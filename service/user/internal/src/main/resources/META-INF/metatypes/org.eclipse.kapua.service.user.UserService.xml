@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+
+     All rights reserved. This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License v1.0
+     which accompanies this distribution, and is available at
+     http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+      Eurotech
+
+-->
+<MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
+    <OCD id="org.eclipse.kapua.service.user.UserService"
+         name="UserService" 
+         description="This is the configuration for the kapua UserService. ">
+        
+        <Icon resource="OSGI-INF/user-service.png" size="32"/>
+
+        <AD id="lockoutPolicy.enabled"  
+            name="lockoutPolicy.enabled"
+            type="Boolean"
+            cardinality="0" 
+            required="true"
+            default="true" 
+            description="User lockout policy enable.">
+        </AD>
+        
+        <AD id="lockoutPolicy.maxFailures"  
+            name="lockoutPolicy.maxFailures"
+            type="Integer"
+            cardinality="0" 
+            required="true"
+            default="3" 
+            min="0"
+            description="Number of consecutive login failures before the user gets locked. Valid if lockout poilcy is enabled."/>
+        
+        <AD id="lockoutPolicy.resetAfter"  
+            name="lockoutPolicy.resetAfter"
+            type="Integer"
+            cardinality="0" 
+            required="true"
+            default="3600" 
+            min="0"
+            description="The amount of time in seconds required after the last login failure to automatically reset the failure counter."/>
+    
+        <AD id="lockoutPolicy.lockDuration"  
+            name="lockoutPolicy.lockDuration"
+            type="Integer"
+            cardinality="0" 
+            required="true"
+            default="10800"
+            min="0" 
+            description="For a locked user the amount of time in seconds required after the last login failure to automatically unlock the user."/>
+    </OCD>
+    
+    <Designate pid="org.eclipse.kapua.service.user.UserService">
+        <Object ocdref="org.eclipse.kapua.service.user.UserService"/>
+    </Designate>
+</MetaData>

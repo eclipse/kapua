@@ -1,0 +1,4 @@
+org.eclipse.kapua.translator.kura.mqtt.TranslatorDataKuraMqtt
+org.eclipse.kapua.translator.kura.mqtt.TranslatorRequestKuraMqtt
+org.eclipse.kapua.translator.mqtt.kura.TranslatorDataMqttKura
+org.eclipse.kapua.translator.mqtt.kura.TranslatorResponseMqttKura

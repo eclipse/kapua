@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+
+     All rights reserved. This program and the accompanying materials
+     are made available under the terms of the Eclipse Public License v1.0
+     which accompanies this distribution, and is available at
+     http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+      Eurotech
+
+-->
+<MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
+    <OCD id="org.eclipse.kapua.service.datastore.MessageStoreService"
+         name="MessageStoreService" 
+         description="This is the configuration for the kapua MessageStoreService ">
+        
+        <Icon resource="OSGI-INF/message-store-service.png" size="32"/>
+
+        <AD id="enabled"  
+            name="messageStore.enabled"
+            type="Boolean"
+            cardinality="0" 
+            required="true"
+            default="true" 
+            description="Message store enable.">
+        </AD>
+        
+        <AD id="dataTTL"  
+            name="dataTTL"
+            type="Integer"
+            cardinality="0" 
+            required="true"
+            default="0" 
+            min="0"
+            description="Message retention period in days."/>
+        
+        <AD id="rxByteLimit"  
+            name="rxByteLimit"
+            type="Long"
+            cardinality="0" 
+            required="true"
+            default="0" 
+            min="0"
+            description="Total data usage per month."/>
+
+    </OCD>
+    
+    <Designate pid="org.eclipse.kapua.service.datastore.MessageStoreService">
+        <Object ocdref="org.eclipse.kapua.service.datastore.MessageStoreService"/>
+    </Designate>
+</MetaData>

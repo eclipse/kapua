@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!--
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Eurotech - initial API and implementation
+   
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.kapua</groupId>
+        <artifactId>kapua-translator-kapua</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kapua-translator-kapua-kura</artifactId>
+    <name>${project.artifactId}</name>
+
+
+	<repositories>
+		<repository>
+			<id>oss.sonatype.org</id>
+			<name>OSS Sonatype Staging</name>
+			<url>https://oss.sonatype.org/content/groups/staging</url>
+		</repository>
+	</repositories>
+
+    <dependencies>
+        <!-- Implemented service interfaces -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-translator-api</artifactId>
+        </dependency>
+
+        <!-- Required service interfaces -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-api</artifactId>
+        </dependency>
+
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-call-kura</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-message-internal</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-internal</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-command-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-configuration-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-bundle-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-packages-internal</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.moxy</artifactId>
+			<version>2.6.3</version>
+		</dependency>
+    </dependencies>
+</project>

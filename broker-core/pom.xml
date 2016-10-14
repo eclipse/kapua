@@ -1,0 +1,172 @@
+<!-- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others All rights reserved. 
+	This program and the accompanying materials are made available under the 
+	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
+	Eurotech - initial API and implementation -->
+	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.kapua</groupId>
+		<artifactId>kapua</artifactId>
+		<version>0.2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>kapua-broker-core</artifactId>
+	<name>${project.artifactId}</name>
+
+	<properties>
+		<activemq.version>5.14.0</activemq.version>
+		<commons.pool.version>2.3</commons.pool.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-commons</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-message-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-locator-service</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-account-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-security-shiro</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-security-authentication-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-security-authorization-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-datastore-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-call-kura</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-registry-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-user-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-translator-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-translator-kapua-kura</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>org.eclipse.kapua.translator.kura.jms</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-transport-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-transport-jms</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-commons</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- activemq -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+			<version>${activemq.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- camel -->
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jms</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- misc -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>${commons.pool.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<!-- Dependencies are required to provide ActiveMQ the JARs -->
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<!-- 
+
+	Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others All rights reserved. 
+
+	This program and the accompanying materials are made available under the 
+	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+	and is available at http://www.eclipse.org/legal/epl-v10.html 
+
+	Contributors: 
+		Eurotech - initial API and implementation 
+
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.kapua</groupId>
+		<artifactId>kapua</artifactId>
+		<version>0.2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.eclipse.kapua.app.api</artifactId>
+	<packaging>war</packaging>
+	<name>org.eclipse.kapua.app.api</name>
+
+	<properties>
+		<jersey.version>2.23.2</jersey.version>
+		<swagger.version>1.5.10</swagger.version>
+		<swagger-ui.version>2.1.4</swagger-ui.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+    <repositories>
+        <repository>
+            <id>kapua_addons</id>
+            <name>Kapua Addons Maven Repository</name>
+            <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+	<dependencies>
+		<!-- -->
+		<!-- Jersey -->
+
+		<!-- -->
+		<!-- Jersey -->
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<!-- -->
+		<!-- Swagger for apidoc -->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jersey2-jaxrs</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+		<!-- -->
+		<!-- Moxy for object marshalling unmarshalling -->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+			<version>2.23.2</version>
+		</dependency>
+
+		<!-- Apache shiro security framework -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+
+		<!-- -->
+		<!-- Same version of the Servlet APIs supported in Apache Tomcat 8.0.x -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-account-internal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-user-internal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-security-shiro</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-registry-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-translator-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-translator-kapua-kura</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>org.eclipse.kapua.translator.kura.jms</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>org.eclipse.kapua.translator.kura.mqtt</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-transport-jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-transport-mqtt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-transport-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-command-internal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-configuration-internal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-packages-internal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>api</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>create swagger ui</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>io.swagger</groupId>
+									<artifactId>swagger-ui</artifactId>
+									<version>${swagger-ui.version}-CQ-10792</version>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/tmp/swagger-ui-js-${swagger-ui.version}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<id>package swagger ui</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo>Swagger-ui: create doc dir</echo>
+								<copy todir="${project.build.directory}/${project.build.finalName}/doc">
+									<fileset dir="${project.build.directory}/tmp/swagger-ui-js-${swagger-ui.version}/swagger-ui/" />
+								</copy>
+								<echo>Copy the install init script</echo>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>customize index</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<echo>Swagger-ui: replace url in index.html</echo>
+								<replaceregexp byline="true" 
+                                               file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
+                                               match="/api/docs/swagger.json" 
+                                               replace="/kapua/api/v1/swagger.json" />
+                                
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,18 @@
+#
+# GWT 
+#
+gwt-unitCache/
+src/main/webapp/WEB-INF/deploy/
+src/main/webapp/WEB-INF/lib
+src/main/webapp/console/gwt/
+src/main/webapp/console/console.nocache.js
+
+
+*.gwt.rpc
+*.cache.html
+*.cache.png
+
+#
+# Tomcat
+#
+tomcat/

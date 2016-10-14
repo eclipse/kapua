@@ -1,0 +1,114 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
+package org.eclipse.kapua.commons.util;
+
+import javax.persistence.OptimisticLockException;
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
+
+import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+import org.eclipse.kapua.KapuaOptimisticLockingException;
+import org.eclipse.persistence.exceptions.DatabaseException;
+
+public class KapuaExceptionUtils
+{
+    /**
+     * Converts a low-level PersistenceException/SQLException to a business-level KapuaException.
+     * 
+     * @param he
+     */
+    public static KapuaException convertPersistenceException(Exception he)
+    {
+        Exception e = he;
+
+        // Handle the case of an incoming KapuaException
+        if (he instanceof KapuaException && he.getCause() != null && he.getCause() instanceof PersistenceException) {
+            e = (Exception) he.getCause();
+        }
+        else if (he instanceof KapuaException) {
+            return (KapuaException) e;
+        }
+
+        // process the Persistence Exception
+        KapuaException ee = null;
+        if (e instanceof OptimisticLockException) {
+            ee = new KapuaOptimisticLockingException(e);
+        }
+        else {
+            Throwable t = e.getCause();
+            if (t instanceof PersistenceException) {
+                t = t.getCause();
+            }
+            if (t instanceof RollbackException) {
+                t = t.getCause();
+            }
+            if (t instanceof DatabaseException) {
+
+                // Handle Unique Constraints Exception
+                DatabaseException cve = (DatabaseException) t;
+
+                int sqlErrorCode = cve.getErrorCode();
+                switch (sqlErrorCode) {
+
+                    // SQL Error: 1062, SQLState: 23000 - ER_DUP_KEYNAME - Unique Constraints Exception
+                    case 1062:
+                    {
+                        //
+                        // Extract the constraint name
+                        // e.g. SQL Message: Duplicate entry 'test_account_1,322,584,746,357' for key 'uc_accountName'
+                        String message = cve.getInternalException().getMessage();
+                        String[] parts = message.split("'");
+                        String constraintName = parts[parts.length - 1];
+
+                        //
+                        // populate the duplicated field name
+                        // String duplicateNameField = s_uniqueConstraints.get(constraintName);
+                        if (constraintName != null) {
+                            ee = new KapuaDuplicateNameException(constraintName);
+                        }
+                    }
+                        break;
+
+                    // SQL Error: 1048, SQLSTATE: 23000 - ER_BAD_NULL_ERROR - Not Null Violation
+                    case 1048:
+                    {
+                        //
+                        // Extract the name of the null attribute
+                        // e.g. SQL Message: Column '%s' cannot be null
+                        String message = cve.getInternalException().getMessage();
+                        String[] parts = message.split("'");
+                        String columnName = null;
+                        if (parts.length == 3) {
+                            columnName = parts[1];
+                        }
+
+                        //
+                        // populate the null field name
+                        if (columnName != null) {
+                            ee = new KapuaIllegalNullArgumentException(columnName);
+                        }
+
+                    }
+                        break;
+                }
+            }
+        }
+        // Handle all other Exceptions
+        if (ee == null) {
+            ee = KapuaException.internalError(e, "Error during Persistence Operation");
+        }
+        return ee;
+    }
+}
