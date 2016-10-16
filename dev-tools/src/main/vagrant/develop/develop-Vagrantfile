@@ -136,7 +136,7 @@ Vagrant.configure("2") do |config|
 	 sudo sed -i 's/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %m | %c | %t%n/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %t | %c | %m%n/g' conf/log4j.properties
 	 sudo sed -i 's/log4j.appender.audit.layout.ConversionPattern=%-5p | %m | %t%n/log4j.appender.audit.layout.ConversionPattern=%-5p | %t%n | %m/g' conf/log4j.properties
 
-	 cp /kapua/org.eclipse.kapua.dev-tools/src/main/vagrant/develop/script/broker/*.sh .
+	 cp /kapua/dev-tools/src/main/vagrant/develop/script/broker/*.sh .
 	 chmod 555 update-kapua-jars-cfg.sh
 	 chmod 555 start-broker.sh
 	 # enable debug
@@ -164,8 +164,8 @@ Vagrant.configure("2") do |config|
      sudo sed -i "$((TOMCAT_USER_LN+3))i \\ \\ <role rolename=\\"manager-status\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
      sudo sed -i "$((TOMCAT_USER_LN+4))i \\ \\ <user username=\\"tomcat\\" password=\\"tomcat\\" roles=\\"manager-gui,manager-script,manager-jmx,manager-status\\"/>" /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/conf/tomcat-users.xml
 
-     sudo cp /kapua/org.eclipse.kapua.dev-tools/src/main/vagrant/develop/script/tomcat/start-tomcat.sh .
-     sudo cp /kapua/org.eclipse.kapua.dev-tools/src/main/vagrant/develop/script/tomcat/update-kapua-war.sh .
+     sudo cp /kapua/dev-tools/src/main/vagrant/develop/script/tomcat/start-tomcat.sh .
+     sudo cp /kapua/dev-tools/src/main/vagrant/develop/script/tomcat/update-kapua-war.sh .
      chmod 555 start-tomcat.sh
      chmod 555 update-kapua-war.sh
      sudo sed -i 's/KAPUA_VERSION/'"$KAPUA_VERSION"'/g' update-kapua-war.sh
