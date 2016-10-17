@@ -125,7 +125,7 @@
                 <include>org.apache.shiro:shiro-core</include>
 
                 <include>${pom.groupId}:kapua-commons</include>
-                <include>${pom.groupId}:kapua-locator-service</include>
+                <include>${pom.groupId}:kapua-service-api</include>
                 <include>${pom.groupId}:kapua-guice</include>
                 <include>${pom.groupId}:kapua-broker-core</include>
                 <include>${pom.groupId}:kapua-message-api</include>

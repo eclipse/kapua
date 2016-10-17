@@ -26,6 +26,7 @@
     <name>${project.artifactId}</name>
 
     <modules>
+        <module>api</module>
         <module>idgenerator</module>
         <module>security</module>
         <module>datastore</module>
