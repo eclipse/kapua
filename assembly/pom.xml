@@ -24,7 +24,6 @@
 
     <properties>
 		<tomcat.version>8.0.37</tomcat.version>
-        <activemq.version>5.14.0</activemq.version>
         <commons.pool.version>2.3</commons.pool.version>
     </properties>
 
