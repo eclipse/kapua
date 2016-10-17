@@ -26,7 +26,6 @@
     <name>${project.artifactId}</name>
 
     <modules>
-        <module>service</module>
         <module>guice</module>
     </modules>
 

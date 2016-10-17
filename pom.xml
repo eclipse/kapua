@@ -27,9 +27,11 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Dependencies versions -->
+        <activemq.version>5.14.0</activemq.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
         <commons-configuration.version>1.9</commons-configuration.version>
+        <commons-pool.version>2.3</commons-pool.version>
         <eclipselink.version>2.6.3</eclipselink.version>
         <guava.version>19.0</guava.version>
         <guice.version>4.1.0</guice.version>
@@ -314,7 +316,7 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-locator-service</artifactId>
+                <artifactId>kapua-service-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -359,6 +361,16 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-translator-kura-jms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-translator-kura-mqtt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-transport-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -393,6 +405,11 @@
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-jms</artifactId>
                 <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons-pool.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -468,17 +485,12 @@
         <module>test</module>
         <module>dev-tools</module>
 
-
-        <module>org.eclipse.kapua.translator.kura.mqtt</module>
-        <module>org.eclipse.kapua.translator.kura.jms</module>
-
-
         <!-- Applications -->
-        <module>org.eclipse.kapua.app.console</module>
-        <module>org.eclipse.kapua.app.api</module>
+        <module>console</module>
+        <module>rest-api</module>
         
-        <!-- assembly -->
-        <module>org.eclipse.kapua.assembly</module>
+        <!-- Assembly -->
+        <module>assembly</module>
     </modules>
 
     <licenses>
@@ -495,16 +507,14 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/eurotech/kapua.git</url>
-        <connection>scm:git:ssh://git@github.com/eurotech/kapua.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/eurotech/kapua.git</developerConnection>
+        <url>https://github.com/eclipse/kapua.git</url>
+        <connection>scm:git:ssh://git@github.com/eclipse/kapua.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse/kapua.git</developerConnection>
     </scm>
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/eurotech/kapua/issues/</url>
+        <url>https://github.com/eclipse/kapua/issues/</url>
     </issueManagement>
 
-	<!-- TODO continuous integration info -->
-	 
 </project>

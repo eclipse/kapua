@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+  -->
+<assembly>
+    <id>unix-bin</id>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <fileSets>
+        <!-- Expanded ActiveMQ Runtime -->
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>target/dependencies/unix/apache-activemq-${activemq.version}</directory>
+            <excludes>
+                <exclude>conf/activemq.xml</exclude>
+                <exclude>conf/log4j.properties</exclude>
+                <!-- reduce activeMQ to a minimal release see: http://activemq.apache.org/initial-configuration.html -->
+                <!--
+                <exclude>lib/activemq-console-*</exclude> console is used during startup by the activemq scripts
+                <exclude>lib/optional/commons-codec*</exclude>
+                <exclude>lib/optional/commons-collections*</exclude>
+                <exclude>lib/optional/commons-lang*</exclude>
+                <exclude>lib/extra/mqtt-client-*</exclude> used for establish mqtt connection by the broker and also all the hwtbuf libraries (at least 2)
+                -->
+                
+                <!-- 
+                geronimo-j2ee-management_1.1_spec-1.0.1.jar  1.0 specs 1.0 already approved https://dev.eclipse.org/ipzilla/show_bug.cgi?id=4281 BUT 1.1 not found
+                geronimo-jms_1.1_spec-1.1.1.jar              https://dev.eclipse.org/ipzilla/show_bug.cgi?id=3662 seems approved by cq
+                geronimo-jta_1.0.1B_spec-1.0.1.jar           https://dev.eclipse.org/ipzilla/show_bug.cgi?id=2709 seems approved by cq
+                -->
+                
+                
+				<exclude>activemq-all-*</exclude>
+				<exclude>lib/activemq-jaas-*</exclude>
+                <exclude>lib/activemq-openwire-legacy*</exclude>
+                <exclude>lib/activemq-web-*</exclude>
+                <exclude>lib/activemq-rar.txt</exclude>
+                <exclude>lib/geronimo-jta_1.0.1B_spec*</exclude>
+                <exclude>lib/optional/activeio-core-*</exclude>
+                <exclude>lib/optional/activemq-amqp-*</exclude>
+                <exclude>lib/optional/activemq-http*</exclude>
+                <exclude>lib/optional/activemq-jdbc-store*</exclude>
+                <exclude>lib/optional/activemq-jms-pool*</exclude>
+                <exclude>lib/optional/activemq-leveldb-store*</exclude>
+                <exclude>lib/optional/activemq-log4j-appender*</exclude>
+                <exclude>lib/optional/activemq-shiro*</exclude>
+                <exclude>lib/optional/activemq-partition*</exclude>
+                <exclude>lib/optional/activemq-pool*</exclude>
+                <exclude>lib/optional/activemq-runtime-config*</exclude>
+                <exclude>lib/optional/activemq-stomp*</exclude>
+                <exclude>lib/optional/commons-codec-*</exclude>
+                <exclude>lib/optional/commons-collections-*</exclude>
+                <exclude>lib/optional/commons-dbcp*</exclude>
+                <exclude>lib/optional/commons-net*</exclude>
+                <exclude>lib/optional/commons-pool2*</exclude>
+                <exclude>lib/optional/geronimo-j2ee-connector*</exclude>
+                <exclude>lib/optional/guava*</exclude>
+                <exclude>lib/optional/hawt*</exclude>
+                <exclude>lib/optional/http*</exclude>
+                <exclude>lib/optional/insight-log*</exclude>
+                <exclude>lib/optional/jackson-*</exclude>
+                <exclude>lib/optional/jasypt-*</exclude>
+                <exclude>lib/optional/jaxb2-*</exclude>
+                <exclude>lib/optional/jettison-*</exclude>
+                <exclude>lib/optional/jmdns-*</exclude>
+                <exclude>lib/optional/leveldb*</exclude>
+                <exclude>lib/optional/org.apache.servicemix.bundles*</exclude>
+                <exclude>lib/optional/org.linkedin*</exclude>
+                <exclude>lib/optional/proton-j*</exclude>
+                <exclude>lib/optional/scala-library*</exclude>
+                <exclude>lib/optional/shiro*</exclude>
+                <exclude>lib/optional/snappy-*</exclude>
+                <exclude>lib/optional/spring-oxm-*</exclude>
+                <exclude>lib/optional/velocity*</exclude>
+                <exclude>lib/optional/xpp3-*</exclude>
+                <exclude>lib/optional/xstream-*</exclude>
+                <exclude>lib/optional/zookeeper-*</exclude>
+                <exclude>lib/web/</exclude>
+
+                <exclude>bin/wrapper.jar</exclude>
+                <exclude>bin/macosx/</exclude>
+                <exclude>bin/linux-x86-32/</exclude>
+                <exclude>bin/linux-x86-64/</exclude>
+
+                <exclude>examples/</exclude>
+                <exclude>docs/</exclude>
+                <exclude>webapps/</exclude>
+                <exclude>webapps-demo/</exclude>
+            </excludes>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>conf/</outputDirectory>
+            <directory>src/main/resources/conf/broker</directory>
+        </fileSet>
+
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib/extra</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <includes>
+                <include>com.google.guava:guava</include>
+                <include>com.google.inject:guice</include>
+                <include>javax.inject:javax.inject</include>
+                <include>aopalliance:aopalliance</include>
+                <include>org.eclipse.persistence:javax.persistence</include>
+                <include>org.eclipse.persistence:eclipselink</include>
+                <include>commons-configuration:commons-configuration</include>
+                <include>org.springframework.security:spring-security-core</include>
+                <include>io.dropwizard.metrics:metrics-core</include>
+                <include>com.h2database:h2</include>
+                <include>com.google.protobuf:protobuf-java</include>
+                <include>org.apache.shiro:shiro-core</include>
+
+                <include>${pom.groupId}:kapua-commons</include>
+                <include>${pom.groupId}:kapua-service-api</include>
+                <include>${pom.groupId}:kapua-guice</include>
+                <include>${pom.groupId}:kapua-broker-core</include>
+                <include>${pom.groupId}:kapua-message-api</include>
+                <include>${pom.groupId}:kapua-message-internal</include>
+                <include>${pom.groupId}:kapua-security-authentication-api</include>
+                <include>${pom.groupId}:kapua-security-authorization-api</include>
+                <include>${pom.groupId}:kapua-security-shiro</include>
+                <include>${pom.groupId}:kapua-device-call-api</include>
+                <include>${pom.groupId}:kapua-device-call-kura</include>
+                <include>${pom.groupId}:kapua-device-api</include>
+                <include>${pom.groupId}:kapua-device-bundle-api</include>
+                <include>${pom.groupId}:kapua-device-bundle-internal</include>
+                <include>${pom.groupId}:kapua-device-command-api</include>
+                <include>${pom.groupId}:kapua-device-command-internal</include>
+                <include>${pom.groupId}:kapua-device-commons</include>
+                <include>${pom.groupId}:kapua-device-configuration-api</include>
+                <include>${pom.groupId}:kapua-device-configuration-internal</include>
+                <include>${pom.groupId}:kapua-device-packages-api</include>
+                <include>${pom.groupId}:kapua-device-packages-internal</include>
+                <include>${pom.groupId}:kapua-device-registry-api</include>
+                <include>${pom.groupId}:kapua-device-registry-internal</include>
+                <include>${pom.groupId}:kapua-idgenerator-api</include>
+                <include>${pom.groupId}:kapua-idgenerator-sequence</include>
+                <include>${pom.groupId}:kapua-user-api</include>
+                <include>${pom.groupId}:kapua-user-internal</include>
+                <include>${pom.groupId}:kapua-datastore-api</include>
+                <include>${pom.groupId}:kapua-datastore-internal</include>
+                <include>${pom.groupId}:kapua-account-api</include>
+                <include>${pom.groupId}:kapua-account-internal</include>
+                <include>${pom.groupId}:kapua-translator-api</include>
+                <include>${pom.groupId}:kapua-translator-kapua-kura</include>
+                <include>${pom.groupId}:kapua-translator-kura-jms</include>
+                <include>${pom.groupId}:kapua-translator-kura-mqtt</include>
+                <include>${pom.groupId}:kapua-transport</include>
+                <include>${pom.groupId}:kapua-transport-jms</include>
+                <include>${pom.groupId}:kapua-transport-mqtt</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

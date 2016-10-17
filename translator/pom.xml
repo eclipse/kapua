@@ -28,6 +28,7 @@
     <modules>
         <module>api</module>
         <module>kapua</module>
+        <module>kura</module>
     </modules>
 
 </project>

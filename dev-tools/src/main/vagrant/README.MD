@@ -25,7 +25,7 @@ To create the Kapua base box run the script with 'base-box' as first parameter f
 
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd org.eclipse.kapua.dev-tools/src/main/vagrant
+$ cd dev-tools/src/main/vagrant
 $ ./start.sh base-box
 ```
 
@@ -40,7 +40,7 @@ Once the base-box is created, from the same directory, it's possible to invoke t
 
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd org.eclipse.kapua.dev-tools/src/main/vagrant
+$ cd dev-tools/src/main/vagrant
 $ ./start.sh develop
 ```
 
@@ -48,7 +48,7 @@ The machine can be recreated every time you need (running the same commands) or,
 If you choose to start it again instead of recreating, you should enter the Vagrant machine and start manually the H2 service (please replace ${H2DB_VERSION} with the correct value):
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd org.eclipse.kapua.dev-tools/src/main/vagrant
+$ cd dev-tools/src/main/vagrant
 $ vagrant up
 $ vagrant ssh
 $ java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &
@@ -59,6 +59,11 @@ $ java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools
 Once the development machine has been created (or started manually as described in the previous chapter), you can enter the machine by executing the command:
 ```
 $ vagrant ssh
+```
+
+***Note:*** to allow the database creation and seeding, before start both the broker and the Tomcat please run a full Kapua project build with sql profile (see the command below)
+```
+$ mvn clean install -Psql -DskipTests
 ```
 
 The broker installation directory is:
@@ -88,9 +93,19 @@ $ ./start-tomcat.sh
 
 The script recreates the link between api and console wars inside the Kapua workspace and the webapps directory of Tomcat. To stop Tomcat call the standard stop script inside bin directory. 
 
-***Note:*** to allow the database creation and seeding, before start both the broker and the Tomcat please run a full Kapua project build with sql profile (see the command below)
+## Verifying Kapua
+
+After running the box, you should be able to connect to the management console at
+
 ```
-$ mvn clean install -Psql
+http://192.168.33.10:8080/console
+```
+
+and login with
+
+```
+username: kapua-sys
+password: kapua-password
 ```
 
 ## Creating the Kapua demo-box
@@ -98,7 +113,7 @@ As for the development machine, once the base-box is created, from the same dire
 
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd org.eclipse.kapua.dev-tools/src/main/vagrant
+$ cd dev-tools/src/main/vagrant
 $ ./start.sh demo
 ```
 
@@ -106,7 +121,7 @@ The machine can be recreated every time you need (running the same commands) or,
 If you choose to start it again instead of recreating, you should enter the Vagrant machine and start manually the H2 service (please replace ${H2DB_VERSION} with the correct value):
 ```
 $ cd $KAPUA_GITHUB_HOME_DIR
-$ cd org.eclipse.kapua.dev-tools/src/main/vagrant
+$ cd dev-tools/src/main/vagrant
 $ vagrant up
 $ vagrant ssh
 $ java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &
@@ -123,24 +138,24 @@ The fresh machine has both the ActiveMQ and Tomcat installed, but please don't u
 To start ***using properly the demo machine*** run a full Kapua build as follow:
 
 ```
-$ mvn clean install -Psql -Pdeploy
+$ mvn clean install -Psql -Pdeploy -DskipTests
 ```
 
 Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory 
 ```
-$ /usr/local/activemq/kapua-broker-${KAPUA_VERSION}
+$ /usr/local/kapua/activemq/apache-activemq-${ACTIVEMQ_VERSION}
 ```
 
 To start the broker type:
 ```
-$ bin/activemq start xbean:conf/activemq.xml
+$ bin/activemq start
 ```
 
 To stop it follow the instructions for the develop machine.
 
 The api and console are properly installed in a Tomcat container in the directory 
 ```
-$ /usr/local/tomcat/kapua-tomcat-apps
+$ /usr/local/kapua/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps
 ```
 
 To start and stop the Tomcat please use the standard scripts under the bin directory of the Tomcat installation.

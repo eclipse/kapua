@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
     Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
    
@@ -10,23 +11,35 @@
         Eurotech - initial API and implementation
    
  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
     <groupId>org.eclipse.kapua</groupId>
-    <artifactId>kapua-idgenerator</artifactId>
+    <artifactId>kapua-translator-kura</artifactId>
     <version>0.2.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>kapua-idgenerator-api</artifactId>
+  <artifactId>kapua-translator-kura-mqtt</artifactId>
   <name>${project.artifactId}</name>
   
   <dependencies>
-        <!-- Extended service interfaces -->
+        <!-- Implemented service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-api</artifactId>
+            <artifactId>kapua-translator-api</artifactId>
         </dependency>
-    </dependencies>
+        
+         <!-- Internal dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-call-kura</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-transport-mqtt</artifactId>
+        </dependency>
+  </dependencies>
+
 </project>
