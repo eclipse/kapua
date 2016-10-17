@@ -14,30 +14,20 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua</artifactId>
+        <artifactId>kapua-translator</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
+    <packaging>pom</packaging>
 
-    <artifactId>org.eclipse.kapua.translator.kura.jms</artifactId>
-    <name>org.eclipse.kapua.translator.kura.jms</name>
+    <artifactId>kapua-translator-kura</artifactId>
+    <name>${project.artifactId}</name>
 
-    <dependencies>
-        <!-- Implemented service interfaces -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-api</artifactId>
-        </dependency>
+    <modules>
+        <module>jms</module>
+        <module>mqtt</module>
+    </modules>
 
-        <!-- Internal dependencies -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-call-kura</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-jms</artifactId>
-        </dependency>
-    </dependencies>
 </project>

@@ -88,8 +88,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>org.eclipse.kapua.translator.kura.jms</artifactId>
-			<version>${project.version}</version>
+			<artifactId>kapua-translator-kura-jms</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

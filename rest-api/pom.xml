@@ -124,13 +124,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>org.eclipse.kapua.translator.kura.jms</artifactId>
-			<version>${project.version}</version>
+			<artifactId>kapua-translator-kura-jms</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>org.eclipse.kapua.translator.kura.mqtt</artifactId>
-			<version>${project.version}</version>
+			<artifactId>kapua-translator-kura-mqtt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
