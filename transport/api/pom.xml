@@ -39,8 +39,6 @@
 
         <!-- External dependencies -->
         <dependency>
-            <!-- Object pooling for kapua clients -->
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
             <version>2.3</version>

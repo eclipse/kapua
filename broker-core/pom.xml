@@ -17,7 +17,6 @@
 
 	<properties>
 		<activemq.version>5.14.0</activemq.version>
-		<commons.pool.version>2.3</commons.pool.version>
 	</properties>
 
 	<dependencies>
@@ -143,7 +142,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
-			<version>${commons.pool.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
