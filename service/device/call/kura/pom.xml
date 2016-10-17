@@ -51,12 +51,7 @@
             <artifactId>kapua-message-internal</artifactId>
         </dependency>
 
-        <!-- -->
         <!-- External dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-        </dependency>
         <dependency>
             <!-- Paho MQTT client -->
             <groupId>org.eclipse.paho</groupId>
@@ -68,6 +63,6 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
         </dependency>
-        
     </dependencies>
+
 </project>
