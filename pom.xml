@@ -477,8 +477,8 @@
         <module>console</module>
         <module>rest-api</module>
         
-        <!-- assembly -->
-        <module>org.eclipse.kapua.assembly</module>
+        <!-- Assembly -->
+        <module>assembly</module>
     </modules>
 
     <licenses>
