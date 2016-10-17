@@ -216,7 +216,8 @@
 
     <build>
         <finalName>console</finalName>
-        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        <!-- 
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>  -->
 
         <plugins>
             <plugin>
