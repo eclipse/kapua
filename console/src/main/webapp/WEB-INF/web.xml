@@ -35,41 +35,41 @@
         <url-pattern>*.jsp</url-pattern>
         <url-pattern>*.js</url-pattern>
         <url-pattern>*.css</url-pattern>
-        <url-pattern>/console/xsrf/*</url-pattern>   
-		<url-pattern>/console/wizard/*</url-pattern>        
-		<url-pattern>/console/wizardActivation/*</url-pattern>
-        <url-pattern>/console/errroHandler/*</url-pattern>     
-        <url-pattern>/console/account/*</url-pattern>
-        <url-pattern>/console/alert/*</url-pattern>
-        <url-pattern>/console/account_usage/*</url-pattern>
-        <url-pattern>/console/auth/*</url-pattern>
-        <url-pattern>/console/cluster/*</url-pattern>
-        <url-pattern>/console/device/*</url-pattern>
-        <url-pattern>/console/deviceManagement/*</url-pattern>
-        <url-pattern>/console/deviceJob/*</url-pattern>
-        <url-pattern>/console/sim/*</url-pattern>
-        <url-pattern>/console/simJob/*</url-pattern>
-        <url-pattern>/console/simProvider/*</url-pattern>
-        <url-pattern>/console/pkiDeviceMgmt/*</url-pattern>
-        <url-pattern>/console/device_snapshots/*</url-pattern>
-        <url-pattern>/console/mqtt/*</url-pattern>
-        <url-pattern>/console/rule/*</url-pattern>
-        <url-pattern>/console/healthCheckReport/*</url-pattern>
-        <url-pattern>/console/healthCheckLog/*</url-pattern>
-        <url-pattern>/console/tag/*</url-pattern>
-        <url-pattern>/console/sysmgmt/*</url-pattern>
-        <url-pattern>/console/user/*</url-pattern>
-        <url-pattern>/console/task/*</url-pattern>
-        <url-pattern>/console/data/*</url-pattern>
-        <url-pattern>/console/exporter/*</url-pattern>
-        <url-pattern>/console/exporter_usage/*</url-pattern>
-        <url-pattern>/console/exporter_device/*</url-pattern>
-        <url-pattern>/console/exporter_device_event/*</url-pattern>
-        <url-pattern>/console/setting/*</url-pattern>
-        <url-pattern>/console/file/*</url-pattern>
-        <url-pattern>/console/image/*</url-pattern>
-        <url-pattern>/console/provision/*</url-pattern>
-        <url-pattern>/console/SSLfile/*</url-pattern>
+        <url-pattern>/xsrf/*</url-pattern>   
+		<url-pattern>/wizard/*</url-pattern>        
+		<url-pattern>/wizardActivation/*</url-pattern>
+        <url-pattern>/errroHandler/*</url-pattern>     
+        <url-pattern>/account/*</url-pattern>
+        <url-pattern>/alert/*</url-pattern>
+        <url-pattern>/account_usage/*</url-pattern>
+        <url-pattern>/auth/*</url-pattern>
+        <url-pattern>/cluster/*</url-pattern>
+        <url-pattern>/device/*</url-pattern>
+        <url-pattern>/deviceManagement/*</url-pattern>
+        <url-pattern>/deviceJob/*</url-pattern>
+        <url-pattern>/sim/*</url-pattern>
+        <url-pattern>/simJob/*</url-pattern>
+        <url-pattern>/simProvider/*</url-pattern>
+        <url-pattern>/pkiDeviceMgmt/*</url-pattern>
+        <url-pattern>/device_snapshots/*</url-pattern>
+        <url-pattern>/mqtt/*</url-pattern>
+        <url-pattern>/rule/*</url-pattern>
+        <url-pattern>/healthCheckReport/*</url-pattern>
+        <url-pattern>/healthCheckLog/*</url-pattern>
+        <url-pattern>/tag/*</url-pattern>
+        <url-pattern>/sysmgmt/*</url-pattern>
+        <url-pattern>/user/*</url-pattern>
+        <url-pattern>/task/*</url-pattern>
+        <url-pattern>/data/*</url-pattern>
+        <url-pattern>/exporter/*</url-pattern>
+        <url-pattern>/exporter_usage/*</url-pattern>
+        <url-pattern>/exporter_device/*</url-pattern>
+        <url-pattern>/exporter_device_event/*</url-pattern>
+        <url-pattern>/setting/*</url-pattern>
+        <url-pattern>/file/*</url-pattern>
+        <url-pattern>/image/*</url-pattern>
+        <url-pattern>/provision/*</url-pattern>
+        <url-pattern>/SSLfile/*</url-pattern>
 	</filter-mapping>
 	
     <filter>
@@ -82,45 +82,45 @@
         <url-pattern>*.jsp</url-pattern>
         <url-pattern>*.js</url-pattern>
         <url-pattern>*.css</url-pattern>
-        <url-pattern>/console/wizard/*</url-pattern>        
-        <url-pattern>/console/wizardActivation/*</url-pattern>  		
-        <url-pattern>/console/xsrf/*</url-pattern>  
-        <url-pattern>/console/account/*</url-pattern>
-        <url-pattern>/console/alert/*</url-pattern>
-        <url-pattern>/console/account_usage/*</url-pattern>
-        <url-pattern>/console/auth/*</url-pattern>
-        <url-pattern>/console/cluster/*</url-pattern>
-        <url-pattern>/console/device/*</url-pattern>
-        <url-pattern>/console/deviceManagement/*</url-pattern>
-        <url-pattern>/console/deviceJob/*</url-pattern>
-        <url-pattern>/console/sim/*</url-pattern>
-        <url-pattern>/console/simJob/*</url-pattern>
-        <url-pattern>/console/simProvider/*</url-pattern>
-        <url-pattern>/console/pkiDeviceMgmt/*</url-pattern>
-        <url-pattern>/console/device_snapshots/*</url-pattern>
-        <url-pattern>/console/provisionRequest/*</url-pattern>
-        <url-pattern>/console/mqtt/*</url-pattern>
-        <url-pattern>/console/rule/*</url-pattern>
-        <url-pattern>/console/healthCheckReport/*</url-pattern>
-        <url-pattern>/console/healthCheckLog/*</url-pattern>
-        <url-pattern>/console/sysmgmt/*</url-pattern>
-        <url-pattern>/console/user/*</url-pattern>
-        <url-pattern>/console/tag/*</url-pattern>
-        <url-pattern>/console/task/*</url-pattern>
-        <url-pattern>/console/data/*</url-pattern>
-        <url-pattern>/console/deviceJobManager/*</url-pattern>
-        <url-pattern>/console/exporter/*</url-pattern>
-        <url-pattern>/console/exporter_usage/*</url-pattern>
-        <url-pattern>/console/exporter_device/*</url-pattern>
-        <url-pattern>/console/exporter_device_event/*</url-pattern>
-        <url-pattern>/console/setting/*</url-pattern>
-        <url-pattern>/console/vpn_connection</url-pattern>
+        <url-pattern>/wizard/*</url-pattern>        
+        <url-pattern>/wizardActivation/*</url-pattern>  		
+        <url-pattern>/xsrf/*</url-pattern>  
+        <url-pattern>/account/*</url-pattern>
+        <url-pattern>/alert/*</url-pattern>
+        <url-pattern>/account_usage/*</url-pattern>
+        <url-pattern>/auth/*</url-pattern>
+        <url-pattern>/cluster/*</url-pattern>
+        <url-pattern>/device/*</url-pattern>
+        <url-pattern>/deviceManagement/*</url-pattern>
+        <url-pattern>/deviceJob/*</url-pattern>
+        <url-pattern>/sim/*</url-pattern>
+        <url-pattern>/simJob/*</url-pattern>
+        <url-pattern>/simProvider/*</url-pattern>
+        <url-pattern>/pkiDeviceMgmt/*</url-pattern>
+        <url-pattern>/device_snapshots/*</url-pattern>
+        <url-pattern>/provisionRequest/*</url-pattern>
+        <url-pattern>/mqtt/*</url-pattern>
+        <url-pattern>/rule/*</url-pattern>
+        <url-pattern>/healthCheckReport/*</url-pattern>
+        <url-pattern>/healthCheckLog/*</url-pattern>
+        <url-pattern>/sysmgmt/*</url-pattern>
+        <url-pattern>/user/*</url-pattern>
+        <url-pattern>/tag/*</url-pattern>
+        <url-pattern>/task/*</url-pattern>
+        <url-pattern>/data/*</url-pattern>
+        <url-pattern>/deviceJobManager/*</url-pattern>
+        <url-pattern>/exporter/*</url-pattern>
+        <url-pattern>/exporter_usage/*</url-pattern>
+        <url-pattern>/exporter_device/*</url-pattern>
+        <url-pattern>/exporter_device_event/*</url-pattern>
+        <url-pattern>/setting/*</url-pattern>
+        <url-pattern>/vpn_connection</url-pattern>
    <!--
    Do not include the following URL patterns for gzip
    compression as it breaks the existing functionality.          
-        <url-pattern>/console/file/*</url-pattern>
-        <url-pattern>/console/SSLfile/*</url-pattern>
-        <url-pattern>/console/gwtComet/*</url-pattern>        
+        <url-pattern>/file/*</url-pattern>
+        <url-pattern>/SSLfile/*</url-pattern>
+        <url-pattern>/gwtComet/*</url-pattern>        
     -->        
 	</filter-mapping>
 
@@ -147,7 +147,7 @@
    	</servlet>
    	<servlet-mapping>
       <servlet-name>KapuaErrorHandlerServlet</servlet-name>
-      <url-pattern>/console/errorHandler/*</url-pattern>
+      <url-pattern>/errorHandler/*</url-pattern>
    	</servlet-mapping>
    
 	<!-- XSRF servlet support -->
@@ -158,7 +158,7 @@
    </servlet>
    <servlet-mapping>
       <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
-      <url-pattern>/console/xsrf/*</url-pattern>
+      <url-pattern>/xsrf/*</url-pattern>
    </servlet-mapping>
 
     <servlet>
@@ -167,7 +167,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceExporterServlet</servlet-name>
-        <url-pattern>/console/exporter_device/*</url-pattern>
+        <url-pattern>/exporter_device/*</url-pattern>
     </servlet-mapping>
 
 	<servlet>
@@ -176,7 +176,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceSnapshotsServlet</servlet-name>
-        <url-pattern>/console/device_snapshots/*</url-pattern>
+        <url-pattern>/device_snapshots/*</url-pattern>
     </servlet-mapping>
 
 	<servlet>
@@ -185,7 +185,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>accountServlet</servlet-name>
-		<url-pattern>/console/account</url-pattern>
+		<url-pattern>/account</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
@@ -194,7 +194,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>authorizationServlet</servlet-name>
-		<url-pattern>/console/auth</url-pattern>
+		<url-pattern>/auth</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -203,7 +203,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>deviceServlet</servlet-name>
-		<url-pattern>/console/device</url-pattern>
+		<url-pattern>/device</url-pattern>
 	</servlet-mapping>
 
     <servlet>
@@ -212,7 +212,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>deviceManagementServlet</servlet-name>
-        <url-pattern>/console/deviceManagement</url-pattern>
+        <url-pattern>/deviceManagement</url-pattern>
     </servlet-mapping>
 
 	<servlet>
@@ -221,7 +221,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>userServlet</servlet-name>
-		<url-pattern>/console/user</url-pattern>
+		<url-pattern>/user</url-pattern>
 	</servlet-mapping>
 
     <listener>
@@ -234,7 +234,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>fileServlet</servlet-name>
-        <url-pattern>/console/file/*</url-pattern>
+        <url-pattern>/file/*</url-pattern>
     </servlet-mapping>
 
 	
@@ -245,32 +245,32 @@
       -->
 	<error-page>
    		<exception-type>java.lang.Throwable</exception-type>
-   		<location>/console/errorHandler/throwable</location>
+   		<location>/errorHandler/throwable</location>
  	</error-page>
  	
  	<error-page>
    		<error-code>400</error-code>
-   		<location>/console/errorHandler/httpError</location>
+   		<location>/errorHandler/httpError</location>
  	</error-page>
  	
  	<error-page>
    		<error-code>401</error-code>
-   		<location>/console/errorHandler/httpError</location>
+   		<location>/errorHandler/httpError</location>
  	</error-page>
  	
  	<error-page>
    		<error-code>403</error-code>
-   		<location>/console/errorHandler/httpError</location>
+   		<location>/errorHandler/httpError</location>
  	</error-page>
  	
  	<error-page>
    		<error-code>404</error-code>
-   		<location>/console/errorHandler/httpError</location>
+   		<location>/errorHandler/httpError</location>
  	</error-page>
  	
  	<error-page>
    		<error-code>405</error-code>
-   		<location>/console/errorHandler/httpError</location>
+   		<location>/errorHandler/httpError</location>
  	</error-page>
  	
 </web-app>

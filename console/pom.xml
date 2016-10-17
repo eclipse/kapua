@@ -25,9 +25,9 @@
 
         <!-- Convenience property to set the GWT version -->
         <gwt.version>2.4.0</gwt.version>
-        
+
         <gxt.version>2.2.5</gxt.version>
-        
+
         <openlayers.version>2.13.1</openlayers.version>
     </properties>
 
@@ -36,10 +36,6 @@
             <id>kapua_addons</id>
             <name>Kapua Addons Maven Repository</name>
             <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -219,8 +215,9 @@
     </dependencies>
 
     <build>
-        <finalName>console-${project.version}</finalName>
-        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        <finalName>console</finalName>
+        <!-- 
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>  -->
 
         <plugins>
             <plugin>
@@ -240,14 +237,16 @@
                 </executions>
 
                 <configuration>
-                    <!--  This optimize code but slows GWT compliling if set to 'false' -->
+                    <!-- This optimize code but slows GWT compile if set to 'false' -->
                     <draftCompile>true</draftCompile>
-                    <runTarget>console.html</runTarget>
+
+                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
                     <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
+                    <optimizationLevel>9</optimizationLevel>
+                    <runTarget>console.jsp</runTarget>
                     <webappDirectory>${project.build.directory}</webappDirectory>
-                    <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                 </configuration>
             </plugin>
 
@@ -317,8 +316,10 @@
                         <configuration>
                             <target>
                                 <echo>Openlayers: copy resources to webapp output folder</echo>
-                                <copy todir="${project.build.directory}/${project.build.finalName}">
-                                    <fileset dir="${project.build.directory}/tmp/openlayers-${openlayers.version}/META-INF/resources/webjars/">
+                                <copy
+                                    todir="${project.build.directory}/${project.build.finalName}">
+                                    <fileset
+                                        dir="${project.build.directory}/tmp/openlayers-${openlayers.version}/META-INF/resources/webjars/">
                                         <exclude name="**/OpenLayers.*.js" />
                                     </fileset>
                                 </copy>
@@ -334,7 +335,10 @@
                         <configuration>
                             <target>
                                 <echo>Openlayers: customize openlayers 'ImgPath' variable</echo>
-                                <replaceregexp byline="true" file="${project.build.directory}/${project.build.finalName}/openlayers/${openlayers.version}/OpenLayers.js" match="ImgPath:&quot;&quot;" replace="ImgPath:&quot;openlayers/${openlayers.version}/img/&quot;" />
+                                <replaceregexp byline="true"
+                                    file="${project.build.directory}/${project.build.finalName}/openlayers/${openlayers.version}/OpenLayers.js"
+                                    match="ImgPath:&quot;&quot;"
+                                    replace="ImgPath:&quot;openlayers/${openlayers.version}/img/&quot;" />
                             </target>
                         </configuration>
                     </execution>
