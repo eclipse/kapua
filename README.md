@@ -1,3 +1,3 @@
 # Eclipse Kapua&trade;
 
-Eclipse Kapua&trade; is a modular IoT cloud platform to manage and integrate devices and their data. It provides a solid integrated foundation of IoT services for any IoT application. Eclipse Kapua&trade; enables comprehensive management of edge IoT nodes including their connectivity, configuration, and application life cycle.
+Eclipse Kapua&trade; is a modular platform providing the services required to manage IoT gateways and smart edge devices Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
