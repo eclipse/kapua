@@ -15,9 +15,9 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
+    <artifactId>kapua-console</artifactId>
+    <name>${project.artifactId}</name>
     <packaging>war</packaging>
-    <artifactId>org.eclipse.kapua.app.console</artifactId>
-    <name>org.eclipse.kapua.app.console</name>
 
     <properties>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>

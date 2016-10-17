@@ -38,7 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>org.eclipse.kapua.app.console</artifactId>
+			<artifactId>kapua-console</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
