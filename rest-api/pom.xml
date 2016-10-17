@@ -20,9 +20,9 @@
 		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eclipse.kapua.app.api</artifactId>
+	<artifactId>kapua-rest-api</artifactId>
+	<name>${project.artifactId}</name>
 	<packaging>war</packaging>
-	<name>org.eclipse.kapua.app.api</name>
 
 	<properties>
 		<jersey.version>2.23.2</jersey.version>

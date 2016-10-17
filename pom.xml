@@ -475,7 +475,7 @@
 
         <!-- Applications -->
         <module>org.eclipse.kapua.app.console</module>
-        <module>org.eclipse.kapua.app.api</module>
+        <module>rest-api</module>
         
         <!-- assembly -->
         <module>org.eclipse.kapua.assembly</module>

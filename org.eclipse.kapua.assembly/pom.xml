@@ -32,7 +32,7 @@
 		<!-- console and api dependency -->
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>org.eclipse.kapua.app.api</artifactId>
+			<artifactId>kapua-rest-api</artifactId>
 			<version>${project.version}</version>
 			<type>war</type>
 		</dependency>
