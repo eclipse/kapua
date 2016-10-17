@@ -496,16 +496,14 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/eurotech/kapua.git</url>
-        <connection>scm:git:ssh://git@github.com/eurotech/kapua.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/eurotech/kapua.git</developerConnection>
+        <url>https://github.com/eclipse/kapua.git</url>
+        <connection>scm:git:ssh://git@github.com/eclipse/kapua.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse/kapua.git</developerConnection>
     </scm>
 
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/eurotech/kapua/issues/</url>
+        <url>https://github.com/eclipse/kapua/issues/</url>
     </issueManagement>
 
-	<!-- TODO continuous integration info -->
-	 
 </project>
