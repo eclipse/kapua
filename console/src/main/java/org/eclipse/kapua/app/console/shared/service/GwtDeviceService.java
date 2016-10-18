@@ -35,6 +35,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("device")
 public interface GwtDeviceService extends RemoteService
 {
+
     /**
      * Returns count of all devices.
      * 
@@ -101,9 +102,12 @@ public interface GwtDeviceService extends RemoteService
      * Returns a list of device history events for a specified device within a specified date range.
      * 
      * @param loadConfig
-     * @param gwtDevice the device to return the history of
-     * @param startDate the start of the date range in milliseconds since epoch (Date.getTime())
-     * @param endDate the end of the date range in milliseconds since epoch (Date.getTime())
+     * @param gwtDevice
+     *            the device to return the history of
+     * @param startDate
+     *            the start of the date range in milliseconds since epoch (Date.getTime())
+     * @param endDate
+     *            the end of the date range in milliseconds since epoch (Date.getTime())
      * @return
      * @throws GwtKapuaException
      */
@@ -123,4 +127,9 @@ public interface GwtDeviceService extends RemoteService
     public void deleteDevice(GwtXSRFToken xsfrToken, String scopeIdString, String clientId)
         throws GwtKapuaException;
 
+    /**
+     * Return Maps Tile Endpoint
+     */
+    public String getTileEndpoint()
+        throws GwtKapuaException;
 }

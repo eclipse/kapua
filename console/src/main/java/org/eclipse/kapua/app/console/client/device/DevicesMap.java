@@ -61,10 +61,12 @@ public class DevicesMap extends LayoutContainer {
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
     private static final Projection DEFAULT_PROJECTION = new Projection("EPSG:4326");
+    private static final String TILE_OPENSTREET_MAP = "https://a.tile.openstreetmap.org";
 
     private DevicesView m_devicesView;
     private GwtSession m_currentSession;
 
+    private String m_tileEndpoint;
     private Map m_map;
     private MapWidget m_mapWidget;
     private Vector m_markerLayer;
@@ -78,9 +80,68 @@ public class DevicesMap extends LayoutContainer {
 
     protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
+
+        // get tile endpoint or use default
+        gwtDeviceService.getTileEndpoint(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable t)
+            {
+                m_tileEndpoint = TILE_OPENSTREET_MAP;
+                initMapOptions();
+                FailureHandler.handle(t);
+            }
+
+            @Override
+            public void onSuccess(String tileServerURIFromConfig)
+            {
+                if (tileServerURIFromConfig != null && !tileServerURIFromConfig.isEmpty()) {
+                    m_tileEndpoint = tileServerURIFromConfig;
+                }
+                else {
+                    m_tileEndpoint = TILE_OPENSTREET_MAP;
+                }
+                initMapOptions();
+            }
+        });
+    }
+
+    public void refresh(GwtDeviceQueryPredicates predicates)
+    {
+        // clean-up the Marker list
+        m_markerLayer.destroyFeatures();
+        if (m_popup != null) {
+            m_map.removePopup(m_popup);
+        }
+
+        // reload the devices for this account
+        final DevicesMap theDeviceMap = this;
+        theDeviceMap.mask(MSGS.loading());
+        BasePagingLoadConfig loadConfig = new BasePagingLoadConfig(0, 500);
+        gwtDeviceService.findDevices(loadConfig,
+                                     m_currentSession.getSelectedAccount().getId(),
+                                     predicates,
+                                     new AsyncCallback<PagingLoadResult<GwtDevice>>() {
+
+                                         public void onFailure(Throwable caught)
+                                         {
+                                             FailureHandler.handle(caught);
+                                             theDeviceMap.unmask();
+                                         }
+
+                                         public void onSuccess(PagingLoadResult<GwtDevice> loadResult)
+                                         {
+                                             placeMarkers(loadResult.getData());
+                                             theDeviceMap.unmask();
+                                         }
+                                     });
+    }
+
+    private void initMapOptions()
+    {
+
         setLayout(new FitLayout());
         setBorders(false);
-
         // create some MapOptions
         MapOptions defaultMapOptions = new MapOptions();
         defaultMapOptions.setNumZoomLevels(16);
@@ -91,9 +152,10 @@ public class DevicesMap extends LayoutContainer {
 
         // create the mapquest base layer
         OSMOptions osmOptions = new OSMOptions();
-        osmOptions.setAttribution(
-                "<p>Tiles Courtesy of <a href=\"http://www.mapquest.com/\" target=\"_blank\">MapQuest</a> <img src=\"http://developer.mapquest.com/content/osm/mq_logo.png\"></p> - &copy; <a href=\"http://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
-        OSM mapQuest = new OSM("Map", "http://otile1.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png", osmOptions);
+        osmOptions.setAttribution("© <a href=\"http://www.openstreetmap.org/copyright\" target=\"_blank\">OpenStreetMap</a> contributors");
+
+        String tileUrl = new StringBuilder().append(m_tileEndpoint).append("/${z}/${x}/${y}.png").toString();
+        OSM mapQuest = new OSM("Map", tileUrl, osmOptions);
         mapQuest.setIsBaseLayer(true);
 
         // Create a marker layer to the current location marker
@@ -126,34 +188,8 @@ public class DevicesMap extends LayoutContainer {
 
         // force the map to fall behind popups
         m_mapWidget.getElement().getFirstChildElement().getStyle().setZIndex(0);
-    }
-
-    public void refresh(GwtDeviceQueryPredicates predicates) {
-        // clean-up the Marker list
-        m_markerLayer.destroyFeatures();
-        if (m_popup != null) {
-            m_map.removePopup(m_popup);
-        }
-
-        // reload the devices for this account
-        final DevicesMap theDeviceMap = this;
-        theDeviceMap.mask(MSGS.loading());
-        BasePagingLoadConfig loadConfig = new BasePagingLoadConfig(0, 500);
-        gwtDeviceService.findDevices(loadConfig,
-                m_currentSession.getSelectedAccount().getId(),
-                predicates,
-                new AsyncCallback<PagingLoadResult<GwtDevice>>() {
-
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                        theDeviceMap.unmask();
-                    }
-
-                    public void onSuccess(PagingLoadResult<GwtDevice> loadResult) {
-                        placeMarkers(loadResult.getData());
-                        theDeviceMap.unmask();
-                    }
-                });
+        layout();
+        refresh(new GwtDeviceQueryPredicates());
     }
 
     private void placeMarkers(List<GwtDevice> devices) {
@@ -180,7 +216,7 @@ public class DevicesMap extends LayoutContainer {
                 // lets create a vector point on the location
                 Style pointStyle = new Style();
                 pointStyle.setFillOpacity(0.9);
-                pointStyle.setExternalGraphic("eclipse/org/eclipse/kapua/app/console/icon/device_map.png");
+                pointStyle.setExternalGraphic("eurotech/com/eurotech/cloud/icon/device_map.png");
                 pointStyle.setGraphicSize(37, 34);
                 pointStyle.setGraphicOffset(-10, -34);
                 pointStyle.setGraphicName(theDevice.getDisplayName());
