@@ -19,8 +19,13 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  * A container for KapuaMetric instances organized into a list.
+ * 
+ * @since 1.0
+ * 
  */
 public class KapuaMetricsMapType {
+
     @XmlElement(name="metric")
     public List<KapuaMetric> metrics = new ArrayList<KapuaMetric>();
+
 }

@@ -21,13 +21,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * KapuaMetric represents an instance of a metric published as part of the message.
- * The metric is defined by a name, a type and a value. The name is an alphanumeric string.
+ * KapuaMetric represents an instance of a metric published as part of the message.<br>
+ * The metric is defined by a name, a type and a value. The name is an alphanumeric string.<br>
  * The type is expressed as a string and can be one of the following values: string, double, int, float, long boolean, base64Binary.
- * The value is the string representation of the corresponding value object.
- * For the primitive types, the conversion is straight forward.
+ * The value is the string representation of the corresponding value object.<br>
+ * For the primitive types, the conversion is straight forward.<br>
  * Values of type base64Binary represent a metric of type byte array;
  * in this case, the metric value is serialized into a base64 encoded string.
+ * 
+ * @since 1.0
+ * 
  */
 @XmlRootElement(name = "metric")
 @XmlType(propOrder = { "name", "type", "value" })
@@ -54,10 +57,20 @@ public class KapuaMetric
     @XmlElement
     public String               value;
 
+    /**
+     * Constructor
+     */
     public KapuaMetric()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param name
+     * @param type
+     * @param value
+     */
     public KapuaMetric(String name, String type, String value)
     {
         this.name = name;
@@ -65,6 +78,13 @@ public class KapuaMetric
         this.value = value;
     }
 
+    /**
+     * Constructor
+     * 
+     * @param name
+     * @param type
+     * @param value
+     */
     public KapuaMetric(String name, Class<?> type, Object value)
     {
         this.name = name;
@@ -72,11 +92,23 @@ public class KapuaMetric
         this.value = getStringValue(value);
     }
 
+    /**
+     * Get metric name
+     * 
+     * @return
+     */
     public String getName()
     {
         return this.name;
     }
 
+    /**
+     * Get metric type.<br>
+     * It returns a String representation of the metric type (e.g. string, double, int, ...).
+     * 
+     * @param type
+     * @return
+     */
     public static String getMetricType(Class<?> type)
     {
 
@@ -112,6 +144,23 @@ public class KapuaMetric
         }
     }
 
+    /**
+     * Converts the value to a string representation.<br>
+     * <br>
+     * If the value is a byte[] it returns a base 64 string conversion:<br>
+     * <code>
+     *    DatatypeConverter.printBase64Binary((byte[]) value);
+     * </code>
+     * <br>
+     * <br>
+     * otherwise it invokes the<br>
+     * <code>
+     *    Sting.valueOf(value);
+     * </code>
+     * 
+     * @param value
+     * @return
+     */
     public static String getStringValue(Object value)
     {
 
@@ -127,6 +176,12 @@ public class KapuaMetric
         }
     }
 
+    /**
+     * Get the metric value.<br>
+     * It returns the metric value as instance of the metric type (e.g Double for double, Integer for int, ...).
+     * 
+     * @return
+     */
     public Object getValue()
     {
 

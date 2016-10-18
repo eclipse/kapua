@@ -17,6 +17,12 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
+/**
+ * Kapua data message object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage
 {
 

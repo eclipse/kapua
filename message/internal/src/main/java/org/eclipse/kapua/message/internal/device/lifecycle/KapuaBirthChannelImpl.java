@@ -15,13 +15,22 @@ package org.eclipse.kapua.message.internal.device.lifecycle;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
 import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
+/**
+ * Kapua birth message channel object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaBirthChannelImpl extends KapuaChannelImpl implements KapuaBirthChannel {
 
 	private String clientId;
-	  
+
+    @Override
 	public String getClientId() {
 		return clientId;
 	}
+
+    @Override
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}

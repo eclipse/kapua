@@ -22,6 +22,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.message.KapuaPayload;
 
+/**
+ * Kapua message payload object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class KapuaPayloadImpl implements KapuaPayload
@@ -29,6 +35,9 @@ public class KapuaPayloadImpl implements KapuaPayload
     private Map<String, Object> properties;
     private byte[]              body;
 
+    /**
+     * Constructor
+     */
     public KapuaPayloadImpl()
     {
         properties = new HashMap<String, Object>();
@@ -58,6 +67,7 @@ public class KapuaPayloadImpl implements KapuaPayload
         this.body = body;
     }
 
+    @Override
     public String toDisplayString()
     {
         StringBuilder sb = new StringBuilder();

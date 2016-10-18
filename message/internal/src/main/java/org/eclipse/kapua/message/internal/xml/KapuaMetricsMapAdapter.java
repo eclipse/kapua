@@ -18,6 +18,12 @@ import java.util.Map.Entry;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+/**
+ * Kapua metrics map adapter. It marshal and unmarshal the Kapua metrics map in a proper way.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaMetricsMapAdapter extends XmlAdapter<KapuaMetricsMapType,Map<String,Object>> {
 
     @Override

@@ -17,6 +17,12 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
+/**
+ * Kapua disconnect message object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaDisconnectMessageImpl extends KapuaMessageImpl<KapuaDisconnectChannel, KapuaDisconnectPayload> implements KapuaDisconnectMessage {
 	
 	private String clientId;
