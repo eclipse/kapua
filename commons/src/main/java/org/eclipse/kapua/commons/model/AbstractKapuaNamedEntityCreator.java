@@ -16,11 +16,25 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * Kapua entity named creator service (reference abstract implementation).
+ *
+ * @param <E> entity type
+ * 
+ * @since 1.0
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> extends AbstractKapuaEntityCreator<E> implements KapuaNamedEntityCreator<E>
 {
     protected String name;
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     * @param name
+     */
     protected AbstractKapuaNamedEntityCreator(KapuaId scopeId,
                                               String name)
     {
@@ -28,11 +42,13 @@ public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> ext
         this.name = name;
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    @Override
     public void setName(String name)
     {
         this.name = name;

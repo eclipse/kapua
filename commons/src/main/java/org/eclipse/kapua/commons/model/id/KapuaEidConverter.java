@@ -16,6 +16,12 @@ import java.math.BigInteger;
 
 import javax.persistence.AttributeConverter;
 
+/**
+ * Kapua identifier converter used by persistence operations to convert the entity from and to database.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaEidConverter implements AttributeConverter<KapuaEid, BigInteger>
 {
     @Override

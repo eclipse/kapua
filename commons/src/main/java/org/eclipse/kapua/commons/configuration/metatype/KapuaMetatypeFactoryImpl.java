@@ -14,26 +14,52 @@ package org.eclipse.kapua.commons.configuration.metatype;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.*;
 
-public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory {
+/**
+ * Kapua metatype objects factory service implementation.
+ * 
+ * @since 1.0
+ *
+ */
+public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory
+{
 
+    /**
+     * Locator instance
+     */
     private KapuaLocator locator = KapuaLocator.getInstance();
+
+    /**
+     * Meta type factory instance
+     */
     private KapuaMetatypeFactory factory = locator.getFactory(KapuaMetatypeFactory.class);
 
-    @Override public KapuaTocd newKapuaTocd() { return new TocdImpl(); }
+    @Override
+    public KapuaTocd newKapuaTocd()
+    {
+        return new TocdImpl();
+    }
 
-    @Override public KapuaTad newKapuaTad() {
+    @Override
+    public KapuaTad newKapuaTad()
+    {
         return new TadImpl();
     }
 
-    @Override public KapuaTscalar newKapuaTscalar() {
+    @Override
+    public KapuaTscalar newKapuaTscalar()
+    {
         return TscalarImpl.fromValue("String");
     }
 
-    @Override public KapuaToption newKapuaToption() {
+    @Override
+    public KapuaToption newKapuaToption()
+    {
         return new ToptionImpl();
     }
 
-    @Override public KapuaTicon newKapuaTicon() {
+    @Override
+    public KapuaTicon newKapuaTicon()
+    {
         return new TiconImpl();
     }
 }

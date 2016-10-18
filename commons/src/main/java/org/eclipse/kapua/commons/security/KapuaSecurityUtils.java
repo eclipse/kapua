@@ -54,7 +54,7 @@ public class KapuaSecurityUtils
     }
 
     /**
-     * Execute the {@link Callable} in a privileged context.<BR>
+     * Execute the {@link Callable} in a privileged context.<br>
      * Trusted mode means that no checks for permissions and rights will fail.
      * 
      * @param privilegedAction

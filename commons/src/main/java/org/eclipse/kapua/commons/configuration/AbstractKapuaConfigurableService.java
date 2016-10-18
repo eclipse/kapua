@@ -45,6 +45,12 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
+/**
+ * Configurable service definition abstract reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractKapuaConfigurableService implements KapuaConfigurableService, Serializable
 {
@@ -52,6 +58,16 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
     private String pid    = null;
     private EntityManagerFactory entityManagerFactory;
 
+    /**
+     * Reads metadata for the service pid
+     * 
+     * @param pid
+     * @return
+     * @throws IOException
+     * @throws Exception
+     * @throws XMLStreamException
+     * @throws FactoryConfigurationError
+     */
     private static TmetadataImpl readMetadata(String pid)
         throws IOException, Exception, XMLStreamException, FactoryConfigurationError
     {
@@ -68,6 +84,14 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         return metaData;
     }
 
+    /**
+     * Validate configuration
+     * 
+     * @param pid
+     * @param ocd
+     * @param updatedProps
+     * @throws KapuaException
+     */
     private static void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps)
         throws KapuaException
     {
@@ -127,6 +151,12 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         }
     }
 
+    /**
+     * Convert the properties map to {@link Properties}
+     * 
+     * @param values
+     * @return
+     */
     private static Properties toProperties(Map<String, Object> values)
     {
         Properties props = new Properties();
@@ -136,6 +166,14 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         return props;
     }
     
+    /**
+     * Convert the {@link Properties} to a properties map
+     * 
+     * @param ocd
+     * @param props
+     * @return
+     * @throws KapuaException
+     */
     private static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException
     {
         List<KapuaTad> ads = ocd.getAD();
@@ -150,6 +188,14 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         return values;
     }
 
+    /**
+     * Create the service configuration entity
+     * 
+     * @param em
+     * @param serviceConfig
+     * @return
+     * @throws KapuaException
+     */
     private ServiceConfig create(EntityManager em, ServiceConfig serviceConfig)
         throws KapuaException
     {
@@ -172,6 +218,14 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         
     }
     
+    /**
+     * Update the service configuration entity
+     * 
+     * @param em
+     * @param serviceConfig
+     * @return
+     * @throws KapuaException
+     */
     private ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
         throws KapuaException
     {
@@ -199,7 +253,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
     }
     
     /**
-     * Protected constructor
+     * Constructor
      * 
      * @param pid
      * @param domain

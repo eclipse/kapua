@@ -21,11 +21,22 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Resource utilities
+ * 
+ * @since 1.0
+ *
+ */
 public class ResourceUtils 
 {
     public static final Logger s_logger = LoggerFactory.getLogger(ResourceUtils.class);
 
+    /**
+     * Get the URL rescource
+     * 
+     * @param resource
+     * @return
+     */
     public static URL getResource(String resource) {
         URL url ;
 

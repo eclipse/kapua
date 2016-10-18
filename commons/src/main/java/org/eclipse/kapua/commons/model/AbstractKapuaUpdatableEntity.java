@@ -37,6 +37,12 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * Kapua updatable entity default abstract implementation.
+ *
+ * @since 1.0
+ * 
+ */
 @SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
@@ -64,31 +70,43 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     @Column(name = "properties")
     protected String   properties;
 
+    /**
+     * Constructor
+     */
     protected AbstractKapuaUpdatableEntity()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public AbstractKapuaUpdatableEntity(KapuaId scopeId)
     {
         super(scopeId);
     }
 
+    @Override
     public Date getModifiedOn()
     {
         return modifiedOn;
     }
 
+    @Override
     public KapuaId getModifiedBy()
     {
         return modifiedBy;
     }
 
+    @Override
     public int getOptlock()
     {
         return optlock;
     }
 
+    @Override
     public void setOptlock(int optlock)
     {
         this.optlock = optlock;
@@ -100,6 +118,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     //
     // -------------------------------------------------
 
+    @Override
     public Properties getEntityAttributes()
         throws KapuaException
     {
@@ -115,6 +134,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
         return props;
     }
 
+    @Override
     public void setEntityAttributes(Properties props)
         throws KapuaException
     {
@@ -136,6 +156,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     //
     // -------------------------------------------------
 
+    @Override
     public Properties getEntityProperties()
         throws KapuaException
     {
@@ -151,6 +172,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
         return props;
     }
 
+    @Override
     public void setEntityProperties(Properties props)
         throws KapuaException
     {
@@ -166,6 +188,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
         }
     }
 
+    @Override
     protected void prePersistsAction()
         throws KapuaException
     {
@@ -174,6 +197,11 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
         this.modifiedOn = this.createdOn;
     }
 
+    /**
+     * Before update action to correctly set the modified on and modified by fields
+     * 
+     * @throws KapuaException
+     */
     @PreUpdate
     protected void preUpdateAction()
         throws KapuaException
@@ -182,10 +210,20 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
         this.modifiedOn = new Date();
     }
     
+    /**
+     * Set the modified on date
+     * 
+     * @param modifiedOn
+     */
     public void setModifiedOn(Date modifiedOn) {
         this.modifiedOn = modifiedOn;
     }
     
+    /**
+     * Set the modified by identifier
+     * 
+     * @param modifiedBy
+     */
     public void setModifiedBy(KapuaId modifiedBy) {
         this.modifiedBy = (KapuaEid)modifiedBy;
     }

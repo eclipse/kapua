@@ -23,7 +23,7 @@ import org.eclipse.kapua.commons.configuration.metatype.XmlConfigPropertyAdapted
 import org.eclipse.kapua.commons.util.CryptoUtil;
 
 /**
- * Xml configuration properties adapter
+ * Xml configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
  * 
  * @since 1.0
  *

@@ -18,8 +18,21 @@ import java.net.URISyntaxException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
+/**
+ * System utilities.
+ * 
+ * @since 1.0
+ *
+ */
 public class SystemUtils
 {
+
+    /**
+     * Get the broker url. Gets the broker schema, host and port from the {@link SystemSetting}
+     * 
+     * @return
+     * @throws URISyntaxException
+     */
     public static URI getBrokerURI()
         throws URISyntaxException
     {

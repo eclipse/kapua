@@ -18,21 +18,32 @@ import java.util.List;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 
+/**
+ * Kapua sql and predicate reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class AndPredicate implements KapuaAndPredicate
 {
     private List<KapuaPredicate> predicates;
 
+    /**
+     * Constructor
+     */
     public AndPredicate()
     {
         this.predicates = new ArrayList<KapuaPredicate>();
     }
 
+    @Override
     public AndPredicate and(KapuaPredicate predicate)
     {
         this.predicates.add(predicate);
         return this;
     }
 
+    @Override
     public List<KapuaPredicate> getPredicates()
     {
         return this.predicates;

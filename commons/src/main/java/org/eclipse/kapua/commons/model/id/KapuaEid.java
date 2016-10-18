@@ -21,7 +21,10 @@ import javax.persistence.Embeddable;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * KapuaEid
+ * Kapua identifier reference implementation.
+ * 
+ * @since 1.0
+ * 
  */
 @Embeddable
 public class KapuaEid implements KapuaId, Serializable
@@ -30,32 +33,53 @@ public class KapuaEid implements KapuaId, Serializable
 
     protected BigInteger      eid;
 
+    /**
+     * Constructor
+     */
     public KapuaEid()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param id
+     */
     public KapuaEid(BigInteger id)
     {
         this();
         this.eid = id;
     }
 
+    /**
+     * Creates a {@link KapuaEid} instance parsing the short identifier provided
+     * 
+     * @param shortId
+     * @return
+     */
     public static KapuaEid parseShortId(String shortId)
     {
         byte[] bytes = Base64.getUrlDecoder().decode(shortId);
         return new KapuaEid(new BigInteger(bytes));
     }
 
+    @Override
     public BigInteger getId()
     {
         return eid;
     }
 
+    /**
+     * Set the identifier
+     * 
+     * @param eid
+     */
     protected void setId(BigInteger eid)
     {
         this.eid = eid;
     }
 
+    @Override
     public String toString()
     {
         return eid.toString();

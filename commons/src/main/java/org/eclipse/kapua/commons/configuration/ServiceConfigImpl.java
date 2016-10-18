@@ -57,11 +57,19 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
     @Column(name = "configurations")
     protected String   configurations;
 
+    /**
+     * Constructor
+     */
     public ServiceConfigImpl()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public ServiceConfigImpl(KapuaId scopeId)
     {
         super(scopeId);

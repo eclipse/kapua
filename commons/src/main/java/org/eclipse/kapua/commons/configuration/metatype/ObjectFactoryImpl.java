@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 
 /**
- * ObjectFactory allows you to programatically construct new instances of the Java representation for XML content.<BR>
+ * ObjectFactory allows you to programmatically construct new instances of the Java representation for XML content.<br>
  * The Java representation of XML content can consist of schema derived interfaces and classes representing the binding of schema type definitions, element declarations and model groups. Factory
  * methods for each of these are provided in this class.
  *

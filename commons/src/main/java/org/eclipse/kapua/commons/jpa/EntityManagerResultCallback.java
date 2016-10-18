@@ -15,8 +15,7 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Entity manager callback result service definition.<br>
- * Used to invoke actions that expect a result (ie query action).
+ * Entity manager callback result service definition.
  * 
  * @param <T> Execution result return type
  * 

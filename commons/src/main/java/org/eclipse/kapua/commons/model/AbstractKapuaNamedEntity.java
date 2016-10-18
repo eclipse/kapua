@@ -21,6 +21,12 @@ import javax.persistence.MappedSuperclass;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * Kapua named-updatable entity default abstract implementation.
+ * 
+ * @since 1.0
+ *
+ */
 @SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
@@ -31,11 +37,20 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
     @Column(name = "name")
     protected String name;
 
+    /**
+     * Constructor
+     */
     protected AbstractKapuaNamedEntity()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     * @param name
+     */
     public AbstractKapuaNamedEntity(KapuaId scopeId,
                                     String name)
     {
@@ -43,11 +58,13 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
         this.name = name;
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    @Override
     public void setName(String name)
     {
         this.name = name;

@@ -14,24 +14,63 @@ package org.eclipse.kapua.commons.model.query;
 
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
 
+/**
+ * Field sort criteria.
+ * 
+ * @since 1.0
+ *
+ */
 public class FieldSortCriteria implements KapuaSortCriteria {
+
+    /**
+     * Sort order
+     */
     public enum SortOrder {
+        /**
+         * Ascending
+         */
         ASCENDING,
+        /**
+         * Descending
+         */
         DESCENDING;
     }
 
+    /**
+     * Field attribute name
+     */
     private String    attributeName;
+
+    /**
+     * Field sort order
+     */
     private SortOrder sortOrder;
 
+    /**
+     * Constructor
+     * 
+     * @param attributeName
+     * @param sortOrder
+     */
     public FieldSortCriteria(String attributeName, SortOrder sortOrder) {
         this.attributeName = attributeName;
         this.sortOrder = sortOrder;
     }
 
+    /**
+     * Get the sort attribute name
+     * 
+     * @return
+     */
     public String getAttributeName() {
         return attributeName;
     }
 
+    /**
+     * Get the sort attribute order
+     * 
+     * @return
+     */
     public SortOrder getSortOrder() {
         return sortOrder;
     }

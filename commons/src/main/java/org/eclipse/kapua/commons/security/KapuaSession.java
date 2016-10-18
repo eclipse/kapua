@@ -39,12 +39,36 @@ public class KapuaSession implements Serializable
         trustedClasses.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
     }
 
+    /**
+     * Access token that identify the logged in session.
+     */
     private AccessToken       accessToken;
+
+    /**
+     * Run as scope identifier.<br>
+     * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
+     */
     private KapuaId           runAsScopeId;
+
+    /**
+     * User scope identifier
+     */
     private KapuaId           scopeId;
+
+    /**
+     * User identifier
+     */
     private KapuaId           userId;
+
+    /**
+     * Username
+     */
     private String            username;
 
+    /**
+     * Trusted mode.<br>
+     * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
+     */
     private boolean           trustedMode      = false;
 
     /**
@@ -78,6 +102,11 @@ public class KapuaSession implements Serializable
         }
     }
 
+    /**
+     * Check if the caller is included in the caller list allowed to change the trusted mode flag.
+     * 
+     * @return
+     */
     private final static boolean isCallerClassTrusted()
     {
         // the stack trace should be like
@@ -117,34 +146,60 @@ public class KapuaSession implements Serializable
         this.username = username;
     }
 
+    /**
+     * Get the access token
+     * 
+     * @return
+     */
     public AccessToken getAccessToken()
     {
         return accessToken;
     }
 
+    /**
+     * Get the run as scope identifier.<br>
+     * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
+     * 
+     * @return
+     */
     public KapuaId getRunAsScopeId()
     {
         return runAsScopeId;
     }
 
+    /**
+     * Get the scope identifier
+     * 
+     * @return
+     */
     public KapuaId getScopeId()
     {
         return scopeId;
     }
 
+    /**
+     * Get the user identifier
+     * 
+     * @return
+     */
     public KapuaId getUserId()
     {
         return userId;
     }
 
+    /**
+     * get the username
+     * 
+     * @return
+     */
     public String getUsername()
     {
         return username;
     }
 
     /**
-     * Set the trusted mode status.<BR>
-     * Trusted mode session means that no checks for permissions and right will fail.
+     * Set the trusted mode status.<br>
+     * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      * 
      * @return
      */
@@ -154,8 +209,8 @@ public class KapuaSession implements Serializable
     }
     
     /**
-     * Return the trusted mode status.<BR>
-     * Trusted mode session means that no checks for permissions and right will fail.
+     * Return the trusted mode status.<br>
+     * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      * 
      * @return
      */

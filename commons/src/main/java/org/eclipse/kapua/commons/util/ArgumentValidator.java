@@ -20,6 +20,9 @@ import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 
 /**
  * Utility class to validate arguments passed in a parameters in service methods.
+ * 
+ * @since 1.0
+ * 
  */
 public class ArgumentValidator 
 {	

@@ -22,6 +22,12 @@ import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
+/**
+ * Exception utilities
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaExceptionUtils
 {
     /**

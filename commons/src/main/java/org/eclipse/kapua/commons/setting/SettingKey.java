@@ -12,7 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
+/**
+ * Setting key definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface SettingKey
 {
+
+    /**
+     * Get the setting key
+     * 
+     * @return
+     */
     public String key();
 }
