@@ -17,12 +17,17 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum ConsoleSettingKeys implements SettingKey {
     SKIN_RESOURCE_DIR("skin.resource.dir"),
 
-    DEVICE_CONFIGURATION_ICON_FOLDER("device.configuration.icon.folder"), DEVICE_CONFIGURATION_ICON_CACHE_TIME("device.configuration.icon.cache.time"), DEVICE_CONFIGURATION_ICON_SIZE_MAX(
-            "device.configuration.icon.size.max"),
+    DEVICE_CONFIGURATION_ICON_FOLDER("device.configuration.icon.folder"), //
+    DEVICE_CONFIGURATION_ICON_CACHE_TIME("device.configuration.icon.cache.time"), //
+    DEVICE_CONFIGURATION_ICON_SIZE_MAX("device.configuration.icon.size.max"),
 
-    DEVICE_CONFIGURATION_SERVICE_IGNORE("device.configuration.service.ignore"),
+    DEVICE_CONFIGURATION_SERVICE_IGNORE("device.configuration.service.ignore"),//
 
-    FILE_UPLOAD_SIZE_MAX("file.upload.size.max"), FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("file.upload.inmemory.size.threshold"),;
+    DEVICE_MAP_TILE_URI("device.map.tile.uri"), //
+
+    FILE_UPLOAD_SIZE_MAX("file.upload.size.max"), //
+    FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("file.upload.inmemory.size.threshold"), //
+    ;
 
     private String key;
 
