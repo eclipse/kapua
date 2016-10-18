@@ -24,11 +24,11 @@ vagrant ssh -c "echo 'deploying the Kapua broker'
 	sudo cp /kapua/commons/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/device/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/locator/guice/target/kapua-*.jar lib/extra
-	sudo cp /kapua/locator/service/target/kapua-*.jar lib/extra
 	sudo cp /kapua/message/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/message/internal/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/account/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/account/internal/target/kapua-*.jar lib/extra
+	sudo cp /kapua/service/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/datastore/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/datastore/internal/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/device/bundle/api/target/kapua-*.jar lib/extra
