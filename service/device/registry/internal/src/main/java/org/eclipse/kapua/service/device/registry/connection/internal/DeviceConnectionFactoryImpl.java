@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 
 public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory
 {
@@ -32,4 +33,9 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory
         return new DeviceConnectionQueryImpl(scopeId);
     }
 
+    @Override
+    public DeviceConnectionSummary newConnectionSummary()
+    {
+        return new DeviceConnectionSummaryImpl();
+    }
 }

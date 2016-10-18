@@ -50,6 +50,8 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceXmlRegistry;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionXmlRegistry;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
@@ -111,7 +113,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaTocd.class,
                     KapuaTad.class,
                     KapuaTicon.class,
-                    KapuaToption.class
+                    KapuaToption.class,
+                    DeviceConnectionSummary.class,
+                    DeviceConnectionXmlRegistry.class
             }, null);
         } catch (Exception e) {
             throw new RuntimeException(e);

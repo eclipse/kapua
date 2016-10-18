@@ -12,15 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.locator.KapuaLocator;
 
-public interface DeviceConnectionFactory extends KapuaObjectFactory
+import javax.xml.bind.annotation.XmlRegistry;
+
+@XmlRegistry
+public class DeviceConnectionXmlRegistry
 {
-    public DeviceConnectionCreator newCreator(KapuaId scopeId);
+    private final KapuaLocator            locator = KapuaLocator.getInstance();
+    private final DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
 
-    public DeviceConnectionQuery newQuery(KapuaId scopeId);
-
-    public DeviceConnectionSummary newConnectionSummary();
-
+    public DeviceConnectionSummary newConnectionSummary()
+    {
+        return factory.newConnectionSummary();
+    }
 }
