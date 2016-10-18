@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+/**
+ * Device position definition.
+ *
+ * @since 1.0
+ *
+ */
 public interface Position
 {
 
