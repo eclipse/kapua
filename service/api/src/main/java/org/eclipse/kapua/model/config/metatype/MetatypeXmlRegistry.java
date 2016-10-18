@@ -21,7 +21,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * @since 1.0
  *
  */
-public class MetatypeXmlRegistry {
+public class MetatypeXmlRegistry
+{
 
     /**
      * Locator instance
@@ -35,6 +36,7 @@ public class MetatypeXmlRegistry {
 
     /**
      * Returns a {@link KapuaTocd} instance
+     * 
      * @return
      */
     public KapuaTocd newKapuaTocd()
@@ -62,15 +64,15 @@ public class MetatypeXmlRegistry {
         return factory.newKapuaTicon();
     }
 
-    /**
-     * Returns a {@link KapuaTscalar} instance
-     * 
-     * @return
-     */
-    public KapuaTscalar newKapuaTscalar()
-    {
-        return factory.newKapuaTscalar();
-    }
+    // /**
+    // * Returns a {@link KapuaTscalar} instance
+    // *
+    // * @return
+    // */
+    // public KapuaTscalar newKapuaTscalar()
+    // {
+    // return factory.newKapuaTscalar();
+    // }
 
     /**
      * Returns a {@link KapuaToption} instance
@@ -80,5 +82,35 @@ public class MetatypeXmlRegistry {
     public KapuaToption newKapuaToption()
     {
         return factory.newKapuaToption();
+    }
+
+    /**
+     * Returns a {@link KapuaTmetadata} instance
+     * 
+     * @return
+     */
+    public KapuaTmetadata newKapuaTmetadata()
+    {
+        return factory.newKapuaTmetadata();
+    }
+
+    /**
+     * Returns a {@link KapuaTdesignate} instance
+     * 
+     * @return
+     */
+    public KapuaTdesignate newKapuaTdesignate()
+    {
+        return factory.newKapuaTdesignate();
+    }
+
+    /**
+     * Returns a {@link KapuaTobject} instance
+     * 
+     * @return
+     */
+    public KapuaTobject newKapuaTobject()
+    {
+        return factory.newKapuaTobject();
     }
 }

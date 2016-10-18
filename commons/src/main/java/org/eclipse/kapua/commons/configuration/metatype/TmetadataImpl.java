@@ -25,14 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -66,23 +58,11 @@ import org.w3c.dom.Element;
  *
  * @since 1.0
  */
-@XmlRootElement(name="MetaData", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Tmetadata", propOrder = {
-    "ocd",
-    "designate",
-    "any"
-})
 public class TmetadataImpl implements KapuaTmetadata {
-    @XmlElement(name = "OCD", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0")
-    protected List<TocdImpl> ocd;
-    @XmlElement(name = "Designate", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0")
-    protected List<TdesignateImpl> designate;
-    @XmlAnyElement(lax = true)
+    protected List<KapuaTocd>       ocd;
+    protected List<KapuaTdesignate> designate;
     protected List<Object> any;
-    @XmlAttribute(name = "localization")
     protected String localization;
-    @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**
@@ -107,11 +87,17 @@ public class TmetadataImpl implements KapuaTmetadata {
      *
      *
      */
+    @Override
     public List<KapuaTocd> getOCD() {
         if (ocd == null) {
-            ocd = new ArrayList<TocdImpl>();
+            ocd = new ArrayList<>();
         }
-        return new ArrayList<KapuaTocd>(this.ocd);
+        return new ArrayList<>(this.ocd);
+    }
+
+    public void setOCD(List<KapuaTocd> ocd)
+    {
+        this.ocd = ocd;
     }
 
     /**
@@ -138,9 +124,14 @@ public class TmetadataImpl implements KapuaTmetadata {
      */
     public List<KapuaTdesignate> getDesignate() {
         if (designate == null) {
-            designate = new ArrayList<TdesignateImpl>();
+            designate = new ArrayList<>();
         }
-        return new ArrayList<KapuaTdesignate>(this.designate);
+        return new ArrayList<>(this.designate);
+    }
+
+    public void setDesignate(List<KapuaTdesignate> designate)
+    {
+        this.designate = designate;
     }
 
     /**
@@ -171,6 +162,11 @@ public class TmetadataImpl implements KapuaTmetadata {
             any = new ArrayList<Object>();
         }
         return this.any;
+    }
+
+    public void setAny(List<Object> any)
+    {
+        this.any = any;
     }
 
     /**
@@ -213,6 +209,11 @@ public class TmetadataImpl implements KapuaTmetadata {
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
+    }
+
+    public void setOtherAttributes(Map<QName, String> otherAttributes)
+    {
+        this.otherAttributes = otherAttributes;
     }
 
 }

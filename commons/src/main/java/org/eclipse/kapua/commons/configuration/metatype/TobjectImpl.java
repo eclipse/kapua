@@ -64,20 +64,10 @@ import org.w3c.dom.Element;
  *
  * @since 1.0
  */
-@XmlRootElement(name="Object", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Tobject", propOrder = {
-    "attribute",
-    "any"
-})
 public class TobjectImpl implements KapuaTobject {
-    @XmlElement(name = "Attribute", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0")
     protected List<TattributeImpl> attribute;
-    @XmlAnyElement(lax = true)
     protected List<Object> any;
-    @XmlAttribute(name = "ocdref", required = true)
     protected String ocdref;
-    @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**

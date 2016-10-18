@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.test.KapuaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,14 +26,12 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAccountServiceTest extends KapuaTest
 {
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(AbstractAccountServiceTest.class);
     
     public static String DEFAULT_PATH = "src/main/sql/H2";
     public static String DEFAULT_COMMONS_PATH = "../commons";
     public static String DEFAULT_FILTER = "act_*.sql";
     public static String DROP_FILTER = "act_*_drop.sql";
-
 
     public static void scriptSession(String path, String fileFilter)
     {
@@ -70,6 +69,7 @@ public abstract class AbstractAccountServiceTest extends KapuaTest
     {
     	KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         scriptSession(DEFAULT_PATH, DEFAULT_FILTER);
+        XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
     }
     
     @AfterClass

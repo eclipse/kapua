@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.metatype.TmetadataImpl;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
@@ -37,6 +36,7 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
@@ -71,7 +71,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
     private static TmetadataImpl readMetadata(String pid)
         throws IOException, Exception, XMLStreamException, FactoryConfigurationError
     {
-        TmetadataImpl metaData = null;
+        KapuaTmetadata metaData = null;
         StringBuilder sbMetatypeXmlName = new StringBuilder();
         sbMetatypeXmlName.append("META-INF/metatypes/").append(pid).append(".xml");
 
@@ -79,7 +79,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         URL metatypeXmlURL = ResourceUtils.getResource(metatypeXmlName);
         String metatypeXml = ResourceUtils.readResource(metatypeXmlURL);
         if (metatypeXml != null) {
-            metaData = XmlUtil.unmarshal(metatypeXml, TmetadataImpl.class);
+            metaData = XmlUtil.unmarshal(metatypeXml, KapuaTmetadata.class);
         }
         return metaData;
     }
@@ -278,7 +278,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         try {
-            TmetadataImpl metadata = readMetadata(this.pid);
+            KapuaTmetadata metadata = readMetadata(this.pid);
             if (metadata.getOCD() != null && metadata.getOCD().size() > 0) {
                 for (KapuaTocd ocd : metadata.getOCD()) {
                     if (ocd.getId() != null && ocd.getId().equals(pid)) {

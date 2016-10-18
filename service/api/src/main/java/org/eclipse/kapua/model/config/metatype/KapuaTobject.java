@@ -23,6 +23,7 @@ package org.eclipse.kapua.model.config.metatype;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -50,12 +51,16 @@ import org.w3c.dom.Element;
  * &lt;/complexType&gt;
  * </pre>
  *
- * @since 1.0
- * 
+ *
  */
+@XmlRootElement(name = "Object", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(name = "Tobject", propOrder = {
+                                         "attribute",
+                                         "any"
+}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTobject")
 public interface KapuaTobject 
 {
-
     /**
      * Gets the value of the attribute property.
      *
@@ -78,6 +83,7 @@ public interface KapuaTobject
      *
      *
      */
+    @XmlElement(name = "Attribute", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
     public List<KapuaTattribute> getAttribute();
 
     /**
@@ -103,6 +109,7 @@ public interface KapuaTobject
      *
      *
      */
+    @XmlAnyElement(lax = true)
     public List<Object> getAny();
 
     /**
@@ -113,6 +120,7 @@ public interface KapuaTobject
      *     {@link String }
      *
      */
+    @XmlAttribute(name = "ocdref", required = true)
     public String getOcdref();
 
     /**
@@ -139,6 +147,7 @@ public interface KapuaTobject
      * @return
      *     always non-null
      */
+    @XmlAnyAttribute
     public Map<QName, String> getOtherAttributes();
 
 }

@@ -28,10 +28,6 @@ public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory
      */
     private KapuaLocator locator = KapuaLocator.getInstance();
 
-    /**
-     * Meta type factory instance
-     */
-    private KapuaMetatypeFactory factory = locator.getFactory(KapuaMetatypeFactory.class);
 
     @Override
     public KapuaTocd newKapuaTocd()
@@ -46,9 +42,9 @@ public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory
     }
 
     @Override
-    public KapuaTscalar newKapuaTscalar()
+    public KapuaTscalar newKapuaTscalar(String type)
     {
-        return TscalarImpl.fromValue("String");
+        return TscalarImpl.fromValue(type);
     }
 
     @Override
@@ -61,5 +57,20 @@ public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory
     public KapuaTicon newKapuaTicon()
     {
         return new TiconImpl();
+    }
+
+    public KapuaTmetadata newKapuaTmetadata()
+    {
+        return new TmetadataImpl();
+    }
+
+    public KapuaTdesignate newKapuaTdesignate()
+    {
+        return new TdesignateImpl();
+    }
+
+    public KapuaTobject newKapuaTobject()
+    {
+        return new TobjectImpl();
     }
 }

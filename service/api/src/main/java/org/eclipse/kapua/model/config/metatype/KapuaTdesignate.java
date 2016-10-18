@@ -22,7 +22,9 @@ package org.eclipse.kapua.model.config.metatype;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -54,9 +56,20 @@ import org.w3c.dom.Element;
  * &lt;/complexType&gt;
  * </pre>
  *
- * @since 1.0
- * 
+ *
  */
+@XmlRootElement(name = "Designate", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(name = "Tdesignate", propOrder = {
+                                            "object",
+                                            "any",
+                                            "pid",
+                                            "factoryPid",
+                                            "bundle",
+                                            "optional",
+                                            "merge",
+                                            "otherAttributes"
+}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTdesignate")
 public interface KapuaTdesignate 
 {
     /**
@@ -67,6 +80,7 @@ public interface KapuaTdesignate
      *     {@link KapuaTobject }
      *
      */
+    @XmlElement(name = "Object", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0", required = true)
     public KapuaTobject getObject();
 
     /**
@@ -102,8 +116,10 @@ public interface KapuaTdesignate
      *
      *
      */
+    @XmlAnyElement(lax = true)
     public List<Object> getAny();
 
+    public void setAny(List<Object> any);
     /**
      * Gets the value of the pid property.
      *
@@ -112,6 +128,7 @@ public interface KapuaTdesignate
      *     {@link String }
      *
      */
+    @XmlAttribute(name = "pid")
     public String getPid();
 
     /**
@@ -132,6 +149,7 @@ public interface KapuaTdesignate
      *     {@link String }
      *
      */
+    @XmlAttribute(name = "factoryPid")
     public String getFactoryPid();
 
     /**
@@ -152,6 +170,7 @@ public interface KapuaTdesignate
      *     {@link String }
      *
      */
+    @XmlAttribute(name = "bundle")
     public String getBundle();
 
     /**
@@ -172,7 +191,8 @@ public interface KapuaTdesignate
      *     {@link Boolean }
      *
      */
-    public boolean isOptional();
+    @XmlAttribute(name = "optional")
+    public Boolean isOptional();
 
     /**
      * Sets the value of the optional property.
@@ -192,7 +212,8 @@ public interface KapuaTdesignate
      *     {@link Boolean }
      *
      */
-    public boolean isMerge();
+    @XmlAttribute(name = "merge")
+    public Boolean isMerge();
 
     /**
      * Sets the value of the merge property.
@@ -218,6 +239,9 @@ public interface KapuaTdesignate
      * @return
      *     always non-null
      */
+    @XmlAnyAttribute
     public Map<QName, String> getOtherAttributes();
+
+    public void setOtherAttributes(Map<QName, String> otherAttributes);
 
 }
