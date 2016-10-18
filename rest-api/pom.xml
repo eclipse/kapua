@@ -170,7 +170,7 @@
 				<version>2.10</version>
 				<executions>
 					<execution>
-						<id>create swagger ui</id>
+						<id>Create swagger ui</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>unpack</goal>
@@ -182,11 +182,29 @@
 									<artifactId>swagger-ui</artifactId>
 									<version>${swagger-ui.version}-CQ-10792</version>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/tmp/swagger-ui-js-${swagger-ui.version}</outputDirectory>
+									<outputDirectory>${project.build.directory}/tmp/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
+                    <execution>
+                        <id>Create swagger ui libs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>io.swagger</groupId>
+                                    <artifactId>swagger-ui-lib</artifactId>
+                                    <version>${swagger-ui.version}</version>
+                                    <!-- <overWrite>true</overWrite> -->
+                                    <outputDirectory>${project.build.directory}/tmp/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -204,9 +222,13 @@
 							<target>
 								<echo>Swagger-ui: create doc dir</echo>
 								<copy todir="${project.build.directory}/${project.build.finalName}/doc">
-									<fileset dir="${project.build.directory}/tmp/swagger-ui-js-${swagger-ui.version}/swagger-ui/" />
+									<fileset dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
-								<echo>Copy the install init script</echo>
+								
+                                <echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
+                                <copy todir="${project.build.directory}/${project.build.finalName}/doc/lib">
+                                    <fileset dir="${project.build.directory}/tmp/swagger-ui-lib/" />
+                                </copy>
 							</target>
 						</configuration>
 					</execution>
