@@ -14,6 +14,12 @@ package org.eclipse.kapua.message.device.data;
 
 import org.eclipse.kapua.message.KapuaPayload;
 
+/**
+ * Kapua data message payload object definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaDataPayload extends KapuaPayload
 {
     

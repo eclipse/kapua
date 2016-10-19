@@ -17,6 +17,12 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
+/**
+ * Kapua birth message object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaBirthMessageImpl extends KapuaMessageImpl<KapuaBirthChannel, KapuaBirthPayload> implements KapuaBirthMessage {
 	
 	private String clientId;

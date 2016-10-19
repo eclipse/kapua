@@ -14,10 +14,28 @@ package org.eclipse.kapua.message.internal;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
+/**
+ * Message error codes.
+ * 
+ * @since 1.0
+ *
+ */
 public enum MessageErrorCodes implements KapuaErrorCode
 {
+    /**
+     * Invalid destination
+     */
     INVALID_DESTINATION,
+    /**
+     * Invalid message
+     */
     INVALID_MESSAGE,
+    /**
+     * Invalid metric type
+     */
     INVALID_METRIC_TYPE,
+    /**
+     * Invalid metric value
+     */
     INVALID_METRIC_VALUE
 }

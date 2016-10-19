@@ -17,6 +17,12 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
+/**
+ * Kapua application message object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaAppsMessageImpl extends KapuaMessageImpl<KapuaAppsChannel, KapuaAppsPayload> implements KapuaAppsMessage {
 	
 }

@@ -14,9 +14,26 @@ package org.eclipse.kapua.message.device.data;
 
 import org.eclipse.kapua.message.KapuaMessage;
 
+/**
+ * Kapua data message object definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaDataMessage extends KapuaMessage<KapuaDataChannel, KapuaDataPayload>
 {
+
+    /**
+     * Get client identifier
+     * 
+     * @return
+     */
     public String getClientId();
 
+    /**
+     * Set client identifier
+     * 
+     * @param clientId
+     */
     public void setClientId(String clientId);
 }

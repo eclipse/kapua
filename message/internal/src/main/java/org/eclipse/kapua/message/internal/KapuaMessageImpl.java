@@ -27,14 +27,16 @@ import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * KapuaMessage provides an abstraction over the messages sent in and out of the Everyware Cloud platform.
+ * KapuaMessage provides an abstraction over the messages sent in and out of the Kapua platform.<br>
  * It encapsulates all the information regarding the message: the topic it was addressed to, the timestamp
- * when it was received by the platform, and the payload contained in the message.
+ * when it was received by the platform, and the payload contained in the message.<br>
  * The payload can be represented by a raw binary array or by an KapuaPayload object if it was formatted
  * as such when the message was composed and sent. Refer to the KapuaPayload documentation for more details on
  * how KapuaPayload are modelled and how they can be constructed.<br>
  * The KapuaMessage class is used both by the messages/search API to return message results from the platform,
  * as well as by messages/store and messages/publish API to send messages to the platform.
+ *
+ * @since 1.0
  *
  */
 @SuppressWarnings("rawtypes")
@@ -58,11 +60,20 @@ public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> im
 
     private P             payload;
 
+    /**
+     * Constructor
+     */
     public KapuaMessageImpl()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param channel
+     * @param metrics
+     */
     public KapuaMessageImpl(C channel, P metrics)
     {
         this();

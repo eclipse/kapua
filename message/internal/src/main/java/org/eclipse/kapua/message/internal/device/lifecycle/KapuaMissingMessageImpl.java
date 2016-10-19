@@ -17,6 +17,12 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
+/**
+ * Kapua missing message object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaMissingMessageImpl extends KapuaMessageImpl<KapuaMissingChannel, KapuaMissingPayload> implements KapuaMissingMessage {
 	
 }

@@ -15,13 +15,22 @@ package org.eclipse.kapua.message.internal.device.lifecycle;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
+/**
+ * Kapua application message channel object reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaAppsChannelImpl extends KapuaChannelImpl implements KapuaAppsChannel {
 
 	private String clientId;
-	  
+
+    @Override
 	public String getClientId() {
 		return clientId;
 	}
+
+    @Override
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}

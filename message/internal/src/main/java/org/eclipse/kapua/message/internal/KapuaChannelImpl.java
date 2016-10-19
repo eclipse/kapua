@@ -16,6 +16,12 @@ import java.util.List;
 
 import org.eclipse.kapua.message.KapuaChannel;
 
+/**
+ * Kapua message channel object freference implementation.
+ *
+ * @since 1.0
+ *
+ */
 public class KapuaChannelImpl implements KapuaChannel
 {
     private List<String> semanticParts;

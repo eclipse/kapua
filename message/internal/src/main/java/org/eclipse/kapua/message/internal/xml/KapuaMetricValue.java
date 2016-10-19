@@ -21,14 +21,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * KapuaMetricValue represents an instance of a metric stored in metricsByValue or metricsByTimestamp column families.
- * The metric is defined by a timestamp, a value and the UUID of the message on which the metric was published. The timestamp is a long type.
+ * KapuaMetricValue represents an instance of a metric stored in metricsByValue or metricsByTimestamp column families.<br>
+ * The metric is defined by a timestamp, a value and the UUID of the message on which the metric was published. The timestamp is a long type.<br>
  * The value is the string representation of the corresponding value object.?????
- * For the primitive types, the conversion is straight forward.
+ * For the primitive types, the conversion is straight forward.<br>
  * Values of type base64Binary represent a metric of type byte array;
  * in this case, the metric value is serialized into a base64 encoded string.
+ * 
+ * @since 1.0
+ * 
  */
-
 @XmlRootElement(name="metricValue")
 @XmlType(propOrder= {"timestamp","value","uuid"})
 public class KapuaMetricValue {
@@ -37,7 +39,7 @@ public class KapuaMetricValue {
     private static final Logger s_logger = LoggerFactory.getLogger(KapuaMetricValue.class);
 
     /**
-     * Timestamp of the Metric.
+     * Metric timestamp.
      */
     @XmlElement
     public Long timestamp;
@@ -54,33 +56,82 @@ public class KapuaMetricValue {
     @XmlElement
     public String uuid;
 
+    /**
+     * Constructor
+     */
     public KapuaMetricValue() {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param timestamp
+     * @param value
+     * @param uuid
+     */
     public KapuaMetricValue(Long timestamp, String value, String uuid) {
         this.timestamp  = timestamp;
         this.value = value;
         this.uuid = uuid;
     }
 
+    /**
+     * Constructor
+     * 
+     * @param timestamp
+     * @param value
+     * @param uuid
+     */
     public KapuaMetricValue(Long timestamp, Object value, String uuid) {
         this.timestamp  = timestamp;
         this.value = getStringValue(value);
         this.uuid = uuid;
     }
 
+    /**
+     * Get the metric timestamp
+     * 
+     * @return
+     */
     public Long getTimestamp() {
         return this.timestamp;
     }
 
+    /**
+     * Get the metric value
+     * 
+     * @return
+     */
     public String getValue() {
         return this.value;
     }
 
+    /**
+     * Get the metric identifier
+     * 
+     * @return
+     */
     public String getUUID() {
         return this.uuid;
     }
 
+    /**
+     * Converts the value to a string representation.<br>
+     * <br>
+     * If the value is a byte[] it returns a base 64 string conversion:<br>
+     * <code>
+     *    DatatypeConverter.printBase64Binary((byte[]) value);
+     * </code>
+     * <br>
+     * <br>
+     * otherwise it invokes the<br>
+     * <code>
+     *    Sting.valueOf(value);
+     * </code>
+     * 
+     * @param value
+     * @return
+     */
     public static String getStringValue(Object value) {
 
         if (value == null) {
