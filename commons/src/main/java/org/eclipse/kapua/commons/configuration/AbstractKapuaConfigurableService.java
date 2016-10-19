@@ -68,7 +68,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @throws XMLStreamException
      * @throws FactoryConfigurationError
      */
-    private static TmetadataImpl readMetadata(String pid)
+    private static KapuaTmetadata readMetadata(String pid)
         throws IOException, Exception, XMLStreamException, FactoryConfigurationError
     {
         KapuaTmetadata metaData = null;
