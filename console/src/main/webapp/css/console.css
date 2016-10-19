@@ -86,7 +86,7 @@ iframe.gwt-Frame {
 	border: none;
 }
 
-body, table, td, select {
+body, table, td, select, label {
 	font-size: 11px;
 	font-family: tahoma, arial, helvetica, sans-serif;
 }
@@ -119,7 +119,7 @@ div.x-tab-panel-footer-plain div.x-tab-strip-spacer {
 
 div.login {
     background-color:  white;
-	background-image:  url(../eclipse/org/eclipse/kapua/app/console/icon/shutterstock_37049290.jpg);
+	background-image:  url(/img/login-background.jpeg);
     background-size:   cover;
     background-repeat: no-repeat;
 }
@@ -127,20 +127,29 @@ div.login {
 div.login-ie8 {
 	background-color:  white;
     background-repeat: no-repeat;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/shutterstock_37049290.jpg',sizingMethod='scale');   /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/shutterstock_37049290.jpg',sizingMethod='scale')"; /* IE8 Hack */
+    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/login-background.jpeg',sizingMethod='scale');   /* IE8 Hack */
+    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/login-background.jpeg',sizingMethod='scale')"; /* IE8 Hack */
 }
 
-div.loginBanner {
+div.loginHeader {
     background-color:  rgba(255,255,255,0.85);
 }
 
-div.loginBanner-ie8 {
+div.loginHeader-ie8 {
 	filter:            progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#EEFFFFFF', EndColorStr='#EEFFFFFF');
 	-ms-filter:        "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEFFFFFF, endColorstr=#EEFFFFFF)";
 }
 
-div.ethLogo {
+div.loginFooter {
+    background-color:  rgba(255,255,255,0.5);
+}
+
+div.loginFooter-ie8 {
+	filter:            progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#EEFFFFFF', EndColorStr='#EEFFFFFF');
+	-ms-filter:        "progid:DXImageTransform.Microsoft.gradient(startColorstr=#EEFFFFFF, endColorstr=#EEFFFFFF)";
+}
+
+div.kapuaLogo {
 	width:             248px;
 	height:            48px;
     margin-right:      15px; 
@@ -152,7 +161,7 @@ div.ethLogo {
     background-size:   contain;
 }
 
-div.ethLogo-ie8 {
+div.kapuaLogo-ie8 {
     width:             248px;
     height:            48px;
     margin-right:      15px; 

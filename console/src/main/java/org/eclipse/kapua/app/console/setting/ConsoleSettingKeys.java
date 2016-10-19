@@ -15,7 +15,8 @@ package org.eclipse.kapua.app.console.setting;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 public enum ConsoleSettingKeys implements SettingKey {
-    SKIN_RESOURCE_DIR("skin.resource.dir"),
+    SKIN_RESOURCE_DIR("skin.resource.dir"), //
+    LOGIN_BACKGROUND_CREDITS("login.background.credits"), //
 
     DEVICE_CONFIGURATION_ICON_FOLDER("device.configuration.icon.folder"), //
     DEVICE_CONFIGURATION_ICON_CACHE_TIME("device.configuration.icon.cache.time"), //
@@ -27,6 +28,7 @@ public enum ConsoleSettingKeys implements SettingKey {
 
     FILE_UPLOAD_SIZE_MAX("file.upload.size.max"), //
     FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("file.upload.inmemory.size.threshold"), //
+
     ;
 
     private String key;
