@@ -20,6 +20,8 @@ import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -60,6 +62,8 @@ public class KapuaCloudConsole implements EntryPoint {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
+    private GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
+
     private GwtSession currentSession;
 
     private Viewport viewport;
@@ -68,6 +72,8 @@ public class KapuaCloudConsole implements EntryPoint {
     private WestNavigationView westView;
     private LayoutContainer centerView;
     private HorizontalPanel southView;
+
+    private Label creditLabel;
 
     /**
      * Note, we defer all application initialization code to {@link #onModuleLoad2()} so that the
@@ -220,32 +226,24 @@ public class KapuaCloudConsole implements EntryPoint {
         viewport.add(splash, centerData);
 
         //
-        // north
-        SimplePanel ethLogo = new SimplePanel();
+        // Header login page
+        SimplePanel kapuaLogo = new SimplePanel();
         if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
-            ethLogo.setStyleName("ethLogo");
+            kapuaLogo.setStyleName("kapuaLogo");
         } else {
-            ethLogo.setStyleName("ethLogo-ie8");
+            kapuaLogo.setStyleName("kapuaLogo-ie8");
         }
 
-        SimplePanel cloudLogo = new SimplePanel();
-        if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
-            cloudLogo.setStyleName("cloudLogo");
-        } else {
-            cloudLogo.setStyleName("cloudLogo-ie8");
-        }
-
-        TableLayout layout = new TableLayout(2);
+        TableLayout layout = new TableLayout(1);
         layout.setWidth("100%");
-        LayoutContainer lcFooter = new LayoutContainer(layout);
-        if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
-            lcFooter.setStyleName("loginBanner");
-        } else {
-            lcFooter.setStyleName("loginBanner-ie8");
-        }
 
-        lcFooter.add(cloudLogo, new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.BOTTOM));
-        lcFooter.add(ethLogo, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.BOTTOM));
+        LayoutContainer lcHeader = new LayoutContainer(layout);
+        lcHeader.add(kapuaLogo, new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.BOTTOM));
+        if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
+            lcHeader.setStyleName("loginHeader");
+        } else {
+            lcHeader.setStyleName("loginHeader-ie8");
+        }
 
         BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 72);
         northData.setCollapsible(false);
@@ -253,7 +251,45 @@ public class KapuaCloudConsole implements EntryPoint {
         northData.setHideCollapseTool(false);
         northData.setSplit(false);
         northData.setMargins(new Margins(0));
-        viewport.add(lcFooter, northData);
+        viewport.add(lcHeader, northData);
+
+        //
+        // Footer login page
+        creditLabel = new Label();
+        creditLabel.setStyleName("margin-right:10px");
+
+        gwtSettingService.getLoginBackgroundCredits(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.error(), caught.getLocalizedMessage());
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                creditLabel.setText(result);
+                creditLabel.repaint();
+            }
+        });
+
+        layout = new TableLayout(1);
+        layout.setWidth("100%");
+        LayoutContainer lcFooter = new LayoutContainer(layout);
+        if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
+            lcFooter.setStyleName("loginFooter");
+        } else {
+            lcFooter.setStyleName("loginFooter-ie8");
+        }
+
+        lcFooter.add(creditLabel, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.BOTTOM));
+
+        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 18);
+        southData.setCollapsible(false);
+        southData.setFloatable(false);
+        southData.setHideCollapseTool(false);
+        southData.setSplit(false);
+        southData.setMargins(new Margins(0));
+        viewport.add(lcFooter, southData);
 
         RootPanel.get().add(viewport);
 
