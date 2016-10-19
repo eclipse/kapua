@@ -57,7 +57,7 @@ div#ruleForm div.x-tab-panel-body {
 }
 
 .x-btn-arrow-custom em {
-	background-image: url("../gxt/images/gray/button/btn-arrow-white.gif") !important;
+	background-image: url("/img/button/arrow_down.png") !important;
 }
 
 .x-tree3-node-icon {
