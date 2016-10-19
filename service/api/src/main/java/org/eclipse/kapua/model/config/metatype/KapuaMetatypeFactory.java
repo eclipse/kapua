@@ -39,9 +39,11 @@ public interface KapuaMetatypeFactory extends KapuaObjectFactory{
     /**
      * Returns a {@link KapuaTscalar} instance
      * 
+     * @param type
+     * 
      * @return
      */
-    public KapuaTscalar newKapuaTscalar();
+    public KapuaTscalar newKapuaTscalar(String type);
 
     /**
      * Returns a {@link KapuaToption} instance
@@ -56,4 +58,26 @@ public interface KapuaMetatypeFactory extends KapuaObjectFactory{
      * @return
      */
     public KapuaTicon newKapuaTicon();
+
+    /**
+     * Returns a {@link KapuaTmetadata} instance
+     * 
+     * @return
+     */
+    public KapuaTmetadata newKapuaTmetadata();
+
+    /**
+     * Returns a {@link KapuaTdesignate} instance
+     * 
+     * @return
+     */
+    public KapuaTdesignate newKapuaTdesignate();
+
+    /**
+     * Returns a {@link KapuaTobject} instance
+     * 
+     * @return
+     */
+    public KapuaTobject newKapuaTobject();
+
 }

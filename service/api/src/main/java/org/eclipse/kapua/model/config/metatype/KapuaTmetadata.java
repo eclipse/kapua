@@ -23,6 +23,7 @@ package org.eclipse.kapua.model.config.metatype;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.*;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -51,9 +52,17 @@ import org.w3c.dom.Element;
  * &lt;/complexType&gt;
  * </pre>
  *
- * @since 1.0
- * 
+ *
  */
+@XmlRootElement(name = "MetaData", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(name = "Tmetadata", propOrder = {
+                                           "OCD",
+                                           "designate",
+                                           "any",
+                                           "localization",
+                                           "otherAttributes"
+}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTmetadata")
 public interface KapuaTmetadata {
 
     /**
@@ -78,7 +87,10 @@ public interface KapuaTmetadata {
      *
      *
      */
+    @XmlElement(name = "OCD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
     public List<KapuaTocd> getOCD();
+
+    public void setOCD(List<KapuaTocd> ocd);
 
     /**
      * Gets the value of the designate property.
@@ -102,8 +114,10 @@ public interface KapuaTmetadata {
      *
      *
      */
+    @XmlElement(name = "Designate", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
     public List<KapuaTdesignate> getDesignate();
 
+    public void setDesignate(List<KapuaTdesignate> designate);
     /**
      * Gets the value of the any property.
      *
@@ -127,8 +141,10 @@ public interface KapuaTmetadata {
      *
      *
      */
+    @XmlAnyElement(lax = true)
     public List<Object> getAny();
 
+    public void setAny(List<Object> any);
     /**
      * Gets the value of the localization property.
      *
@@ -137,6 +153,7 @@ public interface KapuaTmetadata {
      *     {@link String }
      *
      */
+    @XmlAttribute(name = "localization")
     public String getLocalization();
 
     /**
@@ -163,6 +180,8 @@ public interface KapuaTmetadata {
      * @return
      *     always non-null
      */
+    @XmlAnyAttribute
     public Map<QName, String> getOtherAttributes();
 
+    public void setOtherAttributes(Map<QName, String> otherAttributes);
 }

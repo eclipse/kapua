@@ -17,7 +17,15 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.model.config.metatype.*;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountXmlRegistry;
+import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -70,6 +78,7 @@ public abstract class AbstractUserServiceTest extends KapuaTest
     {
     	KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         scriptSession(DEFAULT_PATH, DEFAULT_FILTER);
+        XmlUtil.setContextProvider(new UsersJAXBContextProvider());
     }
     
     @AfterClass

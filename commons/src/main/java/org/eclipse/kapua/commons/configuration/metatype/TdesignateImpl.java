@@ -68,28 +68,14 @@ import org.w3c.dom.Element;
  *
  * @since 1.0
  */
-@XmlRootElement(name="Designate", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Tdesignate", propOrder = {
-    "object",
-    "any"
-})
 public class TdesignateImpl implements KapuaTdesignate {
-    @XmlElement(name = "Object", namespace="http://www.osgi.org/xmlns/metatype/v1.2.0", required = true)
     protected TobjectImpl object;
-    @XmlAnyElement(lax = true)
     protected List<Object> any;
-    @XmlAttribute(name = "pid")
     protected String pid;
-    @XmlAttribute(name = "factoryPid")
     protected String factoryPid;
-    @XmlAttribute(name = "bundle")
     protected String bundle;
-    @XmlAttribute(name = "optional")
     protected Boolean optional;
-    @XmlAttribute(name = "merge")
     protected Boolean merge;
-    @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**
@@ -146,6 +132,10 @@ public class TdesignateImpl implements KapuaTdesignate {
         return this.any;
     }
 
+    public void setAny(List<Object> any)
+    {
+        this.any = any;
+    }
     /**
      * Gets the value of the pid property.
      *
@@ -226,7 +216,8 @@ public class TdesignateImpl implements KapuaTdesignate {
      *     {@link Boolean }
      *
      */
-    public boolean isOptional() {
+    public Boolean isOptional()
+    {
         if (optional == null) {
             return false;
         } else {
@@ -254,7 +245,8 @@ public class TdesignateImpl implements KapuaTdesignate {
      *     {@link Boolean }
      *
      */
-    public boolean isMerge() {
+    public Boolean isMerge()
+    {
         if (merge == null) {
             return false;
         } else {
@@ -292,4 +284,8 @@ public class TdesignateImpl implements KapuaTdesignate {
         return otherAttributes;
     }
 
+    public void setOtherAttributes(Map<QName, String> otherAttributes)
+    {
+        this.otherAttributes = otherAttributes;
+    }
 }
