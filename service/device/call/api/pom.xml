@@ -25,13 +25,6 @@
     <name>${project.artifactId}</name>
 
     <dependencies>
-        <!-- Extended service interfaces -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-api</artifactId>
-        </dependency>
-
-        <!-- Required service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-api</artifactId>
@@ -40,12 +33,5 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-api</artifactId>
         </dependency>
-
-        <!-- External dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-        </dependency>
-
     </dependencies>
 </project>
