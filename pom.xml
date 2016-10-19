@@ -40,6 +40,7 @@
         <junit.version>4.11</junit.version>
         <mariadb.version>1.4.6</mariadb.version>
         <mockito.version>1.10.19</mockito.version>
+        <paho.version>1.1.0</paho.version>
         <protobuf.version>2.6.1</protobuf.version>
         <slf4j.version>1.7.2</slf4j.version>
         <shiro.version>1.2.3</shiro.version>
@@ -410,6 +411,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-pool2</artifactId>
                 <version>${commons-pool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>${paho.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
