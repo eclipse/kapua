@@ -65,7 +65,7 @@ div#ruleForm div.x-tab-panel-body {
 }
 
 .x-hsplitbar {
-	background: url("../eclipse/org/eclipse/kapua/app/console/icon/custom_horizontal_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
+	background: url("/img/misc/horizontal_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
     cursor: row-resize;
     font-size: 1px;
     line-height: 1px;
@@ -75,7 +75,7 @@ div#ruleForm div.x-tab-panel-body {
 }
 
 .x-vsplitbar {
-	background: url("../eclipse/org/eclipse/kapua/app/console/icon/custom_vertical_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
+	background: url("/img/misc/vertical_splitter.png") no-repeat scroll center rgba(0, 0, 0, 0);
     cursor: col-resize;
     position: absolute;
     z-index: 3;
