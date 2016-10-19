@@ -132,7 +132,7 @@ div.login-ie8 {
 }
 
 div.loginHeader {
-    background-color:  rgba(255,255,255,0.85);
+    background-color:  rgba(255,255,255,0.5);
 }
 
 div.loginHeader-ie8 {
@@ -152,11 +152,11 @@ div.loginFooter-ie8 {
 div.kapuaLogo {
 	width:             248px;
 	height:            48px;
-    margin-right:      15px; 
+    margin-left:       15px; 
     margin-top:        10px; 
     margin-bottom:     20px; 
     vertical-align:    baseline;   	
-    background-image:  url(../eclipse/org/eclipse/kapua/app/console/icon/kapua.png);
+    background-image:  url(/img/logo-color.svg);
     background-repeat: no-repeat;
     background-size:   contain;
 }
@@ -164,46 +164,21 @@ div.kapuaLogo {
 div.kapuaLogo-ie8 {
     width:             248px;
     height:            48px;
-    margin-right:      15px; 
+    margin-left:       15px; 
     margin-top:        10px; 
     margin-bottom:     20px; 
     vertical-align:    baseline;    
     background-repeat: no-repeat;
     background-size:   contain;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/kapua.png',sizingMethod='scale'); /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/kapua.png',sizingMethod='scale')"; /* IE8 Hack */
-}
-
-div.cloudLogo {
-    width:             397px;
-    height:            48px;
-    margin-left:       15px; 
-    margin-top:        10px; 
-    margin-bottom:     20px; 
-    vertical-align:    baseline;
-    background-image:  url(../eclipse/org/eclipse/kapua/app/console/icon/kapua.png);
-    background-repeat: no-repeat;
-    background-size:   contain;
-}
-
-div.cloudLogo-ie8 {
-    width:             397px;
-    height:            48px;
-    margin-left:       15px; 
-    margin-top:        10px; 
-    margin-bottom:     20px; 
-    vertical-align:    baseline;
-    background-repeat: no-repeat;
-    background-size:   contain;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/kapua.png',sizingMethod='scale'); /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/kapua.png',sizingMethod='scale')"; /* IE8 Hack */
+    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/logo-color.svg',sizingMethod='scale'); /* IE8 Hack */
+    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/logo-color.svg',sizingMethod='scale')"; /* IE8 Hack */
 }
 
 div.headerLogo {
     width:             500px;
 	height:            30px;
     vertical-align:    baseline;
-    background-image:  url(../eclipse/org/eclipse/kapua/app/console/icon/kapua-logo-white.svg);
+    background-image:  url(/img/logo-white.svg);
     background-repeat: no-repeat;
     background-size:   contain;
 }
@@ -214,18 +189,18 @@ div.headerLogo-ie8 {
     vertical-align:    baseline;
     background-repeat: no-repeat;
     background-size:   contain;
-    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/kapua-logo-white.svg',sizingMethod='scale'); /* IE8 Hack */
-    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../eclipse/org/eclipse/kapua/app/console/icon/kapua-logo-white.svg',sizingMethod='scale')"; /* IE8 Hack */
+    filter:            progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/logo-white.svg',sizingMethod='scale'); /* IE8 Hack */
+    -ms-filter:        "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/img/logo-white.svg',sizingMethod='scale')"; /* IE8 Hack */
 }
 
 div#header-panel {
-	background-color: rgb(75,144,207);
+	background-color: rgb(6,39,68);
 	padding: 3px 5px 3px 5px;
 }
 
 table#header-button td, table#header-button button{
 	background-image:none !important;
-	background-color: rgb(75,144,207) !important;
+	background-color: rgb(6,39,68) !important;
 	color: #FFFFFF !important;
 	font-weight: bold !important;
 }
