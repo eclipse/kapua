@@ -20,11 +20,22 @@ import java.util.List;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
+/**
+ * Query list result reference implementation.
+ * 
+ * @param <E> query entity domain
+ * 
+ * @since 1.0
+ * 
+ */
 public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResult<E>
 {
 	private boolean limitExceeded;
 	private ArrayList<E> items;
     
+    /**
+     * Constructor
+     */
     public KapuaListResultImpl()
     {
         this.limitExceeded = false;

@@ -47,6 +47,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+/**
+ * Xml utilities
+ * 
+ * @since 1.0
+ *
+ */
 public class XmlUtil
 {
     @SuppressWarnings("unused")
@@ -62,6 +68,13 @@ public class XmlUtil
     	jaxbContextProvider = provider;
     }
     
+    /**
+     * Marshal the object to a String
+     * 
+     * @param object
+     * @return
+     * @throws JAXBException
+     */
     public static String marshal(Object object)
         throws JAXBException
     {
@@ -70,6 +83,13 @@ public class XmlUtil
         return sw.toString();
     }
 
+    /**
+     * Marshal the object to a writer
+     * 
+     * @param object
+     * @param w
+     * @throws JAXBException
+     */
     @SuppressWarnings("rawtypes")
     public static void marshal(Object object, Writer w)
         throws JAXBException
@@ -105,6 +125,17 @@ public class XmlUtil
         }
     }
 
+    /**
+     * Unmashal the String to an object
+     * 
+     * @param s
+     * @param clazz
+     * @return
+     * @throws JAXBException
+     * @throws XMLStreamException
+     * @throws FactoryConfigurationError
+     * @throws SAXException
+     */
     public static <T> T unmarshal(String s, Class<T> clazz)
         throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException
     {
@@ -112,6 +143,17 @@ public class XmlUtil
         return unmarshal(sr, clazz);
     }
 
+    /**
+     * Unmashal the reader to an object
+     * 
+     * @param sr
+     * @param clazz
+     * @return
+     * @throws JAXBException
+     * @throws XMLStreamException
+     * @throws FactoryConfigurationError
+     * @throws SAXException
+     */
     public static <T> T unmarshal(Reader sr, Class<T> clazz)
         throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException
     {
@@ -119,7 +161,7 @@ public class XmlUtil
     }
 
     /**
-     * Unmarshall method which injects the namespace URI provided in all the elements before attempting the parsing.
+     * Unmarshal method which injects the namespace URI provided in all the elements before attempting the parsing.
      * 
      * @param s
      * @param clazz
@@ -138,7 +180,7 @@ public class XmlUtil
     }
 
     /**
-     * Unmarshall method which injects the namespace URI provided in all the elements before attempting the parsing.
+     * Unmarshal method which injects the namespace URI provided in all the elements before attempting the parsing.
      * 
      * @param r
      * @param clazz
@@ -198,6 +240,13 @@ public class XmlUtil
         return elem.getValue();
     }
 
+    /**
+     * Find child element by QName
+     * 
+     * @param node
+     * @param qname
+     * @return
+     */
     public static Element findChildElement(Node node, QName qname)
     {
         NodeList nl = node.getChildNodes();
@@ -216,6 +265,13 @@ public class XmlUtil
         return null;
     }
     
+    /**
+     * Get the jaxb context for the provided class
+     * 
+     * @param clazz
+     * @return
+     * @throws JAXBException
+     */
     @SuppressWarnings("rawtypes")
     private static JAXBContext get(Class clazz) throws JAXBException
     {

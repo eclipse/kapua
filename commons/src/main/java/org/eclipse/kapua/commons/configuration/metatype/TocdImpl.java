@@ -117,6 +117,11 @@ public class TocdImpl implements KapuaTocd
         }
     }
 
+    /**
+     * Add Tad to the internal list
+     * 
+     * @param ad
+     */
     public void addAD(KapuaTad ad)
     {
         if (this.ad == null) {
@@ -167,6 +172,11 @@ public class TocdImpl implements KapuaTocd
         }
     }
 
+    /**
+     * Add icon to the internal list
+     * 
+     * @param icon
+     */
     public void addIcon(KapuaTicon icon)
     {
         if (this.icon == null) {
@@ -212,6 +222,11 @@ public class TocdImpl implements KapuaTocd
         this.any = any;
     }
 
+    /**
+     * Add a generic object to the internal list
+     * 
+     * @param object
+     */
     public void addAny(Object object)
     {
         getAny().add(object);
@@ -314,6 +329,12 @@ public class TocdImpl implements KapuaTocd
         return otherAttributes;
     }
 
+    /**
+     * Insert a generic value for the provided QName
+     * 
+     * @param key
+     * @param value
+     */
     public void putOtherAttribute(QName key, String value)
     {
         getOtherAttributes().put(key,

@@ -30,6 +30,9 @@ public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory im
 
     private static CommonsEntityManagerFactory instance              = new CommonsEntityManagerFactory();
 
+    /**
+     * Constructor
+     */
     private CommonsEntityManagerFactory()
     {
         super(PERSISTENCE_UNIT_NAME,

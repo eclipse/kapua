@@ -28,12 +28,25 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Setting reference abstract implementation.
+ * 
+ * @param <K> setting key type
+ * 
+ * @since 1.0
+ * 
+ */
 public abstract class AbstractKapuaSetting<K extends SettingKey>
 {
     private static final Logger s_logger = LoggerFactory.getLogger(AbstractKapuaSetting.class);
 
     protected DataConfiguration config;
 
+    /**
+     * Constructor
+     * 
+     * @param configResourceName
+     */
     protected AbstractKapuaSetting(String configResourceName)
     {
         // env+properties configuration
@@ -51,21 +64,51 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
         this.config = new DataConfiguration(compositeConfig);
     }
 
+    /**
+     * Get the property for the key
+     * 
+     * @param cls
+     * @param key
+     * @return
+     */
     public <T> T get(Class<T> cls, K key)
     {
         return config.get(cls, key.key());
     }
 
+    /**
+     * Get the property for the key 'key'. Returns a default value if no property for that key is found.
+     * 
+     * @param cls
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public <T> T get(Class<T> cls, K key, T defaultValue)
     {
         return config.get(cls, key.key(), defaultValue);
     }
 
+    /**
+     * Get the property list values for the key 'key'
+     * 
+     * @param cls
+     * @param key
+     * @return
+     */
     public <T> List<T> getList(Class<T> cls, K key)
     {
         return config.getList(cls, key.key());
     }
 
+    /**
+     * Get properties map with key matching the provided prefix and regex
+     * 
+     * @param valueType
+     * @param prefixKey
+     * @param regex
+     * @return
+     */
     public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey, String regex)
     {
         Map<String, V> map = new HashMap<String, V>();
@@ -80,6 +123,13 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
         return map;
     }
 
+    /**
+     * Get properties map with key matching the provided prefix
+     * 
+     * @param valueType
+     * @param prefixKey
+     * @return
+     */
     public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey)
     {
         Map<String, V> map = new HashMap<String, V>();
@@ -92,86 +142,199 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
         return map;
     }
 
+    /**
+     * Get an integer property
+     * 
+     * @param key
+     * @return
+     */
     public int getInt(K key)
     {
         return config.getInt(key.key());
     }
 
+    /**
+     * Get an integer property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public int getInt(K key, int defaultValue)
     {
         return config.getInt(key.key(), defaultValue);
     }
 
+    /**
+     * Get an integer property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public int getInt(K key, Integer defaultValue)
     {
         return config.getInt(key.key(), defaultValue);
     }
 
+    /**
+     * Get a boolean property
+     * 
+     * @param key
+     * @return
+     */
     public boolean getBoolean(K key)
     {
         return config.getBoolean(key.key());
     }
 
+    /**
+     * Get a boolean property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public boolean getBoolean(K key, boolean defaultValue)
     {
         return config.getBoolean(key.key(), defaultValue);
     }
 
+    /**
+     * Get a boolean property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public boolean getBoolean(K key, Boolean defaultValue)
     {
         return config.getBoolean(key.key(), defaultValue);
     }
 
+    /**
+     * Get a String property
+     * 
+     * @param key
+     * @return
+     */
     public String getString(K key)
     {
         return config.getString(key.key());
     }
 
+    /**
+     * Get a String property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public String getString(K key, String defaultValue)
     {
         return config.getString(key.key(), defaultValue);
     }
 
+    /**
+     * Get a long property
+     * 
+     * @param key
+     * @return
+     */
     public long getLong(K key)
     {
         return config.getLong(key.key());
     }
 
+    /**
+     * Get a long property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public long getLong(K key, long defaultValue)
     {
         return config.getLong(key.key(), defaultValue);
     }
 
+    /**
+     * Get a long property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public long getLong(K key, Long defaultValue)
     {
         return config.getLong(key.key(), defaultValue);
     }
 
+    /**
+     * Get a float property
+     * 
+     * @param key
+     * @return
+     */
     public float getFloat(K key)
     {
         return config.getFloat(key.key());
     }
 
+    /**
+     * Get a float property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public float getFloat(K key, float defaultValue)
     {
         return config.getFloat(key.key(), defaultValue);
     }
 
+    /**
+     * Get a float property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public float getFloat(K key, Float defaultValue)
     {
         return config.getFloat(key.key(), defaultValue);
     }
 
+    /**
+     * Get a double property
+     * 
+     * @param key
+     * @return
+     */
     public double getDouble(K key)
     {
         return config.getDouble(key.key());
     }
 
+    /**
+     * Get a double property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public double getDouble(K key, double defaultValue)
     {
         return config.getDouble(key.key(), defaultValue);
     }
 
+    /**
+     * Get a double property with a default value (if property is not found)
+     * 
+     * @param key
+     * @param defaultValue
+     * @return
+     */
     public double getDouble(K key, Double defaultValue)
     {
         return config.getDouble(key.key(), defaultValue);

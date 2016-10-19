@@ -18,17 +18,29 @@ package org.eclipse.kapua.commons.configuration.metatype;
  * @since 1.0
  */
 public class Password {
+
     private String password;
 
+    /**
+     * Constructor
+     * 
+     * @param password
+     */
     public Password(String password) {
         super();
         this.password = password;
     }
 
+    /**
+     * Get password
+     * 
+     * @return
+     */
     public String getPassword() {
         return password;
     }
 
+    @Override
     public String toString() {
         return password;
     }

@@ -79,6 +79,11 @@ public enum TscalarImpl implements KapuaTscalar {
     PASSWORD("Password");
     private final String value;
 
+    /**
+     * Constructor
+     * 
+     * @param v
+     */
     TscalarImpl(String v) {
         value = v;
     }
@@ -88,6 +93,12 @@ public enum TscalarImpl implements KapuaTscalar {
         return value;
     }
 
+    /**
+     * Convert a String value to a {@link TscalarImpl}
+     * 
+     * @param v
+     * @return
+     */
     public static TscalarImpl fromValue(String v) {
         for (TscalarImpl c: TscalarImpl.values()) {
             if (c.value.equals(v)) {

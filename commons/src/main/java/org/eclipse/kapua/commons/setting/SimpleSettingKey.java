@@ -12,10 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
+/**
+ * Setting key reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class SimpleSettingKey implements SettingKey {
 
     private final String key;
 
+    /**
+     * Constructor
+     * 
+     * @param key
+     */
     public SimpleSettingKey(String key) {
         this.key = key;
     }

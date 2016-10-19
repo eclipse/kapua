@@ -17,56 +17,115 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
+/**
+ * Service configuration DAO
+ * 
+ * @since 1.0
+ *
+ */
 public class ServiceConfigDAO extends ServiceDAO
 {
+
+    /**
+     * Create and return new service configuration
+     * 
+     * @param em
+     * @param serviceConfigCreator
+     * @return
+     * @throws KapuaException
+     */
     public static ServiceConfigImpl create(EntityManager em, ServiceConfigCreatorImpl serviceConfigCreator)
-            throws KapuaException
-        {
-            //
-            // Create service configuration
-            ServiceConfigImpl serviceConfigImpl = new ServiceConfigImpl(serviceConfigCreator.getScopeId());
+        throws KapuaException
+    {
+        //
+        // Create service configuration
+        ServiceConfigImpl serviceConfigImpl = new ServiceConfigImpl(serviceConfigCreator.getScopeId());
 
-            serviceConfigImpl.setPid(serviceConfigCreator.getPid());
-            serviceConfigImpl.setConfigurations(serviceConfigCreator.getConfigurations());
+        serviceConfigImpl.setPid(serviceConfigCreator.getPid());
+        serviceConfigImpl.setConfigurations(serviceConfigCreator.getConfigurations());
 
-            return ServiceDAO.create(em, serviceConfigImpl);
-        }
+        return ServiceDAO.create(em, serviceConfigImpl);
+    }
 
-        public static ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
-            throws KapuaException
-        {
-            //
-            // Update service configuration
-            ServiceConfigImpl serviceConfigImpl = (ServiceConfigImpl) serviceConfig;
+    /**
+     * Update the provided service configuration
+     * 
+     * @param em
+     * @param serviceConfig
+     * @return
+     * @throws KapuaException
+     */
+    public static ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
+        throws KapuaException
+    {
+        //
+        // Update service configuration
+        ServiceConfigImpl serviceConfigImpl = (ServiceConfigImpl) serviceConfig;
 
-            return ServiceDAO.update(em, ServiceConfigImpl.class, serviceConfigImpl);
-        }
+        return ServiceDAO.update(em, ServiceConfigImpl.class, serviceConfigImpl);
+    }
 
-        public static void delete(EntityManager em, KapuaId userId)
-        {
-            ServiceDAO.delete(em, ServiceConfigImpl.class, userId);
-        }
+    /**
+     * Delete the service configuration by user identifier
+     * 
+     * @param em
+     * @param userId
+     */
+    public static void delete(EntityManager em, KapuaId userId)
+    {
+        ServiceDAO.delete(em, ServiceConfigImpl.class, userId);
+    }
 
-        public static ServiceConfig find(EntityManager em, KapuaId userId)
-        {
-            return em.find(ServiceConfigImpl.class, userId);
-        }
+    /**
+     * Find the service configuration by user identifier
+     * 
+     * @param em
+     * @param userId
+     * @return
+     */
+    public static ServiceConfig find(EntityManager em, KapuaId userId)
+    {
+        return em.find(ServiceConfigImpl.class, userId);
+    }
 
-        public static ServiceConfig findByName(EntityManager em, String name)
-        {
-            return ServiceDAO.findByName(em, ServiceConfigImpl.class, name);
-        }
+    /**
+     * Find the service configuration by service name
+     * 
+     * @param em
+     * @param name
+     * @return
+     */
+    public static ServiceConfig findByName(EntityManager em, String name)
+    {
+        return ServiceDAO.findByName(em, ServiceConfigImpl.class, name);
+    }
 
-        public static ServiceConfigListResult query(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
-            throws KapuaException
-        {
-            return ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), serviceConfigQuery);
-        }
+    /**
+     * Return the service configuration list matching the provided query
+     * 
+     * @param em
+     * @param serviceConfigQuery
+     * @return
+     * @throws KapuaException
+     */
+    public static ServiceConfigListResult query(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
+        throws KapuaException
+    {
+        return ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), serviceConfigQuery);
+    }
 
-        public static long count(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
-            throws KapuaException
-        {
-            return ServiceDAO.count(em, ServiceConfig.class, ServiceConfigImpl.class, serviceConfigQuery);
-        }
+    /**
+     * Return the service configuration count matching the provided query
+     * 
+     * @param em
+     * @param serviceConfigQuery
+     * @return
+     * @throws KapuaException
+     */
+    public static long count(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
+        throws KapuaException
+    {
+        return ServiceDAO.count(em, ServiceConfig.class, ServiceConfigImpl.class, serviceConfigQuery);
+    }
 
 }

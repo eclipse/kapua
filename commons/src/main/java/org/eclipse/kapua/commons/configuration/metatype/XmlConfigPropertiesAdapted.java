@@ -26,15 +26,28 @@ public class XmlConfigPropertiesAdapted
     @XmlElement(name = "property")
     private XmlConfigPropertyAdapted[] properties;
 
+    /**
+     * Constructor
+     */
     public XmlConfigPropertiesAdapted()
     {
     }
 
+    /**
+     * Get the adapted properties as array
+     * 
+     * @return
+     */
     public XmlConfigPropertyAdapted[] getProperties()
     {
         return properties;
     }
 
+    /**
+     * Set the adapted properties from the array
+     * 
+     * @param properties
+     */
     public void setProperties(XmlConfigPropertyAdapted[] properties)
     {
         this.properties = properties;

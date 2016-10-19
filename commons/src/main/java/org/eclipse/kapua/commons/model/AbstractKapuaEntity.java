@@ -35,6 +35,14 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.generator.id.IdGeneratorService;
 
+/**
+ * Kapua base entity reference abstract implementation.
+ * 
+ * @see KapuaEntity
+ * 
+ * @since 1.0
+ *
+ */
 @SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
@@ -62,10 +70,18 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable
     })
     protected KapuaEid createdBy;
 
+    /**
+     * Constructor
+     */
     protected AbstractKapuaEntity()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public AbstractKapuaEntity(KapuaId scopeId)
     {
         this();
@@ -74,36 +90,51 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable
         }
     }
 
+    @Override
     public KapuaId getScopeId()
     {
         return scopeId;
     }
 
+    @Override
     public KapuaId getId()
     {
         return id;
     }
 
+    @Override
     public void setId(KapuaId id)
     {
     	this.id = (KapuaEid)id;
     }
 
+    /**
+     * Set scope identifier
+     * 
+     * @param scopeId
+     */
     public void setScopeId(KapuaId scopeId)
     {
         this.scopeId = (KapuaEid)scopeId;
     }
 
+    @Override
     public Date getCreatedOn()
     {
         return createdOn;
     }
 
+    @Override
     public KapuaId getCreatedBy()
     {
         return createdBy;
     }
 
+    /**
+     * Before update action to correctly set the modified on and modified by fields
+     * 
+     * @throws KapuaException
+     */
     @PrePersist
     protected void prePersistsAction()
         throws KapuaException
@@ -115,11 +146,21 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable
         this.createdBy = new KapuaEid(KapuaSecurityUtils.getSession().getUserId().getId());
         this.createdOn = new Date();
     }
-    
+
+    /**
+     * Set the created on date
+     * 
+     * @param createdOn
+     */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
-    
+
+    /**
+     * Set the created by identifier
+     * 
+     * @param createdBy
+     */
     public void setCreatedBy(KapuaId createdBy) {
         this.createdBy = (KapuaEid)createdBy;
     }

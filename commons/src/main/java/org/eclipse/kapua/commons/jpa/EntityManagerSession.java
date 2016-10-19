@@ -23,7 +23,7 @@ public class EntityManagerSession {
     private final AbstractEntityManagerFactory entityManagerFactory;
 
     /**
-     * Contructor
+     * Constructor
      * 
      * @param entityManagerFactory
      */
@@ -31,6 +31,12 @@ public class EntityManagerSession {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+    /**
+     * Execute the action on a new entity manager
+     * 
+     * @param entityManagerActionCallback
+     * @throws KapuaException
+     */
     public <T> void onEntityManagerAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException {
         EntityManager manager = null;
         try {
@@ -45,6 +51,13 @@ public class EntityManagerSession {
         }
     }
 
+    /**
+     * Return the execution result invoked on a new entity manager
+     * 
+     * @param entityManagerResultCallback
+     * @return
+     * @throws KapuaException
+     */
     public <T> T onEntityManagerResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException {
         EntityManager manager = null;
         try {

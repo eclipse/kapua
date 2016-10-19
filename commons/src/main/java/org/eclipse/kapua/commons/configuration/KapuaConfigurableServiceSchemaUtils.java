@@ -71,6 +71,12 @@ public class KapuaConfigurableServiceSchemaUtils {
 
     }
     
+    /**
+     * Executes the create schema files contained in the path
+     * 
+     * @param path
+     * @throws KapuaException
+     */
     public static void createSchemaObjects(String path)
         throws KapuaException
     {
@@ -79,6 +85,11 @@ public class KapuaConfigurableServiceSchemaUtils {
         scriptSession(path + sep + DEFAULT_PATH, DEFAULT_FILTER);
     }
     
+    /**
+     * Executes the drop schema files contained in the path
+     * 
+     * @param path
+     */
     public static void dropSchemaObjects(String path)
     {
     	String pathSep = String.valueOf(File.separatorChar);

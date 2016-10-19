@@ -36,6 +36,11 @@ public class ServiceConfigCreatorImpl extends AbstractKapuaEntityCreator<Service
     @XmlElement(name = "configurations")
     private Properties configurations;
     
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     protected ServiceConfigCreatorImpl(KapuaId scopeId)
     {
         super(scopeId);

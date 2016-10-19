@@ -14,6 +14,12 @@ package org.eclipse.kapua.commons.model.id;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 
+/**
+ * Kapua identifier factory reference implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KapuaIdFactoryImpl implements KapuaIdFactory {
 
 	@Override

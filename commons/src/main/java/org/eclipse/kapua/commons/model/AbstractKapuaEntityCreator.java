@@ -19,21 +19,36 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * Kapua entity base creator service (reference abstract implementation).
+ *
+ * @param <E> entity type
+ * 
+ * @since 1.0
+ * 
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractKapuaEntityCreator<E extends KapuaEntity> implements KapuaEntityCreator<E>, Serializable
 {
     protected KapuaId scopeId;
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     protected AbstractKapuaEntityCreator(KapuaId scopeId)
     {
         this.scopeId = scopeId;
     }
 
+    @Override
     public KapuaId getScopeId()
     {
         return scopeId;
     }
 
+    @Override
     public void setScopeId(KapuaId scopeId)
     {
         this.scopeId = (KapuaEid) scopeId;

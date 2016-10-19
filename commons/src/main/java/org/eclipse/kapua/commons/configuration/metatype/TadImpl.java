@@ -118,6 +118,11 @@ public class TadImpl implements KapuaTad
         return new ArrayList<>(this.option);
     }
 
+    /**
+     * Add an option to the internal list
+     * 
+     * @param option
+     */
     public void addOption(KapuaToption option)
     {
         if (this.option == null) {
