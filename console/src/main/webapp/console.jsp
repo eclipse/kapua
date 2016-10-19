@@ -52,7 +52,6 @@
         <!-- 
             JS resources
          -->
-        <script type="text/javascript" src="js/jquery/jquery-1.4.2.js"></script>
         <script type="text/javascript" src="console.nocache.js"></script>
         
         <!-- This script manage all JS/CSS deferred loading -->

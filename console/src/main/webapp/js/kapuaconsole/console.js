@@ -70,13 +70,14 @@ function downloadCssConsoleSkin() {
 // Downloads all necessary resources asynchronously
 function deferResourcesDownload() {
 
+	// Openlayers JS resources
 	downloadJsOpenlayers();
 
-	downloadJsConsoleSkin();
-
-	// CSS resources
+	// Custom Kapua CSS
 	downloadCssConsole();
 
+	// Skin resources
+	downloadJsConsoleSkin();
 	downloadCssConsoleSkin();
 }
 
