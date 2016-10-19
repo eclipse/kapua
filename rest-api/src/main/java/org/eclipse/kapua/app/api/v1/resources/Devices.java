@@ -16,11 +16,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.query.EntityFetchStyle;
+import org.eclipse.kapua.model.query.KapuaFetchStyle;
+import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -41,12 +46,8 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceQuery;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.*;
+import org.eclipse.kapua.service.device.registry.connection.*;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
@@ -55,11 +56,13 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 @Path("/devices")
 public class Devices extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+    private final DeviceRegistryService                registryService      = locator.getService(DeviceRegistryService.class);
     private final DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
     private final DeviceCommandManagementService commandService = locator.getService(DeviceCommandManagementService.class);
     private final DeviceCommandFactory commandFactory = locator.getFactory(DeviceCommandFactory.class);
@@ -70,6 +73,8 @@ public class Devices extends AbstractKapuaResource {
     private final DevicePackageFactory packageFactory = locator.getFactory(DevicePackageFactory.class);
     private final DeviceEventService eventService = locator.getService(DeviceEventService.class);
     private final DeviceEventFactory eventFactory = locator.getFactory(DeviceEventFactory.class);
+    private final DeviceConnectionFactory              connectionFactory    = locator.getFactory(DeviceConnectionFactory.class);
+    private final DeviceConnectionService              connectionService    = locator.getService(DeviceConnectionService.class);
 
     /**
      * Returns the list of all the Devices visible to the currently connected user.
@@ -82,7 +87,7 @@ public class Devices extends AbstractKapuaResource {
         DeviceListResult devicesResult = deviceFactory.newDeviceListResult();
         try {
             DeviceQuery query = deviceFactory.newQuery(KapuaSecurityUtils.getSession().getScopeId());
-            devicesResult = (DeviceListResult) deviceRegistryService.query(query);
+            devicesResult = (DeviceListResult) registryService.query(query);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -103,7 +108,7 @@ public class Devices extends AbstractKapuaResource {
         Device device = null;
         try {
             deviceCreator.setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            device = deviceRegistryService.create(deviceCreator);
+            device = registryService.create(deviceCreator);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -125,7 +130,7 @@ public class Devices extends AbstractKapuaResource {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
             KapuaId id = KapuaEid.parseShortId(deviceId);
-            device = deviceRegistryService.find(scopeId, id);
+            device = registryService.find(scopeId, id);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -145,7 +150,7 @@ public class Devices extends AbstractKapuaResource {
     public Device updateDevice(Device device) {
         try {
             ((DeviceImpl) device).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            device = deviceRegistryService.update(device);
+            device = registryService.update(device);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -165,7 +170,7 @@ public class Devices extends AbstractKapuaResource {
         try {
             KapuaId deviceKapuaId = KapuaEid.parseShortId(deviceId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            deviceRegistryService.delete(scopeId, deviceKapuaId);
+            registryService.delete(scopeId, deviceKapuaId);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -396,5 +401,292 @@ public class Devices extends AbstractKapuaResource {
             handleException(t);
         }
         return Response.ok().build();
+    }
+
+    /**
+     * Returns an aggregated summary of the connection status of a group
+     * of devices at a point in time. It returns the number of devices
+     * currently connected, the number of devices which disconnect cleanly,
+     * the number of devices which disconnected abruptly, and the number
+     * of devices which have been disabled.
+     *
+     * @return The DeviceConnectionSummary
+     */
+    @GET
+    @Path("connectionSummary")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public DeviceConnectionSummary connectionSummary()
+    {
+        DeviceConnectionSummary deviceSummary = connectionFactory.newConnectionSummary();
+        KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+        DeviceConnectionQuery connectedQuery = connectionFactory.newQuery(scopeId);
+        KapuaAttributePredicate connectedPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.CONNECTED);
+        connectedQuery.setPredicate(connectedPredicate);
+        DeviceConnectionQuery disconnectedQuery = connectionFactory.newQuery(scopeId);
+        KapuaAttributePredicate disconnectedPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.DISCONNECTED);
+        disconnectedQuery.setPredicate(disconnectedPredicate);
+        DeviceConnectionQuery missingQuery = connectionFactory.newQuery(scopeId);
+        KapuaAttributePredicate missingPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.MISSING);
+        missingQuery.setPredicate(missingPredicate);
+        DeviceQuery enabledQuery = deviceFactory.newQuery(scopeId);
+        KapuaAttributePredicate enabledPredicate = new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.ENABLED);
+        enabledQuery.setPredicate(enabledPredicate);
+        DeviceQuery disabledQuery = deviceFactory.newQuery(scopeId);
+        KapuaAttributePredicate disabledPredicate = new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.DISABLED);
+        disabledQuery.setPredicate(disabledPredicate);
+        try {
+            deviceSummary.setConnected(connectionService.count(connectedQuery));
+            deviceSummary.setDisconnected(connectionService.count(disconnectedQuery));
+            deviceSummary.setMissing(connectionService.count(missingQuery));
+            deviceSummary.setEnabled(registryService.count(enabledQuery));
+            deviceSummary.setDisabled(registryService.count(disabledQuery));
+        }
+        catch (Throwable t) {
+            handleException(t);
+        }
+        return returnNotNullEntity(deviceSummary);
+    }
+
+    /**
+     * Searches the device registry for devices based on the specified criteria.
+     * Query parameters are used to defined the filtering predicate, the sorting and the pagination.
+     * The supplied query parameters are combined into a logical AND, so all specified conditions
+     * need to be satisfied for the device to be selected and returned.
+     * Query parameters which allow for multiple values are combined into an IN predicate effectively
+     * combining them into a logical OR of the values supplied.
+     * <p>
+     * The "fetch" query parameter can be used to control the amount of information to be loaded and
+     * returned for each device. Allowed values are "BASIC" or "FULL". With "BASIC", the core attributes
+     * of the device and the version information of its profile are returned. With "FULL",
+     * all the additional device extended properties are loaded and returned.
+     * <p>
+     * The returned devices can be sorted. Allowed values for the sortField query parameter are:
+     * "clientId", "displayName", "lastEventOn". Sorting can be specified ascending or descending using the
+     * "sort" query parameter with values: "asc" or "desc". If no sortField is specified,
+     * the returned devices will not follow any specific order.
+     * <p>
+     * If the flag DevicesResult.limitExceeded is set, the maximum number of entries to be returned
+     * has been reached. More data exist and can be read by moving the offset forward in a new request
+     *
+     * @param clientId One or more clientId for the devices to be returned.
+     * @param serialNumber One or more serial number for the devices to be returned.
+     * @param displayName One or more display name for the devices to be returned.
+     * @param imei One or more IMEI for the devices to be returned.
+     * @param imsi One or more IMSI for the devices to be returned.
+     * @param iccid One or more ICCID for the devices to be returned.
+     * @param modelId The id of the model of the devices to be returned.
+     * @param status The device status (Enabled/Disabled) of the devices to be returned.
+     * @param biosVersion The bios version of the devices to be returned.
+     * @param firmwareVersion The firmware version of the devices to be returned.
+     * @param osVersion The OS version of the devices to be returned.
+     * @param jvmVersion The JVM version of the devices to be returned.
+     * @param osgiFrameworkVersion The OSGI Framework version of the devices to be returned.
+     * @param applicationFrameworkVersion The application framework version of the devices to be returned.
+     * @param applicationIdentifier The application identifiers of the devices to be returned.
+     * @param customAttribute1 The value of customAttribute1 for the devices to be returned.
+     * @param customAttribute2 The value of customAttribute2 for the devices to be returned.
+     * @param customAttribute3 The value of customAttribute3 for the devices to be returned.
+     * @param customAttribute4 The value of customAttribute4 for the devices to be returned.
+     * @param customAttribute5 The value of customAttribute5 for the devices to be returned.
+     * @param acceptEncoding The encoding accepted by the devices to be returned.
+     * @param gpsLongitude The GPS Longitude of the devices to be returned.
+     * @param gpsLatitude The GPS Latitude of the devices to be returned.
+     * @param credentialsMode The credentials mode of the devices to be returned.
+     * @param preferredUserId The preferred user id of the devices to be returned.
+     * @param limit Maximum number of entries to be returned.
+     * @param offset Starting offset for the entries to be returned.
+     * @param fetch Specifies the amount of information requested. Allowed values are "BASIC" or "FULL". With "BASIC",
+     *            the core attributes of the device and the version information of its profile are
+     *            returned. With "FULL", all the additional extended attributes are loaded and returned.
+     * @param sortField Optional sorting of the returned devices. Allowed values are: "clientId", "displayName", "lastEventOn".
+     * @param sortOrder Optional sorting order. Allowed values are: "asc", "desc".
+     * @return The list of devices matching the criteria supplied.
+     */
+    @GET
+    @Path("search")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public DeviceListResult searchDevices(@QueryParam("clientId") List<String> clientId,
+                                          @QueryParam("serialNumber") List<String> serialNumber,
+                                          @QueryParam("displayName") List<String> displayName,
+                                          @QueryParam("imei") List<String> imei,
+                                          @QueryParam("imsi") List<String> imsi,
+                                          @QueryParam("iccid") List<String> iccid,
+                                          @QueryParam("modelId") String modelId,
+                                          @QueryParam("status") String status,
+                                          // @QueryParam("connectionStatus") String connectionStatus,
+                                          @QueryParam("biosVersion") String biosVersion,
+                                          @QueryParam("firmwareVersion") String firmwareVersion,
+                                          @QueryParam("osVersion") String osVersion,
+                                          @QueryParam("jvmVersion") String jvmVersion,
+                                          @QueryParam("osgiFrameworkVersion") String osgiFrameworkVersion,
+                                          @QueryParam("applicationFrameworkVersion") String applicationFrameworkVersion,
+                                          @QueryParam("applicationIdentifier") String applicationIdentifier,
+                                          @QueryParam("customAttribute1") String customAttribute1,
+                                          @QueryParam("customAttribute2") String customAttribute2,
+                                          @QueryParam("customAttribute3") String customAttribute3,
+                                          @QueryParam("customAttribute4") String customAttribute4,
+                                          @QueryParam("customAttribute5") String customAttribute5,
+                                          @QueryParam("acceptEncoding") String acceptEncoding,
+                                          @QueryParam("gpsLongitude") String gpsLongitude,
+                                          @QueryParam("gpsLatitude") String gpsLatitude,
+                                          @QueryParam("credentialsMode") String credentialsMode,
+                                          @QueryParam("preferredUserId") String preferredUserId,
+                                          @QueryParam("sortField") String sortField,
+                                          @QueryParam("limit") @DefaultValue("50") int limit,
+                                          @QueryParam("offset") @DefaultValue("0") int offset,
+                                          @QueryParam("fetch") @DefaultValue("BASIC") String fetch,
+                                          @QueryParam("sortOrder") @DefaultValue("desc") String sortOrder)
+        throws KapuaIllegalArgumentException
+    {
+        KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+        DeviceListResult result = deviceFactory.newDeviceListResult();
+        DeviceQuery query = deviceFactory.newQuery(scopeId);
+        query.setLimit(limit + 1);
+        query.setOffset(offset);
+        KapuaAndPredicate andPredicate = new AndPredicate();
+        if (clientId != null && clientId.size() > 0) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId.toArray(new String[] {})));
+        }
+        if (serialNumber != null && serialNumber.size() > 0) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.SERIAL_NUMBER, serialNumber.toArray(new String[] {})));
+        }
+        if (displayName != null && displayName.size() > 0) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.DISPLAY_NAME, displayName.toArray(new String[] {})));
+        }
+        if (imei != null && imei.size() > 0) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.IMEI, imei.toArray(new String[] {})));
+        }
+        if (imsi != null && imsi.size() > 0) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.IMSI, imsi.toArray(new String[] {})));
+        }
+        if (iccid != null && iccid.size() > 0) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.ICCID, iccid.toArray(new String[] {})));
+        }
+        if (modelId != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.MODEL_ID, modelId));
+        }
+        if (status != null) {
+            try {
+                DeviceStatus ds = null;
+                ds = DeviceStatus.valueOf(status);
+                andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.STATUS, status));
+            }
+            catch (IllegalArgumentException iae) {
+                throw new KapuaIllegalArgumentException("status", status);
+            }
+        }
+        // if (connectionStatus != null) {
+        // try {
+        // DeviceConnectionStatus dcs = null;
+        // dcs = DeviceConnectionStatus.valueOf(connectionStatus);
+        // andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CONNECTION_STATUS, connectionStatus));
+        // } catch (IllegalArgumentException iae) {
+        // throw new KapuaIllegalArgumentException("connectionStatus", connectionStatus);
+        // }
+        // }
+        if (biosVersion != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.BIOS_VERSION, biosVersion));
+        }
+        if (firmwareVersion != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.FIRMWARE_VERSION, firmwareVersion));
+        }
+        if (osVersion != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.OS_VERSION, osVersion));
+        }
+        if (jvmVersion != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.JVM_VERSION, jvmVersion));
+        }
+        if (osgiFrameworkVersion != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.OSGI_FRAMEWORK_VERSION, osgiFrameworkVersion));
+        }
+        if (applicationFrameworkVersion != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, applicationFrameworkVersion));
+        }
+        if (applicationIdentifier != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationFrameworkVersion, KapuaAttributePredicate.Operator.LIKE));
+        }
+        if (customAttribute1 != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
+        }
+        if (customAttribute2 != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
+        }
+        if (customAttribute3 != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_3, customAttribute3));
+        }
+        if (customAttribute4 != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_4, customAttribute4));
+        }
+        if (customAttribute5 != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_5, customAttribute5));
+        }
+        if (acceptEncoding != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.ACCEPT_ENCODING, acceptEncoding));
+        }
+        if (gpsLongitude != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.GPS_LONGITUDE, gpsLongitude));
+        }
+        if (gpsLatitude != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.GPS_LATITUDE, gpsLatitude));
+        }
+        if (credentialsMode != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CREDENTIALS_MODE, credentialsMode));
+        }
+        if (preferredUserId != null) {
+            andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.PREFERRED_USER_ID, preferredUserId));
+        }
+
+        // Fetch
+        if (fetch != null) {
+            try {
+                KapuaFetchStyle fetchStyle = EntityFetchStyle.valueOf(fetch);
+                query.setFetchStyle(fetchStyle);
+            }
+            catch (IllegalArgumentException iae) {
+                throw new KapuaIllegalArgumentException("fetch", fetch);
+            }
+        }
+
+        // Sort
+        SortOrder so = SortOrder.ASCENDING;
+        if (sortOrder != null) {
+            if ("desc".equals(sortOrder)) {
+                so = SortOrder.DESCENDING;
+            }
+            else if ("asc".equals(sortOrder)) {
+                so = SortOrder.ASCENDING;
+            }
+            else {
+                throw new KapuaIllegalArgumentException("sortOrder", sortOrder);
+            }
+        }
+        if (sortField != null) {
+            KapuaSortCriteria sortCriteria;
+            switch (sortField) {
+                case DevicePredicates.STATUS:
+                    sortCriteria = new FieldSortCriteria(DevicePredicates.STATUS, so);
+                    break;
+                case DevicePredicates.CLIENT_ID:
+                    sortCriteria = new FieldSortCriteria(DevicePredicates.CLIENT_ID, so);
+                    break;
+                case DevicePredicates.DISPLAY_NAME:
+                    sortCriteria = new FieldSortCriteria(DevicePredicates.DISPLAY_NAME, so);
+                    break;
+                case DevicePredicates.LAST_EVENT_ON:
+                    sortCriteria = new FieldSortCriteria(DevicePredicates.LAST_EVENT_ON, so);
+                    break;
+                default:
+                    throw new KapuaIllegalArgumentException("sortField", sortField);
+            }
+            query.setSortCriteria(sortCriteria);
+        }
+        query.setPredicate(andPredicate);
+        try {
+            result = (DeviceListResult) registryService.query(query);
+        }
+        catch (Throwable t) {
+            handleException(t);
+        }
+        return returnNotNullEntity(result);
     }
 }
