@@ -11,7 +11,7 @@ The 2 machine provided (through creation script) are:
 - **Develop machine:** it's a machine that run the Kapua components (broker, api and console) linking the compiled sources (for the broker) and the war files (for the api and console) on the guest machine
 - **Demo machine:** it's a machine that contains all the Kapua components deployed inside the broker and servlet container
 
-Both of them are based on the Kapua base-box so before creating one of them (or both) you need to create the base-box (see following instructions)
+Both of them are based on the Kapua base-box so before creating one of them (or both) you need to create the base-box (see following instructions).
 
 The machines assigned IP is:
 * 192.168.33.10
@@ -20,12 +20,19 @@ The ports exposed are documented per service within the Vagrant files.
 
 **Note:** Before proceeding, check that Vagrant is installed in your PC, otherwise install it. In order to run Vagrant machines, VirtualBox or other virtualization software supported by Vagrant needs also to be installed.
 
+## Demo machine quick start
+It is possible to create the **demo machine in only one step** (so create the base box, the demo vagrant machine, compile the Kapua project and start the services inside the vagrant demo machine) just using this script
+
+```
+$ cd $KAPUA_GITHUB_HOME_DIR/dev-tools/src/main/bin
+$ ./start-demo.sh
+```
+
 ## Creating the Kapua base-box
 To create the Kapua base box run the script with 'base-box' as first parameter from the vagrant directory of the dev-tools module
 
 ```
-$ cd $KAPUA_GITHUB_HOME_DIR
-$ cd dev-tools/src/main/vagrant
+$ cd $KAPUA_GITHUB_HOME_DIR/dev-tools/src/main/vagrant
 $ ./start.sh base-box
 ```
 
@@ -91,21 +98,39 @@ There is a script to start the Tomcat
 $ ./start-tomcat.sh
 ```
 
-The script recreates the link between api and console wars inside the Kapua workspace and the webapps directory of Tomcat. To stop Tomcat call the standard stop script inside bin directory. 
+The script recreates the link between api and console wars inside the Kapua workspace and the webapps directory of Tomcat. To stop Tomcat call the standard stop script inside bin directory.
 
-## Verifying Kapua
+## Verifying and accessing Kapua components
 
-After running the box, you should be able to connect to the management console at
+Once one of the 2 machines is created and started correctly (both of them have the same services at the same ports) there are several services running.
+The list of available services is:
 
+#### H2 Database
 ```
-http://192.168.33.10:8080/console
+Web console url: 192.168.33.10:8082
+Driver Class:    org.h2.Driver
+JDBC url:        jdbc:h2:tcp://192.168.33.10:3306/kapuadb
+Username:        kapua
+Password:        kapua
 ```
 
-and login with
-
+#### Kapua Web Console
 ```
-username: kapua-sys
-password: kapua-password
+Url:      http://192.168.33.10:8080/console/
+Username: kapua-sys
+Password: kapua-password
+```
+
+#### Kapua RESTful APIs:
+```
+Url:      http://192.168.33.10:8080/api/doc
+Username: kapua-sys
+Password: kapua-password
+```
+
+#### Kapua Broker:
+```
+MQTT url: mqtt://192.168.33.10:1883
 ```
 
 ## Creating the Kapua demo-box
@@ -141,7 +166,7 @@ To start ***using properly the demo machine*** run a full Kapua build as follow:
 $ mvn clean install -Psql -Pdeploy -DskipTests
 ```
 
-Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory 
+Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory
 ```
 $ /usr/local/kapua/activemq/apache-activemq-${ACTIVEMQ_VERSION}
 ```
@@ -153,7 +178,7 @@ $ bin/activemq start
 
 To stop it follow the instructions for the develop machine.
 
-The api and console are properly installed in a Tomcat container in the directory 
+The api and console are properly installed in a Tomcat container in the directory
 ```
 $ /usr/local/kapua/tomcat/apache-tomcat-${TOMCAT_VERSION}/webapps
 ```
