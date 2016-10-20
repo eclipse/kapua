@@ -10,44 +10,41 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.device.data;
+package org.eclipse.kapua.message.internal.device.lifecycle;
 
-import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
 import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
 /**
- * Kapua data message channel object reference implementation.
+ * Kapua notify message channel object reference implementation.
  * 
  * @since 1.0
  *
  */
-public class KapuaDataChannelImpl extends KapuaChannelImpl implements KapuaDataChannel {
-	
-	private String clientId;
-	
-    /**
-     * Get the client identifier
-     * 
-     * @return
-     */
-	public String getClientId() {
-		return clientId;
-	}
-	
-    /**
-     * Set the client identifier
-     * 
-     * @param clientId
-     */
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-	
+public class KapuaNotifyChannelImpl extends KapuaChannelImpl implements KapuaNotifyChannel
+{
+
+    private String clientId;
+
+    @Override
+    public String getClientId()
+    {
+        return clientId;
+    }
+
+    @Override
+    public void setClientId(String clientId)
+    {
+        this.clientId = clientId;
+    }
+
     @Override
     public String toString()
     {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("semantic topic '");
+        strBuilder.append("Client id '");
+        strBuilder.append(clientId);
+        strBuilder.append("' - semantic topic '");
         strBuilder.append(super.toString());
         strBuilder.append("'");
         return strBuilder.toString();
