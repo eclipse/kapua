@@ -190,11 +190,14 @@
 	</bean>
 
 	<!-- Converter -->
-	<bean id="kapuaConverter" class="org.eclipse.kapua.broker.core.converter.KapuaConverter" />
+	<bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter" />
+	<bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter" />
 
 	<!-- Consumer -->
 	<!-- ASSISTANTS -->
 	<bean id="deviceMessageListener" class="org.eclipse.kapua.broker.core.listener.DeviceMessageListener" >
+	</bean>
+	<bean id="dataMessageListener" class="org.eclipse.kapua.broker.core.listener.DataMessageListener" >
 	</bean>
 	<!-- ERROR -->
 	<bean id="errorMessageListener" class="org.eclipse.kapua.broker.core.listener.ErrorMessageListener" >
@@ -257,36 +260,41 @@
 					<when id="systemMessageFilter">
 						<simple>${header.originalTopic} regex '^\$EDC\..*'</simple>
 						<choice id="choice">
-							<when id="birthMessageFilter">
+							<when id="birthLifeCycleMessageFilter">
 								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.BIRTH'</simple>
-								<bean ref="kapuaConverter" method="convertToBirth"/>
+								<bean ref="kapuaLifeCycleConverter" method="convertToBirth"/>
 								<to uri="bean:deviceMessageListener?method=processBirthMessage" />
 							</when>
-							<when id="disconnectMessageFilter">
+							<when id="disconnectLifeCycleMessageFilter">
 								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.DC'</simple>
-								<bean ref="kapuaConverter" method="convertToDisconnect"/>
+								<bean ref="kapuaLifeCycleConverter" method="convertToDisconnect"/>
 								<to uri="bean:deviceMessageListener?method=processDisconnectMessage" />
 							</when>
-							<when id="appsMessageFilter">
+							<when id="appsLifeCycleMessageFilter">
 								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.APPS'</simple>
-								<bean ref="kapuaConverter" method="convertToApps"/>
+								<bean ref="kapuaLifeCycleConverter" method="convertToApps"/>
 								<to uri="bean:deviceMessageListener?method=processAppsMessage" />
 							</when>
-							<when id="missingMessageFilter">
+							<when id="missingLifeCycleMessageFilter">
 								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.MISSING'</simple>
-								<bean ref="kapuaConverter" method="convertToMissing"/>
+								<bean ref="kapuaLifeCycleConverter" method="convertToMissing"/>
 								<to uri="bean:deviceMessageListener?method=processMissingMessage" />
 							</when>
-							<otherwise>
-								<bean ref="kapuaConverter" method="convertToData"/>
-								<to uri="bean:errorMessageListener?method=unmatchedMessage" />
+							<when id="notifyLifeCycleMessageFilter">
+								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.NOTIFY'</simple>
+								<bean ref="kapuaLifeCycleConverter" method="convertToNotify"/>
+								<to uri="bean:deviceMessageListener?method=processNotifyMessage" />
+							</when>
+							<otherwise id="unmatchedLifeCycleMessageFilter">
+								<bean ref="kapuaLifeCycleConverter" method="convertToUnmatched"/>
+								<to uri="bean:deviceMessageListener?method=processUnmatchedMessage" />
 							</otherwise>
 						</choice>
 					</when>
 		            <!-- otherwise data messages -->
 					<otherwise>
-						<bean ref="kapuaConverter" method="convertToData"/>
-						<to uri="bean:errorMessageListener?method=unmatchedMessage" />
+						<bean ref="kapuaDataConverter" method="convertToData"/>
+						<to uri="bean:dataMessageListener?method=processDataMessage" />
 					</otherwise>
 	            </choice>
 	            <bean ref="kapuaCamelFilter" method="unbindSession" />

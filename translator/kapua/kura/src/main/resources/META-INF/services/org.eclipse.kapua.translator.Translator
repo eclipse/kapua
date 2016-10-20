@@ -17,3 +17,5 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorLifeAppsKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeBirthKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeDisconnectKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeMissingKuraKapua
+org.eclipse.kapua.translator.kura.kapua.TranslatorLifeNotifyKuraKapua
+org.eclipse.kapua.translator.kura.kapua.TranslatorLifeUnmatchedKuraKapua
