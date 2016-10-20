@@ -37,113 +37,31 @@ import org.slf4j.LoggerFactory;
 import com.codahale.metrics.Counter;
 
 /**
- * Kapua message converter used to convert from Camel incoming messages ({@link JmsMessage}) to a platform specific message type.
+ * Kapua message converter reference implementation used to convert from Camel incoming messages ({@link JmsMessage}) to a platform specific message type.
  * 
  * @since 1.0
  */
-public class KapuaConverter
+public abstract class AbstractKapuaConverter
 {
 
-    public static final Logger logger = LoggerFactory.getLogger(KapuaConverter.class);
+    public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
     // metrics
-    private final static String         METRIC_COMPONENT_NAME = "converter";
-    private final static MetricsService metricsService        = KapuaLocator.getInstance().getService(MetricsService.class);
+    protected final static String         METRIC_COMPONENT_NAME = "converter";
+    protected final static MetricsService metricsService        = KapuaLocator.getInstance().getService(MetricsService.class);
 
     private Counter metricConverterJmsMessage;
     private Counter metricConverterJmsErrorMessage;
-    private Counter metricConverterDataMessage;
-    private Counter metricConverterAppMessage;
-    private Counter metricConverterBirthMessage;
-    private Counter metricConverterDcMessage;
-    private Counter metricConverterMissingMessage;
     private Counter metricConverterErrorMessage;
 
-    public KapuaConverter()
+    /**
+     * Constructor
+     */
+    protected AbstractKapuaConverter()
     {
         metricConverterJmsMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "count");
         metricConverterJmsErrorMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "error", "count");
-        metricConverterDataMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "data", "count");
-        metricConverterAppMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "app", "count");
-        metricConverterBirthMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "birth", "count");
-        metricConverterDcMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "dc", "count");
-        metricConverterMissingMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "missing", "count");
         metricConverterErrorMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "error", "count");
-    }
-
-    /**
-     * Convert incoming message to a Kapua data message
-     * 
-     * @param exchange
-     * @param value
-     * @return Message container that contains data message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
-     */
-    @Converter
-    public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException
-    {
-        metricConverterDataMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.data);
-    }
-
-    /**
-     * Convert incoming message to a Kapua application message
-     * 
-     * @param exchange
-     * @param value
-     * @return Message container that contains application message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
-     */
-    @Converter
-    public CamelKapuaMessage<?> convertToApps(Exchange exchange, Object value) throws KapuaException
-    {
-        metricConverterAppMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.app);
-    }
-
-    /**
-     * Convert incoming message to a Kapua birth message
-     * 
-     * @param exchange
-     * @param value
-     * @return Message container that contains birth message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
-     */
-    @Converter
-    public CamelKapuaMessage<?> convertToBirth(Exchange exchange, Object value) throws KapuaException
-    {
-        metricConverterBirthMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.birth);
-    }
-
-    /**
-     * Convert incoming message to a Kapua disconnect message
-     * 
-     * @param exchange
-     * @param value
-     * @return Message container that contains disconnect message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
-     */
-    @Converter
-    public CamelKapuaMessage<?> convertToDisconnect(Exchange exchange, Object value) throws KapuaException
-    {
-        metricConverterDcMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.disconnect);
-    }
-
-    /**
-     * Convert incoming message to a Kapua missing message
-     * 
-     * @param exchange
-     * @param value
-     * @return Message container that contains missing message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
-     */
-    @Converter
-    public CamelKapuaMessage<?> convertToMissing(Exchange exchange, Object value) throws KapuaException
-    {
-        metricConverterMissingMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.missing);
     }
 
     /**
@@ -155,7 +73,7 @@ public class KapuaConverter
      * @return Message container that contains message of asked type
      * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
-    private CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MESSAGE_TYPE messageType) throws KapuaException
+    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MESSAGE_TYPE messageType) throws KapuaException
     {
         // assume that the message is a Camel Jms message
         org.apache.camel.component.jms.JmsMessage message = (org.apache.camel.component.jms.JmsMessage) exchange.getIn();
