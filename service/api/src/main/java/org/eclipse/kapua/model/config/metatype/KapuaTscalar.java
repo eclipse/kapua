@@ -51,9 +51,6 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  * 
  */
-@XmlRootElement(name = "OCD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTscalar")
 public interface KapuaTscalar {
 
     /**
