@@ -24,15 +24,6 @@
     <artifactId>kapua-translator-kapua-kura</artifactId>
     <name>${project.artifactId}</name>
 
-
-	<repositories>
-		<repository>
-			<id>oss.sonatype.org</id>
-			<name>OSS Sonatype Staging</name>
-			<url>https://oss.sonatype.org/content/groups/staging</url>
-		</repository>
-	</repositories>
-
     <dependencies>
         <!-- Implemented service interfaces -->
         <dependency>
