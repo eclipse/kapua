@@ -62,7 +62,6 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         KapuaTicon.class,
                         KapuaToption.class,
                         TscalarImpl.class,
-                        KapuaTscalar.class,
                         MetatypeXmlRegistry.class
                 }, null);
             }
