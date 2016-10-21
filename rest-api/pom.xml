@@ -247,7 +247,7 @@
 								<replaceregexp byline="true" 
                                                file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
                                                match="/api/docs/swagger.json" 
-                                               replace="/kapua/api/v1/swagger.json" />
+                                               replace="/api/v1/swagger.json" />
                                 
 							</target>
 						</configuration>

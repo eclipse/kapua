@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
+import java.util.List;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.model.query.EntityFetchStyle;
-import org.eclipse.kapua.model.query.KapuaFetchStyle;
-import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.EntityFetchStyle;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
@@ -31,6 +31,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaFetchStyle;
+import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandFactory;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
@@ -46,8 +48,20 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
-import org.eclipse.kapua.service.device.registry.*;
-import org.eclipse.kapua.service.device.registry.connection.*;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
@@ -56,16 +70,18 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 import org.joda.time.DateTime;
 
-import java.util.List;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
+@Api("Devices")
 @Path("/devices")
 public class Devices extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DeviceRegistryService                registryService      = locator.getService(DeviceRegistryService.class);
+    private final DeviceRegistryService registryService = locator.getService(DeviceRegistryService.class);
     private final DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
     private final DeviceCommandManagementService commandService = locator.getService(DeviceCommandManagementService.class);
-    private final DeviceCommandFactory commandFactory = locator.getFactory(DeviceCommandFactory.class);
     private final DeviceConfigurationManagementService configurationService = locator.getService(DeviceConfigurationManagementService.class);
     private final DeviceSnapshotManagementService snapshotService = locator.getService(DeviceSnapshotManagementService.class);
     private final DeviceSnapshotFactory snapshotFactory = locator.getFactory(DeviceSnapshotFactory.class);
@@ -73,8 +89,8 @@ public class Devices extends AbstractKapuaResource {
     private final DevicePackageFactory packageFactory = locator.getFactory(DevicePackageFactory.class);
     private final DeviceEventService eventService = locator.getService(DeviceEventService.class);
     private final DeviceEventFactory eventFactory = locator.getFactory(DeviceEventFactory.class);
-    private final DeviceConnectionFactory              connectionFactory    = locator.getFactory(DeviceConnectionFactory.class);
-    private final DeviceConnectionService              connectionService    = locator.getService(DeviceConnectionService.class);
+    private final DeviceConnectionFactory connectionFactory = locator.getFactory(DeviceConnectionFactory.class);
+    private final DeviceConnectionService connectionService = locator.getService(DeviceConnectionService.class);
 
     /**
      * Returns the list of all the Devices visible to the currently connected user.
@@ -83,6 +99,10 @@ public class Devices extends AbstractKapuaResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @ApiOperation(value = "Get the Devices list",
+    notes = "Returns the list of all the Devices visible to the currently connected user.",
+    response = Device.class,
+    responseContainer = "List")
     public DeviceListResult getDevices() {
         DeviceListResult devicesResult = deviceFactory.newDeviceListResult();
         try {
@@ -104,7 +124,12 @@ public class Devices extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Device postDevice(DeviceCreator deviceCreator) {
+    @ApiOperation(value = "Creates a new Device",
+    notes = "Creates a new Device based on the information provided in DeviceCreator parameter.",
+    response = Device.class)
+    public Device postDevice(
+            @ApiParam(value = "Provides the information for the new Device to be created", required = true) 
+            DeviceCreator deviceCreator) {
         Device device = null;
         try {
             deviceCreator.setScopeId(KapuaSecurityUtils.getSession().getScopeId());
@@ -119,13 +144,18 @@ public class Devices extends AbstractKapuaResource {
      * Returns the Device specified by the "id" path parameter.
      *
      * @param deviceId
-     *            The id of the Device requested.
+     *            The id of the requested Device.
      * @return The requested Device object.
      */
     @GET
     @Path("{deviceId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Device getDevice(@PathParam("deviceId") String deviceId) {
+    @ApiOperation(value = "Gets a Device",
+    notes = "Returns the Device specified by the \"id\" path parameter.",
+    response = Device.class)
+    public Device getDevice(
+            @ApiParam(value = "The id of the requested Device", required = true) 
+            @PathParam("deviceId") String deviceId) {
         Device device = null;
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -147,7 +177,12 @@ public class Devices extends AbstractKapuaResource {
     @PUT
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Device updateDevice(Device device) {
+    @ApiOperation(value = "Updates a Device",
+    notes = "Updates a device based on the information provided in the Device parameter.",
+    response = Device.class)
+    public Device updateDevice(
+            @ApiParam(value = "Provides the information to update the device", required = true) 
+            Device device) {
         try {
             ((DeviceImpl) device).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
             device = registryService.update(device);
@@ -166,7 +201,12 @@ public class Devices extends AbstractKapuaResource {
     @DELETE
     @Path("{deviceId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response deleteDevice(@PathParam("deviceId") String deviceId) {
+    @ApiOperation(value = "Deletes a Device",
+    notes = "Deletes a device based on the id provided in deviceId parameter.",
+    response = Device.class)
+    public Response deleteDevice(
+            @ApiParam(value = "Provides the id of the device to delete", required = true) 
+            @PathParam("deviceId") String deviceId) {
         try {
             KapuaId deviceKapuaId = KapuaEid.parseShortId(deviceId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -177,13 +217,49 @@ public class Devices extends AbstractKapuaResource {
         return Response.ok().build();
     }
 
+    /**
+     * Executes a remote command on a device and return the command output.
+     * 
+     * <p>
+     * Example to list all files in the current working directory:
+     * 
+     * <pre>
+     * Client client = client();
+     * WebResource apisWeb = client.resource(APIS_TEST_URL);
+     * WebResource.Builder deviceCommandWebXml = apisWeb.path(&quot;devices&quot;)
+     *                                                  .path(s_clientId)
+     *                                                  .path(&quot;command&quot;)
+     *                                                  .accept(MediaType.APPLICATION_XML)
+     *                                                  .type(MediaType.APPLICATION_XML);
+     * 
+     * DeviceCommandInput commandInput = new DeviceCommandInput();
+     * commandInput.setCommand(&quot;ls&quot;);
+     * commandInput.setArguments(new String[] { &quot;-l&quot;, &quot;-a&quot; });
+     * 
+     * DeviceCommandOutput commandOutput = deviceCommandWebXml.post(DeviceCommandOutput.class, commandInput);
+     * </pre>
+     * 
+     * @param clientId The client ID of the Device requested.
+     * @param timeout The timeout of the command execution
+     * @param commandInput The input command
+     * 
+     * @return The command output.
+     */
     @POST
     @Path("{deviceId}/command")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Executes a command",
+    notes = "Executes a remote command on a device and return the command output.",
+    response = DeviceCommandOutput.class)
     public DeviceCommandOutput sendCommand(
+            @ApiParam(value = "The input command", required = true) 
             DeviceCommandInput commandInput,
+            
+            @ApiParam(value = "The client ID of the Device requested", required = true) 
             @PathParam("deviceId") String deviceId,
+            
+            @ApiParam(value = "The timeout of the command execution", required = false) 
             @QueryParam("timeout") Long timeout) throws NumberFormatException, KapuaException {
         KapuaId deviceKapuaId = KapuaEid.parseShortId(deviceId);
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -207,7 +283,18 @@ public class Devices extends AbstractKapuaResource {
     @GET
     @Path("{deviceId}/configurations")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DeviceConfiguration getConfigurations(@PathParam("deviceId") String deviceId,
+    @ApiOperation(value = "Gets the device configurations",
+    notes = "Returns the configuration of a device or the configuration of the OSGi component " + 
+            "identified with specified PID (service's persistent identity). " +
+            "In the OSGi framework, the service's persistent identity is defined as the name attribute of the " + 
+            "Component Descriptor XML file; at runtime, the same value is also available " +
+            "in the component.name and in the service.pid attributes of the Component Configuration.",
+    response = DeviceConfiguration.class)
+    public DeviceConfiguration getConfigurations(
+            @ApiParam(value = "The id of the device", required = true) 
+            @PathParam("deviceId") String deviceId,
+            
+            @ApiParam(value = "An optional id of the component to get the configuration for", required = false) 
             @QueryParam("componentId") String componentId) {
         DeviceConfiguration deviceConfiguration = null;
         try {
@@ -223,12 +310,19 @@ public class Devices extends AbstractKapuaResource {
     /**
      * Returns the list of all the Snapshots available on the device.
      *
+     * @param deviceId
+     *            The id of the device
      * @return The list of Snapshot Ids.
      */
     @GET
     @Path("{deviceId}/snapshots")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DeviceSnapshots getSnapshots(@PathParam("deviceId") String deviceId) {
+    @ApiOperation(value = "Gets a list of snapshots",
+    notes = "Returns the list of all the Snapshots available on the device.",
+    response = DeviceSnapshots.class)
+    public DeviceSnapshots getSnapshots(
+            @ApiParam(value = "The id of the device", required = true) 
+            @PathParam("deviceId") String deviceId) {
         DeviceSnapshots deviceSnapshots = snapshotFactory.newDeviceSnapshots();
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -241,18 +335,22 @@ public class Devices extends AbstractKapuaResource {
     }
 
     /**
-     * Creates a new Device based on the information provided in DeviceCreator parameter.
-     *
-     * @param deviceId
-     *            The id of the device
-     * @param snapshotId
-     *            The id of the snapshot to be rolled bac
-     * @return The newly created Device object.
+     * Updates the configuration of a device rolling back a given snapshot ID.
+     * 
+     * @param clientId The client ID of the Device requested.
+     * @snapshotId the ID of the snapshot to rollback to.
      */
     @POST
     @Path("{deviceId}/rollback/{snapshotId}")
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Response rollbackSnapshot(@PathParam("deviceId") String deviceId, @PathParam("snapshotId") String snapshotId) {
+    @ApiOperation(value = "Gets a list of snapshots",
+    notes = "Updates the configuration of a device rolling back a given snapshot ID.")
+    public Response rollbackSnapshot(
+            @ApiParam(value = "The id of the device", required = true) 
+            @PathParam("deviceId") String deviceId, 
+            
+            @ApiParam(value = "the ID of the snapshot to rollback to", required = true) 
+            @PathParam("snapshotId") String snapshotId) {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
             KapuaId id = KapuaEid.parseShortId(deviceId);
@@ -278,13 +376,13 @@ public class Devices extends AbstractKapuaResource {
      * @param offset
      *            Starting offset for the entries to be returned.
      * @param startDate
-     *            Start date of the date range requested. The parameter
+     *            Start date of the requested date range. The parameter
      *            is expressed as a long counting the number of milliseconds since
      *            January 1, 1970, 00:00:00 GMT. The default value of 0 means no
      *            start date. Alternatively, the date can be expressed as a string
      *            following the ISO 8601 format.
      * @param endDate
-     *            End date of the date range requested. The parameter
+     *            End date of the requested date range. The parameter
      *            is expressed as a long counting the number of milliseconds since
      *            January 1, 1970, 00:00:00 GMT. The default value of 0 means no
      *            start date. Alternatively, the date can be expressed as a string
@@ -294,11 +392,32 @@ public class Devices extends AbstractKapuaResource {
     @GET
     @Path("{deviceId}/events")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @ApiOperation(value = "Gets a list of events for a device",
+    notes = "Returns the events for the device identified by the specified " +
+            "ClientID under the account of the currently connected user. " + 
+            "<p> " + 
+            "If the flag DeviceEventsResult.limitExceeded is set, the maximum number " +
+            "of entries to be returned has been reached, more events exist and can " + 
+            "be read by moving the offset forward in a new request",
+    response = DeviceEventListResult.class)
     public DeviceEventListResult getEvents(
+            @ApiParam(value = "The id of the device", required = true) 
             @PathParam("deviceId") String deviceId,
+            
+            @ApiParam(value = "Maximum number of entries to be returned", required = false) 
             @QueryParam("limit") @DefaultValue("50") int limit,
+            
+            @ApiParam(value = "Starting offset for the entries to be returned", required = false) 
             @QueryParam("offset") int offset,
+            
+            @ApiParam(value = "Start date of the requested date range. The parameter is expressed as a long counting the number of milliseconds since "
+                    + "January 1, 1970, 00:00:00 GMT. The default value of 0 means no start date. Alternatively, the date can be expressed as a string "
+                    + "following the ISO 8601 format.", required = false) 
             @QueryParam("startDate") String startDate,
+            
+            @ApiParam(value = "End date of the requested date range. The parameter is expressed as a long counting the number of milliseconds since "
+                    + "January 1, 1970, 00:00:00 GMT. The default value of 0 means no start date. Alternatively, the date can be expressed as a string "
+                    + "following the ISO 8601 format.", required = false) 
             @QueryParam("endDate") String endDate) {
         DeviceEventListResult deviceEvents = eventFactory.newDeviceListResult();
         try {
@@ -335,13 +454,18 @@ public class Devices extends AbstractKapuaResource {
      * Returns the list of packages deployed on a device.
      *
      * @param deviceId
-     *            The client ID of the Device requested.
+     *            The client ID of the requested Device.
      * @return The list of the installed packages.
      */
     @GET
     @Path("{deviceId}/packages")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DevicePackages getPackages(@PathParam("deviceId") String deviceId) {
+    @ApiOperation(value = "Gets a list of installed packages",
+    notes = "Returns the list of packages deployed on a device.",
+    response = DevicePackages.class)
+    public DevicePackages getPackages(
+            @ApiParam(value = "The client ID of the requested Device", required = true)
+            @PathParam("deviceId") String deviceId) {
         DevicePackages result = packageFactory.newDeviceDeploymentPackages();
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -357,7 +481,7 @@ public class Devices extends AbstractKapuaResource {
      * Install a new deployment package on a device.
      *
      * @param deviceId
-     *            The client ID of the Device requested.
+     *            The client ID of the requested Device.
      * @param request
      *            Mandatory object with all the informations
      *            needed to download a package.
@@ -367,7 +491,14 @@ public class Devices extends AbstractKapuaResource {
     @Path("{deviceId}/packages")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response installPackage(@PathParam("deviceId") String deviceId, DevicePackageDownloadRequest request) {
+    @ApiOperation(value = "Installs a new package",
+    notes = "Install a new deployment package on a device.")
+    public Response installPackage(
+            @ApiParam(value = "The client ID of the requested Device", required = true)
+            @PathParam("deviceId") String deviceId, 
+            
+            @ApiParam(value = "Mandatory object with all the informations needed to download a package", required = true)
+            DevicePackageDownloadRequest request) {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
             KapuaId id = KapuaEid.parseShortId(deviceId);
@@ -382,7 +513,7 @@ public class Devices extends AbstractKapuaResource {
      * Uninstalls a package deployed on a device.
      *
      * @param deviceId
-     *            The device ID of the Device requested.
+     *            The device ID of the requested Device.
      * @param request
      *            Mandatory object with all the informations
      *            needed to uninstall a package.
@@ -392,7 +523,14 @@ public class Devices extends AbstractKapuaResource {
     @Path("{deviceId}/packages")
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response uninstallPackage(@PathParam("deviceId") String deviceId, DevicePackageUninstallRequest request) {
+    @ApiOperation(value = "Uninstalls a package",
+    notes = "Uninstalls a package deployed on a device.")
+    public Response uninstallPackage(
+            @ApiParam(value = "The client ID of the requested Device", required = true)
+            @PathParam("deviceId") String deviceId, 
+            
+            @ApiParam(value = "Mandatory object with all the informations needed to uninstall a package", required = true)
+            DevicePackageUninstallRequest request) {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
             KapuaId id = KapuaEid.parseShortId(deviceId);
@@ -402,7 +540,7 @@ public class Devices extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-
+    
     /**
      * Returns an aggregated summary of the connection status of a group
      * of devices at a point in time. It returns the number of devices
@@ -415,24 +553,30 @@ public class Devices extends AbstractKapuaResource {
     @GET
     @Path("connectionSummary")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @ApiOperation(value = "Get a connection summary",
+                  notes = "Returns an aggregated summary of the connection status of a group " +
+                           "of devices at a point in time. It returns the number of devices " +
+                           "currently connected, the number of devices which disconnect cleanly, " +
+                           "the number of devices which disconnected abruptly, and the number " +
+                           "of devices which have been disabled")
     public DeviceConnectionSummary connectionSummary()
     {
         DeviceConnectionSummary deviceSummary = connectionFactory.newConnectionSummary();
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
         DeviceConnectionQuery connectedQuery = connectionFactory.newQuery(scopeId);
-        KapuaAttributePredicate connectedPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.CONNECTED);
+        AttributePredicate<DeviceConnectionStatus> connectedPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.CONNECTED);
         connectedQuery.setPredicate(connectedPredicate);
         DeviceConnectionQuery disconnectedQuery = connectionFactory.newQuery(scopeId);
-        KapuaAttributePredicate disconnectedPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.DISCONNECTED);
+        AttributePredicate<DeviceConnectionStatus> disconnectedPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.DISCONNECTED);
         disconnectedQuery.setPredicate(disconnectedPredicate);
         DeviceConnectionQuery missingQuery = connectionFactory.newQuery(scopeId);
-        KapuaAttributePredicate missingPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.MISSING);
+        AttributePredicate<DeviceConnectionStatus> missingPredicate = new AttributePredicate<>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.MISSING);
         missingQuery.setPredicate(missingPredicate);
         DeviceQuery enabledQuery = deviceFactory.newQuery(scopeId);
-        KapuaAttributePredicate enabledPredicate = new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.ENABLED);
+        AttributePredicate<DeviceStatus> enabledPredicate = new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.ENABLED);
         enabledQuery.setPredicate(enabledPredicate);
         DeviceQuery disabledQuery = deviceFactory.newQuery(scopeId);
-        KapuaAttributePredicate disabledPredicate = new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.DISABLED);
+        AttributePredicate<DeviceStatus> disabledPredicate = new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.DISABLED);
         disabledQuery.setPredicate(disabledPredicate);
         try {
             deviceSummary.setConnected(connectionService.count(connectedQuery));
@@ -505,37 +649,120 @@ public class Devices extends AbstractKapuaResource {
     @GET
     @Path("search")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DeviceListResult searchDevices(@QueryParam("clientId") List<String> clientId,
-                                          @QueryParam("serialNumber") List<String> serialNumber,
-                                          @QueryParam("displayName") List<String> displayName,
-                                          @QueryParam("imei") List<String> imei,
-                                          @QueryParam("imsi") List<String> imsi,
-                                          @QueryParam("iccid") List<String> iccid,
-                                          @QueryParam("modelId") String modelId,
-                                          @QueryParam("status") String status,
-                                          // @QueryParam("connectionStatus") String connectionStatus,
-                                          @QueryParam("biosVersion") String biosVersion,
-                                          @QueryParam("firmwareVersion") String firmwareVersion,
-                                          @QueryParam("osVersion") String osVersion,
-                                          @QueryParam("jvmVersion") String jvmVersion,
-                                          @QueryParam("osgiFrameworkVersion") String osgiFrameworkVersion,
-                                          @QueryParam("applicationFrameworkVersion") String applicationFrameworkVersion,
-                                          @QueryParam("applicationIdentifier") String applicationIdentifier,
-                                          @QueryParam("customAttribute1") String customAttribute1,
-                                          @QueryParam("customAttribute2") String customAttribute2,
-                                          @QueryParam("customAttribute3") String customAttribute3,
-                                          @QueryParam("customAttribute4") String customAttribute4,
-                                          @QueryParam("customAttribute5") String customAttribute5,
-                                          @QueryParam("acceptEncoding") String acceptEncoding,
-                                          @QueryParam("gpsLongitude") String gpsLongitude,
-                                          @QueryParam("gpsLatitude") String gpsLatitude,
-                                          @QueryParam("credentialsMode") String credentialsMode,
-                                          @QueryParam("preferredUserId") String preferredUserId,
-                                          @QueryParam("sortField") String sortField,
-                                          @QueryParam("limit") @DefaultValue("50") int limit,
-                                          @QueryParam("offset") @DefaultValue("0") int offset,
-                                          @QueryParam("fetch") @DefaultValue("BASIC") String fetch,
-                                          @QueryParam("sortOrder") @DefaultValue("desc") String sortOrder)
+    @ApiOperation(value = "Search for devices",
+                  notes = "Searches the device registry for devices based on the specified criteria. " +
+                          "Query parameters are used to defined the filtering predicate, the sorting and the pagination. " +
+                          "The supplied query parameters are combined into a logical AND, so all specified conditions " +
+                          "need to be satisfied for the device to be selected and returned. " +
+                          "Query parameters which allow for multiple values are combined into an IN predicate effectively " +
+                          "combining them into a logical OR of the values supplied. " +
+                          "<p>" +
+                          "The \"fetch\" query parameter can be used to control the amount of information to be loaded and " +
+                          "returned for each device. Allowed values are \"BASIC\" or \"FULL\". With \"BASIC\", the core attributes " +
+                          "of the device and the version information of its profile are returned. With \"FULL\", " +
+                          "all the additional device extended properties are loaded and returned. " +
+                          "<p>" +
+                          "The returned devices can be sorted. Allowed values for the sortField query parameter are: " +
+                          "\"clientId\", \"displayName\", \"lastEventOn\". Sorting can be specified ascending or descending using the " +
+                          "\"sort\" query parameter with values: \"asc\" or \"desc\". If no sortField is specified, " +
+                          "the returned devices will not follow any specific order. " +
+                          "<p>" +
+                          "If the flag DevicesResult.limitExceeded is set, the maximum number of entries to be returned " +
+                          "has been reached. More data exist and can be read by moving the offset forward in a new request")
+    public DeviceListResult searchDevices(
+            @ApiParam(value = "One or more clientId for the devices to be returned", required = false)
+            @QueryParam("clientId") List<String> clientId,
+            
+            @ApiParam(value = "One or more serial number for the devices to be returned", required = false)
+            @QueryParam("serialNumber") List<String> serialNumber,
+            
+            @ApiParam(value = "One or more display name for the devices to be returned", required = false)
+            @QueryParam("displayName") List<String> displayName,
+            
+            @ApiParam(value = "One or more IMEI for the devices to be returned", required = false)
+            @QueryParam("imei") List<String> imei,
+            
+            @ApiParam(value = "One or more IMSI for the devices to be returned", required = false)
+            @QueryParam("imsi") List<String> imsi,
+            
+            @ApiParam(value = "One or more ICCID for the devices to be returned", required = false)
+            @QueryParam("iccid") List<String> iccid,
+            
+            @ApiParam(value = "The id of the model of the devices to be returned", required = false)
+            @QueryParam("modelId") String modelId,
+            
+            @ApiParam(value = "The device status (Enabled/Disabled) of the devices to be returned", required = false)
+            @QueryParam("status") String status,
+            
+            // @QueryParam("connectionStatus") String connectionStatus,
+            
+            @ApiParam(value = "The bios version of the devices to be returned", required = false)
+            @QueryParam("biosVersion") String biosVersion,
+            
+            @ApiParam(value = "The firmware version of the devices to be returned", required = false)
+            @QueryParam("firmwareVersion") String firmwareVersion,
+            
+            @ApiParam(value = "The OS version of the devices to be returned", required = false)
+            @QueryParam("osVersion") String osVersion,
+            
+            @ApiParam(value = "The JVM version of the devices to be returned", required = false)
+            @QueryParam("jvmVersion") String jvmVersion,
+            
+            @ApiParam(value = "The OSGI Framework version of the devices to be returned", required = false)
+            @QueryParam("osgiFrameworkVersion") String osgiFrameworkVersion,
+            
+            @ApiParam(value = "The application framework version of the devices to be returned", required = false)
+            @QueryParam("applicationFrameworkVersion") String applicationFrameworkVersion,
+            
+            @ApiParam(value = "The application identifiers of the devices to be returned", required = false)
+            @QueryParam("applicationIdentifier") String applicationIdentifier,
+            
+            @ApiParam(value = "The value of customAttribute1 for the devices to be returned", required = false)
+            @QueryParam("customAttribute1") String customAttribute1,
+            
+            @ApiParam(value = "The value of customAttribute2 for the devices to be returned", required = false)
+            @QueryParam("customAttribute2") String customAttribute2,
+            
+            @ApiParam(value = "The value of customAttribute3 for the devices to be returned", required = false)
+            @QueryParam("customAttribute3") String customAttribute3,
+            
+            @ApiParam(value = "The value of customAttribute4 for the devices to be returned", required = false)
+            @QueryParam("customAttribute4") String customAttribute4,
+            
+            @ApiParam(value = "The value of customAttribute5 for the devices to be returned", required = false)
+            @QueryParam("customAttribute5") String customAttribute5,
+            
+            @ApiParam(value = "The encoding accepted by the devices to be returned", required = false)
+            @QueryParam("acceptEncoding") String acceptEncoding,
+            
+            @ApiParam(value = "The GPS Longitude of the devices to be returned", required = false)
+            @QueryParam("gpsLongitude") String gpsLongitude,
+            
+            @ApiParam(value = "The GPS Latitude of the devices to be returned", required = false)
+            @QueryParam("gpsLatitude") String gpsLatitude,
+            
+            @ApiParam(value = "The credentials mode of the devices to be returned", required = false)
+            @QueryParam("credentialsMode") String credentialsMode,
+            
+            @ApiParam(value = "The preferred user id of the devices to be returned", required = false)
+            @QueryParam("preferredUserId") String preferredUserId,
+            
+            @ApiParam(value = "Optional sorting of the returned devices. Allowed values are: \"clientId\", \"displayName\", \"lastEventOn\"", required = false)
+            @QueryParam("sortField") String sortField,
+            
+            @ApiParam(value = "Maximum number of entries to be returned", required = false)
+            @QueryParam("limit") @DefaultValue("50") int limit,
+            
+            @ApiParam(value = "Starting offset for the entries to be returned", required = false)
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            
+            @ApiParam(value = "Specifies the amount of information requested. Allowed values are \"BASIC\" or \"FULL\". With \"BASIC\" " +
+                              "the core attributes of the device and the version information of its profile are " +
+                              "returned. With \"FULL\", all the additional extended attributes are loaded and returned", required = false)
+            @QueryParam("fetch") @DefaultValue("BASIC") String fetch,
+            
+            @ApiParam(value = "Optional sorting order. Allowed values are: \"asc\", \"desc\"", required = false)
+            @QueryParam("sortOrder") @DefaultValue("desc") String sortOrder)
         throws KapuaIllegalArgumentException
     {
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -567,9 +794,8 @@ public class Devices extends AbstractKapuaResource {
         }
         if (status != null) {
             try {
-                DeviceStatus ds = null;
-                ds = DeviceStatus.valueOf(status);
-                andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.STATUS, status));
+                DeviceStatus ds = DeviceStatus.valueOf(status);
+                andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.STATUS, ds));
             }
             catch (IllegalArgumentException iae) {
                 throw new KapuaIllegalArgumentException("status", status);

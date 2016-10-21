@@ -36,6 +36,11 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountImpl;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api("Accounts")
 @Path("/accounts")
 public class Accounts extends AbstractKapuaResource 
 {
@@ -48,6 +53,10 @@ public class Accounts extends AbstractKapuaResource
      *
      * @return The list of requested Account objects.
      */
+	@ApiOperation(value = "Get the Accounts list",
+            notes = "Returns the list of all the Accounts visible to the currently connected user.",
+            response = Account.class,
+            responseContainer = "AccountListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult getAccounts() {
@@ -64,15 +73,20 @@ public class Accounts extends AbstractKapuaResource
     }
 
     /**
-     * Returns the Account specified by the "id" path parameter.
+     * Returns the Account specified by the "accountId" path parameter.
      *
-     * @param accountId The id of the Account requested.
+     * @param accountId The id of the requested Account.
      * @return The requested Account object.
      */
+	@ApiOperation(value = "Get an Account",
+            notes = "Returns the Account specified by the \"accountId\" path parameter.",
+            response = Account.class)
     @GET
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Account getAccount(@PathParam("accountId") String accountId) {
+    public Account getAccount(
+            @ApiParam(value = "The id of the requested Account", required = true) 
+            @PathParam("accountId") String accountId) {
 
         Account account = null;
         try {
@@ -87,13 +101,18 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the Account specified by the "name" query parameter.
      *
-     * @param accountName The name of the Account requested.
+     * @param accountName The name of the requested Account.
      * @return The requested Account object.
      */
+	@ApiOperation(value = "Get an Account by name",
+            notes = "Returns the Account specified by the \"name\" query parameter.",
+            response = Account.class)
     @GET
     @Path("findByName")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Account getAccountByName(@QueryParam("accountName") String accountName) {
+    public Account getAccountByName(
+            @ApiParam(value = "The name of the requested Account", required = true) 
+            @QueryParam("accountName") String accountName) {
 
         Account account = null;
         try {
@@ -105,15 +124,20 @@ public class Accounts extends AbstractKapuaResource
     }
 
     /**
-     * Returns the list of all direct child accounts for the Account specified by the "id" path parameter.
+     * Returns the list of all direct child accounts for the Account specified by the "scopeId" path parameter.
      *
-     * @param scopeId The id of the Account requested.
+     * @param scopeId The id of the requested Account.
      * @return The requested list of child accounts.
      */
+	@ApiOperation(value = "Get Children Accounts",
+            notes = "Returns the list of all direct child accounts for the Account specified by the \"scopeId\" path parameter.",
+            response = AccountListResult.class)
     @GET
     @Path("{scopeId}/childAccounts")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccountListResult getChildAccounts(@PathParam("scopeId") String scopeId) {
+    public AccountListResult getChildAccounts(
+            @ApiParam(value = "The id of the requested Account", required = true) 
+            @PathParam("scopeId") String scopeId) {
         AccountListResult accountsResult = accountFactory.newAccountListResult();
         try {
             KapuaId id = KapuaEid.parseShortId(scopeId);
@@ -124,12 +148,12 @@ public class Accounts extends AbstractKapuaResource
         return accountsResult;
     }
 
-    /**
-     * Returns the Service Plan for the Account specified by the "id" path parameter.
-     *
-     * @param accountId The id of the Account for which the Service Plan is requested.
-     * @return The requested AccountServicePlan object.
-     */
+//    /**
+//     * Returns the Service Plan for the Account specified by the "id" path parameter.
+//     *
+//     * @param accountId The id of the Account for which the Service Plan is requested.
+//     * @return The requested AccountServicePlan object.
+//     */
 //    @GET
 //    @Path("{accountId}/servicePlan")
 //    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -146,18 +170,18 @@ public class Accounts extends AbstractKapuaResource
 //        return returnNotNullEntity(servicePlan);
 //    }
 
-    /**
-     * Returns the usage for the Account specified by the "id" path parameter.
-     *
-     * @param limit Maximum number of entries to be returned.
-     * @param offset Starting offset for the entries to be returned.
-     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
-     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
-     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-     * @param accountId The id of the Account for which the usage is requested.
-     * @return The requested UsageResult object.
-     */
+//    /**
+//     * Returns the usage for the Account specified by the "id" path parameter.
+//     *
+//     * @param limit Maximum number of entries to be returned.
+//     * @param offset Starting offset for the entries to be returned.
+//     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
+//     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
+//     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
+//     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
+//     * @param accountId The id of the Account for which the usage is requested.
+//     * @return The requested UsageResult object.
+//     */
 //    @GET
 //    @Path("{accountId}/usageByHour")
 //    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -197,18 +221,18 @@ public class Accounts extends AbstractKapuaResource
 //        return returnNotNullEntity(usage);
 //    }
 
-    /**
-     * Returns the daily usage for the Account specified by the "id" path parameter.
-     *
-     * @param limit Maximum number of entries to be returned.
-     * @param offset Starting offset for the entries to be returned.
-     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
-     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
-     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-     * @param accountId The id of the Account for which the usage is requested.
-     * @return The requested UsageResult object.
-     */
+//    /**
+//     * Returns the daily usage for the Account specified by the "id" path parameter.
+//     *
+//     * @param limit Maximum number of entries to be returned.
+//     * @param offset Starting offset for the entries to be returned.
+//     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
+//     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
+//     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
+//     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
+//     * @param accountId The id of the Account for which the usage is requested.
+//     * @return The requested UsageResult object.
+//     */
 //    @GET
 //    @Path("{accountId}/usageByDay")
 //    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -248,12 +272,12 @@ public class Accounts extends AbstractKapuaResource
 //        return returnNotNullEntity(usage);
 //    }
 
-    /**
-     * Returns the number of currently connected devices for the specified account.
-     *
-     * @param accountId The id of the Account.
-     * @return The requested DeviceCountResult object.
-     */
+//    /**
+//     * Returns the number of currently connected devices for the specified account.
+//     *
+//     * @param accountId The id of the Account.
+//     * @return The requested DeviceCountResult object.
+//     */
 //    @GET
 //    @Path("{accountId}/devices/count")
 //    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -277,10 +301,15 @@ public class Accounts extends AbstractKapuaResource
      * @param accountCreator Provides the information for the new Account to be created.
      * @return The newly created Account object.
      */
+	@ApiOperation(value = "Create an Account",
+            notes = "Creates a new Account based on the information provided in AccountCreator parameter.",
+            response = Account.class)
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Account postAccount(AccountCreator accountCreator) {
+    public Account postAccount(
+            @ApiParam(value = "Provides the information for the new Account to be created", required = true) 
+            AccountCreator accountCreator) {
 
         Account account = null;
         try {
@@ -298,10 +327,15 @@ public class Accounts extends AbstractKapuaResource
      * @param account Provides the information to update the account.
      * @return The updated created Account object.
      */
+	@ApiOperation(value = "Update an Account",
+            notes = "Updates an account based on the information provided in Account parameter.",
+            response = Account.class)
     @PUT
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Account updateAccount(Account account) {
+    public Account updateAccount(
+            @ApiParam(value = "Provides the information to update the account", required = true) 
+            Account account) {
         try {
             ((AccountImpl)account).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
             account = accountService.update(account);
@@ -311,16 +345,20 @@ public class Accounts extends AbstractKapuaResource
         return returnNotNullEntity(account);
     }
     
-    /**
-     * Deletes an account based on the information provided in Account parameter.
+	/**
+     * Deletes the Account specified by the "accountId" path parameter.
      *
-     * @param accountId Provides the information to update the account.
+     * @param accountId The id of the Account to be deleted.
      * @return The updated created Account object.
      */
+	@ApiOperation(value = "Delete an Account",
+            notes = "Deletes an account based on the information provided in accountId parameter.")
     @DELETE
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Response deleteAccount(@PathParam("accountId") String accountId) {
+    public Response deleteAccount(
+            @ApiParam(value = "The id of the Account to be delete", required = true)
+            @PathParam("accountId") String accountId) {
         try {
             KapuaId accountKapuaId = KapuaEid.parseShortId(accountId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
