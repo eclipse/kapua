@@ -49,6 +49,8 @@
         <link rel="stylesheet" type="text/css" href="gxt-2.2.5/css/gxt-all.css" id="gxtCss">
         <link rel="stylesheet" type="text/css" id="gray" href="gxt-2.2.5/css/gxt-gray.css">
         
+        <link rel="stylesheet" href="fontAwesome/css/font-awesome.min.css">
+        
         <!-- 
             JS resources
          -->
