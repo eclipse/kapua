@@ -501,7 +501,6 @@
         <module>translator</module>
         <module>broker-core</module>
         <module>test</module>
-        <module>dev-tools</module>
 
         <!-- Applications -->
         <module>console</module>
@@ -510,6 +509,18 @@
         <!-- Assembly -->
         <module>assembly</module>
     </modules>
+
+	<profiles>
+		<profile>
+			<id>dev-tools</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<modules>
+				<module>dev-tools</module>
+			</modules>
+		</profile>
+	</profiles>
 
     <licenses>
         <license>
