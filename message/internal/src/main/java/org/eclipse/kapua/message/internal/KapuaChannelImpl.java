@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.kapua.message.KapuaChannel;
 
 /**
- * Kapua message channel object freference implementation.
+ * Kapua message channel object reference implementation.
  *
  * @since 1.0
  *
@@ -37,4 +37,21 @@ public class KapuaChannelImpl implements KapuaChannel
     {
         this.semanticParts = semanticParts;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder strBuilder = new StringBuilder();
+        if (semanticParts != null && !semanticParts.isEmpty()) {
+            for (String str : semanticParts) {
+                strBuilder.append(str);
+                strBuilder.append("/");
+            }
+            return strBuilder.toString();
+        }
+        else {
+            return "NO semantic topic defined";
+        }
+    }
+
 }

@@ -20,8 +20,8 @@ import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
 /**
- * Describes the protocol in terms of message type implementations.<BR>
- * It's needed by the broker to translate the specific device protocol message domain to the kapua message domain.<BR>
+ * Describes the protocol in terms of message type implementations.<br>
+ * It's needed by the broker to translate the specific device protocol message domain to the kapua message domain.<br>
  * Each broker connector can be bound with only one device level protocol.
  *
  * @since 1.0
@@ -52,6 +52,14 @@ public class ConnectorDescriptor implements Serializable
          * Missing message type
          */
         missing,
+        /**
+         * Notify message type
+         */
+        notify,
+        /**
+         * Unmatched filtering message type
+         */
+        unmatched,
         /**
          * Data message type
          */
