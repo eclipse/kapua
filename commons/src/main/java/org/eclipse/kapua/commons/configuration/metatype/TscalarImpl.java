@@ -20,8 +20,11 @@
 
 package org.eclipse.kapua.commons.configuration.metatype;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
@@ -56,6 +59,8 @@ import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
  */
 @XmlEnum
 @XmlType(name = "Tscalar")
+@XmlRootElement(name = "OCD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public enum TscalarImpl implements KapuaTscalar {
     @XmlEnumValue("String")
     STRING("String"),
