@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
@@ -26,8 +25,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedPayload;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
 
 /**
@@ -51,14 +48,7 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraUnmatchedMessage.getChannel().getScope());
 
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.findByClientId(account.getId(), kuraUnmatchedMessage.getChannel().getClientId());
-
-        if (device == null) {
-            throw new KapuaEntityNotFoundException(Device.class.toString(), kuraUnmatchedMessage.getChannel().getClientId());
-        }
-        
-        kapuaUnmatchedMessage.setDeviceId(device.getId());
+        // no device information since may it uses an mqtt connection pooling with devices not registered in the device tables
         kapuaUnmatchedMessage.setScopeId(account.getId());
         kapuaUnmatchedMessage.setCapturedOn(kuraUnmatchedMessage.getPayload().getTimestamp());
         kapuaUnmatchedMessage.setSentOn(kuraUnmatchedMessage.getPayload().getTimestamp());
