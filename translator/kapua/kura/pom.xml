@@ -99,5 +99,11 @@
 			<artifactId>org.eclipse.persistence.moxy</artifactId>
 			<version>2.6.3</version>
 		</dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

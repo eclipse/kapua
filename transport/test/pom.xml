@@ -31,7 +31,6 @@
             <artifactId>kapua-transport-mqtt</artifactId>
         </dependency>
 
-        <!-- -->
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -42,6 +41,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
