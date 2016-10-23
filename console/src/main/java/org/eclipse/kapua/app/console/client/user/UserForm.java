@@ -57,58 +57,56 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class UserForm extends Window
-{
+public class UserForm extends Window {
 
-    protected static final ConsoleMessages       MSGS                = GWT.create(ConsoleMessages.class);
+    protected static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    protected final GwtSecurityTokenServiceAsync gwtXSRFService      = GWT.create(GwtSecurityTokenService.class);
-    protected final GwtUserServiceAsync          gwtUserService      = GWT.create(GwtUserService.class);
+    protected final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
+    protected final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
-    protected String                             m_accountId;
-    protected GwtSession                         m_currentSession;
-    protected GwtUser                            m_existingUser;
-    protected FormData                           formData;
-    protected UserForm                           m_userForm;
-    protected FormPanel                          m_formPanel;
-    protected Status                             m_status;
+    protected String m_accountId;
+    protected GwtSession m_currentSession;
+    protected GwtUser m_existingUser;
+    protected FormData formData;
+    protected UserForm m_userForm;
+    protected FormPanel m_formPanel;
+    protected Status m_status;
 
-    protected TabPanel                           m_tabsPanel;
-    protected int                                preselectedTabIndex = 0;
-    private TabItem                              m_tabUserInfo;
-    protected TabItem                            m_tab2FA;
+    protected TabPanel m_tabsPanel;
+    protected int preselectedTabIndex = 0;
+    private TabItem m_tabUserInfo;
+    protected TabItem m_tab2FA;
 
-    protected FieldSet                           statusFieldSet;
+    protected FieldSet statusFieldSet;
 
-    protected FormPanel                          internalPanel;
+    protected FormPanel internalPanel;
 
-    protected Status                             internalStatus;
+    protected Status internalStatus;
 
-    protected TextField<String>                  username;
-    protected TextField<String>                  password;
-    protected TextField<String>                  confirmPassword;
-    protected TextField<String>                  displayName;
-    protected TextField<String>                  email;
-    protected TextField<String>                  phoneNumber;
-    protected NumberField                        optlock;
-    protected SimpleComboBox<String>             statusCombo;
-    protected CheckBox                           lockedCheckBox;
-    protected CheckBoxGroup                      lockedCheckGroup;
-    protected LabelField                         loginOnLabel;
-    protected LabelField                         loginAttemptsLabel;
-    protected LabelField                         loginAttemptsResetOnLabel;
-    protected LabelField                         lockedOnLabel;
-    protected LabelField                         unlockOnLabel;
+    protected TextField<String> username;
+    protected TextField<String> password;
+    protected TextField<String> confirmPassword;
+    protected TextField<String> displayName;
+    protected TextField<String> email;
+    protected TextField<String> phoneNumber;
+    protected NumberField optlock;
+    protected SimpleComboBox<String> statusCombo;
+    protected CheckBox lockedCheckBox;
+    protected CheckBoxGroup lockedCheckGroup;
+    protected LabelField loginOnLabel;
+    protected LabelField loginAttemptsLabel;
+    protected LabelField loginAttemptsResetOnLabel;
+    protected LabelField lockedOnLabel;
+    protected LabelField unlockOnLabel;
 
-    protected Button                             submitButton;
+    protected Button submitButton;
 
     /**
      * No new user is allowed for this form. Only the UserManagerForm can create a new user form using this as super constructor
      * 
      * @param accountId
      */
-    protected UserForm(String accountId)
-    {
+    protected UserForm(String accountId) {
         m_accountId = accountId;
         m_userForm = this;
 
@@ -121,8 +119,7 @@ public class UserForm extends Window
         DialogUtils.resizeDialog(this, 500, 530);
     }
 
-    public UserForm(String accountId, GwtUser existingUser, GwtSession session)
-    {
+    public UserForm(String accountId, GwtUser existingUser, GwtSession session) {
         this(accountId);
 
         m_existingUser = existingUser;
@@ -132,8 +129,7 @@ public class UserForm extends Window
         m_currentSession = session;
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
         FormData formData = new FormData("0");
@@ -257,9 +253,9 @@ public class UserForm extends Window
         m_status.setAutoWidth(true);
 
         submitButton = new Button(MSGS.submitButton(), new SelectionListener<ButtonEvent>() {
+
             @Override
-            public void componentSelected(ButtonEvent ce)
-            {
+            public void componentSelected(ButtonEvent ce) {
                 if (!m_formPanel.isValid()) {
                     return;
                 }
@@ -273,9 +269,9 @@ public class UserForm extends Window
         });
 
         Button cancelButton = new Button(MSGS.cancelButton(), new SelectionListener<ButtonEvent>() {
+
             @Override
-            public void componentSelected(ButtonEvent ce)
-            {
+            public void componentSelected(ButtonEvent ce) {
                 hide();
             }
         });
@@ -293,8 +289,7 @@ public class UserForm extends Window
         setEditability();
     }
 
-    protected void setEditability()
-    {
+    protected void setEditability() {
         statusCombo.setEnabled(false);
         if (!hasSelfManage()) {
             username.setEnabled(false);
@@ -307,30 +302,26 @@ public class UserForm extends Window
         }
     }
 
-    protected void loadUser()
-    {
+    protected void loadUser() {
         // populate if necessary
         if (m_existingUser != null) {
             gwtUserService.find(m_accountId, m_existingUser.getId(), new AsyncCallback<GwtUser>() {
-                public void onFailure(Throwable caught)
-                {
+
+                public void onFailure(Throwable caught) {
                     FailureHandler.handle(caught);
                 }
 
-                public void onSuccess(GwtUser gwtUser)
-                {
+                public void onSuccess(GwtUser gwtUser) {
                     populateTabUserInfo(gwtUser);
                 }
             });
-        }
-        else {
+        } else {
             // New user. No need to show the status field set
             statusFieldSet.setVisible(false);
         }
     }
 
-    protected void populateTabUserInfo(GwtUser gwtUser)
-    {
+    protected void populateTabUserInfo(GwtUser gwtUser) {
         // set value and original value as we want to track the Dirty state
         username.setValue(gwtUser.getUnescapedUsername());
         username.setOriginalValue(gwtUser.getUnescapedUsername());
@@ -359,14 +350,12 @@ public class UserForm extends Window
         optlock.setValue(gwtUser.getOptlock());
     }
 
-    protected void submitAccount()
-    {
+    protected void submitAccount() {
         // update
         m_existingUser.setUsername(username.getValue());
         if (password.isDirty()) {
             m_existingUser.setPassword(password.getValue());
-        }
-        else {
+        } else {
             m_existingUser.setPassword(null);
         }
         m_existingUser.setDisplayName(displayName.getValue());
@@ -377,45 +366,40 @@ public class UserForm extends Window
         m_existingUser.setOptlock(optlock.getValue().intValue());
 
         gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+
             @Override
-            public void onFailure(Throwable ex)
-            {
+            public void onFailure(Throwable ex) {
                 FailureHandler.handle(ex);
             }
 
             @Override
-            public void onSuccess(GwtXSRFToken token)
-            {
+            public void onSuccess(GwtXSRFToken token) {
                 updateCall(token);
             }
         });
     }
 
-    protected void updateCall(GwtXSRFToken token)
-    {
+    protected void updateCall(GwtXSRFToken token) {
         gwtUserService.update(token, m_existingUser, new AsyncCallback<GwtUser>() {
-            public void onFailure(Throwable caught)
-            {
+
+            public void onFailure(Throwable caught) {
                 FailureHandler.handleFormException(m_formPanel, caught);
                 m_status.hide();
                 m_formPanel.getButtonBar().enable();
             }
 
-            public void onSuccess(GwtUser user)
-            {
+            public void onSuccess(GwtUser user) {
                 ConsoleInfo.display(MSGS.info(), MSGS.userUpdatedConfirmation(user.getUnescapedUsername()));
                 hide();
             }
         });
     }
 
-    private boolean hasSelfManage()
-    {
+    private boolean hasSelfManage() {
         return m_currentSession != null && m_currentSession.hasUserUpdatePermission();
     }
 
-    public void show(int tabIndex)
-    {
+    public void show(int tabIndex) {
         preselectedTabIndex = tabIndex;
 
         super.show();
