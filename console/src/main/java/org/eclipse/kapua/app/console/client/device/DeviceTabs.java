@@ -14,7 +14,9 @@ package org.eclipse.kapua.app.console.client.device;
 
 import org.eclipse.kapua.app.console.client.device.management.packages.DeviceTabPackages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice.GwtDeviceApplication;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -23,12 +25,10 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class DeviceTabs extends LayoutContainer {
 
@@ -162,8 +162,7 @@ public class DeviceTabs extends LayoutContainer {
         m_tabsPanel.setBodyBorder(false);
         m_tabsPanel.setStyleAttribute("padding-top", "5px");
 
-        m_tabProfile = new TabItem(MSGS.deviceTabDescription());
-        m_tabProfile.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.deviceProfile()));
+        m_tabProfile = new TabItem(MSGS.deviceTabDescription(), new KapuaIcon(IconSet.INFO));
         m_tabProfile.setBorders(true);
         m_tabProfile.setLayout(new FitLayout());
         m_tabProfile.add(m_deviceProfileTab);
@@ -175,8 +174,7 @@ public class DeviceTabs extends LayoutContainer {
         });
         m_tabsPanel.add(m_tabProfile);
 
-        m_tabHistory = new TabItem(MSGS.tabHistory());
-        m_tabHistory.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.history()));
+        m_tabHistory = new TabItem(MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
         m_tabHistory.setBorders(true);
         m_tabHistory.setLayout(new FitLayout());
         m_tabHistory.add(m_deviceHistoryTab);
@@ -188,8 +186,7 @@ public class DeviceTabs extends LayoutContainer {
         });
         m_tabsPanel.add(m_tabHistory);
 
-        m_tabPackages = new TabItem(MSGS.tabPackages());
-        m_tabPackages.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.package16()));
+        m_tabPackages = new TabItem(MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
         m_tabPackages.setBorders(true);
         m_tabPackages.setLayout(new FitLayout());
         m_tabPackages.add(m_devicePackagesTab);
@@ -201,8 +198,7 @@ public class DeviceTabs extends LayoutContainer {
         });
         m_tabsPanel.add(m_tabPackages);
 
-        m_tabBundles = new TabItem(MSGS.tabBundles());
-        m_tabBundles.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.bundles()));
+        m_tabBundles = new TabItem(MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
         m_tabBundles.setBorders(true);
         m_tabBundles.setLayout(new FitLayout());
         m_tabBundles.add(m_deviceBundlesTab);
@@ -214,8 +210,7 @@ public class DeviceTabs extends LayoutContainer {
         });
         m_tabsPanel.add(m_tabBundles);
 
-        m_tabConfiguration = new TabItem(MSGS.tabConfiguration());
-        m_tabConfiguration.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.configuration()));
+        m_tabConfiguration = new TabItem(MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
         m_tabConfiguration.setBorders(true);
         m_tabConfiguration.setLayout(new FitLayout());
         m_tabConfiguration.add(m_deviceConfigTab);
@@ -227,8 +222,7 @@ public class DeviceTabs extends LayoutContainer {
         });
         m_tabsPanel.add(m_tabConfiguration);
 
-        m_tabCommand = new TabItem(MSGS.tabCommand());
-        m_tabCommand.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.terminal()));
+        m_tabCommand = new TabItem(MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
         m_tabCommand.setBorders(false);
         m_tabCommand.setLayout(new FitLayout());
         m_tabCommand.add(m_deviceCommandTab);

@@ -17,10 +17,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.client.util.DateUtils;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -52,32 +52,29 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class DeviceTabProfile extends LayoutContainer
-{
+public class DeviceTabProfile extends LayoutContainer {
 
-    private static final ConsoleMessages                     MSGS             = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final GwtDeviceServiceAsync                      gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
-    private GwtSession                                       m_currentSession;
-    private DevicesTable                                     m_devicesTable;
+    private GwtSession m_currentSession;
+    private DevicesTable m_devicesTable;
     @SuppressWarnings("unused")
-    private DeviceFilterPanel                                m_deviceFilterPanel;
+    private DeviceFilterPanel m_deviceFilterPanel;
 
-    private boolean                                          m_dirty;
-    private boolean                                          m_initialized;
-    private GwtDevice                                        m_selectedDevice;
+    private boolean m_dirty;
+    private boolean m_initialized;
+    private GwtDevice m_selectedDevice;
 
-    private Grid<GwtGroupedNVPair>                           m_grid;
-    private GroupingStore<GwtGroupedNVPair>                  m_store;
+    private Grid<GwtGroupedNVPair> m_grid;
+    private GroupingStore<GwtGroupedNVPair> m_store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
 
-    private Button                                           m_editButton;
+    private Button m_editButton;
 
-    public DeviceTabProfile(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession)
-    {
+    public DeviceTabProfile(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
         m_devicesTable = devicesTable;
         m_deviceFilterPanel = deviceFilterPanel;
         m_currentSession = currentSession;
@@ -85,14 +82,12 @@ public class DeviceTabProfile extends LayoutContainer
         m_initialized = false;
     }
 
-    public void setDevice(GwtDevice selectedDevice)
-    {
+    public void setDevice(GwtDevice selectedDevice) {
         m_dirty = true;
         m_selectedDevice = selectedDevice;
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
         setLayout(new FitLayout());
         setBorders(false);
@@ -105,9 +100,9 @@ public class DeviceTabProfile extends LayoutContainer
         tabProfileContentPanel.setTopComponent(getToolbar());
 
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
+
             @Override
-            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback)
-            {
+            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 if (m_selectedDevice != null) {
                     gwtDeviceService.findDeviceProfile(m_selectedDevice.getScopeId(), m_selectedDevice.getClientId(), callback);
                 }
@@ -124,9 +119,9 @@ public class DeviceTabProfile extends LayoutContainer
         ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
 
         GridCellRenderer<GwtGroupedNVPair> renderer = new GridCellRenderer<GwtGroupedNVPair>() {
+
             @Override
-            public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid)
-            {
+            public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
                 if (model.getName().equals("devLastEventOn") && model.getValue().compareTo("N/A") != 0) {
                     return DateUtils.formatDateTime(new Date(Long.parseLong(model.getValue())));
                 }
@@ -158,25 +153,23 @@ public class DeviceTabProfile extends LayoutContainer
         m_initialized = true;
     }
 
-    private ToolBar getToolbar()
-    {
+    private ToolBar getToolbar() {
 
         ToolBar menuToolBar = new ToolBar();
 
         //
         // Edit User Button
-        m_editButton = new Button(MSGS.deviceProfileEditButton(), AbstractImagePrototype.create(Resources.INSTANCE.edit()), new SelectionListener<ButtonEvent>() {
+        m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
             @Override
-            public void componentSelected(ButtonEvent ce)
-            {
+            public void componentSelected(ButtonEvent ce) {
                 if (m_grid != null) {
                     GwtDevice gwtDevice = m_selectedDevice;
                     if (gwtDevice != null) {
                         DeviceForm deviceForm = new DeviceForm(gwtDevice, m_currentSession);
                         deviceForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
-                            public void handleEvent(ComponentEvent be)
-                            {
+
+                            public void handleEvent(ComponentEvent be) {
                                 m_dirty = true;
                                 m_devicesTable.refresh();
                                 refresh();
@@ -194,22 +187,19 @@ public class DeviceTabProfile extends LayoutContainer
         return menuToolBar;
     }
 
-    public void refresh()
-    {
+    public void refresh() {
         if (m_dirty && m_initialized) {
             m_dirty = false;
             if (m_selectedDevice != null) {
 
                 if (m_currentSession.hasDeviceUpdatePermission()) {
                     m_editButton.setEnabled(true);
-                }
-                else {
+                } else {
                     m_editButton.setTitle(MSGS.youDontHavePermissionTo("click", "button", "device:update"));
                 }
 
                 m_loader.load();
-            }
-            else {
+            } else {
                 m_grid.getStore().removeAll();
                 m_editButton.setEnabled(false);
             }
@@ -222,14 +212,12 @@ public class DeviceTabProfile extends LayoutContainer
     //
     // --------------------------------------------------------------------------------------
 
-    private class DataLoadListener extends KapuaLoadListener
-    {
-        public DataLoadListener()
-        {
+    private class DataLoadListener extends KapuaLoadListener {
+
+        public DataLoadListener() {
         }
 
-        public void loaderLoad(LoadEvent le)
-        {
+        public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }

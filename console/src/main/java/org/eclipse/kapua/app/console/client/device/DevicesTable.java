@@ -17,9 +17,14 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.Resources;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.client.ui.button.AddButton;
+import org.eclipse.kapua.app.console.client.ui.button.Button;
+import org.eclipse.kapua.app.console.client.ui.button.DeleteButton;
+import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
+import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.ImageUtils;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -57,7 +62,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -102,7 +106,7 @@ public class DevicesTable extends LayoutContainer {
     private Button m_refreshButton;
     private boolean refreshProcess;
     private Button m_deleteDeviceButton;
-    private Button m_export;
+    private SplitButton m_export;
 
     private ToggleButton m_toggleFilter;
 
@@ -162,7 +166,7 @@ public class DevicesTable extends LayoutContainer {
 
         // Edit Device Button
         if (m_currentSession.hasDeviceCreatePermission()) {
-            m_addDeviceButton = new Button(MSGS.addButton(), AbstractImagePrototype.create(Resources.INSTANCE.add()), new SelectionListener<ButtonEvent>() {
+            m_addDeviceButton = new AddButton(new SelectionListener<ButtonEvent>() {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
@@ -183,29 +187,25 @@ public class DevicesTable extends LayoutContainer {
 
         //
         // Refresh Button
-        m_refreshButton = new Button(MSGS.refreshButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.refresh()),
-                new SelectionListener<ButtonEvent>() {
+        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (!refreshProcess) {
-                            refreshProcess = true;
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (!refreshProcess) {
+                    refreshProcess = true;
 
-                            refresh(m_filterPredicates);
+                    refresh(m_filterPredicates);
 
-                            refreshProcess = false;
-                        }
-                    }
-                });
+                    refreshProcess = false;
+                }
+            }
+        });
         m_refreshButton.setEnabled(true);
         m_devicesToolBar.add(m_refreshButton);
         m_devicesToolBar.add(new SeparatorToolItem());
 
         //
         // Export
-        m_export = new SplitButton(MSGS.export());
-        m_export.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.download()));
         Menu menu = new Menu();
         menu.add(new MenuItem(MSGS.exportToExcel(), AbstractImagePrototype.create(Resources.INSTANCE.exportExcel()),
                 new SelectionListener<MenuEvent>() {
@@ -223,38 +223,39 @@ public class DevicesTable extends LayoutContainer {
                         export("csv");
                     }
                 }));
+
+        m_export = new ExportButton();
         m_export.setMenu(menu);
+
         m_devicesToolBar.add(m_export);
         m_devicesToolBar.add(new SeparatorToolItem());
 
         //
         // Delete Device Button
-        m_deleteDeviceButton = new Button(MSGS.deleteButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.delete16()),
-                new SelectionListener<ButtonEvent>() {
+        m_deleteDeviceButton = new DeleteButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (m_devicesGrid != null) {
-                            final GwtDevice gwtDevice = m_devicesGrid.getSelectionModel().getSelectedItem();
-                            if (gwtDevice != null) {
-                                // delete the selected device
-                                // ask for confirmation
-                                MessageBox.confirm(MSGS.confirm(), MSGS.deviceDeleteConfirmation(gwtDevice.getClientId()),
-                                        new Listener<MessageBoxEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (m_devicesGrid != null) {
+                    final GwtDevice gwtDevice = m_devicesGrid.getSelectionModel().getSelectedItem();
+                    if (gwtDevice != null) {
+                        // delete the selected device
+                        // ask for confirmation
+                        MessageBox.confirm(MSGS.confirm(), MSGS.deviceDeleteConfirmation(gwtDevice.getClientId()),
+                                new Listener<MessageBoxEvent>() {
 
-                                            public void handleEvent(MessageBoxEvent ce) {
-                                                // if confirmed, delete
-                                                Dialog dialog = ce.getDialog();
-                                                if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
-                                                    deleteDevice(gwtDevice);
-                                                }
-                                            }
-                                        });
-                            }
-                        }
+                                    public void handleEvent(MessageBoxEvent ce) {
+                                        // if confirmed, delete
+                                        Dialog dialog = ce.getDialog();
+                                        if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                                            deleteDevice(gwtDevice);
+                                        }
+                                    }
+                                });
                     }
-                });
+                }
+            }
+        });
         m_deleteDeviceButton.setEnabled(false);
         m_devicesToolBar.add(m_deleteDeviceButton);
         m_devicesToolBar.add(new FillToolItem());
