@@ -76,17 +76,21 @@ public class WestNavigationView extends LayoutContainer {
     private GwtSession m_currentSession;
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
-        m_centerPanel = center;
         m_currentSession = currentSession;
 
-        ContentPanel panel = new ContentPanel(new FitLayout());
-        panel.setBorders(false);
-        panel.setBodyBorder(false);
-        panel.setHeaderVisible(false);
         m_dashboardView = new DashboardView(m_currentSession);
+
+        ContentPanel panel = new ContentPanel(new FitLayout());
+        panel.setBodyBorder(true);
+        panel.setHeaderVisible(true);
+        panel.setIcon(new KapuaIcon(IconSet.DASHBOARD));
+        panel.setHeading(MSGS.dashboard());
         panel.add(m_dashboardView);
+
+        m_centerPanel = center;
         m_centerPanel.add(panel);
         m_centerPanel.layout();
+
         dashboardSelected = true;
     }
 
@@ -166,42 +170,51 @@ public class WestNavigationView extends LayoutContainer {
                 String selectedId = (String) selected.get("id");
                 if ("dashboard".equals(selectedId)) {
 
-                    panel.setHeaderVisible(false);
                     m_dashboardView = new DashboardView(m_currentSession);
+
+                    panel.setBodyBorder(true);
+                    panel.setIcon(new KapuaIcon(IconSet.DASHBOARD));
+                    panel.setHeading(MSGS.dashboard());
                     panel.add(m_dashboardView);
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = true;
-
                 } else if ("devices".equals(selectedId)) {
+                    DevicesView deviceView = new DevicesView(m_currentSession);
 
                     panel.setHeaderVisible(false);
-                    panel.add(new DevicesView(m_currentSession));
+                    panel.add(deviceView);
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
-
                 } else if ("user".equals(selectedId)) {
+
+                    UserView userView = new UserView(m_currentSession);
+                    userView.setAccount(m_currentSession.getSelectedAccount());
 
                     panel.setIcon(new KapuaIcon(IconSet.USERS));
                     panel.setHeading(MSGS.users());
-                    UserView userView = new UserView(m_currentSession);
-                    userView.setAccount(m_currentSession.getSelectedAccount());
                     panel.add(userView);
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
-                    userView.refresh();
                     dashboardSelected = false;
 
+                    userView.refresh();
                 } else if ("mysettings".equals(selectedId)) {
+
+                    AccountDetailsView settingView = new AccountDetailsView(null, m_currentSession);
+                    settingView.setAccount(m_currentSession.getSelectedAccount());
 
                     panel.setIcon(new KapuaIcon(IconSet.COG));
                     panel.setHeading(MSGS.settings());
-                    AccountDetailsView settingView = new AccountDetailsView(null, m_currentSession);
-                    settingView.setAccount(m_currentSession.getSelectedAccount());
                     panel.add(settingView);
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
+
                     settingView.refresh();
                 }
 
@@ -239,10 +252,12 @@ public class WestNavigationView extends LayoutContainer {
 
                 String selectedId = (String) selected.get("id");
                 if ("childaccounts".equals(selectedId)) {
+                    AccountView accountView = new AccountView(m_currentSession);
+
                     panel.setIcon(new KapuaIcon(IconSet.SITEMAP));
                     panel.setHeading(MSGS.childaccounts());
-                    AccountView accountView = new AccountView(m_currentSession);
                     panel.add(accountView);
+
                     dashboardSelected = false;
                 }
                 imgRefreshLabel.setVisible(dashboardSelected);

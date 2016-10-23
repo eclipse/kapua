@@ -27,26 +27,9 @@ public class DashboardView extends LayoutContainer {
 
     private GwtSession m_currentSession;
     private ContentPanel centerPanel;
-    private ContentPanel southPanel;
-
-    private CenterOverviewView m_centerOverviewView;
-    private BottomOverviewView m_bottomOverviewView;
 
     public DashboardView(GwtSession currentSession) {
         m_currentSession = currentSession;
-    }
-
-    /**
-     * Add panel to different area of overview.
-     */
-    public void AddOverviewsPanel() {
-        // Last message summary and last data received chart
-        m_centerOverviewView = new CenterOverviewView(m_currentSession);
-        centerPanel.add(m_centerOverviewView);
-
-        // Usage chart and currently connected/disconnected device
-        m_bottomOverviewView = new BottomOverviewView(m_currentSession);
-        southPanel.add(m_bottomOverviewView);
     }
 
     protected void onRender(final Element parent, int index) {
@@ -54,9 +37,6 @@ public class DashboardView extends LayoutContainer {
 
         setBorders(false);
         setLayout(new FitLayout());
-
-        LayoutContainer mainLayoutContainer = new LayoutContainer();
-        mainLayoutContainer.setLayout(new BorderLayout());
 
         //
         // CENTER DATA
@@ -71,35 +51,16 @@ public class DashboardView extends LayoutContainer {
         centerPanel.setLayout(new FitLayout());
         centerPanel.setHeaderVisible(false);
 
+
+        LayoutContainer mainLayoutContainer = new LayoutContainer();
+        mainLayoutContainer.setLayout(new BorderLayout());
         mainLayoutContainer.add(centerPanel, centerData);
 
-        //
-        // SOUTH PANEL
-        //
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, .28F);
-        southData.setMargins(new Margins(5, 0, 0, 0));
-        southData.setSplit(false);
-
-        southPanel = new ContentPanel();
-        southPanel.setBodyBorder(false);
-        southPanel.setBorders(false);
-        southPanel.setLayout(new FitLayout());
-        southPanel.setHeaderVisible(false);
-
-        mainLayoutContainer.add(southPanel, southData);
-
-        //
-        // Add all panels to root panel
         add(mainLayoutContainer);
-
-        //
-        // Add specific view in panels
-        AddOverviewsPanel();
     }
 
     public void refresh() {
         if (rendered) {
-            m_centerOverviewView.refresh();
         }
     }
 
