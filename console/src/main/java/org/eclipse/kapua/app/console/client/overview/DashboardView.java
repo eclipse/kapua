@@ -62,7 +62,7 @@ public class DashboardView extends LayoutContainer {
         // CENTER DATA
         //
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMargins(new Margins(5, 0, 0, 0));
+        centerData.setMargins(new Margins(0, 0, 0, 0));
         centerData.setSplit(false);
 
         centerPanel = new ContentPanel();
