@@ -46,34 +46,33 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class NorthView extends LayoutContainer
-{
-    private static final ConsoleMessages       MSGS                    = GWT.create(ConsoleMessages.class);
+public class NorthView extends LayoutContainer {
+
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
-    private final GwtAccountServiceAsync       gwtAccountService       = GWT.create(GwtAccountService.class);
+    private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
     // UI stuff
-    private KapuaCloudConsole                  parent;
-    private Menu                               subAccountMenu;
-    private Button                             userActionButton;
+    private KapuaCloudConsole parent;
+    private Menu subAccountMenu;
+    private Button userActionButton;
 
     // Data
-    private GwtSession                         currentSession;
-    private GwtAccount                         rootAccount;
-    private GwtUser                            user;
+    private GwtSession currentSession;
+    private GwtAccount rootAccount;
+    private GwtUser user;
 
     // Listener
     private final SelectionListener<MenuEvent> switchToAccountListener = new SelectionListener<MenuEvent>() {
-                                                                           @Override
-                                                                           public void componentSelected(MenuEvent ce)
-                                                                           {
-                                                                               switchToAccount(ce);
-                                                                           }
-                                                                       };
+
+        @Override
+        public void componentSelected(MenuEvent ce) {
+            switchToAccount(ce);
+        }
+    };
 
     public NorthView(GwtSession currentSession,
-                     KapuaCloudConsole parent)
-    {
+            KapuaCloudConsole parent) {
         this.parent = parent;
 
         this.currentSession = currentSession;
@@ -81,8 +80,7 @@ public class NorthView extends LayoutContainer
         this.user = currentSession.getGwtUser();
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
         TableLayout layout = new TableLayout(2);
@@ -99,34 +97,31 @@ public class NorthView extends LayoutContainer
 
         // Logo
         panel.add(getKapuaHeader(),
-                  new TableData(Style.HorizontalAlignment.LEFT,
-                                Style.VerticalAlignment.MIDDLE));
+                new TableData(Style.HorizontalAlignment.LEFT,
+                        Style.VerticalAlignment.MIDDLE));
 
         // User Action Menu
         panel.add(getUserActionMenu(),
-                  new TableData(Style.HorizontalAlignment.RIGHT,
-                                Style.VerticalAlignment.MIDDLE));
+                new TableData(Style.HorizontalAlignment.RIGHT,
+                        Style.VerticalAlignment.MIDDLE));
 
         add(panel);
     }
 
-    private Widget getKapuaHeader()
-    {
+    private Widget getKapuaHeader() {
         SimplePanel logo = new SimplePanel();
 
         if (!UserAgentUtils.isIE() ||
-            UserAgentUtils.getIEDocumentMode() > 8) {
+                UserAgentUtils.getIEDocumentMode() > 8) {
             logo.setStyleName("headerLogo");
-        }
-        else {
+        } else {
             logo.setStyleName("headerLogo-ie8");
         }
 
         return logo;
     }
 
-    private Widget getUserActionMenu()
-    {
+    private Widget getUserActionMenu() {
         //
         // Switch to sub-account menu item (added only if this user has 'account:view' permission and if this account has children
         MenuItem switchToAccountMenuItem = null;
@@ -140,17 +135,16 @@ public class NorthView extends LayoutContainer
         userLogoutMenuItem.setText(MSGS.consoleHeaderUserActionLogout());
         userLogoutMenuItem.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.userLogout16()));
         userLogoutMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+
             @Override
-            public void componentSelected(MenuEvent ce)
-            {
+            public void componentSelected(MenuEvent ce) {
                 gwtAuthorizationService.logout(new AsyncCallback<Void>() {
-                    public void onFailure(Throwable caught)
-                    {
+
+                    public void onFailure(Throwable caught) {
                         FailureHandler.handle(caught);
                     }
 
-                    public void onSuccess(Void arg0)
-                    {
+                    public void onSuccess(Void arg0) {
                         ConsoleInfo.display("Info", "Logged out!");
 
                         Window.Location.reload();
@@ -192,8 +186,7 @@ public class NorthView extends LayoutContainer
      * 
      * @return the MenuItem
      */
-    public MenuItem createAccountNavigationMenuItem()
-    {
+    public MenuItem createAccountNavigationMenuItem() {
         MenuItem rootAccountMenuItem = new MenuItem();
         rootAccountMenuItem.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.administrator()));
         rootAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(rootAccount.getName()));
@@ -220,66 +213,64 @@ public class NorthView extends LayoutContainer
      * Populates a Menu objects with a entry for each child account for the given account.
      * It does this recursively for each child.
      * 
-     * @param menu the menu to fill
-     * @param account the account of the current menu item.
+     * @param menu
+     *            the menu to fill
+     * @param account
+     *            the account of the current menu item.
      */
-    private void populateNavigatorMenu(final Menu menu, final String accountId)
-    {
+    private void populateNavigatorMenu(final Menu menu, final String accountId) {
         gwtAccountService.findChildrenAsStrings(accountId,
-                                                false,
-                                                new AsyncCallback<ListLoadResult<GwtAccountStringListItem>>() {
+                false,
+                new AsyncCallback<ListLoadResult<GwtAccountStringListItem>>() {
 
-                                                    @Override
-                                                    public void onFailure(Throwable caught)
-                                                    {
-                                                        FailureHandler.handle(caught);
-                                                    }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        FailureHandler.handle(caught);
+                    }
 
-                                                    @Override
-                                                    public void onSuccess(ListLoadResult<GwtAccountStringListItem> result)
-                                                    {
-                                                        // If no children are found, add "No Child" label
-                                                        if (result.getData() != null &&
-                                                            result.getData().size() == 0) {
-                                                            MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
-                                                            noChildMenuItem.disable();
-                                                            menu.add(noChildMenuItem);
-                                                        }
-                                                        else {
-                                                            // For each child found create a item menu and search for its children
-                                                            for (GwtAccountStringListItem item : result.getData()) {
-                                                                // Add item menu entry
-                                                                MenuItem childAccountMenuItem = new MenuItem();
-                                                                childAccountMenuItem.setText(item.getValue());
-                                                                childAccountMenuItem.setTitle(item.getValue());
-                                                                childAccountMenuItem.setId(String.valueOf(item.getId()));
-                                                                menu.add(childAccountMenuItem);
+                    @Override
+                    public void onSuccess(ListLoadResult<GwtAccountStringListItem> result) {
+                        // If no children are found, add "No Child" label
+                        if (result.getData() != null &&
+                                result.getData().size() == 0) {
+                            MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
+                            noChildMenuItem.disable();
+                            menu.add(noChildMenuItem);
+                        } else {
+                            // For each child found create a item menu and search for its children
+                            for (GwtAccountStringListItem item : result.getData()) {
+                                // Add item menu entry
+                                MenuItem childAccountMenuItem = new MenuItem();
+                                childAccountMenuItem.setText(item.getValue());
+                                childAccountMenuItem.setTitle(item.getValue());
+                                childAccountMenuItem.setId(String.valueOf(item.getId()));
+                                menu.add(childAccountMenuItem);
 
-                                                                // Add selection listener to make the switch happen when selected
-                                                                childAccountMenuItem.addSelectionListener(switchToAccountListener);
+                                // Add selection listener to make the switch happen when selected
+                                childAccountMenuItem.addSelectionListener(switchToAccountListener);
 
-                                                                // Search for its children
-                                                                if (item.hasChildAccount()) {
-                                                                    Menu childMenu = new Menu();
-                                                                    childMenu.setAutoWidth(true);
-                                                                    childAccountMenuItem.setSubMenu(childMenu);
+                                // Search for its children
+                                if (item.hasChildAccount()) {
+                                    Menu childMenu = new Menu();
+                                    childMenu.setAutoWidth(true);
+                                    childAccountMenuItem.setSubMenu(childMenu);
 
-                                                                    populateNavigatorMenu(childMenu, item.getId());
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                });
+                                    populateNavigatorMenu(childMenu, item.getId());
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     /**
      * Make the switch between accounts when an account is selected from
      * the account navigator.
      * 
-     * @param ce The MenuEvent that has been fired with the selection of a menu entry.
+     * @param ce
+     *            The MenuEvent that has been fired with the selection of a menu entry.
      */
-    private void switchToAccount(MenuEvent ce)
-    {
+    private void switchToAccount(MenuEvent ce) {
         String accountName = ce.getItem().getTitle();
         String accountIdString = ce.getItem().getId();
 
@@ -287,16 +278,15 @@ public class NorthView extends LayoutContainer
         parent.getViewport().mask(MSGS.accountSelectorMenuMaskLoading(accountName));
 
         gwtAccountService.find(accountIdString, new AsyncCallback<GwtAccount>() {
+
             @Override
-            public void onFailure(Throwable caught)
-            {
+            public void onFailure(Throwable caught) {
                 parent.getViewport().unmask();
                 FailureHandler.handle(caught);
             }
 
             @Override
-            public void onSuccess(GwtAccount result)
-            {
+            public void onSuccess(GwtAccount result) {
                 if (result != null) {
                     currentSession.setSelectedAccount(result);
                 }
@@ -323,8 +313,7 @@ public class NorthView extends LayoutContainer
      * else:<br/>
      * {username} @ {selectedAccountName}<br/>
      */
-    private void updateUserActionButtonLabel()
-    {
+    private void updateUserActionButtonLabel() {
         // Current selected scope
         String accountName = currentSession.getSelectedAccount().getName();
         String username = user.getUsername();
@@ -332,7 +321,7 @@ public class NorthView extends LayoutContainer
 
         // Set label {displayName || username} @ {selectedAccountName}
         if (displayName == null ||
-            displayName.isEmpty()) {
+                displayName.isEmpty()) {
             displayName = username;
         }
         userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(displayName, accountName));
