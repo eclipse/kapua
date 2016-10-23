@@ -13,8 +13,11 @@
 package org.eclipse.kapua.app.console.client.device.management.packages;
 
 import org.eclipse.kapua.app.console.client.device.DeviceTabs;
+import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageInstallButton;
+import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageUninstallButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.widget.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.client.widget.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
@@ -111,51 +114,45 @@ public class DeviceTabPackages extends LayoutContainer {
     private void initToolBar() {
         toolBar = new ToolBar();
 
-        m_refreshButton = new Button(MSGS.refreshButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.refresh()),
-                new SelectionListener<ButtonEvent>() {
+        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (selectedDevice != null &&
-                                selectedDevice.isOnline()) {
-                            setDirty();
-                            refresh();
-                        } else {
-                            openDeviceOfflineAlertDialog();
-                        }
-                    }
-                });
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (selectedDevice != null &&
+                        selectedDevice.isOnline()) {
+                    setDirty();
+                    refresh();
+                } else {
+                    openDeviceOfflineAlertDialog();
+                }
+            }
+        });
 
-        m_installButton = new Button(MSGS.packageAddButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.packageAdd()),
-                new SelectionListener<ButtonEvent>() {
+        m_installButton = new PackageInstallButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (selectedDevice != null &&
-                                selectedDevice.isOnline()) {
-                            openInstallDialog();
-                        } else {
-                            openDeviceOfflineAlertDialog();
-                        }
-                    }
-                });
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (selectedDevice != null &&
+                        selectedDevice.isOnline()) {
+                    openInstallDialog();
+                } else {
+                    openDeviceOfflineAlertDialog();
+                }
+            }
+        });
 
-        m_uninstallButton = new Button(MSGS.packageDeleteButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.packageDelete()),
-                new SelectionListener<ButtonEvent>() {
+        m_uninstallButton = new PackageUninstallButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (selectedDevice != null &&
-                                selectedDevice.isOnline()) {
-                            openUninstallDialog();
-                        } else {
-                            openDeviceOfflineAlertDialog();
-                        }
-                    }
-                });
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (selectedDevice != null &&
+                        selectedDevice.isOnline()) {
+                    openUninstallDialog();
+                } else {
+                    openDeviceOfflineAlertDialog();
+                }
+            }
+        });
 
         toolBar.add(m_refreshButton);
         toolBar.add(new SeparatorToolItem());
@@ -259,43 +256,43 @@ public class DeviceTabPackages extends LayoutContainer {
 
             final PackageUninstallDialog packageUninstallDialog = new PackageUninstallDialog(selectedDevice.getScopeId(), selectedDevice.getId(), selectedDeploymentPackage);
 
-                packageUninstallDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
+            packageUninstallDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
 
-                    @Override
-                    public void handleEvent(BaseEvent be) {
+                @Override
+                public void handleEvent(BaseEvent be) {
                     toolBar.enable();
 
-                        Boolean exitStatus = packageUninstallDialog.getExitStatus();
-                        if (exitStatus == null) { // Operation Aborted
-                            return;
-                        } else {
+                    Boolean exitStatus = packageUninstallDialog.getExitStatus();
+                    if (exitStatus == null) { // Operation Aborted
+                        return;
+                    } else {
 
-                            InfoDialogType exitDialogType;
-                            String exitMessage = packageUninstallDialog.getExitMessage();
+                        InfoDialogType exitDialogType;
+                        String exitMessage = packageUninstallDialog.getExitMessage();
 
-                            if (exitStatus == true) { // Operation Success
-                                exitDialogType = InfoDialogType.INFO;
-                            } else { // Operaton Failed
-                                exitDialogType = InfoDialogType.ERROR;
-                            }
-
-                            //
-                            // Exit dialog
-                            InfoDialog exitDialog = new InfoDialog(exitDialogType,
-                                    exitMessage);
-
-                            exitDialog.show();
-
-                            m_uninstallButton.disable();
-                        m_deviceTabs.setDevice(selectedDevice);
+                        if (exitStatus == true) { // Operation Success
+                            exitDialogType = InfoDialogType.INFO;
+                        } else { // Operaton Failed
+                            exitDialogType = InfoDialogType.ERROR;
                         }
+
+                        //
+                        // Exit dialog
+                        InfoDialog exitDialog = new InfoDialog(exitDialogType,
+                                exitMessage);
+
+                        exitDialog.show();
+
+                        m_uninstallButton.disable();
+                        m_deviceTabs.setDevice(selectedDevice);
                     }
-                });
+                }
+            });
 
-                packageUninstallDialog.show();
+            packageUninstallDialog.show();
 
-            }
         }
+    }
 
     public void openDeviceOfflineAlertDialog() {
         InfoDialog errorDialog = new InfoDialog(InfoDialogType.INFO,
