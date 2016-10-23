@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.overview;
+package org.eclipse.kapua.app.console.client.dashboard;
 
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
