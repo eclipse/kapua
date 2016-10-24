@@ -218,7 +218,7 @@ public class WestNavigationView extends LayoutContainer {
                     settingView.refresh();
                 }
 
-                imgRefreshLabel.setVisible(dashboardSelected);
+                // imgRefreshLabel.setVisible(dashboardSelected);
             }
         });
 
@@ -260,7 +260,7 @@ public class WestNavigationView extends LayoutContainer {
 
                     dashboardSelected = false;
                 }
-                imgRefreshLabel.setVisible(dashboardSelected);
+                // imgRefreshLabel.setVisible(dashboardSelected);
 
                 m_centerPanel.add(panel);
                 m_centerPanel.layout();

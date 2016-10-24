@@ -18,11 +18,12 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.device.button.ConfigDiscardButton;
 import org.eclipse.kapua.app.console.client.device.button.ConfigSaveButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.client.ui.label.Label;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.client.util.ScaledAbstractImagePrototype;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -39,7 +40,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.ModelIconProvider;
+import com.extjs.gxt.ui.client.data.ModelStringProvider;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -49,7 +50,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -67,7 +67,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class DeviceConfigComponents extends LayoutContainer {
 
@@ -270,8 +269,10 @@ public class DeviceConfigComponents extends LayoutContainer {
         m_tree.setWidth(200);
         m_tree.setDisplayProperty("componentName");
         m_tree.setBorders(true);
+        m_tree.setLabelProvider(modelStringProvider);
         m_tree.setAutoSelect(true);
         m_tree.setStyleAttribute("background-color", "white");
+
         m_configPanel.add(m_tree, westData);
 
         //
@@ -328,53 +329,6 @@ public class DeviceConfigComponents extends LayoutContainer {
                     // renable firing of the events
                     selectionModel.setFiresEvents(true);
                 }
-            }
-        });
-
-        m_tree.setIconProvider(new ModelIconProvider<ModelData>() {
-
-            public AbstractImagePrototype getIcon(ModelData model) {
-                if (model instanceof GwtConfigComponent) {
-                    String icon = ((GwtConfigComponent) model).getComponentIcon();
-                    if ("CloudService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.cloud16());
-                    } else if ("ClockService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.clock16());
-                    } else if ("DataService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.databaseConnect());
-                    } else if ("DiagnosticsService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.diagnostics());
-                    } else if ("MqttDataTransport".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.mqtt());
-                    } else if ("PositionService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.gps16());
-                    } else if ("SslManagerService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.lock16());
-                    } else if ("WatchdogService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.dog16());
-                    } else if ("CommandPasswordService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.terminal());
-                    } else if ("VpnService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.vpn());
-                    } else if ("ProvisioningService".equals(icon)) {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.provisioning16());
-                    } else if ("DenaliService".equals(icon)) {
-                        // WebConsole: DenaliService
-                        return AbstractImagePrototype.create(Resources.INSTANCE.monitorDenali());
-                    } else if ("BluetoothService".equals(icon)) {
-                        // Bluetooth: BluetoothService
-                        return AbstractImagePrototype.create(Resources.INSTANCE.bluetooth());
-                    } else if (icon != null &&
-                            icon.toLowerCase().startsWith("img://")) {
-                        // Replace the base fake protocol with the console base URL
-                        // that was not available on the server side.
-                        icon = icon.replaceFirst("img://", GWT.getHostPageBaseURL());
-                        return new ScaledAbstractImagePrototype(IconHelper.createPath(icon, 16, 16));
-                    } else {
-                        return AbstractImagePrototype.create(Resources.INSTANCE.plugin16());
-                    }
-                }
-                return null;
             }
         });
     }
@@ -571,6 +525,58 @@ public class DeviceConfigComponents extends LayoutContainer {
                     });
         }
     }
+
+    private ModelStringProvider<ModelData> modelStringProvider = new ModelStringProvider<ModelData>() {
+
+        @Override
+        public String getStringValue(ModelData model, String property) {
+
+            KapuaIcon kapuaIcon;
+            if (model instanceof GwtConfigComponent) {
+                String iconName = ((GwtConfigComponent) model).getComponentIcon();
+
+                if (iconName.startsWith("BluetoothService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.BTC);
+                } else if (iconName.startsWith("CloudService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.CLOUD);
+                } else if (iconName.startsWith("DiagnosticsService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.AMBULANCE);
+                } else if (iconName.startsWith("ClockService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.CLOCK_O);
+                } else if (iconName.startsWith("DataService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.DATABASE);
+                } else if (iconName.startsWith("MqttDataTransport")) {
+                    kapuaIcon = new KapuaIcon(IconSet.FORUMBEE);
+                } else if (iconName.startsWith("PositionService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.LOCATION_ARROW);
+                } else if (iconName.startsWith("WatchdogService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.HEARTBEAT);
+                } else if (iconName.startsWith("SslManagerService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.LOCK);
+                } else if (iconName.startsWith("VpnService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.CONNECTDEVELOP);
+                } else if (iconName.startsWith("ProvisioningService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.EXCLAMATION_CIRCLE);
+                } else if (iconName.startsWith("CommandPasswordService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.CHAIN);
+                } else if (iconName.startsWith("WebConsole")) {
+                    kapuaIcon = new KapuaIcon(IconSet.LAPTOP);
+                } else if (iconName.startsWith("CommandService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.TERMINAL);
+                } else if (iconName.startsWith("DenaliService")) {
+                    kapuaIcon = new KapuaIcon(IconSet.SPINNER);
+                } else {
+                    kapuaIcon = new KapuaIcon(IconSet.PUZZLE_PIECE);
+                }
+            } else {
+                kapuaIcon = null;
+            }
+
+            Label label = new Label(((GwtConfigComponent) model).getComponentName(), kapuaIcon);
+
+            return label.getText();
+        }
+    };
 
     // --------------------------------------------------------------------------------------
     //
