@@ -276,7 +276,7 @@
 								<to uri="bean:deviceMessageListener?method=processAppsMessage" />
 							</when>
 							<when id="missingLifeCycleMessageFilter">
-								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.MISSING'</simple>
+								<simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.LWT'</simple>
 								<bean ref="kapuaLifeCycleConverter" method="convertToMissing"/>
 								<to uri="bean:deviceMessageListener?method=processMissingMessage" />
 							</when>
