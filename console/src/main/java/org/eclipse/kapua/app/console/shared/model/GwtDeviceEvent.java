@@ -17,102 +17,129 @@ import java.util.Date;
 
 import org.eclipse.kapua.app.console.client.util.DateUtils;
 
-public class GwtDeviceEvent extends KapuaBaseModel implements Serializable
-{
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 8453754536105261520L;
 
-    public GwtDeviceEvent()
-    {
+    public enum GwtActionType implements IsSerializable {
+        READ, //
+        CREATE, //
+        WRITE, //
+        DELETE, //
+        OPTIONS, //
+        EXECUTE;
+    }
+
+    public enum GwtResponseCode implements IsSerializable {
+        ACCEPTED, // 200
+        // 204
+        BAD_REQUEST, // 400
+        NOT_FOUND, // 404
+        INTERNAL_ERROR; // 500
+    }
+
+    public GwtDeviceEvent() {
     }
 
     @Override
     @SuppressWarnings({ "unchecked" })
-    public <X> X get(String property)
-    {
+    public <X> X get(String property) {
         if ("sentOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime((Date) get("sentOn")));
-        }
-        else if ("receivedOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime((Date) get("receivedOn")));
-        }
-        else {
+            return (X) (DateUtils.formatDateTime(getSentOn()));
+        } else if ("receivedOnFormatted".equals(property)) {
+            return (X) (DateUtils.formatDateTime(getReceivedOn()));
+        } else if ("actionTypeEnum".equals(property)) {
+            return (X) (GwtActionType.valueOf(getGwtActionType()));
+        } else if ("respondeCodeEnum".equals(property)) {
+            return (X) (GwtResponseCode.valueOf(getGwtResponseCode()));
+        } else {
             return super.get(property);
         }
     }
 
-    public String getAccountName()
-    {
+    public String getAccountName() {
         return (String) get("accountName");
     }
 
-    public void setAccountName(String accountName)
-    {
+    public void setAccountName(String accountName) {
         set("accountName", accountName);
     }
 
-    public String getDeviceId()
-    {
+    public String getDeviceId() {
         return (String) get("deviceId");
     }
 
-    public void setDeviceId(String deviceId)
-    {
+    public void setDeviceId(String deviceId) {
         set("deviceId", deviceId);
     }
 
-    public Date getSentOn()
-    {
+    public Date getSentOn() {
         return (Date) get("sentOn");
     }
 
-    public String getSentOnFormatted()
-    {
+    public String getSentOnFormatted() {
         return (String) get("sentOnFormatted");
     }
 
-    public void setSentOn(Date sentOn)
-    {
+    public void setSentOn(Date sentOn) {
         set("sentOn", sentOn);
     }
 
-    public Date getReceivedOn()
-    {
-        return (Date) get("ReceivedOn");
+    public Date getReceivedOn() {
+        return (Date) get("receivedOn");
     }
 
-    public String getReceivedOnFormatted()
-    {
+    public String getReceivedOnFormatted() {
         return (String) get("receivedOnFormatted");
     }
 
-    public void setReceivedOn(Date receivedOn)
-    {
+    public void setReceivedOn(Date receivedOn) {
         set("receivedOn", receivedOn);
     }
 
-    public String getEventType()
-    {
+    public String getEventType() {
         return (String) get("eventType");
     }
 
-    public void setEventType(String eventType)
-    {
+    public void setEventType(String eventType) {
         set("eventType", eventType);
     }
 
-    public String getEventMessage()
-    {
+    public String getGwtActionType() {
+        return get("actionType");
+    }
+
+    public GwtActionType getGwtActionTypeEnum() {
+        return get("actionTypeEnum");
+    }
+
+    public void setGwtActionType(String actionType) {
+        set("actionType", actionType);
+    }
+
+    public String getGwtResponseCode() {
+        return get("responseCode");
+    }
+
+    public GwtResponseCode getGwtResponseCodeEnum() {
+        return get("responseCodeEnum");
+    }
+
+    public void setGwtResponseCode(String gwtResponseCode) {
+        set("responseCode", gwtResponseCode);
+    }
+
+    public String getEventMessage() {
         return (String) get("eventMessage");
     }
 
-    public String getUnescapedEventMessage()
-    {
+    public String getUnescapedEventMessage() {
         return getUnescaped("eventMessage");
     }
 
-    public void setEventMessage(String eventMessage)
-    {
+    public void setEventMessage(String eventMessage) {
         set("eventMessage", eventMessage);
     }
 }
