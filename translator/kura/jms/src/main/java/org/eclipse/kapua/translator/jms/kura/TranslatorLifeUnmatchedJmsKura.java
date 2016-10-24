@@ -55,7 +55,14 @@ public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraU
         throws KapuaException
     {
         KuraUnmatchedPayload kuraUnmatchedPayload = new KuraUnmatchedPayload();
-        kuraUnmatchedPayload.readFromByteArray(jmsBody);
+        // unmatched message may be a text message so if the message protobuf conversion fails, try to set the kura message body as jms message raw payload
+        try {
+            kuraUnmatchedPayload.readFromByteArray(jmsBody);
+        }
+        catch (Throwable t) {
+            logger.debug("Invalid protobuf message - set Kura payload as jms message raw body");
+            kuraUnmatchedPayload.setBody(jmsBody);
+        }
         return kuraUnmatchedPayload;
     }
 
