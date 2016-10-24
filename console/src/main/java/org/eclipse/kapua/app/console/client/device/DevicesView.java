@@ -13,7 +13,9 @@
 package org.eclipse.kapua.app.console.client.device;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -25,14 +27,12 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class DevicesView extends LayoutContainer {
 
@@ -109,8 +109,7 @@ public class DevicesView extends LayoutContainer {
         m_tabsPanel.setBorders(false);
         m_tabsPanel.setBodyBorder(true);
 
-        m_tabTable = new TabItem(MSGS.tabTable());
-        m_tabTable.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.table()));
+        m_tabTable = new TabItem(MSGS.tabTable(), new KapuaIcon(IconSet.HDD_O));
         m_tabTable.setBorders(false);
         m_tabTable.addListener(Events.Select, new Listener<ComponentEvent>() {
 
@@ -122,8 +121,7 @@ public class DevicesView extends LayoutContainer {
         m_tabTable.add(m_deviceTable);
         m_tabsPanel.add(m_tabTable);
 
-        m_tabMap = new TabItem(MSGS.tabMap());
-        m_tabMap.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.deviceMap()));
+        m_tabMap = new TabItem(MSGS.tabMap(), new KapuaIcon(IconSet.MAP_O));
         m_tabMap.setBorders(false);
         m_tabMap.addListener(Events.Select, new Listener<ComponentEvent>() {
 

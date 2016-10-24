@@ -16,9 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.client.ui.button.Button;
+import org.eclipse.kapua.app.console.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -39,7 +40,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -53,31 +53,28 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class AccountDetailsView extends LayoutContainer
-{
+public class AccountDetailsView extends LayoutContainer {
 
-    private static final ConsoleMessages                     MSGS              = GWT.create(ConsoleMessages.class);
-    private GwtAccountServiceAsync                           gwtAccountService = GWT.create(GwtAccountService.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
-    private GwtSession                                       m_currentSession;
-    private AccountView                                      m_centerAccountView;
+    private GwtSession m_currentSession;
+    private AccountView m_centerAccountView;
 
-    private GwtAccount                                       selectedAccount;
-    private Button                                           m_editButton;
-    private LayoutContainer                                  m_bodyLayoutContainer;
+    private GwtAccount selectedAccount;
+    private Button m_editButton;
+    private LayoutContainer m_bodyLayoutContainer;
 
-    private boolean                                          m_dirty;
-    private boolean                                          m_initialized;
+    private boolean m_dirty;
+    private boolean m_initialized;
 
-    private FormPanel                                        m_formPanel;
-    private Grid<GwtGroupedNVPair>                           m_grid;
-    private GroupingStore<GwtGroupedNVPair>                  m_store;
+    private FormPanel m_formPanel;
+    private Grid<GwtGroupedNVPair> m_grid;
+    private GroupingStore<GwtGroupedNVPair> m_store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
 
-    public AccountDetailsView(AccountView centerAccountView, GwtSession currentSession)
-    {
+    public AccountDetailsView(AccountView centerAccountView, GwtSession currentSession) {
         m_centerAccountView = centerAccountView;
         m_currentSession = currentSession;
 
@@ -85,14 +82,12 @@ public class AccountDetailsView extends LayoutContainer
         m_initialized = false;
     }
 
-    public void setAccount(GwtAccount selectedAccount)
-    {
+    public void setAccount(GwtAccount selectedAccount) {
         m_dirty = true;
         this.selectedAccount = selectedAccount;
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
         // Borderlayout that expands to the whole screen
@@ -125,12 +120,11 @@ public class AccountDetailsView extends LayoutContainer
         m_initialized = true;
     }
 
-    private void createGrid(Element parent)
-    {
+    private void createGrid(Element parent) {
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
+
             @Override
-            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback)
-            {
+            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
                 gwtAccountService.getAccountInfo(selectedAccount.getId(), callback);
             }
         };
@@ -164,8 +158,7 @@ public class AccountDetailsView extends LayoutContainer
         add(m_grid);
     }
 
-    private ToolBar getAccountsToolBar()
-    {
+    private ToolBar getAccountsToolBar() {
         ToolBar accountsToolBar = null;
         if (m_currentSession.hasAccountUpdatePermission()) {
             accountsToolBar = new ToolBar();
@@ -173,16 +166,15 @@ public class AccountDetailsView extends LayoutContainer
 
             //
             // Edit Account Button
-            m_editButton = new Button(MSGS.editButton(), AbstractImagePrototype.create(Resources.INSTANCE.edit()), new SelectionListener<ButtonEvent>() {
+            m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
                 @Override
-                public void componentSelected(ButtonEvent ce)
-                {
+                public void componentSelected(ButtonEvent ce) {
                     if (selectedAccount != null) {
                         final AccountForm accountForm = new AccountForm(m_currentSession, selectedAccount);
                         accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
-                            public void handleEvent(ComponentEvent be)
-                            {
+
+                            public void handleEvent(ComponentEvent be) {
 
                                 // reload the account and update the grid
                                 if (m_centerAccountView != null) {
@@ -205,8 +197,7 @@ public class AccountDetailsView extends LayoutContainer
         return accountsToolBar;
     }
 
-    public void refresh()
-    {
+    public void refresh() {
         if (m_initialized && m_dirty && selectedAccount != null) {
             updateAccountInfo();
             m_dirty = false;
@@ -216,8 +207,7 @@ public class AccountDetailsView extends LayoutContainer
                 m_formPanel.show();
             }
             m_editButton.setEnabled(true);
-        }
-        else {
+        } else {
             if (m_formPanel != null) {
                 m_formPanel.hide();
             }
@@ -225,8 +215,7 @@ public class AccountDetailsView extends LayoutContainer
         }
     }
 
-    private void updateAccountInfo()
-    {
+    private void updateAccountInfo() {
         m_store.removeAll();
         m_loader.load();
     }
@@ -237,14 +226,12 @@ public class AccountDetailsView extends LayoutContainer
     //
     // --------------------------------------------------------------------------------------
 
-    private class DataLoadListener extends KapuaLoadListener
-    {
-        public DataLoadListener()
-        {
+    private class DataLoadListener extends KapuaLoadListener {
+
+        public DataLoadListener() {
         }
 
-        public void loaderLoad(LoadEvent le)
-        {
+        public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }

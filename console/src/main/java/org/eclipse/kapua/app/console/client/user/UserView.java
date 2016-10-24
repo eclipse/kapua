@@ -16,11 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.button.AddButton;
+import org.eclipse.kapua.app.console.client.ui.button.Button;
+import org.eclipse.kapua.app.console.client.ui.button.DeleteButton;
+import org.eclipse.kapua.app.console.client.ui.button.EditButton;
+import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.client.widget.color.Color;
 import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtUser;
@@ -53,7 +60,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.CheckColumnConfig;
@@ -72,7 +78,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class UserView extends LayoutContainer {
 
@@ -150,14 +155,19 @@ public class UserView extends LayoutContainer {
         column.setAlignment(HorizontalAlignment.CENTER);
         GridCellRenderer<GwtUser> setStatusIcon = new GridCellRenderer<GwtUser>() {
 
-            public String render(GwtUser model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> employeeList, Grid<GwtUser> grid) {
+            public KapuaIcon render(GwtUser model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> employeeList, Grid<GwtUser> grid) {
+                KapuaIcon enabledIcon = new KapuaIcon(IconSet.USER);
                 switch (GwtUser.GwtUserStatus.valueOf(model.getStatus())) {
                 case ENABLED:
-                    return "<image src=\"eclipse/org/eclipse/kapua/app/console/icon/green.gif\" width=\"12\" height=\"12\" style=\"vertical-align: bottom\" title=\"" + MSGS.enabled() + "\"/>";
+                    enabledIcon.setColor(Color.GREEN);
+                    enabledIcon.setTitle(MSGS.enabled());
+                    break;
                 case DISABLED:
-                    return "<image src=\"eclipse/org/eclipse/kapua/app/console/icon/yellow.gif\" width=\"12\" height=\"12\" style=\"vertical-align: bottom\" title=\"" + MSGS.disabled() + "\"/>";
+                    enabledIcon.setColor(Color.YELLOW);
+                    enabledIcon.setTitle(MSGS.disabled());
+                    break;
                 }
-                return model.getStatus();
+                return enabledIcon;
             }
         };
         column.setRenderer(setStatusIcon);
@@ -267,13 +277,38 @@ public class UserView extends LayoutContainer {
 
         //
         // New User Button
-        m_newButton = new Button(MSGS.newButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.add()),
-                new SelectionListener<ButtonEvent>() {
+        m_newButton = new AddButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        UserManageForm userManageForm = new UserManageForm(m_selectedAccount.getId());
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                UserManageForm userManageForm = new UserManageForm(m_selectedAccount.getId());
+                userManageForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
+
+                    public void handleEvent(ComponentEvent be) {
+                        m_dirty = true;
+                        refresh();
+                    }
+                });
+                userManageForm.show();
+            }
+
+        });
+        m_newButton.setEnabled(m_currentSession.hasUserCreatePermission());
+        menuToolBar.add(m_newButton);
+        menuToolBar.add(new SeparatorToolItem());
+
+        //
+        // Edit User Button
+        m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (m_grid != null) {
+                    GwtUser gwtUser = m_grid.getSelectionModel().getSelectedItem();
+                    if (gwtUser != null) {
+                        UserManageForm userManageForm = new UserManageForm(m_selectedAccount.getId(),
+                                m_grid.getSelectionModel().getSelectedItem(),
+                                m_currentSession);
                         userManageForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
                             public void handleEvent(ComponentEvent be) {
@@ -283,53 +318,21 @@ public class UserView extends LayoutContainer {
                         });
                         userManageForm.show();
                     }
+                }
+            }
 
-                });
-        m_newButton.setEnabled(m_currentSession.hasUserCreatePermission());
-        menuToolBar.add(m_newButton);
-        menuToolBar.add(new SeparatorToolItem());
-
-        //
-        // Edit User Button
-        m_editButton = new Button(MSGS.editButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.edit()),
-                new SelectionListener<ButtonEvent>() {
-
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (m_grid != null) {
-                            GwtUser gwtUser = m_grid.getSelectionModel().getSelectedItem();
-                            if (gwtUser != null) {
-                                UserManageForm userManageForm = new UserManageForm(m_selectedAccount.getId(),
-                                        m_grid.getSelectionModel().getSelectedItem(),
-                                        m_currentSession);
-                                userManageForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
-
-                                    public void handleEvent(ComponentEvent be) {
-                                        m_dirty = true;
-                                        refresh();
-                                    }
-                                });
-                                userManageForm.show();
-                            }
-                        }
-                    }
-
-                });
+        });
         m_editButton.setEnabled(false);
         menuToolBar.add(m_editButton);
         menuToolBar.add(new SeparatorToolItem());
 
         //
         // Refresh Button
-        m_refreshButton = new Button(MSGS.refreshButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.refresh()));
-
-        m_refreshButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Button btn = ce.getButton();
+                Button btn = (Button) ce.getButton();
                 btn.setEnabled(false);
 
                 updateUserGrid();
@@ -343,64 +346,62 @@ public class UserView extends LayoutContainer {
 
         //
         // Delete User Button
-        m_deleteButton = new Button(MSGS.deleteButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.delete16()),
-                new SelectionListener<ButtonEvent>() {
+        m_deleteButton = new DeleteButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        final GwtUser gwtUser = m_grid.getSelectionModel().getSelectedItem();
-                        if (gwtUser != null) {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final GwtUser gwtUser = m_grid.getSelectionModel().getSelectedItem();
+                if (gwtUser != null) {
 
-                            // ask for confirmation
-                            MessageBox.confirm(MSGS.confirm(), MSGS.userDeleteConfirmation(gwtUser.getUsername()),
-                                    new Listener<MessageBoxEvent>() {
+                    // ask for confirmation
+                    MessageBox.confirm(MSGS.confirm(), MSGS.userDeleteConfirmation(gwtUser.getUsername()),
+                            new Listener<MessageBoxEvent>() {
 
-                                        public void handleEvent(MessageBoxEvent ce) {
+                                public void handleEvent(MessageBoxEvent ce) {
 
-                                            // if confirmed, delete
-                                            Dialog dialog = ce.getDialog();
-                                            if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                                    // if confirmed, delete
+                                    Dialog dialog = ce.getDialog();
+                                    if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
-                                                // A user cannot delete itself
-                                                if (m_currentSession.getGwtUser().getId() == m_grid.getSelectionModel().getSelectedItem().getId()) {
-                                                    ConsoleInfo.display(MSGS.error(), MSGS.userCannotDeleteItself());
-                                                } else {
-                                                    gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+                                        // A user cannot delete itself
+                                        if (m_currentSession.getGwtUser().getId() == m_grid.getSelectionModel().getSelectedItem().getId()) {
+                                            ConsoleInfo.display(MSGS.error(), MSGS.userCannotDeleteItself());
+                                        } else {
+                                            gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
-                                                        @Override
-                                                        public void onFailure(Throwable ex) {
-                                                            FailureHandler.handle(ex);
-                                                        }
-
-                                                        @Override
-                                                        public void onSuccess(GwtXSRFToken token) {
-                                                            gwtUserService.delete(token,
-                                                                    m_grid.getSelectionModel().getSelectedItem().getScopeId(),
-                                                                    gwtUser,
-                                                                    new AsyncCallback<Void>() {
-
-                                                                        public void onFailure(Throwable caught) {
-                                                                            FailureHandler.handle(caught);
-                                                                        }
-
-                                                                        public void onSuccess(Void arg) {
-                                                                            ConsoleInfo.display(MSGS.info(),
-                                                                                    MSGS.userDeletedConfirmation(gwtUser.getUnescapedUsername()));
-                                                                            m_dirty = true;
-                                                                            refresh();
-                                                                        }
-                                                                    });
-                                                        }
-                                                    });
-
+                                                @Override
+                                                public void onFailure(Throwable ex) {
+                                                    FailureHandler.handle(ex);
                                                 }
-                                            }
+
+                                                @Override
+                                                public void onSuccess(GwtXSRFToken token) {
+                                                    gwtUserService.delete(token,
+                                                            m_grid.getSelectionModel().getSelectedItem().getScopeId(),
+                                                            gwtUser,
+                                                            new AsyncCallback<Void>() {
+
+                                                                public void onFailure(Throwable caught) {
+                                                                    FailureHandler.handle(caught);
+                                                                }
+
+                                                                public void onSuccess(Void arg) {
+                                                                    ConsoleInfo.display(MSGS.info(),
+                                                                            MSGS.userDeletedConfirmation(gwtUser.getUnescapedUsername()));
+                                                                    m_dirty = true;
+                                                                    refresh();
+                                                                }
+                                                            });
+                                                }
+                                            });
+
                                         }
-                                    });
-                        }
-                    }
-                });
+                                    }
+                                }
+                            });
+                }
+            }
+        });
         m_deleteButton.setEnabled(false);
         menuToolBar.add(m_deleteButton);
 

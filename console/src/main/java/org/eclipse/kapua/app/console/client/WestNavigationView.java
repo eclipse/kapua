@@ -18,17 +18,20 @@ import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.overview.DashboardView;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.user.UserView;
+import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
+import org.eclipse.kapua.app.console.client.widget.color.Color;
 import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.ModelIconProvider;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -36,7 +39,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -45,12 +47,12 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.AccordionLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.WidgetTreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 
 public class WestNavigationView extends LayoutContainer {
@@ -61,7 +63,6 @@ public class WestNavigationView extends LayoutContainer {
     private ContentPanel m_accountPanel;
     private ContentPanel m_accordionPanel;
     private ContentPanel m_managePanel;
-    private AccordionLayout m_accordionLayout;
 
     private TreeStore<ModelData> m_accountStore;
     private TreeGrid<ModelData> m_accountTree;
@@ -69,23 +70,27 @@ public class WestNavigationView extends LayoutContainer {
     private TreeGrid<ModelData> m_manageTree;
 
     private boolean dashboardSelected;
-    private Label imgRefreshLabel;
-    private DashboardView m_dashboardView;
+    private KapuaIcon imgRefreshLabel;
+    private WelcomeView m_welcomeView;
 
     private GwtSession m_currentSession;
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
-        m_centerPanel = center;
         m_currentSession = currentSession;
 
+        m_welcomeView = new WelcomeView(m_currentSession);
+
         ContentPanel panel = new ContentPanel(new FitLayout());
-        panel.setBorders(false);
-        panel.setBodyBorder(false);
-        panel.setHeaderVisible(false);
-        m_dashboardView = new DashboardView(m_currentSession);
-        panel.add(m_dashboardView);
+        panel.setBodyBorder(true);
+        panel.setHeaderVisible(true);
+        panel.setIcon(new KapuaIcon(IconSet.INFO));
+        panel.setHeading(MSGS.welcome());
+        panel.add(m_welcomeView);
+
+        m_centerPanel = center;
         m_centerPanel.add(panel);
         m_centerPanel.layout();
+
         dashboardSelected = true;
     }
 
@@ -97,14 +102,13 @@ public class WestNavigationView extends LayoutContainer {
 
         //
         // accordion
-        m_accordionLayout = new AccordionLayout();
-        m_accordionLayout.setFill(true);
-        m_accordionPanel = new ContentPanel();
+        AccordionLayout accordionLayout = new AccordionLayout();
+        accordionLayout.setFill(true);
+
+        m_accordionPanel = new ContentPanel(accordionLayout);
         m_accordionPanel.setBorders(false);
         m_accordionPanel.setBodyBorder(false);
-        m_accordionPanel.setLayout(m_accordionLayout);
         m_accordionPanel.setHeaderVisible(false);
-        m_accordionPanel.setId("accordion-panel");
         add(m_accordionPanel);
 
         //
@@ -112,7 +116,6 @@ public class WestNavigationView extends LayoutContainer {
         m_accountPanel = new ContentPanel();
         m_accountPanel.setBorders(false);
         m_accountPanel.setBodyBorder(true);
-        m_accountPanel.setAnimCollapse(true);
         m_accountPanel.setHeaderVisible(false);
         m_accountPanel.setScrollMode(Scroll.AUTOY);
 
@@ -122,7 +125,6 @@ public class WestNavigationView extends LayoutContainer {
         m_managePanel.setBorders(false);
         m_managePanel.setBodyBorder(false);
         m_managePanel.setHeading(MSGS.manageHeading());
-        m_managePanel.setHeaderVisible(true);
 
         m_accountStore = new TreeStore<ModelData>();
         m_manageStore = new TreeStore<ModelData>();
@@ -132,51 +134,8 @@ public class WestNavigationView extends LayoutContainer {
         //
         addMenuItems();
 
-        ColumnConfig name = new ColumnConfig("name", "Name", 100);
-        name.setRenderer(new WidgetTreeGridCellRenderer<ModelData>() {
-
-            @Override
-            public Widget getWidget(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
-                Label label = new Label((String) model.get(property));
-                label.setStyleAttribute("padding-left", "5px");
-
-                if (((String) model.get(property)).equals("Dashboard")) {
-
-                    // Adding refresh button
-                    label.setStyleAttribute("padding-right", "50px");
-                    label.setStyleAttribute("background-color", "transparent");
-
-                    ContentPanel dashboardLabelPanel = new ContentPanel();
-                    dashboardLabelPanel.setHeaderVisible(false);
-                    dashboardLabelPanel.setBorders(false);
-                    dashboardLabelPanel.setBodyBorder(false);
-                    dashboardLabelPanel.setLayout(new FitLayout());
-                    dashboardLabelPanel.setStyleAttribute("background-color", "transparent");
-
-                    dashboardLabelPanel.add(label);
-
-                    imgRefreshLabel = new Label("<image src=\"eclipse/org/eclipse/kapua/app/console/icon/refresh.png\" "
-                            + "width=\"15\" height=\"15\" "
-                            + "style=\"vertical-align: middle\" title=\"" + MSGS.refreshButton() + "\"/>");
-
-                    dashboardLabelPanel.add(imgRefreshLabel);
-                    dashboardLabelPanel.setBodyStyle("background-color:transparent");
-
-                    imgRefreshLabel.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
-                        @Override
-                        public void handleEvent(BaseEvent be) {
-                            if (dashboardSelected) {
-                                m_dashboardView.refresh();
-                            }
-                        }
-                    });
-
-                    return dashboardLabelPanel;
-                }
-                return label;
-            }
-        });
+        ColumnConfig name = new ColumnConfig("name", "Name", 200);
+        name.setRenderer(treeCellRenderer);
 
         ColumnModel cm = new ColumnModel(Arrays.asList(name));
 
@@ -186,17 +145,6 @@ public class WestNavigationView extends LayoutContainer {
         m_accountTree.setAutoExpandColumn("name");
         m_accountTree.getTreeView().setRowHeight(36);
         m_accountTree.getTreeView().setForceFit(true);
-        m_accountTree.setIconProvider(new ModelIconProvider<ModelData>() {
-
-            public AbstractImagePrototype getIcon(ModelData model) {
-                if (model.get("icon") != null) {
-                    ImageResource ir = (ImageResource) model.get("icon");
-                    return AbstractImagePrototype.create(ir);
-                } else {
-                    return null;
-                }
-            }
-        });
 
         m_accountTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         m_accountTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
@@ -207,7 +155,7 @@ public class WestNavigationView extends LayoutContainer {
                 if (selected == null)
                     return;
 
-                if (dashboardSelected && ((String) selected.get("id")).equals("dashboard")) {
+                if (dashboardSelected && ((String) selected.get("id")).equals("welcome")) {
                     return;
                 }
 
@@ -220,44 +168,53 @@ public class WestNavigationView extends LayoutContainer {
                 panel.setBodyBorder(false);
 
                 String selectedId = (String) selected.get("id");
-                if ("dashboard".equals(selectedId)) {
+                if ("welcome".equals(selectedId)) {
 
-                    panel.setHeaderVisible(false);
-                    m_dashboardView = new DashboardView(m_currentSession);
-                    panel.add(m_dashboardView);
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
-                    dashboardSelected = true;
+                    m_welcomeView = new WelcomeView(m_currentSession);
 
-                } else if ("devices".equals(selectedId)) {
+                    panel.setBodyBorder(true);
+                    panel.setIcon(new KapuaIcon(IconSet.INFO));
+                    panel.setHeading(MSGS.welcome());
+                    panel.add(m_welcomeView);
 
-                    panel.setHeaderVisible(false);
-                    panel.add(new DevicesView(m_currentSession));
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("devices".equals(selectedId)) {
+                    DevicesView deviceView = new DevicesView(m_currentSession);
 
+                    panel.setHeaderVisible(false);
+                    panel.add(deviceView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("user".equals(selectedId)) {
 
-                    panel.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.users16()));
-                    panel.setHeading(MSGS.users());
                     UserView userView = new UserView(m_currentSession);
                     userView.setAccount(m_currentSession.getSelectedAccount());
+
+                    panel.setIcon(new KapuaIcon(IconSet.USERS));
+                    panel.setHeading(MSGS.users());
                     panel.add(userView);
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
-                    userView.refresh();
                     dashboardSelected = false;
 
+                    userView.refresh();
                 } else if ("mysettings".equals(selectedId)) {
 
-                    panel.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.settings()));
-                    panel.setHeading(MSGS.settings());
                     AccountDetailsView settingView = new AccountDetailsView(null, m_currentSession);
                     settingView.setAccount(m_currentSession.getSelectedAccount());
+
+                    panel.setIcon(new KapuaIcon(IconSet.COG));
+                    panel.setHeading(MSGS.settings());
                     panel.add(settingView);
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
+
                     settingView.refresh();
                 }
 
@@ -265,16 +222,9 @@ public class WestNavigationView extends LayoutContainer {
             }
         });
 
-        ColumnConfig name1 = new ColumnConfig("name", "Name", 100);
-        name1.setRenderer(new WidgetTreeGridCellRenderer<ModelData>() {
+        ColumnConfig name1 = new ColumnConfig("name", "Name", 200);
+        name1.setRenderer(treeCellRenderer);
 
-            @Override
-            public Widget getWidget(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
-                Label label = new Label((String) model.get(property));
-                label.setStyleAttribute("padding-left", "5px");
-                return label;
-            }
-        });
         ColumnModel cm1 = new ColumnModel(Arrays.asList(name1));
 
         m_manageTree = new TreeGrid<ModelData>(m_manageStore, cm1);
@@ -283,18 +233,6 @@ public class WestNavigationView extends LayoutContainer {
         m_manageTree.setAutoExpandColumn("name");
         m_manageTree.getTreeView().setRowHeight(36);
         m_manageTree.getTreeView().setForceFit(true);
-        m_manageTree.setIconProvider(new ModelIconProvider<ModelData>() {
-
-            public AbstractImagePrototype getIcon(ModelData model) {
-                if (model.get("icon") != null) {
-                    ImageResource ir = (ImageResource) model.get("icon");
-                    return AbstractImagePrototype.create(ir);
-                } else {
-                    return null;
-                }
-            }
-        });
-
         m_manageTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         m_manageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
@@ -314,10 +252,12 @@ public class WestNavigationView extends LayoutContainer {
 
                 String selectedId = (String) selected.get("id");
                 if ("childaccounts".equals(selectedId)) {
-                    panel.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.childAccounts16()));
-                    panel.setHeading(MSGS.childaccounts());
                     AccountView accountView = new AccountView(m_currentSession);
+
+                    panel.setIcon(new KapuaIcon(IconSet.SITEMAP));
+                    panel.setHeading(MSGS.childaccounts());
                     panel.add(accountView);
+
                     dashboardSelected = false;
                 }
                 imgRefreshLabel.setVisible(dashboardSelected);
@@ -352,31 +292,23 @@ public class WestNavigationView extends LayoutContainer {
 
         if (selectedAccount != null) {
 
-            m_accountStore.add(newItem("dashboard", MSGS.dashboard(), Resources.INSTANCE.dashboard32()), false);
+            m_accountStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
 
             if (m_currentSession.hasDeviceReadPermission()) {
-                m_accountStore.add(newItem("devices", MSGS.devices(), Resources.INSTANCE.devices32()), false);
+                m_accountStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
             }
-            //
-            // if (m_currentSession.hasDataReadPermission()) {
-            // m_accountStore.add(newItem("data", MSGS.data(), Resources.INSTANCE.data32()), false);
-            // }
-
-            // if (m_currentSession.hasDataReadPermission()) {
-            // m_accountStore.add(newItem("usage", MSGS.usages(), Resources.INSTANCE.usages32()), false);
-            // }
 
             if (m_currentSession.hasUserReadPermission()) {
-                m_accountStore.add(newItem("user", MSGS.users(), Resources.INSTANCE.users32()), false);
+                m_accountStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
             }
             if (m_currentSession.hasAccountReadPermission()) {
-                m_accountStore.add(newItem("mysettings", MSGS.settings(), Resources.INSTANCE.settings32()), false);
+                m_accountStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
             }
 
             //
             // Cloud menu
             if (m_currentSession.hasAccountReadPermission()) {
-                m_manageStore.add(newItem("childaccounts", MSGS.childaccounts(), Resources.INSTANCE.childAccounts32()), false);
+                m_manageStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
         }
 
@@ -407,11 +339,65 @@ public class WestNavigationView extends LayoutContainer {
         this.dashboardSelected = isSelected;
     }
 
-    private ModelData newItem(String id, String text, Object iconStyle) {
+    private ModelData newItem(String id, String text, IconSet icon) {
         ModelData m = new BaseModelData();
         m.set("id", id);
         m.set("name", text);
-        m.set("icon", iconStyle);
+        m.set("icon", icon);
         return m;
     }
+
+    private WidgetTreeGridCellRenderer<ModelData> treeCellRenderer = new WidgetTreeGridCellRenderer<ModelData>() {
+
+        @Override
+        public Widget getWidget(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
+
+            TableLayout layout = new TableLayout(3);
+            layout.setWidth("100%");
+
+            LayoutContainer lc = new LayoutContainer(layout);
+            lc.setStyleAttribute("margin-top", "3px");
+            lc.setWidth(170);
+            lc.setScrollMode(Scroll.NONE);
+
+            //
+            // Icon
+            KapuaIcon icon = new KapuaIcon((IconSet) model.get("icon"));
+            icon.setEmSize(2);
+            icon.setColor(Color.BLUE_KAPUA);
+
+            TableData iconTableData = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
+            iconTableData.setWidth("35px");
+            lc.add(icon, iconTableData);
+
+            //
+            // Label
+            Label label = new Label((String) model.get(property));
+            label.setStyleAttribute("margin-left", "5px");
+
+            TableData labelTableData = new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.MIDDLE);
+            lc.add(label, labelTableData);
+
+            //
+            // Refresh icon for dashboard view
+            if (((String) model.get(property)).equals("Dashboard")) {
+                imgRefreshLabel = new KapuaIcon(IconSet.REFRESH);
+                imgRefreshLabel.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+                    @Override
+                    public void handleEvent(BaseEvent be) {
+                        if (dashboardSelected) {
+                            m_welcomeView.refresh();
+                        }
+                    }
+                });
+
+                lc.add(imgRefreshLabel, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.MIDDLE));
+            }
+
+            //
+            // Return component
+            return lc;
+        }
+    };
 }

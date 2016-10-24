@@ -16,10 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.ui.button.AddButton;
+import org.eclipse.kapua.app.console.client.ui.button.Button;
+import org.eclipse.kapua.app.console.client.ui.button.DeleteButton;
+import org.eclipse.kapua.app.console.client.ui.button.EditButton;
+import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -52,7 +56,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -68,7 +71,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class AccountView extends LayoutContainer {
 
@@ -159,26 +161,24 @@ public class AccountView extends LayoutContainer {
 
         //
         // New Account Button
-        m_newButton = new Button(MSGS.newButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.add()),
-                new SelectionListener<ButtonEvent>() {
+        m_newButton = new AddButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        final AccountForm accountForm = new AccountForm(m_currentSession);
-                        accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final AccountForm accountForm = new AccountForm(m_currentSession);
+                accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
-                            public void handleEvent(ComponentEvent be) {
-                                // add the new account to the grid and select it
-                                if (accountForm.getNewAccount() != null) {
-                                    updateAccountGrid(accountForm.getNewAccount());
-                                }
-                            }
-                        });
-                        accountForm.show();
+                    public void handleEvent(ComponentEvent be) {
+                        // add the new account to the grid and select it
+                        if (accountForm.getNewAccount() != null) {
+                            updateAccountGrid(accountForm.getNewAccount());
+                        }
                     }
-
                 });
+                accountForm.show();
+            }
+
+        });
 
         m_newButton.setEnabled(m_currentSession.hasAccountCreatePermission());
         m_accountsToolBar.add(m_newButton);
@@ -186,49 +186,45 @@ public class AccountView extends LayoutContainer {
 
         //
         // Edit Account Button
-        m_editButton = new Button(MSGS.editButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.edit()),
-                new SelectionListener<ButtonEvent>() {
+        m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (m_grid != null) {
-                            GwtAccount gwtAccount = m_grid.getSelectionModel().getSelectedItem();
-                            if (gwtAccount != null) {
-                                final AccountForm accountForm = new AccountForm(m_currentSession, m_grid.getSelectionModel().getSelectedItem());
-                                accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (m_grid != null) {
+                    GwtAccount gwtAccount = m_grid.getSelectionModel().getSelectedItem();
+                    if (gwtAccount != null) {
+                        final AccountForm accountForm = new AccountForm(m_currentSession, m_grid.getSelectionModel().getSelectedItem());
+                        accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
-                                    public void handleEvent(ComponentEvent be) {
-                                        updateAccountGrid(accountForm.getExistingAccount());
-                                    }
-                                });
-                                accountForm.show();
+                            public void handleEvent(ComponentEvent be) {
+                                updateAccountGrid(accountForm.getExistingAccount());
                             }
-                        }
+                        });
+                        accountForm.show();
                     }
+                }
+            }
 
-                });
+        });
         m_editButton.setEnabled(false);
         m_accountsToolBar.add(m_editButton);
         m_accountsToolBar.add(new SeparatorToolItem());
 
         //
         // Refresh Button
-        m_refreshButton = new Button(MSGS.refreshButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.refresh()),
-                new SelectionListener<ButtonEvent>() {
+        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if (!refreshProcess) {
-                            refreshProcess = true;
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (!refreshProcess) {
+                    refreshProcess = true;
 
-                            updateAccountGrid(null);
+                    updateAccountGrid(null);
 
-                            refreshProcess = false;
-                        }
-                    }
-                });
+                    refreshProcess = false;
+                }
+            }
+        });
 
         m_refreshButton.setEnabled(true);
         m_accountsToolBar.add(m_refreshButton);
@@ -236,63 +232,61 @@ public class AccountView extends LayoutContainer {
 
         //
         // Delete Account Button
-        m_deleteButton = new Button(MSGS.deleteButton(),
-                AbstractImagePrototype.create(Resources.INSTANCE.delete16()),
-                new SelectionListener<ButtonEvent>() {
+        m_deleteButton = new DeleteButton(new SelectionListener<ButtonEvent>() {
 
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        if ((m_grid != null) && (!deleteProcess)) {
-                            final GwtAccount gwtAccount = m_grid.getSelectionModel().getSelectedItem();
-                            if (gwtAccount != null) {
-                                // ask for confirmation
-                                MessageBox.confirm(MSGS.confirm(), MSGS.accountDeleteConfirmation(gwtAccount.getName()),
-                                        new Listener<MessageBoxEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if ((m_grid != null) && (!deleteProcess)) {
+                    final GwtAccount gwtAccount = m_grid.getSelectionModel().getSelectedItem();
+                    if (gwtAccount != null) {
+                        // ask for confirmation
+                        MessageBox.confirm(MSGS.confirm(), MSGS.accountDeleteConfirmation(gwtAccount.getName()),
+                                new Listener<MessageBoxEvent>() {
 
-                                            public void handleEvent(MessageBoxEvent ce) {
-                                                // if confirmed, delete
-                                                Dialog dialog = ce.getDialog();
-                                                if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                                    public void handleEvent(MessageBoxEvent ce) {
+                                        // if confirmed, delete
+                                        Dialog dialog = ce.getDialog();
+                                        if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
-                                                    //
-                                                    // Getting XSRF token
-                                                    gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+                                            //
+                                            // Getting XSRF token
+                                            gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
-                                                        @Override
-                                                        public void onFailure(Throwable ex) {
-                                                            FailureHandler.handle(ex);
-                                                            deleteProcess = false;
-                                                        }
-
-                                                        @Override
-                                                        public void onSuccess(GwtXSRFToken token) {
-                                                            gwtAccountService.delete(token,
-                                                                    gwtAccount,
-                                                                    new AsyncCallback<Void>() {
-
-                                                                        public void onFailure(Throwable caught) {
-                                                                            FailureHandler.handle(caught);
-                                                                            deleteProcess = false;
-                                                                        }
-
-                                                                        public void onSuccess(Void arg) {
-                                                                            ConsoleInfo.display(MSGS.info(),
-                                                                                    MSGS.accountDeletedConfirmation(gwtAccount.getUnescapedName()));
-                                                                            updateAccountGrid(null);
-                                                                            // gwtAccountUtils.loadChildAccounts();
-                                                                            deleteProcess = false;
-                                                                        }
-                                                                    });
-                                                        }
-                                                    });
-
+                                                @Override
+                                                public void onFailure(Throwable ex) {
+                                                    FailureHandler.handle(ex);
+                                                    deleteProcess = false;
                                                 }
-                                            }
-                                        });
-                            }
-                        }
+
+                                                @Override
+                                                public void onSuccess(GwtXSRFToken token) {
+                                                    gwtAccountService.delete(token,
+                                                            gwtAccount,
+                                                            new AsyncCallback<Void>() {
+
+                                                                public void onFailure(Throwable caught) {
+                                                                    FailureHandler.handle(caught);
+                                                                    deleteProcess = false;
+                                                                }
+
+                                                                public void onSuccess(Void arg) {
+                                                                    ConsoleInfo.display(MSGS.info(),
+                                                                            MSGS.accountDeletedConfirmation(gwtAccount.getUnescapedName()));
+                                                                    updateAccountGrid(null);
+                                                                    // gwtAccountUtils.loadChildAccounts();
+                                                                    deleteProcess = false;
+                                                                }
+                                                            });
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                });
                     }
-                });
+                }
+            }
+        });
 
         m_deleteButton.setEnabled(false);
 

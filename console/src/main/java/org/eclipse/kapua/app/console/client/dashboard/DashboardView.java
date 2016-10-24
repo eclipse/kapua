@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.overview;
+package org.eclipse.kapua.app.console.client.dashboard;
 
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
@@ -27,26 +27,9 @@ public class DashboardView extends LayoutContainer {
 
     private GwtSession m_currentSession;
     private ContentPanel centerPanel;
-    private ContentPanel southPanel;
-
-    private CenterOverviewView m_centerOverviewView;
-    private BottomOverviewView m_bottomOverviewView;
 
     public DashboardView(GwtSession currentSession) {
         m_currentSession = currentSession;
-    }
-
-    /**
-     * Add panel to different area of overview.
-     */
-    public void AddOverviewsPanel() {
-        // Last message summary and last data received chart
-        m_centerOverviewView = new CenterOverviewView(m_currentSession);
-        centerPanel.add(m_centerOverviewView);
-
-        // Usage chart and currently connected/disconnected device
-        m_bottomOverviewView = new BottomOverviewView(m_currentSession);
-        southPanel.add(m_bottomOverviewView);
     }
 
     protected void onRender(final Element parent, int index) {
@@ -55,14 +38,11 @@ public class DashboardView extends LayoutContainer {
         setBorders(false);
         setLayout(new FitLayout());
 
-        LayoutContainer mainLayoutContainer = new LayoutContainer();
-        mainLayoutContainer.setLayout(new BorderLayout());
-
         //
         // CENTER DATA
         //
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMargins(new Margins(5, 0, 0, 0));
+        centerData.setMargins(new Margins(0, 0, 0, 0));
         centerData.setSplit(false);
 
         centerPanel = new ContentPanel();
@@ -71,35 +51,16 @@ public class DashboardView extends LayoutContainer {
         centerPanel.setLayout(new FitLayout());
         centerPanel.setHeaderVisible(false);
 
+
+        LayoutContainer mainLayoutContainer = new LayoutContainer();
+        mainLayoutContainer.setLayout(new BorderLayout());
         mainLayoutContainer.add(centerPanel, centerData);
 
-        //
-        // SOUTH PANEL
-        //
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, .28F);
-        southData.setMargins(new Margins(5, 0, 0, 0));
-        southData.setSplit(false);
-
-        southPanel = new ContentPanel();
-        southPanel.setBodyBorder(false);
-        southPanel.setBorders(false);
-        southPanel.setLayout(new FitLayout());
-        southPanel.setHeaderVisible(false);
-
-        mainLayoutContainer.add(southPanel, southData);
-
-        //
-        // Add all panels to root panel
         add(mainLayoutContainer);
-
-        //
-        // Add specific view in panels
-        AddOverviewsPanel();
     }
 
     public void refresh() {
         if (rendered) {
-            m_centerOverviewView.refresh();
         }
     }
 

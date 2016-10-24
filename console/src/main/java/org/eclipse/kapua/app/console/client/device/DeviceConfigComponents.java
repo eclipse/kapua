@@ -15,10 +15,13 @@ package org.eclipse.kapua.app.console.client.device;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.client.device.button.ConfigDiscardButton;
+import org.eclipse.kapua.app.console.client.device.button.ConfigSaveButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.Resources;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.ScaledAbstractImagePrototype;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -68,40 +71,40 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class DeviceConfigComponents extends LayoutContainer {
 
-    private static final ConsoleMessages       MSGS             = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final GwtDeviceServiceAsync        gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
-    private final GwtSecurityTokenServiceAsync gwtXSRFService   = GWT.create(GwtSecurityTokenService.class);
+    private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
     @SuppressWarnings("unused")
-    private GwtSession                         m_currentSession;
+    private GwtSession m_currentSession;
 
-    private boolean                            m_dirty;
-    private boolean                            m_initialized;
-    private GwtDevice                          m_selectedDevice;
-    private DeviceTabConfiguration             m_tabConfig;
+    private boolean m_dirty;
+    private boolean m_initialized;
+    private GwtDevice m_selectedDevice;
+    private DeviceTabConfiguration m_tabConfig;
 
-    private ToolBar                            m_toolBar;
+    private ToolBar m_toolBar;
 
-    private Button                             m_refreshButton;
-    private boolean                            refreshProcess;
+    private Button m_refreshButton;
+    private boolean refreshProcess;
 
-    private Button                             m_apply;
-    private Button                             m_reset;
+    private Button m_apply;
+    private Button m_reset;
 
-    private ContentPanel                       m_configPanel;
-    private DeviceConfigPanel                  m_devConfPanel;
-    private BorderLayoutData                   m_centerData;
+    private ContentPanel m_configPanel;
+    private DeviceConfigPanel m_devConfPanel;
+    private BorderLayoutData m_centerData;
 
     @SuppressWarnings("rawtypes")
-    private BaseTreeLoader                     m_loader;
-    private TreeStore<ModelData>               m_treeStore;
-    private TreePanel<ModelData>               m_tree;
+    private BaseTreeLoader m_loader;
+    private TreeStore<ModelData> m_treeStore;
+    private TreePanel<ModelData> m_tree;
 
-    protected boolean                          resetProcess;
+    protected boolean resetProcess;
 
-    protected boolean                          applyProcess;
+    protected boolean applyProcess;
 
     public DeviceConfigComponents(GwtSession currentSession,
             DeviceTabConfiguration tabConfig) {
@@ -144,64 +147,58 @@ public class DeviceConfigComponents extends LayoutContainer {
 
         //
         // Refresh Button
-        m_refreshButton = new Button(MSGS.refreshButton(),
-                                     AbstractImagePrototype.create(Resources.INSTANCE.refresh()),
-                                     new SelectionListener<ButtonEvent>() {
+        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
-                                         @Override
-                    public void componentSelected(ButtonEvent ce) {
-                                             if (!refreshProcess) {
-                                                 refreshProcess = true;
-                                                 m_refreshButton.setEnabled(false);
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (!refreshProcess) {
+                    refreshProcess = true;
+                    m_refreshButton.setEnabled(false);
 
-                                                 m_dirty = true;
-                                                 refresh();
+                    m_dirty = true;
+                    refresh();
 
-                                                 m_refreshButton.setEnabled(true);
-                                                 refreshProcess = false;
-                                             }
-                                         }
-                                     });
+                    m_refreshButton.setEnabled(true);
+                    refreshProcess = false;
+                }
+            }
+        });
 
         m_refreshButton.setEnabled(true);
         m_toolBar.add(m_refreshButton);
         m_toolBar.add(new SeparatorToolItem());
 
-        m_apply = new Button(MSGS.apply(),
-                             AbstractImagePrototype.create(Resources.INSTANCE.accept16()),
-                             new SelectionListener<ButtonEvent>() {
+        m_apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
 
-                                 @Override
-                    public void componentSelected(ButtonEvent ce) {
-                                     if (!applyProcess) {
-                                         applyProcess = true;
-                                         m_apply.setEnabled(false);
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (!applyProcess) {
+                    applyProcess = true;
+                    m_apply.setEnabled(false);
 
-                                         apply();
+                    apply();
 
-                                         m_apply.setEnabled(true);
-                                         applyProcess = false;
-                                     }
-                                 }
-                             });
+                    m_apply.setEnabled(true);
+                    applyProcess = false;
+                }
+            }
+        });
 
-        m_reset = new Button(MSGS.reset(),
-                             AbstractImagePrototype.create(Resources.INSTANCE.cancel16()),
-                             new SelectionListener<ButtonEvent>() {
+        m_reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
 
-                                 @Override
-                    public void componentSelected(ButtonEvent ce) {
-                                     if (!resetProcess) {
-                                         resetProcess = true;
-                                         m_reset.setEnabled(false);
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (!resetProcess) {
+                    resetProcess = true;
+                    m_reset.setEnabled(false);
 
-                                         reset();
+                    reset();
 
-                                         m_reset.setEnabled(true);
-                                         resetProcess = false;
-                                     }
-                                 }
-                             });
+                    m_reset.setEnabled(true);
+                    resetProcess = false;
+                }
+            }
+        });
 
         m_apply.setEnabled(false);
         m_reset.setEnabled(false);
@@ -305,19 +302,19 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                     // ask for confirmation before switching
                     MessageBox.confirm(MSGS.confirm(),
-                                       MSGS.deviceConfigDirty(),
-                                       new Listener<MessageBoxEvent>() {
+                            MSGS.deviceConfigDirty(),
+                            new Listener<MessageBoxEvent>() {
 
                                 public void handleEvent(MessageBoxEvent ce) {
-                                               // if confirmed, delete
-                                               Dialog dialog = ce.getDialog();
-                                               if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
-                                                   m_devConfPanel.removeFromParent();
-                                                   m_devConfPanel = null;
-                                                   m_tree.getSelectionModel().select(false, componentToSwitchTo);
-                                               }
-                                           }
-                                       });
+                                    // if confirmed, delete
+                                    Dialog dialog = ce.getDialog();
+                                    if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                                        m_devConfPanel.removeFromParent();
+                                        m_devConfPanel = null;
+                                        m_tree.getSelectionModel().select(false, componentToSwitchTo);
+                                    }
+                                }
+                            });
                 } else {
                     refreshConfigPanel(componentToSwitchTo);
 
@@ -368,7 +365,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                         // Bluetooth: BluetoothService
                         return AbstractImagePrototype.create(Resources.INSTANCE.bluetooth());
                     } else if (icon != null &&
-                             icon.toLowerCase().startsWith("img://")) {
+                            icon.toLowerCase().startsWith("img://")) {
                         // Replace the base fake protocol with the console base URL
                         // that was not available on the server side.
                         icon = icon.replaceFirst("img://", GWT.getHostPageBaseURL());
@@ -393,7 +390,7 @@ public class DeviceConfigComponents extends LayoutContainer {
 
         Timer timer = new Timer() {
 
-            private int TIMEOUT_MILLIS  = 30000;
+            private int TIMEOUT_MILLIS = 30000;
             private int countdownMillis = TIMEOUT_MILLIS;
 
             public void run() {
@@ -403,31 +400,31 @@ public class DeviceConfigComponents extends LayoutContainer {
                     //
                     // Poll the current status of the device until is online again or timeout.
                     gwtDeviceService.findDevice(m_selectedDevice.getScopeId(),
-                                                m_selectedDevice.getUnescapedClientId(),
-                                                new AsyncCallback<GwtDevice>() {
+                            m_selectedDevice.getUnescapedClientId(),
+                            new AsyncCallback<GwtDevice>() {
 
-                                                    @Override
+                                @Override
                                 public void onFailure(Throwable t) {
-                                                        done();
-                                                    }
+                                    done();
+                                }
 
-                                                    @Override
+                                @Override
                                 public void onSuccess(GwtDevice gwtDevice) {
-                                                        if (countdownMillis <= 0 ||
-                                                        // Allow the device to disconnect before checking if it's online again.
-                                                            ((TIMEOUT_MILLIS - countdownMillis) > 5000 && gwtDevice.isOnline())) {
-                                                            done();
-                                                        }
-                                                    }
+                                    if (countdownMillis <= 0 ||
+                                    // Allow the device to disconnect before checking if it's online again.
+                                            ((TIMEOUT_MILLIS - countdownMillis) > 5000 && gwtDevice.isOnline())) {
+                                        done();
+                                    }
+                                }
 
                                 private void done() {
-                                                        cancel();
-                                                        refresh();
-                                                        if (m_devConfPanel != null) {
-                                                            m_devConfPanel.unmask();
-                                                        }
-                                                    }
-                                                });
+                                    cancel();
+                                    refresh();
+                                    if (m_devConfPanel != null) {
+                                        m_devConfPanel.unmask();
+                                    }
+                                }
+                            });
                 }
             }
         };
@@ -498,80 +495,80 @@ public class DeviceConfigComponents extends LayoutContainer {
         }
 
         MessageBox.confirm(MSGS.confirm(),
-                           message,
-                           new Listener<MessageBoxEvent>() {
+                message,
+                new Listener<MessageBoxEvent>() {
 
                     public void handleEvent(MessageBoxEvent ce) {
 
-                                   // if confirmed, push the update
-                                   // if confirmed, delete
-                                   Dialog dialog = ce.getDialog();
-                                   if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                        // if confirmed, push the update
+                        // if confirmed, delete
+                        Dialog dialog = ce.getDialog();
+                        if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
-                                       // mark the whole config panel dirty and for reload
-                                       m_tabConfig.setDevice(m_selectedDevice);
+                            // mark the whole config panel dirty and for reload
+                            m_tabConfig.setDevice(m_selectedDevice);
 
-                                       m_devConfPanel.mask(MSGS.applying());
-                                       m_tree.mask();
-                                       m_apply.setEnabled(false);
-                                       m_reset.setEnabled(false);
-                                       m_refreshButton.setEnabled(false);
+                            m_devConfPanel.mask(MSGS.applying());
+                            m_tree.mask();
+                            m_apply.setEnabled(false);
+                            m_reset.setEnabled(false);
+                            m_refreshButton.setEnabled(false);
 
-                                       //
-                                       // Getting XSRF token
-                                       gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+                            //
+                            // Getting XSRF token
+                            gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
-                                           @Override
+                                @Override
                                 public void onFailure(Throwable ex) {
-                                               FailureHandler.handle(ex);
-                                           }
+                                    FailureHandler.handle(ex);
+                                }
 
-                                           @Override
+                                @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                               final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
-                                               gwtDeviceManagementService.updateComponentConfiguration(token,
-                                                                                             m_selectedDevice,
-                                                                                             configComponent,
-                                                                                             new AsyncCallback<Void>() {
+                                    final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
+                                    gwtDeviceManagementService.updateComponentConfiguration(token,
+                                            m_selectedDevice,
+                                            configComponent,
+                                            new AsyncCallback<Void>() {
 
                                                 public void onFailure(Throwable caught) {
-                                                                                                     FailureHandler.handle(caught);
-                                                                                                     m_dirty = true;
-                                                                                                 }
+                                                    FailureHandler.handle(caught);
+                                                    m_dirty = true;
+                                                }
 
                                                 public void onSuccess(Void arg0) {
-                                                                                                     m_dirty = true;
-                                                                                                     if (isCloudUpdate) {
-                                                                                                         refreshWhenOnline();
+                                                    m_dirty = true;
+                                                    if (isCloudUpdate) {
+                                                        refreshWhenOnline();
                                                     } else {
-                                                                                                         refresh();
-                                                                                                     }
-                                                                                                 }
-                                                                                             });
-                                           }
-                                       });
+                                                        refresh();
+                                                    }
+                                                }
+                                            });
+                                }
+                            });
 
-                                       // start the configuration update
-                                   }
-                               }
-                           });
+                            // start the configuration update
+                        }
+                    }
+                });
     }
 
     public void reset() {
         final GwtConfigComponent comp = (GwtConfigComponent) m_tree.getSelectionModel().getSelectedItem();
         if (m_devConfPanel != null && comp != null && m_devConfPanel.isDirty()) {
             MessageBox.confirm(MSGS.confirm(),
-                               MSGS.deviceConfigDirty(),
-                               new Listener<MessageBoxEvent>() {
+                    MSGS.deviceConfigDirty(),
+                    new Listener<MessageBoxEvent>() {
 
                         public void handleEvent(MessageBoxEvent ce) {
-                                       // if confirmed, delete
-                                       Dialog dialog = ce.getDialog();
-                                       if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
-                                           refreshConfigPanel(comp);
-                                       }
-                                   }
-                               });
+                            // if confirmed, delete
+                            Dialog dialog = ce.getDialog();
+                            if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
+                                refreshConfigPanel(comp);
+                            }
+                        }
+                    });
         }
     }
 
