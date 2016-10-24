@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -35,7 +38,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -59,6 +61,12 @@ public class DeviceTabPackagesInProgress extends TabItem {
     private ListLoader<ListLoadResult<GwtPackageOperation>> storeLoader;
 
     public DeviceTabPackagesInProgress(DeviceTabPackages parentTabPanel) {
+        super(MSGS.deviceInstallTabInProgress(), null);
+
+        KapuaIcon icon = new KapuaIcon(IconSet.SPINNER);
+        // icon.setColor(Color.GREEN);
+        setIcon(icon);
+
         this.parentTabPanel = parentTabPanel;
     }
 

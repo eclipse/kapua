@@ -16,8 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.widget.color.Color;
 import org.eclipse.kapua.app.console.shared.model.GwtBundleInfo;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -28,7 +31,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
@@ -36,27 +38,30 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public class DeviceTabPackagesInstalled extends TabItem
-{
-    private static final ConsoleMessages          MSGS                       = GWT.create(ConsoleMessages.class);
+public class DeviceTabPackagesInstalled extends TabItem {
+
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
 
     private boolean m_initialized = false;
-    private boolean m_dirty       = true;
+    private boolean m_dirty = true;
 
-    private DeviceTabPackages    m_rootTabPanel;
-    private TreeGrid<ModelData>  m_treeGrid;
+    private DeviceTabPackages m_rootTabPanel;
+    private TreeGrid<ModelData> m_treeGrid;
     private TreeStore<ModelData> m_treeStore = new TreeStore<ModelData>();
 
-    public DeviceTabPackagesInstalled(DeviceTabPackages rootTabPanel)
-    {
+    public DeviceTabPackagesInstalled(DeviceTabPackages rootTabPanel) {
+        super(MSGS.deviceInstallTabInstalled(), null);
+
+        KapuaIcon icon = new KapuaIcon(IconSet.INBOX);
+        icon.setColor(Color.GREEN);
+        setIcon(icon);
+
         m_rootTabPanel = rootTabPanel;
     }
 
-    public GwtDeploymentPackage getSelectedDeploymentPackage()
-    {
+    public GwtDeploymentPackage getSelectedDeploymentPackage() {
         ModelData selectedItem = m_treeGrid.getSelectionModel().getSelectedItem();
 
         if (selectedItem instanceof GwtDeploymentPackage) {
@@ -65,28 +70,21 @@ public class DeviceTabPackagesInstalled extends TabItem
         return null;
     }
 
-    private GwtDevice getSelectedDevice()
-    {
+    private GwtDevice getSelectedDevice() {
         return m_rootTabPanel.getSelectedDevice();
     }
 
-    public void setDirty(boolean isDirty)
-    {
+    public void setDirty(boolean isDirty) {
         m_dirty = isDirty;
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
-        ColumnConfig name = new ColumnConfig("name",
-                                             "Name",
-                                             100);
+        ColumnConfig name = new ColumnConfig("name", "Name", 100);
         name.setRenderer(new TreeGridCellRenderer<ModelData>());
 
-        ColumnConfig version = new ColumnConfig("version",
-                                                "Version",
-                                                150);
+        ColumnConfig version = new ColumnConfig("version", "Version", 150);
         version.setSortable(false);
 
         ColumnModel cm = new ColumnModel(Arrays.asList(name, version));
@@ -94,7 +92,6 @@ public class DeviceTabPackagesInstalled extends TabItem
         m_treeGrid = new TreeGrid<ModelData>(m_treeStore, cm);
         m_treeGrid.setBorders(false);
         m_treeGrid.setLoadMask(true);
-        m_treeGrid.getStyle().setLeafIcon(AbstractImagePrototype.create(Resources.INSTANCE.plugin()));
         m_treeGrid.setAutoExpandColumn("name");
         m_treeGrid.setTrackMouseOver(false);
         m_treeGrid.getAriaSupport().setLabelledBy(getHeader().getId() + "-label");
@@ -104,15 +101,13 @@ public class DeviceTabPackagesInstalled extends TabItem
         m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent<ModelData> se)
-            {
+            public void selectionChanged(SelectionChangedEvent<ModelData> se) {
                 ModelData selectedItem = se.getSelectedItem();
 
                 // Check if it's a package or a bundle
                 if (selectedItem instanceof GwtDeploymentPackage) {
                     m_rootTabPanel.getUninstallButton().enable();
-                }
-                else {
+                } else {
                     m_rootTabPanel.getUninstallButton().disable();
                 }
             }
@@ -123,8 +118,7 @@ public class DeviceTabPackagesInstalled extends TabItem
         m_initialized = true;
     }
 
-    public void refresh()
-    {
+    public void refresh() {
 
         if (m_dirty && m_initialized) {
 
@@ -133,14 +127,13 @@ public class DeviceTabPackagesInstalled extends TabItem
                 m_treeStore.removeAll();
                 m_treeGrid.unmask();
                 m_treeGrid.getView().setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
-            }
-            else {
+            } else {
                 m_treeGrid.mask(MSGS.loading());
 
                 gwtDeviceManagementService.findDevicePackages(selectedDevice.getScopeId(), selectedDevice.getId(), new AsyncCallback<List<GwtDeploymentPackage>>() {
+
                     @Override
-                    public void onSuccess(List<GwtDeploymentPackage> packages)
-                    {
+                    public void onSuccess(List<GwtDeploymentPackage> packages) {
                         m_treeStore.removeAll();
                         if (packages != null && !packages.isEmpty()) {
                             for (GwtDeploymentPackage pkg : packages) {
@@ -152,8 +145,7 @@ public class DeviceTabPackagesInstalled extends TabItem
                                     }
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             m_rootTabPanel.getUninstallButton().disable();
                             m_treeGrid.getView().setEmptyText(MSGS.deviceNoPackagesInstalled());
                             m_treeGrid.getView().refresh(false);
@@ -163,8 +155,7 @@ public class DeviceTabPackagesInstalled extends TabItem
                     }
 
                     @Override
-                    public void onFailure(Throwable caught)
-                    {
+                    public void onFailure(Throwable caught) {
                         FailureHandler.handle(caught);
                         m_treeGrid.unmask();
                     }

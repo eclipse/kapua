@@ -20,7 +20,7 @@ public class Label extends com.extjs.gxt.ui.client.widget.Label {
     }
 
     public void setIcon(KapuaIcon icon) {
-        super.setText(icon.getInlineHTML() + "&nbsp;&nbsp;" + originalText);
+        super.setText((icon != null ? icon.getInlineHTML() + "&nbsp;&nbsp;" : "") + originalText);
         this.icon = icon;
     }
 }

@@ -531,45 +531,45 @@ public class DeviceConfigComponents extends LayoutContainer {
         @Override
         public String getStringValue(ModelData model, String property) {
 
-            KapuaIcon kapuaIcon;
+            KapuaIcon kapuaIcon = null;
             if (model instanceof GwtConfigComponent) {
                 String iconName = ((GwtConfigComponent) model).getComponentIcon();
 
-                if (iconName.startsWith("BluetoothService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.BTC);
-                } else if (iconName.startsWith("CloudService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.CLOUD);
-                } else if (iconName.startsWith("DiagnosticsService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.AMBULANCE);
-                } else if (iconName.startsWith("ClockService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.CLOCK_O);
-                } else if (iconName.startsWith("DataService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.DATABASE);
-                } else if (iconName.startsWith("MqttDataTransport")) {
-                    kapuaIcon = new KapuaIcon(IconSet.FORUMBEE);
-                } else if (iconName.startsWith("PositionService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.LOCATION_ARROW);
-                } else if (iconName.startsWith("WatchdogService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.HEARTBEAT);
-                } else if (iconName.startsWith("SslManagerService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.LOCK);
-                } else if (iconName.startsWith("VpnService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.CONNECTDEVELOP);
-                } else if (iconName.startsWith("ProvisioningService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.EXCLAMATION_CIRCLE);
-                } else if (iconName.startsWith("CommandPasswordService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.CHAIN);
-                } else if (iconName.startsWith("WebConsole")) {
-                    kapuaIcon = new KapuaIcon(IconSet.LAPTOP);
-                } else if (iconName.startsWith("CommandService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.TERMINAL);
-                } else if (iconName.startsWith("DenaliService")) {
-                    kapuaIcon = new KapuaIcon(IconSet.SPINNER);
-                } else {
-                    kapuaIcon = new KapuaIcon(IconSet.PUZZLE_PIECE);
+                if (iconName != null) {
+                    if (iconName.startsWith("BluetoothService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.BTC);
+                    } else if (iconName.startsWith("CloudService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.CLOUD);
+                    } else if (iconName.startsWith("DiagnosticsService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.AMBULANCE);
+                    } else if (iconName.startsWith("ClockService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.CLOCK_O);
+                    } else if (iconName.startsWith("DataService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.DATABASE);
+                    } else if (iconName.startsWith("MqttDataTransport")) {
+                        kapuaIcon = new KapuaIcon(IconSet.FORUMBEE);
+                    } else if (iconName.startsWith("PositionService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.LOCATION_ARROW);
+                    } else if (iconName.startsWith("WatchdogService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.HEARTBEAT);
+                    } else if (iconName.startsWith("SslManagerService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.LOCK);
+                    } else if (iconName.startsWith("VpnService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.CONNECTDEVELOP);
+                    } else if (iconName.startsWith("ProvisioningService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.EXCLAMATION_CIRCLE);
+                    } else if (iconName.startsWith("CommandPasswordService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.CHAIN);
+                    } else if (iconName.startsWith("WebConsole")) {
+                        kapuaIcon = new KapuaIcon(IconSet.LAPTOP);
+                    } else if (iconName.startsWith("CommandService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.TERMINAL);
+                    } else if (iconName.startsWith("DenaliService")) {
+                        kapuaIcon = new KapuaIcon(IconSet.SPINNER);
+                    } else {
+                        kapuaIcon = new KapuaIcon(IconSet.PUZZLE_PIECE);
+                    }
                 }
-            } else {
-                kapuaIcon = null;
             }
 
             Label label = new Label(((GwtConfigComponent) model).getComponentName(), kapuaIcon);
