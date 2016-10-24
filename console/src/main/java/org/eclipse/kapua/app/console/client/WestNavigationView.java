@@ -16,13 +16,13 @@ import java.util.Arrays;
 
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
-import org.eclipse.kapua.app.console.client.dashboard.DashboardView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.user.UserView;
+import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
 import org.eclipse.kapua.app.console.client.widget.color.Color;
 import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -71,21 +71,21 @@ public class WestNavigationView extends LayoutContainer {
 
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
-    private DashboardView m_dashboardView;
+    private WelcomeView m_welcomeView;
 
     private GwtSession m_currentSession;
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
         m_currentSession = currentSession;
 
-        m_dashboardView = new DashboardView(m_currentSession);
+        m_welcomeView = new WelcomeView(m_currentSession);
 
         ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setBodyBorder(true);
         panel.setHeaderVisible(true);
-        panel.setIcon(new KapuaIcon(IconSet.DASHBOARD));
-        panel.setHeading(MSGS.dashboard());
-        panel.add(m_dashboardView);
+        panel.setIcon(new KapuaIcon(IconSet.INFO));
+        panel.setHeading(MSGS.welcome());
+        panel.add(m_welcomeView);
 
         m_centerPanel = center;
         m_centerPanel.add(panel);
@@ -155,7 +155,7 @@ public class WestNavigationView extends LayoutContainer {
                 if (selected == null)
                     return;
 
-                if (dashboardSelected && ((String) selected.get("id")).equals("dashboard")) {
+                if (dashboardSelected && ((String) selected.get("id")).equals("welcome")) {
                     return;
                 }
 
@@ -168,18 +168,18 @@ public class WestNavigationView extends LayoutContainer {
                 panel.setBodyBorder(false);
 
                 String selectedId = (String) selected.get("id");
-                if ("dashboard".equals(selectedId)) {
+                if ("welcome".equals(selectedId)) {
 
-                    m_dashboardView = new DashboardView(m_currentSession);
+                    m_welcomeView = new WelcomeView(m_currentSession);
 
                     panel.setBodyBorder(true);
-                    panel.setIcon(new KapuaIcon(IconSet.DASHBOARD));
-                    panel.setHeading(MSGS.dashboard());
-                    panel.add(m_dashboardView);
+                    panel.setIcon(new KapuaIcon(IconSet.INFO));
+                    panel.setHeading(MSGS.welcome());
+                    panel.add(m_welcomeView);
 
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
-                    dashboardSelected = true;
+                    dashboardSelected = false;
                 } else if ("devices".equals(selectedId)) {
                     DevicesView deviceView = new DevicesView(m_currentSession);
 
@@ -292,7 +292,7 @@ public class WestNavigationView extends LayoutContainer {
 
         if (selectedAccount != null) {
 
-            m_accountStore.add(newItem("dashboard", MSGS.dashboard(), IconSet.DASHBOARD), false);
+            m_accountStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
 
             if (m_currentSession.hasDeviceReadPermission()) {
                 m_accountStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
@@ -387,7 +387,7 @@ public class WestNavigationView extends LayoutContainer {
                     @Override
                     public void handleEvent(BaseEvent be) {
                         if (dashboardSelected) {
-                            m_dashboardView.refresh();
+                            m_welcomeView.refresh();
                         }
                     }
                 });

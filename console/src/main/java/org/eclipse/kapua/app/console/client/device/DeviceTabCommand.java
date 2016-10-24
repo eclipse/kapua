@@ -14,8 +14,8 @@ package org.eclipse.kapua.app.console.client.device;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.Constants;
-import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
@@ -165,7 +165,7 @@ public class DeviceTabCommand extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
                 if (!m_selectedDevice.isOnline()) {
-                    MessageBox.alert(MSGS.alerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
+                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
 
                         @Override
                         public void handleEvent(MessageBoxEvent be) {

@@ -140,7 +140,7 @@ public class DeviceTabBundles extends LayoutContainer {
 
                         refreshProcess = false;
                     } else {
-                        MessageBox.alert(MSGS.alerts(), MSGS.deviceOffline(),
+                        MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(),
                                 new Listener<MessageBoxEvent>() {
 
                                     @Override
@@ -202,7 +202,7 @@ public class DeviceTabBundles extends LayoutContainer {
                         }
                     });
                 } else {
-                    MessageBox.alert(MSGS.alerts(), MSGS.deviceOffline(),
+                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(),
                             new Listener<MessageBoxEvent>() {
 
                                 @Override
@@ -257,7 +257,7 @@ public class DeviceTabBundles extends LayoutContainer {
                                 }
                             });
                 } else {
-                    MessageBox.alert(MSGS.alerts(), MSGS.deviceOffline(),
+                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(),
                             new Listener<MessageBoxEvent>() {
 
                                 @Override
