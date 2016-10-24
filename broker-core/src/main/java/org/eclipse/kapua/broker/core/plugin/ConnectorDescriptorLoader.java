@@ -51,6 +51,8 @@ public class ConnectorDescriptorLoader
         deviceClass.put(MESSAGE_TYPE.birth, getDeviceClazz("org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage"));
         deviceClass.put(MESSAGE_TYPE.disconnect, getDeviceClazz("org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage"));
         deviceClass.put(MESSAGE_TYPE.missing, getDeviceClazz("org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage"));
+        deviceClass.put(MESSAGE_TYPE.notify, getDeviceClazz("org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage"));
+        deviceClass.put(MESSAGE_TYPE.unmatched, getDeviceClazz("org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraUnmatchedMessage"));
         deviceClass.put(MESSAGE_TYPE.data, getDeviceClazz("org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage"));
 
         Map<MESSAGE_TYPE, Class<KapuaMessage<?, ?>>> kapuaClass = new HashMap<MESSAGE_TYPE, Class<KapuaMessage<?, ?>>>();
@@ -58,6 +60,8 @@ public class ConnectorDescriptorLoader
         kapuaClass.put(MESSAGE_TYPE.birth, getKapuaClazz("org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage"));
         kapuaClass.put(MESSAGE_TYPE.disconnect, getKapuaClazz("org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage"));
         kapuaClass.put(MESSAGE_TYPE.missing, getKapuaClazz("org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage"));
+        kapuaClass.put(MESSAGE_TYPE.notify, getKapuaClazz("org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage"));
+        kapuaClass.put(MESSAGE_TYPE.unmatched, getKapuaClazz("org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage"));
         kapuaClass.put(MESSAGE_TYPE.data, getKapuaClazz("org.eclipse.kapua.message.device.data.KapuaDataMessage"));
 
         connectorsDescriptorMap.put("mqtt", new ConnectorDescriptor("mqtt", "kura", deviceClass, kapuaClass));

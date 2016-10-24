@@ -15,13 +15,13 @@ package org.eclipse.kapua.broker.core.listener;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 import com.codahale.metrics.Counter;
 
 /**
- * Device messages listener (device life cycle).<BR>
- * Manage:<BR>
- * - BIRTH/DC/LWT/APPS device messages<BR>
+ * Device messages listener (device life cycle).<br>
+ * Manage:<br>
+ * - BIRTH/DC/LWT/APPS/NOTIFY device messages<br>
  * Republish of the lifecycle messages (once processed by the broker) isn't supported yet (see #136).
  *
  * @since 1.0
@@ -49,7 +49,8 @@ public class DeviceMessageListener extends AbstractListener
     private Counter metricDeviceDisconnectMessage;
     private Counter metricDeviceMissingMessage;
     private Counter metricDeviceAppsMessage;
-    private Counter metricDeviceUnknownMessage;
+    private Counter metricDeviceNotifyMessage;
+    private Counter metricDeviceUnmatchedMessage;
     private Counter metricDeviceErrorMessage;
 
     public DeviceMessageListener()
@@ -59,7 +60,8 @@ public class DeviceMessageListener extends AbstractListener
         metricDeviceDisconnectMessage = registerCounter("messages", "dc", "count");
         metricDeviceMissingMessage = registerCounter("messages", "missing", "count");
         metricDeviceAppsMessage = registerCounter("messages", "apps", "count");
-        metricDeviceUnknownMessage = registerCounter("messages", "unknown", "count");
+        metricDeviceNotifyMessage = registerCounter("messages", "notify", "count");
+        metricDeviceUnmatchedMessage = registerCounter("messages", "unmatched", "count");
         metricDeviceErrorMessage = registerCounter("messages", "error", "count");
     }
 
@@ -159,6 +161,30 @@ public class DeviceMessageListener extends AbstractListener
             logger.error("Error while processing device missing life-cycle event", e);
             return;
         }
+    }
+
+    /**
+     * Process a notify message.
+     * 
+     * @param notifyMessage
+     */
+    public void processNotifyMessage(CamelKapuaMessage<KapuaNotifyMessage> notifyMessage)
+    {
+        logger.info("Received notify message from device channel: {}",
+                    new Object[] { notifyMessage.getMessage().getChannel().toString() });
+        metricDeviceNotifyMessage.inc();
+    }
+
+    /**
+     * Process a unmatched message.
+     * 
+     * @param unmatchedMessage
+     */
+    public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage)
+    {
+        logger.info("Received unmatched message from device channel: {}",
+                    new Object[] { unmatchedMessage.getMessage().getChannel().toString() });
+        metricDeviceUnmatchedMessage.inc();
     }
 
 }

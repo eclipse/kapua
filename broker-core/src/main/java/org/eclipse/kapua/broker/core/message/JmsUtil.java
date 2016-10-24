@@ -22,7 +22,7 @@ import javax.jms.Topic;
 
 import org.apache.activemq.command.ActiveMQMessage;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.converter.KapuaConverter;
+import org.eclipse.kapua.broker.core.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.broker.core.plugin.AclConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MESSAGE_TYPE;
@@ -99,17 +99,24 @@ public class JmsUtil
      * Convert a {@link BytesMessage} to {@link KapuaMessage}
      * 
      * this code
-     * if (jmsMessage.getBodyLength() > 0) {
-     * payload = new byte[(int) jmsMessage.getBodyLength()];
-     * jmsMessage.readBytes(payload);
-     * }
-     * with camel doesn't work. The call getBodyLength returns the correct message size but the read call reads an empty array (-1 is returned).
-     * The following code return the payload evaluated.
-     * ((ActiveMQMessage)jmsMessage).getContent().data
-     * so we modify the method assuming that camel converter called this utility method with a byte[] representing the jms body message
-     * see {@link KapuaConverter}
      * 
-     * TODO check the code with huge messages
+     * <pre>
+     * <code>
+     * if (jmsMessage.getBodyLength() > 0) {
+     *    payload = new byte[(int) jmsMessage.getBodyLength()];
+     *    jmsMessage.readBytes(payload);
+     * }
+     * </code>
+     * </pre>
+     * 
+     * with camel doesn't work.<br>
+     * The call getBodyLength returns the correct message size but the read call reads an empty array (-1 is returned).<br>
+     * The following code return the payload evaluated.<br>
+     * ((ActiveMQMessage)jmsMessage).getContent().data<br>
+     * so we modify the method assuming that camel converter called this utility method with a byte[] representing the jms body message.
+     * 
+     * @see {@link AbstractKapuaConverter}
+     * 
      * 
      * @param jmsMessage
      * @throws JMSException
@@ -117,6 +124,7 @@ public class JmsUtil
      * @throws KapuaInvalidTopicException
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
+    // TODO check the code with huge messages
     private static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, Class<DeviceMessage<?, ?>> deviceMessageType, Class<KapuaMessage<?, ?>> kapuaMessageType, BytesMessage jmsMessage, String jmsTopic,
                                                               Date queuedOn, KapuaId connectionId)
         throws JMSException, KapuaException

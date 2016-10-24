@@ -74,7 +74,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
         kapuaDataMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraDataMessage.getPayload().getPosition()));
 
         // Return Kapua Message
-        return null;
+        return kapuaDataMessage;
     }
 
     private KapuaDataChannel translate(KuraChannel kuraChannel)
