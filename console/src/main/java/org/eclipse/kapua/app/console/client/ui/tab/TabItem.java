@@ -32,7 +32,7 @@ public class TabItem extends com.extjs.gxt.ui.client.widget.TabItem {
     }
 
     public void setIcon(KapuaIcon icon) {
-        super.setText(icon.getInlineHTML() + "&nbsp;&nbsp;" + originalText);
+        super.setText((icon != null ? icon.getInlineHTML() + "&nbsp;&nbsp;" : "") + originalText);
         this.icon = icon;
     }
 }

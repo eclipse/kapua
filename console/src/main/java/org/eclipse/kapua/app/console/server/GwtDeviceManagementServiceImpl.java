@@ -84,8 +84,8 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
-import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,7 +205,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<>(gwtDeviceOperations);
+        return new BaseListLoadResult<GwtPackageOperation>(gwtDeviceOperations);
     }
 
     @Override
