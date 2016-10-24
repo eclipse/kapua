@@ -56,7 +56,7 @@ public class DeviceTabCommand extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final static String SERVLET_URL = "console/file/command";
+    private final static String SERVLET_URL = "file/command";
 
     private final static int COMMAND_TIMEOUT_SECS = 60;
 
