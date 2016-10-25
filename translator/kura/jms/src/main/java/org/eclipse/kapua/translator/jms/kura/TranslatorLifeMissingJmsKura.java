@@ -55,7 +55,14 @@ public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMis
         throws KapuaException
     {
         KuraMissingPayload kuraMissingPayload = new KuraMissingPayload();
-        kuraMissingPayload.readFromByteArray(jmsBody);
+        // missing message may be a text message so if the message protobuf conversion fails, try to set the kura message body as jms message raw payload
+        try {
+            kuraMissingPayload.readFromByteArray(jmsBody);
+        }
+        catch (Throwable t) {
+            logger.debug("Invalid protobuf message - set Kura payload as jms message raw body");
+            kuraMissingPayload.setBody(jmsBody);
+        }
         return kuraMissingPayload;
     }
 
