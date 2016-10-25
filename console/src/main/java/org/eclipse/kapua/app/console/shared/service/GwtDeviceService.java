@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.console.shared.service;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -33,28 +32,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("device")
-public interface GwtDeviceService extends RemoteService
-{
-
-    /**
-     * Returns count of all devices.
-     * 
-     * @param accountId
-     * @return
-     * @throws GwtKapuaException
-     */
-    public long getNumOfDevices(String accountId)
-        throws GwtKapuaException;
-
-    /**
-     * Returns count of all devices by connection status.
-     * 
-     * @param accountId
-     * @return
-     * @throws GwtKapuaException
-     */
-    public Map<String, Integer> getNumOfDevicesConnected(String accountId)
-        throws GwtKapuaException;
+public interface GwtDeviceService extends RemoteService {
 
     /**
      * Finds device given its clientId
@@ -64,7 +42,7 @@ public interface GwtDeviceService extends RemoteService
      * @return
      */
     public GwtDevice findDevice(String scopeIdString, String clientId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Finds devices in an account with query
@@ -75,7 +53,7 @@ public interface GwtDeviceService extends RemoteService
      * @return
      */
     public PagingLoadResult<GwtDevice> findDevices(PagingLoadConfig loadConfig, String scopeIdString, GwtDeviceQueryPredicates predicates)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Creates a device entry for the account
@@ -86,7 +64,7 @@ public interface GwtDeviceService extends RemoteService
      * @throws GwtKapuaException
      */
     public GwtDevice createDevice(GwtXSRFToken xsrfToken, GwtDeviceCreator gwtDeviceCreator)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Updates a device entity with the given gwtDevice new values for custom attributes, display name and associated tag
@@ -96,7 +74,7 @@ public interface GwtDeviceService extends RemoteService
      * @throws GwtKapuaException
      */
     public GwtDevice updateAttributes(GwtXSRFToken xsfrToken, GwtDevice gwtDevice)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Returns a list of device history events for a specified device within a specified date range.
@@ -112,10 +90,10 @@ public interface GwtDeviceService extends RemoteService
      * @throws GwtKapuaException
      */
     public PagingLoadResult<GwtDeviceEvent> findDeviceEvents(PagingLoadConfig loadConfig, GwtDevice gwtDevice, Date startDate, Date endDate)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     public ListLoadResult<GwtGroupedNVPair> findDeviceProfile(String scopeIdString, String clientId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Deletes a device
@@ -125,11 +103,11 @@ public interface GwtDeviceService extends RemoteService
      * @param clientId
      */
     public void deleteDevice(GwtXSRFToken xsfrToken, String scopeIdString, String clientId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Return Maps Tile Endpoint
      */
     public String getTileEndpoint()
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 }

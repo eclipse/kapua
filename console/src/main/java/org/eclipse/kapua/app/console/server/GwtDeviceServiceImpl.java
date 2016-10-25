@@ -14,9 +14,7 @@ package org.eclipse.kapua.app.console.server;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
@@ -27,6 +25,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtDevice.GwtDeviceCredentials
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
@@ -50,9 +49,6 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -80,56 +76,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     private static Logger logger = LoggerFactory.getLogger(GwtDeviceServiceImpl.class);
 
     private static final long serialVersionUID = -1391026997499175151L;
-
-    public long getNumOfDevices(String scopeIdString)
-            throws GwtKapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
-        try {
-            DeviceQuery query = deviceFactory.newQuery(KapuaEid.parseShortId(scopeIdString));
-            return deviceRegistryService.count(query);
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-            return 0;
-        }
-    }
-
-    public Map<String, Integer> getNumOfDevicesConnected(String scopeIdString)
-            throws GwtKapuaException {
-        KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
-
-        Map<String, Integer> devicesStatus = new HashMap<String, Integer>();
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionService dcs = locator.getService(DeviceConnectionService.class);
-        DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
-        try {
-            DeviceConnectionQuery query = deviceConnectionFactory.newQuery(scopeId);
-
-            query.setPredicate(new AttributePredicate<DeviceConnectionStatus>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.CONNECTED));
-            int count = new Long(dcs.count(query)).intValue();
-            if (count > 0) {
-                devicesStatus.put("connected", count);
-            }
-
-            query.setPredicate(new AttributePredicate<DeviceConnectionStatus>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.DISCONNECTED));
-            count = new Long(dcs.count(query)).intValue();
-            if (count > 0) {
-                devicesStatus.put("disconnected", count);
-            }
-
-            query.setPredicate(new AttributePredicate<DeviceConnectionStatus>(DeviceConnectionPredicates.CONNECTION_STATUS, DeviceConnectionStatus.MISSING));
-            count = new Long(dcs.count(query)).intValue();
-            if (count > 0) {
-                devicesStatus.put("missing", count);
-            }
-
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-            return null;
-        }
-        return devicesStatus;
-    }
 
     public GwtDevice findDevice(String scopeIdString, String clientId)
             throws GwtKapuaException {
@@ -225,8 +171,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     }
 
     public PagingLoadResult<GwtDevice> findDevices(PagingLoadConfig loadConfig,
-                                                   String scopeIdString,
-                                                   GwtDeviceQueryPredicates predicates)
+            String scopeIdString,
+            GwtDeviceQueryPredicates predicates)
             throws GwtKapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
@@ -281,24 +227,26 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
             DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
 
-            DeviceEventQuery eventQuery = deviceEventFactory.newQuery(deviceQuery.getScopeId());
-            eventQuery.setLimit(1);
-            eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
-
             for (Device d : devices.getItems()) {
-                DeviceConnection deviceConnection = deviceConnectionService.findByClientId(d.getScopeId(), d.getClientId());
+                GwtDevice gwtDevice = KapuaGwtConverter.convert(d);
 
                 // Connection info
-                GwtDevice gwtDevice = KapuaGwtConverter.convert(d);
-                gwtDevice.setConnectionIp(deviceConnection.getClientIp());
-                gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
-                gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
-                gwtDevice.setLastEventType(deviceConnection.getStatus().name());
+                DeviceConnection deviceConnection = deviceConnectionService.find(d.getScopeId(), d.getConnectionId());
+                if (deviceConnection != null) {
+                    gwtDevice.setConnectionIp(deviceConnection.getClientIp());
+                    gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
+                    gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
+                    gwtDevice.setLastEventType(deviceConnection.getStatus().name());
+                } else {
+                    gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
+                }
 
                 // Event infos
+                DeviceEventQuery eventQuery = deviceEventFactory.newQuery(deviceQuery.getScopeId());
+                eventQuery.setLimit(1);
+                eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
                 eventQuery.setPredicate(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, d.getId()));
                 KapuaListResult<DeviceEvent> events = deviceEventService.query(eventQuery);
-
                 if (!events.isEmpty()) {
                     DeviceEvent lastEvent = events.getItem(0);
 
@@ -424,9 +372,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     }
 
     public PagingLoadResult<GwtDeviceEvent> findDeviceEvents(PagingLoadConfig loadConfig,
-                                                             GwtDevice gwtDevice,
-                                                             Date startDate,
-                                                             Date endDate)
+            GwtDevice gwtDevice,
+            Date startDate,
+            Date endDate)
             throws GwtKapuaException {
         ArrayList<GwtDeviceEvent> gwtDeviceEvents = new ArrayList<GwtDeviceEvent>();
         BasePagingLoadResult<GwtDeviceEvent> gwtResults = null;
