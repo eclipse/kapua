@@ -225,8 +225,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     }
 
     public PagingLoadResult<GwtDevice> findDevices(PagingLoadConfig loadConfig,
-            String scopeIdString,
-            GwtDeviceQueryPredicates predicates)
+                                                   String scopeIdString,
+                                                   GwtDeviceQueryPredicates predicates)
             throws GwtKapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
@@ -293,6 +293,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 gwtDevice.setConnectionIp(deviceConnection.getClientIp());
                 gwtDevice.setGwtDeviceConnectionStatus(deviceConnection.getStatus().name());
                 gwtDevice.setLastEventOn(deviceConnection.getModifiedOn());
+                gwtDevice.setLastEventType(deviceConnection.getStatus().name());
 
                 // Event infos
                 eventQuery.setPredicate(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, d.getId()));
@@ -423,9 +424,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     }
 
     public PagingLoadResult<GwtDeviceEvent> findDeviceEvents(PagingLoadConfig loadConfig,
-            GwtDevice gwtDevice,
-            Date startDate,
-            Date endDate)
+                                                             GwtDevice gwtDevice,
+                                                             Date startDate,
+                                                             Date endDate)
             throws GwtKapuaException {
         ArrayList<GwtDeviceEvent> gwtDeviceEvents = new ArrayList<GwtDeviceEvent>();
         BasePagingLoadResult<GwtDeviceEvent> gwtResults = null;

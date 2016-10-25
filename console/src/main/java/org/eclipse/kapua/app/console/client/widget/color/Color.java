@@ -34,9 +34,21 @@ public enum Color {
     GREEN(29, 158, 116),
 
     /**
-     * Regular yellow
+     * Yellow
      */
-    YELLOW(230, 200, 29);
+    YELLOW(230, 200, 29),
+
+    /**
+     * Red
+     */
+    RED(190, 70, 70),
+
+    /**
+     * Grey
+     */
+    GREY(220, 220, 220),
+
+    ;
 
     int r;
     int g;

@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.AddButton;
 import org.eclipse.kapua.app.console.client.ui.button.Button;
 import org.eclipse.kapua.app.console.client.ui.button.DeleteButton;
@@ -27,6 +29,7 @@ import org.eclipse.kapua.app.console.client.util.ImageUtils;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.client.widget.color.Color;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -289,21 +292,34 @@ public class DevicesTable extends LayoutContainer {
         GridCellRenderer<GwtDevice> setStatusIcon = new GridCellRenderer<GwtDevice>() {
 
             public String render(GwtDevice gwtDevice, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDevice> deviceList, Grid<GwtDevice> grid) {
-                if (gwtDevice.getGwtDeviceStatus().compareTo("ENABLED") == 0) {
-                    if (gwtDevice.getGwtDeviceConnectionStatus().compareTo("CONNECTED") == 0) {
-                        return ImageUtils.toHTML(Resources.INSTANCE.greenBullet14(), MSGS.connected(), "10");
-                    } else if (gwtDevice.getGwtDeviceConnectionStatus().compareTo("MISSING") == 0) {
-                        return ImageUtils.toHTML(Resources.INSTANCE.redBullet14(), MSGS.missing(), "10");
-                    } else if (gwtDevice.getGwtDeviceConnectionStatus().compareTo("DISCONNECTED") == 0) {
-                        return ImageUtils.toHTML(Resources.INSTANCE.yellowBullet14(), MSGS.disconnected(), "10");
+
+                KapuaIcon icon;
+                if (gwtDevice.getGwtDeviceConnectionStatusEnum() != null) {
+                    switch (gwtDevice.getGwtDeviceConnectionStatusEnum()) {
+                    case CONNECTED:
+                        icon = new KapuaIcon(IconSet.PLUG);
+                        icon.setColor(Color.GREEN);
+                        break;
+                    case DISCONNECTED:
+                        icon = new KapuaIcon(IconSet.PLUG);
+                        icon.setColor(Color.YELLOW);
+                        break;
+                    case MISSING:
+                        icon = new KapuaIcon(IconSet.PLUG);
+                        icon.setColor(Color.RED);
+                        break;
+                    case ANY:
+                    default:
+                        icon = new KapuaIcon(IconSet.PLUG);
+                        icon.setColor(Color.GREY);
+                        break;
                     }
-                    return gwtDevice.getGwtDeviceConnectionStatus();
                 } else {
-                    if (gwtDevice.getGwtDeviceConnectionStatus().compareTo("CONNECTED") == 0) {
-                        return ImageUtils.toHTML(Resources.INSTANCE.greenAndBlackBullet14(), MSGS.disabledButConnected(), "10");
-                    }
-                    return ImageUtils.toHTML(Resources.INSTANCE.blackBullet14(), MSGS.disabled(), "10");
+                    icon = new KapuaIcon(IconSet.PLUG);
+                    icon.setColor(Color.GREY);
                 }
+
+                return icon.getInlineHTML();
             }
         };
         column.setRenderer(setStatusIcon);
