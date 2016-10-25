@@ -56,6 +56,9 @@ public class DeviceDAO extends ServiceDAO
         device.setCredentialsMode(deviceCreator.getCredentialsMode());
         device.setPreferredUserId(deviceCreator.getPreferredUserId());
 
+        // issue #57
+        device.setConnectionId(deviceCreator.getConnectionId());
+
         return ServiceDAO.create(em, device);
     }
 

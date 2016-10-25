@@ -30,6 +30,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
 {
     private static final long     serialVersionUID = 8628137091890107296L;
     private String                clientId;
+    private KapuaId               connectionId;
     private String                displayName;
     private String                serialNumber;
     private String                modelId;
@@ -67,6 +68,18 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     public void setClientId(String clientId)
     {
         this.clientId = clientId;
+    }
+
+    @Override
+    public KapuaId getConnectionId()
+    {
+        return connectionId;
+    }
+
+    @Override
+    public void setConnectionId(KapuaId connectionId)
+    {
+        this.connectionId = connectionId;
     }
 
     public String getDisplayName()
