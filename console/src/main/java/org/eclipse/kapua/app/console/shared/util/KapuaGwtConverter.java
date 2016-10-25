@@ -39,12 +39,10 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.user.User;
 
-public class KapuaGwtConverter
-{
+public class KapuaGwtConverter {
 
     public static GwtAccount convert(Account account)
-        throws KapuaException
-    {
+            throws KapuaException {
         GwtAccount gwtAccount = new GwtAccount();
 
         gwtAccount.setId(account.getId().getShortId());
@@ -59,8 +57,7 @@ public class KapuaGwtConverter
 
         try {
             gwtAccount.setBrokerURL(SystemUtils.getBrokerURI().toString());
-        }
-        catch (URISyntaxException use) {
+        } catch (URISyntaxException use) {
             gwtAccount.setBrokerURL("");
         }
 
@@ -71,8 +68,7 @@ public class KapuaGwtConverter
         return gwtAccount;
     }
 
-    public static GwtOrganization convert(Organization organization)
-    {
+    public static GwtOrganization convert(Organization organization) {
         GwtOrganization gwtOrganization = new GwtOrganization();
 
         gwtOrganization.setName(organization.getName());
@@ -90,8 +86,7 @@ public class KapuaGwtConverter
     }
 
     public static GwtUser convert(User user)
-        throws KapuaException
-    {
+            throws KapuaException {
 
         GwtUser gwtUser = new GwtUser();
 
@@ -111,8 +106,7 @@ public class KapuaGwtConverter
     }
 
     public static GwtDevice convert(Device device)
-        throws KapuaException
-    {
+            throws KapuaException {
         GwtDevice gwtDevice = new GwtDevice();
         gwtDevice.setId(device.getId().getShortId());
         gwtDevice.setScopeId(device.getScopeId().getShortId());
@@ -173,13 +167,14 @@ public class KapuaGwtConverter
         return gwtDevice;
     }
 
-    public static GwtDeviceEvent convert(DeviceEvent deviceEvent)
-    {
+    public static GwtDeviceEvent convert(DeviceEvent deviceEvent) {
         GwtDeviceEvent gwtDeviceEvent = new GwtDeviceEvent();
         gwtDeviceEvent.setDeviceId(deviceEvent.getDeviceId().getShortId());
         gwtDeviceEvent.setSentOn(deviceEvent.getSentOn());
         gwtDeviceEvent.setReceivedOn(deviceEvent.getReceivedOn());
         gwtDeviceEvent.setEventType(deviceEvent.getResource());
+        gwtDeviceEvent.setGwtActionType(deviceEvent.getAction().name());
+        gwtDeviceEvent.setGwtResponseCode(deviceEvent.getResponseCode().name());
 
         String escapedMessage = KapuaSafeHtmlUtils.htmlEscape(deviceEvent.getEventMessage());
         gwtDeviceEvent.setEventMessage(escapedMessage);

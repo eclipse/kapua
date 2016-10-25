@@ -221,6 +221,16 @@ public class DeviceTabHistory extends LayoutContainer {
             }
         };
 
+        column = new ColumnConfig("actionType", MSGS.deviceEventType(), 50);
+        column.setSortable(false);
+        column.setAlignment(HorizontalAlignment.CENTER);
+        columns.add(column);
+
+        column = new ColumnConfig("responseCode", MSGS.deviceEventType(), 50);
+        column.setSortable(false);
+        column.setAlignment(HorizontalAlignment.CENTER);
+        columns.add(column);
+
         column = new ColumnConfig("eventMessage", MSGS.deviceEventMessage(), 200);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.LEFT);
