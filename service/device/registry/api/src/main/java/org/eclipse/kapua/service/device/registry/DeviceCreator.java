@@ -32,6 +32,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 @XmlRootElement(name="deviceCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "clientId",
+                       "connectionId",
                       "displayName",
                       "serialNumber",
                       "modelId",
@@ -63,6 +64,11 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device>
     public String getClientId();
 
     public void setClientId(String clientId);
+
+    @XmlElement(name = "connectionId")
+    public KapuaId getConnectionId();
+
+    public void setConnectionId(KapuaId connectionId);
 
     @XmlElement(name = "displayName")
     public String getDisplayName();
