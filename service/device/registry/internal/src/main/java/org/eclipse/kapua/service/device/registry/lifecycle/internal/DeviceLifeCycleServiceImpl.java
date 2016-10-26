@@ -71,6 +71,9 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService
             deviceCreator.setAcceptEncoding(payload.getAcceptEncoding());
             deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
 
+            // issue #57
+            deviceCreator.setConnectionId(connectionId);
+
             device = deviceRegistryService.create(deviceCreator);
         }
         else {
@@ -88,6 +91,9 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService
             device.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
             device.setApplicationIdentifiers(payload.getApplicationIdentifiers());
             device.setAcceptEncoding(payload.getAcceptEncoding());
+
+            // issue #57
+            device.setConnectionId(connectionId);
 
             deviceRegistryService.update(device);
         }

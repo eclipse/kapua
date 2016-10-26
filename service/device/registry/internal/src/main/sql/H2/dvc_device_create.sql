@@ -14,6 +14,7 @@ CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	    UNSIGNED NOT NULL,
   client_id                 VARCHAR(255)    NOT NULL,
+  connection_id             BIGINT(21) 	    UNSIGNED NULL,
   created_on             	TIMESTAMP(3)    NULL,
   created_by             	BIGINT(21)      UNSIGNED NOT NULL,
   modified_on            	TIMESTAMP       NULL,
@@ -55,6 +56,7 @@ CREATE TABLE dvc_device (
   CONSTRAINT uc_iccid UNIQUE (scope_id, iccid)
 ) DEFAULT CHARSET=utf8;
 
+CREATE INDEX idx_device_connection_id ON dvc_device (scope_id, connection_id);
 CREATE INDEX idx_device_serial_number ON dvc_device (scope_id, serial_number);
 CREATE INDEX idx_device_display_name ON dvc_device (scope_id, display_name);
 CREATE INDEX idx_device_status_id ON dvc_device (scope_id, status, client_id);

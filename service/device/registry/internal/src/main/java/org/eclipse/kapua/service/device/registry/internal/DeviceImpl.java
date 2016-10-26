@@ -23,11 +23,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -46,6 +41,12 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device
     @Basic
     @Column(name = "client_id", updatable = false)
     private String                clientId;
+
+    @Embedded
+    @AttributeOverrides({
+                          @AttributeOverride(name = "eid", column = @Column(name = "connection_id", nullable = true, updatable = false))
+    })
+    private KapuaEid connectionId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -170,6 +171,20 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device
     public void setClientId(String clientId)
     {
         this.clientId = clientId;
+    }
+
+    @Override
+    public KapuaId getConnectionId()
+    {
+        return connectionId;
+    }
+
+    @Override
+    public void setConnectionId(KapuaId connectionId)
+    {
+        if (connectionId != null) {
+            this.connectionId = new KapuaEid(connectionId.getId());
+        }
     }
 
     public DeviceStatus getStatus()
