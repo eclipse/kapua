@@ -18,8 +18,20 @@ import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
 
+/**
+ * Device command request payload.
+ * 
+ * @since 1.0
+ * 
+ */
 public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload
 {
+
+    /**
+     * Get the command argument list
+     * 
+     * @return
+     */
     public String[] getArguments()
     {
         List<String> argumentsList = new ArrayList<>();
@@ -42,6 +54,11 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         }
     }
 
+    /**
+     * Set the command argument list
+     * 
+     * @param arguments
+     */
     public void setArguments(String[] arguments)
     {
         if (arguments != null) {
@@ -51,6 +68,11 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         }
     }
 
+    /**
+     * Get the environment pairs
+     * 
+     * @return
+     */
     public String[] getEnvironmentPairs()
     {
         List<String> v = new ArrayList<>();
@@ -73,6 +95,11 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         }
     }
 
+    /**
+     * Set the environment pairs
+     * 
+     * @param environmentPairs
+     */
     public void setEnvironmentPairs(String[] environmentPairs)
     {
         if (environmentPairs != null) {
@@ -82,11 +109,21 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         }
     }
 
+    /**
+     * Get the working directory
+     * 
+     * @return
+     */
     public String getWorkingDir()
     {
         return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_DIR.getValue());
     }
 
+    /**
+     * Set the working directory
+     * 
+     * @param workingDir
+     */
     public void setWorkingDir(String workingDir)
     {
         if (workingDir != null) {
@@ -94,11 +131,21 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         }
     }
 
+    /**
+     * Get the standard input
+     * 
+     * @return
+     */
     public String getStdin()
     {
         return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_STDIN.getValue());
     }
 
+    /**
+     * Set the standard input
+     * 
+     * @param stdin
+     */
     public void setStdin(String stdin)
     {
         if (stdin != null) {
@@ -106,41 +153,81 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
         }
     }
 
+    /**
+     * Get the command timeout
+     * 
+     * @return
+     */
     public Integer getTimeout()
     {
         return (Integer) getProperties().get(CommandAppProperties.APP_PROPERTY_TOUT.getValue());
     }
 
+    /**
+     * Set the command timeout
+     * 
+     * @param timeout
+     */
     public void setTimeout(int timeout)
     {
         getProperties().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), Integer.valueOf(timeout));
     }
 
+    /**
+     * Get the run asynchronously flag
+     * 
+     * @return
+     */
     public Boolean isRunAsync()
     {
         return (Boolean) getProperties().get(CommandAppProperties.APP_PROPERTY_ASYNC.getValue());
     }
 
+    /**
+     * Set the run asynchronously flag
+     * 
+     * @param runAsync
+     */
     public void setRunAsync(boolean runAsync)
     {
         getProperties().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), Boolean.valueOf(runAsync));
     }
 
+    /**
+     * Set the command
+     * 
+     * @param cmd
+     */
     public void setCommand(String cmd)
     {
         getProperties().put(CommandAppProperties.APP_PROPERTY_CMD.getValue(), cmd);
     }
 
+    /**
+     * Get the command
+     * 
+     * @return
+     */
     public String getCommand()
     {
         return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_CMD.getValue());
     }
 
+    /**
+     * Set the password
+     * 
+     * @param password
+     */
     public void setPassword(String password)
     {
         getProperties().put(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue(), password);
     }
 
+    /**
+     * Get the password
+     * 
+     * @return
+     */
     public String getPassword()
     {
         return (String) getProperties().get(CommandAppProperties.APP_PROPERTY_PASSWORD.getValue());

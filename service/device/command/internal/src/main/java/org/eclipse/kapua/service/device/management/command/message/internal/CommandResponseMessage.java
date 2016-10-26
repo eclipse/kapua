@@ -16,6 +16,12 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 
+/**
+ * Device command response message.
+ * 
+ * @since 1.0
+ * 
+ */
 public class CommandResponseMessage extends KapuaMessageImpl<CommandResponseChannel, CommandResponsePayload> implements KapuaResponseMessage<CommandResponseChannel, CommandResponsePayload>
 {
     private KapuaResponseCode responseCode;

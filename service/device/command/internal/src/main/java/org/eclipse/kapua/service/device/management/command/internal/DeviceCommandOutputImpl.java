@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.management.command.internal;
 
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 
+/**
+ * Device command output entity implementation.
+ *
+ * @since 1.0
+ *
+ */
 public class DeviceCommandOutputImpl implements DeviceCommandOutput
 {
 	

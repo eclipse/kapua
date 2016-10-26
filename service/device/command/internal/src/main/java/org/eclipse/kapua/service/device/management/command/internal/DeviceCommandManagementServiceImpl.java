@@ -35,6 +35,12 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
+/**
+ * Device command service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceCommandManagementServiceImpl implements DeviceCommandManagementService
 {
     @SuppressWarnings({ "rawtypes", "unchecked" })
