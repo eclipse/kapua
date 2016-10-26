@@ -113,8 +113,10 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 DeviceConnectionStatus connectionStatus = null;
                 if (deviceConnection != null) {
                     connectionStatus = deviceConnection.getStatus();
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
                 } else {
                     connectionStatus = DeviceConnectionStatus.DISCONNECTED;
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", ""));
                 }
 
                 pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", connectionStatus.toString()));
@@ -154,8 +156,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devSw", "devOsVersion", device.getOsVersion()));
 
                 pairs.add(new GwtGroupedNVPair("devJava", "devJvmVersion", device.getJvmVersion()));
-
-                pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
 
                 pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", String.valueOf(device.getGpsLatitude())));
                 pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", String.valueOf(device.getGpsLongitude())));
