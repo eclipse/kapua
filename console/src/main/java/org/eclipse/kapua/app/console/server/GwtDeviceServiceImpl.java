@@ -36,6 +36,7 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
@@ -157,8 +158,32 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                 pairs.add(new GwtGroupedNVPair("devJava", "devJvmVersion", device.getJvmVersion()));
 
-                pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", String.valueOf(device.getGpsLatitude())));
-                pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", String.valueOf(device.getGpsLongitude())));
+                // GPS infos retrieval
+                DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
+                DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+                DeviceEventQuery eventQuery = deviceEventFactory.newQuery(device.getScopeId());
+                eventQuery.setLimit(1);
+                eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
+
+                AndPredicate andPredicate = new AndPredicate();
+                andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
+                andPredicate.and(new AttributePredicate<String>(DeviceEventPredicates.EVENT_TYPE, "BIRTH"));
+
+                eventQuery.setPredicate(andPredicate);
+
+                KapuaListResult<DeviceEvent> events = deviceEventService.query(eventQuery);
+                if (!events.isEmpty()) {
+                    DeviceEvent lastEvent = events.getItem(0);
+                    KapuaPosition eventPosition = lastEvent.getPosition();
+
+                    if (eventPosition != null) {
+                        pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", String.valueOf(eventPosition.getLatitude())));
+                        pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", String.valueOf(eventPosition.getLongitude())));
+                    }
+                } else {
+                    pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLat", null));
+                    pairs.add(new GwtGroupedNVPair("gpsInfo", "gpsLong", null));
+                }
 
                 pairs.add(new GwtGroupedNVPair("modemInfo", "modemImei", device.getImei()));
                 pairs.add(new GwtGroupedNVPair("modemInfo", "modemImsi", device.getImsi()));

@@ -20,58 +20,57 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.device.registry.Device;
 
-public abstract class DeviceExporter
-{
-    protected static String[]     s_deviceProperties = {
-                                                         "Account",
-                                                         // "Id",
-                                                         "Client ID",
-                                                         "Status",
-                                                         "Connection Status",
-                                                         "Created On",
-                                                         // "Created By",
-                                                         "Last Event On",
-                                                         "Last Event Type",
-                                                         "Connection IP",
-                                                         // "MQTT connection IP",
-                                                         "Display Name",
-                                                         "Serial Number",
-                                                         "IMEI",
-                                                         "IMSI",
-                                                         "ICCID",
-                                                         "Model ID",
-                                                         "Bios Version",
-                                                         "Firmware Version",
-                                                         "OS Version",
-                                                         "JVM Version",
-                                                         "OSGi Version",
-                                                         "ESF/Kura Version",
-                                                         "Application Identifiers",
-                                                         "Accept Encoding",
-                                                         "GPS Longitude",
-                                                         "GPS Latitude",
-                                                         "Custom Attribute 1",
-                                                         "Custom Attribute 2",
-                                                         "Custom Attribute 3",
-                                                         "Custom Attribute 4",
-                                                         "Custom Attribute 5",
-                                                         "Certificate Id"
+public abstract class DeviceExporter {
+
+    protected static String[] s_deviceProperties = {
+            "Account",
+            // "Id",
+            "Client ID",
+            "Status",
+            "Connection Status",
+            "Created On",
+            // "Created By",
+            "Last Event On",
+            "Last Event Type",
+            "Connection IP",
+            // "MQTT connection IP",
+            "Display Name",
+            "Serial Number",
+            "IMEI",
+            "IMSI",
+            "ICCID",
+            "Model ID",
+            "Bios Version",
+            "Firmware Version",
+            "OS Version",
+            "JVM Version",
+            "OSGi Version",
+            "ESF/Kura Version",
+            "Application Identifiers",
+            "Accept Encoding",
+            // "GPS Longitude",
+            // "GPS Latitude",
+            "Custom Attribute 1",
+            "Custom Attribute 2",
+            "Custom Attribute 3",
+            "Custom Attribute 4",
+            "Custom Attribute 5",
+            "Certificate Id"
             // "Optlock"
     };
 
     protected HttpServletResponse m_response;
 
-    protected DeviceExporter(HttpServletResponse response)
-    {
+    protected DeviceExporter(HttpServletResponse response) {
         m_response = response;
     }
 
     public abstract void init(String account)
-        throws ServletException, IOException;
+            throws ServletException, IOException;
 
     public abstract void append(KapuaListResult<Device> messages)
-        throws ServletException, IOException;
+            throws ServletException, IOException;
 
     public abstract void close()
-        throws ServletException, IOException;
+            throws ServletException, IOException;
 }

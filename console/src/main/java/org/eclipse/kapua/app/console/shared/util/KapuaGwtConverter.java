@@ -122,8 +122,6 @@ public class KapuaGwtConverter {
         gwtDevice.setOsgiVersion(device.getOsgiFrameworkVersion());
         gwtDevice.setAcceptEncoding(device.getAcceptEncoding());
         gwtDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
-        gwtDevice.setGpsLatitude(device.getGpsLatitude());
-        gwtDevice.setGpsLongitude(device.getGpsLongitude());
         gwtDevice.setLastEventOn(device.getLastEventOn());
 
         gwtDevice.setIccid(device.getIccid());
