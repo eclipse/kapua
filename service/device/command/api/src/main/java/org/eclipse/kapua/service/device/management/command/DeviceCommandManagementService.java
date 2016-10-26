@@ -16,8 +16,25 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
+/**
+ * Device command service definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceCommandManagementService extends KapuaService
 {
+
+    /**
+     * Execute the given device command with the provided options
+     * 
+     * @param scopeId
+     * @param deviceId
+     * @param commandInput
+     * @param timeout command timeout
+     * @return
+     * @throws KapuaException
+     */
     public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
         throws KapuaException;
 }
