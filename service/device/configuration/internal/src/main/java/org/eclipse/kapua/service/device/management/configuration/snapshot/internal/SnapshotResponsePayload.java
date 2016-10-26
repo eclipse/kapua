@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.configuration.snapshot.inter
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 
+/**
+ * Device snapshot response payload.
+ * 
+ * @since 1.0
+ * 
+ */
 public class SnapshotResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload
 {
 

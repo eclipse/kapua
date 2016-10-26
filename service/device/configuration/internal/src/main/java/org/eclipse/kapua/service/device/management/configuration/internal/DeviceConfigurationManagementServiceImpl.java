@@ -49,6 +49,12 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.xml.sax.SAXException;
 
+/**
+ * Device configuration service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

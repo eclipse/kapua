@@ -15,7 +15,14 @@ package org.eclipse.kapua.service.device.management.snapshot.internal;
 
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 
+/**
+ * Device snapshot entity implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceSnapshotImpl implements DeviceSnapshot {
+
     private String id;
     private Long timestamp;
     

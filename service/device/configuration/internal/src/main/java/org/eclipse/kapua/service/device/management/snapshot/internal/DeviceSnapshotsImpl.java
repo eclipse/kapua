@@ -21,12 +21,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 
+/**
+ * Device snapshots entity implementation.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "snapshotIds")
 public class DeviceSnapshotsImpl implements DeviceSnapshots
 {
     @XmlElement(name = "snapshotId")
     List<DeviceSnapshot> snapshotIds;
 
+    /**
+     * Constructor
+     */
     public DeviceSnapshotsImpl()
     {
         super();

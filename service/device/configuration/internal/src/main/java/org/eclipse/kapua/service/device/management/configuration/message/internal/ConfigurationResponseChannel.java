@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.configuration.message.intern
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
 
+/**
+ * Device configuration response channel.
+ * 
+ * @since 1.0
+ * 
+ */
 public class ConfigurationResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel
 {
 

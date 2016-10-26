@@ -15,11 +15,14 @@ package org.eclipse.kapua.service.device.management.configuration.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 
+/**
+ * Device configuration entity implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceConfigurationImpl implements DeviceConfiguration
 {
     private List<DeviceComponentConfigurationImpl> configurations;

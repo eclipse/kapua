@@ -14,18 +14,16 @@ package org.eclipse.kapua.service.device.management.configuration.internal;
 
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
-import org.eclipse.kapua.commons.configuration.metatype.XmlConfigPropertiesAdapter;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 
+/**
+ * Device component configuration entity implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceComponentConfigurationImpl implements DeviceComponentConfiguration
 {
     private String              id;
@@ -33,10 +31,18 @@ public class DeviceComponentConfigurationImpl implements DeviceComponentConfigur
     private TocdImpl            definition;
     private Map<String, Object> properties;
 
+    /**
+     * Constructor
+     */
     public DeviceComponentConfigurationImpl()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param id
+     */
     public DeviceComponentConfigurationImpl(String id)
     {
         this.id = id;
