@@ -500,6 +500,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
     {
         if (!isPassThroughConnection(context)) {
             Context loginRemoveConnectionTimeContext = metricLoginRemoveConnectionTime.time();
+            String fullClientId = null;
             try {
 
                 KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(context);
@@ -521,7 +522,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                 KapuaId scopeId = ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getAccountId();
 
                 // multiple account stealing link fix
-                String fullClientId = MessageFormat.format(AclConstants.MULTI_ACCOUNT_CLIENT_ID, accountId, clientId);
+                fullClientId = MessageFormat.format(AclConstants.MULTI_ACCOUNT_CLIENT_ID, accountId, clientId);
 
                 if (!isAdminUser(username)) {
                     // Stealing link check
@@ -537,14 +538,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                     }
                     if (stealingLinkDetected) {
                         metricLoginStealingLinkDisconnect.inc();
-
                         // stealing link detected, skip info
                         logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
                                     new Object[] { clientId, accountId, connectionId, info.getConnectionId(), info.getClientIp() });
                     }
                     else {
-                        KapuaId deviceConnectionId = kapuaSecurityContext.getConnectionId();
-
                         DeviceConnection deviceConnection = null;
                         try {
                             deviceConnection = KapuaSecurityUtils.doPriviledge(new Callable<DeviceConnection>() {
@@ -558,43 +556,25 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                             });
                         }
                         catch (Exception e) {
-                            throw new ShiroException("Error while updating the device connection!", e);
+                            throw new ShiroException("Error while looking for device connection on updating the device!", e);
                         }
                         // the device connection must be not null
-
-                        // cleanup stealing link detection map
-                        connectionMap.remove(fullClientId);
-
+                        // update device connection
                         final DeviceConnection deviceConnectionToUpdate = deviceConnection;
                         if (error == null) {
-                            // update device connection
                             deviceConnectionToUpdate.setStatus(DeviceConnectionStatus.DISCONNECTED);
-
-                            try {
-                                KapuaSecurityUtils.doPriviledge(() -> {
-                                    deviceConnectionService.update(deviceConnectionToUpdate);
-                                    return null;
-                                });
-                            }
-                            catch (Exception e) {
-                                throw new ShiroException("Error while updating the device connection status!", e);
-                            }
                         }
                         else {
-                            // send missing message
-                            // update device connection
                             deviceConnectionToUpdate.setStatus(DeviceConnectionStatus.MISSING);
-
-                            try {
-                                KapuaSecurityUtils.doPriviledge(() -> {
-                                    deviceConnectionService.update(deviceConnectionToUpdate);
-                                    return null;
-                                });
-                            }
-                            catch (Exception e) {
-                                throw new ShiroException("Error while updating the device connection status!", e);
-                            }
-
+                        }
+                        try {
+                            KapuaSecurityUtils.doPriviledge(() -> {
+                                deviceConnectionService.update(deviceConnectionToUpdate);
+                                return null;
+                            });
+                        }
+                        catch (Exception e) {
+                            throw new ShiroException("Error while updating the device connection status!", e);
                         }
                     }
                     metricClientDisconnectionClient.inc();
@@ -609,6 +589,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
             finally {
                 loginRemoveConnectionTimeContext.stop();
                 authenticationService.logout();
+                if (fullClientId != null) {
+                    // cleanup stealing link detection map
+                    connectionMap.remove(fullClientId);
+                }
             }
         }
         super.removeConnection(context, info, error);
