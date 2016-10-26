@@ -22,10 +22,22 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.kapua.KapuaSerializable;
 
+/**
+ * Device configuration entity definition.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "configurations")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceConfigurationXmlRegistry.class, factoryMethod = "newConfiguration")
 public interface DeviceConfiguration extends KapuaSerializable {
+
+    /**
+     * Get the device component configuration list
+     * 
+     * @return
+     */
     @XmlElement(name = "configuration")
     public <C extends DeviceComponentConfiguration> List<C> getComponentConfigurations();
 }
