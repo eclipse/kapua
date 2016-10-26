@@ -14,9 +14,21 @@ package org.eclipse.kapua.service.device.management.bundle.internal;
 
 import org.eclipse.kapua.service.device.management.KapuaAppProperties;
 
+/**
+ * Device bundle properties definition.
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceBundleAppProperties implements KapuaAppProperties
 {
+    /**
+     * Application name
+     */
 	APP_NAME("BUNDLE"),
+    /**
+     * Version
+     */
     APP_VERSION("1.0.0"),
     ;
 
