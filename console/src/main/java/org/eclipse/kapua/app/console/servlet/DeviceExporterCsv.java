@@ -29,21 +29,19 @@ import org.eclipse.kapua.service.device.registry.Device;
 
 import com.opencsv.CSVWriter;
 
-public class DeviceExporterCsv extends DeviceExporter
-{
-    private String     m_account;
-    private DateFormat m_dateFormat;
-    private CSVWriter  m_writer;
+public class DeviceExporterCsv extends DeviceExporter {
 
-    public DeviceExporterCsv(HttpServletResponse response)
-    {
+    private String m_account;
+    private DateFormat m_dateFormat;
+    private CSVWriter m_writer;
+
+    public DeviceExporterCsv(HttpServletResponse response) {
         super(response);
     }
 
     @Override
     public void init(String account)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         m_account = account;
         m_dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
@@ -59,8 +57,7 @@ public class DeviceExporterCsv extends DeviceExporter
 
     @Override
     public void append(KapuaListResult<Device> devices)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         for (Device device : devices.getItems()) {
 
             List<String> cols = new ArrayList<String>();
@@ -68,15 +65,13 @@ public class DeviceExporterCsv extends DeviceExporter
 
             if (device.getClientId() != null) {
                 cols.add(device.getClientId());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getStatus() != null) {
                 cols.add(device.getStatus().name());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
@@ -84,22 +79,19 @@ public class DeviceExporterCsv extends DeviceExporter
 
             if (device.getCreatedOn() != null) {
                 cols.add(m_dateFormat.format(device.getCreatedOn()));
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getLastEventOn() != null) {
                 cols.add(m_dateFormat.format(device.getLastEventOn()));
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getLastEventType() != null) {
                 cols.add(device.getLastEventType().name());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
@@ -107,71 +99,61 @@ public class DeviceExporterCsv extends DeviceExporter
 
             if (device.getDisplayName() != null) {
                 cols.add(device.getDisplayName());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getSerialNumber() != null) {
                 cols.add(device.getSerialNumber());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getImei() != null) {
                 cols.add(device.getImei());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getImsi() != null) {
                 cols.add(device.getImsi());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getIccid() != null) {
                 cols.add(device.getIccid());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getModelId() != null) {
                 cols.add(device.getModelId());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getBiosVersion() != null) {
                 cols.add(device.getBiosVersion());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getFirmwareVersion() != null) {
                 cols.add(device.getFirmwareVersion());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getOsVersion() != null) {
                 cols.add(device.getOsVersion());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getJvmVersion() != null) {
                 cols.add(device.getJvmVersion());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
@@ -181,64 +163,43 @@ public class DeviceExporterCsv extends DeviceExporter
 
             if (device.getApplicationIdentifiers() != null) {
                 cols.add(device.getApplicationIdentifiers());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getAcceptEncoding() != null) {
                 cols.add(device.getAcceptEncoding());
-            }
-            else {
-                cols.add("");
-            }
-
-            if (device.getGpsLongitude() != null) {
-                cols.add(device.getGpsLongitude().toString());
-            }
-            else {
-                cols.add("");
-            }
-
-            if (device.getGpsLatitude() != null) {
-                cols.add(device.getGpsLatitude().toString());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getCustomAttribute1() != null) {
                 cols.add(device.getCustomAttribute1());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getCustomAttribute2() != null) {
                 cols.add(device.getCustomAttribute2());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getCustomAttribute3() != null) {
                 cols.add(device.getCustomAttribute3());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getCustomAttribute4() != null) {
                 cols.add(device.getCustomAttribute4());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
             if (device.getCustomAttribute5() != null) {
                 cols.add(device.getCustomAttribute5());
-            }
-            else {
+            } else {
                 cols.add("");
             }
 
@@ -250,8 +211,7 @@ public class DeviceExporterCsv extends DeviceExporter
 
     @Override
     public void close()
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         m_response.setContentType("text/csv");
         m_response.setCharacterEncoding("UTF-8");
         m_response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(m_account, "UTF-8") + "_devices.csv");

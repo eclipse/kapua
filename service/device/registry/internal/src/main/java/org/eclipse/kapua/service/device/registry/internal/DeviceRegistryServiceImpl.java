@@ -102,8 +102,6 @@ public class DeviceRegistryServiceImpl implements DeviceRegistryService {
             currentDevice.setApplicationFrameworkVersion(device.getApplicationFrameworkVersion());
             currentDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
             currentDevice.setAcceptEncoding(device.getAcceptEncoding());
-            currentDevice.setGpsLongitude(device.getGpsLongitude());
-            currentDevice.setGpsLatitude(device.getGpsLatitude());
             currentDevice.setCustomAttribute1(device.getCustomAttribute1());
             currentDevice.setCustomAttribute2(device.getCustomAttribute2());
             currentDevice.setCustomAttribute3(device.getCustomAttribute3());

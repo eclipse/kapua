@@ -29,37 +29,33 @@ import org.eclipse.kapua.model.id.KapuaId;
  * those properties will not be searchable through Device queries.
  * The clientId field of the Device is used to store the MAC address of the primary network interface of the device.
  */
-@XmlRootElement(name="deviceCreator")
+@XmlRootElement(name = "deviceCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "clientId",
-                       "connectionId",
-                      "displayName",
-                      "serialNumber",
-                      "modelId",
-                      "imei",
-                      "imsi",
-                      "iccid",
-                      "biosVersion",
-                      "firmwareVersion",
-                      "osVersion",
-                      "jvmVersion",
-                      "osgiFrameworkVersion",
-                      "applicationFrameworkVersion",
-                      "applicationIdentifiers",
-                      "acceptEncoding",
-                      "gpsLongitude",
-                      "gpsLatitude",
-                      "customAttribute1",
-                      "customAttribute2",
-                      "customAttribute3",
-                      "customAttribute4",
-                      "customAttribute5",
-                      "credentialsMode",
-                      "preferredUserId"},
-         factoryClass = DeviceXmlRegistry.class,
-         factoryMethod = "newDeviceCreator")
-public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device>
-{
+        "connectionId",
+        "displayName",
+        "serialNumber",
+        "modelId",
+        "imei",
+        "imsi",
+        "iccid",
+        "biosVersion",
+        "firmwareVersion",
+        "osVersion",
+        "jvmVersion",
+        "osgiFrameworkVersion",
+        "applicationFrameworkVersion",
+        "applicationIdentifiers",
+        "acceptEncoding",
+        "customAttribute1",
+        "customAttribute2",
+        "customAttribute3",
+        "customAttribute4",
+        "customAttribute5",
+        "credentialsMode",
+        "preferredUserId" }, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
+public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
+
     @XmlElement(name = "clientId")
     public String getClientId();
 
@@ -140,20 +136,11 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device>
 
     public void setAcceptEncoding(String acceptEncoding);
 
-    @XmlElement(name = "gpsLongitude")
-    public Double getGpsLongitude();
-
-    public void setGpsLongitude(Double gpsLongitude);
-
-    @XmlElement(name = "gpsLatitude")
-    public Double getGpsLatitude();
-
-    public void setGpsLatitude(Double gpsLatitude);
-
     @XmlElement(name = "customAttribute1")
     public String getCustomAttribute1();
 
     public void setCustomAttribute1(String customAttribute1);
+
     @XmlElement(name = "customAttribute2")
     public String getCustomAttribute2();
 
