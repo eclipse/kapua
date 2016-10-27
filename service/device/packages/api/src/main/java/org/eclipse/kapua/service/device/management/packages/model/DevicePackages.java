@@ -22,10 +22,22 @@ import javax.xml.bind.annotation.XmlType;
 
 import java.util.List;
 
+/**
+ * Device packages list container definition.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "devicePackages")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackages")
 public interface DevicePackages extends KapuaSerializable {
+
+    /**
+     * Get the device package list
+     * 
+     * @return
+     */
     @XmlElement(name = "devicePackage")
     public <D extends DevicePackage> List<D> getPackages();
 }
