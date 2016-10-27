@@ -18,6 +18,12 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
 
+/**
+ * Kura device position implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraPosition implements DevicePosition
 {
     /**
@@ -75,97 +81,119 @@ public class KuraPosition implements DevicePosition
     @XmlElement(name = "status")
     private Integer status;
 
+    /**
+     * Constructor
+     */
     public KuraPosition()
     {
     }
 
+    @Override
     public Double getLongitude()
     {
         return longitude;
     }
 
+    @Override
     public void setLongitude(Double longitude)
     {
         this.longitude = longitude;
     }
 
+    @Override
     public Double getLatitude()
     {
         return latitude;
     }
 
+    @Override
     public void setLatitude(Double latitude)
     {
         this.latitude = latitude;
     }
 
+    @Override
     public Double getAltitude()
     {
         return altitude;
     }
 
+    @Override
     public void setAltitude(Double altitude)
     {
         this.altitude = altitude;
     }
 
+    @Override
     public Double getPrecision()
     {
         return precision;
     }
 
+    @Override
     public void setPrecision(Double precision)
     {
         this.precision = precision;
     }
 
+    @Override
     public Double getHeading()
     {
         return heading;
     }
 
+    @Override
     public void setHeading(Double heading)
     {
         this.heading = heading;
     }
 
+    @Override
     public Double getSpeed()
     {
         return speed;
     }
 
+    @Override
     public void setSpeed(Double speed)
     {
         this.speed = speed;
     }
 
+    @Override
     public Date getTimestamp()
     {
         return timestamp;
     }
 
+    @Override
     public void setTimestamp(Date timestamp)
     {
         this.timestamp = timestamp;
     }
 
+    @Override
     public Integer getSatellites()
     {
         return satellites;
     }
 
+    @Override
     public void setSatellites(Integer satellites)
     {
         this.satellites = satellites;
     }
 
+    @Override
     public Integer getStatus()
     {
         return status;
     }
 
+    @Override
     public void setStatus(Integer status)
     {
         this.status = status;
     }
+    
 }

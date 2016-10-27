@@ -16,14 +16,31 @@ import java.util.Date;
 
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 
+/**
+ * Kura device notify message implementation.<br>
+ * The missing message is sent by the device to notify the platform about a task progress.
+ * 
+ * @since 1.0
+ * 
+ */
 public class KuraNotifyMessage extends KuraMessage<KuraNotifyChannel, KuraNotifyPayload>
 {
 
+    /**
+     * Constructor
+     */
     public KuraNotifyMessage()
     {
         super();
     }
     
+    /**
+     * Constructor
+     * 
+     * @param channel
+     * @param timestamp
+     * @param payload
+     */
     public KuraNotifyMessage(KuraNotifyChannel channel,
                              Date timestamp, KuraNotifyPayload payload)
     {

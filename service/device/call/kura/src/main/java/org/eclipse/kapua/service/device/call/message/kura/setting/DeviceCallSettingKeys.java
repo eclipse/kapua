@@ -13,11 +13,25 @@
 package org.eclipse.kapua.service.device.call.message.kura.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
+/**
+ * Available settings key for device call service
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceCallSettingKeys implements SettingKey
 {
+
+    /**
+     * Destination message classifier. {@link DeviceChannel#getMessageClassification} for more detail
+     */
     DESTINATION_MESSAGE_CLASSIFIER("destination.message.classifier"),
 
+    /**
+     * Destination reply part
+     */
     DESTINATION_REPLY_PART("destination.reply.part");
 
     private String key;
@@ -27,6 +41,7 @@ public enum DeviceCallSettingKeys implements SettingKey
         this.key = key;
     }
 
+    @Override
     public String key()
     {
         return key;

@@ -17,6 +17,12 @@ import org.eclipse.kapua.service.device.call.kura.KuraMethod;
 import org.eclipse.kapua.service.device.call.message.app.kura.KuraAppChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestChannel;
 
+/**
+ * Kura command request message channel.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestChannel
 {
     private KuraMethod method;
@@ -24,16 +30,32 @@ public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestC
     private String     requestId;
     private String     requesterClientId;
 
+    /**
+     * Constructor
+     */
     public KuraRequestChannel()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraRequestChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param controlDestinationPrefix
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraRequestChannel(String controlDestinationPrefix, String scopeNamespace, String clientId)
     {
         super(controlDestinationPrefix, scopeNamespace, clientId);

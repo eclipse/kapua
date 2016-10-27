@@ -17,6 +17,12 @@ import java.util.List;
 import org.eclipse.kapua.service.device.call.message.data.DeviceDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+/**
+ * Kura data message channel.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraDataChannel extends KuraChannel implements DeviceDataChannel
 {
 
@@ -28,6 +34,11 @@ public class KuraDataChannel extends KuraChannel implements DeviceDataChannel
         return semanticChannelParts;
     }
 
+    /**
+     * Set the semantic channel tokens. {@link KuraChannel#getSemanticChannelParts() getSemanticChannelParts} for more detail.
+     * 
+     * @param semanticChannelParts
+     */
     public void setSemanticChannelParts(List<String> semanticChannelParts)
     {
         this.semanticChannelParts = semanticChannelParts;

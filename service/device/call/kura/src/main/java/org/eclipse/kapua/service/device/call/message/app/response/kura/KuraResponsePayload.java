@@ -16,6 +16,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponsePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
+/**
+ * Kura command response message payload.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraResponsePayload extends KuraPayload implements DeviceResponsePayload
 {
     @SuppressWarnings("unchecked")

@@ -31,6 +31,12 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+/**
+ * Kura device payload implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraDataPayload implements DevicePayload
 {
     private static final Logger s_logger = LoggerFactory.getLogger(KuraDataPayload.class);
@@ -40,6 +46,9 @@ public class KuraDataPayload implements DevicePayload
     protected Map<String, Object> metrics;
     protected byte[]              body;
 
+    /**
+     * Constructor
+     */
     public KuraDataPayload()
     {
         metrics = new HashMap<>();
@@ -51,6 +60,11 @@ public class KuraDataPayload implements DevicePayload
         return timestamp;
     }
 
+    /**
+     * Set the message timestamp
+     * 
+     * @param timestamp
+     */
     public void setTimestamp(Date timestamp)
     {
         this.timestamp = timestamp;
@@ -62,6 +76,11 @@ public class KuraDataPayload implements DevicePayload
         return position;
     }
 
+    /**
+     * Set the device position
+     * 
+     * @param position
+     */
     public void setPosition(DevicePosition position)
     {
         this.position = position;
@@ -79,6 +98,11 @@ public class KuraDataPayload implements DevicePayload
         return body;
     }
 
+    /**
+     * St the message body
+     * 
+     * @param body
+     */
     public void setBody(byte[] body)
     {
         this.body = body;

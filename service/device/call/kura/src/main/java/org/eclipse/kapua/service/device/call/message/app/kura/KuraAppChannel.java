@@ -15,20 +15,42 @@ package org.eclipse.kapua.service.device.call.message.app.kura;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+/**
+ * Kura application message channel.
+ * 
+ * @since 1.0
+ *
+ */
 public abstract class KuraAppChannel extends KuraChannel implements DeviceAppChannel
 {
     protected String appId;
 
+    /**
+     * Constructor
+     */
     public KuraAppChannel()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraAppChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param controlDestinationPrefix
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraAppChannel(String controlDestinationPrefix, String scopeNamespace, String clientId)
     {
         super(controlDestinationPrefix, scopeNamespace, clientId);

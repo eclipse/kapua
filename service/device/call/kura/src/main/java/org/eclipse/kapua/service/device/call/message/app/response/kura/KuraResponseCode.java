@@ -14,30 +14,70 @@ package org.eclipse.kapua.service.device.call.message.app.response.kura;
 
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseCode;
 
+/**
+ * Kura device response code definition.
+ * 
+ * @since 1.0
+ * 
+ */
 public enum KuraResponseCode implements DeviceResponseCode
 {
+    /**
+     * Accepted request
+     */
     ACCEPTED(200),
+    /**
+     * Bad request
+     */
     BAD_REQUEST(400),
+    /**
+     * Resource not found
+     */
     NOT_FOUND(404),
+    /**
+     * Internal error
+     */
     INTERNAL_ERROR(500);
 
     private int code;
 
+    /**
+     * Constructor
+     * 
+     * @param code
+     */
     KuraResponseCode(int code)
     {
         this.code = code;
     }
 
+    /**
+     * Get the response code
+     * 
+     * @return
+     */
     public int getCode()
     {
         return code;
     }
 
+    /**
+     * Constructs a {@link KuraResponseCode} from a string representation
+     * 
+     * @param responseCode
+     * @return
+     */
     public static KuraResponseCode fromResponseCode(String responseCode)
     {
         return fromResponseCode(Integer.valueOf(responseCode));
     }
 
+    /**
+     * Constructs a {@link KuraResponseCode} from an integer representation
+     * 
+     * @param responseCode
+     * @return
+     */
     public static KuraResponseCode fromResponseCode(int responseCode)
     {
         KuraResponseCode result = null;

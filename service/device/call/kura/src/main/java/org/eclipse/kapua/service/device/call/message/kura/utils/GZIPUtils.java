@@ -18,9 +18,21 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * Gzip utilities.
+ * 
+ * @since 1.0
+ *
+ */
 public class GZIPUtils
 {
 
+    /**
+     * Check if the byte array represents compressed data
+     * 
+     * @param bytes
+     * @return
+     */
     public static boolean isCompressed(byte[] bytes)
     {
         if ((bytes == null) || (bytes.length < 2)) {
@@ -31,6 +43,13 @@ public class GZIPUtils
         }
     }
 
+    /**
+     * Returns the compressed provided data
+     * 
+     * @param source
+     * @return
+     * @throws IOException
+     */
     public static byte[] compress(byte[] source)
         throws IOException
     {
@@ -57,6 +76,13 @@ public class GZIPUtils
         return baos.toByteArray();
     }
 
+    /**
+     * Returns the decompressed provided data
+     * 
+     * @param source
+     * @return
+     * @throws IOException
+     */
     public static byte[] decompress(byte[] source)
         throws IOException
     {

@@ -11,10 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.app;
 
+/**
+ * Response metrics properties definition.
+ * 
+ * @since 1.0
+ *
+ */
 public enum ResponseMetrics
 {
+    /**
+     * Response exit code
+     */
     RESP_METRIC_EXIT_CODE("response.code"),
+    /**
+     * Response exception message
+     */
     RESP_METRIC_EXCEPTION_MESSAGE("response.exception.message"),
+    /**
+     * Response exception stack trace
+     */
     RESP_METRIC_EXCEPTION_STACK("response.exception.stack"),
     ;
 
@@ -25,6 +40,11 @@ public enum ResponseMetrics
         this.value = value;
     }
 
+    /**
+     * Get a value property associated to this specific enumeration key.
+     * 
+     * @return
+     */
     public String getValue()
     {
         return value;

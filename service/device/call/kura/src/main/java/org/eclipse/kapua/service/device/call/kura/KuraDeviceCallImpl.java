@@ -29,6 +29,12 @@ import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
+/**
+ * Kura device call implementation.
+ *
+ * @since 1.0
+ * 
+ */
 @SuppressWarnings("rawtypes")
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage>
 {

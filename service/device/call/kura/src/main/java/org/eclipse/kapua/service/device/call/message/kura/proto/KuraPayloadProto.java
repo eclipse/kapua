@@ -13,6 +13,12 @@
 // source: kurapayload.proto
 package org.eclipse.kapua.service.device.call.message.kura.proto;
 
+/**
+ * Kura payload protobuf definition
+ * 
+ * @since 1.0
+ *
+ */
 @SuppressWarnings("unused")
 public final class KuraPayloadProto
 {

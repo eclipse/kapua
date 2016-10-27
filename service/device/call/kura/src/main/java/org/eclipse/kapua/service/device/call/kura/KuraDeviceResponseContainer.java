@@ -16,10 +16,19 @@ import java.util.ArrayList;
 import org.eclipse.kapua.service.device.call.DeviceCallback;
 import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraResponseMessage;
 
+/**
+ * Kura device callback implementation.
+ * 
+ * @since 1.0
+ * 
+ */
 public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> implements DeviceCallback<KuraResponseMessage>
 {
     private static final long serialVersionUID = -6909761350290400843L;
 
+    /**
+     * Constructor
+     */
     public KuraDeviceResponseContainer()
     {
         super();

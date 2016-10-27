@@ -17,13 +17,28 @@ import java.util.Iterator;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
+/**
+ * Kura device notification message payload implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraNotifyPayload extends KuraPayload implements DevicePayload
 {
+    
+    /**
+     * Constructor
+     */
     public KuraNotifyPayload() 
     {
     	super();
     }
 
+    /**
+     * Returns a displayable representation string
+     * 
+     * @return
+     */
     public String toDisplayString()
     {
     	StringBuilder sb = new StringBuilder();

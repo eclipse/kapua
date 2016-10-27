@@ -14,18 +14,40 @@ package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+/**
+ * Kura device missing message channel implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraMissingChannel extends KuraChannel
 {
 
+    /**
+     * Constructor
+     */
 	public KuraMissingChannel()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraMissingChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param messageClassification
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraMissingChannel(String messageClassification, String scopeNamespace, String clientId)
     {
         this.messageClassification = messageClassification;
