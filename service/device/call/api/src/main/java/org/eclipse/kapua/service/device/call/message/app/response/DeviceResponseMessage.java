@@ -14,6 +14,13 @@ package org.eclipse.kapua.service.device.call.message.app.response;
 
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
+/**
+ * Device response message definition.<br>
+ * It is used to get a response (to a previous request) from a device.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceResponseMessage<D extends DeviceResponseChannel, P extends DeviceResponsePayload> extends DeviceMessage<D, P>
 {
 }

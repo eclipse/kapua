@@ -16,11 +16,36 @@ import java.util.Date;
 
 import org.eclipse.kapua.message.Message;
 
+/**
+ * Device message definition.
+ * 
+ * @param <C> channel type
+ * @param <P> payload type
+ * 
+ * @since 1.0
+ * 
+ */
 public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload> extends Message
 {
+
+    /**
+     * Get the channel associated to the message
+     * 
+     * @return
+     */
     public C getChannel();
 
+    /**
+     * Get the payload associated to the message
+     * 
+     * @return
+     */
     public P getPayload();
 
+    /**
+     * Get the message timestamp
+     * 
+     * @return
+     */
     public Date getTimestamp();
 }

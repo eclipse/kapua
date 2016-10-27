@@ -14,13 +14,41 @@ package org.eclipse.kapua.service.device.call.message.app.response;
 
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
 
+/**
+ * Device response payload definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceResponsePayload extends DevicePayload
 {
+
+    /**
+     * Get the command response code
+     * 
+     * @return
+     */
     public <C extends DeviceResponseCode> C getResponseCode();
 
+    /**
+     * Get the command exception message
+     * 
+     * @return
+     */
     public String getExceptionMessage();
 
+    /**
+     * Get the command exception stack
+     * 
+     * @return
+     */
     public String getExceptionStack();
 
+    /**
+     * Get the command response body
+     * 
+     * @return
+     */
     public byte[] getResponseBody();
+
 }
