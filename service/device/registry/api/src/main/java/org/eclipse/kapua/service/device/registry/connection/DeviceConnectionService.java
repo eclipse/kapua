@@ -20,10 +20,22 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
  * It includes APIs to find, list, and update devices connections associated with a scope.
+ * 
+ * @since 1.0
+ * 
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
                                          KapuaUpdatableEntityService<DeviceConnection>
 {
+
+    /**
+     * Find the connection by client identifier
+     * 
+     * @param scopeId
+     * @param clientId
+     * @return
+     * @throws KapuaException
+     */
     public DeviceConnection findByClientId(KapuaId scopeId, String clientId)
         throws KapuaException;
 

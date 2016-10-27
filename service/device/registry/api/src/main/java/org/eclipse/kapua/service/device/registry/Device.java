@@ -24,8 +24,11 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Device is an object representing a device or gateway connected to the Kapua platform.
+ * Device is an object representing a device or gateway connected to the Kapua platform.<br>
  * The Device object contains several attributes regarding the Device itself and its software configuration.
+ * 
+ * @since 1.0
+ * 
  */
 @XmlRootElement(name = "device")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -77,134 +80,398 @@ public interface Device extends KapuaUpdatableEntity {
         return TYPE;
     }
 
+    /**
+     * Get the client identifier
+     * 
+     * @return
+     */
     @XmlElement(name = "clientId")
     public String getClientId();
 
+    /**
+     * Set the client identifier
+     * 
+     * @param clientId
+     */
     public void setClientId(String clientId);
 
+    /**
+     * Get the connection identifier
+     * 
+     * @return
+     */
     @XmlElement(name = "connectionId")
     public KapuaId getConnectionId();
 
+    /**
+     * Set the connection identifier
+     * 
+     * @param connectionId
+     */
     public void setConnectionId(KapuaId connectionId);
 
+    /**
+     * Get the connection status
+     * 
+     * @return
+     */
     @XmlElement(name = "status")
     public DeviceStatus getStatus();
 
+    /**
+     * Set the connection status
+     * 
+     * @param status
+     */
     public void setStatus(DeviceStatus status);
 
+    /**
+     * Get the display name
+     * 
+     * @return
+     */
     @XmlElement(name = "displayName")
     public String getDisplayName();
 
+    /**
+     * Set the display name
+     * 
+     * @param diplayName
+     */
     public void setDisplayName(String diplayName);
 
+    /**
+     * Get the last event on
+     * 
+     * @return
+     */
     @XmlElement(name = "lastEventOn")
     public Date getLastEventOn();
 
+    /**
+     * Set the last event on
+     * 
+     * @param lastEventOn
+     */
     public void setLastEventOn(Date lastEventOn);
 
+    /**
+     * Get the last event type
+     * 
+     * @return
+     */
     @XmlElement(name = "lastEventType")
     public DeviceEventType getLastEventType();
 
+    /**
+     * Set the last event type
+     * 
+     * @param lastEventType
+     */
     public void setLastEventType(DeviceEventType lastEventType);
 
+    /**
+     * Get the serial number
+     * 
+     * @return
+     */
     @XmlElement(name = "serialNumber")
     public String getSerialNumber();
 
+    /**
+     * Set the serial number
+     * 
+     * @param serialNumber
+     */
     public void setSerialNumber(String serialNumber);
 
+    /**
+     * Get the model identifier
+     * 
+     * @return
+     */
     @XmlElement(name = "modelId")
     public String getModelId();
 
+    /**
+     * Set the model identifier
+     * 
+     * @param modelId
+     */
     public void setModelId(String modelId);
 
+    /**
+     * Get the imei
+     * 
+     * @return
+     */
     @XmlElement(name = "imei")
     public String getImei();
 
+    /**
+     * Set the imei
+     * 
+     * @param imei
+     */
     public void setImei(String imei);
 
+    /**
+     * Get the imsi
+     * 
+     * @return
+     */
     @XmlElement(name = "imsi")
     public String getImsi();
 
+    /**
+     * Set the imsi
+     * 
+     * @param imsi
+     */
     public void setImsi(String imsi);
 
+    /**
+     * Get the iccid
+     * 
+     * @return
+     */
     @XmlElement(name = "iccid")
     public String getIccid();
 
+    /**
+     * Set the iccid
+     * 
+     * @param iccid
+     */
     public void setIccid(String iccid);
 
+    /**
+     * Get bios version
+     * 
+     * @return
+     */
     @XmlElement(name = "biosVersion")
     public String getBiosVersion();
 
+    /**
+     * Set bios version
+     * 
+     * @param biosVersion
+     */
     public void setBiosVersion(String biosVersion);
 
+    /**
+     * Get firmware version
+     * 
+     * @return
+     */
     @XmlElement(name = "firmwareVersion")
     public String getFirmwareVersion();
 
+    /**
+     * Set firmware version
+     * 
+     * @param firmwareVersion
+     */
     public void setFirmwareVersion(String firmwareVersion);
 
+    /**
+     * Get os version
+     * 
+     * @return
+     */
     @XmlElement(name = "osVersion")
     public String getOsVersion();
 
+    /**
+     * Set os version
+     * 
+     * @param osVersion
+     */
     public void setOsVersion(String osVersion);
 
+    /**
+     * Get jvm version
+     * 
+     * @return
+     */
     @XmlElement(name = "jvmVersion")
     public String getJvmVersion();
 
+    /**
+     * Set jvm version
+     * 
+     * @param jvmVersion
+     */
     public void setJvmVersion(String jvmVersion);
 
+    /**
+     * Get osgi framework version
+     * 
+     * @return
+     */
     @XmlElement(name = "osgiFrameworkVersion")
     public String getOsgiFrameworkVersion();
 
+    /**
+     * Set osgi framework version
+     * 
+     * @param osgiFrameworkVersion
+     */
     public void setOsgiFrameworkVersion(String osgiFrameworkVersion);
 
+    /**
+     * Get application framework version
+     * 
+     * @return
+     */
     @XmlElement(name = "applicationFrameworkVersion")
     public String getApplicationFrameworkVersion();
 
+    /**
+     * Set application framework version
+     * 
+     * @param appFrameworkVersion
+     */
     public void setApplicationFrameworkVersion(String appFrameworkVersion);
 
+    /**
+     * Get application identifiers
+     * 
+     * @return
+     */
     @XmlElement(name = "applicationIdentifiers")
     public String getApplicationIdentifiers();
 
+    /**
+     * Set application identifiers
+     * 
+     * @param applicationIdentifiers
+     */
     public void setApplicationIdentifiers(String applicationIdentifiers);
 
+    /**
+     * Get accept encoding flag
+     * 
+     * @return
+     */
     @XmlElement(name = "acceptEncoding")
     public String getAcceptEncoding();
 
+    /**
+     * Set accept encoding flag
+     * 
+     * @param acceptEncoding
+     */
     public void setAcceptEncoding(String acceptEncoding);
 
+    /**
+     * Get custom attribute 1
+     * 
+     * @return
+     */
     @XmlElement(name = "customAttribute1")
     public String getCustomAttribute1();
 
+    /**
+     * Set custom attribute 1
+     * 
+     * @param customAttribute1
+     */
     public void setCustomAttribute1(String customAttribute1);
 
+    /**
+     * Get custom attribute 2
+     * 
+     * @return
+     */
     @XmlElement(name = "customAttribute2")
     public String getCustomAttribute2();
 
+    /**
+     * Set custom attribute 2
+     * 
+     * @param customAttribute2
+     */
     public void setCustomAttribute2(String customAttribute2);
 
+    /**
+     * Get custom attribute 3
+     * 
+     * @return
+     */
     @XmlElement(name = "customAttribute3")
     public String getCustomAttribute3();
 
+    /**
+     * Set custom attribute 3
+     * 
+     * @param customAttribute3
+     */
     public void setCustomAttribute3(String customAttribute3);
 
+    /**
+     * Get custom attribute 4
+     * 
+     * @return
+     */
     @XmlElement(name = "customAttribute4")
     public String getCustomAttribute4();
 
+    /**
+     * Set custom attribute 4
+     * 
+     * @param customAttribute4
+     */
     public void setCustomAttribute4(String customAttribute4);
 
+    /**
+     * Get custom attribute 5
+     * 
+     * @return
+     */
     @XmlElement(name = "customAttribute5")
     public String getCustomAttribute5();
 
+    /**
+     * Set custom attribute 5
+     * 
+     * @param customAttribute5
+     */
     public void setCustomAttribute5(String customAttribute5);
 
+    /**
+     * Get credentials mode.<br>
+     * The device credential mode sets a security level for the devices, setting a specific user connection policy between the available policies.
+     * 
+     * @return
+     */
     @XmlElement(name = "devoceCredentialsMode")
     public DeviceCredentialsMode getCredentialsMode();
 
+    /**
+     * Set credentials mode.<br>
+     * The device credential mode sets a security level for the devices, setting a specific user connection policy between the available policies.
+     * 
+     * @param credentialsMode
+     */
     public void setCredentialsMode(DeviceCredentialsMode credentialsMode);
 
+    /**
+     * Get preferred user identifier.<br>
+     * Set the preferred user identifier that can connect to this device.
+     * 
+     * @return
+     */
     @XmlElement(name = "preferredUserId")
     public KapuaId getPreferredUserId();
 
+    /**
+     * Set preferred user identifier.<br>
+     * Set the preferred user identifier that can connect to this device.
+     * 
+     * @param deviceUserId
+     */
     public void setPreferredUserId(KapuaId deviceUserId);
 
     /*

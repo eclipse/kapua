@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.registry.event;
 
 import org.eclipse.kapua.service.KapuaEntityService;
 
+/**
+ * Device event service definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceEventService extends KapuaEntityService<DeviceEvent, DeviceEventCreator>
 {
 

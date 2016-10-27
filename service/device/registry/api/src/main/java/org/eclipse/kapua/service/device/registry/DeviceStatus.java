@@ -12,8 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+/**
+ * Device status.
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceStatus
 {
+    /**
+     * Enabled
+     */
     ENABLED,
+    /**
+     * Disabled
+     */
     DISABLED
 }

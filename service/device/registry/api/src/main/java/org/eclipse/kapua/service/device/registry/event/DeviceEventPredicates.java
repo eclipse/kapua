@@ -12,10 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
+/**
+ * Device event predicates.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceEventPredicates {
 
+    /**
+     * Device identifier
+     */
     public static final String DEVICE_ID = "deviceId";
+    /**
+     * Received on
+     */
     public static final String RECEIVED_ON = "receivedOn";
+    /**
+     * Sent on
+     */
     public static final String SENT_ON = "sentOn";
+    /**
+     * Event type
+     */
     public static final String EVENT_TYPE = "resource";
 }

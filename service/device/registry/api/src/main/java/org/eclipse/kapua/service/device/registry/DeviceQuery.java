@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
 
+/**
+ * Device query definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceQuery extends KapuaQuery<Device>
 {
 

@@ -19,6 +19,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Device event list definition.
+ * 
+ * @since 1.0
+ * 
+ */
 @XmlRootElement(name = "accountListResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceEventXmlRegistry.class,factoryMethod = "newDeviceListResult")
