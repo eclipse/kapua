@@ -10,6 +10,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 
+/**
+ * Package bundle informations list container.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "bundleInfos")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DevicePackageBundleInfosImpl implements DevicePackageBundleInfos

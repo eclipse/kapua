@@ -53,6 +53,12 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.generator.id.IdGeneratorService;
 
+/**
+ * Device package service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DevicePackageManagementServiceImpl implements DevicePackageManagementService {
 
     @Override

@@ -4,6 +4,12 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 
+/**
+ * Package response message.
+ * 
+ * @since 1.0
+ *
+ */
 public class PackageResponseMessage extends KapuaMessageImpl<PackageResponseChannel, PackageResponsePayload>
                                    implements KapuaResponseMessage<PackageResponseChannel, PackageResponsePayload>
 {
