@@ -14,6 +14,13 @@ package org.eclipse.kapua.service.device.management;
 
 import org.eclipse.kapua.message.KapuaChannel;
 
+/**
+ * Kapua control message channel definition. (Marker interface)<br>
+ * This is the marker interface used by all control message channel.
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaControlChannel extends KapuaChannel
 {
 

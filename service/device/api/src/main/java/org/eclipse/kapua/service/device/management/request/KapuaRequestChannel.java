@@ -14,9 +14,28 @@ package org.eclipse.kapua.service.device.management.request;
 import org.eclipse.kapua.service.device.management.KapuaAppChannel;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 
+/**
+ * Kapua request message channel definition.<br>
+ * This object defines the channel for a Kapua request message.<br>
+ * The request message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaRequestChannel extends KapuaAppChannel
 {
+
+    /**
+     * Get the request method
+     * 
+     * @return
+     */
     public KapuaMethod getMethod();
 
+    /**
+     * Set the request method
+     * 
+     * @param method
+     */
     public void setMethod(KapuaMethod method);
 }

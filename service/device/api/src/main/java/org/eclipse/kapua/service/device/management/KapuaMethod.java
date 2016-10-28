@@ -12,12 +12,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management;
 
+/**
+ * Kapua request/reply method definition.<br>
+ * This object defines the command types that should be supported by a Kapua device.
+ * 
+ * @since 1.0
+ *
+ */
 public enum KapuaMethod
 {
+    /**
+     * Read
+     */
     READ,
+    /**
+     * Create
+     */
     CREATE,
+    /**
+     * Write
+     */
     WRITE,
+    /**
+     * Delete
+     */
     DELETE,
+    /**
+     * Options
+     */
     OPTIONS,
+    /**
+     * Execute
+     */
     EXECUTE;
 }
