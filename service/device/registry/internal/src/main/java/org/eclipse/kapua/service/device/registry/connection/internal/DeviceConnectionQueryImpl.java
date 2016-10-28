@@ -17,13 +17,28 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 
+/**
+ * Device connection query.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceConnectionQueryImpl extends AbstractKapuaQuery<DeviceConnection> implements DeviceConnectionQuery
 {
+
+    /**
+     * Constructor
+     */
     private DeviceConnectionQueryImpl()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public DeviceConnectionQueryImpl(KapuaId scopeId)
     {
         this();

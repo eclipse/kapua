@@ -34,6 +34,12 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 
+/**
+ * Device life cycle service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService
 {
     @Override

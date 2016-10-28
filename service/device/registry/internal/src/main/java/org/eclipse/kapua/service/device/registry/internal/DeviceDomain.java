@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+/**
+ * Device domanin.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceDomain {
 	
     String DEVICE = "device";

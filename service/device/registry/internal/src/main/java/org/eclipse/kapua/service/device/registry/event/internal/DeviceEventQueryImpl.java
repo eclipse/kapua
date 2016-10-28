@@ -17,13 +17,28 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 
+/**
+ * Device event query.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceEventQueryImpl extends AbstractKapuaQuery<DeviceEvent> implements DeviceEventQuery
 {
+
+    /**
+     * Constructor
+     */
     private DeviceEventQueryImpl()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public DeviceEventQueryImpl(KapuaId scopeId)
     {
         this();

@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 
+/**
+ * Device connection summary.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceConnectionSummaryImpl implements DeviceConnectionSummary
 {
     private long connected;

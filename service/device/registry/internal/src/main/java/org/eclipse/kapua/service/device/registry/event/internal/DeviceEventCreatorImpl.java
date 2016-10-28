@@ -24,6 +24,12 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 
+/**
+ * Device event creator service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEvent> implements DeviceEventCreator
 {
     private static final long serialVersionUID = -3982569213440658172L;
@@ -52,6 +58,11 @@ public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEve
     @XmlElement(name = "eventMessage")
     private String            eventMessage;
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     protected DeviceEventCreatorImpl(KapuaId scopeId)
     {
         super(scopeId);
@@ -117,21 +128,25 @@ public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEve
         this.resource = resource;
     }
 
+    @Override
     public KapuaMethod getAction()
     {
         return action;
     }
 
+    @Override
     public void setAction(KapuaMethod action)
     {
         this.action = action;
     }
 
+    @Override
     public KapuaResponseCode getResponseCode()
     {
         return responseCode;
     }
 
+    @Override
     public void setResponseCode(KapuaResponseCode responseCode)
     {
         this.responseCode = responseCode;

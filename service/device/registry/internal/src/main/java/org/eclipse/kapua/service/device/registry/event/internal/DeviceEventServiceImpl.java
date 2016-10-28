@@ -30,6 +30,12 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
+/**
+ * Device event service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceEventServiceImpl implements DeviceEventService {
 
     private final AuthorizationService authorizationService;
@@ -38,6 +44,12 @@ public class DeviceEventServiceImpl implements DeviceEventService {
 
     private final EntityManagerSession entityManagerSession;
 
+    /**
+     * Constructor
+     * 
+     * @param authorizationService
+     * @param permissionFactory
+     */
     public DeviceEventServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
@@ -45,6 +57,9 @@ public class DeviceEventServiceImpl implements DeviceEventService {
         this.entityManagerSession = new EntityManagerSession(DeviceEntityManagerFactory.instance());
     }
 
+    /**
+     * Constructor
+     */
     public DeviceEventServiceImpl() {
         KapuaLocator locator = KapuaLocator.getInstance();
         authorizationService = locator.getService(AuthorizationService.class);

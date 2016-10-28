@@ -25,6 +25,9 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 
 /**
  * Provides logic used to validate preconditions required to execute the device service operation.
+ * 
+ * @since 1.0
+ * 
  */
 public final class DeviceValidation {
 
@@ -32,11 +35,24 @@ public final class DeviceValidation {
 
     private final AuthorizationService authorizationService;
 
+    /**
+     * Constructs
+     * 
+     * @param permissionFactory
+     * @param authorizationService
+     */
     public DeviceValidation(PermissionFactory permissionFactory, AuthorizationService authorizationService) {
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
     }
 
+    /**
+     * Validates the device creates precondition
+     * 
+     * @param deviceCreator
+     * @return
+     * @throws KapuaException
+     */
     public DeviceCreator validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
@@ -47,6 +63,13 @@ public final class DeviceValidation {
         return deviceCreator;
     }
 
+    /**
+     * Validates the device updates precondition
+     * 
+     * @param device
+     * @return
+     * @throws KapuaException
+     */
     public Device validateUpdatePreconditions(Device device) throws KapuaException {
         ArgumentValidator.notNull(device, "device");
         ArgumentValidator.notNull(device.getId(), "device.id");
@@ -57,6 +80,13 @@ public final class DeviceValidation {
         return device;
     }
 
+    /**
+     * Validates the find device precondition
+     * 
+     * @param scopeId
+     * @param entityId
+     * @throws KapuaException
+     */
     public void validateFindPreconditions(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
@@ -64,6 +94,12 @@ public final class DeviceValidation {
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, scopeId));
     }
 
+    /**
+     * Validates the device query precondition
+     * 
+     * @param query
+     * @throws KapuaException
+     */
     public void validateQueryPreconditions(KapuaQuery<Device> query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -71,6 +107,12 @@ public final class DeviceValidation {
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, query.getScopeId()));
     }
 
+    /**
+     * Validates the device count precondition
+     * 
+     * @param query
+     * @throws KapuaException
+     */
     public void validateCountPreconditions(KapuaQuery<Device> query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -78,6 +120,13 @@ public final class DeviceValidation {
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, query.getScopeId()));
     }
 
+    /**
+     * Validates the device delete precondition
+     * 
+     * @param scopeId
+     * @param deviceId
+     * @throws KapuaException
+     */
     public void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
         ArgumentValidator.notNull(deviceId, "device.id");
         ArgumentValidator.notNull(scopeId, "device.scopeId");
@@ -85,6 +134,13 @@ public final class DeviceValidation {
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.delete, scopeId));
     }
 
+    /**
+     * Validates the device find by identifier precondition
+     * 
+     * @param scopeId
+     * @param clientId
+     * @throws KapuaException
+     */
     public void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");

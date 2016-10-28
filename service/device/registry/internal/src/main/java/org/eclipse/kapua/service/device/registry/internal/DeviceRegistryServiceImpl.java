@@ -28,22 +28,29 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 
+/**
+ * Device registry service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceRegistryServiceImpl implements DeviceRegistryService {
 
     // Collaborator members
-
     private final AuthorizationService authorizationService;
-
     private final PermissionFactory permissionFactory;
-
     private final DeviceValidation deviceValidation;
-
     private final DeviceEntityManagerFactory deviceEntityManagerFactory;
-
     private final EntityManagerSession entityManagerSession;
 
     // Constructors
-
+    /**
+     * Constructor
+     * 
+     * @param authorizationService
+     * @param permissionFactory
+     * @param deviceEntityManagerFactory
+     */
     public DeviceRegistryServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory, DeviceEntityManagerFactory deviceEntityManagerFactory) {
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
@@ -52,6 +59,9 @@ public class DeviceRegistryServiceImpl implements DeviceRegistryService {
         this.entityManagerSession = new EntityManagerSession(deviceEntityManagerFactory);
     }
 
+    /**
+     * Constructor
+     */
     public DeviceRegistryServiceImpl() {
         KapuaLocator locator = KapuaLocator.getInstance();
         authorizationService = locator.getService(AuthorizationService.class);

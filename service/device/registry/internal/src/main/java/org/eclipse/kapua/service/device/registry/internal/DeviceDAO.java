@@ -22,8 +22,21 @@ import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
+/**
+ * Device DAO
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceDAO extends ServiceDAO {
 
+    /**
+     * Creates a new Device
+     * 
+     * @param em
+     * @param deviceCreator
+     * @return
+     */
     public static Device create(EntityManager em, DeviceCreator deviceCreator) {
         Device device = new DeviceImpl(deviceCreator.getScopeId());
 
@@ -59,25 +72,61 @@ public class DeviceDAO extends ServiceDAO {
         return ServiceDAO.create(em, device);
     }
 
+    /**
+     * Updates the provided device
+     * 
+     * @param em
+     * @param device
+     * @return
+     */
     public static Device update(EntityManager em, Device device) {
         DeviceImpl deviceImpl = (DeviceImpl) device;
         return ServiceDAO.update(em, DeviceImpl.class, deviceImpl);
     }
 
+    /**
+     * Finds the device by device identifier
+     * 
+     * @param em
+     * @param deviceId
+     * @return
+     */
     public static Device find(EntityManager em, KapuaId deviceId) {
         return em.find(DeviceImpl.class, deviceId);
     }
 
+    /**
+     * Returns the device list matching the provided query
+     * 
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
         return ServiceDAO.query(em, Device.class, DeviceImpl.class, new DeviceListResultImpl(), query);
     }
 
+    /**
+     * Returns the device count matching the provided query
+     * 
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static long count(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
         return ServiceDAO.count(em, Device.class, DeviceImpl.class, query);
     }
 
+    /**
+     * Deletes the device by device identifier
+     * 
+     * @param em
+     * @param deviceId
+     */
     public static void delete(EntityManager em, KapuaId deviceId) {
         ServiceDAO.delete(em, DeviceImpl.class, deviceId);
     }

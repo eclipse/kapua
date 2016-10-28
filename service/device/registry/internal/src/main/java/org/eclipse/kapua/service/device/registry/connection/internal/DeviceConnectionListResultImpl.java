@@ -16,6 +16,12 @@ import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 
+/**
+ * Device connection list.
+ *
+ * @since 1.0
+ *
+ */
 public class DeviceConnectionListResultImpl extends KapuaListResultImpl<DeviceConnection> implements DeviceConnectionListResult
 {
     private static final long serialVersionUID = -4450707993798807403L;

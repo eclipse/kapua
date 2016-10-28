@@ -19,6 +19,12 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
+/**
+ * Device service factory implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceFactoryImpl implements DeviceFactory
 {
 
