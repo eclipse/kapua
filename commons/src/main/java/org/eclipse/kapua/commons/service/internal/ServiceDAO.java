@@ -27,7 +27,10 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
@@ -387,13 +390,14 @@ public class ServiceDAO {
         Expression<Boolean> expr;
         String attrName = attrPred.getAttributeName();
         Object attrValue = attrPred.getAttributeValue();
+        SingularAttribute attribute = entityType.getSingularAttribute(attrName);
         if (attrValue instanceof Object[] && ((Object[]) attrValue).length == 1) {
             Object[] attrValues = (Object[]) attrValue;
             attrValue = attrValues[0];
         }
         if (attrValue instanceof Object[]) {
             Object[] attrValues = (Object[]) attrValue;
-            Expression<?> inPredicate = entityRoot.get(entityType.getSingularAttribute(attrName));
+            Expression<?> inPredicate = entityRoot.get(attribute);
             In inExpr = cb.in(inPredicate);
             for (Object value : attrValues) {
                 inExpr.value(value);
@@ -404,30 +408,69 @@ public class ServiceDAO {
             case LIKE:
                 ParameterExpression<String> pl = cb.parameter(String.class);
                 binds.put(pl, "%" + attrValue + "%");
-                expr = cb.like((Expression<String>) entityRoot.get(entityType.getSingularAttribute(attrName)), pl);
+                expr = cb.like((Expression<String>) entityRoot.get(attribute), pl);
                 break;
 
             case STARTS_WITH:
                 ParameterExpression<String> psw = cb.parameter(String.class);
                 binds.put(psw, attrValue + "%");
-                expr = cb.like((Expression<String>) entityRoot.get(entityType.getSingularAttribute(attrName)), psw);
+                expr = cb.like((Expression<String>) entityRoot.get(attribute), psw);
                 break;
 
             case IS_NULL:
-                expr = cb.isNull(entityRoot.get(entityType.getSingularAttribute(attrName)));
+                expr = cb.isNull(entityRoot.get(attribute));
                 break;
 
             case NOT_NULL:
-                expr = cb.isNotNull(entityRoot.get(entityType.getSingularAttribute(attrName)));
+                expr = cb.isNotNull(entityRoot.get(attribute));
                 break;
 
             case NOT_EQUAL:
-                expr = cb.notEqual(entityRoot.get(entityType.getSingularAttribute(attrName)), attrValue);
+                expr = cb.notEqual(entityRoot.get(attribute), attrValue);
                 break;
 
+            case GREATER_THAN:
+                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = entityRoot.get(attribute);
+                    Comparable comparablAttrValue = (Comparable) attrValue;
+                    expr = cb.greaterThan(comparableExpression, comparablAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                }
+                break;
+
+            case GREATER_THAN_OR_EQUAL:
+                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = entityRoot.get(attribute);
+                    Comparable comparablAttrValue = (Comparable) attrValue;
+                    expr = cb.greaterThanOrEqualTo(comparableExpression, comparablAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                }
+                break;
+
+            case LESS_THAN:
+                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = entityRoot.get(attribute);
+                    Comparable comparablAttrValue = (Comparable) attrValue;
+                    expr = cb.lessThan(comparableExpression, comparablAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                }
+                break;
+            case LESS_THAN_OR_EQUAL:
+                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    Expression<? extends Comparable> comparableExpression = entityRoot.get(attribute);
+                    Comparable comparablAttrValue = (Comparable) attrValue;
+                    expr = cb.lessThanOrEqualTo(comparableExpression, comparablAttrValue);
+                } else {
+                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                }
+                break;
+                
             default:
             case EQUAL:
-                expr = cb.equal(entityRoot.get(entityType.getSingularAttribute(attrName)), attrValue);
+                expr = cb.equal(entityRoot.get(attribute), attrValue);
                 break;
             }
         }
