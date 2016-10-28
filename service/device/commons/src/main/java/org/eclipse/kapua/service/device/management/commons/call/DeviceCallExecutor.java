@@ -28,23 +28,52 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 import org.eclipse.kapua.translator.Translator;
 
+/**
+ * Device call executor definition.<br>
+ * This object executes call, collecting the response from the device.
+ * 
+ * @param <C> request channel type
+ * @param <P> request payload type
+ * @param <RQ> request message type
+ * @param <RS> response message type
+ * 
+ * @since 1.0
+ * 
+ */
 @SuppressWarnings("rawtypes")
 public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage>
 {
     private RQ   requestMessage;
     private Long timeout;
 
+    /**
+     * Constructor
+     * 
+     * @param requestMessage
+     */
     public DeviceCallExecutor(RQ requestMessage)
     {
         this(requestMessage, null);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param requestMessage
+     * @param timeout
+     */
     public DeviceCallExecutor(RQ requestMessage, Long timeout)
     {
         this.requestMessage = requestMessage;
         this.timeout = timeout;
     }
 
+    /**
+     * Performs the device call
+     * 
+     * @return
+     * @throws KapuaException
+     */
     @SuppressWarnings({ "unchecked" })
     public RS send()
         throws KapuaException

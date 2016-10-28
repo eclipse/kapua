@@ -14,14 +14,38 @@ package org.eclipse.kapua.service.device.management.commons.exception;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
+/**
+ * Device management error codes.
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceManagementErrorCodes implements KapuaErrorCode
 {
+    /**
+     * Request exception
+     */
     REQUEST_EXCEPTION,
+    /**
+     * Bad request method
+     */
     REQUEST_BAD_METHOD,
 
+    /**
+     * Response parse exception
+     */
     RESPONSE_PARSE_EXCEPTION,
 
+    /**
+     * Bad request
+     */
     RESPONSE_BAD_REQUEST,
+    /**
+     * Response not found
+     */
     RESPONSE_NOT_FOUND,
+    /**
+     * Response internal error
+     */
     RESPONSE_INTERNAL_ERROR;
 }

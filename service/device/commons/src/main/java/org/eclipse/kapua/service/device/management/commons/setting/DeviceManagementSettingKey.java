@@ -14,19 +14,38 @@ package org.eclipse.kapua.service.device.management.commons.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
+/**
+ * Available settings key for device management service
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceManagementSettingKey implements SettingKey
 {
+
+    /**
+     * Character encoding
+     */
     CHAR_ENCODING("character.encoding"),
 
+    /**
+     * Request timeout
+     */
     REQUEST_TIMEOUT("request.timeout");
 
     private String key;
 
+    /**
+     * Constructor
+     * 
+     * @param key
+     */
     private DeviceManagementSettingKey(String key)
     {
         this.key = key;
     }
 
+    @Override
     public String key()
     {
         return key;

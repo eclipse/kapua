@@ -17,6 +17,12 @@ import java.util.List;
 import org.eclipse.kapua.service.device.management.KapuaAppChannel;
 import org.eclipse.kapua.service.device.management.KapuaAppProperties;
 
+/**
+ * Kapua application message channel implementation.<br>
+ * 
+ * @since 1.0
+ *
+ */
 public abstract class KapuaAppChannelImpl implements KapuaAppChannel
 {
 

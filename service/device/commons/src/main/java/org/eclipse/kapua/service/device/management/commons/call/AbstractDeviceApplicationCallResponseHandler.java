@@ -18,8 +18,25 @@ import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraRespo
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 
+/**
+ * Device application call response handler.<br>
+ * This handler gets the call response from a device and convert it to the expected object type.
+ * 
+ * @param <T> expected response type
+ * 
+ * @since 1.0
+ * 
+ */
 public abstract class AbstractDeviceApplicationCallResponseHandler<T>
 {
+
+    /**
+     * Handle the device reply and convert it to the proper type
+     * 
+     * @param responseMessage
+     * @return
+     * @throws DeviceManagementException
+     */
     @SuppressWarnings("rawtypes")
     public T handle(DeviceResponseMessage responseMessage)
         throws DeviceManagementException
@@ -55,10 +72,23 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T>
         return responseObject;
     }
 
+    /**
+     * Handle an accepted request reply
+     * 
+     * @param responseMessage
+     * @return
+     * @throws DeviceManagementException
+     */
     @SuppressWarnings("rawtypes")
     protected abstract T handleAcceptedRequest(DeviceResponseMessage responseMessage)
         throws DeviceManagementException;
 
+    /**
+     * Handle a bad request reply
+     * 
+     * @param responseMessage
+     * @throws DeviceManagementException
+     */
     @SuppressWarnings("rawtypes")
     protected void handleBadRequestReply(DeviceResponseMessage responseMessage)
         throws DeviceManagementException
@@ -73,6 +103,12 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T>
                                                            responsePayload.getExceptionStack() });
     }
 
+    /**
+     * Handle an internal error reply
+     * 
+     * @param responseMessage
+     * @throws DeviceManagementException
+     */
     @SuppressWarnings("rawtypes")
     protected void handleDeviceInternalErrorReply(DeviceResponseMessage responseMessage)
         throws DeviceManagementException
@@ -87,6 +123,12 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T>
                                                            responsePayload.getExceptionStack() });
     }
 
+    /**
+     * Handle a resource not found reply
+     * 
+     * @param responseMessage
+     * @throws DeviceManagementException
+     */
     @SuppressWarnings("rawtypes")
     protected void handleNotFoundReply(DeviceResponseMessage responseMessage)
         throws DeviceManagementException
