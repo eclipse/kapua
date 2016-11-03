@@ -343,7 +343,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         try {
             TypedQuery<Account> q;
             q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
-            q.setParameter("parentAccountPath", account.getParentAccountPath() + "/%");
+            q.setParameter("parentAccountPath", "\\" + account.getParentAccountPath() + "/%");
 
             result = new AccountListResultImpl();
             result.addItems(q.getResultList());
