@@ -16,11 +16,14 @@ import java.util.Set;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -30,6 +33,7 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 import org.eclipse.kapua.service.authorization.user.role.UserRoles;
 import org.eclipse.kapua.service.authorization.user.role.UserRolesCreator;
 import org.eclipse.kapua.service.authorization.user.role.UserRolesListResult;
+import org.eclipse.kapua.service.authorization.user.role.UserRolesQuery;
 import org.eclipse.kapua.service.authorization.user.role.UserRolesService;
 
 /**
@@ -48,8 +52,7 @@ public class UserRolesServiceImpl extends AbstractKapuaService implements UserRo
 
     @Override
     public UserRoles create(UserRolesCreator userRoleCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(userRoleCreator, "userRoleCreator");
         ArgumentValidator.notNull(userRoleCreator.getUserId(), "userRoleCreator.userId");
         ArgumentValidator.notEmptyOrNull(userRoleCreator.getRoles(), "userRoleCreator.roles");
@@ -82,8 +85,7 @@ public class UserRolesServiceImpl extends AbstractKapuaService implements UserRo
 
     @Override
     public UserRoles find(KapuaId scopeId, KapuaId userRoleId)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(userRoleId, "userRoleId");
 
@@ -99,8 +101,7 @@ public class UserRolesServiceImpl extends AbstractKapuaService implements UserRo
 
     @Override
     public UserRolesListResult query(KapuaQuery<UserRoles> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -112,12 +113,11 @@ public class UserRolesServiceImpl extends AbstractKapuaService implements UserRo
         authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> UserRolesDAO.query(em, query));
-    }
+        } finally {
 
     @Override
     public long count(KapuaQuery<UserRoles> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -131,10 +131,23 @@ public class UserRolesServiceImpl extends AbstractKapuaService implements UserRo
         return entityManagerSession.onResult(em -> UserRolesDAO.count(em, query));
     }
 
+    public UserRoles findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        UserRolesQuery userRolesQuery = new UserRolesQueryImpl(scopeId);
+        KapuaPredicate predicate = new AttributePredicate<KapuaId>(UserRolesPredicates.USER_ID, userId);
+        userRolesQuery.setPredicate(predicate);
+
+        UserRoles userRoles = null;
+        UserRolesListResult result = query(userRolesQuery);
+        if (result.getSize() == 1) {
+            userRoles = result.getItem(0);
+        }
+
+        return userRoles;
+    }
+
     @Override
     public UserRolesListResult merge(Set<UserRolesCreator> newPermissions)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

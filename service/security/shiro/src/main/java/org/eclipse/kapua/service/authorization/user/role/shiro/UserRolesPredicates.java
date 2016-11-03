@@ -18,10 +18,10 @@ package org.eclipse.kapua.service.authorization.user.role.shiro;
  * @since 1.0
  * 
  */
-public class UserRolesPredicates
-{
+public class UserRolesPredicates {
+
     /**
-     * Role name
+     * User Id
      */
-    public static final String ROLE_NAME = "name";
+    public static final String USER_ID = "userId";
 }

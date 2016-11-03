@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -46,8 +47,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public Role create(RoleCreator roleCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
         ArgumentValidator.notNull(roleCreator.getRoles(), "roleCreator.permissions");
@@ -79,8 +79,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public Role find(KapuaId scopeId, KapuaId roleId)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(roleId, "roleId");
 
@@ -92,12 +91,11 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
         authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> RoleDAO.find(em, roleId));
-    }
+        } catch (Exception e) {
 
     @Override
     public RoleListResult query(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -113,8 +111,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public long count(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -130,8 +127,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public RoleListResult merge(Set<RoleCreator> newPermissions)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

@@ -25,37 +25,55 @@ import org.eclipse.kapua.service.KapuaEntityService;
  * @since 1.0
  *
  */
-public interface RoleService extends KapuaEntityService<Role, RoleCreator>
-{
+public interface RoleService extends KapuaEntityService<Role, RoleCreator> {
+
     /**
      * Creates a new {@link Role} based on the parameters provided by the creator
+     * 
+     * @since 1.0
      */
     public Role create(RoleCreator creator)
-        throws KapuaException;
+            throws KapuaException;
+
+    /**
+     * Updates the role according the given updated entity
+     * 
+     * @since 1.0
+     */
+    public Role update(Role role)
+            throws KapuaException;
 
     /**
      * Find the {@link Role} specified by the provided account identifier and entity identifier
+     * 
+     * @since 1.0
      */
     public Role find(KapuaId accountId, KapuaId entityId)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Return the role list for the specific role query
+     * 
+     * @since 1.0
      */
     public RoleListResult query(KapuaQuery<Role> query)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Return the role count for the specific role query
+     * 
+     * @since 1.0
      */
     public long count(KapuaQuery<Role> query)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Delete the role identified by the provided entity
+     * 
+     * @since 1.0
      */
     public void delete(KapuaId scopeId, KapuaId entityId)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Merge the new permissions list with the already persisted permissions.<br>
@@ -64,7 +82,9 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>
      * @param newPermissions
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0
      */
     public RoleListResult merge(Set<RoleCreator> newPermissions)
-        throws KapuaException;
+            throws KapuaException;
 }
