@@ -24,8 +24,8 @@ import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
 import org.eclipse.kapua.app.console.client.widget.color.Color;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;

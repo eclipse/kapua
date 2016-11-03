@@ -24,7 +24,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -129,7 +129,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // convert to GwtAccount and return
             // reload the user as we want to load all its permissions
-            gwtUser = KapuaGwtConverter.convert(userService.find(user.getScopeId(), user.getId()));
+            gwtUser = KapuaGwtModelConverter.convert(userService.find(user.getScopeId(), user.getId()));
         }
         catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -243,7 +243,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 //
                 // convert to GwtAccount and return
                 // reload the user as we want to load all its permissions
-                gwtUserUpdated = KapuaGwtConverter.convert(userService.find(user.getScopeId(), user.getId()));
+                gwtUserUpdated = KapuaGwtModelConverter.convert(userService.find(user.getScopeId(), user.getId()));
             }
         }
         catch (Throwable t) {
@@ -284,7 +284,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             UserService userService = locator.getService(UserService.class);
             User user = userService.find(scopeId, userId);
             if (user != null) {
-                gwtUser = KapuaGwtConverter.convert(user);
+                gwtUser = KapuaGwtModelConverter.convert(user);
             }
         }
         catch (Throwable t) {
@@ -307,7 +307,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             UserListResult list = userService.query(query);
 
             for (User user : list.getItems()) {
-                gwtUserList.add(KapuaGwtConverter.convert(user));
+                gwtUserList.add(KapuaGwtModelConverter.convert(user));
             }
         }
         catch (Throwable t) {

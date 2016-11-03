@@ -15,6 +15,8 @@ package org.eclipse.kapua.app.console.shared.model;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+
 public class GwtSession extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = -4511854889803351914L;

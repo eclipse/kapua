@@ -20,9 +20,9 @@ import org.eclipse.kapua.app.console.client.ui.button.Button;
 import org.eclipse.kapua.app.console.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 

@@ -10,7 +10,9 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.shared.model.account;
+
+import org.eclipse.kapua.app.console.shared.model.GwtStringListItem;
 
 public class GwtAccountStringListItem extends GwtStringListItem
 {

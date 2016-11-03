@@ -24,7 +24,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.kapua.app.console.shared.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger     s_logger         = LoggerFactory.getLogger(KapuaGwtConverter.class);
+    private static Logger     s_logger         = LoggerFactory.getLogger(KapuaGwtModelConverter.class);
 
     /**
      *

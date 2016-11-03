@@ -19,95 +19,99 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
     private static final long serialVersionUID = -7753268319786525424L;
 
     /**
-     * Defines the domain of the object protected by the Permission
+     * Defines the domain of the object protected by the {@link GwtPermission}
      */
-    public enum Domain {
-        account, user, data, device, rule, apis, broker, system, simcard, simprovider, certificate, self;
+    public enum GwtDomain {
+        account, //
+        credential, //
+        datastore, //
+        device_connection, //
+        device, //
+        device_event, //
+        device_management, //
+        role, //
+        user, //
+        user_permission, //
     }
 
     /**
-     * Defines the actions allowed by the Permission
+     * Defines the actions allowed by the {@link GwtPermission}
      */
-    public enum Action {
-        view, manage, connect, all;
+    public enum GwtAction {
+        read, //
+        write, //
+        delete, //
+        connect, //
+        exec;
     }
 
-    private Domain m_domain;
-    private Action m_action;
-    private long m_accountId;
+    private GwtDomain domain;
+    private GwtAction action;
+    private String targetScopeId;
 
     /**
      * Gwt Permission constructor.
      * 
      * @param domain
+     *            The {@link GwtDomain} of the permission
      * @param action
-     * @param accountId
+     *            The {@link GwtAction} of the permission
+     * @param targetScopeId
+     *            The target scope id of the permission
      */
-    public GwtPermission(Domain domain, Action action, long accountId) {
-        m_domain = domain;
-        m_action = action;
-        m_accountId = accountId;
+    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId) {
+        this.domain = domain;
+        this.action = action;
+        this.targetScopeId = targetScopeId;
     }
 
     /**
-     * Gwt Permission constructor.
+     * Returns the string representation for this {@link GwtPermission} in the following format:
+     * <p>
+     * {domain}[:{action}[:{targetScopeId]]
+     * </p>
      * 
-     * @param domain
-     * @param action
+     * @return the formatted string representation of this {@link GwtPermission}
+     * @since 1.0.0
      */
-    public GwtPermission(Domain domain, Action action) {
-        m_domain = domain;
-        m_action = action;
-        m_accountId = -1;
-    }
-
-    /**
-     * Gwt Permission constructor.
-     * 
-     * @param domain
-     */
-    public GwtPermission(Domain domain) {
-        m_domain = domain;
-        m_action = null;
-        m_accountId = -1;
-    }
-
-    /**
-     * Returns the string representation for this Permission
-     */
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(m_domain.name());
-        if (m_action != null) {
+        sb.append(domain.name());
+
+        if (action != null) {
             sb.append(":")
-                    .append(m_action.name());
+                    .append(action.name());
         }
-        if (m_accountId >= 0) {
+        if (targetScopeId != null) {
             sb.append(":")
-                    .append(String.valueOf(m_accountId));
+                    .append(targetScopeId);
         }
         return sb.toString();
     }
 
     /**
-     * @return the domain
+     * @return the domain of this permission
+     * @since 1.0.0
      */
-    public Domain getDomain() {
-        return m_domain;
+    public GwtDomain getDomain() {
+        return domain;
     }
 
     /**
-     * @return the action
+     * @return the action of this permission
+     * @since 1.0.0
      */
-    public Action getAction() {
-        return m_action;
+    public GwtAction getAction() {
+        return action;
     }
 
     /**
-     * @return the accountId
+     * @return the target scope id of this permission
+     * @since 1.0.0
      */
-    public long getAccountId() {
-        return m_accountId;
+    public String getTargetScopeId() {
+        return targetScopeId;
     }
 }

@@ -18,13 +18,13 @@ import java.util.Properties;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.GwtAccountCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -85,7 +85,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             Account account = accountService.create(accountCreator);
 
             // convert to GwtAccount and return
-            gwtAccount = KapuaGwtConverter.convert(account);
+            gwtAccount = KapuaGwtModelConverter.convert(account);
         }
         catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -102,7 +102,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            gwtAccount = KapuaGwtConverter.convert(accountService.find(accountId));
+            gwtAccount = KapuaGwtModelConverter.convert(accountService.find(accountId));
         }
         catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -181,7 +181,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             account = accountService.update(account);
 
             // convert to GwtAccount and return
-            gwtAccountUpdated = KapuaGwtConverter.convert(account);
+            gwtAccountUpdated = KapuaGwtModelConverter.convert(account);
         }
         catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -218,7 +218,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             account = accountService.update(account);
 
             // convert to GwtAccount and return
-            gwtAccountUpdated = KapuaGwtConverter.convert(account);
+            gwtAccountUpdated = KapuaGwtModelConverter.convert(account);
         }
         catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -262,7 +262,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             KapuaListResult<Account> list = accountService.query(query);
             for (Account account : list.getItems()) {
-                gwtAccountList.add(KapuaGwtConverter.convert(account));
+                gwtAccountList.add(KapuaGwtModelConverter.convert(account));
             }
         }
         catch (Throwable t) {
@@ -287,7 +287,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             KapuaListResult<Account> list = accountService.query(query);
             for (Account account : list.getItems()) {
-                gwtAccountList.add(KapuaGwtConverter.convert(account));
+                gwtAccountList.add(KapuaGwtModelConverter.convert(account));
             }
         }
         catch (Throwable t) {
@@ -335,7 +335,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             AccountService accountService = locator.getService(AccountService.class);
             Account account = accountService.findByName(accountName);
             if (account != null) {
-                gwtAccount = KapuaGwtConverter.convert(account);
+                gwtAccount = KapuaGwtModelConverter.convert(account);
             }
         }
         catch (Throwable t) {

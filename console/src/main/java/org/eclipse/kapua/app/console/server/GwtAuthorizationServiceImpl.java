@@ -20,11 +20,11 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -113,7 +113,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 if (gwtSession == null) {
                     gwtSession = establishSession();
                 } else {
-                    gwtSession.setGwtUser(KapuaGwtConverter.convert(user));
+                    gwtSession.setGwtUser(KapuaGwtModelConverter.convert(user));
                 }
             }
         } catch (Throwable t) {
@@ -169,8 +169,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         //
         // Convert entities
-        GwtUser gwtUser = KapuaGwtConverter.convert(user);
-        GwtAccount gwtAccount = KapuaGwtConverter.convert(account);
+        GwtUser gwtUser = KapuaGwtModelConverter.convert(user);
+        GwtAccount gwtAccount = KapuaGwtModelConverter.convert(account);
 
         //
         // Build the session

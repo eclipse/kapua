@@ -27,8 +27,8 @@ import org.eclipse.kapua.model.id.KapuaId;
  * 
  */
 @Embeddable
-public class KapuaEid implements KapuaId, Serializable
-{
+public class KapuaEid implements KapuaId, Serializable {
+
     private static final long serialVersionUID = 8998805462408705432L;
 
     protected BigInteger      eid;
@@ -36,8 +36,7 @@ public class KapuaEid implements KapuaId, Serializable
     /**
      * Constructor
      */
-    public KapuaEid()
-    {
+    public KapuaEid() {
     }
 
     /**
@@ -45,10 +44,18 @@ public class KapuaEid implements KapuaId, Serializable
      * 
      * @param id
      */
-    public KapuaEid(BigInteger id)
-    {
+    public KapuaEid(BigInteger id) {
         this();
         this.eid = id;
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param id
+     */
+    public KapuaEid(KapuaId id) {
+        this(id.getId());
     }
 
     /**
@@ -64,8 +71,7 @@ public class KapuaEid implements KapuaId, Serializable
     }
 
     @Override
-    public BigInteger getId()
-    {
+    public BigInteger getId() {
         return eid;
     }
 
@@ -74,20 +80,17 @@ public class KapuaEid implements KapuaId, Serializable
      * 
      * @param eid
      */
-    protected void setId(BigInteger eid)
-    {
+    protected void setId(BigInteger eid) {
         this.eid = eid;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return eid.toString();
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((eid == null) ? 0 : eid.hashCode());
@@ -95,8 +98,7 @@ public class KapuaEid implements KapuaId, Serializable
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
@@ -107,8 +109,7 @@ public class KapuaEid implements KapuaId, Serializable
         if (eid == null) {
             if (other.eid != null)
                 return false;
-        }
-        else if (!eid.equals(other.eid))
+        } else if (!eid.equals(other.eid))
             return false;
         return true;
     }

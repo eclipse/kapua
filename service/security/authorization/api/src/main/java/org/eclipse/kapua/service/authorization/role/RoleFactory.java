@@ -21,13 +21,25 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface RoleFactory extends KapuaObjectFactory
-{
+public interface RoleFactory extends KapuaObjectFactory {
+
+    /**
+     * Creates a new {@link Role} for the specified scope identifier
+     * 
+     * @param scopeId
+     * @return
+     * 
+     * @since 1.0
+     */
+    public Role newRole(KapuaId scopeId);
+
     /**
      * Creates a new {@link RoleCreator} for the specified scope identifier
      * 
      * @param scopeId
      * @return
+     * 
+     * @since 1.0
      */
     public RoleCreator newCreator(KapuaId scopeId);
 
@@ -36,6 +48,8 @@ public interface RoleFactory extends KapuaObjectFactory
      * 
      * @param scopeId
      * @return
+     * 
+     * @since 1.0
      */
     public RoleQuery newQuery(KapuaId scopeId);
 }

@@ -29,7 +29,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDe
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
@@ -88,7 +88,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
             Device device = deviceRegistryService.findByClientId(scopeId, clientId);
 
-            gwtDevice = KapuaGwtConverter.convert(device);
+            gwtDevice = KapuaGwtModelConverter.convert(device);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -253,7 +253,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
 
             for (Device d : devices.getItems()) {
-                GwtDevice gwtDevice = KapuaGwtConverter.convert(d);
+                GwtDevice gwtDevice = KapuaGwtModelConverter.convert(d);
 
                 // Connection info
                 gwtDevice.setGwtDeviceConnectionStatus(GwtDeviceConnectionStatus.DISCONNECTED.name());
@@ -321,7 +321,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             Device device = deviceRegistryService.create(deviceCreator);
 
-            gwtDevice = KapuaGwtConverter.convert(device);
+            gwtDevice = KapuaGwtModelConverter.convert(device);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -371,7 +371,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             device = deviceRegistryService.update(device);
 
             // Convert to gwt object
-            gwtDeviceUpdated = KapuaGwtConverter.convert(device);
+            gwtDeviceUpdated = KapuaGwtModelConverter.convert(device);
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -431,7 +431,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             // prepare results
             for (DeviceEvent deviceEvent : deviceEvents.getItems()) {
-                gwtDeviceEvents.add(KapuaGwtConverter.convert(deviceEvent));
+                gwtDeviceEvents.add(KapuaGwtModelConverter.convert(deviceEvent));
             }
             gwtResults = new BasePagingLoadResult<GwtDeviceEvent>(gwtDeviceEvents);
             gwtResults.setOffset(loadConfig.getOffset());

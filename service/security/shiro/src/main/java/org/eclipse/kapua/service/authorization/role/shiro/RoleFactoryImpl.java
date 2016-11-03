@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
@@ -23,18 +24,20 @@ import org.eclipse.kapua.service.authorization.role.RoleQuery;
  * @since 1.0
  * 
  */
-public class RoleFactoryImpl implements RoleFactory
-{
+public class RoleFactoryImpl implements RoleFactory {
 
     @Override
-    public RoleCreator newCreator(KapuaId scopeId)
-    {
+    public Role newRole(KapuaId scopeId) {
+        return new RoleImpl(scopeId);
+    }
+
+    @Override
+    public RoleCreator newCreator(KapuaId scopeId) {
         return new RoleCreatorImpl(scopeId);
     }
 
     @Override
-    public RoleQuery newQuery(KapuaId scopeId)
-    {
+    public RoleQuery newQuery(KapuaId scopeId) {
         return new RoleQueryImpl(scopeId);
     }
 

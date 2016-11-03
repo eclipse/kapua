@@ -10,16 +10,16 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.shared.model.account;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import org.eclipse.kapua.app.console.client.util.DateUtils;
+import org.eclipse.kapua.app.console.shared.model.GwtOrganization;
+import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GwtAccount extends KapuaBaseModel implements Serializable {
+public class GwtAccount extends GwtUpdatableEntityModel implements Serializable {
 
     private static final long serialVersionUID = -5999185569672904770L;
 
@@ -61,82 +61,7 @@ public class GwtAccount extends KapuaBaseModel implements Serializable {
     private GwtOrganization gwtOrganization;
 
     public GwtAccount() {
-    }
-
-    public String getId() {
-        return (String) get("id");
-    }
-
-    public void setId(String id) {
-        set("id", id);
-    }
-
-    @Override
-    @SuppressWarnings({ "unchecked" })
-    public <X> X get(String property) {
-        if ("createdOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getCreatedOn()));
-        } else if ("modifiedOnFormatted".equals(property)) {
-            return (X) (DateUtils.formatDateTime(getModifiedOn()));
-        } else {
-            return super.get(property);
-        }
-    }
-
-    public Date getCreatedOn() {
-        return (Date) get("createdOn");
-    }
-
-    public String getCreatedOnFormatted() {
-        return get("createdOnFormatted");
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        set("createdOn", createdOn);
-    }
-
-    public String getCreatedBy() {
-        return (String) get("createdBy");
-    }
-
-    public void setCreatedBy(String createdBy) {
-        set("createdBy", createdBy);
-    }
-
-    public String getCreatedByFormatted() {
-        return (String) get("createdByFormatted");
-    }
-
-    public void setCreatedByFormatted(String createdByFormatted) {
-        set("createdByFormatted", createdByFormatted);
-    }
-
-    public Date getModifiedOn() {
-        return (Date) get("modifiedOn");
-    }
-
-    public String getModifiedOnFormatted() {
-        return DateUtils.formatDateTime((Date) get("modifiedOn"));
-    }
-
-    public void setModifiedOn(Date modifiedOn) {
-        set("modifiedOn", modifiedOn);
-    }
-
-    public String getModifiedBy() {
-        return (String) get("modifiedBy");
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        set("modifiedBy", modifiedBy);
-    }
-
-    public String getModifiedByFormatted() {
-        return (String) get("modifiedByFormatted");
-    }
-
-    public void setModifiedByFormatted(String modifiedByFormatted) {
-        set("modifiedByFormatted", modifiedByFormatted);
+        super();
     }
 
     public String getName() {
@@ -218,4 +143,5 @@ public class GwtAccount extends KapuaBaseModel implements Serializable {
     public int getOptlock() {
         return (Integer) get("optlock");
     }
+
 }
