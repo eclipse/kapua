@@ -17,6 +17,12 @@ import java.util.Date;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 
+/**
+ * Device command input entity implementation.
+ *
+ * @since 1.0
+ *
+ */
 public class DeviceCommandInputImpl implements DeviceCommandInput {
 
 	private String command;

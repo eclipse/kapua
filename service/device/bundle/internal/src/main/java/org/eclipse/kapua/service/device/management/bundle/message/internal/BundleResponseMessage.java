@@ -16,6 +16,12 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 
+/**
+ * Device bundle information response message.
+ * 
+ * @since 1.0
+ * 
+ */
 public class BundleResponseMessage extends KapuaMessageImpl<BundleResponseChannel, BundleResponsePayload>
                                           implements KapuaResponseMessage<BundleResponseChannel, BundleResponsePayload>
 {

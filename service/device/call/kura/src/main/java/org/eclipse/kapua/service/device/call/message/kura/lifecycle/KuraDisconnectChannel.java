@@ -14,18 +14,40 @@ package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+/**
+ * Kura device disconnect message channel implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraDisconnectChannel extends KuraChannel
 {
 
+    /**
+     * Constructor
+     */
     public KuraDisconnectChannel()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraDisconnectChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param messageClassification
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraDisconnectChannel(String messageClassification, String scopeNamespace, String clientId)
     {
         this.messageClassification = messageClassification;

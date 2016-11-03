@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.command.message.internal;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
 
+/**
+ * Device command request message.
+ * 
+ * @since 1.0
+ * 
+ */
 public class CommandRequestMessage extends KapuaMessageImpl<CommandRequestChannel, CommandRequestPayload> implements KapuaRequestMessage<CommandRequestChannel, CommandRequestPayload>
 {
     @SuppressWarnings("unchecked")

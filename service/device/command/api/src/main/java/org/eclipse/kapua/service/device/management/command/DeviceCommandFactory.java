@@ -14,9 +14,26 @@ package org.eclipse.kapua.service.device.management.command;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
+/**
+ * Device command entity service factory definition.
+ *
+ * @since 1.0
+ * 
+ */
 public interface DeviceCommandFactory extends KapuaObjectFactory
 {
+
+    /**
+     * Creates a new {@link DeviceCommandInput}
+     * 
+     * @return
+     */
     public DeviceCommandInput newCommandInput();
 
+    /**
+     * Create a new {@link DeviceCommandOutput}
+     * 
+     * @return
+     */
     public DeviceCommandOutput newCommandOutput();
 }

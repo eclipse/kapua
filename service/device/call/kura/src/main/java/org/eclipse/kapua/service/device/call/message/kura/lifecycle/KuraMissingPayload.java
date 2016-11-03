@@ -17,13 +17,28 @@ import java.util.Iterator;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
+/**
+ * Kura device unmatched message payload implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraMissingPayload extends KuraPayload implements DevicePayload
 {
+
+    /**
+     * Constructor
+     */
     public KuraMissingPayload() 
     {
     	super();
     }
 
+    /**
+     * Returns a displayable representation string
+     * 
+     * @return
+     */
     public String toDisplayString()
     {
     	StringBuilder sb = new StringBuilder();

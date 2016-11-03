@@ -18,6 +18,12 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFact
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 
+/**
+ * Device connection service factory implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory
 {
 

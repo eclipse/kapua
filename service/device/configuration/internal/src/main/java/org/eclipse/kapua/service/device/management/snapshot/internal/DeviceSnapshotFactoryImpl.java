@@ -16,6 +16,12 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 
+/**
+ * Device snapshot entity service factory implementation.
+ *
+ * @since 1.0
+ * 
+ */
 public class DeviceSnapshotFactoryImpl implements DeviceSnapshotFactory
 {
 

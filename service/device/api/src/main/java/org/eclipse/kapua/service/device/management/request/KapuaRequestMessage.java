@@ -17,9 +17,29 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
 
+/**
+ * Kapua request message definition.<br>
+ * This object defines the for a Kapua request message.<br>
+ * The request message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessage<C, P>
 {
+
+    /**
+     * Get the request message class type
+     * 
+     * @return
+     */
     public <M extends KapuaRequestMessage<C, P>> Class<M> getRequestClass();
 
+    /**
+     * Get the response message class type
+     * 
+     * @return
+     */
     public <RSC extends KapuaResponseChannel, RSP extends KapuaResponsePayload, M extends KapuaResponseMessage<RSC, RSP>> Class<M> getResponseClass();
+
 }

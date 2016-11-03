@@ -22,6 +22,12 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.eclipse.kapua.commons.util.CryptoUtil;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.XmlConfigPropertyAdapted.ConfigPropertyType;
 
+/**
+ * Xml Kura configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraXmlConfigPropertiesAdapter extends XmlAdapter<KuraXmlConfigPropertiesAdapted, Map<String, Object>>
 {
 

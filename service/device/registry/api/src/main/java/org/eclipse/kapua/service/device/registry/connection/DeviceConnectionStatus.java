@@ -12,9 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+/**
+ * Device connection status.
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceConnectionStatus
 {
+    /**
+     * Connected
+     */
     CONNECTED,
+    /**
+     * Disconnected
+     */
     DISCONNECTED,
+    /**
+     * Missing
+     */
     MISSING
 }

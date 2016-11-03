@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.configuration.message.intern
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 
+/**
+ * Device configuration response payload.
+ * 
+ * @since 1.0
+ * 
+ */
 public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload
 {
 

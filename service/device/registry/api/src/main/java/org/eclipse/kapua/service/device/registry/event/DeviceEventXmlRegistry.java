@@ -16,15 +16,31 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+/**
+ * Device event xml factory class.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRegistry
 public class DeviceEventXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceEventFactory factory = locator.getFactory(DeviceEventFactory.class);
     
+    /**
+     * Creates a new device event
+     * 
+     * @return
+     */
     public DeviceEvent newDeviceEvent() {
         return factory.newDeviceEvent();
     }
 
+    /**
+     * Creates a new device event list result
+     * 
+     * @return
+     */
     public DeviceEventListResult newDeviceListResult() { return factory.newDeviceListResult(); }
 }

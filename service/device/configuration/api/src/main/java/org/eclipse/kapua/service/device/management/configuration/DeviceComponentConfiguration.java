@@ -20,6 +20,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.commons.configuration.metatype.XmlConfigPropertiesAdapter;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 
+/**
+ * Device component configuration entity definition.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
@@ -30,24 +36,64 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 }, factoryClass = DeviceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
 public interface DeviceComponentConfiguration
 {
+    /**
+     * Get device configuration component identifier
+     * 
+     * @return
+     */
     @XmlElement(name = "id")
     public String getId();
 
+    /**
+     * Set device configuration component identifier
+     * 
+     * @param Id
+     */
     public void setId(String Id);
 
+    /**
+     * Get device configuration component name
+     * 
+     * @return
+     */
     @XmlAttribute(name = "name")
     public String getName();
 
+    /**
+     * Set device configuration component name
+     * 
+     * @param unescapedComponentName
+     */
     public void setName(String unescapedComponentName);
 
+    /**
+     * Get device configuration component definition
+     * 
+     * @return
+     */
     @XmlElement(name = "definition")
     public KapuaTocd getDefinition();
 
+    /**
+     * Set device configuration component definition
+     * 
+     * @param definition
+     */
     public void setDefinition(KapuaTocd definition);
 
+    /**
+     * Get device configuration component properties
+     * 
+     * @return
+     */
     @XmlElement(name = "properties")
     @XmlJavaTypeAdapter(XmlConfigPropertiesAdapter.class)
     public Map<String, Object> getProperties();
 
+    /**
+     * Set device configuration component properties
+     * 
+     * @param properties
+     */
     public void setProperties(Map<String, Object> properties);
 }

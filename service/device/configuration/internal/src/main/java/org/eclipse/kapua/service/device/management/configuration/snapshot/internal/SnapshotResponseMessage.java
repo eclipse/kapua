@@ -16,6 +16,12 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 
+/**
+ * Device snapshot response message.
+ * 
+ * @since 1.0
+ * 
+ */
 public class SnapshotResponseMessage extends KapuaMessageImpl<SnapshotResponseChannel, SnapshotResponsePayload>implements KapuaResponseMessage<SnapshotResponseChannel, SnapshotResponsePayload>
 {
     private KapuaResponseCode responseCode;

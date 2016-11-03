@@ -16,6 +16,12 @@ import org.eclipse.kapua.service.device.management.packages.model.internal.Devic
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallRequestImpl;
 
+/**
+ * Device package service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DevicePackageFactoryImpl implements DevicePackageFactory {
 
     @Override

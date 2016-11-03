@@ -14,9 +14,27 @@ package org.eclipse.kapua.service.device.call.message.app;
 
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
+/**
+ * Device application channel definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceAppChannel extends DeviceChannel
 {
+
+    /**
+     * Get the application identifier
+     * 
+     * @return
+     */
     public String getAppId();
 
+    /**
+     * Set the application identifier
+     * 
+     * @param appId
+     */
     public void setAppId(String appId);
+
 }

@@ -23,6 +23,12 @@ import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
+/**
+ * Kura device message service factory implementation.
+ * 
+ * @since 1.0
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class KuraMessageFactoryImpl implements DeviceMessageFactory
 {

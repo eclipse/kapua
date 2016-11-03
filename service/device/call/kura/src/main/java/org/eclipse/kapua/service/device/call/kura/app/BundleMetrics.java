@@ -11,9 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.app;
 
+/**
+ * Bundle metrics properties definition.
+ * 
+ * @since 1.0
+ *
+ */
 public enum BundleMetrics
 {
+
+    /**
+     * Application identifier
+     */
     APP_ID("DEPLOY"),
+    /**
+     * Application version
+     */
     APP_VERSION("V2"),
     ;
 
@@ -24,6 +37,11 @@ public enum BundleMetrics
         this.value = value;
     }
 
+    /**
+     * Get a value property associated to this specific enumeration key.
+     * 
+     * @return
+     */
     public String getValue()
     {
         return value;

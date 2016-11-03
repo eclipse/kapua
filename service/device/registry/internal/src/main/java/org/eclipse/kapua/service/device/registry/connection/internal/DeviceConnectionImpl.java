@@ -32,6 +32,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
+/**
+ * Device connection entity.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity(name = "DeviceConnection")
@@ -72,71 +78,91 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     @Column(name = "server_ip")
     private String                 serverIp;
 
+    /**
+     * Constructor
+     */
     protected DeviceConnectionImpl()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public DeviceConnectionImpl(KapuaId scopeId)
     {
         super(scopeId);
     }
 
+    @Override
     public DeviceConnectionStatus getStatus()
     {
         return connectionStatus;
     }
 
+    @Override
     public void setStatus(DeviceConnectionStatus connectionStatus)
     {
         this.connectionStatus = connectionStatus;
     }
 
+    @Override
     public String getClientId()
     {
         return clientId;
     }
 
+    @Override
     public void setClientId(String clientId)
     {
         this.clientId = clientId;
     }
 
+    @Override
     public KapuaId getUserId()
     {
         return userId;
     }
 
+    @Override
     public void setUserId(KapuaId userId)
     {
         this.userId = (KapuaEid) userId;
     }
 
+    @Override
     public String getProtocol()
     {
         return protocol;
     }
 
+    @Override
     public void setProtocol(String protocol)
     {
         this.protocol = protocol;
     }
 
+    @Override
     public String getClientIp()
     {
         return clientIp;
     }
 
+    @Override
     public void setClientIp(String clientIp)
     {
         this.clientIp = clientIp;
     }
 
+    @Override
     public String getServerIp()
     {
         return serverIp;
     }
 
+    @Override
     public void setServerIp(String serverIp)
     {
         this.serverIp = serverIp;

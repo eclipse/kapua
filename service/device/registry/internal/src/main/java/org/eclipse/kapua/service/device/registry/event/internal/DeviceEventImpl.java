@@ -36,6 +36,12 @@ import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
+/**
+ * Device event entity.
+ * 
+ * @since 1.0
+ *
+ */
 @Entity
 @Table(name = "dvc_device_event")
 public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
@@ -86,11 +92,19 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
     @Column(name = "event_message", updatable = false, nullable = false)
     private String            eventMessage;
 
+    /**
+     * Constructor
+     */
     protected DeviceEventImpl()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     public DeviceEventImpl(KapuaId scopeId)
     {
         super(scopeId);
@@ -167,21 +181,25 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
         this.resource = resource;
     }
 
+    @Override
     public KapuaMethod getAction()
     {
         return action;
     }
 
+    @Override
     public void setAction(KapuaMethod action)
     {
         this.action = action;
     }
 
+    @Override
     public KapuaResponseCode getResponseCode()
     {
         return responseCode;
     }
 
+    @Override
     public void setResponseCode(KapuaResponseCode responseCode)
     {
         this.responseCode = responseCode;

@@ -16,17 +16,33 @@ import java.util.Date;
 
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
+/**
+ * Kura device message implementation.
+ * 
+ * @since 1.0
+ * 
+ */
 public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataPayload>
 {
     protected KuraDataChannel  channel;
     protected Date             timestamp;
     protected KuraDataPayload  payload;
 
+    /**
+     * Constructor
+     */
     public KuraDataMessage()
     {
         super();
     }
 
+    /**
+     * Constructor
+     * 
+     * @param channel
+     * @param timestamp
+     * @param payload
+     */
     public KuraDataMessage(KuraDataChannel channel, Date timestamp, KuraDataPayload payload)
     {
         this();
@@ -53,6 +69,11 @@ public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataP
         return timestamp;
     }
 
+    /**
+     * Set the message timestamp
+     * 
+     * @param timestamp
+     */
     public void setTimestamp(Date timestamp)
     {
         this.timestamp = timestamp;

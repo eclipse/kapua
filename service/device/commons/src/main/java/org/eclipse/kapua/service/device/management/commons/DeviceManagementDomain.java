@@ -12,8 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons;
 
+/**
+ * Device management domain
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceManagementDomain {
 	
+    /**
+     * Device management
+     */
     String DEVICE_MANAGEMENT = "device_management";
 
 }

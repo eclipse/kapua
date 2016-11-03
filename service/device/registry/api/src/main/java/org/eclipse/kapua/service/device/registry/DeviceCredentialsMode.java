@@ -14,6 +14,9 @@ package org.eclipse.kapua.service.device.registry;
 
 /**
  * Defines the strategy to validate credentials during device login.
+ * 
+ * @since 1.0
+ * 
  */
 public enum DeviceCredentialsMode
 {
@@ -42,6 +45,9 @@ public enum DeviceCredentialsMode
 
     private boolean usableAsAccountDefault;
 
+    /**
+     * Constructor
+     */
     DeviceCredentialsMode()
     {
         this(true);

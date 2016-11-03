@@ -3,13 +3,14 @@ package org.eclipse.kapua.service.device.management.packages.model.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 
+/**
+ * Device packages list container.
+ * 
+ * @since 1.0
+ *
+ */
 public class DevicePackagesImpl implements DevicePackages
 {
     public List<DevicePackageImpl> deploymentPackages;

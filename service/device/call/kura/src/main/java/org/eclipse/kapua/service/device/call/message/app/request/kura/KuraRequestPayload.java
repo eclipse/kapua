@@ -17,6 +17,12 @@ import org.eclipse.kapua.service.device.call.kura.app.RequestMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestPayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
+/**
+ * Kura command request message payload.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraRequestPayload extends KuraPayload implements DeviceRequestPayload
 {
     @Override

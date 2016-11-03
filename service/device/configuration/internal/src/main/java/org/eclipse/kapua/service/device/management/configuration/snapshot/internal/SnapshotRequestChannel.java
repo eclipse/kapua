@@ -16,6 +16,12 @@ import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
 import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
 
+/**
+ * Device snapshot request channel.
+ * 
+ * @since 1.0
+ * 
+ */
 public class SnapshotRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
 {
     private KapuaMethod method;
@@ -33,11 +39,21 @@ public class SnapshotRequestChannel extends KapuaAppChannelImpl implements Kapua
         this.method = method;
     }
 
+    /**
+     * Get the snapshot identifier
+     * 
+     * @return
+     */
     public String getSnapshotId()
     {
         return snapshotId;
     }
 
+    /**
+     * Set the snapshot identifier
+     * 
+     * @param snapshotId
+     */
     public void setSnapshotId(String snapshotId)
     {
         this.snapshotId = snapshotId;

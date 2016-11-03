@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.call.message.data;
 
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
+/**
+ * Device data message channel definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceDataChannel extends DeviceChannel
 {
 

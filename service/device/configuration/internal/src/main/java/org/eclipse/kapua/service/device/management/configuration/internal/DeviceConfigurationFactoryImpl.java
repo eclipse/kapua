@@ -16,6 +16,12 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceComponent
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 
+/**
+ * Device configuration entity service factory implementation.
+ *
+ * @since 1.0
+ * 
+ */
 public class DeviceConfigurationFactoryImpl implements DeviceConfigurationFactory
 {
 

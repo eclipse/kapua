@@ -14,6 +14,14 @@ package org.eclipse.kapua.service.device.management.response;
 
 import org.eclipse.kapua.service.device.management.KapuaAppChannel;
 
+/**
+ * Kapua response message channel definition.<br>
+ * This object defines the channel for a Kapua response message.<br>
+ * The response message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaResponseChannel extends KapuaAppChannel
 {
 

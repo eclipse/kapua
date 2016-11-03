@@ -17,11 +17,22 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
+/**
+ * Device registry service definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceRegistryService extends KapuaEntityService<Device, DeviceCreator>,
                                        KapuaUpdatableEntityService<Device>
 {
     /**
      * Finds a device by its unique clientId and loads it with all its properties.
+     * 
+     * @param scopeId
+     * @param clientId
+     * @return
+     * @throws KapuaException
      */
     public Device findByClientId(KapuaId scopeId, String clientId)
         throws KapuaException;

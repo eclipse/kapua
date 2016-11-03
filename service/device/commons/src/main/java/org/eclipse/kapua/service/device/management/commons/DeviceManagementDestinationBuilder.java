@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons;
 
+/**
+ * Device management destination builder.
+ * 
+ * 
+ * @since 1.0
+ *
+ * @param <T> destination type
+ */
 @SuppressWarnings("unchecked")
 public class DeviceManagementDestinationBuilder<T>
 {
@@ -20,30 +28,60 @@ public class DeviceManagementDestinationBuilder<T>
     protected String assetId;
     protected String appId;
 
+    /**
+     * Add the topic prefix to the destination
+     * 
+     * @param topicPrefix
+     * @return
+     */
     public T withTopicPrefix(String topicPrefix)
     {
         this.topicPrefix = topicPrefix;
         return (T) this;
     }
 
+    /**
+     * Add the account name to the destination
+     * 
+     * @param accountName
+     * @return
+     */
     public T withAccountName(String accountName)
     {
         this.accountName = accountName;
         return (T) this;
     }
 
+    /**
+     * Add the asset identifier to the destination
+     * 
+     * @param assetId
+     * @return
+     */
     public T withAssetId(String assetId)
     {
         this.assetId = assetId;
         return (T) this;
     }
 
+    /**
+     * Add the application identifier to the destination
+     * 
+     * @param appId
+     * @return
+     */
     public T withAppId(String appId)
     {
         this.appId = appId;
         return (T) this;
     }
 
+    /**
+     * Provides a destination builder for the device request messages.
+     * 
+     * @since 1.0
+     *
+     */
     public static class Request extends DeviceManagementDestinationBuilder<Request>
     {
         /**
@@ -63,18 +101,35 @@ public class DeviceManagementDestinationBuilder<T>
         private String              method;
         private String[]            resources;
 
+        /**
+         * Add the request method to the destination
+         * 
+         * @param method
+         * @return
+         */
         public Request withMethod(String method)
         {
             this.method = method;
             return this;
         }
 
+        /**
+         * Add the resources to the destination
+         * 
+         * @param resources
+         * @return
+         */
         public Request withResources(String[] resources)
         {
             this.resources = resources;
             return this;
         }
 
+        /**
+         * Build the destination
+         * 
+         * @return
+         */
         public String build()
         {
             String resourcesToString = buildResourcesString();

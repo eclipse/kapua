@@ -16,19 +16,41 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 
+/**
+ * Kura device birth message channel implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraBirthChannel extends KuraChannel
 {
     protected static final String DESTINATION_CONTROL_PREFIX = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
 
+    /**
+     * Constructor
+     */
     public KuraBirthChannel()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraBirthChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param messageClassification
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraBirthChannel(String messageClassification, String scopeNamespace, String clientId)
     {
         this.messageClassification = messageClassification;

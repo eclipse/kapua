@@ -12,8 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.lifecycle;
 
+/**
+ * Device life cycle domain.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceLifecycleDomain {
 	
+    /**
+     * Device life cycle
+     */
 	String DEVICE_LIFECYCLE = "device_lifecycle";
 
 }

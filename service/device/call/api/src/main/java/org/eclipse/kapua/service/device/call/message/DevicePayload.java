@@ -18,21 +18,60 @@ import java.util.Map;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.Payload;
 
+/**
+ * Device payload definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DevicePayload extends Payload
 {
+
+    /**
+     * Get the message timestamp
+     * 
+     * @return
+     */
     public Date getTimestamp();
 
+    /**
+     * Get the device position
+     * 
+     * @return
+     */
     public DevicePosition getPosition();
 
+    /**
+     * Get the metrics (if defined)
+     * 
+     * @return
+     */
     public Map<String, Object> getMetrics();
 
+    /**
+     * Get the message body (if defined)
+     * 
+     * @return
+     */
     public byte[] getBody();
 
     //
     // Encode/Decode stuff
     //
+    /**
+     * Convert the message to a well formed byte array
+     * 
+     * @return
+     */
     public byte[] toByteArray();
 
+    /**
+     * Read and instantiate a message from well formed byte array
+     * 
+     * @param rawPayload
+     * @throws KapuaException
+     */
     public void readFromByteArray(byte[] rawPayload)
         throws KapuaException;
+
 }

@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
+/**
+ * Kura device application message payload implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraAppsPayload extends KuraPayload implements DevicePayload
 {
     private final static String UPTIME                 = "uptime";
@@ -47,11 +53,44 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload
     private final static String MODEM_IMSI             = "modem_imsi";
     private final static String MODEM_ICCID            = "modem_iccid";
 
+    /**
+     * Constructor
+     */
     public KuraAppsPayload()
     {
     	super();
     }
     
+    /**
+     * Constructor
+     * 
+     * @param uptime
+     * @param displayName
+     * @param modelName
+     * @param modelId
+     * @param partNumber
+     * @param serialNumber
+     * @param firmwareVersion
+     * @param biosVersion
+     * @param os
+     * @param osVersion
+     * @param jvmName
+     * @param jvmVersion
+     * @param jvmProfile
+     * @param esfkuraVersion
+     * @param connectionInterface
+     * @param connectionIp
+     * @param acceptEncoding
+     * @param applicationIdentifiers
+     * @param availableProcessors
+     * @param totalMemory
+     * @param osArch
+     * @param osgiFramework
+     * @param osgiFrameworkVersion
+     * @param modemImei
+     * @param modemImsi
+     * @param modemIccid
+     */
     public KuraAppsPayload(String uptime,
                             String displayName,
                             String modelName,
@@ -161,151 +200,301 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload
         }
     }
 
+    /**
+     * Get the device uptime
+     * 
+     * @return
+     */
     public String getUptime()
     {
         return (String) getMetrics().get(UPTIME);
     }
 
+    /**
+     * Get the device display name
+     * 
+     * @return
+     */
     public String getDisplayName()
     {
         return (String) getMetrics().get(DISPLAY_NAME);
     }
 
+    /**
+     * Get the model name
+     * 
+     * @return
+     */
     public String getModelName()
     {
         return (String) getMetrics().get(MODEL_NAME);
     }
 
+    /**
+     * Get the model identifier
+     * 
+     * @return
+     */
     public String getModelId()
     {
         return (String) getMetrics().get(MODEL_ID);
     }
 
+    /**
+     * Get the part number
+     * 
+     * @return
+     */
     public String getPartNumber()
     {
         return (String) getMetrics().get(PART_NUMBER);
     }
 
+    /**
+     * Get the serial number
+     * 
+     * @return
+     */
     public String getSerialNumber()
     {
         return (String) getMetrics().get(SERIAL_NUMBER);
     }
 
+    /**
+     * Get the firmware
+     * 
+     * @return
+     */
     public String getFirmware()
     {
         return (String) getMetrics().get(FIRMWARE_VERSION);
     }
 
+    /**
+     * Get the firmware version
+     * 
+     * @return
+     */
     public String getFirmwareVersion()
     {
         return (String) getMetrics().get(FIRMWARE_VERSION);
     }
 
+    /**
+     * Get the bios
+     * 
+     * @return
+     */
     public String getBios()
     {
         return (String) getMetrics().get(BIOS_VERSION);
     }
 
+    /**
+     * Get the biuos version
+     * 
+     * @return
+     */
     public String getBiosVersion()
     {
         return (String) getMetrics().get(BIOS_VERSION);
     }
 
+    /**
+     * Get the operating system
+     * 
+     * @return
+     */
     public String getOs()
     {
         return (String) getMetrics().get(OS);
     }
 
+    /**
+     * Get the operating system version
+     * 
+     * @return
+     */
     public String getOsVersion()
     {
         return (String) getMetrics().get(OS_VERSION);
     }
 
+    /**
+     * Get the java virtual machine
+     * 
+     * @return
+     */
     public String getJvm()
     {
         return (String) getMetrics().get(JVM_NAME);
     }
 
+    /**
+     * Get the java virtual machine version
+     * 
+     * @return
+     */
     public String getJvmVersion()
     {
         return (String) getMetrics().get(JVM_VERSION);
     }
 
+    /**
+     * Get the java virtual machine profile
+     * 
+     * @return
+     */
     public String getJvmProfile()
     {
         return (String) getMetrics().get(JVM_PROFILE);
     }
 
+    /**
+     * Get the container framework
+     * 
+     * @return
+     */
     public String getContainerFramework()
     {
         return (String) getMetrics().get(OSGI_FRAMEWORK);
     }
 
+    /**
+     * Get the container framework version
+     * 
+     * @return
+     */
     public String getContainerFrameworkVersion()
     {
         return (String) getMetrics().get(OSGI_FRAMEWORK_VERSION);
     }
 
+    /**
+     * Get the application framework
+     * 
+     * @return
+     */
     public String getApplicationFramework()
     {
         return (String) getMetrics().get(ESFKURA_VERSION);
     }
 
+    /**
+     * Get the application framework version
+     * 
+     * @return
+     */
     public String getApplicationFrameworkVersion()
     {
         return (String) getMetrics().get(ESFKURA_VERSION);
     }
 
+    /**
+     * Get connection interface
+     * 
+     * @return
+     */
     public String getConnectionInterface()
     {
         return (String) getMetrics().get(CONNECTION_INTERFACE);
     }
 
+    /**
+     * Get the connection interface ip
+     * 
+     * @return
+     */
     public String getConnectionIp()
     {
         return (String) getMetrics().get(CONNECTION_IP);
     }
 
+    /**
+     * Get accept encoding
+     * 
+     * @return
+     */
     public String getAcceptEncoding()
     {
         return (String) getMetrics().get(ACCEPT_ENCODING);
     }
 
+    /**
+     * Get application identifiers
+     * 
+     * @return
+     */
     public String getApplicationIdentifiers()
     {
         return (String) getMetrics().get(APPLICATION_IDS);
     }
 
+    /**
+     * Get available processor
+     * 
+     * @return
+     */
     public String getAvailableProcessors()
     {
         return (String) getMetrics().get(AVAILABLE_PROCESSORS);
     }
 
+    /**
+     * Get total memory
+     * 
+     * @return
+     */
     public String getTotalMemory()
     {
         return (String) getMetrics().get(TOTAL_MEMORY);
     }
 
+    /**
+     * Get operating system architecture
+     * 
+     * @return
+     */
     public String getOsArch()
     {
         return (String) getMetrics().get(OS_ARCH);
     }
 
+    /**
+     * Get modem imei
+     * 
+     * @return
+     */
     public String getModemImei()
     {
         return (String) getMetrics().get(MODEM_IMEI);
     }
 
+    /**
+     * Get modem imsi
+     * 
+     * @return
+     */
     public String getModemImsi()
     {
         return (String) getMetrics().get(MODEM_IMSI);
     }
 
+    /**
+     * Get modem iccid
+     * 
+     * @return
+     */
     public String getModemIccid()
     {
         return (String) getMetrics().get(MODEM_ICCID);
     }
 
+    /**
+     * Returns a displayable representation string
+     * 
+     * @return
+     */
     public String toDisplayString()
     {
         return new StringBuilder().append("[ getUptime()=").append(getUptime())

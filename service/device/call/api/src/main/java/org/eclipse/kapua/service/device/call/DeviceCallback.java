@@ -14,10 +14,28 @@ package org.eclipse.kapua.service.device.call;
 
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
+/**
+ * Device callback definition
+ * 
+ * @param <RSM> response message type
+ * 
+ * @since 1.0
+ * 
+ */
 @SuppressWarnings("rawtypes")
 public interface DeviceCallback<RSM extends DeviceMessage>
 {
+
+    /**
+     * Action to be invoked on response received
+     * 
+     * @param response
+     */
     public void responseReceived(RSM response);
 
+    /**
+     * Action to be invoked on timed out
+     */
     public void timedOut();
+
 }

@@ -8,6 +8,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadStatus;
 
+/**
+ * Device download package operation entity.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "packageDownloadOperation")
 public class DevicePackageDownloadOperationImpl implements DevicePackageDownloadOperation {
 
@@ -23,6 +29,9 @@ public class DevicePackageDownloadOperationImpl implements DevicePackageDownload
     @XmlElement(name = "status")
     private DevicePackageDownloadStatus status;
 
+    /**
+     * Constructor
+     */
     public DevicePackageDownloadOperationImpl() {
     }
 

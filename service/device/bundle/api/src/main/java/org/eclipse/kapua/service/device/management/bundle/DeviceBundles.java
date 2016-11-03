@@ -15,13 +15,24 @@ package org.eclipse.kapua.service.device.management.bundle;
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
-
+/**
+ * Device bundles list entity definition.
+ * 
+ * @since 1.0
+ * 
+ */
 @XmlType(propOrder = { "bundles" },
         factoryClass = DeviceBundleXmlRegistry.class,
         factoryMethod = "newBundleListResult")
 @XmlRootElement(name = "bundles")
 public interface DeviceBundles
 {
+
+    /**
+     * Get the device bundles list
+     * 
+     * @return
+     */
     @XmlElement(name = "bundle", namespace = "http://eurotech.com/esf/2.0")
     public <B extends DeviceBundle> List<B> getBundles();
 }

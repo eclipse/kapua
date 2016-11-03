@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.bundle.message.internal;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
 
+/**
+ * Device bundle information request message.
+ * 
+ * @since 1.0
+ * 
+ */
 public class BundleRequestMessage extends KapuaMessageImpl<BundleRequestChannel, BundleRequestPayload>
                                          implements KapuaRequestMessage<BundleRequestChannel, BundleRequestPayload>
 {

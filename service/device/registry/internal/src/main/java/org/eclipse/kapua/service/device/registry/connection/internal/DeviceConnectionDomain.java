@@ -12,8 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
+/**
+ * Device connection domain
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceConnectionDomain {
 	
+    /**
+     * Device connection
+     */
     String DEVICE_CONNECTION = "device_connection";
 
 }

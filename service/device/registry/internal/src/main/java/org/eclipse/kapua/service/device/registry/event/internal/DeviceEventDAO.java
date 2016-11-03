@@ -21,9 +21,22 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 
+/**
+ * Device event DAO
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceEventDAO extends ServiceDAO
 {
 
+    /**
+     * Create a new device event
+     * 
+     * @param em
+     * @param deviceEventCreator
+     * @return
+     */
     public static DeviceEvent create(EntityManager em, DeviceEventCreator deviceEventCreator)
     {
         DeviceEvent deviceEvent = new DeviceEventImpl(deviceEventCreator.getScopeId());
@@ -39,6 +52,14 @@ public class DeviceEventDAO extends ServiceDAO
         return ServiceDAO.create(em, deviceEvent);
     }
 
+    /**
+     * Update the provided device event
+     * 
+     * @param em
+     * @param deviceConnection
+     * @return
+     * @throws KapuaException
+     */
     public static DeviceEvent update(EntityManager em, DeviceEvent deviceConnection)
         throws KapuaException
     {
@@ -48,23 +69,52 @@ public class DeviceEventDAO extends ServiceDAO
         return null;
     }
 
+    /**
+     * Find the device event by device event identifier
+     * 
+     * @param em
+     * @param deviceEventId
+     * @return
+     */
     public static DeviceEvent find(EntityManager em, KapuaId deviceEventId)
     {
         return em.find(DeviceEventImpl.class, deviceEventId);
     }
 
+    /**
+     * Return the device event list matching the provided query
+     * 
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static DeviceEventListResult query(EntityManager em, KapuaQuery<DeviceEvent> query)
         throws KapuaException
     {
         return ServiceDAO.query(em, DeviceEvent.class, DeviceEventImpl.class, new DeviceEventListResultImpl(), query);
     }
 
+    /**
+     * Return the device event count matching the provided query
+     * 
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static long count(EntityManager em, KapuaQuery<DeviceEvent> query)
         throws KapuaException
     {
         return ServiceDAO.count(em, DeviceEvent.class, DeviceEventImpl.class, query);
     }
 
+    /**
+     * Delete the device event by device event identifier
+     * 
+     * @param em
+     * @param deviceEventId
+     */
     public static void delete(EntityManager em, KapuaId deviceEventId)
     {
         ServiceDAO.delete(em, DeviceEventImpl.class, deviceEventId);

@@ -14,17 +14,59 @@ package org.eclipse.kapua.service.device.call.message;
 
 import org.eclipse.kapua.message.Channel;
 
+/**
+ * Device channel definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceChannel extends Channel
 {
+
+    /**
+     * Get the message classification.<br>
+     * This field it is used to distinguish between command messages and "standard" messages such as telemetry messages.<br>
+     * The domain values can be customized via configuration parameter.
+     * 
+     * @return
+     */
     public String getMessageClassification();
 
+    /**
+     * Set the message classification.<br>
+     * This field it is used to distinguish between command messages and "standard" messages such as telemetry messages.<br>
+     * The domain values can be customized via configuration parameter.
+     * 
+     * @param messageClassification
+     */
     public void setMessageClassification(String messageClassification);
 
+    /**
+     * Get the message scope
+     * 
+     * @return
+     */
     public String getScope();
 
+    /**
+     * Set th emessage scope
+     * 
+     * @param scope
+     */
     public void setScope(String scope);
 
+    /**
+     * Get the client identifier
+     * 
+     * @return
+     */
     public String getClientId();
 
+    /**
+     * Set the client identifier
+     * 
+     * @param clientId
+     */
     public void setClientId(String clientId);
+
 }

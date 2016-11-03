@@ -12,8 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+/**
+ * Device event domain.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceEventDomain  {
-	
+
+    /**
+     * Device event
+     */
     String DEVICE_EVENT = "device_event";
 
 }

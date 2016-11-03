@@ -18,8 +18,16 @@ import org.eclipse.kapua.service.device.registry.event.*;
 
 import java.util.Date;
 
+/**
+ * Device event factory service implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceEventFactoryImpl implements DeviceEventFactory
 {
+
+    @Override
     public DeviceEventCreator newCreator(KapuaId scopeId, KapuaId deviceId, Date receivedOn, String resource) {
     	DeviceEventCreatorImpl creator = new DeviceEventCreatorImpl(scopeId);
         creator.setDeviceId(deviceId);

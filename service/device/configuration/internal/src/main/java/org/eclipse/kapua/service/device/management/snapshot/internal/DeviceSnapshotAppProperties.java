@@ -14,9 +14,21 @@ package org.eclipse.kapua.service.device.management.snapshot.internal;
 
 import org.eclipse.kapua.service.device.management.KapuaAppProperties;
 
+/**
+ * Device snapshot properties definition.
+ * 
+ * @since 1.0
+ *
+ */
 public enum DeviceSnapshotAppProperties implements KapuaAppProperties
 {
+    /**
+     * Application name
+     */
 	APP_NAME("SNAPSHOT"),
+    /**
+     * Application version
+     */
     APP_VERSION("1.0.0"),
     ;
 

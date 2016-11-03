@@ -17,6 +17,12 @@ import java.util.List;
 
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 
+/**
+ * Device bundles list entity implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceBundlesImpl implements DeviceBundles
 {
     private List<DeviceBundleImpl> bundles;

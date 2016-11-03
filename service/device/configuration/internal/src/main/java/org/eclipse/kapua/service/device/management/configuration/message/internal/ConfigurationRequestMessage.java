@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.configuration.message.intern
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
 
+/**
+ * Device configuration request message.
+ * 
+ * @since 1.0
+ * 
+ */
 public class ConfigurationRequestMessage extends KapuaMessageImpl<ConfigurationRequestChannel, ConfigurationRequestPayload>
                                          implements KapuaRequestMessage<ConfigurationRequestChannel, ConfigurationRequestPayload>
 {

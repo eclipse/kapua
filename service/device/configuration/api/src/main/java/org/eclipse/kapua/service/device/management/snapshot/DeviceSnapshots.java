@@ -22,6 +22,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.KapuaSerializable;
 
+/**
+ * Device snapshots entity definition.<br>
+ * This entity manages a list of {@link DeviceSnapshot}
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "snapshots")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "snapshots" },
@@ -29,6 +36,12 @@ import org.eclipse.kapua.KapuaSerializable;
         factoryMethod = "newDeviceSnapshots")
 public interface DeviceSnapshots extends KapuaSerializable
 {
+
+    /**
+     * Get the device snapshot list
+     * 
+     * @return
+     */
     @XmlElement(name="snapshotId")
     public List<DeviceSnapshot> getSnapshots();
 }

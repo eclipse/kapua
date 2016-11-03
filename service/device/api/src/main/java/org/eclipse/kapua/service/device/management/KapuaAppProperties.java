@@ -12,7 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management;
 
+/**
+ * Kapua application property definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface KapuaAppProperties
 {
+
+    /**
+     * Get the property value
+     * 
+     * @return
+     */
     public String getValue();
 }

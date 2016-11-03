@@ -22,9 +22,22 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
+/**
+ * Device connection DAO
+ * 
+ * @since 1.0
+ *
+ */
 public class DeviceConnectionDAO extends ServiceDAO
 {
 
+    /**
+     * Create a new device connection
+     * 
+     * @param em
+     * @param deviceConnectionCreator
+     * @return
+     */
     public static DeviceConnection create(EntityManager em, DeviceConnectionCreator deviceConnectionCreator)
     {
         DeviceConnection deviceConnection = new DeviceConnectionImpl(deviceConnectionCreator.getScopeId());
@@ -38,6 +51,14 @@ public class DeviceConnectionDAO extends ServiceDAO
         return ServiceDAO.create(em, deviceConnection);
     }
 
+    /**
+     * Update the provided device connection
+     * 
+     * @param em
+     * @param deviceConnection
+     * @return
+     * @throws KapuaException
+     */
     public static DeviceConnection update(EntityManager em, DeviceConnection deviceConnection)
         throws KapuaException
     {
@@ -45,23 +66,52 @@ public class DeviceConnectionDAO extends ServiceDAO
         return ServiceDAO.update(em, DeviceConnectionImpl.class, deviceConnectionImpl);
     }
 
+    /**
+     * Find the device connection by device connection identifier
+     * 
+     * @param em
+     * @param deviceConnectionId
+     * @return
+     */
     public static DeviceConnection find(EntityManager em, KapuaId deviceConnectionId)
     {
         return em.find(DeviceConnectionImpl.class, deviceConnectionId);
     }
 
+    /**
+     * Return the device connection list matching the provided query
+     * 
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static DeviceConnectionListResult query(EntityManager em, KapuaQuery<DeviceConnection> query)
         throws KapuaException
     {
         return ServiceDAO.query(em, DeviceConnection.class, DeviceConnectionImpl.class, new DeviceConnectionListResultImpl(), query);
     }
 
+    /**
+     * Return the device connection count matching the provided query
+     * 
+     * @param em
+     * @param query
+     * @return
+     * @throws KapuaException
+     */
     public static long count(EntityManager em, KapuaQuery<DeviceConnection> query)
         throws KapuaException
     {
         return ServiceDAO.count(em, DeviceConnection.class, DeviceConnectionImpl.class, query);
     }
 
+    /**
+     * Delete the device connection by device connection identifier
+     * 
+     * @param em
+     * @param deviceConnectionId
+     */
     public static void delete(EntityManager em, KapuaId deviceConnectionId)
     {
         ServiceDAO.delete(em, DeviceConnectionImpl.class, deviceConnectionId);

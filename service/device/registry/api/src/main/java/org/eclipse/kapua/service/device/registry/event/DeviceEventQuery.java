@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.registry.event;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
 
+/**
+ * Device event query definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceEventQuery extends KapuaQuery<DeviceEvent>
 {
 

@@ -13,6 +13,12 @@ package org.eclipse.kapua.service.device.call.kura;
 
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
 
+/**
+ * Kura device call service factory implementation.
+ * 
+ * @since 1.0
+ * 
+ */
 public class KuraDeviceCallFactoryImpl implements DeviceCallFactory
 {
 

@@ -19,6 +19,12 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 
+/**
+ * Kura device channel implementation.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraChannel implements DeviceChannel
 {
     protected static final String DESTINATION_CONTROL_PREFIX = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
@@ -27,15 +33,31 @@ public class KuraChannel implements DeviceChannel
     protected String              scopeNamespace;
     protected String              clientId;
 
+    /**
+     * Constructor
+     */
     public KuraChannel()
     {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param messageClassification
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraChannel(String messageClassification, String scopeNamespace, String clientId)
     {
         this.messageClassification = messageClassification;
@@ -43,26 +65,31 @@ public class KuraChannel implements DeviceChannel
         this.clientId = clientId;
     }
 
+    @Override
     public String getMessageClassification()
     {
         return messageClassification;
     }
 
+    @Override
     public void setMessageClassification(String messageClassification)
     {
         this.messageClassification = messageClassification;
     }
 
+    @Override
     public String getScope()
     {
         return scopeNamespace;
     }
 
+    @Override
     public void setScope(String scope)
     {
         this.scopeNamespace = scope;
     }
 
+    @Override
     public String getClientId()
     {
         return clientId;
@@ -74,6 +101,12 @@ public class KuraChannel implements DeviceChannel
         this.clientId = clientId;
     }
 
+    /**
+     * Get the semantic tokens list.<br>
+     * The semantic part, of a channel, describes an action or a destination inside a domain (eg a scope identifier and a client identifier)
+     * 
+     * @return
+     */
     public List<String> getSemanticChannelParts()
     {
         return new ArrayList<>();

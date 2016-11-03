@@ -19,10 +19,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 /**
- * Represents a typed property.
- * Various flags help in the interpretation and semantics of the property value.
+ * Represents a typed property.<br>
+ * Various flags help in the interpretation and semantics of the property value.<br>
  * For example, a property value might be an array or the property value might have been
  * encrypted.
+ * 
+ * @since 1.0
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlConfigPropertyAdapted
@@ -71,10 +74,19 @@ public class XmlConfigPropertyAdapted
     @XmlElement(name="value")
     private String[]           values;
 
-
+    /**
+     * Constructor
+     */
     public XmlConfigPropertyAdapted() {
     }
 
+    /**
+     * Constructor
+     * 
+     * @param name
+     * @param type
+     * @param values
+     */
     public XmlConfigPropertyAdapted(String name,
                                     ConfigPropertyType type,
                                     String[] values) {
@@ -85,42 +97,92 @@ public class XmlConfigPropertyAdapted
         this.encrypted = false;
     }
 
+    /**
+     * Get the property name
+     * 
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the property name
+     * 
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get the is array flag property
+     * 
+     * @return
+     */
     public boolean getArray() {
         return array;
     }
 
+    /**
+     * Set the is array flag property
+     * 
+     * @param array
+     */
     public void setArray(boolean array) {
         this.array = array;
     }
 
+    /**
+     * Get the property type
+     * 
+     * @return
+     */
     public ConfigPropertyType getType() {
         return type;
     }
 
+    /**
+     * Set the property type
+     * 
+     * @param type
+     */
     public void setType(ConfigPropertyType type) {
         this.type = type;
     }
 
+    /**
+     * Get the is encrypted flag property
+     * 
+     * @return
+     */
     public boolean isEncrypted() {
         return encrypted;
     }
 
+    /**
+     * Set the is encrypted flag property
+     * 
+     * @param encrypted
+     */
     public void setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
     }
 
+    /**
+     * Get property values
+     * 
+     * @return
+     */
     public String[] getValues() {
         return values;
     }
 
+    /**
+     * Set property values
+     * 
+     * @param values
+     */
     public void setValues(String[] values) {
         this.values = values;
     }

@@ -18,11 +18,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Kura bundle definition.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name="bundle")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder= {"name","version","id","state"})
 public class KuraBundle
 {
+
     @XmlElement(name="name")
     public String name;
 
@@ -32,44 +39,82 @@ public class KuraBundle
     @XmlElement(name="id")
     public long id;
 
-    @XmlElement(name="state")
+    @XmlElement(name = "state")
     public String state;
 
+    /**
+     * Get bundle name
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * Set bundle name
+     * 
+     * @param name
+     */
     public void setName(String name)
     {
         this.name = name;
     }
 
+    /**
+     * Get bundle version
+     * 
+     * @return
+     */
     public String getVersion()
     {
         return version;
     }
 
+    /**
+     * Set bundle version
+     * 
+     * @param version
+     */
     public void setVersion(String version)
     {
         this.version = version;
     }
 
+    /**
+     * Get bundle identifier
+     * 
+     * @return
+     */
     public long getId()
     {
         return id;
     }
 
+    /**
+     * Set bundle identifier
+     * 
+     * @param id
+     */
     public void setId(long id)
     {
         this.id = id;
     }
 
+    /**
+     * Get bundle state
+     * 
+     * @return
+     */
     public String getState()
     {
         return state;
     }
 
+    /**
+     * Set bundle state
+     * 
+     * @param state
+     */
     public void setState(String state)
     {
         this.state = state;

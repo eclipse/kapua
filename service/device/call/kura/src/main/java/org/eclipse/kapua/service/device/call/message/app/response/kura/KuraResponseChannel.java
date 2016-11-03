@@ -15,16 +15,35 @@ package org.eclipse.kapua.service.device.call.message.app.response.kura;
 import org.eclipse.kapua.service.device.call.message.app.kura.KuraAppChannel;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseChannel;
 
+/**
+ * Kura command response message channel.
+ * 
+ * @since 1.0
+ *
+ */
 public class KuraResponseChannel extends KuraAppChannel implements DeviceResponseChannel
 {
     private String replyPart;
     private String requestId;
 
+    /**
+     * Constructor
+     * 
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraResponseChannel(String scopeNamespace, String clientId)
     {
         this(null, scopeNamespace, clientId);
     }
 
+    /**
+     * Constructor
+     * 
+     * @param controlDestinationPrefix
+     * @param scopeNamespace
+     * @param clientId
+     */
     public KuraResponseChannel(String controlDestinationPrefix, String scopeNamespace, String clientId)
     {
         super(controlDestinationPrefix, scopeNamespace, clientId);

@@ -8,6 +8,12 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
 
+/**
+ * Device package bundle information.
+ * 
+ * @since 1.0
+ *
+ */
 @XmlRootElement(name = "bundleInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "name", "version" })

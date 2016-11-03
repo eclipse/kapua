@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.device.registry;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
 
+/**
+ * Device list result definition.
+ * 
+ * @since 1.0
+ *
+ */
 public interface DeviceListResult extends KapuaListResult<Device>
 {
 

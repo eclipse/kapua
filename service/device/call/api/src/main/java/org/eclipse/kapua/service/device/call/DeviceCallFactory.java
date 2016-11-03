@@ -14,8 +14,21 @@ package org.eclipse.kapua.service.device.call;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
+/**
+ * Device call service factory definition.
+ * 
+ * @since 1.0
+ * 
+ */
 @SuppressWarnings("rawtypes")
 public interface DeviceCallFactory extends KapuaObjectFactory
 {
+
+    /**
+     * Creates a new {@link DeviceCall}
+     * 
+     * @return
+     */
     public DeviceCall newDeviceCall();
+
 }
