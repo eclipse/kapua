@@ -13,8 +13,8 @@
 package org.eclipse.kapua.app.console.client.device.management.packages;
 
 import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.ui.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.widget.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageUninstallRequest;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementService;

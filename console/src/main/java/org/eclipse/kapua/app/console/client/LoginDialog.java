@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
 
@@ -185,11 +185,10 @@ public class LoginDialog extends Dialog {
     // Login
     public void performLogin() {
 
-        final GwtUser tmpUser = new GwtUser(username.getValue(),
-                password.getValue());
+        final GwtLoginCredential crendentials = new GwtLoginCredential(username.getValue(), password.getValue());
 
         // FIXME: use some Credentials object instead of using GwtUser!
-        gwtAuthorizationService.login(tmpUser, new AsyncCallback<GwtSession>() {
+        gwtAuthorizationService.login(crendentials, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -215,7 +214,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onSuccess(Void arg0) {
-                ConsoleInfo.display("Info", "Logged out!");
+                ConsoleInfo.display(MSGS.popupInfo(), MSGS.loggedOut());
                 reset();
                 show();
             }

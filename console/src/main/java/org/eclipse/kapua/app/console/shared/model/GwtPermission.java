@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GwtPermission extends KapuaBaseModel implements Serializable {
+public class GwtPermission extends KapuaBaseModel {
 
     private static final long serialVersionUID = -7753268319786525424L;
 
     /**
      * Defines the domain of the object protected by the {@link GwtPermission}
      */
-    public enum GwtDomain {
+    public enum GwtDomain implements IsSerializable {
         account, //
         credential, //
         datastore, //
@@ -37,7 +37,7 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
     /**
      * Defines the actions allowed by the {@link GwtPermission}
      */
-    public enum GwtAction {
+    public enum GwtAction implements IsSerializable {
         read, //
         write, //
         delete, //
@@ -45,9 +45,17 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
         exec;
     }
 
-    private GwtDomain domain;
-    private GwtAction action;
-    private String targetScopeId;
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <X> X get(String property) {
+        if ("domainEnum".equals(property)) {
+            return (X) (GwtDomain.valueOf(getDomain()));
+        } else if ("actionEnum".equals(property)) {
+            return (X) (GwtAction.valueOf(getAction()));
+        } else {
+            return super.get(property);
+        }
+    }
 
     /**
      * Gwt Permission constructor.
@@ -60,9 +68,9 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
      *            The target scope id of the permission
      */
     public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId) {
-        this.domain = domain;
-        this.action = action;
-        this.targetScopeId = targetScopeId;
+        setDomain(domain != null ? domain.name() : null);
+        setAction(action != null ? action.name() : null);
+        setTargetScopeId(targetScopeId);
     }
 
     /**
@@ -78,15 +86,15 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(domain.name());
+        sb.append(getDomainEnum().name());
 
-        if (action != null) {
+        if (getAction() != null) {
             sb.append(":")
-                    .append(action.name());
+                    .append(getActionEnum().name());
         }
-        if (targetScopeId != null) {
+        if (getTargetScopeId() != null) {
             sb.append(":")
-                    .append(targetScopeId);
+                    .append(getTargetScopeId());
         }
         return sb.toString();
     }
@@ -95,16 +103,32 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
      * @return the domain of this permission
      * @since 1.0.0
      */
-    public GwtDomain getDomain() {
-        return domain;
+    public String getDomain() {
+        return get("domain");
+    }
+
+    public GwtDomain getDomainEnum() {
+        return get("domainEnum");
+    }
+
+    public void setDomain(String domain) {
+        set("domain", domain);
     }
 
     /**
      * @return the action of this permission
      * @since 1.0.0
      */
-    public GwtAction getAction() {
-        return action;
+    public String getAction() {
+        return get("action");
+    }
+
+    public GwtAction getActionEnum() {
+        return get("actionEnum");
+    }
+
+    public void setAction(String action) {
+        set("action", action);
     }
 
     /**
@@ -112,6 +136,11 @@ public class GwtPermission extends KapuaBaseModel implements Serializable {
      * @since 1.0.0
      */
     public String getTargetScopeId() {
-        return targetScopeId;
+        return get("targetScopeId");
     }
+
+    public void setTargetScopeId(String targetScopeId) {
+        set("targetScopeId", targetScopeId);
+    }
+
 }

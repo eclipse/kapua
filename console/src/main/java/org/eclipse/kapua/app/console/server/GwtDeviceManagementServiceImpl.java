@@ -47,9 +47,9 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCommandInput;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCommandOutput;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtSnapshot;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.device.management.bundles.GwtBundle;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageDownloadOperation;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageInstallRequest;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageOperation;
@@ -491,9 +491,9 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     // Bundles
     //
     @Override
-    public ListLoadResult<GwtGroupedNVPair> findBundles(GwtDevice device)
+    public ListLoadResult<GwtBundle> findBundles(GwtDevice device)
             throws GwtKapuaException {
-        List<GwtGroupedNVPair> pairs = new ArrayList<GwtGroupedNVPair>();
+        List<GwtBundle> pairs = new ArrayList<GwtBundle>();
 
         try {
 
@@ -508,7 +508,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                     null);
 
             for (DeviceBundle bundle : bundles.getBundles()) {
-                GwtGroupedNVPair pair = new GwtGroupedNVPair();
+                GwtBundle pair = new GwtBundle();
                 pair.setId(String.valueOf(bundle.getId()));
                 pair.setName(bundle.getName());
                 pair.setStatus(toStateString(bundle));
@@ -520,11 +520,11 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<GwtGroupedNVPair>(pairs);
+        return new BaseListLoadResult<GwtBundle>(pairs);
     }
 
     @Override
-    public void startBundle(GwtXSRFToken xsrfToken, GwtDevice device, GwtGroupedNVPair pair)
+    public void startBundle(GwtXSRFToken xsrfToken, GwtDevice device, GwtBundle gwtBundle)
             throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
@@ -538,7 +538,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId deviceId = KapuaEid.parseCompactId(device.getId());
             deviceBundleManagementService.start(scopeId,
                     deviceId,
-                    String.valueOf(pair.getId()),
+                    String.valueOf(gwtBundle.getId()),
                     null);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -546,7 +546,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     }
 
     @Override
-    public void stopBundle(GwtXSRFToken xsrfToken, GwtDevice device, GwtGroupedNVPair pair)
+    public void stopBundle(GwtXSRFToken xsrfToken, GwtDevice device, GwtBundle gwtBundle)
             throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
@@ -560,7 +560,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId deviceId = KapuaEid.parseCompactId(device.getId());
             deviceBundleManagementService.stop(scopeId,
                     deviceId,
-                    String.valueOf(pair.getId()),
+                    String.valueOf(gwtBundle.getId()),
                     null);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

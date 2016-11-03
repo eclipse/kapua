@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.resources.icons;
 
-import org.eclipse.kapua.app.console.client.widget.color.Color;
+import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
 
 import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.Element;

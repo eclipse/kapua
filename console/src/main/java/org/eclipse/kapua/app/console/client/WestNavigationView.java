@@ -20,10 +20,11 @@ import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.role.RoleView;
+import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.user.UserView;
 import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
-import org.eclipse.kapua.app.console.client.widget.color.Color;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
@@ -60,14 +61,14 @@ public class WestNavigationView extends LayoutContainer {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private LayoutContainer m_centerPanel;
-    private ContentPanel m_accountPanel;
+    private ContentPanel cloudResourcesPanel;
     private ContentPanel m_accordionPanel;
-    private ContentPanel m_managePanel;
+    private ContentPanel accountManagementPanel;
 
-    private TreeStore<ModelData> m_accountStore;
-    private TreeGrid<ModelData> m_accountTree;
-    private TreeStore<ModelData> m_manageStore;
-    private TreeGrid<ModelData> m_manageTree;
+    private TreeStore<ModelData> cloudResourcesTreeStore;
+    private TreeGrid<ModelData> cloudResourcesTreeGrid;
+    private TreeStore<ModelData> accountManagementTreeStore;
+    private TreeGrid<ModelData> accountManagementTreeGrid;
 
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
@@ -101,7 +102,7 @@ public class WestNavigationView extends LayoutContainer {
         setBorders(false);
 
         //
-        // accordion
+        // Accordion Panel
         AccordionLayout accordionLayout = new AccordionLayout();
         accordionLayout.setFill(true);
 
@@ -113,21 +114,22 @@ public class WestNavigationView extends LayoutContainer {
 
         //
         // Top managing panel
-        m_accountPanel = new ContentPanel();
-        m_accountPanel.setBorders(false);
-        m_accountPanel.setBodyBorder(true);
-        m_accountPanel.setHeaderVisible(false);
-        m_accountPanel.setScrollMode(Scroll.AUTOY);
+        cloudResourcesPanel = new ContentPanel();
+        cloudResourcesPanel.setAnimCollapse(false);
+        cloudResourcesPanel.setBorders(false);
+        cloudResourcesPanel.setBodyBorder(true);
+        cloudResourcesPanel.setHeaderVisible(false);
+        cloudResourcesPanel.setScrollMode(Scroll.AUTOY);
 
         //
         // Bottom manage panel
-        m_managePanel = new ContentPanel();
-        m_managePanel.setBorders(false);
-        m_managePanel.setBodyBorder(false);
-        m_managePanel.setHeading(MSGS.manageHeading());
+        accountManagementPanel = new ContentPanel();
+        accountManagementPanel.setBorders(false);
+        accountManagementPanel.setBodyBorder(false);
+        accountManagementPanel.setHeading(MSGS.manageHeading());
 
-        m_accountStore = new TreeStore<ModelData>();
-        m_manageStore = new TreeStore<ModelData>();
+        cloudResourcesTreeStore = new TreeStore<ModelData>();
+        accountManagementTreeStore = new TreeStore<ModelData>();
 
         //
         // Adding item to stores
@@ -139,15 +141,15 @@ public class WestNavigationView extends LayoutContainer {
 
         ColumnModel cm = new ColumnModel(Arrays.asList(name));
 
-        m_accountTree = new TreeGrid<ModelData>(m_accountStore, cm);
-        m_accountTree.setBorders(false);
-        m_accountTree.setHideHeaders(true);
-        m_accountTree.setAutoExpandColumn("name");
-        m_accountTree.getTreeView().setRowHeight(36);
-        m_accountTree.getTreeView().setForceFit(true);
+        cloudResourcesTreeGrid = new TreeGrid<ModelData>(cloudResourcesTreeStore, cm);
+        cloudResourcesTreeGrid.setBorders(false);
+        cloudResourcesTreeGrid.setHideHeaders(true);
+        cloudResourcesTreeGrid.setAutoExpandColumn("name");
+        cloudResourcesTreeGrid.getTreeView().setRowHeight(36);
+        cloudResourcesTreeGrid.getTreeView().setForceFit(true);
 
-        m_accountTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        m_accountTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
+        cloudResourcesTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        cloudResourcesTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<ModelData> se) {
@@ -159,7 +161,7 @@ public class WestNavigationView extends LayoutContainer {
                     return;
                 }
 
-                m_manageTree.getSelectionModel().deselectAll();
+                accountManagementTreeGrid.getSelectionModel().deselectAll();
 
                 m_centerPanel.removeAll();
 
@@ -203,6 +205,17 @@ public class WestNavigationView extends LayoutContainer {
                     dashboardSelected = false;
 
                     userView.refresh();
+                } else if ("role".equals(selectedId)) {
+
+                    panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
+                    panel.setHeading(MSGS.roles());
+
+                    RoleView userView = new RoleView(m_currentSession);
+                    panel.add(userView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("mysettings".equals(selectedId)) {
 
                     AccountDetailsView settingView = new AccountDetailsView(null, m_currentSession);
@@ -217,8 +230,6 @@ public class WestNavigationView extends LayoutContainer {
 
                     settingView.refresh();
                 }
-
-                // imgRefreshLabel.setVisible(dashboardSelected);
             }
         });
 
@@ -227,14 +238,14 @@ public class WestNavigationView extends LayoutContainer {
 
         ColumnModel cm1 = new ColumnModel(Arrays.asList(name1));
 
-        m_manageTree = new TreeGrid<ModelData>(m_manageStore, cm1);
-        m_manageTree.setBorders(false);
-        m_manageTree.setHideHeaders(true);
-        m_manageTree.setAutoExpandColumn("name");
-        m_manageTree.getTreeView().setRowHeight(36);
-        m_manageTree.getTreeView().setForceFit(true);
-        m_manageTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        m_manageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
+        accountManagementTreeGrid = new TreeGrid<ModelData>(accountManagementTreeStore, cm1);
+        accountManagementTreeGrid.setBorders(false);
+        accountManagementTreeGrid.setHideHeaders(true);
+        accountManagementTreeGrid.setAutoExpandColumn("name");
+        accountManagementTreeGrid.getTreeView().setRowHeight(36);
+        accountManagementTreeGrid.getTreeView().setForceFit(true);
+        accountManagementTreeGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        accountManagementTreeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<ModelData> se) {
@@ -243,7 +254,7 @@ public class WestNavigationView extends LayoutContainer {
                 if (selected == null)
                     return;
 
-                m_accountTree.getSelectionModel().deselectAll();
+                cloudResourcesTreeGrid.getSelectionModel().deselectAll();
 
                 m_centerPanel.removeAll();
                 ContentPanel panel = new ContentPanel(new FitLayout());
@@ -267,68 +278,71 @@ public class WestNavigationView extends LayoutContainer {
             }
         });
 
-        m_accountPanel.add(m_accountTree);
-        m_accountPanel.add(m_managePanel);
-        m_accountPanel.add(m_manageTree);
+        cloudResourcesPanel.add(cloudResourcesTreeGrid);
+        cloudResourcesPanel.add(accountManagementPanel);
+        cloudResourcesPanel.add(accountManagementTreeGrid);
 
-        m_accountTree.getSelectionModel().select(0, false);
+        cloudResourcesTreeGrid.getSelectionModel().select(0, false);
 
-        m_accordionPanel.add(m_accountPanel);
+        m_accordionPanel.add(cloudResourcesPanel);
     }
 
     public void addMenuItems() {
         ModelData selectedAccountItem = null;
         ModelData selectedManageItem = null;
 
-        if (m_accountTree != null && m_manageTree != null) {
-            selectedAccountItem = m_accountTree.getSelectionModel().getSelectedItem();
-            selectedManageItem = m_manageTree.getSelectionModel().getSelectedItem();
+        if (cloudResourcesTreeGrid != null && accountManagementTreeGrid != null) {
+            selectedAccountItem = cloudResourcesTreeGrid.getSelectionModel().getSelectedItem();
+            selectedManageItem = accountManagementTreeGrid.getSelectionModel().getSelectedItem();
         }
 
-        m_accountStore.removeAll();
-        m_manageStore.removeAll();
+        cloudResourcesTreeStore.removeAll();
+        accountManagementTreeStore.removeAll();
 
         GwtAccount selectedAccount = m_currentSession.getSelectedAccount();
 
         if (selectedAccount != null) {
 
-            m_accountStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
+            cloudResourcesTreeStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
 
             if (m_currentSession.hasDeviceReadPermission()) {
-                m_accountStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
+                cloudResourcesTreeStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
             }
 
             if (m_currentSession.hasUserReadPermission()) {
-                m_accountStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
+                cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
+            }
+            if (m_currentSession.hasUserReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
             }
             if (m_currentSession.hasAccountReadPermission()) {
-                m_accountStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
+                cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
             }
 
             //
             // Cloud menu
             if (m_currentSession.hasAccountReadPermission()) {
-                m_manageStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
+                accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
         }
 
         if (selectedAccountItem != null) {
             String searchFor = (String) selectedAccountItem.get("id");
 
-            for (int i = 0; i < m_accountStore.getAllItems().size(); i++) {
-                String compareTo = (String) m_accountStore.getChild(i).get("id");
+            for (int i = 0; i < cloudResourcesTreeStore.getAllItems().size(); i++) {
+                String compareTo = (String) cloudResourcesTreeStore.getChild(i).get("id");
                 if (searchFor.compareTo(compareTo) == 0) {
-                    m_accountTree.getSelectionModel().select(i, false);
+                    cloudResourcesTreeGrid.getSelectionModel().select(i, false);
                     break;
                 }
             }
         } else if (selectedManageItem != null) {
             String searchFor = (String) selectedManageItem.get("id");
 
-            for (int i = 0; i < m_manageStore.getAllItems().size(); i++) {
-                String compareTo = (String) m_manageStore.getChild(i).get("id");
+            for (int i = 0; i < accountManagementTreeStore.getAllItems().size(); i++) {
+                String compareTo = (String) accountManagementTreeStore.getChild(i).get("id");
                 if (searchFor.compareTo(compareTo) == 0) {
-                    m_manageTree.getSelectionModel().select(i, false);
+                    accountManagementTreeGrid.getSelectionModel().select(i, false);
                     break;
                 }
             }

@@ -6,10 +6,10 @@ import java.util.Set;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
-import org.eclipse.kapua.app.console.shared.model.role.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.role.GwtRoleCreator;
-import org.eclipse.kapua.app.console.shared.model.role.GwtRolePermission;
-import org.eclipse.kapua.app.console.shared.model.role.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -86,7 +86,10 @@ public class GwtKapuaModelConverter {
         // Convert permission associated with role
         Set<RolePermission> rolePermissions = new HashSet<RolePermission>();
         for (GwtRolePermission gwtRolePermission : gwtRole.getPermissions()) {
-            Permission p = convert(gwtRolePermission.getPermission());
+
+            Permission p = convert(new GwtPermission(gwtRolePermission.getDomainEnum(),
+                    gwtRolePermission.getActionEnum(),
+                    gwtRolePermission.getTargetScopeId()));
 
             RolePermission rp = permissionFactory.newRolePermission(//
                     scopeId, //
@@ -162,8 +165,8 @@ public class GwtKapuaModelConverter {
 
         //
         // Return converted
-        return permissionFactory.newPermission(convert(gwtPermission.getDomain()),
-                convert(gwtPermission.getAction()),
+        return permissionFactory.newPermission(convert(gwtPermission.getDomainEnum()),
+                convert(gwtPermission.getActionEnum()),
                 convert(gwtPermission.getTargetScopeId()));
     }
 

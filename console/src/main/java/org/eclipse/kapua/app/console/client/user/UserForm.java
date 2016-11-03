@@ -353,11 +353,6 @@ public class UserForm extends Window {
     protected void submitAccount() {
         // update
         m_existingUser.setUsername(username.getValue());
-        if (password.isDirty()) {
-            m_existingUser.setPassword(password.getValue());
-        } else {
-            m_existingUser.setPassword(null);
-        }
         m_existingUser.setDisplayName(displayName.getValue());
         m_existingUser.setEmail(email.getValue());
         m_existingUser.setPhoneNumber(phoneNumber.getValue());

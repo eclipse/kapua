@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDe
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GwtDevice extends KapuaBaseModel implements Serializable {
+public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
     private static final long serialVersionUID = -7670819589361945552L;
 
@@ -75,22 +75,19 @@ public class GwtDevice extends KapuaBaseModel implements Serializable {
         }
     }
 
-    public GwtDevice() {
-    }
-
     @Override
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("lastEventOnFormatted".equals(property)) {
-            Date lastEventOn = (Date) get("lastEventOn");
+            Date lastEventOn = getLastEventOn();
             if (lastEventOn != null)
-                return (X) (DateUtils.formatDateTime((Date) getLastEventOn()));
+                return (X) (DateUtils.formatDateTime(lastEventOn));
             return (X) "";
         } else if ("uptimeFormatted".equals(property)) {
-            if (getUptime() == -1) {
-                return (X) "Unknown";
-            } else {
+            if (getUptime() != null) {
                 return (X) String.valueOf(getUptime());
+            } else {
+                return null;
             }
         } else if ("credentialsTightEnum".equals(property)) {
             return (X) GwtDeviceCredentialsTight.valueOf(getCredentialsTight());
@@ -101,20 +98,7 @@ public class GwtDevice extends KapuaBaseModel implements Serializable {
         }
     }
 
-    public String getScopeId() {
-        return (String) get("scopeId");
-    }
-
-    public void setScopeId(String scopeId) {
-        set("scopeId", scopeId);
-    }
-
-    public String getId() {
-        return (String) get("id");
-    }
-
-    public void setId(String id) {
-        set("id", id);
+    public GwtDevice() {
     }
 
     public String getClientId() {
@@ -529,14 +513,6 @@ public class GwtDevice extends KapuaBaseModel implements Serializable {
 
     public void setCredentialsAllowChange(boolean credentialsAllowChange) {
         set("credentialsAllowChange", credentialsAllowChange);
-    }
-
-    public int getOptlock() {
-        return (Integer) get("optlock");
-    }
-
-    public void setOptlock(int optlock) {
-        set("optlock", optlock);
     }
 
     public boolean isOnline() {

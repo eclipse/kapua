@@ -122,10 +122,15 @@ public class DeviceTabProfile extends LayoutContainer {
 
             @Override
             public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
-                if (model.getName().equals("devLastEventOn") && model.getValue().compareTo("N/A") != 0) {
-                    return DateUtils.formatDateTime(new Date(Long.parseLong(model.getValue())));
+                Object value = model.getValue();
+                if (value != null && value instanceof String) {
+                    String stringValue = (String) value;
+
+                    if (model.getName().equals("devLastEventOn") && stringValue.compareTo("N/A") != 0) {
+                        return DateUtils.formatDateTime(new Date(Long.parseLong(stringValue)));
+                    }
                 }
-                return model.getValue();
+                return value;
             }
         };
 
@@ -149,6 +154,7 @@ public class DeviceTabProfile extends LayoutContainer {
         m_grid.disableTextSelection(false);
 
         tabProfileContentPanel.add(m_grid);
+
         add(tabProfileContentPanel);
         m_initialized = true;
     }

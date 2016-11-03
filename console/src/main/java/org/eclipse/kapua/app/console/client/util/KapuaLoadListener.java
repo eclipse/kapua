@@ -16,6 +16,8 @@ import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.LoadListener;
 
 public class KapuaLoadListener extends LoadListener {
+
+    @Override
     public void loaderLoadException(LoadEvent le) {
         if (le.exception != null) {
             FailureHandler.handle(le.exception);

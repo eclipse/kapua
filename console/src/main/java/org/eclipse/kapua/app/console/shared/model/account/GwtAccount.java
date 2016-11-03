@@ -108,40 +108,4 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
         return (String) get("parentAccountId");
     }
 
-    public void setDashboardPreferredTopic(String dashboardPreferredTopic) {
-        set("dashboardPreferredTopic", dashboardPreferredTopic);
-    }
-
-    public String getDashboardPreferredTopic() {
-        return (String) get("dashboardPreferredTopic");
-    }
-
-    public String getUnescapedDashboardPreferredTopic() {
-        return (String) getUnescaped("dashboardPreferredTopic");
-    }
-
-    public void setDashboardPreferredMetric(String dashboardPreferredMetric) {
-        set("dashboardPreferredMetric", dashboardPreferredMetric);
-    }
-
-    public String getDashboardPreferredMetric() {
-        return (String) get("dashboardPreferredMetric");
-    }
-
-    public String getUnescapedDashboardPreferredMetric() {
-        return (String) getUnescaped("dashboardPreferredMetric");
-    }
-
-    public String toString() {
-        return getName();
-    }
-
-    public void setOptlock(int optlock) {
-        set("optlock", optlock);
-    }
-
-    public int getOptlock() {
-        return (Integer) get("optlock");
-    }
-
 }

@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.shared.util;
 
 import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
@@ -29,8 +28,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.role.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.role.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -118,7 +117,12 @@ public class KapuaGwtModelConverter {
 
         //
         // Convert other attributes
-        gwtRolePermission.setPermission(convert(rolePermission.getPermission()));
+        GwtPermission gwtPermission = convert(rolePermission.getPermission());
+
+        gwtRolePermission.setRoleId(convert(rolePermission.getRoleId()));
+        gwtRolePermission.setDomain(gwtPermission.getDomain());
+        gwtRolePermission.setAction(gwtPermission.getAction());
+        gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
 
         //
         // Return converted entity
@@ -231,8 +235,15 @@ public class KapuaGwtModelConverter {
         return kapuaId.getShortId();
     }
 
-    public static GwtAccount convert(Account account)
-            throws KapuaException {
+    /**
+     * Converts a {@link Account} into a {@link GwtAccount} for GWT usage.
+     * 
+     * @param account
+     *            The {@link Account} to convert.
+     * @return The converted {@link GwtAccount}
+     * @since 1.0.0
+     */
+    public static GwtAccount convert(Account account) {
         GwtAccount gwtAccount = new GwtAccount();
 
         //
@@ -252,13 +263,19 @@ public class KapuaGwtModelConverter {
             gwtAccount.setBrokerURL("");
         }
 
-        Properties accountProperties = account.getEntityProperties();
-        gwtAccount.setDashboardPreferredTopic(accountProperties.getProperty("topic"));
-        gwtAccount.setDashboardPreferredMetric(accountProperties.getProperty("metric"));
-
+        //
+        // Return converted entity
         return gwtAccount;
     }
 
+    /**
+     * Converts a {@link Organization} into a {@link GwtOrganization} for GWT usage.
+     * 
+     * @param organization
+     *            The {@link Organization} to convert.
+     * @return The converted {@link GwtOrganization}.
+     * @since 1.0.0
+     */
     public static GwtOrganization convert(Organization organization) {
         GwtOrganization gwtOrganization = new GwtOrganization();
 
@@ -273,26 +290,38 @@ public class KapuaGwtModelConverter {
         gwtOrganization.setStateProvinceCounty(organization.getStateProvinceCounty());
         gwtOrganization.setCountry(organization.getCountry());
 
+        //
+        // Return converted entity
         return gwtOrganization;
     }
 
+    /**
+     * Converts a {@link User} into a {@link GwtUser} for GWT usage.
+     * 
+     * @param user
+     *            The {@link User} to convert.
+     * @return The converted {@link GwtUser}
+     * @since 1.0.0
+     */
     public static GwtUser convert(User user)
             throws KapuaException {
 
         GwtUser gwtUser = new GwtUser();
 
-        gwtUser.setId(user.getId().getShortId());
-        gwtUser.setScopeId(user.getScopeId().getShortId());
+        //
+        // Convert commons attributes
+        convertEntity(user, gwtUser);
+
+        //
+        // Convert other attributes
         gwtUser.setUsername(user.getName());
-        gwtUser.setCreatedOn(user.getCreatedOn());
-        gwtUser.setModifiedOn(user.getModifiedOn());
         gwtUser.setDisplayName(user.getDisplayName());
         gwtUser.setEmail(user.getEmail());
         gwtUser.setPhoneNumber(user.getPhoneNumber());
         gwtUser.setStatus(user.getStatus().name());
-        gwtUser.setCreatedBy(user.getCreatedBy().getShortId());
-        gwtUser.setModifiedBy(user.getModifiedBy().getShortId());
-        gwtUser.setOptlock(user.getOptlock());
+
+        //
+        // Return converted entity
         return gwtUser;
     }
 
@@ -383,7 +412,7 @@ public class KapuaGwtModelConverter {
             return;
         }
 
-        convertEntity(kapuaEntity, gwtEntity);
+        convertEntity((KapuaEntity) kapuaEntity, (GwtEntityModel) gwtEntity);
 
         gwtEntity.setModifiedOn(kapuaEntity.getModifiedOn());
         gwtEntity.setModifiedBy(convert(kapuaEntity.getModifiedBy()));
