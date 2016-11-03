@@ -46,8 +46,8 @@ public class RestApisApplication extends ResourceConfig {
 		register(KapuaSerializableBodyWriter.class);
 		register(ListBodyWriter.class);
 		// Hook the swagger-ui
-		registerClasses(ApiListingResource.class,
-						SwaggerSerializers.class);
+//		registerClasses(ApiListingResource.class,
+//						SwaggerSerializers.class);
 
 		register(new ContainerLifecycleListener() {
 

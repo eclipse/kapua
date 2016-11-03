@@ -21,7 +21,6 @@ import io.swagger.annotations.Api;
 /**
  * Root resource (exposed at "test" path)
  */
-@Api
 @Path("test")
 public class TestResource extends AbstractKapuaResource {
 
