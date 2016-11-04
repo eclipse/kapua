@@ -42,6 +42,10 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
+        //
+        // Container borders
+        setBorders(true);
+
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = getDataProxy();
         descriptionValuesloader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
         descriptionValuesStore = new GroupingStore<GwtGroupedNVPair>(descriptionValuesloader);
@@ -88,8 +92,7 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         gropingView.setEnableNoGroups(false);
         gropingView.setEnableGroupingMenu(false);
 
-        descriptionGrid = new KapuaGrid<GwtGroupedNVPair>();
-        descriptionGrid.reconfigure(descriptionValuesStore, new ColumnModel(columns));
+        descriptionGrid = new KapuaGrid<GwtGroupedNVPair>(descriptionValuesStore, new ColumnModel(columns));
         descriptionGrid.setView(gropingView);
 
         add(descriptionGrid);

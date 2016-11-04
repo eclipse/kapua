@@ -1,19 +1,16 @@
 package org.eclipse.kapua.app.console.client.ui.grid;
 
-import java.util.ArrayList;
-
 import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridView;
 
 public class KapuaGrid<M extends KapuaBaseModel> extends Grid<M> {
 
-    public KapuaGrid() {
-        // Dummy init required by GWT/GXT in order to not explode on initialization.
-        super(null, new ColumnModel(new ArrayList<ColumnConfig>()));
+    public KapuaGrid(ListStore<M> store, ColumnModel cm) {
+        super(store, cm);
 
         //
         // Grid properties

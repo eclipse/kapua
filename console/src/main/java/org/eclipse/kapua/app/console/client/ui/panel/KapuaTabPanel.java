@@ -20,7 +20,9 @@ public class KapuaTabPanel<M extends GwtEntityModel> extends TabPanel {
             ((KapuaTabItem<M>) t).setEntity(entity);
         }
 
-        ((KapuaTabItem<M>) getSelectedItem()).refresh();
+        if (getSelectedItem() != null) {
+            ((KapuaTabItem<M>) getSelectedItem()).refresh();
+        }
     }
 
 }

@@ -17,7 +17,7 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
     public KapuaTabItem(String title, KapuaIcon tabIcon) {
         super(title, tabIcon);
 
-        setBorders(true);
+        setBorders(false);
         setLayout(new FitLayout());
 
         addListener(Events.Select, new Listener<ComponentEvent>() {

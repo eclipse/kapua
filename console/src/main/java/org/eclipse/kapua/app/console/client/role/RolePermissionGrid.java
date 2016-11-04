@@ -11,6 +11,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermissio
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -34,7 +35,11 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtRolePermission>> callback) {
-                gwtRoleService.getRolePermissions((PagingLoadConfig) loadConfig, selectedRole.getScopeId(), selectedRole.getId(), callback);
+                if (selectedRole != null) {
+                    gwtRoleService.getRolePermissions((PagingLoadConfig) loadConfig, selectedRole.getScopeId(), selectedRole.getId(), callback);
+                } else {
+                    callback.onSuccess(new BasePagingLoadResult<GwtRolePermission>(new ArrayList<GwtRolePermission>()));
+                }
             }
         };
     }

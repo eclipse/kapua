@@ -3,7 +3,9 @@ package org.eclipse.kapua.app.console.client.ui.grid;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
@@ -18,46 +20,40 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.GridView;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public abstract class EntityGrid<M extends GwtEntityModel> extends KapuaGrid<M> {
+public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    protected EntityView<M> parentEntityView;
-    protected GwtSession currentSession;
+    private final int ENTITY_PAGE_SIZE = 100;
 
+    protected GwtSession currentSession;
+    protected EntityView<M> parentEntityView;
+
+    protected KapuaGrid<M> entityGrid;
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
+    protected PagingToolBar entityPagingToolbar;
 
     protected EntityGrid(EntityView<M> entityView, GwtSession currentSession) {
-        super();
+        super(new FitLayout());
 
         //
-        // Configure data loader
-
-        // Proxy
-        RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();
-
-        // Loader
-        entityLoader = new BasePagingLoader<PagingLoadResult<M>>(dataProxy);
-
-        // Store
-        entityStore = new ListStore<M>(entityLoader);
+        // Container borders
+        setBorders(false);
+        setBodyBorder(true);
+        setHeaderVisible(false);
 
         //
-        // Grid load listener
-        entityLoader.addLoadListener(new EntityLoadListener<M>(this, entityStore));
-
-        //
-        // Configure columns
-        ColumnModel columnModel = new ColumnModel(getColumns());
-
-        //
-        // Set grid
-        reconfigure(entityStore, columnModel);
+        // Paging toolbar
+        entityPagingToolbar = getPagingToolbar();
+        if (entityPagingToolbar != null) {
+            setBottomComponent(entityPagingToolbar);
+        }
 
         //
         // Set other properties
@@ -70,8 +66,37 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends KapuaGrid<M> 
         super.onRender(target, index);
 
         //
+        // Configure Entity Grid
+
+        // Data Proxy
+        RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();
+
+        // Dara Loader
+        entityLoader = new BasePagingLoader<PagingLoadResult<M>>(dataProxy);
+
+        // Data Store
+        entityStore = new ListStore<M>(entityLoader);
+
+        //
+        // Grid Data Load Listener
+        entityLoader.addLoadListener(new EntityGridLoadListener<M>(this, entityStore));
+
+        //
+        // Bind Entity Paging Toolbar
+        entityPagingToolbar.bind(entityLoader);
+
+        //
+        // Configure columns
+        ColumnModel columnModel = new ColumnModel(getColumns());
+
+        //
+        // Set grid
+        entityGrid = new KapuaGrid<M>(entityStore, columnModel);
+        add(entityGrid);
+
+        //
         // Grid selection mode
-        GridSelectionModel<M> selectionModel = getSelectionModel();
+        GridSelectionModel<M> selectionModel = entityGrid.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
         selectionModel.addSelectionChangedListener(new SelectionChangedListener<M>() {
 
@@ -83,11 +108,19 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends KapuaGrid<M> 
 
         //
         // Grid view options
-        GridView gridView = getView();
+        GridView gridView = entityGrid.getView();
         gridView.setEmptyText(MSGS.gridEmptyResult());
+
+        //
+        // Do first load
+        refresh();
     }
 
     protected abstract RpcProxy<PagingLoadResult<M>> getDataProxy();
+
+    protected PagingToolBar getPagingToolbar() {
+        return new KapuaPagingToolBar(ENTITY_PAGE_SIZE);
+    }
 
     protected abstract List<ColumnConfig> getColumns();
 
@@ -101,8 +134,12 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends KapuaGrid<M> 
         }
     }
 
-    public void setPagingToolbar(PagingToolBar resultPagingToolbar) {
-        resultPagingToolbar.bind(entityLoader);
+    public void setPagingToolbar(PagingToolBar entityPagingToolbar) {
+        this.entityPagingToolbar = entityPagingToolbar;
+    }
+
+    public GridSelectionModel<M> getSelectionModel() {
+        return entityGrid.getSelectionModel();
     }
 
 }

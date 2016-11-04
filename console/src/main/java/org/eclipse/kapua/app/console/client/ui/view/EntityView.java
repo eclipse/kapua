@@ -17,15 +17,12 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
 public abstract class EntityView<M extends GwtEntityModel> extends LayoutContainer {
 
     private final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-
-    private final int ENTITY_PAGE_SIZE = 100;
 
     private GwtSession currentSession;
 
@@ -76,7 +73,6 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
         // Center Main panel:
         LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
         resultContainer.setBorders(false);
-        resultContainer.setBorders(false);
 
         KapuaBorderLayoutData centerMainPanel = new KapuaBorderLayoutData(LayoutRegion.CENTER);
         add(resultContainer, centerMainPanel);
@@ -89,20 +85,8 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
             filterPanel.setEntityGrid(entityGrid);
         }
 
-        // Toolbar
-        PagingToolBar resultPagingToolbar = new PagingToolBar(ENTITY_PAGE_SIZE);
-        entityGrid.setPagingToolbar(resultPagingToolbar);
-
-        ContentPanel entityGridPanel = new ContentPanel(new FitLayout());
-        entityGridPanel.setBodyBorder(true);
-        entityGridPanel.setBorders(false);
-        entityGridPanel.setHeaderVisible(false);
-
-        entityGridPanel.add(entityGrid);
-        entityGridPanel.setBottomComponent(resultPagingToolbar);
-
         BorderLayoutData northData = new KapuaBorderLayoutData(LayoutRegion.NORTH, .45F);
-        resultContainer.add(entityGridPanel, northData);
+        resultContainer.add(entityGrid, northData);
 
         //
         // Center sub panel: Entity sub tabs
@@ -118,10 +102,6 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
         centerData.setMarginTop(5);
 
         resultContainer.add(tabsPanel, centerData);
-
-        //
-        // Do first load
-        entityGrid.refresh();
     }
 
     public abstract List<KapuaTabItem<M>> getTabs(EntityView<M> entityView, GwtSession currentSession);
