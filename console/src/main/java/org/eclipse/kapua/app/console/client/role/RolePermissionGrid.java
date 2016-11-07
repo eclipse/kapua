@@ -33,8 +33,11 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     @Override
     protected KapuaEntityCRUDToolbar<GwtRolePermission> getEntityCRUDToolbar() {
         KapuaEntityCRUDToolbar<GwtRolePermission> toolbar = super.getEntityCRUDToolbar();
+
         toolbar.setAddButtonVisible(false);
         toolbar.setEditButtonVisible(false);
+        toolbar.setDeleteButtonVisible(false);
+
         return toolbar;
     }
 

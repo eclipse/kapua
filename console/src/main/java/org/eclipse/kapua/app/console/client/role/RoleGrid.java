@@ -27,6 +27,11 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     }
 
     @Override
+    protected RoleToolbarGrid getEntityCRUDToolbar() {
+        return new RoleToolbarGrid();
+    }
+
+    @Override
     protected RpcProxy<PagingLoadResult<GwtRole>> getDataProxy() {
         return new RpcProxy<PagingLoadResult<GwtRole>>() {
 

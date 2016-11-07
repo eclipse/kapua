@@ -1,11 +1,14 @@
 package org.eclipse.kapua.app.console.client.ui.widget;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.button.AddButton;
 import org.eclipse.kapua.app.console.client.ui.button.DeleteButton;
 import org.eclipse.kapua.app.console.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.client.ui.dialog.ActionDialog;
 import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -17,9 +20,12 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
 public class KapuaEntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
+
+    private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     protected EntityGrid<M> entityGrid;
     protected GridSelectionModel<M> gridSelectionModel;
@@ -169,6 +175,16 @@ public class KapuaEntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         return new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
+
+                //
+                // Show exit popup
+                ActionDialog dialog = be.getComponent();
+                if (dialog.getExitStatus()) {
+                    ConsoleInfo.display(MSGS.popupInfo(), dialog.getExitMessage());
+                } else {
+                    ConsoleInfo.display(MSGS.popupError(), dialog.getExitMessage());
+                }
+
                 entityGrid.refresh();
                 thisToolbar.enable();
             }

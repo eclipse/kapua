@@ -54,6 +54,15 @@ public class KapuaIcon extends Text {
             case 2:
                 sb.append(" fa-2x' ");
                 break;
+            case 3:
+                sb.append(" fa-3x' ");
+                break;
+            case 4:
+                sb.append(" fa-4x' ");
+                break;
+            case 5:
+                sb.append(" fa-5x' ");
+                break;
             default:
                 sb.append(" fa-lg' ");
                 break;

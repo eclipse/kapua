@@ -13,6 +13,7 @@
 package org.eclipse.kapua.app.console.client.ui.dialog;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -27,7 +28,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
 
 public abstract class KapuaDialog extends Dialog {
 
@@ -68,13 +68,13 @@ public abstract class KapuaDialog extends Dialog {
         infoPanel.setBodyStyle("background-color:transparent");
         add(infoPanel);
 
-        // Heading Icon (if implementation needs one
+        // Heading Icon (if implementation needs one)
         AbstractImagePrototype headerIcon = getHeaderIcon();
         if (headerIcon != null) {
             getHeader().setIcon(headerIcon);
         }
 
-        // Heading Message (if implementation needs one
+        // Heading Message (if implementation needs one)
         String headingMessage = getHeaderMessage();
         if (headingMessage == null) {
             headingMessage = "";
@@ -82,13 +82,15 @@ public abstract class KapuaDialog extends Dialog {
         setHeading(headingMessage);
 
         // Icon (if implementation needs one)
-        Image infoIcon = getInfoIcon();
+        KapuaIcon infoIcon = getInfoIcon();
         if (infoIcon != null) {
             TableData tableData = new TableData();
             tableData.setWidth("50px");
             tableData.setHorizontalAlign(HorizontalAlignment.CENTER);
             tableData.setVerticalAlign(VerticalAlignment.MIDDLE);
             tableData.setPadding(5);
+
+            infoIcon.setEmSize(3);
 
             infoPanel.add(infoIcon, tableData);
         }
@@ -116,7 +118,7 @@ public abstract class KapuaDialog extends Dialog {
 
     public abstract String getHeaderMessage();
 
-    public abstract Image getInfoIcon();
+    public abstract KapuaIcon getInfoIcon();
 
     public abstract String getInfoMessage();
 
