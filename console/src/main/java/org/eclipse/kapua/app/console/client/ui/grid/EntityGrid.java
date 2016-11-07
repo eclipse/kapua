@@ -5,6 +5,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.widget.KapuaEntityCRUDToolbar;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -34,6 +35,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected GwtSession currentSession;
     protected EntityView<M> parentEntityView;
 
+    protected KapuaEntityCRUDToolbar<M> entityCRUDToolbar;
     protected KapuaGrid<M> entityGrid;
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
@@ -48,6 +50,12 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         setBodyBorder(true);
         setHeaderVisible(false);
 
+        //
+        // CRUD toolbar
+        entityCRUDToolbar = getEntityCRUDToolbar();
+        if (entityCRUDToolbar != null) {
+            setTopComponent(entityCRUDToolbar);
+        }
         //
         // Paging toolbar
         entityPagingToolbar = getPagingToolbar();
@@ -83,7 +91,9 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Bind Entity Paging Toolbar
-        entityPagingToolbar.bind(entityLoader);
+        if (entityPagingToolbar != null) {
+            entityPagingToolbar.bind(entityLoader);
+        }
 
         //
         // Configure columns
@@ -93,6 +103,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         // Set grid
         entityGrid = new KapuaGrid<M>(entityStore, columnModel);
         add(entityGrid);
+
+        //
+        // Bind the grid to CRUD toolbar
+        entityCRUDToolbar.setEntityGrid(this);
 
         //
         // Grid selection mode
@@ -114,6 +128,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         //
         // Do first load
         refresh();
+    }
+
+    protected KapuaEntityCRUDToolbar<M> getEntityCRUDToolbar() {
+        return new KapuaEntityCRUDToolbar<M>();
     }
 
     protected abstract RpcProxy<PagingLoadResult<M>> getDataProxy();

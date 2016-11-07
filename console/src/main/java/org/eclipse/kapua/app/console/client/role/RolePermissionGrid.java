@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.widget.KapuaEntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
@@ -27,6 +28,14 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     protected RolePermissionGrid(EntityView<GwtRolePermission> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
+    }
+
+    @Override
+    protected KapuaEntityCRUDToolbar<GwtRolePermission> getEntityCRUDToolbar() {
+        KapuaEntityCRUDToolbar<GwtRolePermission> toolbar = super.getEntityCRUDToolbar();
+        toolbar.setAddButtonVisible(false);
+        toolbar.setEditButtonVisible(false);
+        return toolbar;
     }
 
     @Override
