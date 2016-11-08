@@ -31,22 +31,22 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public abstract class ActionDialog extends KapuaDialog
-{
-    protected static final ConsoleMessages       MSGS             = GWT.create(ConsoleMessages.class);
-    protected final GwtSecurityTokenServiceAsync gwtXSRFService   = GWT.create(GwtSecurityTokenService.class);
+public abstract class ActionDialog extends KapuaDialog {
+
+    protected static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    protected final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
     protected GwtXSRFToken xsrfToken;
 
-    protected static int                         FORM_LABEL_WIDTH = 150;
-    protected FormPanel                          m_formPanel;
+    protected static int FORM_LABEL_WIDTH = 120;
+    protected FormPanel m_formPanel;
 
-    protected Button                             m_submitButton;
-    protected Button                             m_cancelButton;
-    protected Status                             m_status;
+    protected Button m_submitButton;
+    protected Button m_cancelButton;
+    protected Status m_status;
 
-    protected Boolean                            m_exitStatus;
-    protected String                             m_exitMessage;
+    protected Boolean m_exitStatus;
+    protected String m_exitMessage;
 
     public ActionDialog() {
         super();

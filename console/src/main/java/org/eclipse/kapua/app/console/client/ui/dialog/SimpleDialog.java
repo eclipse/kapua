@@ -15,18 +15,16 @@ package org.eclipse.kapua.app.console.client.ui.dialog;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.google.gwt.user.client.Element;
 
-public abstract class SimpleDialog extends ActionDialog
-{
+public abstract class SimpleDialog extends ActionDialog {
+
     protected ContentPanel m_bodyPanel;
 
-    public SimpleDialog()
-    {
+    public SimpleDialog() {
         super();
     }
 
     @Override
-    protected void onRender(Element parent, int pos)
-    {
+    protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
 
         //
@@ -42,6 +40,13 @@ public abstract class SimpleDialog extends ActionDialog
         createBody();
 
         m_formPanel.add(m_bodyPanel);
+    }
+
+    @Override
+    protected void preSubmit() {
+        if (m_formPanel.isValid()) {
+            super.preSubmit();
+        }
     }
 
     public abstract void createBody();

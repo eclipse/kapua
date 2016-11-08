@@ -3,9 +3,10 @@ package org.eclipse.kapua.app.console.client.role;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.client.ui.widget.KapuaEntityCRUDToolbar;
+import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
@@ -22,6 +23,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
+    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
 
     private GwtRole selectedRole;
@@ -31,8 +34,8 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     }
 
     @Override
-    protected KapuaEntityCRUDToolbar<GwtRolePermission> getEntityCRUDToolbar() {
-        KapuaEntityCRUDToolbar<GwtRolePermission> toolbar = super.getEntityCRUDToolbar();
+    protected EntityCRUDToolbar<GwtRolePermission> getToolbar() {
+        EntityCRUDToolbar<GwtRolePermission> toolbar = super.getToolbar();
 
         toolbar.setAddButtonVisible(false);
         toolbar.setEditButtonVisible(false);
@@ -60,19 +63,19 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", "id", 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRolePermissionColumnHeaderId(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOnFormatted", "Created On", 100);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("domain", "Domain", 100);
+        columnConfig = new ColumnConfig("domain", MSGS.gridRolePermissionColumnHeaderDomain(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("action", "Action", 100);
+        columnConfig = new ColumnConfig("action", MSGS.gridRolePermissionColumnHeaderAction(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("targetScopeId", "Target Scope Id", 100);
+        columnConfig = new ColumnConfig("targetScopeId", MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 100);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

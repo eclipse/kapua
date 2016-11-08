@@ -5,7 +5,7 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.client.ui.widget.KapuaEntityCRUDToolbar;
+import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -35,7 +35,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected GwtSession currentSession;
     protected EntityView<M> parentEntityView;
 
-    protected KapuaEntityCRUDToolbar<M> entityCRUDToolbar;
+    protected EntityCRUDToolbar<M> entityCRUDToolbar;
     protected KapuaGrid<M> entityGrid;
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
@@ -43,6 +43,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     protected EntityGrid(EntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
+        //
+        // Set other properties
+        this.parentEntityView = entityView;
+        this.currentSession = currentSession;
 
         //
         // Container borders
@@ -52,7 +56,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // CRUD toolbar
-        entityCRUDToolbar = getEntityCRUDToolbar();
+        entityCRUDToolbar = getToolbar();
         if (entityCRUDToolbar != null) {
             setTopComponent(entityCRUDToolbar);
         }
@@ -62,11 +66,6 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         if (entityPagingToolbar != null) {
             setBottomComponent(entityPagingToolbar);
         }
-
-        //
-        // Set other properties
-        this.parentEntityView = entityView;
-        this.currentSession = currentSession;
     }
 
     @Override
@@ -130,8 +129,8 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         refresh();
     }
 
-    protected KapuaEntityCRUDToolbar<M> getEntityCRUDToolbar() {
-        return new KapuaEntityCRUDToolbar<M>();
+    protected EntityCRUDToolbar<M> getToolbar() {
+        return new EntityCRUDToolbar<M>(currentSession);
     }
 
     protected abstract RpcProxy<PagingLoadResult<M>> getDataProxy();

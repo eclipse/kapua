@@ -8,6 +8,18 @@ public class GwtRolePermission extends GwtEntityModel {
 
     private static final long serialVersionUID = 6331197556606146242L;
 
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <X> X get(String property) {
+        if ("domainEnum".equals(property)) {
+            return (X) (GwtDomain.valueOf(getDomain()));
+        } else if ("actionEnum".equals(property)) {
+            return (X) (GwtAction.valueOf(getAction()));
+        } else {
+            return super.get(property);
+        }
+    }
+
     public GwtRolePermission() {
         super();
     }

@@ -10,6 +10,7 @@ import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -23,11 +24,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class KapuaEntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
+public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     private final static ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
+    protected GwtSession currentSession;
+
     protected EntityGrid<M> entityGrid;
+
     protected GridSelectionModel<M> gridSelectionModel;
 
     protected ToolBar thisToolbar = this;
@@ -43,6 +47,10 @@ public class KapuaEntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected RefreshButton refreshEntityButton;
     private boolean refreshEntityButtonShow = true;
+
+    public EntityCRUDToolbar(GwtSession currentSession) {
+        this.currentSession = currentSession;
+    }
 
     @Override
     protected void onRender(Element target, int index) {
@@ -179,10 +187,12 @@ public class KapuaEntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
                 //
                 // Show exit popup
                 ActionDialog dialog = be.getComponent();
-                if (dialog.getExitStatus()) {
-                    ConsoleInfo.display(MSGS.popupInfo(), dialog.getExitMessage());
-                } else {
-                    ConsoleInfo.display(MSGS.popupError(), dialog.getExitMessage());
+                if (dialog.getExitStatus() != null) {
+                    if (dialog.getExitStatus()) {
+                        ConsoleInfo.display(MSGS.popupInfo(), dialog.getExitMessage());
+                    } else {
+                        ConsoleInfo.display(MSGS.popupError(), dialog.getExitMessage());
+                    }
                 }
 
                 entityGrid.refresh();

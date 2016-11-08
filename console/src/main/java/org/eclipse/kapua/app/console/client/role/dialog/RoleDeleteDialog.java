@@ -1,7 +1,7 @@
 package org.eclipse.kapua.app.console.client.role.dialog;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.DeleteConfirmationDialog;
+import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
@@ -10,7 +10,7 @@ import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class RoleDeleteDialogConfirmation extends DeleteConfirmationDialog {
+public class RoleDeleteDialog extends EntityDeleteDialog {
 
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
@@ -18,7 +18,7 @@ public class RoleDeleteDialogConfirmation extends DeleteConfirmationDialog {
 
     private GwtRole gwtRole;
 
-    public RoleDeleteDialogConfirmation(GwtRole gwtRole) {
+    public RoleDeleteDialog(GwtRole gwtRole) {
         this.gwtRole = gwtRole;
 
         DialogUtils.resizeDialog(this, 300, 135);

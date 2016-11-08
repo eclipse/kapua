@@ -21,7 +21,7 @@ public class GwtPermission extends KapuaBaseModel {
     /**
      * Defines the domain of the object protected by the {@link GwtPermission}
      */
-    public enum GwtDomain implements IsSerializable {
+    public enum GwtDomain implements IsSerializable, Enum {
         account, //
         credential, //
         datastore, //
@@ -37,12 +37,17 @@ public class GwtPermission extends KapuaBaseModel {
     /**
      * Defines the actions allowed by the {@link GwtPermission}
      */
-    public enum GwtAction implements IsSerializable {
+    public enum GwtAction implements IsSerializable, Enum {
         read, //
         write, //
         delete, //
         connect, //
         exec;
+
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
 
     @Override
@@ -59,6 +64,13 @@ public class GwtPermission extends KapuaBaseModel {
 
     /**
      * Gwt Permission constructor.
+     */
+    public GwtPermission() {
+        super();
+    }
+
+    /**
+     * Gwt Permission constructor.
      * 
      * @param domain
      *            The {@link GwtDomain} of the permission
@@ -68,6 +80,7 @@ public class GwtPermission extends KapuaBaseModel {
      *            The target scope id of the permission
      */
     public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId) {
+        this();
         setDomain(domain != null ? domain.name() : null);
         setAction(action != null ? action.name() : null);
         setTargetScopeId(targetScopeId);

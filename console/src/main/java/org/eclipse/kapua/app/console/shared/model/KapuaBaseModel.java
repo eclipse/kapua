@@ -19,25 +19,21 @@ import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 
-public class KapuaBaseModel extends BaseModel implements Serializable
-{
+public class KapuaBaseModel extends BaseModel implements Serializable {
+
     private static final long serialVersionUID = -240340584288457781L;
 
-    public KapuaBaseModel()
-    {
+    public KapuaBaseModel() {
         super();
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
-    public <X> X get(String property)
-    {
+    public <X> X get(String property) {
         return super.get(property);
     }
 
     @SuppressWarnings({ "unchecked" })
-    public <X> X getUnescaped(String property)
-    {
+    public <X> X getUnescaped(String property) {
         X value = get(property);
 
         if (value instanceof String) {
@@ -48,14 +44,12 @@ public class KapuaBaseModel extends BaseModel implements Serializable
     }
 
     @Override
-    public <X> X set(String name, X value)
-    {
+    public <X> X set(String name, X value) {
         return set(name, value, true);
     }
 
     @SuppressWarnings({ "unchecked" })
-    public <X> X set(String name, X value, boolean htmlEscape)
-    {
+    public <X> X set(String name, X value, boolean htmlEscape) {
         if (htmlEscape && value != null && value instanceof String) {
             value = (X) KapuaSafeHtmlUtils.htmlEscape(((String) value));
         }
@@ -64,8 +58,7 @@ public class KapuaBaseModel extends BaseModel implements Serializable
     }
 
     @Override
-    public void setProperties(Map<String, Object> properties)
-    {
+    public void setProperties(Map<String, Object> properties) {
         for (String property : properties.keySet()) {
             set(property, properties.get(property));
         }

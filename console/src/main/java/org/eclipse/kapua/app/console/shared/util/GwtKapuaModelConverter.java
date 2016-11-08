@@ -131,16 +131,18 @@ public class GwtKapuaModelConverter {
 
         // Convert permission associated with role
         Set<RolePermission> rolePermissions = new HashSet<RolePermission>();
-        for (GwtPermission gwtPermission : gwtRoleCreator.getPermissions()) {
-            Permission p = convert(gwtPermission);
+        if (gwtRoleCreator.getPermissions() != null) {
+            for (GwtPermission gwtPermission : gwtRoleCreator.getPermissions()) {
+                Permission p = convert(gwtPermission);
 
-            RolePermission rp = permissionFactory.newRolePermission(//
-                    scopeId, //
-                    p.getDomain(), //
-                    p.getAction(), //
-                    p.getTargetScopeId());
+                RolePermission rp = permissionFactory.newRolePermission(//
+                        scopeId, //
+                        p.getDomain(), //
+                        p.getAction(), //
+                        p.getTargetScopeId());
 
-            rolePermissions.add(rp);
+                rolePermissions.add(rp);
+            }
         }
 
         roleCreator.setRoles(rolePermissions);

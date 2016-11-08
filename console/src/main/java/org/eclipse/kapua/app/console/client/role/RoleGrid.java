@@ -3,6 +3,7 @@ package org.eclipse.kapua.app.console.client.role;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -20,6 +21,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RoleGrid extends EntityGrid<GwtRole> {
 
+    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
 
     public RoleGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
@@ -27,8 +30,8 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     }
 
     @Override
-    protected RoleToolbarGrid getEntityCRUDToolbar() {
-        return new RoleToolbarGrid();
+    protected RoleToolbarGrid getToolbar() {
+        return new RoleToolbarGrid(currentSession);
     }
 
     @Override
@@ -51,13 +54,13 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", "id", 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRoleColumnHeaderId(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("name", "Name", 400);
+        columnConfig = new ColumnConfig("name", MSGS.gridRoleColumnHeaderName(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOnFormatted", "Created On", 300);
+        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRoleColumnHeaderCreatedOn(), 300);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
