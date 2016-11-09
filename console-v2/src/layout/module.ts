@@ -1,6 +1,6 @@
 import LayoutCtrl from "./controllers/LayoutCtrl";
 
-import "./styles/layout.scss";
+import "./assets/styles/layout.scss";
 
 angular.module("app.layout", ["ui.router"])
     .config(["$stateProvider", ($stateProvider: angular.ui.IStateProvider) => {

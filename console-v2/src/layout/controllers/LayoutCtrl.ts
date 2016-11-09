@@ -2,7 +2,7 @@ export default class LayoutCtrl {
     navigationItems = [
         {
             title: "Welcome",
-            iconClass: "fa fa-dashboard",
+            iconClass: "fa fa-info",
             href: "#/welcome"
         }
     ];
@@ -10,6 +10,6 @@ export default class LayoutCtrl {
     constructor() { }
 
     private getLogoImage() {
-        return require("../../login/assets/img/logo-white.svg");
+        return require("../assets/img/logo-white.svg");
     }
 }
