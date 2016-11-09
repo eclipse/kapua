@@ -31,7 +31,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "typings install",
     "start": "tsc && concurrently \"tsc -w\" \"browser-sync start --server\"",
-    "webpack:w": "webpack-dev-server --port 3000"
+    "webpack:w": "webpack-dev-server -d --port 3000"
   },
   "repository": {
     "type": "git",
