@@ -1,0 +1,10 @@
+<div pf-vertical-navigation 
+	 items="vm.navigationItems" 
+	 brand-src="{{:: vm.getLogoImage() }}"
+	 brand-alt="Kapua" 
+	 show-badges="true" 
+	 pinnable-menus="true"
+	 update-active-items-on-click="true" 
+	 navigate-callback="ctrl.handleNavigateClick">
+</div>
+<ui-view name="kapuaView"></ui-view>

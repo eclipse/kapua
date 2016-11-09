@@ -22,7 +22,7 @@ module.exports = {
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" }, 
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" }, 
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-            { test: /\.(png|jpe?g)$/, loader: 'url?limit=25000' },
+            { test: /\.(png|jpe?g|gif)$/, loader: 'url?limit=25000' },
             { test: /\.html$/, exclude: /node_modules/, loader: 'html' }
         ]
     },
