@@ -1,0 +1,50 @@
+{
+  "name": "console-v2",
+  "version": "0.0.1",
+  "description": "Kapua admin console written in HTML and AngularJS",
+  "main": "index.js",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-patternfly": "^3.13.0",
+    "angular-ui-router": "^0.3.2"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.17.5",
+    "concurrently": "^3.1.0",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "html-loader": "^0.4.4",
+    "html-webpack-plugin": "^2.24.1",
+    "node-sass": "^3.11.2",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^1.1.0",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.8",
+    "typings": "^1.5.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "typings install",
+    "start": "tsc && concurrently \"tsc -w\" \"browser-sync start --server\"",
+    "webpack:w": "webpack-dev-server --port 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eclipse/kapua.git"
+  },
+  "keywords": [
+    "kapua",
+    "console"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eclipse/kapua/issues"
+  },
+  "homepage": "https://github.com/eclipse/kapua#readme"
+}

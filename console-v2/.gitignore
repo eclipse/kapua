@@ -1,0 +1,11 @@
+# Node Modules
+node_modules/
+
+# TypeScript Typings
+typings/
+
+# Visual Studio Code settings
+.vscode/
+
+# Final build folder
+dist/
