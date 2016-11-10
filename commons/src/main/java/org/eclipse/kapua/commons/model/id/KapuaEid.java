@@ -31,7 +31,7 @@ public class KapuaEid implements KapuaId, Serializable {
 
     private static final long serialVersionUID = 8998805462408705432L;
 
-    protected BigInteger eid;
+    protected BigInteger      eid;
 
     /**
      * Constructor

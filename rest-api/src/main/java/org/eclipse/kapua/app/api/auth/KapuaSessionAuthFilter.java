@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.api.auth;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.FilterChain;
@@ -26,9 +27,8 @@ import org.apache.shiro.web.servlet.ShiroFilter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.service.authentication.AccessToken;
-import org.eclipse.kapua.service.authentication.AccessTokenImpl;
-
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
 
 /**
  * {@link ShiroFilter} override. Used to intercept the http request execute and plug into thread context the Kapua session
@@ -36,34 +36,33 @@ import org.eclipse.kapua.service.authentication.AccessTokenImpl;
  */
 public class KapuaSessionAuthFilter extends ShiroFilter {
 
-	protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain)
-			throws IOException, ServletException {
-		// bind kapua session
+    protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain)
+            throws IOException, ServletException {
+        // bind kapua session
 
-		// TODO workaround to fix the null kapua session on webconsole requests.
-		// to be removed and substitute with getToken or another solution?
-		KapuaSession kapuaSession = null;
-		Subject shiroSubject = SecurityUtils.getSubject();
-		if (shiroSubject != null && shiroSubject.isAuthenticated()) {
-			Session s = shiroSubject.getSession();
-			KapuaEid scopeId = (KapuaEid) s.getAttribute("scopeId");
-			KapuaEid userScopeId = (KapuaEid) s.getAttribute("userScopeId");
-			KapuaEid userId = (KapuaEid) s.getAttribute("userId");
+        // TODO workaround to fix the null kapua session on webconsole requests.
+        // to be removed and substitute with getToken or another solution?
+        KapuaSession kapuaSession = null;
+        Subject shiroSubject = SecurityUtils.getSubject();
+        if (shiroSubject != null && shiroSubject.isAuthenticated()) {
+            Session s = shiroSubject.getSession();
+            KapuaEid scopeId = (KapuaEid) s.getAttribute("scopeId");
+            KapuaEid userId = (KapuaEid) s.getAttribute("userId");
 
-			// create the access token
-			String generatedTokenKey = UUID.randomUUID().toString();
-			AccessToken accessToken = new AccessTokenImpl(userId, scopeId, userScopeId, generatedTokenKey);
+            // create the access token
+            String generatedTokenKey = UUID.randomUUID().toString();
+            AccessToken accessToken = new AccessTokenImpl(scopeId, userId, generatedTokenKey, new Date());
 
-			kapuaSession = new KapuaSession(accessToken, scopeId, userScopeId, userId, "");
-		}
-		try {
-			KapuaSecurityUtils.setSession(kapuaSession);
+            kapuaSession = new KapuaSession(accessToken, scopeId, userId, "");
+        }
+        try {
+            KapuaSecurityUtils.setSession(kapuaSession);
 
-			super.executeChain(request, response, origChain);
-		} finally {
-			// unbind kapua session
-			KapuaSecurityUtils.clearSession();
-		}
-	}
+            super.executeChain(request, response, origChain);
+        } finally {
+            // unbind kapua session
+            KapuaSecurityUtils.clearSession();
+        }
+    }
 
 }

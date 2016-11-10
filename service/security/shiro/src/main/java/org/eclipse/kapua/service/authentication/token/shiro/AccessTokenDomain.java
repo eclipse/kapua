@@ -10,16 +10,17 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication;
-
-import org.eclipse.kapua.model.KapuaEntityCreator;
+package org.eclipse.kapua.service.authentication.token.shiro;
 
 /**
- * Access token creator service definition
- *
- * @since 1.0
+ * Access token domain.<br>
+ * Used to describe the access token domain.
  * 
+ * @since 1.0
+ *
  */
-public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken>
-{
+public interface AccessTokenDomain {
+
+    String ACCESS_TOKEN = "access_token";
+
 }

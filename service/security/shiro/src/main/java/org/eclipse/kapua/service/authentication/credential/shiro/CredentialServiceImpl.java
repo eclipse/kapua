@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -72,11 +73,11 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(credentialDomain, Actions.write, credentialCreator.getScopeId()));
-        
+
         if (countExistingCredentials(credentialCreator.getCredentialType(), credentialCreator.getScopeId(), credentialCreator.getUserId()) > 0) {
             throw new KapuaExistingCredentialException(CredentialType.PASSWORD, credentialCreator.getUserId().toCompactId());
-        }
-        
+        } catch (Exception pe) {
+
         return entityManagerSession.onTransactedInsert(em -> CredentialDAO.create(em, credentialCreator));
     }
 
@@ -101,14 +102,14 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
 
         return entityManagerSession.onTransactedResult(em -> {
             Credential currentCredential = CredentialDAO.find(em, credential.getId());
-            
+
             if (currentCredential == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credential.getId());
             }
-            
+
             if (currentCredential.getCredentialType() != credential.getCredentialType()) {
                 throw new KapuaIllegalArgumentException("credentialType", credential.getCredentialType().toString());
-            }
+        }
 
             // Passing attributes??
             return CredentialDAO.update(em, credential);
@@ -130,7 +131,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         authorizationService.checkPermission(permissionFactory.newPermission(credentialDomain, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> CredentialDAO.find(em, credentialId));
-    }
+        }
 
     @Override
     public CredentialListResult query(KapuaQuery<Credential> query)
@@ -189,7 +190,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
             }
             CredentialDAO.delete(em, credentialId);
         });
-    }
+        }
 
     @Override
     public CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)

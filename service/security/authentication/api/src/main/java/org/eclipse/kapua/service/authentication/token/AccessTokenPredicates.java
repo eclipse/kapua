@@ -10,27 +10,17 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro.setting;
-
-import org.eclipse.kapua.commons.setting.SettingKey;
+package org.eclipse.kapua.service.authentication.token;
 
 /**
- * Authentication setting key
+ * Access Token predicates used to build query predicates.
  * 
  * @since 1.0
- *
+ * 
  */
-public enum KapuaAuthenticationSettingKeys implements SettingKey {
-    AUTHENTICATION_KEY("authentication.key"), //
-    AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after");
+public class AccessTokenPredicates {
 
-    private String key;
+    public static final String TOKEN_ID = "tokenId";
+    public static final String USER_ID = "userId";
 
-    private KapuaAuthenticationSettingKeys(String key) {
-        this.key = key;
-    }
-
-    public String key() {
-        return key;
-    }
 }
