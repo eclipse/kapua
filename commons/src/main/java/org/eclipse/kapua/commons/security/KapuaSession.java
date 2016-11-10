@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
  * Kapua session

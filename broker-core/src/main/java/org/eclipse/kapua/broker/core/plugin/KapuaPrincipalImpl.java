@@ -15,8 +15,8 @@ package org.eclipse.kapua.broker.core.plugin;
 import java.security.Principal;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.AccessToken;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
  * Kapua {@link Principal} implementation

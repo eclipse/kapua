@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 import org.apache.shiro.SecurityUtils;
@@ -36,10 +37,12 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authentication.AccessToken;
-import org.eclipse.kapua.service.authentication.AccessTokenImpl;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -50,8 +53,7 @@ import org.slf4j.MDC;
  * since 1.0
  * 
  */
-public class AuthenticationServiceShiroImpl implements AuthenticationService, KapuaService
-{
+public class AuthenticationServiceShiroImpl implements AuthenticationService, KapuaService {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
 
@@ -68,8 +70,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
         try {
             realms.add(new org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticatingRealm());
             realms.add(new org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizingRealm());
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             // TODO add default realm???
         }
 
@@ -94,23 +95,20 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
         if (defaultSecurityManager.getSessionManager() instanceof AbstractSessionManager) {
             ((AbstractSessionManager) defaultSecurityManager.getSessionManager()).setGlobalSessionTimeout(-1);
             logger.info("Shiro global session timeout set to indefinite.");
-        }
-        else {
+        } else {
             logger.warn("Cannot set Shiro global session timeout to indefinite.");
         }
         if (defaultSecurityManager.getSessionManager() instanceof AbstractValidatingSessionManager) {
             ((AbstractValidatingSessionManager) defaultSecurityManager.getSessionManager()).setSessionValidationSchedulerEnabled(false);
             logger.info("Shiro global session validator scheduler disabled.");
-        }
-        else {
+        } else {
             logger.warn("Cannot disable Shiro session validator scheduler.");
         }
     }
 
     @Override
     public AccessToken login(AuthenticationCredentials authenticationToken)
-        throws KapuaException
-    {
+            throws KapuaException {
         Subject currentUser = SecurityUtils.getSubject();
 
         if (currentUser.isAuthenticated()) {
@@ -126,7 +124,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
             MDC.put(KapuaSecurityUtils.MDC_USERNAME, usernamePasswordToken.getUsername());
 
             UsernamePasswordToken shiroToken = new UsernamePasswordToken(usernamePasswordToken.getUsername(),
-                                                                         usernamePasswordToken.getPassword());
+                    usernamePasswordToken.getPassword());
             try {
                 currentUser.login(shiroToken);
 
@@ -139,13 +137,18 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
 
                 // create the access token
                 String generatedTokenKey = generateToken();
-                AccessToken accessToken = new AccessTokenImpl(userId, scopeId, userScopeId, generatedTokenKey);
+                Date now = new Date();
+
+                // FIXME: improve expiring feature
+                KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
+                long expireTime = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
+                AccessToken accessToken = new AccessTokenImpl(scopeId, userId, generatedTokenKey, new Date(now.getTime() + expireTime * 60000));
 
                 KapuaSession kapuaSession = new KapuaSession(accessToken,
-                                                             scopeId,
-                                                             userScopeId,
-                                                             userId,
-                                                             usernamePasswordToken.getUsername());
+                        scopeId,
+                        userScopeId,
+                        userId,
+                        usernamePasswordToken.getUsername());
 
                 KapuaSecurityUtils.setSession(kapuaSession);
 
@@ -153,26 +156,20 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
                 logger.info("Login for thread '{}' - '{}' - '{}'", new Object[] { Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject.toString() });
 
                 return kapuaSession.getAccessToken();
-            }
-            catch (ShiroException se) {
+            } catch (ShiroException se) {
 
                 KapuaAuthenticationException kae = null;
                 if (se instanceof UnknownAccountException) {
                     kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_USERNAME, se, usernamePasswordToken.getUsername());
-                }
-                else if (se instanceof DisabledAccountException) {
+                } else if (se instanceof DisabledAccountException) {
                     kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_USERNAME, se, usernamePasswordToken.getUsername());
-                }
-                else if (se instanceof LockedAccountException) {
+                } else if (se instanceof LockedAccountException) {
                     kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_USERNAME, se, usernamePasswordToken.getUsername());
-                }
-                else if (se instanceof IncorrectCredentialsException) {
+                } else if (se instanceof IncorrectCredentialsException) {
                     kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS, se, usernamePasswordToken.getUsername());
-                }
-                else if (se instanceof ExpiredCredentialsException) {
+                } else if (se instanceof ExpiredCredentialsException) {
                     kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.EXPIRED_CREDENTIALS, se, usernamePasswordToken.getUsername());
-                }
-                else {
+                } else {
                     throw KapuaAuthenticationException.internalError(se);
                 }
 
@@ -180,8 +177,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
 
                 throw kae;
             }
-        }
-        else {
+        } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TOKEN_PROVIDED);
         }
 
@@ -189,25 +185,21 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
 
     @Override
     public void logout()
-        throws KapuaException
-    {
+            throws KapuaException {
         Subject currentUser = SecurityUtils.getSubject();
         try {
             currentUser.logout();
-        }
-        finally {
+        } finally {
             KapuaSecurityUtils.clearSession();
         }
     }
 
-    private String generateToken()
-    {
+    private String generateToken() {
         return UUID.randomUUID().toString();
     }
 
     @Override
-    public AccessToken getToken(String tokenId) throws KapuaException
-    {
+    public AccessToken getToken(String tokenId) throws KapuaException {
         // KapuaSession kapuaSession = sessionMap.get(tokenId);
         // if (kapuaSession!=null) {
         // return kapuaSession.getAccessToken();

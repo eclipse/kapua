@@ -10,9 +10,11 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication;
+package org.eclipse.kapua.service.authentication.token;
 
-import org.eclipse.kapua.model.KapuaEntity;
+import java.util.Date;
+
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -21,36 +23,45 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface AccessToken extends KapuaEntity
-{
-	
-	public static final String TYPE = "accessToken";
+public interface AccessToken extends KapuaUpdatableEntity {
 
-    default public String getType()
-    {
+    public static final String TYPE = "accessToken";
+
+    default public String getType() {
         return TYPE;
     }
-    
+
     /**
      * Return the token identifier
      * 
-     * @return
+     * @return the token identifier
+     * @since 1.0
      */
     public String getTokenId();
-    
-    /**
-     * Return the user scope identifier.<br>
-     * It is not ull if the user acts on a different scope identifier (on which he has the right)
-     * 
-     * @return
-     */
-    public KapuaId getUserScopeId();
-	
+
     /**
      * Return the user identifier
      * 
      * @return
+     * 
+     * @since 1.0
      */
-	public KapuaId getUserId();
+    public KapuaId getUserId();
+
+    /**
+     * Gets the expire date of this token.
+     * 
+     * @since 1.0
+     */
+    public Date getExpiresOn();
+
+    /**
+     * Sets the expire date of this token.
+     * 
+     * @param expiresOn
+     *            The expire date of this token.
+     * @since 1.0
+     */
+    public void setExpiresOn(Date expiresOn);
 
 }

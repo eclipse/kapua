@@ -104,6 +104,7 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>src/main/sql/H2/atht_credential_drop.sql</srcFile>
+                                        <srcFile>src/main/sql/H2/atht_access_token_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_user_permission_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_role_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_role_permission_drop.sql</srcFile>
@@ -111,6 +112,7 @@
                                         <srcFile>src/main/sql/H2/athz_user_role_roles_drop.sql</srcFile>
 
                                         <srcFile>src/main/sql/H2/atht_credential_create.sql</srcFile>
+                                        <srcFile>src/main/sql/H2/atht_access_token_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_user_permission_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_role_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_role_permission_create.sql</srcFile>

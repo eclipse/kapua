@@ -10,27 +10,19 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro.setting;
+package org.eclipse.kapua.service.authentication.token.shiro;
 
-import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Authentication setting key
+ * Credential permission domain.<br>
+ * Used to describe the credential domain in the {@link Permission}
  * 
  * @since 1.0
  *
  */
-public enum KapuaAuthenticationSettingKeys implements SettingKey {
-    AUTHENTICATION_KEY("authentication.key"), //
-    AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after");
+public interface AccessTokenDomain {
 
-    private String key;
+    String ACCESS_TOKEN = "access_token";
 
-    private KapuaAuthenticationSettingKeys(String key) {
-        this.key = key;
-    }
-
-    public String key() {
-        return key;
-    }
 }
