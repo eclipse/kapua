@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
-import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddDialog;
+import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
@@ -19,14 +19,14 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class RoleAddDialog extends EntityAddDialog {
+public class RoleAddDialog extends EntityAddEditDialog {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+
     private final static GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
 
-    private TextField<String> roleNameField;
-
-    private RolePermissionGridField rolePermissionsGrid;
+    protected TextField<String> roleNameField;
+    protected RolePermissionNewGridField rolePermissionsGrid;
 
     public RoleAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -90,14 +90,19 @@ public class RoleAddDialog extends EntityAddDialog {
 
         //
         // Permissions
-        rolePermissionsGrid = new RolePermissionGridField(currentSession);
-        rolePermissionsGrid.setFieldLabel(MSGS.dialogAddFieldRolePermissions());
-        rolePermissionsGrid.setToolTip(MSGS.dialogAddFieldRolePermissionsTooltip());
+        rolePermissionsGrid = getRolePermissionNewGridField(currentSession);
         roleFormPanel.add(rolePermissionsGrid);
 
         //
         // Add form panel to body
         m_bodyPanel.add(roleFormPanel);
+    }
+
+    protected RolePermissionNewGridField getRolePermissionNewGridField(GwtSession currentSession) {
+        RolePermissionNewGridField rolePermissionsGrid = new RolePermissionNewGridField(currentSession);
+        rolePermissionsGrid.setFieldLabel(MSGS.dialogAddFieldRolePermissions());
+        rolePermissionsGrid.setToolTip(MSGS.dialogAddFieldRolePermissionsTooltip());
+        return rolePermissionsGrid;
     }
 
 }

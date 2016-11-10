@@ -167,4 +167,12 @@ public abstract class ActionDialog extends KapuaDialog {
     public String getExitMessage() {
         return m_exitMessage;
     }
+
+    public void maskDialog() {
+        m_formPanel.mask(MSGS.loading());
+    }
+
+    public void unmaskDialog() {
+        m_formPanel.unmask();
+    }
 }

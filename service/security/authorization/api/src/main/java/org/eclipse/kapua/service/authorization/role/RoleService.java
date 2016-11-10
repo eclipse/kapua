@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -75,16 +73,16 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator> {
     public void delete(KapuaId scopeId, KapuaId entityId)
             throws KapuaException;
 
-    /**
-     * Merge the new permissions list with the already persisted permissions.<br>
-     * In other word the newPermission list will replace all the roles for the user in the database.
-     * 
-     * @param newPermissions
-     * @return
-     * @throws KapuaException
-     * 
-     * @since 1.0
-     */
-    public RoleListResult merge(Set<RoleCreator> newPermissions)
-            throws KapuaException;
+    // /**
+    // * Merge the new permissions list with the already persisted permissions.<br>
+    // * In other word the newPermission list will replace all the roles for the user in the database.
+    // *
+    // * @param role
+    // * @return
+    // * @throws KapuaException
+    // *
+    // * @since 1.0
+    // */
+    // public RoleListResult merge(Set<RoleCreator> newPermissions)
+    // throws KapuaException;
 }

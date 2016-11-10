@@ -24,7 +24,7 @@ public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
         GwtRole selectedRole = gridSelectionModel.getSelectedItem();
         RoleEditDialog dialog = null;
         if (selectedRole != null) {
-            dialog = new RoleEditDialog(selectedRole);
+            dialog = new RoleEditDialog(currentSession, selectedRole);
         }
         return dialog;
     }

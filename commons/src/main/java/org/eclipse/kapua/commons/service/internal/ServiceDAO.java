@@ -132,9 +132,10 @@ public class ServiceDAO {
             AbstractKapuaUpdatableEntity updatableEntity = (AbstractKapuaUpdatableEntity) entity;
             updatableEntity.setCreatedOn(entityToUpdate.getCreatedOn());
             updatableEntity.setCreatedBy(entityToUpdate.getCreatedBy());
+
             em.merge(entity);
             em.flush();
-            em.refresh(entityToUpdate);
+            // em.refresh(entityToUpdate);
         }
 
         return entityToUpdate;
@@ -509,7 +510,7 @@ public class ServiceDAO {
                     throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                 }
                 break;
-                
+
             default:
             case EQUAL:
                 expr = cb.equal(entityRoot.get(attribute), attrValue);

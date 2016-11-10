@@ -6,11 +6,11 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-public abstract class EntityAddDialog extends SimpleDialog {
+public abstract class EntityAddEditDialog extends SimpleDialog {
 
     protected GwtSession currentSession;
 
-    public EntityAddDialog(GwtSession currentSession) {
+    public EntityAddEditDialog(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
 

@@ -23,6 +23,9 @@ public interface GwtRoleService extends RemoteService {
     public GwtRole update(GwtXSRFToken gwtXsrfToken, GwtRole gwtRole)
             throws GwtKapuaException;
 
+    public GwtRole find(String scopeShortId, String roleShortId)
+            throws GwtKapuaException;
+
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery)
             throws GwtKapuaException;
 

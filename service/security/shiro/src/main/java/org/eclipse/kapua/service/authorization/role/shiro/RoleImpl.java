@@ -69,9 +69,9 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
      */
     public RoleImpl(Role role) {
         super(role.getScopeId());
-        id = (KapuaEid) role.getId();
+        id = new KapuaEid(role.getId());
         createdOn = role.getCreatedOn();
-        createdBy = (KapuaEid) role.getCreatedBy();
+        createdBy = new KapuaEid(role.getCreatedBy());
         setName(role.getName());
         setPermissions(role.getPermissions());
     }
@@ -100,13 +100,7 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
         this.permissions = new HashSet<>();
 
         for (RolePermission p : permissions) {
-
-            RolePermissionImpl rp = new RolePermissionImpl(p.getScopeId(),
-                    p.getPermission().getDomain(),
-                    p.getPermission().getAction(),
-                    p.getPermission().getTargetScopeId());
-
-            this.permissions.add(rp);
+            this.permissions.add(new RolePermissionImpl(p));
         }
     }
 

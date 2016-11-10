@@ -3,9 +3,11 @@ package org.eclipse.kapua.app.console.shared.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
+import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
@@ -13,6 +15,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
@@ -45,6 +48,16 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
  */
 public class GwtKapuaModelConverter {
 
+    /**
+     * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
+     * 
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtRoleQuery
+     *            the {@link GwtRoleQuery} to convert
+     * @return the converted {@link RoleQuery}
+     * @since 1.0.0
+     */
     public static RoleQuery convertQuery(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery) {
 
         // Get Services
@@ -79,6 +92,7 @@ public class GwtKapuaModelConverter {
         // Convert scopeId
         KapuaId scopeId = convert(gwtRole.getScopeId());
         Role role = roleFactory.newRole(scopeId);
+        convertEntity(gwtRole, role);
 
         // Convert name
         role.setName(gwtRole.getName());
@@ -96,6 +110,8 @@ public class GwtKapuaModelConverter {
                     p.getDomain(), //
                     p.getAction(), //
                     p.getTargetScopeId());
+            rp.setId(convert(gwtRolePermission.getId()));
+            rp.setRoleId(role.getId());
 
             rolePermissions.add(rp);
         }
@@ -257,6 +273,43 @@ public class GwtKapuaModelConverter {
     }
 
     /**
+     * Utility method to convert commons properties of {@link GwtUpdatableEntityModel} object to the matching {@link KapuaUpdatableEntity} object
+     * 
+     * @param gwtEntity
+     *            The {@link GwtUpdatableEntityModel} from which copy values
+     * @param kapuaEntity
+     *            The {@link KapuaUpdatableEntity} into which to copy values
+     * @since 1.0.0
+     */
+    private static void convertEntity(GwtUpdatableEntityModel gwtEntity, KapuaUpdatableEntity kapuaEntity) {
+        if (kapuaEntity == null || gwtEntity == null) {
+            return;
+        }
+
+        convertEntity((GwtEntityModel) gwtEntity, (KapuaEntity) kapuaEntity);
+
+        kapuaEntity.setOptlock(gwtEntity.getOptlock());
+    }
+
+    /**
+     * Utility method to convert commons properties of {@link GwtEntityModel} object to the matching {@link KapuaEntity} object
+     * 
+     * @param gwtEntity
+     *            The {@link GwtEntityModel} from which copy values
+     * @param kapuaEntity
+     *            The {@link KapuaEntity} into which to copy values
+     * @since 1.0.0
+     */
+    private static void convertEntity(GwtEntityModel gwtEntity, KapuaEntity kapuaEntity) {
+        if (kapuaEntity == null || gwtEntity == null) {
+            return;
+        }
+
+        kapuaEntity.setId(convert(gwtEntity.getId()));
+        // kapuaEntity.set
+    }
+
+    /**
      * Converts a {@link KapuaId} form the short form to the actual object.
      * <p>
      * Example: AQ => 1
@@ -268,6 +321,9 @@ public class GwtKapuaModelConverter {
      * @since 1.0.0
      */
     public static KapuaId convert(String shortKapuaId) {
+        if (shortKapuaId == null) {
+            return null;
+        }
         return KapuaEid.parseShortId(shortKapuaId);
     }
 }

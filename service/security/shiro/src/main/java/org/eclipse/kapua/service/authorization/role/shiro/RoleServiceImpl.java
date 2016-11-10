@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -29,6 +27,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 
 /**
@@ -123,12 +122,5 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
         authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
-    }
-
-    @Override
-    public RoleListResult merge(Set<RoleCreator> newPermissions)
-            throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

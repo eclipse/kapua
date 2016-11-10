@@ -95,6 +95,31 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
+    public GwtRole find(String scopeShortId, String roleShortId) throws GwtKapuaException {
+
+        //
+        // Do find
+        GwtRole gwtRole = null;
+        try {
+            // Convert from GWT Entity
+            KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
+            KapuaId roleId = GwtKapuaModelConverter.convert(roleShortId);
+
+            // Delete
+            KapuaLocator locator = KapuaLocator.getInstance();
+            RoleService roleService = locator.getService(RoleService.class);
+            Role role = roleService.find(scopeId, roleId);
+            gwtRole = KapuaGwtModelConverter.convert(role);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+        //
+        // Return result
+        return gwtRole;
+    }
+
+    @Override
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery) throws GwtKapuaException {
         //
         // Do query
