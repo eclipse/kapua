@@ -22,9 +22,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
-import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDAO;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
@@ -37,7 +34,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 /**
- * Credential service implementation.
+ * Access token service implementation.
  * 
  * @since 1.0
  *
@@ -107,9 +104,9 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
         try {
 
-            Credential currentUser = CredentialDAO.find(em, accessToken.getId());
-            if (currentUser == null) {
-                throw new KapuaEntityNotFoundException(Credential.TYPE, accessToken.getId());
+            AccessToken currentAccessToken = AccessTokenDAO.find(em, accessToken.getId());
+            if (currentAccessToken == null) {
+                throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessToken.getId());
             }
 
             // Passing attributes??
@@ -237,12 +234,12 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // Do delete
         EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
         try {
-            if (CredentialDAO.find(em, accessTokenId) == null) {
-                throw new KapuaEntityNotFoundException(Credential.TYPE, accessTokenId);
+            if (AccessTokenDAO.find(em, accessTokenId) == null) {
+                throw new KapuaEntityNotFoundException(AccessToken.TYPE, accessTokenId);
             }
 
             em.beginTransaction();
-            CredentialDAO.delete(em, accessTokenId);
+            AccessTokenDAO.delete(em, accessTokenId);
             em.commit();
         } catch (Exception e) {
             em.rollback();
@@ -265,7 +262,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccessTokenDomain.ACCESS_TOKEN, Actions.read, scopeId));
 
         //
         // Build query

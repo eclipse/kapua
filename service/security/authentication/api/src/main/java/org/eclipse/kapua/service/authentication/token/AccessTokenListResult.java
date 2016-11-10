@@ -15,12 +15,11 @@ package org.eclipse.kapua.service.authentication.token;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * Credential list result definition.
+ * Access token list result definition.
  * 
  * @since 1.0
  * 
  */
-public interface AccessTokenListResult extends KapuaListResult<AccessToken>
-{
+public interface AccessTokenListResult extends KapuaListResult<AccessToken> {
 
 }

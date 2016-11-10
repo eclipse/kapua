@@ -26,10 +26,10 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 public class AccessTokenFactoryImpl implements AccessTokenFactory {
 
     @Override
-    public AccessTokenCreatorImpl newCreator(KapuaId scopeId, String tokenId, KapuaId userId, Date expiresOn) {
+    public AccessTokenCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn) {
         AccessTokenCreatorImpl accessTokenCreator = new AccessTokenCreatorImpl(scopeId);
-        accessTokenCreator.setTokenId(tokenId);
         accessTokenCreator.setUserId(userId);
+        accessTokenCreator.setTokenId(tokenId);
         accessTokenCreator.setExpiresOn(expiresOn);
         return accessTokenCreator;
     }

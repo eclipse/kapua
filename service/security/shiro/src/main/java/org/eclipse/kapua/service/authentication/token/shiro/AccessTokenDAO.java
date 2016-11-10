@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 
 /**
- * Credential DAO.
+ * Access token DAO.
  * 
  * @since 1.0
  *
@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 public class AccessTokenDAO extends ServiceDAO {
 
     /**
-     * Creates and return new credential
+     * Creates and return new access token
      * 
      * @param em
      * @param accessTokenCreator
@@ -41,16 +41,16 @@ public class AccessTokenDAO extends ServiceDAO {
             throws KapuaException {
         //
         // Create User
-        AccessTokenImpl credentialImpl = new AccessTokenImpl(accessTokenCreator.getScopeId(),
+        AccessTokenImpl accessTokenImpl = new AccessTokenImpl(accessTokenCreator.getScopeId(),
                 accessTokenCreator.getUserId(),
                 accessTokenCreator.getTokenId(),
                 accessTokenCreator.getExpiresOn());
 
-        return ServiceDAO.create(em, credentialImpl);
+        return ServiceDAO.create(em, accessTokenImpl);
     }
 
     /**
-     * Update the provided credential
+     * Update the provided access token
      * 
      * @param em
      * @param accessToken
@@ -67,7 +67,7 @@ public class AccessTokenDAO extends ServiceDAO {
     }
 
     /**
-     * Delete the accessToken by credential identifier
+     * Delete the accessToken by access token identifier
      * 
      * @param em
      * @param accessTokenId
@@ -77,7 +77,7 @@ public class AccessTokenDAO extends ServiceDAO {
     }
 
     /**
-     * Find the access token by credential identifier
+     * Find the access token by access token identifier
      * 
      * @param em
      * @param accessTokenId

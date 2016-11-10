@@ -47,14 +47,13 @@ public class KapuaSessionAuthFilter extends ShiroFilter {
         if (shiroSubject != null && shiroSubject.isAuthenticated()) {
             Session s = shiroSubject.getSession();
             KapuaEid scopeId = (KapuaEid) s.getAttribute("scopeId");
-            KapuaEid userScopeId = (KapuaEid) s.getAttribute("userScopeId");
             KapuaEid userId = (KapuaEid) s.getAttribute("userId");
 
             // create the access token
             String generatedTokenKey = UUID.randomUUID().toString();
             AccessToken accessToken = new AccessTokenImpl(scopeId, userId, generatedTokenKey, new Date());
 
-            kapuaSession = new KapuaSession(accessToken, scopeId, userScopeId, userId, "");
+            kapuaSession = new KapuaSession(accessToken, scopeId, userId, "");
         }
         try {
             KapuaSecurityUtils.setSession(kapuaSession);

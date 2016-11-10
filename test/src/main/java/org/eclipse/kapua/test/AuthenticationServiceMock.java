@@ -24,17 +24,14 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
 @TestService
-public class AuthenticationServiceMock implements AuthenticationService
-{
+public class AuthenticationServiceMock implements AuthenticationService {
 
-    public AuthenticationServiceMock()
-    {
+    public AuthenticationServiceMock() {
     }
-    
+
     @Override
     public AccessToken login(AuthenticationCredentials authenticationToken)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (!(authenticationToken instanceof UsernamePasswordTokenMock))
             throw KapuaException.internalError("Unmanaged credentials type");
 
@@ -44,7 +41,7 @@ public class AuthenticationServiceMock implements AuthenticationService
         UserService userService = serviceLocator.getService(UserService.class);
         User user = userService.findByName(usrPwdTokenMock.getUsername());
 
-        KapuaSession kapuaSession = new KapuaSession(null, null, user.getScopeId(), user.getId(), user.getName());
+        KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId(), user.getName());
         KapuaSecurityUtils.setSession(kapuaSession);
         // TODO Auto-generated method stub
         return null;
@@ -52,16 +49,14 @@ public class AuthenticationServiceMock implements AuthenticationService
 
     @Override
     public void logout()
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         KapuaSecurityUtils.clearSession();
     }
 
     @Override
     public AccessToken getToken(String tokenId)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

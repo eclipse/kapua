@@ -9,6 +9,12 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 
+/**
+ * Access token implementation
+ * 
+ * @since 1.0
+ *
+ */
 public class AccessTokenCreatorImpl extends AbstractKapuaEntityCreator<AccessToken> implements AccessTokenCreator {
 
     private static final long serialVersionUID = -27718046815190710L;
@@ -22,6 +28,11 @@ public class AccessTokenCreatorImpl extends AbstractKapuaEntityCreator<AccessTok
     @XmlElement(name = "expiresOn")
     private Date expiresOn;
 
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
     protected AccessTokenCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }

@@ -36,13 +36,16 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
+import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
+import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
+import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -132,21 +135,26 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService, Ka
                 Session shiroSession = shiroSubject.getSession();
 
                 KapuaEid scopeId = (KapuaEid) shiroSession.getAttribute("scopeId");
-                KapuaEid userScopeId = (KapuaEid) shiroSession.getAttribute("userScopeId");
                 KapuaEid userId = (KapuaEid) shiroSession.getAttribute("userId");
 
-                // create the access token
-                String generatedTokenKey = generateToken();
-                Date now = new Date();
+                //
+                // Create the access token
+                KapuaLocator locator = KapuaLocator.getInstance();
+                AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
+                AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
 
-                // FIXME: improve expiring feature
                 KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
                 long expireTime = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
-                AccessToken accessToken = new AccessTokenImpl(scopeId, userId, generatedTokenKey, new Date(now.getTime() + expireTime * 60000));
+                Date expireDate = new Date(new Date().getTime() + expireTime);
+                String generatedTokenKey = generateToken();
+                AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, userId, generatedTokenKey, expireDate);
 
+                AccessToken accessToken = accessTokenService.create(accessTokenCreator);
+
+                //
+                // Add token to session
                 KapuaSession kapuaSession = new KapuaSession(accessToken,
                         scopeId,
-                        userScopeId,
                         userId,
                         usernamePasswordToken.getUsername());
 

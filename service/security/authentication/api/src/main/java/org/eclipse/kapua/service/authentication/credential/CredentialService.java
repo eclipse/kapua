@@ -23,8 +23,7 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  * @since 1.0
  *
  */
-public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>, KapuaUpdatableEntityService<Credential>
-{
+public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>, KapuaUpdatableEntityService<Credential> {
 
     /**
      * Return the credential list result looking by user identifier (and also scope identifier)
@@ -33,7 +32,9 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @param userId
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0
      */
     public CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)
-        throws KapuaException;
+            throws KapuaException;
 }

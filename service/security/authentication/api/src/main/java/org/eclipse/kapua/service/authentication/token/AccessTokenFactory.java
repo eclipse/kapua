@@ -16,10 +16,9 @@ import java.util.Date;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 
 /**
- * Credential factory service definition.
+ * Access token factory service definition.
  * 
  * @since 1.0
  * 
@@ -27,15 +26,21 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 public interface AccessTokenFactory extends KapuaObjectFactory {
 
     /**
-     * Create a new {@link CredentialCreator} for the specific credential type
+     * Create a new {@link AccessTokenCreator} for the specific access credential type
      * 
      * @param scopeId
-     * @param tokenId
+     *            The scopeId of the new {@link AccessToken}.
      * @param userId
+     *            The userId owner of the new {@link AccessToken}.
+     * @param tokenId
+     *            The tokenId of the new {@link AccessToken}.
      * @param expiresOn
+     *            The expiration date after which the token is no longer valid.
      * 
-     * @return
+     * @return A new instance of {@link AccessToken}.
+     * 
+     * @since 1.0
      */
-    public AccessTokenCreator newCreator(KapuaId scopeId, String tokenId, KapuaId userId, Date expiresOn);
+    public AccessTokenCreator newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn);
 
 }

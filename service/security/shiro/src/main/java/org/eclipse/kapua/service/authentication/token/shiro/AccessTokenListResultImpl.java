@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 
 /**
- * Credential list result implementation.
+ * Access token list result implementation.
  * 
  * @since 1.0
  * 

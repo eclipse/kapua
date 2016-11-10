@@ -12,11 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
-import org.eclipse.kapua.service.authorization.permission.Permission;
-
 /**
- * Credential permission domain.<br>
- * Used to describe the credential domain in the {@link Permission}
+ * Access token domain.<br>
+ * Used to describe the access token domain.
  * 
  * @since 1.0
  *

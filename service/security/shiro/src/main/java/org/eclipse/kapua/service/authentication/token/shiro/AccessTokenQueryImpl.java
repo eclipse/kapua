@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 
 /**
- * Access tokan query implementation.
+ * Access token query implementation.
  * 
  * @since 1.0
  * 

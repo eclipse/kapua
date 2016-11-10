@@ -31,4 +31,4 @@ CREATE TABLE atht_access_token (
 
 CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
 CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
-CREATE INDEX idx_atht_access_token_token_id ON atht_access_token (scope_id, token_id);
+CREATE UNIQUE INDEX idx_atht_access_token_token_id ON atht_access_token (scope_id, token_id);

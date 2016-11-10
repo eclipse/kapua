@@ -25,10 +25,10 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
  * 
  * @since 1.0
  */
-public class KapuaSession implements Serializable
-{
+public class KapuaSession implements Serializable {
+
     private static final long serialVersionUID = -3831904230950408142L;
-    
+
     public final static String KAPUA_SESSION_KEY = "KapuaSession";
 
     private static List<String> trustedClasses = new ArrayList<String>();
@@ -42,61 +42,57 @@ public class KapuaSession implements Serializable
     /**
      * Access token that identify the logged in session.
      */
-    private AccessToken       accessToken;
+    private AccessToken accessToken;
 
     /**
      * Run as scope identifier.<br>
      * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
      */
-    private KapuaId           runAsScopeId;
+    private KapuaId runAsScopeId;
 
     /**
      * User scope identifier
      */
-    private KapuaId           scopeId;
+    private KapuaId scopeId;
 
     /**
      * User identifier
      */
-    private KapuaId           userId;
+    private KapuaId userId;
 
     /**
      * Username
      */
-    private String            username;
+    private String username;
 
     /**
      * Trusted mode.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      */
-    private boolean           trustedMode      = false;
+    private boolean trustedMode = false;
 
     /**
      * Default constructor
      */
-    public KapuaSession()
-    {
+    public KapuaSession() {
         super();
     }
-    
+
     /**
      * Creates a {@link KapuaSession} copy with trusted mode flag set to true (to be used only from trusted classes)
      * 
      * @return
      */
-    public static KapuaSession createFrom()
-    {
+    public static KapuaSession createFrom() {
         if (isCallerClassTrusted()) {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
             KapuaSession kapuaSessionCopy = new KapuaSession(kapuaSession.getAccessToken(),
-                                                             kapuaSession.getRunAsScopeId(),
-                                                             kapuaSession.getScopeId(),
-                                                             kapuaSession.getUserId(),
-                                                             kapuaSession.getUsername());
+                    kapuaSession.getScopeId(),
+                    kapuaSession.getUserId(),
+                    kapuaSession.getUsername());
             kapuaSessionCopy.trustedMode = true;
             return kapuaSessionCopy;
-        }
-        else {
+        } else {
             // TODO to be replaced with a security exception
             throw new RuntimeException("Method not allowed for the caller class");
         }
@@ -107,8 +103,7 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    private final static boolean isCallerClassTrusted()
-    {
+    private final static boolean isCallerClassTrusted() {
         // the stack trace should be like
         // 0 ---> Thread
         // 1 ---> KapuaSession -> isCallerClassTrusted()
@@ -117,8 +112,7 @@ public class KapuaSession implements Serializable
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         if (stackTraceElements != null && stackTraceElements.length > 4) {
             return trustedClasses.contains(MessageFormat.format(TRUST_CLASS_METHOD_PATTERN, stackTraceElements[3].getClassName(), stackTraceElements[3].getMethodName()));
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -133,15 +127,12 @@ public class KapuaSession implements Serializable
      * @param username
      */
     public KapuaSession(AccessToken accessToken,
-                        KapuaId runAsScopeId,
-                        KapuaId scopeId,
-                        KapuaId userId,
-                        String username)
-    {
+            KapuaId runAsScopeId,
+            KapuaId userId,
+            String username) {
         this();
         this.accessToken = accessToken;
         this.runAsScopeId = runAsScopeId;
-        this.scopeId = scopeId;
         this.userId = userId;
         this.username = username;
     }
@@ -151,8 +142,7 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    public AccessToken getAccessToken()
-    {
+    public AccessToken getAccessToken() {
         return accessToken;
     }
 
@@ -162,8 +152,7 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    public KapuaId getRunAsScopeId()
-    {
+    public KapuaId getRunAsScopeId() {
         return runAsScopeId;
     }
 
@@ -172,8 +161,7 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    public KapuaId getScopeId()
-    {
+    public KapuaId getScopeId() {
         return scopeId;
     }
 
@@ -182,8 +170,7 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    public KapuaId getUserId()
-    {
+    public KapuaId getUserId() {
         return userId;
     }
 
@@ -192,8 +179,7 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
@@ -203,19 +189,17 @@ public class KapuaSession implements Serializable
      * 
      * @return
      */
-    final void setTrustedMode(boolean trustedMode)
-    {
+    final void setTrustedMode(boolean trustedMode) {
         this.trustedMode = trustedMode;
     }
-    
+
     /**
      * Return the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      * 
      * @return
      */
-    public final boolean isTrustedMode()
-    {
+    public final boolean isTrustedMode() {
         return trustedMode;
     }
 }
