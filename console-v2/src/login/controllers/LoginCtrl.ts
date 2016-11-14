@@ -1,5 +1,13 @@
+interface ILoginData {
+    username: string;
+    password: string;
+}
+
 export default class LayoutCtrl {
-    constructor($rootScope: angular.IRootScopeService) {
+    private loginData: ILoginData;
+
+    constructor(private $rootScope: angular.IRootScopeService,
+                private $http: angular.IHttpService) {
         $rootScope.$on("$stateChangeSuccess", (event, toState: angular.ui.IState, toParams, fromState: angular.ui.IState, fromParams) => {
             if (toState.name.indexOf("kapua.") === 0) {
                 angular.element("html").addClass("layout-pf layout-pf-fixed");
@@ -7,5 +15,12 @@ export default class LayoutCtrl {
                 angular.element("html").removeClass("layout-pf layout-pf-fixed");
             }
         });
+    }
+
+    private doLogin(loginData: ILoginData) {
+        this.$http.post("http://localhost:8080/api/v1/authentication", loginData)
+            .then((responseData: angular.IHttpPromiseCallbackArg<any>) => {
+                console.log(responseData);
+            });
     }
 }
