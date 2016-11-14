@@ -26,6 +26,9 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountXmlRegistry;
+import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
+import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
+import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
@@ -115,7 +118,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaTicon.class,
                     KapuaToption.class,
                     DeviceConnectionSummary.class,
-                    DeviceConnectionXmlRegistry.class
+                    DeviceConnectionXmlRegistry.class,
+                    AuthenticationCredentials.class,
+                    UsernamePasswordToken.class,
+                    AuthenticationXmlRegistry.class
             }, null);
         } catch (Exception e) {
             throw new RuntimeException(e);
