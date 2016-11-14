@@ -32,14 +32,14 @@ public class AuthenticationServiceMock implements AuthenticationService {
     @Override
     public AccessToken login(AuthenticationCredentials authenticationToken)
             throws KapuaException {
-        if (!(authenticationToken instanceof UsernamePasswordTokenMock))
+        if (!(authenticationToken instanceof UsernamePasswordCredentialsMock))
             throw KapuaException.internalError("Unmanaged credentials type");
 
-        UsernamePasswordTokenMock usrPwdTokenMock = (UsernamePasswordTokenMock) authenticationToken;
+        UsernamePasswordCredentialsMock usrPwdCredentialsMock = (UsernamePasswordCredentialsMock) authenticationToken;
 
         KapuaLocator serviceLocator = KapuaLocator.getInstance();
         UserService userService = serviceLocator.getService(UserService.class);
-        User user = userService.findByName(usrPwdTokenMock.getUsername());
+        User user = userService.findByName(usrPwdCredentialsMock.getUsername());
 
         KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId(), user.getName());
         KapuaSecurityUtils.setSession(kapuaSession);

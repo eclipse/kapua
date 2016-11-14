@@ -13,7 +13,7 @@
 org.eclipse.kapua.service.authentication.AuthenticationService
 org.eclipse.kapua.service.authentication.credential.CredentialFactory
 org.eclipse.kapua.service.authentication.credential.CredentialService
-org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory
+org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory
 org.eclipse.kapua.service.authorization.AuthorizationService
 org.eclipse.kapua.service.authorization.permission.PermissionFactory
 org.eclipse.kapua.service.authorization.role.RoleFactory

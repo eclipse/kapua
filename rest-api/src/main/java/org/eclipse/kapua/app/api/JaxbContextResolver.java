@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountXmlRegistry;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
-import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
@@ -121,7 +121,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceConnectionSummary.class,
                     DeviceConnectionXmlRegistry.class,
                     AuthenticationCredentials.class,
-                    UsernamePasswordToken.class,
+                    UsernamePasswordCredentials.class,
                     AuthenticationXmlRegistry.class,
                     AccessTokenImpl.class
             }, null);

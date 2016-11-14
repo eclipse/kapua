@@ -3,16 +3,16 @@ package org.eclipse.kapua.service.authentication;
 import org.eclipse.kapua.locator.KapuaLocator;
 
 public class AuthenticationXmlRegistry {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UsernamePasswordTokenFactory usernamePasswordTokenFactory = locator.getFactory(UsernamePasswordTokenFactory.class);
-    
+    private final UsernamePasswordCredentialsFactory usernamePasswordCredentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
+
     /**
-     * Creates a new UsernamePasswordToken instance
+     * Creates a new {@link UsernamePasswordCredentials} instance
      * 
      * @return
      */
-    public UsernamePasswordToken newUsernamePasswordToken()
-    {
-        return usernamePasswordTokenFactory.newInstance(null, null);
+    public UsernamePasswordCredentials newUsernamePasswordCredentials() {
+        return usernamePasswordCredentialsFactory.newInstance(null, null);
     }
 }
