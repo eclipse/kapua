@@ -26,6 +26,7 @@ org.eclipse.kapua.service.authorization.role.RoleService
 org.eclipse.kapua.service.authorization.role.RoleFactory
 org.eclipse.kapua.service.authorization.user.role.UserRolesFactory
 org.eclipse.kapua.service.authorization.user.role.UserRolesService
+org.eclipse.kapua.service.authentication.token.AccessTokenService
 
 ## Uncomment as needed
 org.eclipse.kapua.service.device.registry.DeviceFactory
