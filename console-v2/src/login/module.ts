@@ -14,4 +14,4 @@ angular.module("app.login", [])
             }
         });
     }])
-    .controller("LoginCtrl", ["$rootScope", "$http", LoginCtrl]);
+    .controller("LoginCtrl", ["$rootScope", "$http", "$state", "$localStorage", LoginCtrl]);

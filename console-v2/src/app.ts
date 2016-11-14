@@ -1,5 +1,6 @@
 import "angular-patternfly";
 import "angular-ui-router";
+import "angular-local-storage";
 
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly.css";
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css";
@@ -13,6 +14,7 @@ angular.module("app", [
     "ui.router",
     "patternfly",
     "patternfly.charts",
+    "LocalStorageModule",
     "app.login",
     "app.layout",
     "app.welcome"
