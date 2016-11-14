@@ -125,9 +125,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
         }
 
         AccessToken accessToken;
-        if (authenticationToken instanceof UsernamePasswordTokenImpl) {
+        if (authenticationToken instanceof UsernamePasswordCredentialsImpl) {
 
-            UsernamePasswordTokenImpl usernamePasswordToken = (UsernamePasswordTokenImpl) authenticationToken;
+            UsernamePasswordCredentialsImpl usernamePasswordToken = (UsernamePasswordCredentialsImpl) authenticationToken;
 
             MDC.put(KapuaSecurityUtils.MDC_USERNAME, usernamePasswordToken.getUsername());
 

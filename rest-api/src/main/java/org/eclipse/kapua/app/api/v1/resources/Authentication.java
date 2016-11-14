@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 import io.swagger.annotations.Api;
@@ -34,7 +34,7 @@ public class Authentication extends AbstractKapuaResource{
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccessToken getAccounts(UsernamePasswordToken authenticationCredentials) {
+    public AccessToken getAccounts(UsernamePasswordCredentials authenticationCredentials) {
         AccessToken accessToken = null;
         try {
             accessToken = authenticationService.login(authenticationCredentials);

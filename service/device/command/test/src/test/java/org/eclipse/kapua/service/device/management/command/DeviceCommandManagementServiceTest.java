@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
@@ -91,7 +91,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
             String password = "kapua-password";
 
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            UsernamePasswordTokenFactory credentialsFactory = locator.getFactory(UsernamePasswordTokenFactory.class);
+            UsernamePasswordCredentialsFactory credentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
             authenticationService.login(credentialsFactory.newInstance(username, password.toCharArray()));
 
             //

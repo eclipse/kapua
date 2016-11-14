@@ -24,14 +24,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * @since 1.0
  * 
  */
-@XmlRootElement(name = "accessToken")
+@XmlRootElement(name = "usernamePasswordCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "username", 
-                       "password" },
-        factoryClass = AuthenticationXmlRegistry.class, 
-        factoryMethod = "newUsernamePasswordToken")
-public interface UsernamePasswordToken extends AuthenticationCredentials
-{
+@XmlType(propOrder = { "username", "password" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
+public interface UsernamePasswordCredentials extends AuthenticationCredentials {
+
     /**
      * return the username
      * 

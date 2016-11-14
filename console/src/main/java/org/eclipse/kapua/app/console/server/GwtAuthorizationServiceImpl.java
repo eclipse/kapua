@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -53,9 +53,9 @@ import org.slf4j.LoggerFactory;
 
 public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet implements GwtAuthorizationService {
 
-    private static final long serialVersionUID = -3919578632016541047L;
+    private static final long   serialVersionUID     = -3919578632016541047L;
 
-    private static final Logger s_logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
+    private static final Logger s_logger             = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
 
     private static final Domain accountDomain = new AccountDomain();
     private static final Domain deviceDomain = new DeviceDomain();
@@ -63,8 +63,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     private static final Domain datastoreDomain = new DatastoreDomain();
     private static final Domain userDomain = new UserDomain();
 
-    public static final String SESSION_CURRENT = "console.current.session";
-    public static final String SESSION_CURRENT_USER = "console.current.user";
+    public static final String  SESSION_CURRENT      = "console.current.session";
+    public static final String  SESSION_CURRENT_USER = "console.current.user";
 
     /**
      * Login call in response to the login dialog.
@@ -83,7 +83,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            UsernamePasswordTokenFactory credentialsFactory = locator.getFactory(UsernamePasswordTokenFactory.class);
+            UsernamePasswordCredentialsFactory credentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
             AuthenticationCredentials credentials = credentialsFactory.newInstance(gwtLoginCredentials.getUsername(),
                     gwtLoginCredentials.getPassword().toCharArray());
 
@@ -146,7 +146,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         // Get user info
         UserService userService = locator.getService(UserService.class);
         User user = userService.find(kapuaSession.getScopeId(),
-                kapuaSession.getUserId());
+                                     kapuaSession.getUserId());
 
         //
         // Get permission info

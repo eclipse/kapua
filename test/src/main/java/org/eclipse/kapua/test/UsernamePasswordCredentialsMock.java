@@ -10,46 +10,25 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.test;
 
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
-import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
-/**
- * Username and password {@link AuthenticationCredentials} implementation.
- * 
- * @since 1.0
- * 
- */
-public class UsernamePasswordTokenImpl extends org.apache.shiro.authc.UsernamePasswordToken implements UsernamePasswordToken
+public class UsernamePasswordCredentialsMock implements UsernamePasswordCredentials
 {
-    private static final long serialVersionUID = -7549848672967689716L;
-
-    private String            username;
-    private char[]            password;
-
-    private UsernamePasswordTokenImpl()
+    private String username;
+    private char[] password;
+    
+    public UsernamePasswordCredentialsMock(String username, char[] password)
     {
-        super();
-    }
-
-    /**
-     * Constructor
-     * 
-     * @param username
-     * @param password
-     */
-    public UsernamePasswordTokenImpl(String username, char[] password)
-    {
-        this();
         this.username = username;
         this.password = password;
     }
-
+    
     @Override
     public String getUsername()
     {
-        return username;
+        return this.username;
     }
 
     @Override
@@ -61,7 +40,7 @@ public class UsernamePasswordTokenImpl extends org.apache.shiro.authc.UsernamePa
     @Override
     public char[] getPassword()
     {
-        return password;
+        return this.password;
     }
 
     @Override
@@ -69,4 +48,5 @@ public class UsernamePasswordTokenImpl extends org.apache.shiro.authc.UsernamePa
     {
         this.password = password;
     }
+
 }

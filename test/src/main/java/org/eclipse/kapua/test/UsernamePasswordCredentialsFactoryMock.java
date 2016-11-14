@@ -10,25 +10,21 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+package org.eclipse.kapua.test;
 
-/**
- * Username password {@link UsernamePasswordTokenFactory} factory definition.
- * 
- * @since 1.0
- * 
- */
-public interface UsernamePasswordTokenFactory extends KapuaObjectFactory
+import org.eclipse.kapua.locator.guice.TestService;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
+
+@TestService
+public class UsernamePasswordCredentialsFactoryMock implements UsernamePasswordCredentialsFactory
 {
 
-    /**
-     * Creates a new {@link UsernamePasswordToken} instance based on provided username and password
-     * 
-     * @param username
-     * @param password
-     * @return
-     */
-    public UsernamePasswordToken newInstance(String username, char[] password);
+    @Override
+    public UsernamePasswordCredentials newInstance(String username, char[] password)
+    {
+        return new UsernamePasswordCredentialsMock(username, password);
+    }
+
 }

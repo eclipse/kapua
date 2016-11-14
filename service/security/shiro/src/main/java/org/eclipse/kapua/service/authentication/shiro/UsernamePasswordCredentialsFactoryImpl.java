@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
 import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
 
 /**
- * Username password {@link UsernamePasswordTokenFactory} factory implementation.
+ * Username password {@link UsernamePasswordCredentialsFactory} factory implementation.
  * 
  * @since 1.0
  * 
@@ -26,8 +26,8 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
 public class UsernamePasswordTokenFactoryImpl implements UsernamePasswordTokenFactory
 {
     @Override
-    public UsernamePasswordToken newInstance(String username, char[] password)
+    public UsernamePasswordCredentials newInstance(String username, char[] password)
     {
-        return new UsernamePasswordTokenImpl(username, password);
+        return new UsernamePasswordCredentialsImpl(username, password);
     }
 }
