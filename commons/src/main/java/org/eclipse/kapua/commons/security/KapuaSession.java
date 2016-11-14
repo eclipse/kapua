@@ -44,11 +44,11 @@ public class KapuaSession implements Serializable {
      */
     private AccessToken accessToken;
 
-    /**
-     * Run as scope identifier.<br>
-     * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
-     */
-    private KapuaId runAsScopeId;
+    // /**
+    // * Run as scope identifier.<br>
+    // * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
+    // */
+    // private KapuaId runAsScopeId;
 
     /**
      * User scope identifier
@@ -127,12 +127,12 @@ public class KapuaSession implements Serializable {
      * @param username
      */
     public KapuaSession(AccessToken accessToken,
-            KapuaId runAsScopeId,
+            KapuaId scopeId,
             KapuaId userId,
             String username) {
         this();
         this.accessToken = accessToken;
-        this.runAsScopeId = runAsScopeId;
+        this.scopeId = scopeId;
         this.userId = userId;
         this.username = username;
     }
@@ -152,9 +152,9 @@ public class KapuaSession implements Serializable {
      * 
      * @return
      */
-    public KapuaId getRunAsScopeId() {
-        return runAsScopeId;
-    }
+    // public KapuaId getRunAsScopeId() {
+    // return runAsScopeId;
+    // }
 
     /**
      * Get the scope identifier

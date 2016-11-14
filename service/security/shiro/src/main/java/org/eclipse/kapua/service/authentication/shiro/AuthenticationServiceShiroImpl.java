@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -115,6 +116,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
     @Override
     public AccessToken login(AuthenticationCredentials authenticationToken)
             throws KapuaException {
+
         Subject currentUser = SecurityUtils.getSubject();
 
         if (currentUser.isAuthenticated()) {
@@ -122,16 +124,17 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.SUBJECT_ALREADY_LOGGED);
         }
 
-        // AccessToken accessToken = null;
+        AccessToken accessToken;
         if (authenticationToken instanceof UsernamePasswordTokenImpl) {
 
             UsernamePasswordTokenImpl usernamePasswordToken = (UsernamePasswordTokenImpl) authenticationToken;
 
             MDC.put(KapuaSecurityUtils.MDC_USERNAME, usernamePasswordToken.getUsername());
 
-            UsernamePasswordToken shiroToken = new UsernamePasswordToken(usernamePasswordToken.getUsername(),
-                    usernamePasswordToken.getPassword());
+            UsernamePasswordToken shiroToken = new UsernamePasswordToken(usernamePasswordToken.getUsername(), usernamePasswordToken.getPassword());
             try {
+                //
+                // Shiro login
                 currentUser.login(shiroToken);
 
                 Subject shiroSubject = SecurityUtils.getSubject();
@@ -146,30 +149,38 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
                 AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
                 AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
 
+                // Retrieve TTL access token
                 KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
                 long expireTime = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
                 Date expireDate = new Date(new Date().getTime() + expireTime);
                 String generatedTokenKey = generateToken();
                 AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, userId, generatedTokenKey, expireDate);
 
-                AccessToken accessToken = accessTokenService.create(accessTokenCreator);
+                try {
+                    accessToken = KapuaSecurityUtils.doPriviledge(new Callable<AccessToken>() {
+
+                        @Override
+                        public AccessToken call()
+                                throws Exception {
+                            return accessTokenService.create(accessTokenCreator);
+                        }
+                    });
+                } catch (Exception e) {
+                    throw KapuaAuthenticationException.internalError(e);
+                }
 
                 //
                 // Add token to session
-                KapuaSession kapuaSession = new KapuaSession(accessToken,
-                        scopeId,
-                        userId,
-                        usernamePasswordToken.getUsername());
+                KapuaSession kapuaSession = new KapuaSession(accessToken, scopeId, userId, usernamePasswordToken.getUsername());
 
                 KapuaSecurityUtils.setSession(kapuaSession);
 
                 shiroSubject.getSession().setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);
                 logger.info("Login for thread '{}' - '{}' - '{}'", new Object[] { Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject.toString() });
 
-                return kapuaSession.getAccessToken();
             } catch (ShiroException se) {
 
-                KapuaAuthenticationException kae = null;
+                KapuaAuthenticationException kae;
                 if (se instanceof UnknownAccountException) {
                     kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_USERNAME, se, usernamePasswordToken.getUsername());
                 } else if (se instanceof DisabledAccountException) {
@@ -192,6 +203,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TOKEN_PROVIDED);
         }
 
+        return accessToken;
     }
 
     @Override
