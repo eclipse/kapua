@@ -12,12 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * Username and password {@link AuthenticationCredentials} definition.
  * 
  * @since 1.0
  * 
  */
+@XmlRootElement(name = "accessToken")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "username", 
+                       "password" },
+        factoryClass = AuthenticationXmlRegistry.class, 
+        factoryMethod = "newUsernamePasswordToken")
 public interface UsernamePasswordToken extends AuthenticationCredentials
 {
     /**
@@ -39,6 +51,7 @@ public interface UsernamePasswordToken extends AuthenticationCredentials
      * 
      * @return
      */
+    @XmlJavaTypeAdapter(StringToCharArrayAdapter.class)
     public char[] getPassword();
 
     /**
