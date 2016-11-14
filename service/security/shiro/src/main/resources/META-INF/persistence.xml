@@ -19,6 +19,7 @@
         
         <!-- Authentication -->
         <class>org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl</class>
+        <class>org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl</class>
          
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
