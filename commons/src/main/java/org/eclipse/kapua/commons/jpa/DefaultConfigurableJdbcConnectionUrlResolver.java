@@ -18,17 +18,18 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import static com.google.common.base.MoreObjects.firstNonNull;
 
 /**
- * Configurable JDBC connection URL resolver implementation.
+ * Configurable JDBC connection URL resolver implementation. Can be configured using Kubernetes service discovery or
+ * properties.
  * 
  * @since 1.0
  *
  */
 public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
 
+    private final SystemSetting config = SystemSetting.getInstance();
+
     @Override
     public String connectionUrl() {
-        SystemSetting config = SystemSetting.getInstance();
-
         // Mandatory connection parameters
         String dbName = config.getString(SystemSettingKey.DB_NAME);
         String dbConnectionScheme = config.getString(SystemSettingKey.DB_CONNECTION_SCHEME);
