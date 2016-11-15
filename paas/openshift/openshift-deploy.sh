@@ -17,6 +17,6 @@ if [ -z "${ELASTIC_SEARCH_MEMORY}" ]; then
 fi
 
 oc new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch
-oc new-app hekonsek/h2
+oc new-app hekonsek/h2 --name=sql
 
 echo 'ElasticSearch server started.'

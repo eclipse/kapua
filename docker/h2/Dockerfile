@@ -21,8 +21,8 @@ RUN mkdir -p ${DATA_DIR}
 
 VOLUME ${DATA_DIR}
 
-EXPOSE 8181 1521
+EXPOSE 8181 3306
 
 CMD java -cp /opt/h2/bin/h2*.jar org.h2.tools.Server \
-  -web -webAllowOthers -webPort 8181 -tcp -tcpAllowOthers -tcpPort 1521 \
+  -web -webAllowOthers -webPort 8181 -tcp -tcpAllowOthers -tcpPort 3306 \
   -baseDir ${DATA_DIR}
