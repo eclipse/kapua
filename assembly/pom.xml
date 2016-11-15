@@ -463,8 +463,63 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.17.2</version>
+				<configuration>
+					<images>
+						<image>
+							<name>kapua-broker</name>
+							<build>
+								<from>java:8u40</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
+								</assembly>
+								<entryPoint>
+								   <shell>/maven/bin/activemq console</shell>
+								</entryPoint>
+								<ports>
+									<port>1883</port>
+								</ports>
+							</build>
+						</image>
+						<image>
+							<name>kapua-console</name>
+							<build>
+								<from>java:8u40</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-console.xml</descriptor>
+								</assembly>
+								<entryPoint>
+								   <shell>/maven/bin/catalina.sh run</shell>
+								</entryPoint>
+								<ports>
+									<port>8080</port>
+								</ports>
+							</build>
+						</image>
+						<image>
+							<name>kapua-api</name>
+							<build>
+								<from>java:8u40</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-api.xml</descriptor>
+								</assembly>
+								<entryPoint>
+								   <shell>/maven/bin/catalina.sh run</shell>
+								</entryPoint>
+								<ports>
+									<port>8080</port>
+								</ports>
+							</build>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 	<profiles>
 		<profile>
 			<id>deploy</id>
@@ -512,6 +567,17 @@
 	     		</plugins>
 	     	</build>
 		</profile>
+
+		<profile>
+			<id>docker</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<defaultGoal>clean install docker:build</defaultGoal>
+			</build>
+		</profile>
+
 	</profiles>
 
 </project>
