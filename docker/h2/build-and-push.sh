@@ -13,5 +13,5 @@
 #
 ###############################################################################
 
-docker build -t hekonsek/h2 .
-docker push hekonsek/h2
+docker build -t hekonsek/h2:0.2.0-SNAPSHOT .
+docker push hekonsek/h2:0.2.0-SNAPSHOT
