@@ -53,7 +53,7 @@ public class KapuaSessionAuthFilter extends ShiroFilter {
             String generatedTokenKey = UUID.randomUUID().toString();
             AccessToken accessToken = new AccessTokenImpl(scopeId, userId, generatedTokenKey, new Date());
 
-            kapuaSession = new KapuaSession(accessToken, scopeId, userId, "");
+            kapuaSession = new KapuaSession(accessToken, scopeId, userId);
         }
         try {
             KapuaSecurityUtils.setSession(kapuaSession);

@@ -25,7 +25,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<filter>
+	<!-- <filter>
 		<filter-name>KapuaFilter</filter-name>
 		<filter-class>org.eclipse.kapua.app.api.auth.KapuaSessionAuthFilter</filter-class>
 	</filter>
@@ -33,7 +33,7 @@
 		<filter-name>KapuaFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
+ -->
 	<!-- -->
 	<!-- Listeners -->
 	<listener>
