@@ -19,19 +19,18 @@ import java.util.concurrent.Callable;
  *
  * @since 1.0
  */
-public class KapuaSecurityUtils
-{
-    public static String                           MDC_USERNAME  = "username";
+public class KapuaSecurityUtils {
 
-    private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<KapuaSession>();
+    public static String MDC_USER_ID = "userId";
+
+    private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<>();
 
     /**
      * Return the {@link KapuaSession} associated to the current thread session.
      * 
      * @return
      */
-    public static KapuaSession getSession()
-    {
+    public static KapuaSession getSession() {
         return threadSession.get();
     }
 
@@ -40,16 +39,14 @@ public class KapuaSecurityUtils
      * 
      * @param session
      */
-    public static void setSession(KapuaSession session)
-    {
+    public static void setSession(KapuaSession session) {
         threadSession.set(session);
     }
 
     /**
      * Clear the {@link KapuaSession} from the current thread session.
      */
-    public static void clearSession()
-    {
+    public static void clearSession() {
         threadSession.remove();
     }
 
@@ -62,8 +59,7 @@ public class KapuaSecurityUtils
      * @throws Exception
      */
     public static <T> T doPriviledge(Callable<T> privilegedAction)
-        throws Exception
-    {
+            throws Exception {
         T result = null;
 
         KapuaSession session = getSession();
@@ -78,8 +74,7 @@ public class KapuaSecurityUtils
         session.setTrustedMode(true);
         try {
             result = privilegedAction.call();
-        }
-        finally {
+        } finally {
             session.setTrustedMode(false);
 
             if (created) {
