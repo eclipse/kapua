@@ -16,45 +16,29 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Username and password {@link LoginCredentials} definition.
+ * Username and password {@link AuthenticationCredentials} definition.
  * 
  * @since 1.0
  * 
  */
-@XmlRootElement(name = "usernamePasswordCredentials")
+@XmlRootElement(name = "accessTokenCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "username", "password" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
-public interface UsernamePasswordCredentials extends LoginCredentials {
+@XmlType(propOrder = { "tokenId" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newAccessTokenCredentials")
+public interface AccessTokenCredentials extends SessionCredentials {
 
     /**
-     * return the username
+     * Return the token id
      * 
      * @return
      */
-    public String getUsername();
+    public String getTokenId();
 
     /**
-     * Set the username
+     * Set the token id
      * 
-     * @param username
+     * @param tokenId
      */
-    public void setUsername(String username);
-
-    /**
-     * return the password
-     * 
-     * @return
-     */
-    @XmlJavaTypeAdapter(StringToCharArrayAdapter.class)
-    public char[] getPassword();
-
-    /**
-     * Set the password
-     * 
-     * @param password
-     */
-    public void setPassword(char[] password);
+    public void setTokenId(String tokenId);
 }

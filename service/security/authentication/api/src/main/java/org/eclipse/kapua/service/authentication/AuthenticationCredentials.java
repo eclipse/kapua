@@ -18,6 +18,5 @@ package org.eclipse.kapua.service.authentication;
  * @since 1.0
  * 
  */
-public interface AuthenticationCredentials
-{
+public interface AuthenticationCredentials {
 }

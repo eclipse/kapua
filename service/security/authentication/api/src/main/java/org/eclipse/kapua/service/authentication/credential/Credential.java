@@ -22,12 +22,11 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface Credential extends KapuaEntity
-{
+public interface Credential extends KapuaEntity {
+
     public static final String TYPE = "credential";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -51,4 +50,11 @@ public interface Credential extends KapuaEntity
      * @return
      */
     public String getCredentialKey();
+
+    /**
+     * Sets the credential key
+     * 
+     * @param credentialKey
+     */
+    public void setCredentialKey(String credentialKey);
 }
