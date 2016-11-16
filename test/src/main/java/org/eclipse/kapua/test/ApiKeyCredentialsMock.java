@@ -10,21 +10,26 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-
 package org.eclipse.kapua.test;
 
-import org.eclipse.kapua.locator.guice.TestService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
+import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 
-@TestService
-public class UsernamePasswordCredentialsFactoryMock implements UsernamePasswordCredentialsFactory
-{
+public class ApiKeyCredentialsMock implements ApiKeyCredentials {
+
+    private String apiKey;
+
+    public ApiKeyCredentialsMock(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
     @Override
-    public UsernamePasswordCredentials newInstance(String username, char[] password)
-    {
-        return new UsernamePasswordCredentialsMock(username, password);
+    public String getApiKey() {
+        return this.apiKey;
+    }
+
+    @Override
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
 }
