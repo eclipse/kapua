@@ -33,9 +33,9 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -49,12 +49,12 @@ import org.slf4j.LoggerFactory;
 
 public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet implements GwtAuthorizationService {
 
-    private static final long   serialVersionUID     = -3919578632016541047L;
+    private static final long serialVersionUID = -3919578632016541047L;
 
-    private static final Logger s_logger             = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
+    private static final Logger s_logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
 
-    public static final String  SESSION_CURRENT      = "console.current.session";
-    public static final String  SESSION_CURRENT_USER = "console.current.user";
+    public static final String SESSION_CURRENT = "console.current.session";
+    public static final String SESSION_CURRENT_USER = "console.current.user";
 
     /**
      * Login call in response to the login dialog.
@@ -73,9 +73,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            UsernamePasswordCredentialsFactory credentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
-            AuthenticationCredentials credentials = credentialsFactory.newInstance(tmpUser.getUsername(),
-                                                                                   tmpUser.getPassword().toCharArray());
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(tmpUser.getUsername(), tmpUser.getPassword().toCharArray());
 
             // Login
             authenticationService.login(credentials);
@@ -136,7 +135,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         // Get user info
         UserService userService = locator.getService(UserService.class);
         User user = userService.find(kapuaSession.getScopeId(),
-                                     kapuaSession.getUserId());
+                kapuaSession.getUserId());
 
         //
         // Get permission info
@@ -233,8 +232,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
             // Check
             hasAccess = authorizationService.isPermitted(permission);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return hasAccess;
