@@ -23,7 +23,7 @@
 	<name>${project.artifactId}</name>
 
     <properties>
-		<tomcat.version>8.0.37</tomcat.version>
+		<tomcat.version>8.0.38</tomcat.version>
         <commons.pool.version>2.3</commons.pool.version>
     </properties>
 
