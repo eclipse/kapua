@@ -166,7 +166,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
     @Override
     protected void assertCredentialsMatch(AuthenticationToken authcToken, AuthenticationInfo info)
             throws AuthenticationException {
-        LoginAuthenticationInfo kapuaInfo = (LoginAuthenticationInfo) info;
+        SessionAuthenticationInfo kapuaInfo = (SessionAuthenticationInfo) info;
 
         super.assertCredentialsMatch(authcToken, info);
 
