@@ -16,45 +16,29 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Username and password {@link LoginCredentials} definition.
+ * Api key {@link LoginCredentials} definition.
  * 
  * @since 1.0
  * 
  */
-@XmlRootElement(name = "usernamePasswordCredentials")
+@XmlRootElement(name = "apiKeyCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "username", "password" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
-public interface UsernamePasswordCredentials extends LoginCredentials {
+@XmlType(propOrder = { "apiKey" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newApiKeyCredentials")
+public interface ApiKeyCredentials extends LoginCredentials {
 
     /**
      * return the username
      * 
      * @return
      */
-    public String getUsername();
+    public String getApiKey();
 
     /**
      * Set the username
      * 
      * @param username
      */
-    public void setUsername(String username);
-
-    /**
-     * return the password
-     * 
-     * @return
-     */
-    @XmlJavaTypeAdapter(StringToCharArrayAdapter.class)
-    public char[] getPassword();
-
-    /**
-     * Set the password
-     * 
-     * @param password
-     */
-    public void setPassword(char[] password);
+    public void setApiKey(String apiKey);
 }

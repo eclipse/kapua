@@ -4,6 +4,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
 
 /**
  * Access token service API
@@ -36,6 +37,20 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      * 
      * @since 1.0
      */
-    public AccessToken findByTokenId(KapuaId scopeId, KapuaId tokenId)
+    public AccessToken findByTokenId(String tokenId)
             throws KapuaException;
+
+    /**
+     * Invalidated the {@link AccessToken} by its id. After calling this method the token will be no longer valid and a new
+     * {@link AuthenticationService#login(org.eclipse.kapua.service.authentication.LoginCredentials)} invocation is required in order to get a new valid {@link AccessToken}.
+     * 
+     * @param scopeId
+     *            The {@link KapuaId} scopeId of the {@link AccessToken} to delete.
+     * @param id
+     *            The {@link KapuaId} of the {@link AccessToken} to delete.
+     * @param kapuaId
+     * 
+     * @since 1.0
+     */
+    public void invalidate(KapuaId scopeId, KapuaId id) throws KapuaException;
 }

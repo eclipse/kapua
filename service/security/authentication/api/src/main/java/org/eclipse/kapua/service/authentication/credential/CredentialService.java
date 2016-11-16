@@ -37,4 +37,15 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      */
     public CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)
             throws KapuaException;
+
+    /**
+     * Returns the {@link Credential} of type {@link CredentialType#API_KEY} matching the given parameters
+     * 
+     * @param tokenApiKey
+     *            The API key to match
+     * @return The matched {@link Credential}
+     * @throws KapuaException
+     * @since 1.0
+     */
+    public Credential findByApiKey(String tokenApiKey) throws KapuaException;
 }

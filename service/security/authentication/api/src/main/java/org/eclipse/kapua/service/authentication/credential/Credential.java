@@ -41,8 +41,7 @@ public interface Credential extends KapuaUpdatableEntity
 {
     public static final String TYPE = "credential";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -54,7 +53,7 @@ public interface Credential extends KapuaUpdatableEntity
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getUserId();
-    
+
     /**
      * Sets the user identifier
      */
@@ -67,7 +66,7 @@ public interface Credential extends KapuaUpdatableEntity
      */
     @XmlElement(name = "credentialType")
     public CredentialType getCredentialType();
-    
+
     /**
      * Sets the user credential type
      */
@@ -80,9 +79,11 @@ public interface Credential extends KapuaUpdatableEntity
      */
     @XmlElement(name = "credentialKey")
     public String getCredentialKey();
-    
+
     /**
      * Sets the credential key
+     * 
+     * @param credentialKey
      */
     public void setCredentialKey(String credentialKey);
 }
