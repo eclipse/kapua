@@ -9,16 +9,15 @@
  * Contributors:
  *      Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua;
+package org.eclipse.kapua.commons.model.misc;
 
-import java.io.Serializable;
+import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaNamedEntityService;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
-/**
- * Kapua {@link Serializable} entity. (Marker interface).
- * 
- * @since 1.0
- * 
- */
-public interface KapuaSerializable {
+public interface CollisionEntityService extends KapuaEntityService<CollisionEntity, CollisionEntityCreator>,
+                                        KapuaNamedEntityService<CollisionEntity>,
+                                        KapuaConfigurableService
+{
 
 }
