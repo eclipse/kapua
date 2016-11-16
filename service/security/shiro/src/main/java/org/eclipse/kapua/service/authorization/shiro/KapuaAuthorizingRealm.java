@@ -55,9 +55,9 @@ import org.slf4j.LoggerFactory;
  */
 public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
-    private static final Logger logger = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
+    private static final Logger logger     = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
 
-    public static final String REALM_NAME = "kapuaAuthorizingRealm";
+    public static final String  REALM_NAME = "kapuaAuthorizingRealm";
 
     public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
@@ -70,7 +70,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
             throws AuthenticationException {
         //
         // Extract principal
-        String username = (String) principals.getPrimaryPrincipal();
+        String username = ((User) principals.getPrimaryPrincipal()).getName();
         logger.debug("Getting authorization info for: {}", username);
 
         //
@@ -89,8 +89,8 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         } catch (AuthenticationException e) {
             throw e;
         } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
-        }
+				throw new ShiroException("Error while find user!", e);
+			}
 
         //
         // Check existence
@@ -135,7 +135,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 throw e;
             } catch (Exception e) {
                 throw new ShiroException("Error while find access permissions!", e);
-            }
+        }
 
             for (AccessPermission accessPermission : accessPermissions.getItems()) {
                 Permission p = accessPermission.getPermission();
@@ -152,7 +152,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 throw e;
             } catch (Exception e) {
                 throw new ShiroException("Error while find access role ids!", e);
-            }
+			}
 
             RoleService roleService = locator.getService(RoleService.class);
             RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
@@ -180,9 +180,9 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 for (RolePermission rolePermission : rolePermissions.getItems()) {
 
                     Permission p = rolePermission.getPermission();
-                    info.addStringPermission(p.toString());
+            info.addStringPermission(p.toString());
                     logger.trace("Role: {} has permission: {}", role, p);
-                }
+        }
             }
 
         }

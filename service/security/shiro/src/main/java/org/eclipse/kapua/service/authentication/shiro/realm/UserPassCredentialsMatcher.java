@@ -14,10 +14,14 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
@@ -28,8 +32,12 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
+    @SuppressWarnings("unused")
+    private static final Logger s_logger = LoggerFactory.getLogger(UserPassCredentialsMatcher.class);
+
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
+
         //
         // Token data
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
@@ -38,18 +46,19 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
         //
         // Info data
-        SimpleAuthenticationInfo info = (SimpleAuthenticationInfo) authenticationInfo;
-        String infoUsername = (String) info.getPrincipals().getPrimaryPrincipal();
-        String infoPassword = (String) info.getCredentials();
+        LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
+        User infoUser = (User) info.getPrincipals().getPrimaryPrincipal();
+        Credential infoCredential = (Credential) info.getCredentials();
 
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (tokenUsername.equals(infoUsername) && BCrypt.checkpw(tokenPassword, infoPassword)) {
+        if (tokenUsername.equals(infoUser.getName()) && CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) && BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey())) {
             credentialMatch = true;
 
             // FIXME: if true cache token password for authentication performance improvement
         }
+
         return credentialMatch;
     }
 
