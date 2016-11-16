@@ -34,9 +34,9 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -83,9 +83,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            UsernamePasswordCredentialsFactory credentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
-            AuthenticationCredentials credentials = credentialsFactory.newInstance(gwtLoginCredentials.getUsername(),
-                    gwtLoginCredentials.getPassword().toCharArray());
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(tmpUser.getUsername(), tmpUser.getPassword().toCharArray());
 
             // Login
             authenticationService.login(credentials);
