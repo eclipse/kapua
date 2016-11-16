@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
@@ -34,7 +35,21 @@ public class Authentication extends AbstractKapuaResource{
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccessToken getAccounts(UsernamePasswordCredentials authenticationCredentials) {
+    public AccessToken loginUsernamePassword(UsernamePasswordCredentials authenticationCredentials) {
+        AccessToken accessToken = null;
+        try {
+            accessToken = authenticationService.login(authenticationCredentials);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return accessToken;
+    }
+    
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("/apikey")
+    public AccessToken loginApiKey(ApiKeyCredentials authenticationCredentials) {
         AccessToken accessToken = null;
         try {
             accessToken = authenticationService.login(authenticationCredentials);
