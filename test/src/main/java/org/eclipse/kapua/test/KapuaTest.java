@@ -21,7 +21,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,8 +56,8 @@ public class KapuaTest extends Assert {
                 String password = "kapua-password";
 
                 AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-                UsernamePasswordCredentialsFactory credentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
-                authenticationService.login(credentialsFactory.newInstance(username, password.toCharArray()));
+                CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+                authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray()));
 
                 //
                 // Get current user Id

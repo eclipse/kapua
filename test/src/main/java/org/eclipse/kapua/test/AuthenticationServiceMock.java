@@ -17,8 +17,9 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.guice.TestService;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -30,7 +31,7 @@ public class AuthenticationServiceMock implements AuthenticationService {
     }
 
     @Override
-    public AccessToken login(AuthenticationCredentials authenticationToken)
+    public AccessToken login(LoginCredentials authenticationToken)
             throws KapuaException {
         if (!(authenticationToken instanceof UsernamePasswordCredentialsMock))
             throw KapuaException.internalError("Unmanaged credentials type");
@@ -41,7 +42,7 @@ public class AuthenticationServiceMock implements AuthenticationService {
         UserService userService = serviceLocator.getService(UserService.class);
         User user = userService.findByName(usrPwdCredentialsMock.getUsername());
 
-        KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId(), user.getName());
+        KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId());
         KapuaSecurityUtils.setSession(kapuaSession);
         // TODO Auto-generated method stub
         return null;
@@ -55,10 +56,16 @@ public class AuthenticationServiceMock implements AuthenticationService {
     }
 
     @Override
-    public AccessToken getToken(String tokenId)
+    public AccessToken findAccessToken(String tokenId)
             throws KapuaException {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void authenticate(SessionCredentials sessionCredentials) throws KapuaException {
+        // TODO Auto-generated method stub
+
     }
 
 }
