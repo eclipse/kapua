@@ -45,10 +45,8 @@ public class RestApisApplication extends ResourceConfig {
 		register(RestApiJAXBContextProvider.class);
 		register(KapuaSerializableBodyWriter.class);
 		register(ListBodyWriter.class);
-		// Hook the swagger-ui
-//		registerClasses(ApiListingResource.class,
-//						SwaggerSerializers.class);
-
+		register(CORSResponseFilter.class);
+		
 		register(new ContainerLifecycleListener() {
 
 			@Override
