@@ -41,8 +41,8 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
  * @since 1.0
  *
  */
-public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Credential
-{
+public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Credential {
+
     private static final long serialVersionUID = -7921424688644169175L;
 
     @Embedded
@@ -62,8 +62,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     /**
      * Constructor
      */
-    public CredentialImpl()
-    {
+    public CredentialImpl() {
         super();
     }
 
@@ -75,8 +74,7 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
      * @param credentialType
      * @param credentialKey
      */
-    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey)
-    {
+    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
         super(scopeId);
         this.userId = (KapuaEid) userId;
         this.credentialType = credentialType;
@@ -84,20 +82,17 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     }
 
     @Override
-    public KapuaId getUserId()
-    {
+    public KapuaId getUserId() {
         return userId;
     }
 
     @Override
-    public CredentialType getCredentialType()
-    {
+    public CredentialType getCredentialType() {
         return credentialType;
     }
 
     @Override
-    public String getCredentialKey()
-    {
+    public String getCredentialKey() {
         return credentialKey;
     }
 

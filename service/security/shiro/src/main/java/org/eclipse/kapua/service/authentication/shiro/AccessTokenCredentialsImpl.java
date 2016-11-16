@@ -13,56 +13,50 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
 /**
- * Username and password {@link AuthenticationCredentials} implementation.
+ * Access token {@link AuthenticationCredentials} implementation.
  * 
  * @since 1.0
  * 
  */
-public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken implements UsernamePasswordCredentials, AuthenticationToken {
+public class AccessTokenCredentialsImpl implements AccessTokenCredentials, AuthenticationToken {
 
     private static final long serialVersionUID = -7549848672967689716L;
 
-    private String username;
-    private char[] password;
+    private String tokenId;
 
-    private UsernamePasswordCredentialsImpl() {
+    private AccessTokenCredentialsImpl() {
         super();
     }
 
     /**
      * Constructor
      * 
-     * @param username
-     * @param password
+     * @param tokenId
      */
-    public UsernamePasswordCredentialsImpl(String username, char[] password) {
+    public AccessTokenCredentialsImpl(String tokenId) {
         this();
-        this.username = username;
-        this.password = password;
+        this.tokenId = tokenId;
+    }
+
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     @Override
-    public String getUsername() {
-        return username;
+    public Object getPrincipal() {
+        return getTokenId();
     }
 
     @Override
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public char[] getPassword() {
-        return password;
-    }
-
-    @Override
-    public void setPassword(char[] password) {
-        this.password = password;
+    public Object getCredentials() {
+        return getTokenId();
     }
 }

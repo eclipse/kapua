@@ -15,25 +15,24 @@ package org.eclipse.kapua.service.authentication.shiro.setting;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
- * Authentication setting key
+ * Crypto setting key
  * 
  * @since 1.0
  *
  */
-public enum KapuaAuthenticationSettingKeys implements SettingKey {
-    AUTHENTICATION_KEY("authentication.key"), //
+public enum KapuaCryptoSettingKeys implements SettingKey {
+    CRYPTO_KEY("crypto.key"), //
 
-    AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after"),//
+    CRYPTO_BCRYPT_LOG_ROUNDS("crypto.bCrypt.logRounds"),
 
-    AUTHENTICATION_APIKEY_PRE_LENGTH("authentication.apiKey.pre.length"),//
-    AUTHENTICATION_APIKEY_PRE_SEPARATOR("authentication.apiKey.pre.separator"),//
+    CRYPTO_SHA_ALGORITHM("crypto.sha.algorithm"),
 
-    AUTHENTICATION_APIKEY_KEY_LENGTH("authentication.apiKey.key.length"), //
+    CRYPTO_SHA_SALT_LENGTH("crypto.sha.salt.length"),
     ;
 
     private String key;
 
-    private KapuaAuthenticationSettingKeys(String key) {
+    private KapuaCryptoSettingKeys(String key) {
         this.key = key;
     }
 

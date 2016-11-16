@@ -10,9 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
-
-import java.util.concurrent.Callable;
+package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -21,7 +19,6 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.session.Session;
@@ -32,11 +29,12 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.shiro.credential.BCryptCredentialsMatcher;
-import org.eclipse.kapua.service.authentication.shiro.credential.KapuaSimpleAuthenticationInfo;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -44,34 +42,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JPA-based Apache Shiro {@link AuthenticatingRealm} implementation.
+ * {@link UsernamePasswordCredentials} based {@link AuthenticatingRealm} implementation.
  * 
  * since 1.0
  * 
  */
-public class KapuaAuthenticatingRealm extends AuthenticatingRealm {
+public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
 
     @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(KapuaAuthenticatingRealm.class);
+    private static final Logger s_logger = LoggerFactory.getLogger(UserPassAuthenticatingRealm.class);
 
     /**
      * Realm name
      */
-    public static final String REALM_NAME = "kapuaAuthenticatingRealm";
-
-    public static final String PRINCIPAL_USER_ID_KEY = "userIdPrincipal";
-    public static final String PRINCIPAL_USERNAME_KEY = "usernamePrincipal";
+    public static final String REALM_NAME = "userPassAuthenticatingRealm";
 
     /**
      * Constructor
      * 
      * @throws KapuaException
      */
-    public KapuaAuthenticatingRealm() throws KapuaException {
-        // This name must match the name in the User class's getPrincipals() method
+    public UserPassAuthenticatingRealm() throws KapuaException {
         setName(REALM_NAME);
 
-        CredentialsMatcher credentialsMather = new BCryptCredentialsMatcher();
+        CredentialsMatcher credentialsMather = new UserPassCredentialsMatcher();
         setCredentialsMatcher(credentialsMather);
     }
 
@@ -80,9 +74,8 @@ public class KapuaAuthenticatingRealm extends AuthenticatingRealm {
             throws AuthenticationException {
         //
         // Extract credentials
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        UsernamePasswordCredentialsImpl token = (UsernamePasswordCredentialsImpl) authenticationToken;
         String tokenUsername = token.getUsername();
-        // char[] tokenPassword = token.getPassword();
 
         //
         // Get Services
@@ -104,21 +97,11 @@ public class KapuaAuthenticatingRealm extends AuthenticatingRealm {
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPriviledge(new Callable<User>() {
-
-                @Override
-                public User call()
-                        throws Exception {
-                    return userService.findByName(tokenUsername);
-                }
-            });
+            user = KapuaSecurityUtils.doPriviledge(() -> userService.findByName(tokenUsername));
+        } catch (AuthenticationException ae) {
+            throw ae;
         } catch (Exception e) {
-            // to preserve the original exception message (if possible)
-            if (e instanceof AuthenticationException) {
-                throw (AuthenticationException) e;
-            } else {
-                throw new ShiroException("Error while find user!", e);
-            }
+            throw new ShiroException("Error while find user!", e);
         }
 
         // Check existence
@@ -135,21 +118,11 @@ public class KapuaAuthenticatingRealm extends AuthenticatingRealm {
         // Find account
         final Account account;
         try {
-            account = KapuaSecurityUtils.doPriviledge(new Callable<Account>() {
-
-                @Override
-                public Account call()
-                        throws Exception {
-                    return accountService.find(user.getScopeId());
-                }
-            });
+            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(user.getScopeId()));
+        } catch (AuthenticationException ae) {
+            throw ae;
         } catch (Exception e) {
-            // to preserve the original exception message (if possible)
-            if (e instanceof AuthenticationException) {
-                throw (AuthenticationException) e;
-            } else {
-                throw new ShiroException("Error while find account!", e);
-            }
+            throw new ShiroException("Error while find account!", e);
         }
 
         // Check existence
@@ -160,45 +133,47 @@ public class KapuaAuthenticatingRealm extends AuthenticatingRealm {
         //
         // Find credentials
         // FIXME: manage multiple credentials and multiple credentials type
-        Credential credential = null;
+        Credential credential;
         try {
-            credential = KapuaSecurityUtils.doPriviledge(new Callable<Credential>() {
+            credential = KapuaSecurityUtils.doPriviledge(() -> {
+                CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
 
-                @Override
-                public Credential call()
-                        throws Exception {
-                    CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(),
-                            user.getId());
-                    // TODO may be better to filter by credential type?
-                    if (credentialList != null && !credentialList.isEmpty()) {
-                        return credentialList.getItem(0);
-                    } else {
-                        throw new UnknownAccountException();
+                if (credentialList != null && !credentialList.isEmpty()) {
+                    Credential credentialMatched = null;
+                    for (Credential c : credentialList.getItems()) {
+                        if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
+                            credentialMatched = c;
+                            break;
+                        }
                     }
+                    return credentialMatched;
+                } else {
+                    return null;
                 }
             });
+        } catch (AuthenticationException ae) {
+            throw ae;
         } catch (Exception e) {
-            if (e instanceof AuthenticationException) {
-                throw (AuthenticationException) e;
-            } else {
-                throw new ShiroException("Error while find credentials!", e);
-            }
+            throw new ShiroException("Error while find credentials!", e);
+        }
+
+        // Check existence
+        if (credential == null) {
+            throw new UnknownAccountException();
         }
 
         //
-        // BuildAuthenticationInfo8
-        KapuaSimpleAuthenticationInfo info = new KapuaSimpleAuthenticationInfo(user,
-                credential,
+        // BuildAuthenticationInfo
+        return new LoginAuthenticationInfo(getName(),
                 account,
-                getName());
-
-        return info;
+                user,
+                credential);
     }
 
     @Override
     protected void assertCredentialsMatch(AuthenticationToken authcToken, AuthenticationInfo info)
             throws AuthenticationException {
-        KapuaSimpleAuthenticationInfo kapuaInfo = (KapuaSimpleAuthenticationInfo) info;
+        LoginAuthenticationInfo kapuaInfo = (LoginAuthenticationInfo) info;
 
         super.assertCredentialsMatch(authcToken, info);
 
@@ -210,6 +185,6 @@ public class KapuaAuthenticatingRealm extends AuthenticatingRealm {
 
     @Override
     public boolean supports(AuthenticationToken authenticationToken) {
-        return (authenticationToken instanceof UsernamePasswordToken);
+        return authenticationToken instanceof UsernamePasswordCredentialsImpl;
     }
 }
