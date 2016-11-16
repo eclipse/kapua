@@ -44,12 +44,6 @@ public class KapuaSession implements Serializable {
      */
     private AccessToken accessToken;
 
-    // /**
-    // * Run as scope identifier.<br>
-    // * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
-    // */
-    // private KapuaId runAsScopeId;
-
     /**
      * User scope identifier
      */
@@ -59,11 +53,6 @@ public class KapuaSession implements Serializable {
      * User identifier
      */
     private KapuaId userId;
-
-    /**
-     * Username
-     */
-    private String username;
 
     /**
      * Trusted mode.<br>
@@ -88,8 +77,7 @@ public class KapuaSession implements Serializable {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
             KapuaSession kapuaSessionCopy = new KapuaSession(kapuaSession.getAccessToken(),
                     kapuaSession.getScopeId(),
-                    kapuaSession.getUserId(),
-                    kapuaSession.getUsername());
+                    kapuaSession.getUserId());
             kapuaSessionCopy.trustedMode = true;
             return kapuaSessionCopy;
         } else {
@@ -124,17 +112,14 @@ public class KapuaSession implements Serializable {
      * @param runAsScopeId
      * @param scopeId
      * @param userId
-     * @param username
      */
     public KapuaSession(AccessToken accessToken,
             KapuaId scopeId,
-            KapuaId userId,
-            String username) {
+            KapuaId userId) {
         this();
         this.accessToken = accessToken;
         this.scopeId = scopeId;
         this.userId = userId;
-        this.username = username;
     }
 
     /**
@@ -145,16 +130,6 @@ public class KapuaSession implements Serializable {
     public AccessToken getAccessToken() {
         return accessToken;
     }
-
-    /**
-     * Get the run as scope identifier.<br>
-     * This field tells on which scope the user is working on. <b>(may be different from the user scope identifier)</b>
-     * 
-     * @return
-     */
-    // public KapuaId getRunAsScopeId() {
-    // return runAsScopeId;
-    // }
 
     /**
      * Get the scope identifier
@@ -172,15 +147,6 @@ public class KapuaSession implements Serializable {
      */
     public KapuaId getUserId() {
         return userId;
-    }
-
-    /**
-     * get the username
-     * 
-     * @return
-     */
-    public String getUsername() {
-        return username;
     }
 
     /**

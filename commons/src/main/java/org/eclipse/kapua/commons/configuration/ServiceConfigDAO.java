@@ -12,8 +12,8 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
@@ -23,8 +23,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * @since 1.0
  *
  */
-public class ServiceConfigDAO extends ServiceDAO
-{
+public class ServiceConfigDAO extends ServiceDAO {
 
     /**
      * Create and return new service configuration
@@ -35,8 +34,7 @@ public class ServiceConfigDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static ServiceConfigImpl create(EntityManager em, ServiceConfigCreatorImpl serviceConfigCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Create service configuration
         ServiceConfigImpl serviceConfigImpl = new ServiceConfigImpl(serviceConfigCreator.getScopeId());
@@ -56,8 +54,7 @@ public class ServiceConfigDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Update service configuration
         ServiceConfigImpl serviceConfigImpl = (ServiceConfigImpl) serviceConfig;
@@ -71,8 +68,7 @@ public class ServiceConfigDAO extends ServiceDAO
      * @param em
      * @param userId
      */
-    public static void delete(EntityManager em, KapuaId userId)
-    {
+    public static void delete(EntityManager em, KapuaId userId) {
         ServiceDAO.delete(em, ServiceConfigImpl.class, userId);
     }
 
@@ -83,8 +79,7 @@ public class ServiceConfigDAO extends ServiceDAO
      * @param userId
      * @return
      */
-    public static ServiceConfig find(EntityManager em, KapuaId userId)
-    {
+    public static ServiceConfig find(EntityManager em, KapuaId userId) {
         return em.find(ServiceConfigImpl.class, userId);
     }
 
@@ -95,9 +90,8 @@ public class ServiceConfigDAO extends ServiceDAO
      * @param name
      * @return
      */
-    public static ServiceConfig findByName(EntityManager em, String name)
-    {
-        return ServiceDAO.findByName(em, ServiceConfigImpl.class, name);
+    public static ServiceConfig findByName(EntityManager em, String name) {
+        return ServiceDAO.findByField(em, ServiceConfigImpl.class, "name", name);
     }
 
     /**
@@ -109,8 +103,7 @@ public class ServiceConfigDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static ServiceConfigListResult query(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), serviceConfigQuery);
     }
 
@@ -123,8 +116,7 @@ public class ServiceConfigDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.count(em, ServiceConfig.class, ServiceConfigImpl.class, serviceConfigQuery);
     }
 

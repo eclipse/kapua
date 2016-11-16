@@ -36,6 +36,8 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -125,29 +127,31 @@ public class ServiceDAO {
      * @param em
      * @param clazz
      * @param name
-     *            name of the entity to find
+     *            name of the field from which to search
+     * @param value
+     *            value of the field from which to search
      * @return
      */
-    public static <E extends KapuaEntity> E findByName(EntityManager em, Class<E> clazz, String name) {
+    public static <E extends KapuaEntity> E findByField(EntityManager em, Class<E> clazz, String name, String value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(clazz);
 
         //
         // FROM
-        Root<E> userRoot = criteriaSelectQuery.from(clazz);
+        Root<E> entityRoot = criteriaSelectQuery.from(clazz);
 
         //
         // SELECT
-        criteriaSelectQuery.select(userRoot);
+        criteriaSelectQuery.select(entityRoot);
 
         // name
-        ParameterExpression<String> pName = cb.parameter(String.class, "name");
-        criteriaSelectQuery.where(cb.equal(userRoot.get("name"), pName));
+        ParameterExpression<String> pName = cb.parameter(String.class, name);
+        criteriaSelectQuery.where(cb.equal(entityRoot.get(name), pName));
 
         //
         // QUERY!
         TypedQuery<E> query = em.createQuery(criteriaSelectQuery);
-        query.setParameter(pName.getName(), name);
+        query.setParameter(pName.getName(), value);
 
         List<E> result = query.getResultList();
         E user = null;
@@ -192,22 +196,46 @@ public class ServiceDAO {
 
         //
         // WHERE
-        ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
-        Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
+        KapuaPredicate kapuaPredicates = kapuaQuery.getPredicate();
+        if (kapuaQuery.getScopeId() != null) {
 
-        Map<ParameterExpression, Object> binds = new HashMap<ParameterExpression, Object>();
-        binds.put(scopeIdParam, kapuaQuery.getScopeId());
-        Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaQuery.getPredicate(),
+            AndPredicate scopedAndPredicate = new AndPredicate();
+
+            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>("scopeId", kapuaQuery.getScopeId());
+            scopedAndPredicate.and(scopeId);
+
+            if (kapuaQuery.getPredicate() != null) {
+                scopedAndPredicate.and(kapuaQuery.getPredicate());
+            }
+
+            kapuaPredicates = scopedAndPredicate;
+        }
+
+        Map<ParameterExpression, Object> binds = new HashMap<>();
+        Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaPredicates,
                 binds,
                 cb,
                 entityRoot,
                 entityRoot.getModel());
 
-        if (expr == null) {
-            criteriaSelectQuery.where(scopeIdExpr);
-        } else {
-            criteriaSelectQuery.where(cb.and(scopeIdExpr, expr));
-        }
+        criteriaSelectQuery.where(expr);
+
+        // ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
+        // Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
+        //
+        // Map<ParameterExpression, Object> binds = new HashMap<>();
+        // binds.put(scopeIdParam, kapuaQuery.getScopeId());
+        // Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaQuery.getPredicate(),
+        // binds,
+        // cb,
+        // entityRoot,
+        // entityRoot.getModel());
+        //
+        // if (expr == null) {
+        // criteriaSelectQuery.where(scopeIdExpr);
+        // } else {
+        // criteriaSelectQuery.where(cb.and(scopeIdExpr, expr));
+        // }
 
         //
         // ORDER BY
@@ -467,7 +495,7 @@ public class ServiceDAO {
                     throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                 }
                 break;
-                
+
             default:
             case EQUAL:
                 expr = cb.equal(entityRoot.get(attribute), attrValue);
