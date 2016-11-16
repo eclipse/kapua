@@ -50,8 +50,6 @@ org.eclipse.kapua.service.device.management.packages.DevicePackageFactory
 org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService
 org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory
 
-org.eclipse.kapua.service.generator.id.IdGeneratorService
-
 org.eclipse.kapua.service.datastore.DatastoreObjectFactory
 org.eclipse.kapua.service.datastore.MessageStoreService
 org.eclipse.kapua.service.datastore.AssetInfoStoreService

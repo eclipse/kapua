@@ -35,7 +35,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.AccessToken;
 import org.eclipse.kapua.service.authentication.AccessTokenImpl;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
@@ -50,7 +49,7 @@ import org.slf4j.MDC;
  * since 1.0
  * 
  */
-public class AuthenticationServiceShiroImpl implements AuthenticationService, KapuaService
+public class AuthenticationServiceShiroImpl implements AuthenticationService
 {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);

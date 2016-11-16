@@ -90,7 +90,7 @@ public class Accounts extends AbstractKapuaResource
 
         Account account = null;
         try {
-        	KapuaId id = KapuaEid.parseShortId(accountId);
+            KapuaId id = KapuaEid.parseCompactId(accountId);
             account = accountService.find(id);
         } catch (Throwable t) {
             handleException(t);
@@ -140,7 +140,7 @@ public class Accounts extends AbstractKapuaResource
             @PathParam("scopeId") String scopeId) {
         AccountListResult accountsResult = accountFactory.newAccountListResult();
         try {
-            KapuaId id = KapuaEid.parseShortId(scopeId);
+            KapuaId id = KapuaEid.parseCompactId(scopeId);
         	accountsResult = (AccountListResult) accountService.findChildsRecursively(id);
         } catch (Throwable t) {
             handleException(t);
@@ -360,7 +360,7 @@ public class Accounts extends AbstractKapuaResource
             @ApiParam(value = "The id of the Account to be delete", required = true)
             @PathParam("accountId") String accountId) {
         try {
-            KapuaId accountKapuaId = KapuaEid.parseShortId(accountId);
+            KapuaId accountKapuaId = KapuaEid.parseCompactId(accountId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
             accountService.delete(scopeId, accountKapuaId);
         } catch (Throwable t) {

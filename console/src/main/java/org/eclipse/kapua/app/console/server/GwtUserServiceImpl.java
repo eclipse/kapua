@@ -68,7 +68,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaLocator locator = KapuaLocator.getInstance();
             UserFactory userFactory = locator.getFactory(UserFactory.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtUserCreator.getScopeId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
             UserCreator userCreator = userFactory.newCreator(scopeId,
                                                              gwtUserCreator.getUsername());
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
@@ -107,7 +107,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     action = Actions.valueOf(tokens[1]);
                 }
                 if (tokens.length > 2) {
-                    targetScopeId = KapuaEid.parseShortId(tokens[2]);
+                    targetScopeId = KapuaEid.parseCompactId(tokens[2]);
                 }
 
                 Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
@@ -148,8 +148,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtUser.getScopeId());
-            KapuaId userId = KapuaEid.parseShortId(gwtUser.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtUser.getScopeId());
+            KapuaId userId = KapuaEid.parseCompactId(gwtUser.getId());
 
             User user = userService.find(scopeId, userId);
 
@@ -193,7 +193,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                         action = Actions.valueOf(tokens[1]);
                     }
                     if (tokens.length > 2) {
-                        targetScopeId = KapuaEid.parseShortId(tokens[2]);
+                        targetScopeId = KapuaEid.parseCompactId(tokens[2]);
                     }
 
                     Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
@@ -257,12 +257,12 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = KapuaEid.parseShortId(accountId);
+        KapuaId scopeId = KapuaEid.parseCompactId(accountId);
 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
-            User user = userService.find(scopeId, KapuaEid.parseShortId(gwtUser.getId()));
+            User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUser.getId()));
             if (user != null) {
                 userService.delete(user);
             }
@@ -275,8 +275,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     public GwtUser find(String accountId, String userIdString)
         throws GwtKapuaException
     {
-        KapuaId scopeId = KapuaEid.parseShortId(accountId);
-        KapuaId userId = KapuaEid.parseShortId(userIdString);
+        KapuaId scopeId = KapuaEid.parseCompactId(accountId);
+        KapuaId userId = KapuaEid.parseCompactId(userIdString);
 
         GwtUser gwtUser = null;
         try {
@@ -297,7 +297,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     public ListLoadResult<GwtUser> findAll(String scopeIdString)
         throws GwtKapuaException
     {
-        KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
+        KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         List<GwtUser> gwtUserList = new ArrayList<GwtUser>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();

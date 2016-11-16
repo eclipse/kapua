@@ -36,7 +36,7 @@ public class KapuaIdAdapter extends XmlAdapter<String, KapuaId>{
 	@Override
 	public String marshal(KapuaId v) throws Exception 
 	{
-		return v.getShortId();
+        return v.toCompactId();
 	}
 
 	@Override

@@ -24,7 +24,7 @@ public class KapuaIdFactoryImpl implements KapuaIdFactory {
 
 	@Override
 	public KapuaId newKapuaId(String shortId) {
-		return KapuaEid.parseShortId(shortId);
+        return KapuaEid.parseCompactId(shortId);
 	}
 
 }

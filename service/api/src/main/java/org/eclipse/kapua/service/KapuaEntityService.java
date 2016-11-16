@@ -31,7 +31,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntityCreator<E>> extends KapuaService
 {
     /**
-     * Creates the entity using information provided via entitty creator
+     * Creates the entity using information provided via entity creator
      * 
      * @param creator
      * @return

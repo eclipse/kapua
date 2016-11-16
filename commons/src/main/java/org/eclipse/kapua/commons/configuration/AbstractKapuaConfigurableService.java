@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -52,12 +53,11 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  *
  */
 @SuppressWarnings("serial")
-public abstract class AbstractKapuaConfigurableService implements KapuaConfigurableService, Serializable
+public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService, Serializable
 {
     private String domain = null;
     private String pid    = null;
-    private EntityManagerFactory entityManagerFactory;
-
+    
     /**
      * Reads metadata for the service pid
      * 
@@ -259,11 +259,11 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @param domain
      * @param entityFactory
      */
-    protected AbstractKapuaConfigurableService(String pid, String domain , EntityManagerFactory entityFactory)
+    protected AbstractKapuaConfigurableService(String pid, String domain, EntityManagerFactory entityManagerFactory)
     {
+        super(entityManagerFactory);
         this.pid = pid;
         this.domain = domain;
-        this.entityManagerFactory = entityFactory;
     }
 
     @Override

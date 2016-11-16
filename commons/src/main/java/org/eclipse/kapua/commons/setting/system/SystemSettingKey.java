@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting.system;
 
+import javax.persistence.EntityExistsException;
+
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
@@ -154,7 +156,17 @@ public enum SystemSettingKey implements SettingKey
     /**
      * Tell if is running into ogsi container
      */
-    OSGI_CONTEXT("commons.osgi.context");
+    OSGI_CONTEXT("commons.osgi.context"),
+
+    /**
+     * Set the Kapua key size
+     */
+    KAPUA_KEY_SIZE("commons.entity.key.size"),
+
+    /**
+     * Maximum allowed retry (due to a {@link EntityExistsException}, so already exists key) on insert operation
+     */
+    KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry");
 
     private String key;
 

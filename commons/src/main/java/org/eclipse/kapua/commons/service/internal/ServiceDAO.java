@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
@@ -30,6 +33,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -53,17 +57,65 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
  */
 public class ServiceDAO {
 
+    private final static String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
+
     /**
-     * Create entity utility method
+     * Create entity utility method.<br>
+     * This method checks for the constraint violation and, in this case, it throws a specific exception ({@link KapuaEntityExistsException}).
      * 
      * @param em
-     * @param entity
-     *            to be created
+     * @param entity to be created
      * @return
      */
     public static <E extends KapuaEntity> E create(EntityManager em, E entity) {
         //
         // Creating entity
+        try {
+            em.persist(entity);
+            em.flush();
+        }
+        catch (EntityExistsException e) {
+            throw new KapuaEntityExistsException(e, entity.getId());
+        }
+        catch (PersistenceException e) {
+            if (isInsertConstraintViolation(e)) {
+                KapuaEntity entityFound = em.find(entity.getClass(), entity.getId());
+                if (entityFound == null) {
+                    throw e;
+                }
+                throw new KapuaEntityExistsException(e, entity.getId());
+            }
+            else {
+                throw e;
+            }
+        }
+
+        return entity;
+    }
+
+    private static boolean isInsertConstraintViolation(PersistenceException e) {
+        // extract the sql exception
+        Throwable cause = e.getCause();
+        while (cause != null && !(cause instanceof SQLException)) {
+            cause = cause.getCause();
+        }
+        if (cause == null) {
+            return false;
+        }
+        SQLException innerExc = (SQLException) cause;
+        if (SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState())) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static <E extends KapuaEntity> E store(EntityManager em, E entity)
+    {
+        //
+        // Creating entity
+
         em.persist(entity);
         em.flush();
 

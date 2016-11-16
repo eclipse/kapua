@@ -7,31 +7,30 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ *     Red Hat
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.generator.id;
+package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaService;
 
 /**
- * Id generator service definition.
+ * Entity manager callback insert result service definition.
+ * 
+ * @param <T> Insert execution result return type
  * 
  * @since 1.0
  * 
  */
-public interface IdGeneratorService extends KapuaService
-{
+public interface EntityManagerInsertCallback<T> {
 
     /**
-     * Returns a unique identifier within the platform.<br>
-     * It could be used as primary key for a record database insert.
+     * Return the insert execution result invoked using the provided entity manager.
      * 
+     * @param entityManager
      * @return
      * @throws KapuaException
      */
-    public KapuaId generate()
-        throws KapuaException;
+    T onEntityInsert(EntityManager entityManager) throws KapuaException;
+
 }

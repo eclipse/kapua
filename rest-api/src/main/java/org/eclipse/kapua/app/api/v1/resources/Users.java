@@ -28,7 +28,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -89,7 +88,7 @@ public class Users extends AbstractKapuaResource {
             @PathParam("userId") String userId) {
         User user = null;
         try {
-            KapuaId id = KapuaEid.parseShortId(userId);
+            KapuaId id = KapuaEid.parseCompactId(userId);
             user = userService.find(KapuaSecurityUtils.getSession().getScopeId(), id);
         } catch (Throwable t) {
             handleException(t);
@@ -216,7 +215,7 @@ public class Users extends AbstractKapuaResource {
             @ApiParam(value = "The id of the User to be deleted", required = true)
             @PathParam("userId") String userId) {
         try {
-            KapuaId id = KapuaEid.parseShortId(userId);
+            KapuaId id = KapuaEid.parseCompactId(userId);
             userService.delete(KapuaSecurityUtils.getSession().getScopeId(), id);
         } catch (Throwable t) {
             handleException(t);

@@ -82,7 +82,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             throws GwtKapuaException {
         GwtDevice gwtDevice = null;
         try {
-            KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
@@ -103,7 +103,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         DeviceConnectionService dcs = locator.getService(DeviceConnectionService.class);
         try {
 
-            KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
 
             Device device = drs.findByClientId(scopeId, clientId);
 
@@ -132,7 +132,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 }
 
                 if (device.getPreferredUserId() != null) {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastUserUsed", device.getPreferredUserId().getShortId()));
+                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastUserUsed", device.getPreferredUserId().toCompactId()));
                 }
 
                 pairs.add(new GwtGroupedNVPair("devInfo", "devApps", device.getApplicationIdentifiers()));
@@ -208,7 +208,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         int totalResult = 0;
         try {
             BasePagingLoadConfig bplc = (BasePagingLoadConfig) loadConfig;
-            DeviceQuery deviceQuery = deviceFactory.newQuery(KapuaEid.parseShortId(scopeIdString));
+            DeviceQuery deviceQuery = deviceFactory.newQuery(KapuaEid.parseCompactId(scopeIdString));
             deviceQuery.setLimit(bplc.getLimit() + 1);
             deviceQuery.setOffset(bplc.getOffset());
 
@@ -306,7 +306,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         GwtDevice gwtDevice = null;
 
         try {
-            KapuaId scopeId = KapuaEid.parseShortId(gwtDeviceCreator.getScopeId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtDeviceCreator.getScopeId());
 
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());
@@ -343,8 +343,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         try {
             //
             // Find original device
-            KapuaId scopeId = KapuaEid.parseShortId(gwtDevice.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtDevice.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtDevice.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtDevice.getId());
             device = deviceRegistryService.find(scopeId, deviceId);
 
             //
@@ -355,7 +355,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             // Security Stuff
             device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
-            KapuaId deviceUserId = KapuaEid.parseShortId(gwtDevice.getDeviceUserId());
+            KapuaId deviceUserId = KapuaEid.parseCompactId(gwtDevice.getDeviceUserId());
             device.setPreferredUserId(deviceUserId);
 
             // Custom attributes
@@ -386,7 +386,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
         checkXSRFToken(xsrfToken);
 
         try {
-            KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
@@ -413,11 +413,11 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             // prepare the query
             BasePagingLoadConfig bplc = (BasePagingLoadConfig) loadConfig;
-            DeviceEventQuery query = deviceEventFactory.newQuery(KapuaEid.parseShortId(gwtDevice.getScopeId()));
+            DeviceEventQuery query = deviceEventFactory.newQuery(KapuaEid.parseCompactId(gwtDevice.getScopeId()));
 
             KapuaAndPredicate andPredicate = new AndPredicate();
 
-            andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseShortId(gwtDevice.getId())));
+            andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())));
             // .and(new AttributePredicate<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN));
             // .and(new AttributePredicate<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.LESS_THAN));
 

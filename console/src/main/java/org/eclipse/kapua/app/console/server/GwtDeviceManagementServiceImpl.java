@@ -113,8 +113,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DevicePackageManagementService deviceManagementService = locator.getService(DevicePackageManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(scopeShortId);
-            KapuaId deviceId = KapuaEid.parseShortId(deviceShortId);
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceShortId);
             DevicePackages deploymentPackages = deviceManagementService.getInstalled(scopeId,
                     deviceId,
                     null);
@@ -156,8 +156,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         //
         // Do install
         try {
-            KapuaId scopeId = KapuaEid.parseShortId(gwtPackageInstallRequest.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtPackageInstallRequest.getDeviceId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtPackageInstallRequest.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtPackageInstallRequest.getDeviceId());
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DevicePackageFactory devicePackageFactory = locator.getFactory(DevicePackageFactory.class);
@@ -188,13 +188,13 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DevicePackageManagementService deviceManagementService = locator.getService(DevicePackageManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(scopeShortId);
-            KapuaId deviceId = KapuaEid.parseShortId(deviceShortId);
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceShortId);
             DevicePackageDownloadOperation downloadOperation = deviceManagementService.downloadStatus(scopeId, deviceId, null);
 
             GwtPackageDownloadOperation gwtDownloadOperation = new GwtPackageDownloadOperation();
 
-            gwtDownloadOperation.setId(downloadOperation.getId().getShortId());
+            gwtDownloadOperation.setId(downloadOperation.getId().toCompactId());
             gwtDownloadOperation.setStatus(downloadOperation.getStatus().name());
             gwtDownloadOperation.setSize(downloadOperation.getSize());
             gwtDownloadOperation.setProgress(downloadOperation.getProgress());
@@ -217,8 +217,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         //
         // Do install
         try {
-            KapuaId scopeId = KapuaEid.parseShortId(gwtPackageUninstallRequest.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtPackageUninstallRequest.getDeviceId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtPackageUninstallRequest.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtPackageUninstallRequest.getDeviceId());
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DevicePackageFactory devicePackageFactory = locator.getFactory(DevicePackageFactory.class);
@@ -253,8 +253,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceConfigurationManagementService deviceConfiguratiomManagementService = locator.getService(DeviceConfigurationManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(device.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(device.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(device.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(device.getId());
             DeviceConfiguration deviceConfigurations = deviceConfiguratiomManagementService.get(scopeId,
                     deviceId,
                     null,
@@ -402,8 +402,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
         // execute the update
         try {
-            KapuaId scopeId = KapuaEid.parseShortId(gwtDevice.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtDevice.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtDevice.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtDevice.getId());
             deviceConfigurationManagementService.put(scopeId,
                     deviceId,
                     compConfig,
@@ -432,8 +432,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceSnapshotManagementService deviceSnapshotManagementService = locator.getService(DeviceSnapshotManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtDevice.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtDevice.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtDevice.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtDevice.getId());
             DeviceSnapshots snapshotIds = deviceSnapshotManagementService.get(scopeId,
                     deviceId,
                     null);
@@ -476,8 +476,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceSnapshotManagementService deviceService = locator.getService(DeviceSnapshotManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtDevice.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtDevice.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtDevice.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtDevice.getId());
             deviceService.rollback(scopeId,
                     deviceId,
                     String.valueOf(snapshot.getSnapshotId()),
@@ -501,8 +501,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceBundleManagementService deviceBundleManagementService = locator.getService(DeviceBundleManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(device.getScopeId());
-            KapuaId id = KapuaEid.parseShortId(device.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(device.getScopeId());
+            KapuaId id = KapuaEid.parseCompactId(device.getId());
             DeviceBundles bundles = deviceBundleManagementService.get(scopeId,
                     id,
                     null);
@@ -534,8 +534,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceBundleManagementService deviceBundleManagementService = locator.getService(DeviceBundleManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(device.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(device.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(device.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(device.getId());
             deviceBundleManagementService.start(scopeId,
                     deviceId,
                     String.valueOf(pair.getId()),
@@ -556,8 +556,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceBundleManagementService deviceBundleManagementService = locator.getService(DeviceBundleManagementService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(device.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(device.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(device.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(device.getId());
             deviceBundleManagementService.stop(scopeId,
                     deviceId,
                     String.valueOf(pair.getId()),
@@ -607,8 +607,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             commandInput.setWorkingDir(gwtCommandInput.getWorkingDir());
             commandInput.setBody(gwtCommandInput.getZipBytes());
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtDevice.getScopeId());
-            KapuaId deviceId = KapuaEid.parseShortId(gwtDevice.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtDevice.getScopeId());
+            KapuaId deviceId = KapuaEid.parseCompactId(gwtDevice.getId());
             DeviceCommandOutput commandOutput = deviceCommandManagementService.exec(scopeId,
                     deviceId,
                     commandInput, null);

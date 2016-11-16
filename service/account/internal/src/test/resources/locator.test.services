@@ -18,6 +18,4 @@ org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory
 org.eclipse.kapua.service.authorization.AuthorizationService
 org.eclipse.kapua.service.authorization.permission.PermissionFactory
 org.eclipse.kapua.service.user.UserService
-org.eclipse.kapua.service.generator.id.IdGeneratorService
-org.eclipse.kapua.model.id.KapuaIdFactory
 org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory

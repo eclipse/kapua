@@ -45,14 +45,14 @@ public class KapuaGwtConverter {
             throws KapuaException {
         GwtAccount gwtAccount = new GwtAccount();
 
-        gwtAccount.setId(account.getId().getShortId());
+        gwtAccount.setId(account.getId().toCompactId());
         gwtAccount.setName(account.getName());
         gwtAccount.setCreatedOn(account.getCreatedOn());
-        gwtAccount.setCreatedBy(account.getCreatedBy().getShortId());
+        gwtAccount.setCreatedBy(account.getCreatedBy().toCompactId());
         gwtAccount.setModifiedOn(account.getModifiedOn());
-        gwtAccount.setModifiedBy(account.getModifiedBy().getShortId());
+        gwtAccount.setModifiedBy(account.getModifiedBy().toCompactId());
         gwtAccount.setGwtOrganization(convert(account.getOrganization()));
-        gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().getShortId() : null);
+        gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().toCompactId() : null);
         gwtAccount.setOptlock(account.getOptlock());
 
         try {
@@ -90,8 +90,8 @@ public class KapuaGwtConverter {
 
         GwtUser gwtUser = new GwtUser();
 
-        gwtUser.setId(user.getId().getShortId());
-        gwtUser.setScopeId(user.getScopeId().getShortId());
+        gwtUser.setId(user.getId().toCompactId());
+        gwtUser.setScopeId(user.getScopeId().toCompactId());
         gwtUser.setUsername(user.getName());
         gwtUser.setCreatedOn(user.getCreatedOn());
         gwtUser.setModifiedOn(user.getModifiedOn());
@@ -99,8 +99,8 @@ public class KapuaGwtConverter {
         gwtUser.setEmail(user.getEmail());
         gwtUser.setPhoneNumber(user.getPhoneNumber());
         gwtUser.setStatus(user.getStatus().name());
-        gwtUser.setCreatedBy(user.getCreatedBy().getShortId());
-        gwtUser.setModifiedBy(user.getModifiedBy().getShortId());
+        gwtUser.setCreatedBy(user.getCreatedBy().toCompactId());
+        gwtUser.setModifiedBy(user.getModifiedBy().toCompactId());
         gwtUser.setOptlock(user.getOptlock());
         return gwtUser;
     }
@@ -108,8 +108,8 @@ public class KapuaGwtConverter {
     public static GwtDevice convert(Device device)
             throws KapuaException {
         GwtDevice gwtDevice = new GwtDevice();
-        gwtDevice.setId(device.getId().getShortId());
-        gwtDevice.setScopeId(device.getScopeId().getShortId());
+        gwtDevice.setId(device.getId().toCompactId());
+        gwtDevice.setScopeId(device.getScopeId().toCompactId());
         gwtDevice.setGwtDeviceStatus(device.getStatus().toString());
         gwtDevice.setClientId(device.getClientId());
         gwtDevice.setDisplayName(device.getDisplayName());
@@ -160,14 +160,14 @@ public class KapuaGwtConverter {
 
             gwtDevice.setGwtDeviceConnectionStatus(connection.getStatus().toString());
             gwtDevice.setConnectionIp(connection.getClientIp());
-            gwtDevice.setDeviceUserId(connection.getUserId().getShortId());
+            gwtDevice.setDeviceUserId(connection.getUserId().toCompactId());
         }
         return gwtDevice;
     }
 
     public static GwtDeviceEvent convert(DeviceEvent deviceEvent) {
         GwtDeviceEvent gwtDeviceEvent = new GwtDeviceEvent();
-        gwtDeviceEvent.setDeviceId(deviceEvent.getDeviceId().getShortId());
+        gwtDeviceEvent.setDeviceId(deviceEvent.getDeviceId().toCompactId());
         gwtDeviceEvent.setSentOn(deviceEvent.getSentOn());
         gwtDeviceEvent.setReceivedOn(deviceEvent.getReceivedOn());
         gwtDeviceEvent.setEventType(deviceEvent.getResource());

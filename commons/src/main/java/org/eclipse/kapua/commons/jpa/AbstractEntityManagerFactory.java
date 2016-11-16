@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  * 
  */
-public abstract class AbstractEntityManagerFactory {
+public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.commons.jpa.EntityManagerFactory
+{
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
