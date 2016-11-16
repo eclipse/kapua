@@ -10,22 +10,33 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authentication.shiro.setting;
 
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
+import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
- * Username password {@link UsernamePasswordCredentialsFactory} factory implementation.
+ * Crypto setting key
  * 
  * @since 1.0
- * 
+ *
  */
-public class UsernamePasswordCredentialsFactoryImpl implements UsernamePasswordCredentialsFactory
-{
-    @Override
-    public UsernamePasswordCredentials newInstance(String username, char[] password)
-    {
-        return new UsernamePasswordCredentialsImpl(username, password);
+public enum KapuaCryptoSettingKeys implements SettingKey {
+    CRYPTO_KEY("crypto.key"), //
+
+    CRYPTO_BCRYPT_LOG_ROUNDS("crypto.bCrypt.logRounds"),
+
+    CRYPTO_SHA_ALGORITHM("crypto.sha.algorithm"),
+
+    CRYPTO_SHA_SALT_LENGTH("crypto.sha.salt.length"),
+    ;
+
+    private String key;
+
+    private KapuaCryptoSettingKeys(String key) {
+        this.key = key;
+    }
+
+    public String key() {
+        return key;
     }
 }

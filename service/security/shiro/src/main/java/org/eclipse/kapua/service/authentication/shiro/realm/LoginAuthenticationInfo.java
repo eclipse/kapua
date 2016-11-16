@@ -10,46 +10,46 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro.credential;
+package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.user.User;
 
 /**
- * Kapua {@link SimpleAuthenticationInfo} implementation
+ * Kapua {@link AuthenticationInfo} implementation
  * 
  * @since 1.0
  *
  */
-public class KapuaSimpleAuthenticationInfo extends SimpleAuthenticationInfo
-{
+public class LoginAuthenticationInfo implements AuthenticationInfo {
+
     private static final long serialVersionUID = -8682457531010599453L;
 
-    private User              user;
-    private Credential        credential;
-    private Account           account;
+    private String realmName;
+    private Account account;
+    private User user;
+    private Credential credentials;
 
     /**
      * Constructor
      * 
+     * @param realmName
+     * @param account
      * @param user
      * @param credential
-     * @param account
-     * @param realmName
      */
-    public KapuaSimpleAuthenticationInfo(User user,
-                                         Credential credential,
-                                         Account account,
-                                         String realmName)
-    {
-        super(user.getName(),
-              credential.getCredentialKey(),
-              realmName);
-        this.user = user;
-        this.credential = credential;
+    public LoginAuthenticationInfo(String realmName,
+            Account account,
+            User user,
+            Credential credentials) {
+        this.realmName = realmName;
         this.account = account;
+        this.user = user;
+        this.credentials = credentials;
     }
 
     /**
@@ -57,8 +57,7 @@ public class KapuaSimpleAuthenticationInfo extends SimpleAuthenticationInfo
      * 
      * @return
      */
-    public User getUser()
-    {
+    public User getUser() {
         return user;
     }
 
@@ -67,9 +66,22 @@ public class KapuaSimpleAuthenticationInfo extends SimpleAuthenticationInfo
      * 
      * @return
      */
-    public Account getAccount()
-    {
+    public Account getAccount() {
         return account;
+    }
+
+    public String getRealmName() {
+        return realmName;
+    }
+
+    @Override
+    public PrincipalCollection getPrincipals() {
+        return new SimplePrincipalCollection(getUser(), getRealmName());
+    }
+
+    @Override
+    public Object getCredentials() {
+        return credentials;
     }
 
 }

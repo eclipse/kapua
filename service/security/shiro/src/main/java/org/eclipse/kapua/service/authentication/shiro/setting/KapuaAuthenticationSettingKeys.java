@@ -22,7 +22,14 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_KEY("authentication.key"), //
-    AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after");
+
+    AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after"),//
+
+    AUTHENTICATION_APIKEY_PRE_LENGTH("authentication.apiKey.pre.length"),//
+    AUTHENTICATION_APIKEY_PRE_SEPARATOR("authentication.apiKey.pre.separator"),//
+
+    AUTHENTICATION_APIKEY_KEY_LENGTH("authentication.apiKey.key.length"), //
+    ;
 
     private String key;
 

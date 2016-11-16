@@ -16,8 +16,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentialsFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -40,8 +40,8 @@ public class AuthenticationServiceTest extends AbstractAuthenticationServiceTest
         char[] password = "kapua-password".toCharArray();
 
         KapuaLocator locator = KapuaLocator.getInstance();
-        UsernamePasswordCredentialsFactory usernamePasswordCredentialsFactory = locator.getFactory(UsernamePasswordCredentialsFactory.class);
-        UsernamePasswordCredentials credentialsToken = usernamePasswordCredentialsFactory.newInstance(username, password);
+        CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+        UsernamePasswordCredentials credentialsToken = credentialsFactory.newUsernamePasswordCredentials(username, password);
 
         AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
         authenticationService.login(credentialsToken);

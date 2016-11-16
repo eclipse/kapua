@@ -10,14 +10,13 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro.credential;
+package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
 
 /**
  * BCrypt credential matcher implementation
@@ -25,33 +24,26 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  * òsince 1.0
  * 
  */
-public class BCryptCredentialsMatcher implements CredentialsMatcher
-{
+public class UuidCredentialsMatcher implements CredentialsMatcher {
 
     @Override
-    public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo)
-    {
+    public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
         //
         // Token data
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        String tokenUsername = token.getUsername();
-        String tokenPassword = new String(token.getPassword());
+        AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
+        String tokenTokenId = token.getTokenId();
 
         //
         // Info data
         SimpleAuthenticationInfo info = (SimpleAuthenticationInfo) authenticationInfo;
-        String infoUsername = (String) info.getPrincipals().getPrimaryPrincipal();
-        String infoPassword = (String) info.getCredentials();
+        String infoTokenId = (String) info.getPrincipals().getPrimaryPrincipal();
 
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (tokenUsername.equals(infoUsername)) {
-            if (BCrypt.checkpw(tokenPassword, infoPassword)) {
-                credentialMatch = true;
-
-                // FIXME: if true cache token password for authentication performance improvement
-            }
+        if (tokenTokenId.equals(infoTokenId)) {
+            credentialMatch = true;
+            // FIXME: if true cache token password for authentication performance improvement
         }
 
         return credentialMatch;

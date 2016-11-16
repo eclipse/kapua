@@ -20,42 +20,74 @@ import org.eclipse.kapua.KapuaErrorCode;
  * since 1.0
  * 
  */
-public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode
-{
-    /**
-     * Invalid credentials provided
-     */
-    INVALID_CREDENTIALS_TOKEN_PROVIDED,
+public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
     /**
      * User already logged
      */
     SUBJECT_ALREADY_LOGGED,
+
     /**
-     * Invalid username
+     * Invalid credentials provided
      */
-    INVALID_USERNAME,
-    /**
-     * Invalid credentials
-     */
-    INVALID_CREDENTIALS,
-    /**
-     * Expired credentials
-     */
-    EXPIRED_CREDENTIALS,
-    /**
-     * User locked
-     */
-    LOCKED_USERNAME,
-    /**
-     * User disabled
-     */
-    DISABLED_USERNAME,
+    INVALID_CREDENTIALS_TYPE_PROVIDED,
+
     /**
      * Authentication error
      */
     AUTHENTICATION_ERROR,
+
     /**
      * Credential crypt error
      */
-    CREDENTIAL_CRYPT_ERROR
+    CREDENTIAL_CRYPT_ERROR,
+
+    /**
+     * Login credential not found
+     */
+    UNKNOWN_LOGIN_CREDENTIAL,
+
+    /**
+     * Login credentials invalid
+     */
+    INVALID_LOGIN_CREDENTIALS,
+
+    /**
+     * Login credentials expired
+     */
+    EXPIRED_LOGIN_CREDENTIALS,
+
+    /**
+     * Login credentials locked
+     */
+    LOCKED_LOGIN_CREDENTIAL,
+
+    /**
+     * Login credentials disabled
+     */
+    DISABLED_LOGIN_CREDENTIAL,
+
+    /**
+     * Session credential not found
+     */
+    UNKNOWN_SESSION_CREDENTIAL,
+
+    /**
+     * Session credentials invalid
+     */
+    INVALID_SESSION_CREDENTIALS,
+
+    /**
+     * Session credentials expired
+     */
+    EXPIRED_SESSION_CREDENTIALS,
+
+    /**
+     * Session credentials locked
+     */
+    LOCKED_SESSION_CREDENTIAL,
+
+    /**
+     * Session credentials disabled
+     */
+    DISABLED_SESSION_CREDENTIAL,
 }

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
+import java.util.Date;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -276,12 +278,42 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     }
 
     @Override
-    public AccessToken findByTokenId(KapuaId scopeId, KapuaId tokenId)
+    public AccessToken findByTokenId(String tokenId)
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(tokenId, "tokenId");
+
+        //
+        // Do the find
+        AccessToken accessToken = null;
+        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
+        try {
+            accessToken = AccessTokenDAO.findByTokenId(em, tokenId);
+        } catch (Exception e) {
+            throw KapuaExceptionUtils.convertPersistenceException(e);
+        } finally {
+            em.close();
+        }
+
+        //
+        // Check Access
+        if (accessToken != null) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+            authorizationService.checkPermission(permissionFactory.newPermission(AccessTokenDomain.ACCESS_TOKEN, Actions.read, accessToken.getId()));
+        }
+
+        return accessToken;
+    }
+
+    @Override
+    public void invalidate(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
+        //
+        // Validation of the fields
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(accessTokenId, "accessTokenId");
 
         //
         // Check Access
@@ -291,20 +323,22 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         authorizationService.checkPermission(permissionFactory.newPermission(AccessTokenDomain.ACCESS_TOKEN, Actions.read, scopeId));
 
         //
-        // Build query
-        AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<KapuaId>(AccessTokenPredicates.TOKEN_ID, tokenId);
-        query.setPredicate(predicate);
-
-        //
-        // Query and return result
+        // Do find
         AccessToken accessToken = null;
-        AccessTokenListResult result = query(query);
-        if (result.getSize() == 1) {
-            accessToken = result.getItem(0);
+        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
+        try {
+            em.beginTransaction();
+
+            accessToken = AccessTokenDAO.find(em, accessTokenId);
+            accessToken.setExpiresOn(new Date());
+            AccessTokenDAO.update(em, accessToken);
+
+            em.commit();
+        } catch (Exception pe) {
+            em.rollback();
+            throw KapuaExceptionUtils.convertPersistenceException(pe);
+        } finally {
+            em.close();
         }
-
-        return accessToken;
     }
-
 }

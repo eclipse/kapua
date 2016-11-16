@@ -88,6 +88,17 @@ public class AccessTokenDAO extends ServiceDAO {
     }
 
     /**
+     * Find the access token by the token string id
+     * 
+     * @param em
+     * @param tokenId
+     * @return
+     */
+    public static AccessToken findByTokenId(EntityManager em, String tokenId) {
+        return ServiceDAO.findByField(em, AccessToken.class, "tokenId", tokenId);
+    }
+
+    /**
      * Return the access token list matching the provided query
      * 
      * @param em
@@ -112,5 +123,4 @@ public class AccessTokenDAO extends ServiceDAO {
             throws KapuaException {
         return ServiceDAO.count(em, AccessToken.class, AccessTokenImpl.class, accessTokenQuery);
     }
-
 }
