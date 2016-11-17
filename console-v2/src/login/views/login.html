@@ -33,11 +33,12 @@
                 </div>
                 <span class="help-block"> Forgot <a href="#" tabindex="5">username</a> or <a href="#" tabindex="6">password</a>?</span>
               </div>
-              <div class="col-xs-4 col-sm-4 col-md-4 submit">
-                <button type="submit" class="btn btn-primary btn-lg pull-right" tabindex="4" ng-disabled="!(vm.loginData.username && vm.loginData.password)">Log In</button>
+              <div class="col-xs-4 col-sm-4 col-md-4">
+                <button type="submit" class="btn btn-primary btn-lg pull-right" tabindex="5" ng-disabled="!(vm.loginData.username && vm.loginData.password)">Log In</button>
               </div>
             </div>
           </form>
+          <button class="btn btn-default" ng-click="vm.doSSOLogin()">SSO Login</button>
         </div>
         <!--/.col-*-->
         <div class="col-sm-5 col-md-6 col-lg-7" id="details">
