@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 public interface ApiKeyCredentials extends LoginCredentials {
 
     /**
-     * return the username
+     * return the api key
      * 
      * @return
      */
@@ -38,9 +38,9 @@ public interface ApiKeyCredentials extends LoginCredentials {
     public String getApiKey();
 
     /**
-     * Set the username
+     * Set the api key
      * 
-     * @param username
+     * @param apiKey
      */
     public void setApiKey(String apiKey);
 }
