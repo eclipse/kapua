@@ -26,6 +26,15 @@ public class AuthenticationXmlRegistry {
     }
 
     /**
+     * Creates a new {@link JwtCredentials} instance
+     * 
+     * @return
+     */
+    public JwtCredentials newJwtCredentials() {
+        return credentialsFactory.newJwtCredentials(null);
+    }
+
+    /**
      * Creates a new {@link AccessTokenCredentials} instance
      * 
      * @return
