@@ -22,7 +22,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum KapuaApiSettingKeys implements SettingKey {
     API_KEY("api.key"), //
-    API_AUTHENTICATION_HEADER_ACCESS_TOKEN_NAME("X-Access-Token")//
+    API_AUTHENTICATION_HEADER_ACCESS_TOKEN_NAME("api.authentication.header.accessToken.name")//
     ;
 
     private String key;
