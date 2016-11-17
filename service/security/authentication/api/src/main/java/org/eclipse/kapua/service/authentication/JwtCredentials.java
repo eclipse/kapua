@@ -42,5 +42,5 @@ public interface JwtCredentials extends LoginCredentials {
      * 
      * @param jwt
      */
-    public void setApiKey(String jwt);
+    public void setJwt(String jwt);
 }

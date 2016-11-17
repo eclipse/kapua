@@ -17,6 +17,7 @@ import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
 @TestService
@@ -28,13 +29,18 @@ public class CredentialsFactoryMock implements CredentialsFactory {
     }
 
     @Override
-    public AccessTokenCredentials newAccessTokenCredentials(String tokenId) {
-        return new AccessTokenCredentialsMock(tokenId);
+    public JwtCredentials newJwtCredentials(String jwt) {
+        return new JwtCredentialsMock(jwt);
     }
 
     @Override
     public ApiKeyCredentials newApiKeyCredentials(String apiKey) {
         return new ApiKeyCredentialsMock(apiKey);
+    }
+
+    @Override
+    public AccessTokenCredentials newAccessTokenCredentials(String tokenId) {
+        return new AccessTokenCredentialsMock(tokenId);
     }
 
 }

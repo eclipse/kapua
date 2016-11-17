@@ -30,10 +30,6 @@ public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken imple
     private String username;
     private char[] password;
 
-    private UsernamePasswordCredentialsImpl() {
-        super();
-    }
-
     /**
      * Constructor
      * 
@@ -41,7 +37,6 @@ public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken imple
      * @param password
      */
     public UsernamePasswordCredentialsImpl(String username, char[] password) {
-        this();
         this.username = username;
         this.password = password;
     }

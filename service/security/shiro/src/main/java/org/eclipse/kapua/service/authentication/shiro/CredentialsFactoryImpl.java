@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
 /**
@@ -33,6 +34,11 @@ public class CredentialsFactoryImpl implements CredentialsFactory {
     @Override
     public ApiKeyCredentials newApiKeyCredentials(String apiKey) {
         return new ApiKeyCredentialsImpl(apiKey);
+    }
+
+    @Override
+    public JwtCredentials newJwtCredentials(String jwt) {
+        return new JwtCredentialsImpl(jwt);
     }
 
     @Override
