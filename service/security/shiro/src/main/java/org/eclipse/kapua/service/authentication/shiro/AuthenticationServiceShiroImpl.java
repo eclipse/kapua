@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -339,14 +338,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         AccessToken accessToken;
         try {
-            accessToken = KapuaSecurityUtils.doPriviledge(new Callable<AccessToken>() {
-
-                @Override
-                public AccessToken call()
-                        throws Exception {
-                    return accessTokenService.create(accessTokenCreator);
-                }
-            });
+            accessToken = KapuaSecurityUtils.doPriviledge(() -> accessTokenService.create(accessTokenCreator));
         } catch (Exception e) {
             throw KapuaAuthenticationException.internalError(e);
         }
@@ -356,9 +348,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private void enstablishSession(Subject subject, AccessToken accessToken) {
         KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getUserId());
-
         KapuaSecurityUtils.setSession(kapuaSession);
-
         subject.getSession().setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);
     }
 
