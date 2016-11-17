@@ -71,4 +71,16 @@ public class Authentication extends AbstractKapuaResource {
         }
         return accessToken;
     }
+
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("/logout")
+    public void logout() {
+        try {
+            authenticationService.logout();
+        } catch (Throwable t) {
+            handleException(t);
+        }
+    }
 }
