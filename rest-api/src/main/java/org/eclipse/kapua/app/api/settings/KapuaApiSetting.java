@@ -22,7 +22,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  */
 public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
 
-    private static final String API_SETTING_RESOURCE = "kapua-api-setting.properties";
+    private static final String API_SETTING_RESOURCE = "kapua-api-settings.properties";
 
     private static final KapuaApiSetting instance = new KapuaApiSetting();
 

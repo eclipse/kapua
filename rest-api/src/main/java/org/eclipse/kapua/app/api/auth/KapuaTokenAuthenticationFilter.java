@@ -16,9 +16,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.app.api.settings.KapuaApiSetting;
 import org.eclipse.kapua.app.api.settings.KapuaApiSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -26,6 +28,17 @@ import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 
 public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
+
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        try {
+            return executeLogin(request, response);
+        } catch (AuthenticationException ae) {
+            return onLoginFailure(null, ae, request, response);
+        } catch (Exception e) {
+            throw KapuaRuntimeException.internalError(e);
+        }
+    }
 
     @Override
     protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) {
@@ -50,13 +63,8 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        // if (log.isDebugEnabled()) {
-        // log.debug("Authentication required: sending 401 Authentication challenge response.");
-        // }
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        // String authcHeader = getAuthcScheme() + " realm=\"" + getApplicationName() + "\"";
-        // httpResponse.setHeader(AUTHENTICATE_HEADER, authcHeader);
         return false;
     }
 
