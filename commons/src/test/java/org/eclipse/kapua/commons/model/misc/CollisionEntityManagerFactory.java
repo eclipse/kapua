@@ -25,7 +25,7 @@ public class CollisionEntityManagerFactory extends AbstractEntityManagerFactory
     @SuppressWarnings("unused")
     private static final Logger LOG = LoggerFactory.getLogger(CollisionEntityManagerFactory.class);
 
-    private static final String              PERSISTENCE_UNIT_NAME = "kapua-commons";
+    private static final String              PERSISTENCE_UNIT_NAME = "kapua-commons-unit-test";
     private static final String              DATASOURCE_NAME       = "kapua-dbpool";
     private static final Map<String, String> uniqueConstraints     = new HashMap<>();
 
