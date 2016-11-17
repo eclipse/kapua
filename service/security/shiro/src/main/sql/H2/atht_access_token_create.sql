@@ -19,7 +19,7 @@ CREATE TABLE atht_access_token (
   modified_by            	BIGINT(21)    UNSIGNED,
   
   user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
-  token_id					VARCHAR(64)	  NOT NULL,
+  token_id					TEXT	      NOT NULL,
   expires_on				TIMESTAMP(3)  NOT NULL,
   
   optlock               	INT UNSIGNED,
@@ -31,4 +31,3 @@ CREATE TABLE atht_access_token (
 
 CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
 CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
-CREATE UNIQUE INDEX idx_atht_access_token_token_id ON atht_access_token (scope_id, token_id);
