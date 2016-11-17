@@ -16,7 +16,11 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+
+import com.auth0.jwt.JWTVerifier;
 
 /**
  * {@link AccessTokenCredentials} credential matcher implementation
@@ -40,10 +44,20 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (infoCredential.getTokenId().equals(tokenTokenId)) {
-            credentialMatch = true;
+        if (tokenTokenId.equals(infoCredential.getTokenId())) {
+            KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
+            String secret = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_JWT_SECRET);
+            try {
+                final JWTVerifier verifier = new JWTVerifier(secret);
+                verifier.verify(tokenTokenId);
 
-            // FIXME: if true cache token password for authentication performance improvement
+                credentialMatch = true;
+
+                // FIXME: if true cache token password for authentication performance improvement
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         return credentialMatch;

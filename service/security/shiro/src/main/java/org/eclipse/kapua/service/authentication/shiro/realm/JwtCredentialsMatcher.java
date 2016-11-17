@@ -27,40 +27,8 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
-        // //
-        // // Token data
-        // ApiKeyCredentialsImpl tokenApiKey = (ApiKeyCredentialsImpl) authenticationToken.getCredentials();
-        // String tokenApiFullKey = tokenApiKey.getApiKey();
-        //
-        // //
-        // // Info data
-        // LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
-        // Credential infoCredential = (Credential) info.getCredentials();
-        //
-        // //
-        // // Match token with info
-        // boolean credentialMatch = false;
-        // if (CredentialType.API_KEY.equals(infoCredential.getCredentialType())) {
-        // String fullApiKey = infoCredential.getCredentialKey();
-        //
-        // KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        //
-        // int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_LENGTH);
-        // String tokenPre = tokenApiFullKey.substring(0, preLength);
-        // String tokenKey = tokenApiFullKey.substring(preLength, tokenApiFullKey.length() - 1);
-        //
-        // String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_SEPARATOR);
-        // String infoPre = fullApiKey.split(preSeparator)[0];
-        // String infoHashedKey = fullApiKey.split(preSeparator)[1];
-        //
-        // if (tokenPre.equals(infoPre) && BCrypt.checkpw(tokenKey, infoHashedKey)) {
-        // credentialMatch = true;
-        //
-        // // FIXME: if true cache token password for authentication performance improvement
-        // }
-        // }
-        //
-        // return credentialMatch;
+
+        // Issuer iss = new Issuer("https://idp.c2id.com");
 
         return true;
     }

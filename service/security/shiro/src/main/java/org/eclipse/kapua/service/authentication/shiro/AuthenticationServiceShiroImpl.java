@@ -15,7 +15,8 @@ package org.eclipse.kapua.service.authentication.shiro;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -48,6 +49,8 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import com.auth0.jwt.JWTSigner;
 
 /**
  * Authentication service implementation.
@@ -263,10 +266,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
         }
     }
 
-    private String generateToken() {
-        return UUID.randomUUID().toString();
-    }
-
     @Override
     public AccessToken findAccessToken(String tokenId) throws KapuaException {
         AccessToken accessToken = null;
@@ -335,11 +334,14 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
 
         // Retrieve TTL access token
         KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
-        long expireTime = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
-        Date expireDate = new Date(new Date().getTime() + expireTime);
-        String generatedTokenKey = generateToken();
-        AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, userId, generatedTokenKey, expireDate);
+        long ttl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
 
+        // Generate token
+        Date now = new Date();
+        String jwt = generateToken(session, now, ttl);
+
+        // Persist token
+        AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, userId, jwt, new Date(now.getTime() + ttl));
         AccessToken accessToken;
         try {
             accessToken = KapuaSecurityUtils.doPriviledge(() -> accessTokenService.create(accessTokenCreator));
@@ -356,4 +358,33 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
         subject.getSession().setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);
     }
 
+    private String generateToken(Session session, Date now, long ttl) {
+
+        KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
+        String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_JWT_ISSUER);
+
+        //
+        // Reserved claims
+        long issuedAtTime = now.getTime(); // issued at claim
+        long expiresOnTime = issuedAtTime + ttl; // expires claim. In this case the token expires in 60 seconds
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("iss", issuer);
+        claims.put("exp", expiresOnTime);
+        claims.put("iat", issuedAtTime);
+
+        //
+        // Kapua claims
+        KapuaEid scopeId = (KapuaEid) session.getAttribute("scopeId");
+        KapuaEid userId = (KapuaEid) session.getAttribute("userId");
+
+        claims.put("sId", scopeId.getShortId());
+        claims.put("uId", userId.getShortId());
+
+        //
+        // Sign token
+        String secret = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_JWT_SECRET);
+        JWTSigner signer = new JWTSigner(secret);
+        return signer.sign(claims);
+    }
 }
