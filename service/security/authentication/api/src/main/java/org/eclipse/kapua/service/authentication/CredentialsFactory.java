@@ -28,23 +28,38 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      * @param username
      * @param password
      * @return
+     * 
+     * @since 1.0
      */
     public UsernamePasswordCredentials newUsernamePasswordCredentials(String username, char[] password);
 
     /**
-     * Creates a new {@link UsernamePasswordCredentials} instance based on provided username and password
+     * Creates a new {@link ApiKeyCredentials} instance based on provided api key
      * 
-     * @param username
-     * @param password
+     * @param apiKey
      * @return
+     * 
+     * @since 1.0
      */
     public ApiKeyCredentials newApiKeyCredentials(String apiKey);
+
+    /**
+     * Creates a new {@link JwtCredentials} instance based on provided Json Web Token
+     * 
+     * @param jwt
+     * @return
+     * 
+     * @since 1.0
+     */
+    public JwtCredentials newJwtCredentials(String jwt);
 
     /**
      * Creates a new {@link AccessTokenCredentials} instance based on provided tokenId
      * 
      * @param tokenId
      * @return
+     * 
+     * @since 1.0
      */
     public AccessTokenCredentials newAccessTokenCredentials(String tokenId);
 
