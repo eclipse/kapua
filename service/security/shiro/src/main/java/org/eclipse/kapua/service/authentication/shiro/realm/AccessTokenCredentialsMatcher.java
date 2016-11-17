@@ -16,7 +16,6 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
-import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
@@ -31,13 +30,12 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
         //
         // Token data
-        AccessTokenCredentialsImpl tokenApiKey = (AccessTokenCredentialsImpl) authenticationToken.getCredentials();
-        String tokenTokenId = tokenApiKey.getTokenId();
+        String tokenTokenId = (String) authenticationToken.getCredentials();
 
         //
         // Info data
         SessionAuthenticationInfo info = (SessionAuthenticationInfo) authenticationInfo;
-        AccessToken infoCredential = (AccessToken) info.getCredentials();
+        AccessToken infoCredential = info.getAccessToken();
 
         //
         // Match token with info

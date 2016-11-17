@@ -32,7 +32,7 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
     private String realmName;
     private Account account;
     private User user;
-    private AccessToken token;
+    private AccessToken accessToken;
 
     /**
      * Constructor
@@ -40,16 +40,16 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
      * @param realmName
      * @param account
      * @param user
-     * @param token
+     * @param accessToken
      */
     public SessionAuthenticationInfo(String realmName,
             Account account,
             User user,
-            AccessToken token) {
+            AccessToken accessToken) {
         this.realmName = realmName;
         this.account = account;
         this.user = user;
-        this.token = token;
+        this.accessToken = accessToken;
     }
 
     /**
@@ -74,6 +74,10 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
         return realmName;
     }
 
+    public AccessToken getAccessToken() {
+        return accessToken;
+    }
+
     @Override
     public PrincipalCollection getPrincipals() {
         return new SimplePrincipalCollection(getUser(), getRealmName());
@@ -81,7 +85,6 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
 
     @Override
     public Object getCredentials() {
-        return token;
+        return getAccessToken();
     }
-
 }
