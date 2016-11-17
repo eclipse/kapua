@@ -29,8 +29,14 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 
 public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
+    private static final String OPTIONS = "OPTIONS";
+
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        if (OPTIONS.equals(((HttpServletRequest) request).getMethod())) {
+            return true;
+        }
+
         try {
             return executeLogin(request, response);
         } catch (AuthenticationException ae) {
