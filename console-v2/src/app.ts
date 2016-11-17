@@ -9,6 +9,7 @@ import "angular-patternfly/dist/styles/angular-patternfly.css";
 import "./login/module.ts";
 import "./layout/module.ts";
 import "./welcome/module.ts";
+import "./users/module.ts";
 
 angular.module("app", [
     "ui.router",
@@ -17,7 +18,8 @@ angular.module("app", [
     "LocalStorageModule",
     "app.login",
     "app.layout",
-    "app.welcome"
+    "app.welcome",
+    "app.users"
 ]);
 
 angular.bootstrap(document, ["app"], {

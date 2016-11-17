@@ -31,6 +31,9 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        if (((HttpServletRequest)request).getMethod().equals("OPTIONS")) {
+            return true;
+        }
         try {
             return executeLogin(request, response);
         } catch (AuthenticationException ae) {
