@@ -365,8 +365,16 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService
 
         //
         // Reserved claims
-        long issuedAtTime = now.getTime(); // issued at claim
-        long expiresOnTime = issuedAtTime + ttl; // expires claim. In this case the token expires in 60 seconds
+        /**
+         * NOTE
+         * As per RFC specification, 'iss' and 'exp' MUST be "MUST be a number containing a NumericDate value".
+         * See https://tools.ietf.org/html/rfc7519#page-9
+         * 
+         * NumericDate value is defined here: https://tools.ietf.org/html/rfc7519#page-6
+         * 
+         */
+        long issuedAtTime = now.getTime() / 1000; // Issued at claim
+        long expiresOnTime = issuedAtTime + (ttl / 1000); // Expires claim. In this case the token expires in 60 seconds
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("iss", issuer);
