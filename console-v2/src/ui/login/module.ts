@@ -21,11 +21,11 @@ angular.module("app.login", ["satellizer"])
             $authProvider.oauth2({
                 name: "oauth2",
                 clientId: "console",
-                redirectUri: window.location.origin,
+                redirectUri: window.location.origin + "/oauth/login",
                 authorizationEndpoint: "http://localhost:9090/auth/realms/master/protocol/openid-connect/auth",
                 responseType: "id_token token",
                 nonce: "abcdefg",
-                requiredUrlParams: ["nonce"]
+                requiredUrlParams: ["nonce"],
             });
         }])
     .controller("LoginCtrl", ["$rootScope", "$http", "$state", "localStorageService", "$auth", LoginCtrl]);

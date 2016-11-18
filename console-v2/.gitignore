@@ -9,3 +9,6 @@ typings/
 
 # Final build folder
 dist/
+
+# NPM debug log
+npm-debug.log

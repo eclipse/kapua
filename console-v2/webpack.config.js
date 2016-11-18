@@ -1,11 +1,15 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
+let path = require("path");
 
 module.exports = {
-    entry: "./src/app.ts",
+    entry: {
+        ui: "./src/ui/app.ts",
+        // server: "./src/server/main.ts"
+    },
     output: {
-        filename: "bundle.js",
-        path: "dist"
+        path: path.join(__dirname, "dist"),
+        filename: "[name].js"
     },
     resolve: {
         // Add '.ts' and '.tsx' as a resolvable extension.
@@ -35,7 +39,7 @@ module.exports = {
         //     }
         // ),
         new HtmlWebpackPlugin({
-            template: './src/index.html',
+            template: './src/ui/index.html',
             inject: 'body',
             hash: true
         }),

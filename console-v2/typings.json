@@ -3,6 +3,10 @@
     "angular": "registry:dt/angular#1.5.0+20161101124950",
     "angular-local-storage": "registry:dt/angular-local-storage#0.1.5+20160602154142",
     "angular-ui-router": "registry:dt/angular-ui-router#1.1.5+20160810191828",
-    "jquery": "registry:dt/jquery#1.10.0+20160929162922"
+    "jquery": "registry:dt/jquery#1.10.0+20160929162922",
+    "node": "registry:env/node#6.0.0+20161105011511"
+  },
+  "dependencies": {
+    "express": "registry:npm/express#4.14.0+20160925001530"
   }
 }
