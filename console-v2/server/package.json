@@ -1,0 +1,37 @@
+{
+  "name": "kapua-console-v2-server",
+  "version": "0.0.1",
+  "description": "Kapua console backend",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0",
+    "nodemon": "^1.11.0",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.8",
+    "typings": "^1.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "typings install",
+    "start": "tsc && concurrently \"tsc -w\" \"browser-sync start --server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eclipse/kapua.git"
+  },
+  "keywords": [
+    "kapua",
+    "console",
+    "backend"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eclipse/kapua/issues"
+  },
+  "homepage": "https://github.com/eclipse/kapua#readme"
+}

@@ -3,10 +3,10 @@ var webpack = require('webpack');
 let path = require("path");
 
 module.exports = {
-    entry: "./src/ui/app.ts",
+    entry: "./app.ts",
     output: {
         filename: "bundle.js",
-        path: "dist/ui"
+        path: "dist"
     },
     resolve: {
         // Add '.ts' and '.tsx' as a resolvable extension.
@@ -36,7 +36,7 @@ module.exports = {
         //     }
         // ),
         new HtmlWebpackPlugin({
-            template: './src/ui/index.html',
+            template: './src/index.html',
             inject: 'body',
             hash: true
         }),

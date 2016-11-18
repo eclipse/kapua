@@ -8,9 +8,11 @@
     "angular-local-storage": "^0.5.0",
     "angular-patternfly": "^3.13.0",
     "angular-ui-router": "^0.3.2",
+    "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "ngstorage-webpack": "^2.2.2",
-    "satellizer": "^0.15.5"
+    "satellizer": "^0.15.5",
+    "ts-node": "^1.7.0"
   },
   "devDependencies": {
     "browser-sync": "^2.17.5",

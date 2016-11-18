@@ -1,0 +1,9 @@
+{
+  "globalDependencies": {
+    "node": "registry:env/node#6.0.0+20161105011511"
+  },
+  "dependencies": {
+    "body-parser": "registry:npm/body-parser#1.15.2+20161116154925",
+    "express": "registry:npm/express#4.14.0+20160925001530"
+  }
+}
