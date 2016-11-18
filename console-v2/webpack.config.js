@@ -3,13 +3,10 @@ var webpack = require('webpack');
 let path = require("path");
 
 module.exports = {
-    entry: {
-        ui: "./src/ui/app.ts",
-        // server: "./src/server/main.ts"
-    },
+    entry: "./src/ui/app.ts",
     output: {
-        path: path.join(__dirname, "dist"),
-        filename: "[name].js"
+        filename: "bundle.js",
+        path: "dist/ui"
     },
     resolve: {
         // Add '.ts' and '.tsx' as a resolvable extension.
