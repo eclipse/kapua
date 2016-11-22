@@ -14,16 +14,17 @@ package org.eclipse.kapua.app.api.v1.resources;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.app.api.v1.resources.model.ErrorBean;
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+public abstract class AbstractKapuaResource {
 
-
-public abstract class AbstractKapuaResource 
-{
     private static final Logger s_logger = LoggerFactory.getLogger(AbstractKapuaResource.class);
-    
+
     protected <T> T returnNotNullEntity(T entity) {
         if (entity == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -34,31 +35,39 @@ public abstract class AbstractKapuaResource
     protected void handleException(Throwable t) {
 
         WebApplicationException wae = null;
-        
-        
+        if (t instanceof KapuaAuthenticationException) {
+            KapuaErrorCode kapuaErrorCode = ((KapuaAuthenticationException) t).getCode();
+
+            if (KapuaErrorCodes.INTERNAL_ERROR.equals(kapuaErrorCode)) {
+                wae = new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            } else {
+                wae = new WebApplicationException(Response.Status.UNAUTHORIZED);
+            }
+        }
+
+        else {
+            s_logger.error("Internal Error", t);
+            wae = newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
+        }
         // TODO manage exceptions
         // ...
         ///////
-        
-    	s_logger.error("Internal Error", t);
-        wae = newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
 
         s_logger.debug("Error Processing Request", t);
+
         if (wae != null) {
             throw wae;
         }
     }
-  
-    protected WebApplicationException newWebApplicationException(Throwable t, Response.Status status) 
-    {
+
+    protected WebApplicationException newWebApplicationException(Throwable t, Response.Status status) {
         String message = t.getMessage();
 
         Response response = Response.status(status).entity(new ErrorBean(status, message)).build();
         return new WebApplicationException(response);
     }
-    
-    protected WebApplicationException newWebApplicationException(Response.Status status, String message) 
-    {
+
+    protected WebApplicationException newWebApplicationException(Response.Status status, String message) {
         Response response = Response.status(status).entity(new ErrorBean(status, message)).build();
         return new WebApplicationException(response);
     }

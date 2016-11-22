@@ -12,14 +12,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.jose4j.jwk.HttpsJwks;
-import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -55,23 +70,21 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
         if (jwt.equals(infoCredential.getCredentialKey())) {
             try {
 
-                JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
-                        .setSkipAllValidators()
-                        .setDisableRequireSignature()
-                        .setSkipSignatureVerification()
-                        .build();
-
-                JwtContext jwtContext = firstPassJwtConsumer.process(jwt);
-                HttpsJwks httpsJkws = new HttpsJwks(jwtContext.getJwtClaims().getIssuer() + ".well-known/jwks.json");
+                URI jwksUri = resolveJwksUri(jwt);
+                HttpsJwks httpsJkws = new HttpsJwks(jwksUri.toString());
                 HttpsJwksVerificationKeyResolver httpsJwksKeyResolver = new HttpsJwksVerificationKeyResolver(httpsJkws);
 
                 //
                 // Set validator
+                KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+                List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
+
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setVerificationKeyResolver(httpsJwksKeyResolver) // Set resolver key
                         .setRequireIssuedAt() // Set require reserved claim: iat
                         .setRequireExpirationTime() // Set require reserved claim: exp
                         .setRequireSubject() // // Set require reserved claim: sub
+                        .setExpectedAudience(audiences.toArray(new String[audiences.size()]))
                         .build();
 
                 //
@@ -81,11 +94,54 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 credentialMatch = true;
 
                 // FIXME: if true cache token password for authentication performance improvement
-            } catch (InvalidJwtException | MalformedClaimException e) {
+            } catch (InvalidJwtException e) {
                 logger.error("Error while validating JWT credentials", e);
             }
         }
 
         return credentialMatch;
+    }
+
+    private URI resolveJwksUri(String jwt) {
+
+        try {
+            //
+            // Parse JWT without validation
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setSkipAllValidators()
+                    .setDisableRequireSignature()
+                    .setSkipSignatureVerification()
+                    .build();
+            JwtContext jwtContext = jwtConsumer.process(jwt);
+
+            //
+            // Resolve Json Web Key Set URI by the issuer
+            String issuer = jwtContext.getJwtClaims().getIssuer();
+            if (issuer.endsWith("/")) {
+                issuer = issuer.substring(0, issuer.length() - 1);
+            }
+
+            // Read .well-known file
+            URL url = new URL(issuer + "/.well-known/openid-configuration");
+            URLConnection httpConnection = url.openConnection();
+            BufferedReader inputReader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
+            JsonReader jsonReader = Json.createReader(inputReader);
+            inputReader.close();
+
+            // Parse json response
+            JsonObject jsonObject = jsonReader.readObject();
+
+            // Get and clean jwks_uri property
+            JsonValue jwksUriJsonValue = jsonObject.get("jwks_uri");
+
+            if (jwksUriJsonValue != null) {
+                String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
+                return new URI(jwksUriString);
+            } else {
+                throw KapuaException.internalError("Cannot get the 'jwks_key' property from the .well-known file:" + jsonObject.toString());
+            }
+        } catch (Exception e) {
+            throw KapuaRuntimeException.internalError(e, "Cannot het Json Web Key Set URI");
+        }
     }
 }
