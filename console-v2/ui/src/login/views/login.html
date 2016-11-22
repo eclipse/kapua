@@ -6,7 +6,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-7 col-md-6 col-lg-5" id="login">
-          <form class="form-horizontal" role="form" ng-submit="vm.doLogin(vm.loginData)">
+          <form class="form-horizontal" role="form">
             <div class="form-group">
               <div class="col-sm-10 col-md-10 col-sm-offset-2">
                 <h3>Console login</h3>
@@ -35,7 +35,7 @@
               </div>
               <div class="col-xs-4 col-sm-4 col-md-4">
                 <button class="btn btn-default" ng-click="vm.doSSOLogin()">SSO Login</button>
-                <button type="submit" class="btn btn-primary pull-right" tabindex="5" ng-disabled="!(vm.loginData.username && vm.loginData.password)">Log In</button>
+                <button class="btn btn-primary pull-right" ng-click="vm.doLogin(vm.loginData)" tabindex="5" ng-disabled="!(vm.loginData.username && vm.loginData.password)">Log In</button>
               </div>
             </div>
           </form>
