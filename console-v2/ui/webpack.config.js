@@ -1,6 +1,5 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var webpack = require('webpack');
-let path = require("path");
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var webpack = require("webpack");
 
 module.exports = {
     entry: "./src/app.ts",
@@ -9,12 +8,12 @@ module.exports = {
         path: "dist"
     },
     resolve: {
-        // Add '.ts' and '.tsx' as a resolvable extension.
+        // Add ".ts" and ".tsx" as a resolvable extension.
         extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
     module: {
         loaders: [
-            // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'
+            // all files with a ".ts" or ".tsx" extension will be handled by "ts-loader"
             { test: /\.tsx?$/, loader: "ts" },
             { test: /\.css$/, loader: "style!css" },
             { test: /\.scss$/, loader: "style!css!sass" },
@@ -23,8 +22,9 @@ module.exports = {
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" }, 
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" }, 
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-            { test: /\.(png|jpe?g|gif)$/, loader: 'url?limit=25000' },
-            { test: /\.html$/, exclude: /node_modules/, loader: 'html' }
+            { test: /\.(png|jpe?g|gif)$/, loader: "url?limit=25000" },
+            { test: /\.html$/, exclude: /node_modules/, loader: "html" },
+            { test: /\.json$/, loader: "json" }
         ]
     },
     plugins: [
@@ -36,15 +36,15 @@ module.exports = {
         //     }
         // ),
         new HtmlWebpackPlugin({
-            template: './src/index.html',
-            inject: 'body',
+            template: "./src/index.html",
+            inject: "body",
             hash: true
         }),
         new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery',
-            'window.jquery': 'jquery'
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery",
+            "window.jquery": "jquery"
         })
     ]
 }

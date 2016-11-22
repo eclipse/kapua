@@ -1,12 +1,15 @@
 <div>
-	<div pf-vertical-navigation 
-		 items="vm.navigationItems" 
-		 brand-src="{{:: vm.getLogoImage() }}" 
-		 brand-alt="Kapua" 
-		 show-badges="true"
-		 pinnable-menus="true" 
-		 update-active-items-on-click="true" 
-		 navigate-callback="ctrl.handleNavigateClick">
+	<div pf-vertical-navigation items="vm.navigationItems" brand-src="{{:: vm.getLogoImage() }}" brand-alt="Kapua" show-badges="true"
+		pinnable-menus="true" update-active-items-on-click="true" navigate-callback="ctrl.handleNavigateClick">
+		<div>
+			<ul class="nav navbar-nav navbar-right navbar-iconic">
+				<li>
+					<a class="dropdown-toggle nav-item-iconic" aria-haspopup="true" aria-expanded="true" ng-click="vm.doLogout()">
+						<i class="fa fa-sign-out"></i>
+					</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 	<div class="container-fluid container-cards-pf container-pf-nav-pf-vertical nav-pf-vertical-with-badges">
 		<ui-view name="kapuaView"></ui-view>

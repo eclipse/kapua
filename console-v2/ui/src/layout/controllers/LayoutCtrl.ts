@@ -27,9 +27,18 @@ export default class LayoutCtrl {
         }
     ];
 
-    constructor() { }
+    constructor(private $http: angular.IHttpService,
+        private $state: angular.ui.IStateService,
+        private localStorageService: angular.local.storage.ILocalStorageService,
+        private kapuaConfig) { }
 
     private getLogoImage() {
         return require("../assets/img/logo-white.svg");
+    }
+
+    private doLogout() {
+        this.$http.get(this.kapuaConfig.restApi.baseUrl + "/authentication/logout").then((response: angular.IHttpPromiseCallbackArg<any>) => {
+            this.$state.go("login");
+        });
     }
 }
