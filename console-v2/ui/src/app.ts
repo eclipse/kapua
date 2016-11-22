@@ -20,7 +20,12 @@ angular.module("app", [
     "app.layout",
     "app.welcome",
     "app.users"
-]);
+])
+    .config(["$locationProvider",
+        ($locationProvider: angular.ILocationProvider) => {
+            $locationProvider.html5Mode(true);
+        }])
+    .constant("kapuaConfig", require("./kapua-console.config.json"));
 
 angular.bootstrap(document, ["app"], {
     strictDi: true

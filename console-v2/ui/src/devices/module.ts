@@ -10,7 +10,7 @@ angular.module("app.devices", [])
                 url: "/devices",
                 views: {
                     mainView: {
-                        template: require("./views/devices.html"),
+                        template: require("./views/devices-list.html"),
                         controller: "DevicesListCtrl as vm"
                     }
                 }

@@ -4,6 +4,16 @@
     "angular-local-storage": "registry:dt/angular-local-storage#0.1.5+20160602154142",
     "angular-ui-router": "registry:dt/angular-ui-router#1.1.5+20160810191828",
     "jquery": "registry:dt/jquery#1.10.0+20160929162922",
+    "uglify-js": "registry:dt/uglify-js#2.6.1+20160316155526",
+    "webpack": "registry:dt/webpack#1.12.9+20161025142220"
+  },
+  "dependencies": {
+    "source-map": "registry:npm/source-map#0.4.0+20160723033700"
+  },
+  "globalDevDependencies": {
+    "require": "registry:dt/require#2.1.20+20160919185614",
+    "source-map": "registry:dt/source-map#0.0.0+20161003134342",
+    "uglify-js": "registry:dt/uglify-js#2.6.1+20160316155526",
     "webpack": "registry:dt/webpack#1.12.9+20161025142220"
   }
 }

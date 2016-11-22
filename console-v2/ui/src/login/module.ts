@@ -5,9 +5,11 @@ import LoginCtrl from "./controllers/LoginCtrl";
 import "./assets/styles/login.scss";
 
 angular.module("app.login", ["satellizer"])
-    .config(["$stateProvider", "$authProvider",
+    .constant("kapuaConfig", require("../kapua-console.config.json"))
+    .config(["$stateProvider", "$authProvider", "kapuaConfig",
         ($stateProvider: angular.ui.IStateProvider,
-            $authProvider) => {
+         $authProvider,
+         kapuaConfig) => {
             $stateProvider.state("login", {
                 url: "/login",
                 views: {
@@ -21,11 +23,12 @@ angular.module("app.login", ["satellizer"])
             $authProvider.oauth2({
                 name: "oauth2",
                 clientId: "console",
-                redirectUri: window.location.origin + "/oauth/login",
-                authorizationEndpoint: "http://localhost:9090/auth/realms/master/protocol/openid-connect/auth",
-                responseType: "id_token token",
+                redirectUri: window.location.origin,
+                authorizationEndpoint: kapuaConfig.oauth.authorizationEndpoint,
+                url: window.location.origin + "/oauth/authenticate",
+                responseType: ["code"],
                 nonce: "abcdefg",
                 requiredUrlParams: ["nonce"],
             });
         }])
-    .controller("LoginCtrl", ["$rootScope", "$http", "$state", "localStorageService", "$auth", LoginCtrl]);
+    .controller("LoginCtrl", ["$rootScope", "$http", "$state", "localStorageService", "$auth", "kapuaConfig", LoginCtrl]);

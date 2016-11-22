@@ -1,0 +1,9 @@
+{
+    "oauth": {
+        "tokenEndpoint": "http://localhost:9090/auth/realms/master/protocol/openid-connect/token",
+        "clientId": "console"
+    },
+    "restApi": {
+        "baseUrl": "http://localhost:8080"
+    }
+}
