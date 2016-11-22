@@ -6,6 +6,7 @@ import "angular-patternfly/node_modules/patternfly/dist/css/patternfly.css";
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css";
 import "angular-patternfly/dist/styles/angular-patternfly.css";
 
+import "./constants/module.ts";
 import "./login/module.ts";
 import "./layout/module.ts";
 import "./welcome/module.ts";
@@ -16,6 +17,7 @@ angular.module("app", [
     "patternfly",
     "patternfly.charts",
     "LocalStorageModule",
+    "app.constants",
     "app.login",
     "app.layout",
     "app.welcome",
@@ -24,8 +26,7 @@ angular.module("app", [
     .config(["$locationProvider",
         ($locationProvider: angular.ILocationProvider) => {
             $locationProvider.html5Mode(true);
-        }])
-    .constant("kapuaConfig", require("./kapua-console.config.json"));
+        }]);
 
 angular.bootstrap(document, ["app"], {
     strictDi: true
