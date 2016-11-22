@@ -33,6 +33,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE("authentication.credential.userpass.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_CACHE_TTL("authentication.credential.userpass.cache.ttl"), //
 
+    AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED("authentication.credential.jwt.audience.allowed"), //
     AUTHENTICATION_CREDENTIAL_JWT_CACHE_ENABLE("authentication.credential.jwt.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_JWT_CACHE_CACHE_TTL("authentication.credential.jwt.cache.ttl"), //
 
