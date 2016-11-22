@@ -34,6 +34,7 @@ public class Authentication extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("user")
     public AccessToken loginUsernamePassword(UsernamePasswordCredentials authenticationCredentials) {
         AccessToken accessToken = null;
         try {
