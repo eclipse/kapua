@@ -23,17 +23,19 @@ class Server {
     }
 
     private routes() {
-        let router: express.Router;
-        router = express.Router();
+        let router = express.Router();
+        this.app.use(express.static("ui/dist"));
+
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded());
 
         let oauthLogin: routes.OAuthLogin = new routes.OAuthLogin();
-        router.get("/oauth/login", oauthLogin.oauthLogin);
+        router.post("/oauth/authenticate", oauthLogin.oauthLogin);
 
         let index: routes.Index = new routes.Index();
-        router.get("/", index.index);
+        router.get("*", (req, res, next) => { res.sendFile("index.html", { root: "ui/dist" }); });
 
         this.app.use(router);
-        this.app.use(express.static("dist/ui"));
     }
 }
 
