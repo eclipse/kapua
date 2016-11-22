@@ -37,7 +37,7 @@ export default class LayoutCtrl {
     }
 
     private doLogout() {
-        this.$http.get(this.kapuaConfig.restApi.baseUrl + "/authentication/logout").then((response: angular.IHttpPromiseCallbackArg<any>) => {
+        this.$http.post(this.kapuaConfig.restApi.baseUrl + "/authentication/logout", {}).then((response: angular.IHttpPromiseCallbackArg<any>) => {
             this.$state.go("login");
         });
     }

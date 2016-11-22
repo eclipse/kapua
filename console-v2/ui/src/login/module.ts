@@ -4,8 +4,7 @@ import LoginCtrl from "./controllers/LoginCtrl";
 
 import "./assets/styles/login.scss";
 
-angular.module("app.login", ["satellizer"])
-    .constant("kapuaConfig", require("../kapua-console.config.json"))
+angular.module("app.login", ["satellizer", "app.constants"])
     .config(["$stateProvider", "$authProvider", "kapuaConfig",
         ($stateProvider: angular.ui.IStateProvider,
          $authProvider,
