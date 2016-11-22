@@ -82,8 +82,8 @@ public class CredentialServiceImpl implements CredentialService {
                 SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 
                 KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_LENGTH);
-                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_KEY_LENGTH);
+                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
 
                 byte[] bPre = new byte[preLength];
                 random.nextBytes(bPre);
@@ -344,8 +344,8 @@ public class CredentialServiceImpl implements CredentialService {
             //
             // Build search query
             KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-            int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_LENGTH);
-            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_SEPARATOR);
+            int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
             String apiKeyPreValue = apiKey.substring(0, preLength).concat(preSeparator);
 
             //

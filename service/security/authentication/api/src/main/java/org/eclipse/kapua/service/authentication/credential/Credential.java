@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
-import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -22,11 +22,11 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface Credential extends KapuaEntity {
+public interface Credential extends KapuaUpdatableEntity {
 
     public static final String TYPE = "credential";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

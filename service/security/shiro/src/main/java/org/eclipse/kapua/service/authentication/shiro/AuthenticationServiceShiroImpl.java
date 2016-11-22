@@ -15,8 +15,6 @@ package org.eclipse.kapua.service.authentication.shiro;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -33,6 +31,7 @@ import org.apache.shiro.session.mgt.AbstractSessionManager;
 import org.apache.shiro.session.mgt.AbstractValidatingSessionManager;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -42,15 +41,19 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.utils.RSAUtil;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
+import org.jose4j.jws.AlgorithmIdentifiers;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.NumericDate;
+import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import com.auth0.jwt.JWTSigner;
 
 /**
  * Authentication service implementation.
@@ -71,7 +74,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         // SecurityUtils.setSecurityManager(securityManager);
 
         // Make the SecurityManager instance available to the entire application:
-        Collection<Realm> realms = new ArrayList<Realm>();
+        Collection<Realm> realms = new ArrayList<>();
         try {
             realms.add(new org.eclipse.kapua.service.authentication.shiro.realm.UserPassAuthenticatingRealm());
             realms.add(new org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizingRealm());
@@ -359,38 +362,42 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private String generateToken(Session session, Date now, long ttl) {
 
         KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
-        String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_JWT_ISSUER);
 
         //
+        // Build claims
+        JwtClaims claims = new JwtClaims();
+
         // Reserved claims
-        /**
-         * NOTE
-         * As per RFC specification, 'iss' and 'exp' MUST be "MUST be a number containing a NumericDate value".
-         * See https://tools.ietf.org/html/rfc7519#page-9
-         * 
-         * NumericDate value is defined here: https://tools.ietf.org/html/rfc7519#page-6
-         * 
-         */
-        long issuedAtTime = now.getTime() / 1000; // Issued at claim
-        long expiresOnTime = issuedAtTime + (ttl / 1000); // Expires claim. In this case the token expires in 60 seconds
+        String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
+        Date issuedAtDate = now; // Issued at claim
+        Date expiresOnDate = new Date(now.getTime() + ttl); // Expires claim.
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("iss", issuer);
-        claims.put("exp", expiresOnTime);
-        claims.put("iat", issuedAtTime);
+        claims.setIssuer(issuer);
+        claims.setIssuedAt(NumericDate.fromMilliseconds(issuedAtDate.getTime()));
+        claims.setExpirationTime(NumericDate.fromMilliseconds(expiresOnDate.getTime()));
 
-        //
         // Kapua claims
         KapuaEid scopeId = (KapuaEid) session.getAttribute("scopeId");
         KapuaEid userId = (KapuaEid) session.getAttribute("userId");
 
-        claims.put("sId", scopeId.getShortId());
-        claims.put("uId", userId.getShortId());
+        // Jwts.builder().setIssuer(issuer)
+        // .setIssuedAt(issuedAtDate)
+        // .setExpiration(new Date(expiresOnDate))
+        // .setSubject(userId.getShortId()).claims.setClaim("sId", scopeId.getShortId());
+        claims.setSubject(userId.getShortId());
+        claims.setClaim("sId", scopeId.getShortId());
 
-        //
-        // Sign token
-        String secret = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_JWT_SECRET);
-        JWTSigner signer = new JWTSigner(secret);
-        return signer.sign(claims);
+        String jwt = null;
+        try {
+            JsonWebSignature jws = new JsonWebSignature();
+            jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
+            jws.setPayload(claims.toJson());
+            jws.setKey(RSAUtil.getPrivateKey());
+
+            jwt = jws.getCompactSerialization();
+        } catch (JoseException e) {
+            KapuaRuntimeException.internalError(e);
+        }
+        return jwt;
     }
 }

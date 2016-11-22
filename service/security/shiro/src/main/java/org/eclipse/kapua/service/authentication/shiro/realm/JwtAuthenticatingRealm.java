@@ -33,7 +33,9 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
-import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -82,35 +84,13 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
         KapuaLocator locator;
         UserService userService;
         AccountService accountService;
-        CredentialService credentialService;
-
         try {
             locator = KapuaLocator.getInstance();
             userService = locator.getService(UserService.class);
             accountService = locator.getService(AccountService.class);
-            credentialService = locator.getService(CredentialService.class);
         } catch (KapuaRuntimeException kre) {
             throw new ShiroException("Error while getting services!", kre);
         }
-
-        // //
-        // // Find credentials
-        // // FIXME: manage multiple credentials and multiple credentials type
-        // final Credential credential;
-        // try {
-        // credential = KapuaSecurityUtils.doPriviledge(() -> {
-        // return credentialService.findByApiKey(jwt);
-        // });
-        // } catch (AuthenticationException ae) {
-        // throw ae;
-        // } catch (Exception e) {
-        // throw new ShiroException("Error while find credentials!", e);
-        // }
-        //
-        // // Check existence
-        // if (credential == null) {
-        // throw new UnknownAccountException();
-        // }
 
         //
         // Get the associated user by name
@@ -150,11 +130,15 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         //
-        // BuildAuthenticationInfo
+        // Create credential
+        Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt);
+
+        //
+        // Build AuthenticationInfo
         return new LoginAuthenticationInfo(getName(),
                 account,
                 user,
-                null);
+                credential);
     }
 
     @Override

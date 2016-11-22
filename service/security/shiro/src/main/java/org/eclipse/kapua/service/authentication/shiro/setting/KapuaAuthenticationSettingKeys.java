@@ -25,13 +25,22 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
 
     AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after"),//
 
-    AUTHENTICATION_TOKEN_JWT_SECRET("authentication.token.jwt.secret"),//
-    AUTHENTICATION_TOKEN_JWT_ISSUER("authentication.token.jwt.issuer"),//
+    // AUTHENTICATION_TOKEN_JWT_SECRET("authentication.token.jwt.secret"),//
+    AUTHENTICATION_SESSION_JWT_ISSUER("authentication.session.jwt.issuer"),//
+    AUTHENTICATION_SESSION_JWT_CACHE_ENABLE("authentication.session.jwt.cache.enabled"), //
+    AUTHENTICATION_SESSION_JWT_CACHE_CACHE_TTL("authentication.session.jwt.cache.ttl"), //
 
-    AUTHENTICATION_APIKEY_PRE_LENGTH("authentication.apiKey.pre.length"),//
-    AUTHENTICATION_APIKEY_PRE_SEPARATOR("authentication.apiKey.pre.separator"),//
+    AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE("authentication.credential.userpass.cache.enabled"), //
+    AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_CACHE_TTL("authentication.credential.userpass.cache.ttl"), //
 
-    AUTHENTICATION_APIKEY_KEY_LENGTH("authentication.apiKey.key.length"), //
+    AUTHENTICATION_CREDENTIAL_JWT_CACHE_ENABLE("authentication.credential.jwt.cache.enabled"), //
+    AUTHENTICATION_CREDENTIAL_JWT_CACHE_CACHE_TTL("authentication.credential.jwt.cache.ttl"), //
+
+    AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH("authentication.credential.apiKey.pre.length"),//
+    AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR("authentication.credential.apiKey.pre.separator"),//
+    AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH("authentication.credential.apiKey.key.length"), //
+    AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_ENABLE("authentication.credential.apiKey.cache.enabled"), //
+    AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_TTL("authentication.credential.apiKey.cache.ttl"), //
     ;
 
     private String key;

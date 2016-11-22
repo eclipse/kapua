@@ -18,9 +18,13 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.utils.RSAUtil;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-
-import com.auth0.jwt.JWTVerifier;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link AccessTokenCredentials} credential matcher implementation
@@ -30,11 +34,13 @@ import com.auth0.jwt.JWTVerifier;
  */
 public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
+    private static Logger logger = LoggerFactory.getLogger(AccessTokenCredentialsMatcher.class);
+
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
         //
         // Token data
-        String tokenTokenId = (String) authenticationToken.getCredentials();
+        String jwt = (String) authenticationToken.getCredentials();
 
         //
         // Info data
@@ -44,19 +50,30 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (tokenTokenId.equals(infoCredential.getTokenId())) {
+        if (jwt.equals(infoCredential.getTokenId())) {
             KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
-            String secret = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_JWT_SECRET);
             try {
-                final JWTVerifier verifier = new JWTVerifier(secret);
-                verifier.verify(tokenTokenId);
+                String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
+
+                //
+                // Set validator
+                JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                        .setVerificationKey(RSAUtil.getPublicKey()) // Set public key
+                        .setExpectedIssuer(issuer) // Set expected issuer
+                        .setRequireIssuedAt() // Set require reserved claim: iat
+                        .setRequireExpirationTime() // Set require reserved claim: exp
+                        .setRequireSubject() // // Set require reserved claim: sub
+                        .build();
+
+                //
+                // This validates JWT
+                jwtConsumer.processToClaims(jwt);
 
                 credentialMatch = true;
 
                 // FIXME: if true cache token password for authentication performance improvement
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (InvalidJwtException e) {
+                logger.error("Error while validating JWT access token", e);
             }
         }
 
