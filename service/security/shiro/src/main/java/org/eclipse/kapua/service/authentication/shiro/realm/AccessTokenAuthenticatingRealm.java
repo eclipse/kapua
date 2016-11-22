@@ -22,7 +22,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
@@ -66,8 +65,19 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
     public AccessTokenAuthenticatingRealm() throws KapuaException {
         setName(REALM_NAME);
 
-        CredentialsMatcher credentialsMather = new AccessTokenCredentialsMatcher();
-        setCredentialsMatcher(credentialsMather);
+        // Credential matcher for access tokens
+        setCredentialsMatcher(new AccessTokenCredentialsMatcher());
+
+        // // Access token caching
+        // KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
+        // boolean cachingEnabled = settings.getBoolean(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_CACHE_ENABLE);
+        //
+        // setCachingEnabled(cachingEnabled);
+        //
+        // if (cachingEnabled) {
+        //
+        //// setCacheManager(cacheManager);
+        // }
     }
 
     @Override
@@ -98,9 +108,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         // Find accessToken
         final AccessToken accessToken;
         try {
-            accessToken = KapuaSecurityUtils.doPriviledge(() -> {
-                return accessTokenService.findByTokenId(tokenTokenId);
-            });
+            accessToken = KapuaSecurityUtils.doPriviledge(() -> accessTokenService.findByTokenId(tokenTokenId));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {

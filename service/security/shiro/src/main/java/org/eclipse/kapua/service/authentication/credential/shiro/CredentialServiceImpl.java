@@ -80,11 +80,70 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(credentialDomain, Actions.write, credentialCreator.getScopeId()));
 
-        if (countExistingCredentials(credentialCreator.getCredentialType(), credentialCreator.getScopeId(), credentialCreator.getUserId()) > 0) {
-            throw new KapuaExistingCredentialException(CredentialType.PASSWORD, credentialCreator.getUserId().toCompactId());
-        } catch (Exception pe) {
+        //
+        // Do create
+        Credential credential = null;
+        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
+        try {
+            em.beginTransaction();
 
-        return entityManagerSession.onTransactedInsert(em -> CredentialDAO.create(em, credentialCreator));
+            //
+            // Do pre persist magic on key values
+            String fullKey = null;
+            switch (credentialCreator.getCredentialType()) {
+            case API_KEY: // Generate new api key
+                SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+
+                KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_LENGTH);
+                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_KEY_LENGTH);
+
+                byte[] bPre = new byte[preLength];
+                random.nextBytes(bPre);
+                String pre = Base64.encodeToString(bPre);
+
+                byte[] bKey = new byte[keyLength];
+                random.nextBytes(bKey);
+                String key = Base64.encodeToString(bKey);
+
+                fullKey = pre + key;
+
+                credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
+                        credentialCreator.getUserId(),
+                        credentialCreator.getCredentialType(),
+                        fullKey);
+
+                break;
+            case PASSWORD:
+            default:
+                // Don't do nothing special
+                break;
+
+            }
+
+            credential = CredentialDAO.create(em, credentialCreator);
+            credential = CredentialDAO.find(em, credential.getId());
+
+            em.commit();
+
+            //
+            // Do post persist magic on key values
+            switch (credentialCreator.getCredentialType()) {
+            case API_KEY:
+                credential.setCredentialKey(fullKey);
+                break;
+            case PASSWORD:
+            default:
+                credential.setCredentialKey(fullKey);
+            }
+        } catch (Exception pe) {
+            em.rollback();
+            throw KapuaExceptionUtils.convertPersistenceException(pe);
+        } finally {
+            em.close();
+        }
+
+        return credential;
     }
 
     @Override
@@ -137,7 +196,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         authorizationService.checkPermission(permissionFactory.newPermission(credentialDomain, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> CredentialDAO.find(em, credentialId));
-        }
+    }
 
     @Override
     public CredentialListResult query(KapuaQuery<Credential> query)
@@ -239,8 +298,8 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
             //
             // Build search query
             KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-            int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_LENGTH);
-            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_SEPARATOR);
+            int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
             String apiKeyPreValue = apiKey.substring(0, preLength).concat(preSeparator);
 
             //

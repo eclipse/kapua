@@ -96,9 +96,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         // FIXME: manage multiple credentials and multiple credentials type
         final Credential credential;
         try {
-            credential = KapuaSecurityUtils.doPriviledge(() -> {
-                return credentialService.findByApiKey(tokenApiKey);
-            });
+            credential = KapuaSecurityUtils.doPriviledge(() -> credentialService.findByApiKey(tokenApiKey));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {

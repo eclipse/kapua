@@ -41,7 +41,7 @@ public interface Credential extends KapuaUpdatableEntity
 {
     public static final String TYPE = "credential";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 
