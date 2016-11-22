@@ -56,10 +56,11 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
     private static Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
 
+    // FIXME: Add a time-to-live cache???
     private static final Map<String, URI> ISSUER_JWKSURI_CACHE = new HashMap<>();
 
-    private static final String openIdConfigurationWellKnownPath = "/.well-known/openid-configuration";
-    private static final String jwksUriWellKnownKey = "jwks_uri";
+    private static final String OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH = "/.well-known/openid-configuration";
+    private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -137,7 +138,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 uri = ISSUER_JWKSURI_CACHE.get(issuer);
             } else {
                 // Read .well-known file
-                URL url = new URL(issuer + openIdConfigurationWellKnownPath);
+                URL url = new URL(issuer + OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH);
                 urlConnection = url.openConnection();
                 inputReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 JsonReader jsonReader = Json.createReader(inputReader);
@@ -147,7 +148,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 inputReader.close();
 
                 // Get and clean jwks_uri property
-                JsonValue jwksUriJsonValue = jsonObject.get(jwksUriWellKnownKey);
+                JsonValue jwksUriJsonValue = jsonObject.get(JWKS_URI_WELL_KNOWN_KEY);
 
                 if (jwksUriJsonValue != null) {
                     String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
