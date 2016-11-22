@@ -13,11 +13,14 @@
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -52,6 +55,11 @@ import org.slf4j.LoggerFactory;
 public class JwtCredentialsMatcher implements CredentialsMatcher {
 
     private static Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
+
+    private static final Map<String, URI> ISSUER_JWKSURI_CACHE = new HashMap<>();
+
+    private static final String openIdConfigurationWellKnownPath = "/.well-known/openid-configuration";
+    private static final String jwksUriWellKnownKey = "jwks_uri";
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -104,6 +112,9 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
     private URI resolveJwksUri(String jwt) {
 
+        URI uri;
+        URLConnection urlConnection = null;
+        BufferedReader inputReader = null;
         try {
             //
             // Parse JWT without validation
@@ -121,27 +132,43 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 issuer = issuer.substring(0, issuer.length() - 1);
             }
 
-            // Read .well-known file
-            URL url = new URL(issuer + "/.well-known/openid-configuration");
-            URLConnection httpConnection = url.openConnection();
-            BufferedReader inputReader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-            JsonReader jsonReader = Json.createReader(inputReader);
-            inputReader.close();
-
-            // Parse json response
-            JsonObject jsonObject = jsonReader.readObject();
-
-            // Get and clean jwks_uri property
-            JsonValue jwksUriJsonValue = jsonObject.get("jwks_uri");
-
-            if (jwksUriJsonValue != null) {
-                String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
-                return new URI(jwksUriString);
+            // Check against cache
+            if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
+                uri = ISSUER_JWKSURI_CACHE.get(issuer);
             } else {
-                throw KapuaException.internalError("Cannot get the 'jwks_key' property from the .well-known file:" + jsonObject.toString());
+                // Read .well-known file
+                URL url = new URL(issuer + openIdConfigurationWellKnownPath);
+                urlConnection = url.openConnection();
+                inputReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                JsonReader jsonReader = Json.createReader(inputReader);
+
+                // Parse json response
+                JsonObject jsonObject = jsonReader.readObject();
+                inputReader.close();
+
+                // Get and clean jwks_uri property
+                JsonValue jwksUriJsonValue = jsonObject.get(jwksUriWellKnownKey);
+
+                if (jwksUriJsonValue != null) {
+                    String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
+                    uri = new URI(jwksUriString);
+                    ISSUER_JWKSURI_CACHE.put(issuer, uri);
+                } else {
+                    throw KapuaException.internalError("Cannot get the 'jwks_key' property from the .well-known file:" + jsonObject.toString());
+                }
             }
         } catch (Exception e) {
             throw KapuaRuntimeException.internalError(e, "Cannot het Json Web Key Set URI");
+        } finally {
+            if (inputReader != null) {
+                try {
+                    inputReader.close();
+                } catch (IOException e) {
+                    logger.error("Cannot close inputReader", e);
+                }
+            }
         }
+
+        return uri;
     }
 }
