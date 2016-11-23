@@ -23,9 +23,26 @@ angular.module("app", [
     "app.welcome",
     "app.users"
 ])
-    .config(["$locationProvider",
-        ($locationProvider: angular.ILocationProvider) => {
-            $locationProvider.html5Mode(true);
+    .config(["$locationProvider", "$urlRouterProvider",
+        ($locationProvider: angular.ILocationProvider,
+         $urlRouterProvider: angular.ui.IUrlRouterProvider) => {
+            $locationProvider.html5Mode({ enabled: true, requireBase: false });
+        }])
+    .run(["$state", "$rootScope", "$auth",
+        ($state: angular.ui.IStateService,
+         $rootScope: angular.IRootScopeService,
+         $auth) => {
+            $rootScope.$on("$stateChangeStart", (event: angular.IAngularEvent, toState: angular.ui.IState, toParams, fromState: angular.ui.IState, fromParams) => {
+                if (toState.name.indexOf("kapua.") === 0 && !$auth.isAuthenticated()) {
+                    event.preventDefault();
+                    $state.go("login");
+                }
+            });
+            $rootScope.$on("$locationChangeSuccess", function() {
+                if (!$state.transition) {
+                    $state.go("login");
+                }
+            });
         }]);
 
 angular.bootstrap(document, ["app"], {

@@ -14,4 +14,4 @@ angular.module("app.layout", ["ui.router"])
             }
         });
     }])
-    .controller("LayoutCtrl", ["$http", "$state", "localStorageService", "kapuaConfig", LayoutCtrl]);
+    .controller("LayoutCtrl", ["$http", "$state", "localStorageService", "$auth", "kapuaConfig", LayoutCtrl]);

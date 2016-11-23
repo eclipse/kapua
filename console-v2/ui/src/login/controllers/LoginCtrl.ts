@@ -12,6 +12,9 @@ export default class LoginCtrl {
         private localStorageService: angular.local.storage.ILocalStorageService,
         private $auth,
         private kapuaConfig) {
+        if ($auth.isAuthenticated()) {
+            $state.go("kapua.welcome");
+        }
         $rootScope.$on("$stateChangeSuccess", (event, toState: angular.ui.IState, toParams, fromState: angular.ui.IState, fromParams) => {
             if (toState.name.indexOf("kapua.") === 0) {
                 angular.element("html").addClass("layout-pf layout-pf-fixed");
@@ -22,10 +25,9 @@ export default class LoginCtrl {
     }
 
     private doLogin(loginData: ILoginData) {
-        this.$http.post(this.kapuaConfig.restApi.baseUrl + "/authentication/user", loginData)
-            .then((response: angular.IHttpPromiseCallbackArg<any>) => {
-                this.setAuthToken(response.data.tokenId);
-            },
+        this.$auth.login(loginData).then((response: angular.IHttpPromiseCallbackArg<any>) => {
+            this.setAuthToken(response.data.tokenId);
+        },
             (responseData: angular.IHttpPromiseCallbackArg<any>) => {
                 console.log("fail!");
             });
@@ -33,14 +35,12 @@ export default class LoginCtrl {
 
     private doSSOLogin() {
         this.$auth.authenticate("oauth2").then((response: angular.IHttpPromiseCallbackArg<any>) => {
-            console.log(response);
             this.setAuthToken(response.data.tokenId);
         });
     }
 
     private setAuthToken(token: string) {
-        this.$http.defaults.headers.common["X-Access-Token"] = token;
-        this.localStorageService.set("accessToken", token);
+        this.$auth.setToken(token);
         this.$state.go("kapua.welcome");
     }
 }

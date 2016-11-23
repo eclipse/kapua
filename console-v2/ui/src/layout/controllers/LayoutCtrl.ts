@@ -30,7 +30,10 @@ export default class LayoutCtrl {
     constructor(private $http: angular.IHttpService,
         private $state: angular.ui.IStateService,
         private localStorageService: angular.local.storage.ILocalStorageService,
-        private kapuaConfig) { }
+        private $auth,
+        private kapuaConfig) {
+            
+         }
 
     private getLogoImage() {
         return require("../assets/img/logo-white.svg");

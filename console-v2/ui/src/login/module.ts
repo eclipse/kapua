@@ -7,8 +7,8 @@ import "./assets/styles/login.scss";
 angular.module("app.login", ["satellizer", "app.constants"])
     .config(["$stateProvider", "$authProvider", "kapuaConfig",
         ($stateProvider: angular.ui.IStateProvider,
-         $authProvider,
-         kapuaConfig) => {
+            $authProvider,
+            kapuaConfig) => {
             $stateProvider.state("login", {
                 url: "/login",
                 views: {
@@ -29,5 +29,10 @@ angular.module("app.login", ["satellizer", "app.constants"])
                 nonce: "abcdefg",
                 requiredUrlParams: ["nonce"],
             });
+
+            $authProvider.loginUrl = kapuaConfig.restApi.baseUrl + "/authentication/user";
+            // TODO remove with Authorization: Bearer
+            $authProvider.tokenHeader = "X-Access-Token";
+            $authProvider.tokenType = "";
         }])
     .controller("LoginCtrl", ["$rootScope", "$http", "$state", "localStorageService", "$auth", "kapuaConfig", LoginCtrl]);
