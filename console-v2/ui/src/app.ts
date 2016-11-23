@@ -23,28 +23,49 @@ angular.module("app", [
     "app.welcome",
     "app.users"
 ])
-    .config(["$locationProvider", "$urlRouterProvider",
-        ($locationProvider: angular.ILocationProvider,
-         $urlRouterProvider: angular.ui.IUrlRouterProvider) => {
-            $locationProvider.html5Mode({ enabled: true, requireBase: false });
-        }])
+    .config(["$locationProvider", "$urlRouterProvider", (
+        $locationProvider: angular.ILocationProvider,
+        $urlRouterProvider: angular.ui.IUrlRouterProvider
+    ) => {
+        $locationProvider.html5Mode({ enabled: true, requireBase: false });
+    }])
     .run(["$state", "$rootScope", "$auth",
-        ($state: angular.ui.IStateService,
-         $rootScope: angular.IRootScopeService,
-         $auth) => {
-            $rootScope.$on("$stateChangeStart", (event: angular.IAngularEvent, toState: angular.ui.IState, toParams, fromState: angular.ui.IState, fromParams) => {
+        (
+            $state: angular.ui.IStateService,
+            $rootScope: angular.IRootScopeService,
+            $auth
+        ) => {
+            $rootScope.$on("$stateChangeStart", (
+                event: angular.IAngularEvent,
+                toState: angular.ui.IState,
+                toParams, fromState: angular.ui.IState,
+                fromParams
+            ) => {
                 if (toState.name.indexOf("kapua.") === 0 && !$auth.isAuthenticated()) {
                     event.preventDefault();
                     $state.go("login");
                 }
             });
-            $rootScope.$on("$locationChangeSuccess", function() {
+
+            $rootScope.$on("$locationChangeSuccess", function () {
                 if (!$state.transition) {
                     $state.go("login");
+                } else {
+                    $state.transition.then((transitionResult: any) => {
+                        if (transitionResult.name.indexOf("kapua.") === 0 && !$auth.isAuthenticated()) {
+                            $state.go("login");
+                        }
+                    });
                 }
             });
-        }]);
 
-angular.bootstrap(document, ["app"], {
-    strictDi: true
-});
+            $rootScope.$on("$stateChangeSuccess", (
+                event: angular.IAngularEvent,
+                toState: angular.ui.IState,
+                toParams,
+                fromState: angular.ui.IState,
+                fromParams
+            ) => {
+                $rootScope["showHeader"] = toState.name.indexOf("kapua.") === 0;
+            });
+        }]);

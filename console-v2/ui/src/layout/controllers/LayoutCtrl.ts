@@ -27,13 +27,14 @@ export default class LayoutCtrl {
         }
     ];
 
-    constructor(private $http: angular.IHttpService,
+    constructor(
+        private $http: angular.IHttpService,
         private $state: angular.ui.IStateService,
         private localStorageService: angular.local.storage.ILocalStorageService,
         private $auth,
-        private kapuaConfig) {
-            
-         }
+        private kapuaConfig,
+        private $rootScope: angular.IRootScopeService
+    ) { }
 
     private getLogoImage() {
         return require("../assets/img/logo-white.svg");
@@ -41,6 +42,7 @@ export default class LayoutCtrl {
 
     private doLogout() {
         this.$http.post(this.kapuaConfig.restApi.baseUrl + "/authentication/logout", {}).then((response: angular.IHttpPromiseCallbackArg<any>) => {
+            this.$auth.logout();
             this.$state.go("login");
         });
     }
