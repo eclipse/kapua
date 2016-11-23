@@ -8,7 +8,7 @@ typings/
 .vscode/
 
 # Final build folder
-dist/
+**/dist/
 
 # NPM debug log
 npm-debug.log
