@@ -16,10 +16,9 @@ import java.util.Set;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -42,11 +41,9 @@ import org.eclipse.kapua.service.authorization.user.role.UserRolesService;
  * @since 1.0
  *
  */
-public class UserRolesServiceImpl extends AbstractKapuaService implements UserRolesService
-{
+public class UserRolesServiceImpl extends AbstractKapuaService implements UserRolesService {
 
-    public UserRolesServiceImpl()
-    {
+    public UserRolesServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance());
     }
 
@@ -113,7 +110,7 @@ public class UserRolesServiceImpl extends AbstractKapuaService implements UserRo
         authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> UserRolesDAO.query(em, query));
-        } finally {
+    }
 
     @Override
     public long count(KapuaQuery<UserRoles> query)

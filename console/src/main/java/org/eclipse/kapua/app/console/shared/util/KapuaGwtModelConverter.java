@@ -232,7 +232,7 @@ public class KapuaGwtModelConverter {
 
         //
         // Return converted entity
-        return kapuaId.getShortId();
+        return kapuaId.toCompactId();
     }
 
     /**
@@ -254,7 +254,7 @@ public class KapuaGwtModelConverter {
         // Convert other attributes
         gwtAccount.setName(account.getName());
         gwtAccount.setGwtOrganization(convert(account.getOrganization()));
-        gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().getShortId() : null);
+        gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().toCompactId() : null);
         gwtAccount.setOptlock(account.getOptlock());
 
         try {
@@ -328,8 +328,8 @@ public class KapuaGwtModelConverter {
     public static GwtDevice convert(Device device)
             throws KapuaException {
         GwtDevice gwtDevice = new GwtDevice();
-        gwtDevice.setId(device.getId().getShortId());
-        gwtDevice.setScopeId(device.getScopeId().getShortId());
+        gwtDevice.setId(device.getId().toCompactId());
+        gwtDevice.setScopeId(device.getScopeId().toCompactId());
         gwtDevice.setGwtDeviceStatus(device.getStatus().toString());
         gwtDevice.setClientId(device.getClientId());
         gwtDevice.setDisplayName(device.getDisplayName());
@@ -380,14 +380,14 @@ public class KapuaGwtModelConverter {
 
             gwtDevice.setGwtDeviceConnectionStatus(connection.getStatus().toString());
             gwtDevice.setConnectionIp(connection.getClientIp());
-            gwtDevice.setDeviceUserId(connection.getUserId().getShortId());
+            gwtDevice.setDeviceUserId(connection.getUserId().toCompactId());
         }
         return gwtDevice;
     }
 
     public static GwtDeviceEvent convert(DeviceEvent deviceEvent) {
         GwtDeviceEvent gwtDeviceEvent = new GwtDeviceEvent();
-        gwtDeviceEvent.setDeviceId(deviceEvent.getDeviceId().getShortId());
+        gwtDeviceEvent.setDeviceId(deviceEvent.getDeviceId().toCompactId());
         gwtDeviceEvent.setSentOn(deviceEvent.getSentOn());
         gwtDeviceEvent.setReceivedOn(deviceEvent.getReceivedOn());
         gwtDeviceEvent.setEventType(deviceEvent.getResource());

@@ -324,6 +324,6 @@ public class GwtKapuaModelConverter {
         if (shortKapuaId == null) {
             return null;
         }
-        return KapuaEid.parseShortId(shortKapuaId);
+        return KapuaEid.parseCompactId(shortKapuaId);
     }
 }
