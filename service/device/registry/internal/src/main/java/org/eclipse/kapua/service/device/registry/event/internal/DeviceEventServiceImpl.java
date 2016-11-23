@@ -14,10 +14,8 @@ package org.eclipse.kapua.service.device.registry.event.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -36,13 +34,12 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
  * @since 1.0
  *
  */
-public class DeviceEventServiceImpl implements DeviceEventService {
+public class DeviceEventServiceImpl extends AbstractKapuaService implements DeviceEventService
+{
 
     private final AuthorizationService authorizationService;
 
     private final PermissionFactory permissionFactory;
-
-    private final EntityManagerSession entityManagerSession;
 
     /**
      * Constructor
@@ -51,21 +48,19 @@ public class DeviceEventServiceImpl implements DeviceEventService {
      * @param permissionFactory
      */
     public DeviceEventServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory) {
+        super(DeviceEntityManagerFactory.instance());
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
-
-        this.entityManagerSession = new EntityManagerSession(DeviceEntityManagerFactory.instance());
     }
 
     /**
      * Constructor
      */
     public DeviceEventServiceImpl() {
+        super(DeviceEntityManagerFactory.instance());
         KapuaLocator locator = KapuaLocator.getInstance();
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
-
-        this.entityManagerSession = new EntityManagerSession(DeviceEntityManagerFactory.instance());
     }
 
     // Operations
@@ -107,21 +102,9 @@ public class DeviceEventServiceImpl implements DeviceEventService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceEventDomain.DEVICE_EVENT, Actions.read, scopeId));
 
-        //
-        // Do find
-        DeviceEvent deviceEvent = null;
-        EntityManager em = DeviceEntityManagerFactory.getEntityManager();
-        try {
-            deviceEvent = DeviceEventDAO.find(em, entityId);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return deviceEvent;
+        return entityManagerSession.onEntityManagerResult(em -> {
+            return DeviceEventDAO.find(em, entityId);
+        });
     }
 
     @Override
@@ -137,21 +120,9 @@ public class DeviceEventServiceImpl implements DeviceEventService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceEventDomain.DEVICE_EVENT, Actions.read, query.getScopeId()));
 
-        //
-        // Do Query
-        DeviceEventListResult result = null;
-        EntityManager em = DeviceEntityManagerFactory.getEntityManager();
-        try {
-            result = DeviceEventDAO.query(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return result;
+        return entityManagerSession.onEntityManagerResult(em -> {
+            return DeviceEventDAO.query(em, query);
+        });
     }
 
     @Override
@@ -167,21 +138,10 @@ public class DeviceEventServiceImpl implements DeviceEventService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceEventDomain.DEVICE_EVENT, Actions.read, query.getScopeId()));
 
+        return entityManagerSession.onEntityManagerResult(em -> {
+            return DeviceEventDAO.count(em, query);
+        });
         //
-        // Do count
-        long count = 0;
-        EntityManager em = DeviceEntityManagerFactory.getEntityManager();
-        try {
-            count = DeviceEventDAO.count(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return count;
     }
 
     @Override
@@ -195,10 +155,7 @@ public class DeviceEventServiceImpl implements DeviceEventService {
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceEventDomain.DEVICE_EVENT, Actions.delete, scopeId));
 
-        //
-        // Do delete
-        EntityManager em = DeviceEntityManagerFactory.getEntityManager();
-        try {
+        entityManagerSession.onEntityManagerAction(em -> {
             if (DeviceEventDAO.find(em, deviceEventId) == null) {
                 throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
             }
@@ -206,13 +163,6 @@ public class DeviceEventServiceImpl implements DeviceEventService {
             em.beginTransaction();
             DeviceEventDAO.delete(em, deviceEventId);
             em.commit();
-        }
-        catch (Exception e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
+        });
     }
 }

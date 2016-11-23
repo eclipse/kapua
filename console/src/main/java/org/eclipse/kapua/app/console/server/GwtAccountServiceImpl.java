@@ -60,7 +60,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         checkXSRFToken(xsrfToken);
 
         GwtAccount gwtAccount = null;
-        KapuaId parentAccountId = KapuaEid.parseShortId(gwtAccountCreator.getParentAccountId());
+        KapuaId parentAccountId = KapuaEid.parseCompactId(gwtAccountCreator.getParentAccountId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
@@ -96,7 +96,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     public GwtAccount find(String accountIdString)
         throws GwtKapuaException
     {
-        KapuaId accountId = KapuaEid.parseShortId(accountIdString);
+        KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         GwtAccount gwtAccount = null;
         try {
@@ -114,7 +114,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String accountIdString)
         throws GwtKapuaException
     {
-        KapuaId accountId = KapuaEid.parseShortId(accountIdString);
+        KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
@@ -125,9 +125,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedOn", account.getModifiedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", account.getModifiedBy().getShortId()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", account.getModifiedBy().toCompactId()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", account.getCreatedBy().getShortId()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", account.getCreatedBy().toCompactId()));
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", SystemUtils.getBrokerURI().toString()));
 
@@ -157,7 +157,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         checkXSRFToken(xsrfToken);
 
         GwtAccount gwtAccountUpdated = null;
-        KapuaId scopeId = KapuaEid.parseShortId(gwtAccount.getId());
+        KapuaId scopeId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
@@ -197,7 +197,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         checkXSRFToken(xsrfToken);
 
         GwtAccount gwtAccountUpdated = null;
-        KapuaId scopeId = KapuaEid.parseShortId(gwtAccount.getId());
+        KapuaId scopeId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
@@ -233,7 +233,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
 
-        KapuaId kapuaId = KapuaEid.parseShortId(gwtAccount.getId());
+        KapuaId kapuaId = KapuaEid.parseCompactId(gwtAccount.getId());
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
@@ -253,7 +253,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     {
 
         List<GwtAccount> gwtAccountList = new ArrayList<GwtAccount>();
-        KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
+        KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
@@ -275,7 +275,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     public ListLoadResult<GwtAccount> findChildren(String parentAccountId, boolean recoursive)
         throws GwtKapuaException
     {
-        KapuaId scopeId = KapuaEid.parseShortId(parentAccountId);
+        KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
@@ -300,7 +300,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     public ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String parentAccountId, boolean recoursive)
         throws GwtKapuaException
     {
-        KapuaId scopeId = KapuaEid.parseShortId(parentAccountId);
+        KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
 
         List<GwtAccountStringListItem> gwtAccountStrings = new ArrayList<GwtAccountStringListItem>();
 
@@ -311,7 +311,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             list = accountService.findChildsRecursively(scopeId);
             for (Account account : list.getItems()) {
                 GwtAccountStringListItem item = new GwtAccountStringListItem();
-                item.setId(account.getId().getShortId());
+                item.setId(account.getId().toCompactId());
                 item.setValue(account.getName());
                 item.setHasChildAccount(false); // FIXME: add check to see if account has or noe childs
 

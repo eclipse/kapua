@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  *
  */
-public class UserEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory
+public class UserEntityManagerFactory extends AbstractEntityManagerFactory
 {
     @SuppressWarnings("unused")
     private static final Logger              LOG                 = LoggerFactory.getLogger(UserEntityManagerFactory.class);

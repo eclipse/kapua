@@ -93,7 +93,7 @@ public class DeviceExporterServlet extends HttpServlet
             int offset = 0;
 
             // paginate through the matching message
-            DeviceQuery dq = drf.newQuery(KapuaEid.parseShortId(scopeIdString));
+            DeviceQuery dq = drf.newQuery(KapuaEid.parseCompactId(scopeIdString));
             dq.setLimit(250);
 
             // Inserting filter parameter if specified

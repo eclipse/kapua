@@ -17,8 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -69,29 +67,13 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.write, userCreator.getScopeId()));
 
-        //
-        // Do create
-        User user = null;
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();;
-        try {
-
+        return entityManagerSession.onEntityManagerInsert(em -> {
             em.beginTransaction();
-
-            user = UserDAO.create(em, userCreator);
-
-            user = UserDAO.find(em, user.getId());
+            User user = UserDAO.create(em, userCreator);
             em.commit();
-
-        }
-        catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
-            em.close();
-        }
-
-        return user;
+            user = UserDAO.find(em, user.getId());
+            return user;
+        });
     }
 
     @Override
@@ -115,30 +97,16 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
 
         //
         // Do update
-        User userUpdated = null;
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();
-        try {
-
+        return entityManagerSession.onEntityManagerResult(em -> {
             User currentUser = UserDAO.find(em, user.getId());
             if (currentUser == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
             }
-
             em.beginTransaction();
             UserDAO.update(em, user);
             em.commit();
-
-            userUpdated = UserDAO.find(em, user.getId());
-        }
-        catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
-            em.close();
-        }
-
-        return userUpdated;
+            return UserDAO.find(em, user.getId());
+        });
     }
 
     @Override
@@ -154,8 +122,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.write, scopeId));
 
         // Do the delete
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();
-        try {
+        entityManagerSession.onEntityManagerAction(em -> {
             // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
             User userx = UserDAO.find(em, userId);
             if (userx == null) {
@@ -171,14 +138,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
             em.beginTransaction();
             UserDAO.delete(em, userId);
             em.commit();
-        }
-        catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
-            em.close();
-        }
+        });
     }
 
     @Override
@@ -202,19 +162,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, accountId));
 
         // Do the find
-        User user = null;
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();;
-        try {
-            user = UserDAO.find(em, userId);
-        }
-        catch (Exception pe) {
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
-            em.close();
-        }
-
-        return user;
+        return entityManagerSession.onEntityManagerResult(em -> {
+            return UserDAO.find(em, userId);
+        });
     }
 
     @Override
@@ -225,27 +175,17 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         ArgumentValidator.notEmptyOrNull(name, "name");
 
         // Do the find
-        User user = null;
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();;
-        try {
-            user = UserDAO.findByName(em, name);
-        }
-        catch (Exception pe) {
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
-            em.close();
-        }
-
-        //
-        // Check Access
-        if (user != null) {
-            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, user.getScopeId()));
-        }
-
-        return user;
+        return entityManagerSession.onEntityManagerResult(em -> {
+            User user = UserDAO.findByName(em, name);
+            //
+            // Check Access
+            if (user != null) {
+                AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+                PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+                authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, user.getScopeId()));
+            }
+            return user;
+        });
     }
 
     @Override
@@ -263,21 +203,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, query.getScopeId()));
 
-        //
-        // Do count
-        UserListResult result = null;
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();;
-        try {
-            result = UserDAO.query(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return result;
+        return entityManagerSession.onEntityManagerResult(em -> {
+            return UserDAO.query(em, query);
+        });
     }
 
     @Override
@@ -293,21 +221,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, query.getScopeId()));
 
-        //
-        // Do count
-        long count = 0;
-        EntityManager em = UserEntityManagerFactory.getInstance().createEntityManager();;
-        try {
-            count = UserDAO.count(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return count;
+        return entityManagerSession.onEntityManagerResult(em -> {
+            return UserDAO.count(em, query);
+        });
     }
 
     // -----------------------------------------------------------------------------------------

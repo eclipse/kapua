@@ -41,5 +41,4 @@ org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService
 org.eclipse.kapua.service.device.registry.event.DeviceEventFactory
 org.eclipse.kapua.service.device.registry.event.DeviceEventService
 org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService
-org.eclipse.kapua.service.generator.id.IdGeneratorService
 org.eclipse.kapua.service.metric.MetricsService

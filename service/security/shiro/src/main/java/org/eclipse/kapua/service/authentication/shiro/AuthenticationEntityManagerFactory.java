@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
 /**
  * Entity manager factory for the authentication module.
@@ -25,7 +26,7 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
  * @since 1.0
  *
  */
-public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFactory
+public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory
 {
     private static final String                       PERSISTENCE_UNIT_NAME = "kapua-authentication";
     private static final String                       DATASOURCE_NAME       = "kapua-dbpool";
@@ -54,4 +55,15 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
     {
         return instance.createEntityManager();
     }
+
+    /**
+     * Return the {@link EntityManager} singleton instance
+     * 
+     * @return
+     */
+    public static AuthenticationEntityManagerFactory getInstance()
+    {
+        return instance;
+    }
+
 }

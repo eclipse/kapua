@@ -113,8 +113,8 @@ public class FileServlet extends KapuaHttpServlet {
             byte[] data = fileItem.get();
             String xmlConfigurationString = new String(data, "UTF-8");
 
-            deviceConfigurationManagementService.put(KapuaEid.parseShortId(scopeIdString),
-                    KapuaEid.parseShortId(deviceIdString),
+            deviceConfigurationManagementService.put(KapuaEid.parseCompactId(scopeIdString),
+                                                     KapuaEid.parseCompactId(deviceIdString),
                     xmlConfigurationString,
                     null);
 
@@ -198,8 +198,8 @@ public class FileServlet extends KapuaHttpServlet {
             commandInput.setWorkingDir("/tmp/");
             commandInput.setBody(data);
 
-            DeviceCommandOutput deviceCommandOutput = deviceService.exec(KapuaEid.parseShortId(scopeIdString),
-                    KapuaEid.parseShortId(deviceIdString),
+            DeviceCommandOutput deviceCommandOutput = deviceService.exec(KapuaEid.parseCompactId(scopeIdString),
+                                                                         KapuaEid.parseCompactId(deviceIdString),
                     commandInput,
                     null);
             resp.setContentType("text/plain");

@@ -22,7 +22,7 @@ import org.eclipse.kapua.KapuaException;
  * @since 1.0
  *
  */
-public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory
+public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory
 {
     private static final String                PERSISTENCE_UNIT_NAME = "kapua-commons";
     private static final String                DATASOURCE_NAME       = "kapua-dbpool";

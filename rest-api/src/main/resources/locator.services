@@ -52,7 +52,6 @@ org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementSer
 #org.eclipse.kapua.service.datastore.TopicInfoStoreService
 #org.eclipse.kapua.service.datastore.MetricInfoStoreService
 #
-org.eclipse.kapua.service.generator.id.IdGeneratorService
 org.eclipse.kapua.model.id.KapuaIdFactory
 
 org.eclipse.kapua.transport.TransportClientFactory

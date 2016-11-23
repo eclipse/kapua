@@ -77,11 +77,10 @@ public class DeviceRegistryServiceImpl implements DeviceRegistryService {
     public Device create(DeviceCreator deviceCreator) throws KapuaException {
         deviceValidation.validateCreatePreconditions(deviceCreator);
 
-        return entityManagerSession.onEntityManagerResult(entityManager -> {
+        return entityManagerSession.onEntityManagerInsert(entityManager -> {
             entityManager.beginTransaction();
             Device device = DeviceDAO.create(entityManager, deviceCreator);
             entityManager.commit();
-
             return DeviceDAO.find(entityManager, device.getId());
         });
     }

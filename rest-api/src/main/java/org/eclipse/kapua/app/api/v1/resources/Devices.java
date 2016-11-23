@@ -34,7 +34,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaFetchStyle;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
-import org.eclipse.kapua.service.device.management.command.DeviceCommandFactory;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
@@ -159,7 +158,7 @@ public class Devices extends AbstractKapuaResource {
         Device device = null;
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             device = registryService.find(scopeId, id);
         } catch (Throwable t) {
             handleException(t);
@@ -208,7 +207,7 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "Provides the id of the device to delete", required = true) 
             @PathParam("deviceId") String deviceId) {
         try {
-            KapuaId deviceKapuaId = KapuaEid.parseShortId(deviceId);
+            KapuaId deviceKapuaId = KapuaEid.parseCompactId(deviceId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
             registryService.delete(scopeId, deviceKapuaId);
         } catch (Throwable t) {
@@ -261,7 +260,7 @@ public class Devices extends AbstractKapuaResource {
             
             @ApiParam(value = "The timeout of the command execution", required = false) 
             @QueryParam("timeout") Long timeout) throws NumberFormatException, KapuaException {
-        KapuaId deviceKapuaId = KapuaEid.parseShortId(deviceId);
+        KapuaId deviceKapuaId = KapuaEid.parseCompactId(deviceId);
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
         return commandService.exec(scopeId, deviceKapuaId, commandInput, timeout);
     }
@@ -299,7 +298,7 @@ public class Devices extends AbstractKapuaResource {
         DeviceConfiguration deviceConfiguration = null;
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             deviceConfiguration = configurationService.get(scopeId, id, null, componentId, null);
         } catch (Throwable t) {
             handleException(t);
@@ -326,7 +325,7 @@ public class Devices extends AbstractKapuaResource {
         DeviceSnapshots deviceSnapshots = snapshotFactory.newDeviceSnapshots();
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             deviceSnapshots = snapshotService.get(scopeId, id, null);
         } catch (Throwable t) {
             handleException(t);
@@ -353,7 +352,7 @@ public class Devices extends AbstractKapuaResource {
             @PathParam("snapshotId") String snapshotId) {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             snapshotService.rollback(scopeId, id, snapshotId, null);
         } catch (Throwable t) {
             handleException(t);
@@ -422,7 +421,7 @@ public class Devices extends AbstractKapuaResource {
         DeviceEventListResult deviceEvents = eventFactory.newDeviceListResult();
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             DeviceEventQuery query = eventFactory.newQuery(scopeId);
 
             KapuaAndPredicate andPredicate = new AndPredicate();
@@ -469,7 +468,7 @@ public class Devices extends AbstractKapuaResource {
         DevicePackages result = packageFactory.newDeviceDeploymentPackages();
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             result = packageService.getInstalled(scopeId, id, null);
         } catch (Throwable t) {
             handleException(t);
@@ -501,7 +500,7 @@ public class Devices extends AbstractKapuaResource {
             DevicePackageDownloadRequest request) {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             packageService.downloadExec(scopeId, id, request, null);
         } catch (Throwable t) {
             handleException(t);
@@ -533,7 +532,7 @@ public class Devices extends AbstractKapuaResource {
             DevicePackageUninstallRequest request) {
         try {
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
-            KapuaId id = KapuaEid.parseShortId(deviceId);
+            KapuaId id = KapuaEid.parseCompactId(deviceId);
             packageService.uninstallExec(scopeId, id, request, null);
         } catch (Throwable t) {
             handleException(t);

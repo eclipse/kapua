@@ -54,4 +54,15 @@ public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFact
     {
         return instance.createEntityManager();
     }
+
+    /**
+     * Return the {@link EntityManager} singleton instance
+     * 
+     * @return
+     */
+    public static AuthorizationEntityManagerFactory getInstance()
+    {
+        return instance;
+    }
+
 }

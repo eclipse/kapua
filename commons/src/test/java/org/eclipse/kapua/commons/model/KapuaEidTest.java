@@ -52,15 +52,15 @@ public class KapuaEidTest
 	public void test() 
 	{
 		KapuaEid kid = new KapuaEid(eid);
-		String sid = kid.getShortId(); 
+        String sid = kid.toCompactId();
 		System.out.println(eid+"="+sid);
 
 		assertEquals(eid, kid.getId());
 		assertEquals(eid.toString(), kid.toString());
 
-		KapuaEid kid1 = KapuaEid.parseShortId(sid);
+        KapuaEid kid1 = KapuaEid.parseCompactId(sid);
 		assertEquals(eid, kid1.getId());
 		assertEquals(kid.toString(), kid1.toString());
-		assertEquals(kid.getShortId(), kid1.getShortId());
+        assertEquals(kid.toCompactId(), kid1.toCompactId());
 	}
 }

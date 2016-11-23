@@ -26,6 +26,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode
      */
     ENTITY_NOT_FOUND,
     /**
+     * Entity already exists
+     */
+    ENTITY_ALREADY_EXISTS,
+    /**
      * Duplicate name
      */
     DUPLICATE_NAME,

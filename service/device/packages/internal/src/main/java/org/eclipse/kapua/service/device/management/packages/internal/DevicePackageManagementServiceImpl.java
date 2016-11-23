@@ -15,6 +15,8 @@ package org.eclipse.kapua.service.device.management.packages.internal;
 import java.util.Date;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -51,7 +53,6 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.inte
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.eclipse.kapua.service.generator.id.IdGeneratorService;
 
 /**
  * Device package service implementation.
@@ -161,8 +162,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Generate requestId
-        IdGeneratorService idGeneratorService = locator.getService(IdGeneratorService.class);
-        KapuaId operationId = idGeneratorService.generate();
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -344,8 +344,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Generate requestId
-        IdGeneratorService idGeneratorService = locator.getService(IdGeneratorService.class);
-        KapuaId operationId = idGeneratorService.generate();
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -486,8 +485,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
 
         //
         // Generate requestId
-        IdGeneratorService idGeneratorService = locator.getService(IdGeneratorService.class);
-        KapuaId operationId = idGeneratorService.generate();
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request

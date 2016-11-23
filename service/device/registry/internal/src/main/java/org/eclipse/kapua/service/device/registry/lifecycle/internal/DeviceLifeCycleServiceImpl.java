@@ -42,6 +42,7 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
  */
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService
 {
+
     @Override
     public void birth(KapuaId connectionId, KapuaBirthMessage message)
         throws KapuaException

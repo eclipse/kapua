@@ -51,8 +51,8 @@ public class DeviceSnapshotsServlet extends HttpServlet
             // get the devices and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceConfigurationManagementService deviceConfigurationManagementService = locator.getService(DeviceConfigurationManagementService.class);
-            DeviceConfiguration conf = deviceConfigurationManagementService.get(KapuaEid.parseShortId(account),
-                                                                                KapuaEid.parseShortId(clientId),
+            DeviceConfiguration conf = deviceConfigurationManagementService.get(KapuaEid.parseCompactId(account),
+                                                                                KapuaEid.parseCompactId(clientId),
                                                                                 snapshotId,
                                                                                 null,
                                                                                 null);
