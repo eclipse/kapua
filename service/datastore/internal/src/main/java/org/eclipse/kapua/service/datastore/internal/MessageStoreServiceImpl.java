@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -79,6 +80,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 
+@KapuaProvider
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService
 {
     private static final long    serialVersionUID  = 4142282449826005424L;

@@ -1,0 +1,44 @@
+<!--
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<locator-config>
+	<provided>
+		<api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
+		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
+		<api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
+		<api>org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory</api>
+		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
+		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionService</api>
+		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesFactory</api>
+		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesService</api>
+		<api>org.eclipse.kapua.service.account.AccountFactory</api>
+		<api>org.eclipse.kapua.service.account.AccountService</api>
+		<api>org.eclipse.kapua.service.user.UserFactory</api>
+		<api>org.eclipse.kapua.service.user.UserService</api>
+		<api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
+	</provided>
+	<packages>
+		<package>org.eclipse.kapua.service.authentication.credential.shiro</package>
+		<package>org.eclipse.kapua.service.authentication.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.permission.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.user.permission.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.user.role.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.shiro</package>
+		<package>org.eclipse.kapua.service.generator.id.sequence</package>
+		<package>org.eclipse.kapua.test.user</package>
+		<package>org.eclipse.kapua.test.account</package>
+	</packages>
+</locator-config>

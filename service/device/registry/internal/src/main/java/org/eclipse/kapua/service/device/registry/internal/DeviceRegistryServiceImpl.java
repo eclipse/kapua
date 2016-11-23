@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
@@ -34,6 +35,7 @@ import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceRegistryServiceImpl implements DeviceRegistryService {
 
     // Collaborator members

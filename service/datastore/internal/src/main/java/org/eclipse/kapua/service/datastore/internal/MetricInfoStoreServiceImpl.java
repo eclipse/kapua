@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -43,6 +44,7 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@KapuaProvider
 public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService implements MetricInfoStoreService
 {
     private static final long    serialVersionUID = 7490084233555473342L;

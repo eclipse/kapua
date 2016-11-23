@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -22,6 +23,7 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceBundleFactoryImpl implements DeviceBundleFactory
 {
 

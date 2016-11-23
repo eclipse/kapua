@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -40,6 +41,7 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService
 {
 

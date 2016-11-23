@@ -24,6 +24,7 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -55,6 +56,7 @@ import org.xml.sax.SAXException;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

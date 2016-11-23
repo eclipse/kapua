@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
@@ -22,6 +23,7 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class DeviceConfigurationFactoryImpl implements DeviceConfigurationFactory
 {
 

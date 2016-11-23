@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Ignoring those tests until we have build fixed. Then we should enabled embedded MariaDB and turn tests on again.
  */
-@Ignore
 public class AccountServiceTest extends AbstractAccountServiceTest
 {
     @SuppressWarnings("unused")
@@ -168,6 +167,7 @@ public class AccountServiceTest extends AbstractAccountServiceTest
     }
 
     @Test
+    @Ignore
     public void testConfiguration()
         throws Exception
     {

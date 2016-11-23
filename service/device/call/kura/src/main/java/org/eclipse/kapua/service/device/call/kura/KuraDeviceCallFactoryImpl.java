@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
 
 /**
@@ -19,6 +20,7 @@ import org.eclipse.kapua.service.device.call.DeviceCallFactory;
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class KuraDeviceCallFactoryImpl implements DeviceCallFactory
 {
 

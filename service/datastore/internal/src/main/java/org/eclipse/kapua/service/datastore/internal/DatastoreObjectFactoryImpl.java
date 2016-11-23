@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.MessageCreatorImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MessageImpl;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.service.datastore.model.query.AssetInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.TopicInfoQuery;
 
+@KapuaProvider
 public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory
 {
 

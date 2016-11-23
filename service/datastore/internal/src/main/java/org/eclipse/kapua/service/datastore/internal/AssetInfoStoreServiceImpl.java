@@ -18,6 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -43,6 +44,7 @@ import org.eclipse.kapua.service.datastore.model.query.AssetInfoQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@KapuaProvider
 public class AssetInfoStoreServiceImpl extends AbstractKapuaConfigurableService implements AssetInfoStoreService
 {
     private static final long   serialVersionUID = 6772144495298409738L;

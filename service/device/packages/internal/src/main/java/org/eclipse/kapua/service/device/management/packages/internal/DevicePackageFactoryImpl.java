@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
@@ -34,6 +35,7 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.inte
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DevicePackageFactoryImpl implements DevicePackageFactory {
 
     @Override

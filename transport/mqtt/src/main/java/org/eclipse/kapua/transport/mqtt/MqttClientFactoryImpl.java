@@ -13,6 +13,7 @@
 package org.eclipse.kapua.transport.mqtt;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
@@ -24,6 +25,7 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
  * @since 1.0.0
  *
  */
+@KapuaProvider
 public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, MqttPayload, MqttMessage, MqttMessage, MqttFacade, MqttClientConnectionOptions> {
 
     @Override

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.registry.event.*;
@@ -24,6 +25,7 @@ import java.util.Date;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceEventFactoryImpl implements DeviceEventFactory
 {
 
