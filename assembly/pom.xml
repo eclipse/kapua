@@ -482,6 +482,9 @@
 								<ports>
 									<port>1883</port>
 								</ports>
+								<volumes>
+									<volume>/maven/data</volume>
+								</volumes>
 							</build>
 						</image>
 						<image>

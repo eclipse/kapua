@@ -19,6 +19,7 @@
         <fileSet>
             <outputDirectory>/</outputDirectory>
             <directory>target/dependencies/activemq/apache-activemq-${activemq.version}</directory>
+            <fileMode>0644</fileMode>
             <excludes>
                 <exclude>conf/activemq.xml</exclude>
                 <exclude>conf/log4j.properties</exclude>
@@ -85,10 +86,7 @@
                 <exclude>lib/optional/zookeeper-*</exclude>
                 <exclude>lib/web/</exclude>
 
-                <exclude>bin/wrapper.jar</exclude>
-                <exclude>bin/macosx/</exclude>
-                <exclude>bin/linux-x86-32/</exclude>
-                <exclude>bin/linux-x86-64/</exclude>
+                <exclude>bin/</exclude>
 
                 <exclude>examples/</exclude>
                 <exclude>docs/</exclude>
@@ -100,6 +98,19 @@
         <fileSet>
             <outputDirectory>conf/</outputDirectory>
             <directory>src/main/resources/conf/broker</directory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>bin/</outputDirectory>
+            <directory>target/dependencies/activemq/apache-activemq-${activemq.version}/bin/</directory>
+            <fileMode>0755</fileMode>
+            <excludes>
+                <exclude>bin/wrapper.jar</exclude>
+                <exclude>bin/macosx/</exclude>
+                <exclude>bin/linux-x86-32/</exclude>
+                <exclude>bin/linux-x86-64/</exclude>
+            </excludes>
         </fileSet>
 
     </fileSets>
@@ -110,6 +121,7 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <useTransitiveDependencies>true</useTransitiveDependencies>
+            <fileMode>0644</fileMode>
             <includes>
                 <include>com.google.guava:guava</include>
                 <include>com.google.inject:guice</include>
