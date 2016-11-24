@@ -32,6 +32,9 @@ class Server {
         let oauthLogin: routes.OAuthLogin = new routes.OAuthLogin();
         router.post("/oauth/authenticate", oauthLogin.oauthLogin);
 
+        let api = new routes.Api();
+        router.all("/api/*", api.api);
+
         let index: routes.Index = new routes.Index();
         router.get("*", (req, res, next) => { res.sendFile("index.html", { root: "ui/dist" }); });
 
