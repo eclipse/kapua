@@ -19,36 +19,39 @@ if [ -z "${ELASTIC_SEARCH_MEMORY}" ]; then
   ELASTIC_SEARCH_MEMORY='512M'
 fi
 
-oc new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch
+oc new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch -n eclipse-kapua
 
 echo 'ElasticSearch server started.'
 
+### SQL database
+
 echo 'Staring SQL database'
 
-oc new-app hekonsek/h2 --name=sql
+oc new-app hekonsek/h2 --name=sql -n eclipse-kapua
 
 echo 'SQL database started'
 
+### Broker
+
+echo 'Starting broker'
+
+oc new-app dbosanac/kapua-broker:latest -name=kapua-broker -n eclipse-kapua
+
+echo 'Broker started'
 
 ## Build assembly module with
 ## mvn -Pdocker
 
-##echo 'Starting broker'
+echo 'Starting web console'
 
-##oc new-app --docker-image kapua-broker:latest -name=kapua-broker -n eclipse-kapua
-
-##echo 'Broker started'
-
-##echo 'Starting web console'
-
-##oc new-app --docker-image kapua-console:latest -name=kapua-console -n eclipse-kapua
+oc new-app hekonsek/kapua-console:latest -n eclipse-kapua
 
 ##oc expose svc/kapua-console --hostname=kapua-console.com
 
-##echo 'Web console started'
+echo 'Web console started.'
 
-##echo 'Starting rest api'
+echo 'Starting rest api'
 
-##oc new-app --docker-image kapua-api:latest -name=kapua-api -n eclipse-kapua
+oc new-app hekonsek/kapua-api:latest -n eclipse-kapua
 
-##echo 'Rest api started'
+echo 'Rest api started'
