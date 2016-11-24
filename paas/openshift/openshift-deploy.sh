@@ -13,6 +13,10 @@
 #oc login
 #oc new-project eclipse-kapua --description="Open source IoT Platform" --display-name="Eclipse Kapua"
 
+if [ -z "${DOCKER_ACCOUNT}" ]; then
+  DOCKER_ACCOUNT='kapua'
+fi
+
 echo 'Starting ElasticSearch server...'
 
 if [ -z "${ELASTIC_SEARCH_MEMORY}" ]; then
@@ -27,7 +31,7 @@ echo 'ElasticSearch server started.'
 
 echo 'Staring SQL database'
 
-oc new-app hekonsek/h2 --name=sql -n eclipse-kapua
+oc new-app ${DOCKER_ACCOUNT}/h2 --name=sql -n eclipse-kapua
 
 echo 'SQL database started'
 
@@ -35,7 +39,7 @@ echo 'SQL database started'
 
 echo 'Starting broker'
 
-oc new-app dbosanac/kapua-broker:latest -name=kapua-broker -n eclipse-kapua
+oc new-app ${DOCKER_ACCOUNT}/kapua-broker:latest -name=kapua-broker -n eclipse-kapua
 
 echo 'Broker started'
 
@@ -44,7 +48,7 @@ echo 'Broker started'
 
 echo 'Starting web console'
 
-oc new-app hekonsek/kapua-console:latest -n eclipse-kapua
+oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n eclipse-kapua
 
 ##oc expose svc/kapua-console --hostname=kapua-console.com
 
@@ -52,6 +56,6 @@ echo 'Web console started.'
 
 echo 'Starting rest api'
 
-oc new-app hekonsek/kapua-api:latest -n eclipse-kapua
+oc new-app ${DOCKER_ACCOUNT}/kapua-api:latest -n eclipse-kapua
 
 echo 'Rest api started'

@@ -25,6 +25,8 @@
     <properties>
 		<tomcat.version>8.0.38</tomcat.version>
         <commons.pool.version>2.3</commons.pool.version>
+
+		<docker.account>kapua</docker.account>
     </properties>
 
 	<dependencies>
@@ -470,7 +472,7 @@
 				<configuration>
 					<images>
 						<image>
-							<name>kapua-broker</name>
+							<name>${docker.account}/kapua-broker</name>
 							<build>
 								<from>java:8u40</from>
 								<assembly>
@@ -488,7 +490,7 @@
 							</build>
 						</image>
 						<image>
-							<name>kapua-console</name>
+							<name>${docker.account}/kapua-console</name>
 							<build>
 								<from>java:8u40</from>
 								<assembly>
@@ -503,7 +505,7 @@
 							</build>
 						</image>
 						<image>
-							<name>kapua-api</name>
+							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>java:8u40</from>
 								<assembly>
