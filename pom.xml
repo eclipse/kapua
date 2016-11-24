@@ -49,6 +49,7 @@
         <!-- Plugins versions -->
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
+        <docker-maven-plugin.version>0.17.2</docker-maven-plugin.version>
 
         <!-- -->
         <!-- Database configuration for local installs and tests -->
@@ -66,6 +67,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
