@@ -501,6 +501,11 @@
 								<ports>
 									<port>8080</port>
 								</ports>
+								<runCmds>
+									<run>chgrp -R 0 /maven</run>
+									<run>chmod -R g+rw /maven</run>
+									<run>find /maven -type d -exec chmod g+x {} +</run>
+								</runCmds>
 							</build>
 						</image>
 						<image>
@@ -516,6 +521,11 @@
 								<ports>
 									<port>8080</port>
 								</ports>
+								<runCmds>
+									<run>chgrp -R 0 /maven</run>
+									<run>chmod -R g+rw /maven</run>
+									<run>find /maven -type d -exec chmod g+x {} +</run>
+								</runCmds>
 							</build>
 						</image>
 					</images>
