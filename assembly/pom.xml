@@ -210,64 +210,8 @@
 		</dependency>
 	</dependencies>
 
-<!-- 
-    <build>
-   		<plugins>
-   			<plugin>
-   				<groupId>org.apache.maven.plugins</groupId>
-   				<artifactId>maven-dependency-plugin</artifactId>
-   				<executions>
-   					<execution>
-   						<id>unpack-unix</id>
-   						<phase>generate-resources</phase>
-   						<goals>
-   							<goal>unpack</goal>
-   						</goals>
-   						<configuration>
-   							<artifactItems>
-   								<artifactItem>
-   									<groupId>org.apache.activemq</groupId>
-   									<artifactId>apache-activemq</artifactId>
-   									<classifier>bin</classifier>
-   									<type>tar.gz</type>
-   									<outputDirectory>target/dependencies/unix</outputDirectory>
-   								</artifactItem>
-   							</artifactItems>
-   						</configuration>
-   					</execution>
-   				</executions>
-   			</plugin>
-   			<plugin>
-   				<groupId>org.apache.maven.plugins</groupId>
-   				<artifactId>maven-assembly-plugin</artifactId>
-   				<version>2.6</version>
-   				<executions>
-   					<execution>
-   						<id>unix-bin</id>
-   						<phase>package</phase>
-   						<goals>
-   							<goal>attached</goal>
-   						</goals>
-   						<configuration>
-   							<descriptors>
-   								<descriptor>src/main/descriptors/unix-bin.xml</descriptor>
-   							</descriptors>
-   							otherwise we got exception on some machine
-   							group id 'xxxxxxxxxx' is too big ( > 2097151 ) 
-   							<tarLongFileMode>posix</tarLongFileMode>
-   							<finalName>kapua-broker-${project.version}</finalName>
-   							<appendAssemblyId>false</appendAssemblyId>
-   						</configuration>
-   					</execution>
-   				</executions>
-   			</plugin>
-   		</plugins>
-   	</build>
- -->
-
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -592,6 +536,15 @@
 			</build>
 		</profile>
 
+		<profile>
+			<id>docker-push</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<defaultGoal>clean install docker:build docker:push</defaultGoal>
+			</build>
+		</profile>
 	</profiles>
 
 </project>
