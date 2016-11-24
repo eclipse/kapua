@@ -1,10 +1,13 @@
 {
   "globalDependencies": {
-    "node": "registry:env/node#6.0.0+20161105011511"
+    "node": "registry:env/node#6.0.0+20161105011511",
+    "reflect-metadata": "registry:dt/reflect-metadata#0.0.0+20160630155503"
   },
   "dependencies": {
     "body-parser": "registry:npm/body-parser#1.15.2+20161116154925",
     "express": "registry:npm/express#4.14.0+20160925001530",
+    "jsonwebtoken": "registry:npm/jsonwebtoken#7.1.8+20160811031426",
+    "lodash": "registry:npm/lodash#4.0.0+20161015015725",
     "request": "registry:npm/request#2.69.0+20160428223725"
   }
 }
