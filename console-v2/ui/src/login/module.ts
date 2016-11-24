@@ -30,7 +30,7 @@ angular.module("app.login", ["satellizer", "app.constants"])
                 requiredUrlParams: ["nonce"],
             });
 
-            $authProvider.loginUrl = kapuaConfig.restApi.baseUrl + "/authentication/user";
+            $authProvider.loginUrl = "/api/authentication/user";
             // TODO remove with Authorization: Bearer
             $authProvider.tokenHeader = "X-Access-Token";
             $authProvider.tokenType = "";

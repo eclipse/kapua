@@ -6,7 +6,7 @@
   "dependencies": {
     "angular": "^1.5.8",
     "angular-local-storage": "^0.5.0",
-    "angular-patternfly": "^3.13.0",
+    "angular-patternfly": "^3.15.0",
     "angular-ui-router": "^0.3.2",
     "ngstorage-webpack": "^2.2.2",
     "satellizer": "^0.15.5",

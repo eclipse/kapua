@@ -27,7 +27,7 @@ export default class UsersListCtrl {
     private users: IUser[];
     constructor(private $http: angular.IHttpService,
                 localStorageService: angular.local.storage.ILocalStorageService) {
-        this.$http.get("http://localhost:8080/api/v1/users").then((responseData: angular.IHttpPromiseCallbackArg<IUserResponse>) => {
+        this.$http.get("/api/users").then((responseData: angular.IHttpPromiseCallbackArg<IUserResponse>) => {
             this.users = responseData.data.items.item;
         });
     }
