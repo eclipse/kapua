@@ -19,16 +19,9 @@ angular.module("app.login", ["satellizer", "app.constants"])
                 }
             });
 
-            $authProvider.oauth2({
-                name: "oauth2",
-                clientId: "console",
-                redirectUri: window.location.origin,
-                authorizationEndpoint: kapuaConfig.oauth.authorizationEndpoint,
-                url: window.location.origin + "/oauth/authenticate",
-                responseType: ["code"],
-                nonce: "abcdefg",
-                requiredUrlParams: ["nonce"],
-            });
+            let currentIdentityProvider = kapuaConfig.oauth.currentIdentityProvider;
+            let currentIdentityProviderConfig = kapuaConfig.oauth.customIdentityProviders[currentIdentityProvider];
+            $authProvider.oauth2(currentIdentityProviderConfig);
 
             $authProvider.loginUrl = "/api/authentication/user";
             // TODO remove with Authorization: Bearer

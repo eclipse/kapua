@@ -1,5 +1,0 @@
-{
-    "oauth": {
-        "authorizationEndpoint": "http://localhost:9090/auth/realms/master/protocol/openid-connect/auth"
-    }
-}
