@@ -24,7 +24,7 @@ class Server {
 
     private routes() {
         let router = express.Router();
-        this.app.use(express.static("../../ui/dist"));
+        this.app.use(express.static(path.resolve(__dirname, "../../ui/dist")));
 
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded());

@@ -10,7 +10,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 
 let kapuaServerConf = require("../conf/kapua-server.config.json");
-let privateKey = fs.readFileSync(path.resolve(__dirname, "../conf/public_key"));
+let privateKey = fs.readFileSync(path.resolve(__dirname, "../conf/public.key"));
 
 namespace Route {
     export class OAuthLogin {
@@ -67,7 +67,7 @@ namespace Route {
 
     export class Index {
         public index(req: express.Request, res: express.Response, next: express.NextFunction) {
-            res.sendFile("index.html", { root: "../../ui/dist" });
+            res.sendFile("index.html", { root: path.resolve(__dirname, "../../ui/dist") });
         }
     }
 }

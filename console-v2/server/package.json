@@ -2,7 +2,7 @@
   "name": "kapua-console-v2-server",
   "version": "0.0.1",
   "description": "Kapua console backend",
-  "main": "index.js",
+  "main": "dist/main.js",
   "dependencies": {
     "body-parser": "^1.15.2",
     "es6-shim": "^0.35.1",
@@ -22,7 +22,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "typings install",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "start:dev": "concurrently \"tsc -w\" \"nodemon --debug --watch dist --watch conf -e js,json,key\""
   },
   "repository": {
     "type": "git",
