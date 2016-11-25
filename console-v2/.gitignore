@@ -13,5 +13,5 @@
 # NPM debug log
 **/npm-debug.log
 
-# Prevent further updates to server/conf/publi._key
+# Prevent further updates to server/conf/public.key
 server/conf/public.key
