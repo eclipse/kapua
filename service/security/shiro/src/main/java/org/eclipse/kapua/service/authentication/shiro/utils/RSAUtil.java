@@ -1,6 +1,8 @@
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
 import java.security.Key;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
@@ -18,7 +20,11 @@ public class RSAUtil {
 
             rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
             rsaJsonWebKey.setKeyId("k1");
-
+            Base64.Encoder encoder = Base64.getMimeEncoder(64, new byte[]{'\n'});
+            System.out.println("-----BEGIN PUBLIC KEY-----");
+            byte[] raw = rsaJsonWebKey.getKey().getEncoded();
+            System.out.println(encoder.encodeToString(raw));
+            System.out.println("-----END PUBLIC KEY-----");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
