@@ -6,9 +6,11 @@ import "./assets/styles/login.scss";
 
 angular.module("app.login", ["satellizer", "app.constants"])
     .config(["$stateProvider", "$authProvider", "kapuaConfig",
-        ($stateProvider: angular.ui.IStateProvider,
+        (
+            $stateProvider: angular.ui.IStateProvider,
             $authProvider,
-            kapuaConfig) => {
+            kapuaConfig
+        ) => {
             $stateProvider.state("login", {
                 url: "/login",
                 views: {
@@ -28,4 +30,11 @@ angular.module("app.login", ["satellizer", "app.constants"])
             $authProvider.tokenHeader = "X-Access-Token";
             $authProvider.tokenType = "";
         }])
+    .run(["$templateCache", (
+        $templateCache: angular.ITemplateCacheService
+    ) => {
+        $templateCache.put("login/views/login-user-pass.html", require("./views/login-user-pass.html"));
+        $templateCache.put("login/views/login-sso.html", require("./views/login-sso.html"));
+        $templateCache.put("login/views/login-both.html", require("./views/login-both.html"));
+    }])
     .controller("LoginCtrl", ["$rootScope", "$http", "$state", "localStorageService", "$auth", "kapuaConfig", LoginCtrl]);
