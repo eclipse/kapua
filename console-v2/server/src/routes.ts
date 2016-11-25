@@ -37,7 +37,7 @@ namespace Route {
     }
 
     export class Api {
-        public api(req: express.Request, res: express.Response) {
+        public api(req: express.Request & bodyParser.Parsed, res: express.Response) {
             let token = <string>req.headers["x-access-token"];
             if (token) {
                 try {
@@ -54,6 +54,7 @@ namespace Route {
                 headers: {
                     "X-Access-Token": token
                 },
+                body: req.body,
                 json: true
             }, (error: Error, apiResponse: http.IncomingMessage, body: any) => {
                 if (error) {
