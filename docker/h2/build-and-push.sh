@@ -13,5 +13,9 @@
 #
 ###############################################################################
 
-docker build -t hekonsek/h2:0.2.0-SNAPSHOT .
-docker push hekonsek/h2:0.2.0-SNAPSHOT
+if [ -z "${DOCKER_ACCOUNT}" ]; then
+  DOCKER_ACCOUNT='kapua'
+fi
+
+docker build -t ${DOCKER_ACCOUNT}/h2:0.2.0-SNAPSHOT .
+docker push ${DOCKER_ACCOUNT}/h2:0.2.0-SNAPSHOT
