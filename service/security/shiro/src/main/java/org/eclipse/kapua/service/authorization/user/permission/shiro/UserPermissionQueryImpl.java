@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.authorization.user.permission.shiro;
 
 import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionQuery;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermissionQuery;
 
 /**
  * User permission query implementation.

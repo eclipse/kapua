@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.user.permission;
+package org.eclipse.kapua.service.authorization.user;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
 
@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * @since 1.0
  *
  */
-public interface UserPermissionListResult extends KapuaListResult<UserPermission>
+public interface UserPermissionListResult extends KapuaListResult<UserAccess>
 {
 
 }

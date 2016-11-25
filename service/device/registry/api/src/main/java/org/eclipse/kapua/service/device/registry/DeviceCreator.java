@@ -74,6 +74,21 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
     public void setClientId(String clientId);
 
     /**
+     * Get the device status
+     * 
+     * @return
+     */
+    @XmlElement
+    public DeviceStatus getStatus();
+
+    /**
+     * Sets the device status
+     * 
+     * @param status
+     */
+    public void setStatus(DeviceStatus status);
+
+    /**
      * Get the connection identifier
      * 
      * @return

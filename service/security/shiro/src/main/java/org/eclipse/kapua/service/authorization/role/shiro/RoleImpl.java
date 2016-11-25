@@ -26,8 +26,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
@@ -66,14 +66,13 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
      * Creates a soft clone.
      * 
      * @param role
+     * @throws KapuaException
      */
-    public RoleImpl(Role role) {
-        super(role.getScopeId());
-        id = new KapuaEid(role.getId());
-        createdOn = role.getCreatedOn();
-        createdBy = new KapuaEid(role.getCreatedBy());
+    public RoleImpl(Role role) throws KapuaException {
+        super((AbstractKapuaUpdatableEntity) role);
+
         setName(role.getName());
-        setPermissions(role.getPermissions());
+        setRolePermissions(role.getRolePermissions());
     }
 
     /**
@@ -96,7 +95,7 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
     }
 
     @Override
-    public void setPermissions(Set<RolePermission> permissions) {
+    public void setRolePermissions(Set<RolePermission> permissions) {
         this.permissions = new HashSet<>();
 
         for (RolePermission p : permissions) {
@@ -105,14 +104,8 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
     }
 
     @Override
-    public Set<RolePermission> getPermissions() {
-        Set<RolePermission> permissionsTmp = new HashSet<>();
-
-        for (RolePermissionImpl p : permissions) {
-            permissionsTmp.add(p);
-        }
-
-        return permissionsTmp;
+    @SuppressWarnings("unchecked")
+    public Set<RolePermissionImpl> getRolePermissions() {
+        return permissions;
     }
-
 }

@@ -17,9 +17,9 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionListResult;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermissionCreator;
+import org.eclipse.kapua.service.authorization.user.UserPermissionListResult;
 
 /**
  * User permission DAO

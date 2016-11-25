@@ -13,9 +13,9 @@
 package org.eclipse.kapua.service.authorization.user.permission.shiro;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionQuery;
+import org.eclipse.kapua.service.authorization.user.UserPermissionCreator;
+import org.eclipse.kapua.service.authorization.user.UserPermissionFactory;
+import org.eclipse.kapua.service.authorization.user.UserPermissionQuery;
 
 /**
  * User permission factory service implementation.

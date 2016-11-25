@@ -12,21 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import java.util.Iterator;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * Role service implementation.
@@ -37,7 +41,7 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 public class RoleServiceImpl extends AbstractKapuaService implements RoleService {
 
     public RoleServiceImpl() {
-        super(AuthenticationEntityManagerFactory.getInstance());
+        super(AuthorizationEntityManagerFactory.getInstance());
     }
 
     @Override
@@ -45,7 +49,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
             throws KapuaException {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
-        ArgumentValidator.notNull(roleCreator.getRoles(), "roleCreator.permissions");
+        ArgumentValidator.notNull(roleCreator.getRolePermissions(), "roleCreator.permissions");
 
         //
         // Check Access
@@ -60,7 +64,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
     public Role update(Role role) throws KapuaException {
         ArgumentValidator.notNull(role, "role");
         ArgumentValidator.notEmptyOrNull(role.getName(), "role.name");
-        ArgumentValidator.notNull(role.getPermissions(), "role.permissions");
+        ArgumentValidator.notNull(role.getRolePermissions(), "role.permissions");
 
         //
         // Check Access
@@ -74,6 +78,18 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
             Role currentRole = RoleDAO.find(em, role.getId());
             if (currentRole == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
+            }
+
+            //
+            // Force deletion of deleted RolePermissions.
+            // Eclipse Link does not seems to take care about
+            Iterator<RolePermission> rolePermissionsIterator = currentRole.getRolePermissions().iterator();
+            while (rolePermissionsIterator.hasNext()) {
+                RolePermission currentRolePermission = rolePermissionsIterator.next();
+
+                if (!role.getRolePermissions().contains(currentRolePermission)) {
+                    ServiceDAO.delete(em, RolePermissionImpl.class, currentRolePermission.getId());
+                }
             }
 
             Role roleUpdated = RoleDAO.update(em, role);

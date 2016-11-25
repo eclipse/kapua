@@ -25,7 +25,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
 
 @Entity(name = "UserPermission")
 @Table(name = "athz_user_permission")

@@ -183,7 +183,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Modified By", KapuaGwtModelConverter.convert(role.getModifiedBy())));
                 gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Name", role.getName()));
 
-                for (RolePermission rolePermission : role.getPermissions()) {
+                for (RolePermission rolePermission : role.getRolePermissions()) {
                     GwtRolePermission gwtRolePermission = KapuaGwtModelConverter.convert(rolePermission);
 
                     gwtRoleDescription.add(new GwtGroupedNVPair("Permission - " + rolePermission.toString(), "Domain", gwtRolePermission.getDomain()));
@@ -218,7 +218,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // If there are results
             if (role != null) {
-                for (RolePermission rolePermission : role.getPermissions()) {
+                for (RolePermission rolePermission : role.getRolePermissions()) {
                     gwtRolePermissions.add(KapuaGwtModelConverter.convert(rolePermission));
                 }
             }

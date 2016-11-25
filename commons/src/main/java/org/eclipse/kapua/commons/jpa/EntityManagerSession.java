@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import javax.persistence.PersistenceException;
-
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -30,7 +28,7 @@ public class EntityManagerSession {
     private static final Logger logger = LoggerFactory.getLogger(EntityManagerSession.class);
 
     private final EntityManagerFactory entityManagerFactory;
-    private final static int           MAX_INSERT_ALLOWED_RETRY = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
+    private static final int MAX_INSERT_ALLOWED_RETRY = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
 
     private TransactionManager transacted    = new TransactionManagerTransacted();
     private TransactionManager notTransacted = new TransactionManagerNotTransacted();
@@ -40,8 +38,7 @@ public class EntityManagerSession {
      * 
      * @param entityManagerFactory
      */
-    public EntityManagerSession(EntityManagerFactory entityManagerFactory)
-    {
+    public EntityManagerSession(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
 
     }
@@ -83,8 +80,8 @@ public class EntityManagerSession {
             transactionManager.beginTransaction(manager);
             entityManagerActionCallback.onAction(manager);
             transactionManager.commit(manager);
-        } catch (KapuaException e) {
-            if (manager!=null) {
+        } catch (Exception e) {
+            if (manager != null) {
                 manager.rollback();
             }
             throw KapuaExceptionUtils.convertPersistenceException(e);
@@ -135,7 +132,7 @@ public class EntityManagerSession {
             T result = entityManagerResultCallback.onResult(manager);
             transactionManager.commit(manager);
             return result;
-        } catch (KapuaException e) {
+        } catch (Exception e) {
             if (manager != null) {
                 manager.rollback();
             }
@@ -202,8 +199,8 @@ public class EntityManagerSession {
                     }
                     if (++retry < MAX_INSERT_ALLOWED_RETRY) {
                         logger.warn("Entity already exists. Cannot insert the entity, try again!");
-                    }
-                    else {
+                    } else {
+                        manager.rollback();
                         throw KapuaExceptionUtils.convertPersistenceException(e);
                     }
                 }
@@ -217,15 +214,15 @@ public class EntityManagerSession {
             while (!succeeded);
         }
         catch (Exception e) {
-            if (manager != null) {
-                manager.rollback();
-            }
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
+                    if (manager != null) {
+                        manager.rollback();
+                }
+                    throw KapuaExceptionUtils.convertPersistenceException(e);
+                }
         finally {
             if (manager != null) {
-                manager.close();
-            }
+            manager.close();
+        }
         }
         return instance;
     }

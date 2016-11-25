@@ -46,7 +46,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator> {
      * 
      * @since 1.0
      */
-    public Role find(KapuaId accountId, KapuaId entityId)
+    public Role find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException;
 
     /**

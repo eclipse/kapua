@@ -55,13 +55,13 @@ public class RoleCreatorImpl extends AbstractKapuaEntityCreator<Role> implements
     }
 
     @Override
-    public void setRoles(Set<RolePermission> permissions)
+    public void setRolePermissions(Set<RolePermission> permissions)
     {
         this.permissions = permissions;
     }
 
     @Override
-    public Set<RolePermission> getRoles()
+    public Set<RolePermission> getRolePermissions()
     {
         return permissions;
     }

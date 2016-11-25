@@ -12,15 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -53,7 +58,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     }
 
     public RolePermissionImpl(RolePermission rolePermission) {
-        super(rolePermission.getScopeId());
+        super((AbstractKapuaEntity) rolePermission);
 
         setId(rolePermission.getId());
         setRoleId(rolePermission.getRoleId());
@@ -100,6 +105,18 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     @Override
     public String toString() {
         return permission.toString();
+    }
+
+    @PreUpdate
+    protected void preUpdateAction()
+            throws KapuaException {
+        if (getCreatedBy() == null) {
+            setCreatedBy(KapuaSecurityUtils.getSession().getUserId());
+        }
+
+        if (getCreatedOn() == null) {
+            setCreatedOn(new Date());
+        }
     }
 
     @Override

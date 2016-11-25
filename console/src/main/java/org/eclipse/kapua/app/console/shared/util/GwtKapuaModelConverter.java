@@ -116,7 +116,7 @@ public class GwtKapuaModelConverter {
             rolePermissions.add(rp);
         }
 
-        role.setPermissions(rolePermissions);
+        role.setRolePermissions(rolePermissions);
 
         //
         // Return converted
@@ -161,7 +161,7 @@ public class GwtKapuaModelConverter {
             }
         }
 
-        roleCreator.setRoles(rolePermissions);
+        roleCreator.setRolePermissions(rolePermissions);
 
         //
         // Return converted
@@ -306,7 +306,6 @@ public class GwtKapuaModelConverter {
         }
 
         kapuaEntity.setId(convert(gwtEntity.getId()));
-        // kapuaEntity.set
     }
 
     /**

@@ -17,8 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermissionCreator;
 
 /**
  * User permission creator service implementation.

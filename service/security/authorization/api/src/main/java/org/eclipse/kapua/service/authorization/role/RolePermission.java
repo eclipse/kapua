@@ -22,12 +22,11 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * @since 1.0
  *
  */
-public interface RolePermission extends KapuaEntity
-{
+public interface RolePermission extends KapuaEntity {
+
     public static final String TYPE = "rolePermission";
 
-    default public String getType()
-    {
+    public default String getType() {
         return TYPE;
     }
 

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authorization.user.role;
 
 import java.util.Set;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -25,12 +26,11 @@ import org.eclipse.kapua.service.authorization.role.Role;
  * @since 1.0
  * 
  */
-public interface UserRoles extends KapuaEntity
-{
+public interface UserRoles extends KapuaEntity {
+
     public static final String TYPE = "userRole";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -52,8 +52,9 @@ public interface UserRoles extends KapuaEntity
      * Set the roles list
      * 
      * @param roles
+     * @throws KapuaException
      */
-    public void setRoles(Set<Role> roles);
+    public void setRoles(Set<Role> roles) throws KapuaException;
 
     /**
      * Get the roles list

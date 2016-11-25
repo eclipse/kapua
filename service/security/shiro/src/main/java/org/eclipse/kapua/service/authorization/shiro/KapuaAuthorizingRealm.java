@@ -34,10 +34,10 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionQuery;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionService;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermissionFactory;
+import org.eclipse.kapua.service.authorization.user.UserPermissionQuery;
+import org.eclipse.kapua.service.authorization.user.UserPermissionService;
 import org.eclipse.kapua.service.authorization.user.permission.shiro.UserPermissionPredicates;
 import org.eclipse.kapua.service.authorization.user.role.UserRoles;
 import org.eclipse.kapua.service.authorization.user.role.UserRolesService;
@@ -173,7 +173,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         if (userRoles != null) {
             for (Role role : userRoles.getRoles()) {
                 logger.trace("User: {} has role: {}", username, role);
-                for (RolePermission rolePermission : role.getPermissions()) {
+                for (RolePermission rolePermission : role.getRolePermissions()) {
 
                     Permission p = permissionFactory.newPermission(rolePermission.getPermission().getDomain(),
                             rolePermission.getPermission().getAction(),

@@ -49,12 +49,12 @@ public interface Role extends KapuaUpdatableEntity {
      * 
      * @param permissions
      */
-    public void setPermissions(Set<RolePermission> permissions);
+    public void setRolePermissions(Set<RolePermission> permissions);
 
     /**
      * Get the permissions set
      * 
      * @return
      */
-    public Set<RolePermission> getPermissions();
+    public <R extends RolePermission> Set<R> getRolePermissions();
 }

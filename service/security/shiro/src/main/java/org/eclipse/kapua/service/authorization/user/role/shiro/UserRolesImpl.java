@@ -26,6 +26,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -41,25 +42,24 @@ import org.eclipse.kapua.service.authorization.user.role.UserRoles;
  * @since 1.0
  *
  */
-public class UserRolesImpl extends AbstractKapuaEntity implements UserRoles
-{
+public class UserRolesImpl extends AbstractKapuaEntity implements UserRoles {
+
     private static final long serialVersionUID = -3760818776351242930L;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "user_id"))
+            @AttributeOverride(name = "eid", column = @Column(name = "user_id"))
     })
-    private KapuaEid          userId;
+    private KapuaEid userId;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "athz_user_role_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<RoleImpl>     roles;
+    private Set<RoleImpl> roles;
 
     /**
      * Constructor
      */
-    protected UserRolesImpl()
-    {
+    protected UserRolesImpl() {
         super();
     }
 
@@ -68,28 +68,24 @@ public class UserRolesImpl extends AbstractKapuaEntity implements UserRoles
      * 
      * @param scopeId
      */
-    public UserRolesImpl(KapuaId scopeId)
-    {
+    public UserRolesImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public void setUserId(KapuaId userId)
-    {
+    public void setUserId(KapuaId userId) {
         if (userId.getId() != null) {
             this.userId = new KapuaEid(userId.getId());
         }
     }
 
     @Override
-    public KapuaId getUserId()
-    {
+    public KapuaId getUserId() {
         return userId;
     }
 
     @Override
-    public void setRoles(Set<Role> roles)
-    {
+    public void setRoles(Set<Role> roles) throws KapuaException {
         Set<RoleImpl> rolesTmp = new HashSet<>();
 
         for (Role r : roles) {
@@ -101,8 +97,7 @@ public class UserRolesImpl extends AbstractKapuaEntity implements UserRoles
     }
 
     @Override
-    public Set<Role> getRoles()
-    {
+    public Set<Role> getRoles() {
         Set<Role> rolesTmp = new HashSet<>();
 
         for (Role r : roles) {

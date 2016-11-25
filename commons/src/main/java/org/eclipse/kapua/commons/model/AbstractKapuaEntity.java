@@ -49,23 +49,23 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     @EmbeddedId
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "id", nullable = false, updatable = false))
     })
     protected KapuaEid id;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "scope_id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "scope_id", nullable = false, updatable = false))
     })
     protected KapuaEid scopeId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on", nullable = false, updatable = false)
-    protected Date     createdOn;
+    protected Date createdOn;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "created_by", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "created_by", nullable = false, updatable = false))
     })
     protected KapuaEid createdBy;
 
@@ -73,6 +73,18 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * Constructor
      */
     protected AbstractKapuaEntity() {
+    }
+
+    /**
+     * Constructor
+     */
+    protected AbstractKapuaEntity(AbstractKapuaEntity entity) {
+        this();
+
+        setId(entity.getId());
+        setScopeId(entity.getScopeId());
+        setCreatedBy(entity.getCreatedBy());
+        setCreatedOn(entity.getCreatedOn());
     }
 
     /**
@@ -88,18 +100,20 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     }
 
     @Override
-    public KapuaId getScopeId() {
-        return scopeId;
-    }
-
-    @Override
     public KapuaId getId() {
         return id;
     }
 
     @Override
     public void setId(KapuaId id) {
-    	this.id = (KapuaEid)id;
+        if (id != null) {
+            this.id = new KapuaEid(id);
+        }
+    }
+
+    @Override
+    public KapuaId getScopeId() {
+        return scopeId;
     }
 
     /**
@@ -108,7 +122,9 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * @param scopeId
      */
     public void setScopeId(KapuaId scopeId) {
-        this.scopeId = (KapuaEid)scopeId;
+        if (scopeId != null) {
+            this.scopeId = new KapuaEid(scopeId);
+        }
     }
 
     @Override
@@ -116,9 +132,29 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
         return createdOn;
     }
 
+    /**
+     * Set the created on date
+     * 
+     * @param createdOn
+     */
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
     @Override
     public KapuaId getCreatedBy() {
         return createdBy;
+    }
+
+    /**
+     * Set the created by identifier
+     * 
+     * @param createdBy
+     */
+    public void setCreatedBy(KapuaId createdBy) {
+        if (createdBy != null) {
+            this.createdBy = new KapuaEid(createdBy);
+        }
     }
 
     /**
@@ -135,21 +171,4 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
         this.createdOn = new Date();
     }
 
-    /**
-     * Set the created on date
-     * 
-     * @param createdOn
-     */
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    /**
-     * Set the created by identifier
-     * 
-     * @param createdBy
-     */
-    public void setCreatedBy(KapuaId createdBy) {
-        this.createdBy = (KapuaEid)createdBy;
-    }
 }

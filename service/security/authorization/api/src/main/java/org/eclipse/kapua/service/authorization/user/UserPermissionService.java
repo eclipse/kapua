@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.user.permission;
+package org.eclipse.kapua.service.authorization.user;
 
 import java.util.Set;
 
@@ -25,30 +25,30 @@ import org.eclipse.kapua.service.KapuaEntityService;
  * @since 1.0
  *
  */
-public interface UserPermissionService extends KapuaEntityService<UserPermission, UserPermissionCreator>
+public interface UserPermissionService extends KapuaEntityService<UserAccess, UserPermissionCreator>
 {
     /**
      * Create e new user permission
      */
-    public UserPermission create(UserPermissionCreator creator)
+    public UserAccess create(UserPermissionCreator creator)
         throws KapuaException;
 
     /**
      * Find the user permission by scope identifier and user identifier
      */
-    public UserPermission find(KapuaId accountId, KapuaId entityId)
+    public UserAccess find(KapuaId accountId, KapuaId entityId)
         throws KapuaException;
 
     /**
      * Return the user permission list matching the provided query
      */
-    public UserPermissionListResult query(KapuaQuery<UserPermission> query)
+    public UserPermissionListResult query(KapuaQuery<UserAccess> query)
         throws KapuaException;
 
     /**
      * Return the count of the user permission matching the provided query
      */
-    public long count(KapuaQuery<UserPermission> query)
+    public long count(KapuaQuery<UserAccess> query)
         throws KapuaException;
 
     /**

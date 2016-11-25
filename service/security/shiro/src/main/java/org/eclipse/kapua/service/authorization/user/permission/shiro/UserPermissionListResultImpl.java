@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.authorization.user.permission.shiro;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionListResult;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermissionListResult;
 
 /**
  * User permission list result implementation.

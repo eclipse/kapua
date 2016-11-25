@@ -12,14 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * Role DAO
@@ -42,15 +47,25 @@ public class RoleDAO extends ServiceDAO {
         Role role = new RoleImpl(creator.getScopeId());
 
         role.setName(creator.getName());
-        role.setPermissions(creator.getRoles());
+        role.setRolePermissions(creator.getRolePermissions());
+
+        // Remove duplicates from role permissions
+        cleanDuplicates(role);
 
         return ServiceDAO.create(em, role);
     }
 
     public static Role update(EntityManager em, Role role) {
+
         //
         // Update Role
         RoleImpl roleImpl = (RoleImpl) role;
+
+        // Remove duplicates from role permissions
+        cleanDuplicates(roleImpl);
+
+        // for (RolePermission rp : role.getRolePermissions())
+        // up
 
         return ServiceDAO.update(em, RoleImpl.class, roleImpl);
     }
@@ -100,6 +115,29 @@ public class RoleDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<Role> roleQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Role.class, RoleImpl.class, roleQuery);
+    }
+
+    //
+    // Private methods
+    //
+    protected static void cleanDuplicates(Role role) {
+
+        Set<RolePermission> rolePermissions = role.getRolePermissions();
+
+        Iterator<RolePermission> iRpA = rolePermissions.iterator();
+        while (iRpA.hasNext()) {
+            Permission pA = iRpA.next().getPermission();
+
+            Iterator<RolePermission> iRpB = rolePermissions.iterator();
+            while (iRpB.hasNext()) {
+                Permission pB = iRpB.next().getPermission();
+
+                if (pA != pB && pA.equals(pB)) {
+                    iRpA.remove();
+                    break;
+                }
+            }
+        }
     }
 
 }

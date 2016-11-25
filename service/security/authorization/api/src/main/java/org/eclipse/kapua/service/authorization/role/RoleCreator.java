@@ -43,12 +43,12 @@ public interface RoleCreator extends KapuaEntityCreator<Role>
      * 
      * @param permissions
      */
-    public void setRoles(Set<RolePermission> permissions);
+    public void setRolePermissions(Set<RolePermission> permissions);
 
     /**
      * Return the {@link RolePermission} set
      * 
      * @return
      */
-    public Set<RolePermission> getRoles();
+    public Set<RolePermission> getRolePermissions();
 }

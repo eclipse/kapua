@@ -25,10 +25,10 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionListResult;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionService;
+import org.eclipse.kapua.service.authorization.user.UserPermission;
+import org.eclipse.kapua.service.authorization.user.UserPermissionCreator;
+import org.eclipse.kapua.service.authorization.user.UserPermissionListResult;
+import org.eclipse.kapua.service.authorization.user.UserPermissionService;
 
 /**
  * User permission service implementation.
