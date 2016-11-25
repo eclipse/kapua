@@ -1,14 +1,17 @@
 # Node Modules
-node_modules/
+**/node_modules/
 
 # TypeScript Typings
-typings/
+**/typings/
 
 # Visual Studio Code settings
-.vscode/
+**/.vscode/
 
 # Final build folder
 **/dist/
 
 # NPM debug log
-npm-debug.log
+**/npm-debug.log
+
+# Prevent further updates to server/conf/publi._key
+server/conf/public.key
