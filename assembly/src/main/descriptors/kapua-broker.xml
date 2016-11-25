@@ -159,8 +159,6 @@
                 <include>${pom.groupId}:kapua-device-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
-                <include>${pom.groupId}:kapua-idgenerator-api</include>
-                <include>${pom.groupId}:kapua-idgenerator-sequence</include>
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
@@ -171,7 +169,7 @@
                 <include>${pom.groupId}:kapua-translator-kapua-kura</include>
                 <include>${pom.groupId}:kapua-translator-kura-jms</include>
                 <include>${pom.groupId}:kapua-translator-kura-mqtt</include>
-                <include>${pom.groupId}:kapua-transport</include>
+                <include>${pom.groupId}:kapua-transport-api</include>
                 <include>${pom.groupId}:kapua-transport-jms</include>
                 <include>${pom.groupId}:kapua-transport-mqtt</include>
             </includes>
