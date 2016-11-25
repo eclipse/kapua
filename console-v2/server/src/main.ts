@@ -24,7 +24,7 @@ class Server {
 
     private routes() {
         let router = express.Router();
-        this.app.use(express.static("ui/dist"));
+        this.app.use(express.static("../../ui/dist"));
 
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded());
@@ -36,7 +36,7 @@ class Server {
         router.all("/api/*", api.api);
 
         let index: routes.Index = new routes.Index();
-        router.get("*", (req, res, next) => { res.sendFile("index.html", { root: "ui/dist" }); });
+        router.get("*", index.index);
 
         this.app.use(router);
     }

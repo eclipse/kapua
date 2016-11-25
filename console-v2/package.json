@@ -1,0 +1,22 @@
+{
+  "name": "kapua-console-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "concurrently \"cd server && npm i\" \"cd ui && npm i\"",
+    "start": "cd server && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eclipse/kapua.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eclipse/kapua/issues"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^3.1.0"
+  }
+}
