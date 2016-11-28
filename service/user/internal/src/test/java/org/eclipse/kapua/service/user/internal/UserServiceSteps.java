@@ -317,7 +317,7 @@ public class UserServiceSteps extends KapuaTest {
         }
     }
 
-    @When("^I retreive metadata$")
+    @When("^I retrieve metadata$")
     public void getMetadata() throws KapuaException {
         metadata = userService.getConfigMetadata();
     }
@@ -329,7 +329,7 @@ public class UserServiceSteps extends KapuaTest {
         }
     }
 
-    @When("^I retreive \"(.*)\" metadata with id \"(.*)\" in scope (\\d+)$")
+    @When("^I retrieve \"(.*)\" metadata with id \"(.*)\" in scope (\\d+)$")
     public void getMetadataWithIdInScope(String type, String metadataId, int scopeId) throws KapuaException {
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
         Map<String, Object> values = userService.getConfigValues(scpId);
