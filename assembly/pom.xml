@@ -472,6 +472,12 @@
 								</runCmds>
 							</build>
 						</image>
+						<image>
+							<name>${docker.account}/kapua-sql</name>
+							<build>
+								<dockerFileDir>sql</dockerFileDir>
+							</build>
+						</image>
 					</images>
 				</configuration>
 			</plugin>

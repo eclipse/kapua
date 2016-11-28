@@ -50,7 +50,7 @@ echo 'Starting web console'
 
 oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n eclipse-kapua
 
-##oc expose svc/kapua-console --hostname=kapua-console.com
+##oc expose svc/kapua-console
 
 echo 'Web console started.'
 
