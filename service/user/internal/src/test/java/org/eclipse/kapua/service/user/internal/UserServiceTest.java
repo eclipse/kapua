@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public class UserServiceTest extends AbstractUserServiceTest
      * We should ignore this test until we have build fixed.
      */
     @Test
+    @Ignore
     public void testCreate()
         throws Exception
     {
