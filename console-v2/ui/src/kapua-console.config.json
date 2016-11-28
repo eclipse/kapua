@@ -1,20 +1,24 @@
-export default {
-    oauth: {
+{
+    "oauth": {
         "currentIdentityProvider": "custom1",
         "customIdentityProviders": {
             "custom1": {
                 "name": "oauth2",
                 "clientId": "console",
-                "redirectUri": window.location.origin,
+                "redirectUri": "http://localhost:3000",
                 "authorizationEndpoint": "http://localhost:9090/auth/realms/master/protocol/openid-connect/auth",
-                "url": window.location.origin + "/oauth/authenticate",
-                "responseType": ["code"],
+                "url": "http://localhost:3000/oauth/authenticate",
+                "responseType": [
+                    "code"
+                ],
                 "nonce": "abcdefg",
-                "requiredUrlParams": ["nonce"]
+                "requiredUrlParams": [
+                    "nonce"
+                ]
             }
         }
     },
-    login: {
-        mode: "sso"
+    "login": {
+        "mode": "both"
     }
-};
+}
