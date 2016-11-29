@@ -30,14 +30,13 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
-@Embeddable
-@XmlAccessorType(XmlAccessType.FIELD)
 /**
  * Permission implementation.
  * 
  * @since 1.0
- *
  */
+@Embeddable
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PermissionImpl implements Permission, Serializable {
 
     private static final long serialVersionUID = 1480557438886065675L;
@@ -56,8 +55,24 @@ public class PermissionImpl implements Permission, Serializable {
     })
     private KapuaEid targetScopeId;
 
+    /**
+     * Constructor
+     */
     protected PermissionImpl() {
         super();
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param permission
+     */
+    public PermissionImpl(Permission permission) {
+        this();
+
+        setDomain(permission.getDomain());
+        setAction(permission.getAction());
+        setTargetScopeId(permission.getTargetScopeId());
     }
 
     /**
@@ -69,11 +84,9 @@ public class PermissionImpl implements Permission, Serializable {
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId) {
         this();
-        this.domain = domain;
-        this.action = action;
-        if (targetScopeId != null) {
-            this.targetScopeId = new KapuaEid(targetScopeId.getId());
-        }
+        setDomain(domain);
+        setAction(action);
+        setTargetScopeId(targetScopeId);
     }
 
     @Override
@@ -98,7 +111,9 @@ public class PermissionImpl implements Permission, Serializable {
 
     @Override
     public void setTargetScopeId(KapuaId targetScopeId) {
-        this.targetScopeId = new KapuaEid(targetScopeId.getId());
+        if (targetScopeId != null) {
+            this.targetScopeId = new KapuaEid(targetScopeId);
+        }
     }
 
     @Override

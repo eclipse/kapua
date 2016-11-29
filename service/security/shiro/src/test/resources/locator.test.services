@@ -18,10 +18,8 @@ org.eclipse.kapua.service.authorization.AuthorizationService
 org.eclipse.kapua.service.authorization.permission.PermissionFactory
 org.eclipse.kapua.service.authorization.role.RoleFactory
 org.eclipse.kapua.service.authorization.role.RoleService
-org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory
-org.eclipse.kapua.service.authorization.user.permission.UserPermissionService
-org.eclipse.kapua.service.authorization.user.role.UserRolesFactory
-org.eclipse.kapua.service.authorization.user.role.UserRolesService
+org.eclipse.kapua.service.authorization.access.AccessInfoFactory
+org.eclipse.kapua.service.authorization.access.AccessInfoService
 #
 org.eclipse.kapua.service.account.AccountFactory
 org.eclipse.kapua.service.account.AccountService

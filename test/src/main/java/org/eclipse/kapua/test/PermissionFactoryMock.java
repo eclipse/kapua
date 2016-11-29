@@ -21,27 +21,23 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 @TestService
-public class PermissionFactoryMock implements PermissionFactory
-{
+public class PermissionFactoryMock implements PermissionFactory {
 
     @Override
-    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId)
-    {
+    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public RolePermission newRolePermission(KapuaId scopeId, String domain, Actions action, KapuaId targetScopeId)
-    {
+    public RolePermission newRolePermission(KapuaId scopeId, Permission p) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Permission parseString(String stringPermission)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

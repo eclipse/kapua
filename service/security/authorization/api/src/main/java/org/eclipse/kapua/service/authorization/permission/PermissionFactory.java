@@ -23,8 +23,8 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
  * @since 1.0
  *
  */
-public interface PermissionFactory extends KapuaObjectFactory
-{
+public interface PermissionFactory extends KapuaObjectFactory {
+
     /**
      * Creates a new permission for the specified domain, action and target scope identifier
      * 
@@ -44,7 +44,7 @@ public interface PermissionFactory extends KapuaObjectFactory
      * @param targetScopeId
      * @return
      */
-    public RolePermission newRolePermission(KapuaId scopeId, String domain, Actions action, KapuaId targetScopeId);
+    public RolePermission newRolePermission(KapuaId scopeId, Permission p);
 
     /**
      * Parse the permission string representation to build a new {@link Permission}
@@ -54,5 +54,5 @@ public interface PermissionFactory extends KapuaObjectFactory
      * @throws KapuaException
      */
     public Permission parseString(String stringPermission)
-        throws KapuaException;
+            throws KapuaException;
 }

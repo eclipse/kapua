@@ -32,12 +32,9 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -67,7 +64,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
             UserCreator userCreator = userFactory.newCreator(scopeId,
-                                                             gwtUserCreator.getUsername());
+                    gwtUserCreator.getUsername());
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
@@ -85,32 +82,32 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 permissions.addAll(Arrays.asList(gwtUserCreator.getPermissions().split(",")));
             }
 
-            UserPermissionService userPermissionService = locator.getService(UserPermissionService.class);
-            UserPermissionFactory userPermissionFactory = locator.getFactory(UserPermissionFactory.class);
+            AccessInfoService userPermissionService = locator.getService(AccessInfoService.class);
+            AccessInfoFactory userPermissionFactory = locator.getFactory(AccessInfoFactory.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
             for (String p : permissions) {
-                UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(user.getScopeId());
-                userPermissionCreator.setUserId(scopeId);
-
-                String[] tokens = p.split(":");
-                String domain = null;
-                Actions action = null;
-                KapuaId targetScopeId = null;
-                if (tokens.length > 0) {
-                    domain = tokens[0];
-                }
-                if (tokens.length > 1) {
-                    action = Actions.valueOf(tokens[1]);
-                }
-                if (tokens.length > 2) {
-                    targetScopeId = KapuaEid.parseCompactId(tokens[2]);
-                }
-
-                Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
-                userPermissionCreator.setPermission(permission);
-
-                userPermissionService.create(userPermissionCreator);
+                // UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(user.getScopeId());
+                // userPermissionCreator.setAccessId(scopeId);
+                //
+                // String[] tokens = p.split(":");
+                // String domain = null;
+                // Actions action = null;
+                // KapuaId targetScopeId = null;
+                // if (tokens.length > 0) {
+                // domain = tokens[0];
+                // }
+                // if (tokens.length > 1) {
+                // action = Actions.valueOf(tokens[1]);
+                // }
+                // if (tokens.length > 2) {
+                // targetScopeId = KapuaEid.parseCompactId(tokens[2]);
+                // }
+                //
+                // Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
+                // userPermissionCreator.setPermission(permission);
+                //
+                // userPermissionService.create(userPermissionCreator);
             }
 
             //
@@ -119,9 +116,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
             CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
-                                                                               user.getId(),
-                                                                               CredentialType.PASSWORD,
-                                                                               gwtUserCreator.getPassword());
+                    user.getId(),
+                    CredentialType.PASSWORD,
+                    gwtUserCreator.getPassword());
             credentialService.create(credentialCreator);
 
             // convert to GwtAccount and return
@@ -185,7 +182,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 // user.getId(),
                 // CredentialType.PASSWORD,
                 // gwtUser.getPassword());
-                        //
+                //
                 // credentialService.create(credentialCreator);
                 // }
                 // }

@@ -49,7 +49,6 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
-import org.eclipse.kapua.service.authorization.user.permission.shiro.UserPermissionDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -207,9 +206,10 @@ public class KapuaGwtModelConverter {
             gwtDomain = GwtDomain.role;
         } else if (UserDomain.USER.equals(domain)) {
             gwtDomain = GwtDomain.user;
-        } else if (UserPermissionDomain.USER_PERMISSION.equals(domain)) {
-            gwtDomain = GwtDomain.user_permission;
         }
+        // else if (UserPermissionDomain.USER_PERMISSION.equals(domain)) {
+        // gwtDomain = GwtDomain.user_permission;
+        // }
 
         return gwtDomain;
     }

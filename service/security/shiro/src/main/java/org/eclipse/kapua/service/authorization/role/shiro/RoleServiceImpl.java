@@ -49,7 +49,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
             throws KapuaException {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
-        ArgumentValidator.notNull(roleCreator.getRolePermissions(), "roleCreator.permissions");
+        ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
 
         //
         // Check Access

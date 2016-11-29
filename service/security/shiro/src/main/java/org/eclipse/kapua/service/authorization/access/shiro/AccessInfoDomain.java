@@ -10,24 +10,19 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Authorization error codes
+ * User permission domain.<br>
+ * Used to describe the user permission domain in the {@link Permission}.
  * 
- * since 1.0
- * 
+ * @since 1.0
+ *
  */
-public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
-    /**
-     * Invalid string permission representation
-     */
-    INVALID_STRING_PERMISSION,
+public interface AccessInfoDomain {
+	
+    String ACCESS_INFO = "user_permission";
 
-    /**
-     * One or more embedded entities is not found or does not match the scopeId of the root entity
-     */
-    ENTITY_SCOPE_MISSMATCH
 }

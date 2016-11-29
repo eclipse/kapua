@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -47,7 +48,15 @@ public class RoleDAO extends ServiceDAO {
         Role role = new RoleImpl(creator.getScopeId());
 
         role.setName(creator.getName());
-        role.setRolePermissions(creator.getRolePermissions());
+
+        if (creator.getPermissions() != null) {
+            Set<RolePermission> rolePermissions = new HashSet<>();
+            for (Permission p : creator.getPermissions()) {
+                rolePermissions.add(new RolePermissionImpl(role.getScopeId(), p));
+
+            }
+            role.setRolePermissions(rolePermissions);
+        }
 
         // Remove duplicates from role permissions
         cleanDuplicates(role);
@@ -63,9 +72,6 @@ public class RoleDAO extends ServiceDAO {
 
         // Remove duplicates from role permissions
         cleanDuplicates(roleImpl);
-
-        // for (RolePermission rp : role.getRolePermissions())
-        // up
 
         return ServiceDAO.update(em, RoleImpl.class, roleImpl);
     }

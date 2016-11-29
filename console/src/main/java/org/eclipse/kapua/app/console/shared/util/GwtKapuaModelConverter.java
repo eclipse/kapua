@@ -29,7 +29,6 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
-import org.eclipse.kapua.service.authorization.user.permission.shiro.UserPermissionDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
@@ -107,9 +106,7 @@ public class GwtKapuaModelConverter {
 
             RolePermission rp = permissionFactory.newRolePermission(//
                     scopeId, //
-                    p.getDomain(), //
-                    p.getAction(), //
-                    p.getTargetScopeId());
+                    p);
             rp.setId(convert(gwtRolePermission.getId()));
             rp.setRoleId(role.getId());
 
@@ -136,7 +133,6 @@ public class GwtKapuaModelConverter {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
         RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
         // Convert scopeId
         KapuaId scopeId = convert(gwtRoleCreator.getScopeId());
@@ -146,22 +142,14 @@ public class GwtKapuaModelConverter {
         roleCreator.setName(gwtRoleCreator.getName());
 
         // Convert permission associated with role
-        Set<RolePermission> rolePermissions = new HashSet<RolePermission>();
+        Set<Permission> permissions = new HashSet<Permission>();
         if (gwtRoleCreator.getPermissions() != null) {
             for (GwtPermission gwtPermission : gwtRoleCreator.getPermissions()) {
-                Permission p = convert(gwtPermission);
-
-                RolePermission rp = permissionFactory.newRolePermission(//
-                        scopeId, //
-                        p.getDomain(), //
-                        p.getAction(), //
-                        p.getTargetScopeId());
-
-                rolePermissions.add(rp);
+                permissions.add(convert(gwtPermission));
             }
         }
 
-        roleCreator.setRolePermissions(rolePermissions);
+        roleCreator.setPermissions(permissions);
 
         //
         // Return converted
@@ -264,7 +252,7 @@ public class GwtKapuaModelConverter {
                 domain = UserDomain.USER;
                 break;
             case user_permission:
-                domain = UserPermissionDomain.USER_PERMISSION;
+                // domain = UserPermissionDomain.USER_PERMISSION;
                 break;
             }
         }

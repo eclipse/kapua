@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.role;
+package org.eclipse.kapua.service.authorization.access;
 
 import java.util.Set;
 
@@ -18,44 +18,62 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.kapua.model.KapuaEntityCreator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Role creator service definition.
- * 
+ * Access info creator service definition
+ *
  * @since 1.0
  * 
  */
-public interface RoleCreator extends KapuaEntityCreator<Role> {
+public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
 
     /**
-     * Set the permission name
+     * Set the user identifier
      * 
-     * @param name
+     * @param userId
      */
-    public void setName(String name);
+    public void setUserId(KapuaId userId);
 
     /**
-     * Return the permission name
+     * get the user identifier
      * 
      * @return
      */
-    @XmlElement(name = "name")
-    public String getName();
+    @XmlElement(name = "userId")
+    public KapuaId getUserId();
 
     /**
-     * Set the {@link RolePermission} set
+     * Set user role ids
      * 
-     * @param permissions
+     * @param role
+     */
+    public void setRoleIds(Set<KapuaId> roleIds);
+
+    /**
+     * Get user role ids
+     * 
+     * @return
+     */
+    @XmlElementWrapper(name = "roleIds")
+    @XmlElement(name = "roleId")
+    public Set<KapuaId> getRoleIds();
+
+    /**
+     * Set user permissions
+     * 
+     * @param permission
      */
     public void setPermissions(Set<Permission> permissions);
 
     /**
-     * Return the {@link RolePermission} set
+     * Get user permissions
      * 
      * @return
      */
     @XmlElementWrapper(name = "permissions")
     @XmlElement(name = "permission")
     public <P extends Permission> Set<P> getPermissions();
+
 }

@@ -10,85 +10,83 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.role.shiro;
-
-import java.util.Date;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
- * Role permission implementation.
+ * User permission implementation.
  * 
  * @since 1.0
+ *
  */
-@Entity(name = "RolePermission")
-@Table(name = "athz_role_permission")
-public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermission {
+@Entity(name = "AccessPermission")
+@Table(name = "athz_access_permission")
+public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessPermission {
 
-    private static final long serialVersionUID = -4107313856966377197L;
+    private static final long serialVersionUID = -3760818776351242930L;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "role_id"))
+            @AttributeOverride(name = "eid", column = @Column(name = "access_info_id", nullable = false, updatable = false))
     })
-    private KapuaEid roleId;
+    private KapuaEid accessId;
 
     @Embedded
     private PermissionImpl permission;
 
-    protected RolePermissionImpl() {
+    /**
+     * Constructor
+     */
+    protected AccessPermissionImpl() {
         super();
     }
 
     /**
      * Constructor
      * 
-     * @param rolePermission
+     * @param scopeId
      */
-    public RolePermissionImpl(RolePermission rolePermission) {
-        super((AbstractKapuaEntity) rolePermission);
-
-        setId(rolePermission.getId());
-        setRoleId(rolePermission.getRoleId());
-        setPermission(rolePermission.getPermission());
+    public AccessPermissionImpl(KapuaId scopeId) {
+        super(scopeId);
     }
 
     /**
      * Constructor
      * 
-     * @param scopeId
-     * @param p
+     * @param accessPermission
      */
-    public RolePermissionImpl(KapuaId scopeId, Permission p) {
-        super(scopeId);
-        setPermission(p);
+    public AccessPermissionImpl(AccessPermission accessPermission) {
+        super((AbstractKapuaEntity) accessPermission);
+
+        setAccessId(accessPermission.getAccessId());
+        setPermission(accessPermission.getPermission());
     }
 
     @Override
-    public void setRoleId(KapuaId roleId) {
-        if (roleId != null) {
-            this.roleId = new KapuaEid(roleId.getId());
+    public void setAccessId(KapuaId userId) {
+        if (userId != null) {
+            this.accessId = new KapuaEid(userId);
+        } else {
+            this.accessId = null;
         }
     }
 
     @Override
-    public KapuaId getRoleId() {
-        return roleId;
+    public KapuaId getAccessId() {
+        return accessId;
     }
 
     @Override
@@ -96,38 +94,22 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
         if (permission != null) {
             this.permission = new PermissionImpl(permission);
         } else {
-            permission = null;
+            this.permission = null;
         }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Permission getPermission() {
         return permission;
-    }
-
-    @Override
-    public String toString() {
-        return permission.toString();
-    }
-
-    @PreUpdate
-    protected void preUpdateAction()
-            throws KapuaException {
-        if (getCreatedBy() == null) {
-            setCreatedBy(KapuaSecurityUtils.getSession().getUserId());
-        }
-
-        if (getCreatedOn() == null) {
-            setCreatedOn(new Date());
-        }
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((accessId == null) ? 0 : accessId.hashCode());
         result = prime * result + ((permission == null) ? 0 : permission.hashCode());
-        result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
         return result;
     }
 
@@ -139,16 +121,16 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
             return false;
         if (getClass() != obj.getClass())
             return false;
-        RolePermissionImpl other = (RolePermissionImpl) obj;
+        AccessPermissionImpl other = (AccessPermissionImpl) obj;
+        if (accessId == null) {
+            if (other.accessId != null)
+                return false;
+        } else if (!accessId.equals(other.accessId))
+            return false;
         if (permission == null) {
             if (other.permission != null)
                 return false;
         } else if (!permission.equals(other.permission))
-            return false;
-        if (roleId == null) {
-            if (other.roleId != null)
-                return false;
-        } else if (!roleId.equals(other.roleId))
             return false;
         return true;
     }

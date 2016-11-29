@@ -10,24 +10,19 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 
 /**
- * Authorization error codes
+ * Access info list result implementation.
  * 
- * since 1.0
+ * @since 1.0
  * 
  */
-public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
-    /**
-     * Invalid string permission representation
-     */
-    INVALID_STRING_PERMISSION,
+public class AccessInfoListResultImpl extends KapuaListResultImpl<AccessInfo> implements AccessInfoListResult {
 
-    /**
-     * One or more embedded entities is not found or does not match the scopeId of the root entity
-     */
-    ENTITY_SCOPE_MISSMATCH
+    private static final long serialVersionUID = 2231053707705207563L;
 }
