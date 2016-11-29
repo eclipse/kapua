@@ -38,7 +38,7 @@ namespace Route {
 
     export class Api {
         public api(req: express.Request & bodyParser.Parsed, res: express.Response) {
-            let token = <string>req.headers["x-access-token"];
+            let token = _.replace(<string>req.headers["authorization"], "Bearer ", "");
             if (token) {
                 try {
                     let decoded = jwt.verify(token, privateKey);
@@ -51,9 +51,7 @@ namespace Route {
             request({
                 url: apiUrl,
                 method: req.method,
-                headers: {
-                    "X-Access-Token": token
-                },
+                headers: req.headers,
                 body: req.body,
                 json: true
             }, (error: Error, apiResponse: http.IncomingMessage, body: any) => {

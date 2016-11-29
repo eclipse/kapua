@@ -30,6 +30,8 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
     private static final String OPTIONS = "OPTIONS";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER = "Bearer";
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -51,11 +53,13 @@ public class KapuaTokenAuthenticationFilter extends AuthenticatingFilter {
 
         //
         // Extract token
-        KapuaApiSetting settings = KapuaApiSetting.getInstance();
-        String accessTokenHeaderName = settings.getString(KapuaApiSettingKeys.API_AUTHENTICATION_HEADER_ACCESS_TOKEN_NAME);
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String tokenId = httpRequest.getHeader(accessTokenHeaderName);
-
+        String authorizationHeader = httpRequest.getHeader(AUTHORIZATION_HEADER);
+        String tokenId = null;
+        if (authorizationHeader != null) {
+            tokenId = httpRequest.getHeader(AUTHORIZATION_HEADER).replace(BEARER + " ", "");
+        }
+        
         //
         // Build AccessToken for Shiro Auth
         KapuaLocator locator = KapuaLocator.getInstance();

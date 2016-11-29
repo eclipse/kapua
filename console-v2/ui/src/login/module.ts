@@ -26,9 +26,6 @@ angular.module("app.login", ["satellizer", "app.constants"])
             $authProvider.oauth2(currentIdentityProviderConfig);
 
             $authProvider.loginUrl = "/api/authentication/user";
-            // TODO remove with Authorization: Bearer
-            $authProvider.tokenHeader = "X-Access-Token";
-            $authProvider.tokenType = "";
         }])
     .run(["$templateCache", (
         $templateCache: angular.ITemplateCacheService
