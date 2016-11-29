@@ -4,6 +4,7 @@
     "angular-local-storage": "registry:dt/angular-local-storage#0.1.5+20160602154142",
     "angular-ui-router": "registry:dt/angular-ui-router#1.1.5+20160810191828",
     "jquery": "registry:dt/jquery#1.10.0+20160929162922",
+    "oclazyload": "registry:dt/oclazyload#0.0.0+20160317120654",
     "uglify-js": "registry:dt/uglify-js#2.6.1+20160316155526",
     "webpack": "registry:dt/webpack#1.12.9+20161025142220"
   },
