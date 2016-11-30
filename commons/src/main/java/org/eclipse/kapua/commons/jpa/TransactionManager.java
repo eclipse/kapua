@@ -6,32 +6,34 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Red Hat
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Entity manager callback action service definition.
+ * Defines the transaction manager behavior used by the {@link EntityManagerSession}
  * 
  * @since 1.0
- *
+ * 
  */
-public interface EntityManagerActionCallback {
+public interface TransactionManager
+{
 
     /**
-     * Execute the action using the provided entity manager.<br>
-     * WARNING!<br>
-     * The transactionality (if needed by the code) must be managed internally to this method.<br>
-     * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * (@see {@link EntityManagerSession#onEntityManagerAction}<br>
+     * Perform the commit call
      * 
-     * @param entityManager
+     * @param manager
      * @throws KapuaException
      */
-    void onAction(EntityManager entityManager) throws KapuaException;
+    public void commit(EntityManager manager) throws KapuaException;
+
+    /**
+     * Create the transaction
+     * 
+     * @param manager
+     * @throws KapuaException
+     */
+    public void beginTransaction(EntityManager manager) throws KapuaException;
 
 }

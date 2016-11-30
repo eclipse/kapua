@@ -33,18 +33,20 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     public CollisionEntity insert(String testField) throws KapuaException
     {
         CollisionEntityCreator collisionEntityCreator = new CollisionEntityCreator(testField);
-        return entityManagerSession.onEntityManagerInsert(em -> {
+        return entityManagerSession.onInsert(em -> {
             CollisionEntity collisionEntity = null;
             try {
                 em.beginTransaction();
                 collisionEntity = CollisionEntityDAO.create(em, collisionEntityCreator);
                 em.commit();
+                return collisionEntity;
             }
             catch (Exception e) {
-                em.rollback();
+                if (em != null) {
+                    em.rollback();
+                }
                 throw e;
             }
-            return CollisionEntityDAO.find(em, collisionEntity.getId());
         });
     }
 

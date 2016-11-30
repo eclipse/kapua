@@ -82,22 +82,26 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist");
         }
 
-        return entityManagerSession.onEntityManagerInsert(em -> {
-            Account account = null;
-            em.beginTransaction();
-            account = AccountDAO.create(em, accountCreator);
-            em.persist(account);
+        return entityManagerSession.onInsert(em -> {
+            try {
+                Account account = null;
+                em.beginTransaction();
+                account = AccountDAO.create(em, accountCreator);
+                em.persist(account);
 
-            // Set the parent account path
-            String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
-            account.setParentAccountPath(parentAccountPath);
-            AccountDAO.update(em, account);
-            em.commit();
-
-            //
-            // reload the latest version of the entity
-            // to make sure we get all the latest info/version
-            return find(account.getScopeId(), account.getId());
+                // Set the parent account path
+                String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
+                account.setParentAccountPath(parentAccountPath);
+                account = AccountDAO.update(em, account);
+                em.commit();
+                return account;
+            }
+            catch (Exception e) {
+                if (em != null) {
+                    em.rollback();
+                }
+                throw e;
+            }
         });
     }
 
@@ -120,7 +124,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, account.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onTransactedResult(em -> {
             Account oldAccount = AccountDAO.find(em, account.getId());
             if (oldAccount == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
@@ -139,11 +143,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             }
 
             // Update
-            em.beginTransaction();
-            AccountDAO.update(em, account);
-            em.commit();
-
-            return find(account.getScopeId(), account.getId());
+            return AccountDAO.update(em, account);
         });
     }
 
@@ -171,7 +171,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
         }
 
-        entityManagerSession.onEntityManagerAction(em -> {
+        entityManagerSession.onTransactedAction(em -> {
             // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
             Account accountx = AccountDAO.find(em, accountId);
             if (accountx == null) {
@@ -188,9 +188,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
                 throw new KapuaIllegalAccessException(action.name());
             }
 
-            em.beginTransaction();
             AccountDAO.delete(em, accountId);
-            em.commit();
         });
     }
 
@@ -246,7 +244,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         // Argument Validation
         ArgumentValidator.notEmptyOrNull(name, "name");
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onResult(em -> {
             Account account = AccountDAO.findByName(em, name);
             // Check Access
             if (account != null) {
@@ -284,7 +282,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, account.getId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onResult(em -> {
             AccountListResult result = null;
             TypedQuery<Account> q;
             q = em.createNamedQuery("Account.findChildAccountsRecursive", Account.class);
@@ -310,7 +308,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onResult(em -> {
             return AccountDAO.query(em, query);
         });
     }
@@ -329,9 +327,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return AccountDAO.count(em, query);
-        });
+        return entityManagerSession.onResult(em -> AccountDAO.count(em, query));
     }
 
     /**
@@ -349,9 +345,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         // Argument Validation
         ArgumentValidator.notNull(accountId, "accountId");
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return AccountDAO.find(em, accountId);
-        });
+        return entityManagerSession.onResult(em -> AccountDAO.find(em, accountId));
     }
 
     private List<Account> findChildAccountsTrusted(KapuaId accountId)
@@ -362,7 +356,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         ArgumentValidator.notNull(accountId, "accountId");
         ArgumentValidator.notNull(accountId.getId(), "accountId.id");
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onResult(em -> {
             TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccounts", Account.class);
             q.setParameter("scopeId", accountId);
             return q.getResultList();

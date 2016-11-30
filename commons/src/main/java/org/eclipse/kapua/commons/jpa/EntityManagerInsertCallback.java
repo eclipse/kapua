@@ -25,12 +25,17 @@ import org.eclipse.kapua.KapuaException;
 public interface EntityManagerInsertCallback<T> {
 
     /**
-     * Return the insert execution result invoked using the provided entity manager.
+     * Return the insert execution result invoked using the provided entity manager.<br>
+     * <br>
+     * WARNING!<br>
+     * The transactionality (if needed by the code) must be managed internally to this method.<br>
+     * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
+     * (@see {@link EntityManagerSession#onEntityManagerInsert}
      * 
      * @param entityManager
      * @return
      * @throws KapuaException
      */
-    T onEntityInsert(EntityManager entityManager) throws KapuaException;
+    T onInsert(EntityManager entityManager) throws KapuaException;
 
 }

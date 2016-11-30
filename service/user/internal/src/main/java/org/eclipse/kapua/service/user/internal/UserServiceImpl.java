@@ -67,13 +67,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.write, userCreator.getScopeId()));
 
-        return entityManagerSession.onEntityManagerInsert(em -> {
-            em.beginTransaction();
-            User user = UserDAO.create(em, userCreator);
-            em.commit();
-            user = UserDAO.find(em, user.getId());
-            return user;
-        });
+        return entityManagerSession.onTransactedInsert(em -> UserDAO.create(em, userCreator));
     }
 
     @Override
@@ -97,15 +91,12 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
 
         //
         // Do update
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onTransactedResult(em -> {
             User currentUser = UserDAO.find(em, user.getId());
             if (currentUser == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
             }
-            em.beginTransaction();
-            UserDAO.update(em, user);
-            em.commit();
-            return UserDAO.find(em, user.getId());
+            return UserDAO.update(em, user);
         });
     }
 
@@ -122,7 +113,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.write, scopeId));
 
         // Do the delete
-        entityManagerSession.onEntityManagerAction(em -> {
+        entityManagerSession.onTransactedAction(em -> {
             // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
             User userx = UserDAO.find(em, userId);
             if (userx == null) {
@@ -135,9 +126,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
             // FIXME-KAPUA: Ask the Authorization Service
             // UserDAO.checkForLastAccountAdministratorDelete(em, userx);
 
-            em.beginTransaction();
             UserDAO.delete(em, userId);
-            em.commit();
         });
     }
 
@@ -162,9 +151,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, accountId));
 
         // Do the find
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return UserDAO.find(em, userId);
-        });
+        return entityManagerSession.onResult(em -> UserDAO.find(em, userId));
     }
 
     @Override
@@ -175,7 +162,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         ArgumentValidator.notEmptyOrNull(name, "name");
 
         // Do the find
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onResult(em -> {
             User user = UserDAO.findByName(em, name);
             //
             // Check Access
@@ -203,9 +190,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return UserDAO.query(em, query);
-        });
+        return entityManagerSession.onResult(em -> UserDAO.query(em, query));
     }
 
     @Override
@@ -221,9 +206,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomain.USER, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return UserDAO.count(em, query);
-        });
+        return entityManagerSession.onResult(em -> UserDAO.count(em, query));
     }
 
     // -----------------------------------------------------------------------------------------

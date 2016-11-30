@@ -64,12 +64,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceConnectionDomain.DEVICE_CONNECTION, Actions.write, deviceConnectionCreator.getScopeId()));
 
-        return entityManagerSession.onEntityManagerInsert(em -> {
-            em.beginTransaction();
-            DeviceConnection deviceConnection = DeviceConnectionDAO.create(em, deviceConnectionCreator);
-            em.commit();
-            return DeviceConnectionDAO.find(em, deviceConnection.getId());
-        });
+        return entityManagerSession.onTransactedInsert(em -> DeviceConnectionDAO.create(em, deviceConnectionCreator));
     }
 
     @Override
@@ -89,14 +84,11 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceConnectionDomain.DEVICE_CONNECTION, Actions.write, deviceConnection.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onTransactedResult(em -> {
             if (DeviceConnectionDAO.find(em, deviceConnection.getId()) == null) {
                 throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnection.getId());
             }
-            em.beginTransaction();
-            DeviceConnection deviceConnectionUpdated = DeviceConnectionDAO.update(em, deviceConnection);
-            em.commit();
-            return deviceConnectionUpdated;
+            return DeviceConnectionDAO.update(em, deviceConnection);
         });
     }
 
@@ -116,9 +108,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceConnectionDomain.DEVICE_CONNECTION, Actions.read, scopeId));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return DeviceConnectionDAO.find(em, entityId);
-        });
+        return entityManagerSession.onResult(em -> DeviceConnectionDAO.find(em, entityId));
     }
 
     @Override
@@ -163,9 +153,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceConnectionDomain.DEVICE_CONNECTION, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return DeviceConnectionDAO.query(em, query);
-        });
+        return entityManagerSession.onResult(em -> DeviceConnectionDAO.query(em, query));
     }
 
     @Override
@@ -184,9 +172,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceConnectionDomain.DEVICE_CONNECTION, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return DeviceConnectionDAO.count(em, query);
-        });
+        return entityManagerSession.onResult(em -> DeviceConnectionDAO.count(em, query));
     }
 
     @Override
@@ -205,15 +191,11 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceConnectionDomain.DEVICE_CONNECTION, Actions.write, scopeId));
 
-        entityManagerSession.onEntityManagerAction(em -> {
+        entityManagerSession.onTransactedAction(em -> {
             if (DeviceConnectionDAO.find(em, deviceConnectionId) == null) {
                 throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId);
             }
-
-            em.beginTransaction();
             DeviceConnectionDAO.delete(em, deviceConnectionId);
-            em.commit();
-
         });
     }
 

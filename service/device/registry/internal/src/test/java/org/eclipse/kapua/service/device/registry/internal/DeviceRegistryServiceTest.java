@@ -49,6 +49,7 @@ public class DeviceRegistryServiceTest extends KapuaTest {
     @Before
     public void before() {
         deviceCreator = new DeviceFactoryImpl().newCreator(scope, clientId);
+        deviceCreator.setCredentialsMode(DeviceCredentialsMode.INHERITED);
     }
 
     // Database fixtures

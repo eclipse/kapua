@@ -73,6 +73,7 @@ public class ServiceDAO {
         try {
             em.persist(entity);
             em.flush();
+            em.refresh(entity);
         }
         catch (EntityExistsException e) {
             throw new KapuaEntityExistsException(e, entity.getId());
@@ -109,17 +110,6 @@ public class ServiceDAO {
         else {
             return false;
         }
-    }
-
-    public static <E extends KapuaEntity> E store(EntityManager em, E entity)
-    {
-        //
-        // Creating entity
-
-        em.persist(entity);
-        em.flush();
-
-        return entity;
     }
 
     /**

@@ -58,12 +58,7 @@ public class UserPermissionServiceImpl extends AbstractKapuaService implements U
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserPermissionDomain.USER_PERMISSION, Actions.write, userPermissionCreator.getScopeId()));
 
-        return entityManagerSession.onEntityManagerInsert(em -> {
-            em.beginTransaction();
-            UserPermission permission = UserPermissionDAO.create(em, userPermissionCreator);
-            em.commit();
-            return permission;
-        });
+        return entityManagerSession.onTransactedInsert(em -> UserPermissionDAO.create(em, userPermissionCreator));
     }
 
     @Override
@@ -74,14 +69,11 @@ public class UserPermissionServiceImpl extends AbstractKapuaService implements U
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserPermissionDomain.USER_PERMISSION, Actions.write, scopeId));
 
-        entityManagerSession.onEntityManagerAction(em -> {
+        entityManagerSession.onTransactedAction(em -> {
             if (UserPermissionDAO.find(em, permissionId) == null) {
                 throw new KapuaEntityNotFoundException(UserPermission.TYPE, permissionId);
             }
-
-            em.beginTransaction();
             UserPermissionDAO.delete(em, permissionId);
-            em.commit();
         });
     }
 
@@ -99,9 +91,7 @@ public class UserPermissionServiceImpl extends AbstractKapuaService implements U
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserPermissionDomain.USER_PERMISSION, Actions.read, scopeId));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return UserPermissionDAO.find(em, permissionId);
-        });
+        return entityManagerSession.onResult(em -> UserPermissionDAO.find(em, permissionId));
     }
 
     @Override
@@ -118,9 +108,7 @@ public class UserPermissionServiceImpl extends AbstractKapuaService implements U
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserPermissionDomain.USER_PERMISSION, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return UserPermissionDAO.query(em, query);
-        });
+        return entityManagerSession.onResult(em -> UserPermissionDAO.query(em, query));
     }
 
     @Override
@@ -137,9 +125,7 @@ public class UserPermissionServiceImpl extends AbstractKapuaService implements U
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(UserPermissionDomain.USER_PERMISSION, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return UserPermissionDAO.count(em, query);
-        });
+        return entityManagerSession.onResult(em -> UserPermissionDAO.count(em, query));
     }
 
     @Override

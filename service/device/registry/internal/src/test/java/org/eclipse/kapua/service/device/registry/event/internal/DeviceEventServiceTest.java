@@ -19,9 +19,11 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import org.assertj.core.api.Assertions;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
@@ -49,6 +51,7 @@ public class DeviceEventServiceTest extends KapuaTest {
     @Before
     public void before() {
         deviceEventCreator = new DeviceEventFactoryImpl().newCreator(scope, new KapuaEid(ONE), new Date(), "resource");
+        deviceEventCreator.setResponseCode(KapuaResponseCode.ACCEPTED);
     }
 
     // Database fixtures
