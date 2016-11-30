@@ -12,26 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 
 /**
- * Access info service definition.
+ * {@link AccessInfo} service definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator> {
 
     /**
-     * Create a new access info
+     * Creates a new {@link AccessInfo} entity.<br>
+     * Is up to the implementation whether or not to check the existence of the referred {@link User} entity.
      * 
      * @param accessInfoCreator
-     * @return
+     *            The {@link AccessInfoCreator} form which create the {@link AccessInfo}
+     * @return The created {@link AccessInfo} entity.
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -39,11 +38,13 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
             throws KapuaException;
 
     /**
-     * Find the access info by scope identifier and access info identifier
+     * Finds the {@link AccessInfo} by scope identifier and {@link AccessInfo} id.
      * 
      * @param scopeId
+     *            The scope id in which to search.
      * @param accessInfoId
-     * @return
+     *            The {@link AccessInfo} id to search.
+     * @return The {@link AccessInfo} found or {@code null} if no entity was found.
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -51,10 +52,11 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
             throws KapuaException;
 
     /**
-     * Return the access info list matching the provided query
+     * Returns the {@link AccessInfoListResult} with elements matching the provided query.
      * 
      * @param query
-     * @return
+     *            The {@link AccessInfoQuery} used to filter results.
+     * @return The {@link AccessInfoListResult} with elements matching the query parameter.
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -62,10 +64,11 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
             throws KapuaException;
 
     /**
-     * Return the count of the access info matching the provided query
+     * Returns the count of the {@link AccessInfo} elements matching the provided query.
      * 
      * @param query
-     * @return
+     *            The {@link AccessInfoQuery} used to filter results.
+     * @return The count of the {@link AccessInfo} elements matching the provided query.
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -73,26 +76,15 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
             throws KapuaException;
 
     /**
-     * Delete the access info by scope identifier and entity identifier
+     * Delete the {@link AccessInfo} by scope id and {@link AccessInfo} id.
      * 
      * @param scopeId
+     *            The scope id in which to delete.
      * @param accessInfoId
+     *            The {@link AccessInfo} id to delete.
      * @throws KapuaException
      * @since 1.0.0
      */
     public void delete(KapuaId scopeId, KapuaId accessInfoId)
-            throws KapuaException;
-
-    /**
-     * Merge the new permissions list with the already persisted permissions.<br>
-     * In other word the newPermission list will replace all the roles for the user in the database.
-     * 
-     * @deprecated
-     * @param newPermissions
-     * @return
-     * @throws KapuaException
-     */
-    @Deprecated
-    public AccessInfoListResult merge(Set<AccessInfoCreator> newPermissions)
             throws KapuaException;
 }

@@ -12,15 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
+import javax.management.relation.RoleInfo;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Role permission entity definition.
+ * Role permission entity.<br>
+ * Describes a {@link Permission} associated to the role.<br>
+ * Wrapping of the {@link Permission} into this class is intended to adds auditing
+ * informations like {@link RolePermission#getCreatedBy()} and{@link RolePermission#getCreatedOn()}.<br>
+ * <br>
+ * This is a not editable entity so it can be only removed or created and therefore any change to
+ * {@link RolePermission#getRoleId()} and {@link RolePermission#getPermission()} property is forbidden.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface RolePermission extends KapuaEntity {
 
@@ -31,30 +39,38 @@ public interface RolePermission extends KapuaEntity {
     }
 
     /**
-     * Set the role identifier
+     * Sets the {@link Role} id of which this {@link RolePermission} belongs.
      * 
-     * @param roleId
+     * @param accessId
+     *            The {@link RoleInfo} id.
+     * @since 1.0.0
      */
     public void setRoleId(KapuaId roleId);
 
     /**
-     * Get the role identifier
+     * Gets the {@link Role} id of which this {@link RolePermission} belongs.
      * 
-     * @return
+     * @return The {@link Role} id.
+     * @since 1.0.0
      */
+    @XmlElement(name = "roleId")
     public KapuaId getRoleId();
 
     /**
-     * Set the permission for this Role
+     * Sets the {@link Permission} that this {@link RolePermission} has.<br>
+     * It up to the implementation class to make a clone of the given {@link Permission} or use the given {@link Permission}.
      * 
      * @param permission
+     *            The {@link Permission} to set for this {@link RolePermission}.
+     * @since 1.0.0
      */
     public void setPermission(Permission permission);
 
     /**
-     * Get the permission for this Role
+     * Gets the {@link Permission} that this {@link RolePermission} has.
      * 
-     * @return
+     * @return The {@link Permission} that this {@link RolePermission} has.
      */
+    @XmlElement(name = "permission")
     public Permission getPermission();
 }

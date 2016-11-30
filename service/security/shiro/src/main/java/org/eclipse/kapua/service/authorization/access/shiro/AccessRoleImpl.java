@@ -19,9 +19,9 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 
 /**
- * {@link AccessRole} implementation
+ * {@link AccessRole} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @Entity(name = "AccessRole")
 @Table(name = "athz_access_role")
@@ -39,24 +39,35 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private RoleImpl role;
 
+    /**
+     * Empty constructor required by JPA.
+     * 
+     * @since 1.0.0
+     */
     protected AccessRoleImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param scopeId
+     *            The scope id to set for this {@link AccessRole}.
+     * @since 1.0.0
      */
     public AccessRoleImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     /**
-     * Constructor
+     * Constructor.<br>
+     * Creates a clone of the given {@link AccessRole}.
      * 
      * @param accessRole
+     *            The {@link AccessRole} to clone.
      * @throws KapuaException
+     *             If the given {@link AccessRole} is incompatible with the implementation-specific type.
+     * @since 1.0.0
      */
     public AccessRoleImpl(AccessRole accessRole) throws KapuaException {
         super((AbstractKapuaEntity) accessRole);

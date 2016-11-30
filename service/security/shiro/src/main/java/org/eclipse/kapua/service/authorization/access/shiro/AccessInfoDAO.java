@@ -58,7 +58,7 @@ public class AccessInfoDAO extends ServiceDAO {
                 accessPermissions.add(accessPermission);
             }
 
-            accessInfo.setPermissions(accessPermissions);
+            accessInfo.setAccessPermissions(accessPermissions);
         }
 
         if (creator.getRoleIds() != null) {
@@ -70,7 +70,7 @@ public class AccessInfoDAO extends ServiceDAO {
                 accessRoles.add(accessRole);
             }
 
-            accessInfo.setRoles(accessRoles);
+            accessInfo.setAccessRoles(accessRoles);
         }
 
         return ServiceDAO.create(em, accessInfo);

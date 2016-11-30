@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
+import java.security.Permissions;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -21,39 +22,48 @@ import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Role creator service definition.
+ * {@link Role} creator definition.<br>
+ * It is used to create a new {@link Role} with {@link Permission}s associated
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 public interface RoleCreator extends KapuaEntityCreator<Role> {
 
     /**
-     * Set the permission name
+     * Sets the {@link Role} name.
      * 
      * @param name
+     *            The {@link Role} name.
+     * 
+     * @since 1.0.0
      */
     public void setName(String name);
 
     /**
-     * Return the permission name
+     * Gets the {@link Role} name.
      * 
-     * @return
+     * @return The {@link Role} name.
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     public String getName();
 
     /**
-     * Set the {@link RolePermission} set
+     * Sets the set of {@link Permissions} to assign to the {@link Role} created entity.
+     * It up to the implementation class to make a clone of the set or use the given set.
      * 
      * @param permissions
+     *            The set of {@link Permissions}.
+     * @since 1.0.0
      */
     public void setPermissions(Set<Permission> permissions);
 
     /**
-     * Return the {@link RolePermission} set
+     * Gets the set of {@link Permission} added to this {@link Role}.
+     * The implementation must return the reference of the set and not make a clone.
      * 
-     * @return
+     * @return The set of {@link Permission}.
+     * @since 1.0.0
      */
     @XmlElementWrapper(name = "permissions")
     @XmlElement(name = "permission")

@@ -16,26 +16,29 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Access info factory
+ * {@link AccessInfo} object factory.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AccessInfoFactory extends KapuaObjectFactory {
 
     /**
-     * Creates a new user permission creator for the provided scope identifier
+     * Instantiate a new {@link AccessInfoCreator} implementing object with the provided scope id.
      * 
      * @param scopeId
-     * @return
+     *            The scope id to set.
+     * @return A instance of the implementing class of {@link AccessInfoCreator}.
+     * @since 1.0.0
      */
     public AccessInfoCreator newCreator(KapuaId scopeId);
 
     /**
-     * Creates a new user permission query for the provided scope identifier
+     * Instantiate a new {@link AccessInfoQuery} implementing object with the provided scope id.
      * 
      * @param scopeId
-     * @return
+     *            The scope id to set.
+     * @return A instance of the implementing class of {@link AccessInfoCreator}.
+     * @since 1.0.0
      */
     public AccessInfoQuery newQuery(KapuaId scopeId);
 

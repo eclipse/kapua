@@ -18,71 +18,88 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 
 /**
- * Role service definition.
+ * {@link Role} service definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 public interface RoleService extends KapuaEntityService<Role, RoleCreator> {
 
     /**
-     * Creates a new {@link Role} based on the parameters provided by the creator
+     * Creates a new {@link Role} based on the parameters provided in the {@link RoleCreator}.<br>
+     * {@link Role} must have a unique name within the scope.
      * 
-     * @since 1.0
+     * @param roleCreator
+     *            The creator object from which to create the {@link Role}.
+     * @throws KapuaException
+     * @since 1.0.0
      */
-    public Role create(RoleCreator creator)
+    public Role create(RoleCreator roleCreator)
             throws KapuaException;
 
     /**
-     * Updates the role according the given updated entity
+     * Updates the {@link Role} according the given updated entity.<br>
+     * The {@link Role#getName()} can be updated, but must remain unique within the scope.
+     * The {@link Role#getRolePermissions()} can be changed (add or remove {@link RolePermission}s). <br>
      * 
-     * @since 1.0
+     * @param role
+     *            The updated {@link Role}.
+     * @return A {@link Role} with updated values.
+     * @throws KapuaException
+     * @since 1.0.0
      */
     public Role update(Role role)
             throws KapuaException;
 
     /**
-     * Find the {@link Role} specified by the provided account identifier and entity identifier
+     * Finds the {@link Role} by scope identifier and {@link Role} id.
      * 
-     * @since 1.0
+     * @param scopeId
+     *            The scope id in which to search.
+     * @param roleId
+     *            The {@link Role} id to search.
+     * @return The {@link Role} found or {@code null} if no entity was found.
+     * @throws KapuaException
+     * @since 1.0.0
      */
-    public Role find(KapuaId scopeId, KapuaId entityId)
+    public Role find(KapuaId scopeId, KapuaId roleId)
             throws KapuaException;
 
     /**
-     * Return the role list for the specific role query
+     * Returns the {@link RoleListResult} with elements matching the provided query.
      * 
-     * @since 1.0
+     * @param query
+     *            The {@link RoleQuery} used to filter results.
+     * @return The {@link RoleListResult} with elements matching the query parameter.
+     * @throws KapuaException
+     * @since 1.0.0
      */
     public RoleListResult query(KapuaQuery<Role> query)
             throws KapuaException;
 
     /**
-     * Return the role count for the specific role query
+     * Returns the count of the {@link Role} elements matching the provided query.
      * 
-     * @since 1.0
+     * @param query
+     *            The {@link RoleQuery} used to filter results.
+     * @return The count of the {@link Role} elements matching the provided query.
+     * @throws KapuaException
+     * @since 1.0.0
      */
     public long count(KapuaQuery<Role> query)
             throws KapuaException;
 
     /**
-     * Delete the role identified by the provided entity
+     * Delete the {@link Role} by scope id and {@link Role} id.
      * 
-     * @since 1.0
+     * @param scopeId
+     *            The scope id in which to delete.
+     * @param roleId
+     *            The {@link Role} id to delete.
+     * @throws KapuaException
+     * @since 1.0.0
      */
-    public void delete(KapuaId scopeId, KapuaId entityId)
+    public void delete(KapuaId scopeId, KapuaId roleId)
             throws KapuaException;
 
-    // /**
-    // * Merge the new permissions list with the already persisted permissions.<br>
-    // * In other word the newPermission list will replace all the roles for the user in the database.
-    // *
-    // * @param role
-    // * @return
-    // * @throws KapuaException
-    // *
-    // * @since 1.0
-    // */
-    // public RoleListResult merge(Set<RoleCreator> newPermissions)
-    // throws KapuaException;
 }

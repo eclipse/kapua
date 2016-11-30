@@ -37,8 +37,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRole;
 /**
  * {@link AccessInfo} implementation.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @Entity(name = "AccessInfo")
 @Table(name = "athz_access_info")
@@ -60,14 +59,22 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
     @JoinColumn(name = "access_info_id", referencedColumnName = "id")
     private Set<AccessPermissionImpl> permissions;
 
+    /**
+     * Empty constructor required by JPA.
+     * 
+     * @since 1.0.0
+     */
     protected AccessInfoImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param scopeId
+     *            The scope id to set for this {@link AccessInfo}.
+     * 
+     * @since 1.0.0
      */
     public AccessInfoImpl(KapuaId scopeId) {
         super(scopeId);
@@ -75,17 +82,20 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
 
     /**
      * Constructor.<br>
-     * Creates a soft clone.
+     * Creates a clone of the given {@link AccessInfo}.
      * 
      * @param accessInfo
+     *            The {@link AccessInfo} object to clone into this {@link AccessInfo}.
      * @throws KapuaException
+     *             If the given {@link AccessInfo} is incompatible with the implementation-specific type.
+     * @since 1.0.0
      */
     public AccessInfoImpl(AccessInfo accessInfo) throws KapuaException {
         super((AbstractKapuaUpdatableEntity) accessInfo);
 
         setUserId(accessInfo.getUserId());
-        setRoles(accessInfo.getRoles());
-        setPermissions(accessInfo.getPermissions());
+        setAccessRoles(accessInfo.getAccessRoles());
+        setAccessPermissions(accessInfo.getAccessPermissions());
     }
 
     @Override
@@ -103,11 +113,11 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
     }
 
     @Override
-    public void setRoles(Set<AccessRole> roles) throws KapuaException {
+    public void setAccessRoles(Set<AccessRole> accessRoles) throws KapuaException {
 
-        if (roles != null) {
+        if (accessRoles != null) {
             this.roles = new HashSet<>();
-            for (AccessRole ac : roles) {
+            for (AccessRole ac : accessRoles) {
                 this.roles.add(new AccessRoleImpl(ac));
             }
         } else {
@@ -117,16 +127,15 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<AccessRoleImpl> getRoles() {
+    public Set<AccessRoleImpl> getAccessRoles() {
         return roles;
     }
 
     @Override
-    public void setPermissions(Set<AccessPermission> permissions) {
-
-        if (permissions != null) {
+    public void setAccessPermissions(Set<AccessPermission> accessPermissions) {
+        if (accessPermissions != null) {
             this.permissions = new HashSet<>();
-            for (AccessPermission p : permissions) {
+            for (AccessPermission p : accessPermissions) {
                 this.permissions.add(new AccessPermissionImpl(p));
             }
         } else {
@@ -137,7 +146,7 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
 
     @Override
     @SuppressWarnings("unchecked")
-    public Set<AccessPermissionImpl> getPermissions() {
+    public Set<AccessPermissionImpl> getAccessPermissions() {
         return this.permissions;
     }
 }

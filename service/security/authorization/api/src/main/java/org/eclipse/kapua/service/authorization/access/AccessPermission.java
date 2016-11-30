@@ -12,16 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
  * Access permission entity.<br>
- * Describes a permission associated to the access info.
+ * Describes a {@link Permission} associated to the access info.<br>
+ * Wrapping of the {@link Permission} into this class is intended to adds auditing
+ * informations like {@link AccessPermission#getCreatedBy()} and{@link AccessPermission#getCreatedOn()}.<br>
+ * <br>
+ * This is a not editable entity so it can be only removed or created and therefore any change to
+ * {@link AccessPermission#getAccessId()} and {@link AccessPermission#getPermission()} property is forbidden.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AccessPermission extends KapuaEntity {
 
@@ -32,31 +38,39 @@ public interface AccessPermission extends KapuaEntity {
     }
 
     /**
-     * Set the access identifier
+     * Sets the {@link AccessInfo} id of which this {@link AccessPermission} belongs.
      * 
      * @param accessId
+     *            The {@link AccessInfo} id.
+     * @since 1.0.0
      */
     public void setAccessId(KapuaId accessId);
 
     /**
-     * Get the access identifier
+     * Gets the {@link AccessInfo} id of which this {@link AccessPermission} belongs.
      * 
-     * @return
+     * @return The {@link AccessInfo} id.
+     * @since 1.0.0
      */
+    @XmlElement(name = "accessId")
     public KapuaId getAccessId();
 
     /**
-     * Set the permission
+     * Sets the {@link Permission} that this {@link AccessPermission} has.<br>
+     * It up to the implementation class to make a clone of the given {@link Permission} or use the given {@link Permission}.
      * 
      * @param permission
+     *            The {@link Permission} to set for this {@link AccessPermission}.
+     * @since 1.0.0
      */
     public void setPermission(Permission permission);
 
     /**
-     * Get the permission
+     * Gets the {@link Permission} that this {@link AccessPermission} has.
      * 
-     * @return
+     * @return The {@link Permission} that this {@link AccessPermission} has.
      */
+    @XmlElement(name = "permission")
     public <P extends Permission> P getPermission();
 
 }

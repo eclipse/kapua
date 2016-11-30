@@ -1,16 +1,25 @@
 package org.eclipse.kapua.service.authorization.access;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleService;
 
 /**
  * Access role entity.<br>
- * Describes a role associated to the access info.
+ * Describes a {@link Role} associated to the access info.<br>
+ * Wrapping of the {@link Role} into this class is intended to add auditing
+ * informations like {@link AccessRole#getCreatedBy()} and{@link AccessRole#getCreatedOn()}.<br>
+ * <br>
+ * This is a not editable entity so it can be only removed or created and therefore any change to
+ * {@link AccessRole#getAccessId()} and {@link AccessRole#getRole()} property is forbidden.<br>
+ * <br>
+ * To edit {@link Role} entity please refer to {@link RoleService#update(Role)}
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AccessRole extends KapuaEntity {
 
@@ -21,31 +30,38 @@ public interface AccessRole extends KapuaEntity {
     }
 
     /**
-     * Set the access identifier
+     * Sets the {@link AccessInfo} id of which this {@link AccessRole} belongs.
      * 
      * @param accessId
+     *            The {@link AccessInfo} id.
+     * @since 1.0.0
      */
     public void setAccessId(KapuaId accessId);
 
     /**
-     * Get the access identifier
+     * Gets the {@link AccessInfo} id of which this {@link AccessRole} belongs.
      * 
-     * @return
+     * @return The {@link AccessInfo} id.
+     * @since 1.0.0
      */
+    @XmlElement(name = "accessId")
     public KapuaId getAccessId();
 
     /**
-     * Set the role
+     * Sets the {@link Role} that this {@link AccessRole} has.<br>
+     * It up to the implementation class to make a clone of the given {@link Role} or use the given {@link Role}.
      * 
      * @param role
-     * @throws KapuaException
+     *            The {@link Role} to set for this {@link AccessRole}.
+     * @since 1.0.0
      */
     public void setRole(Role role) throws KapuaException;
 
     /**
-     * Get the role
+     * Gets the {@link Role} that this {@link AccessRole} has.
      * 
-     * @return
+     * @return The {@link Role} that this {@link AccessRole} has.
      */
+    @XmlElement(name = "role")
     public <R extends Role> R getRole();
 }

@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -36,13 +35,18 @@ import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCode
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
 
 /**
- * User permission service implementation.
+ * {@link AccessInfoService} implementation based on JPA.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class AccessInfoServiceImpl extends AbstractKapuaService implements AccessInfoService {
 
+    /**
+     * Constructor.<br>
+     * It initialize the {@link AbstractEntityManagerFactory} with the specific {@link AuthorizationEntityManagerFactory#getInstance()}.
+     * 
+     * @since 1.0.0
+     */
     public AccessInfoServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance());
     }
@@ -145,12 +149,5 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
             AccessInfoDAO.delete(em, accessInfoId);
             em.commit();
         });
-    }
-
-    @Override
-    public AccessInfoListResult merge(Set<AccessInfoCreator> newPermissions)
-            throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

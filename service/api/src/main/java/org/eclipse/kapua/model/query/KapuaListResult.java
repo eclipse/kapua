@@ -26,28 +26,29 @@ import org.eclipse.kapua.model.KapuaEntity;
 /**
  * Query list result definition.
  * 
- * @param <E> query entity domain
+ * @param <E>
+ *            query entity domain
  * 
  * @since 1.0
  * 
  */
 @XmlRootElement(name = "result")
-@XmlType(propOrder = {"limitExceeded", "size", "items"})
-public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializable
-{
+@XmlType(propOrder = { "limitExceeded", "size", "items" })
+public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializable {
 
     /**
      * Get the limit exceeded flag
      * 
      * @return
      */
-	@XmlElement(name = "limitExceeded")
+    @XmlElement(name = "limitExceeded")
     public boolean isLimitExceeded();
 
     /**
      * Set the limit exceeded flag
      * 
-     * @param limitExceeded true if the query matching elements are more than {@link KapuaQuery#setLimit(Integer)} value
+     * @param limitExceeded
+     *            true if the query matching elements are more than {@link KapuaQuery#setLimit(Integer)} value
      */
     public void setLimitExceeded(boolean limitExceeded);
 
@@ -56,10 +57,10 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      * 
      * @return
      */
-    @XmlElementWrapper
+    @XmlElementWrapper(name = "items")
     @XmlElement(name = "item")
     public List<E> getItems();
-    
+
     /**
      * Return the element at i position (zero based)
      * 
@@ -67,7 +68,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      * @return
      */
     public E getItem(int i);
-    
+
     /**
      * Return the result list size
      * 
@@ -75,21 +76,21 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      */
     @XmlElement(name = "size")
     public int getSize();
-    
+
     /**
      * Check if the result list is empty
      * 
      * @return
      */
     public boolean isEmpty();
-    
+
     /**
      * Add items to the result list
      * 
      * @param items
      */
     public void addItems(Collection<? extends E> items);
-    
+
     /**
      * Clear item result list
      */

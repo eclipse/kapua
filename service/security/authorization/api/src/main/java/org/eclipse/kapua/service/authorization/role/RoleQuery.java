@@ -15,11 +15,10 @@ package org.eclipse.kapua.service.authorization.role;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
- * Role query definition.
+ * {@link Role} query definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface RoleQuery extends KapuaQuery<Role>
-{
+public interface RoleQuery extends KapuaQuery<Role> {
 }

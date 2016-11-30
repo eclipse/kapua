@@ -15,10 +15,9 @@ package org.eclipse.kapua.service.authorization.access;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
- * Access info query definition.
+ * {@link AccessInfo} query definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AccessInfoQuery extends KapuaQuery<AccessInfo> {
 }

@@ -15,10 +15,9 @@ package org.eclipse.kapua.service.authorization.access;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * Access info list definition.
+ * {@link AccessInfo} list result definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface AccessInfoListResult extends KapuaListResult<AccessInfo> {
 

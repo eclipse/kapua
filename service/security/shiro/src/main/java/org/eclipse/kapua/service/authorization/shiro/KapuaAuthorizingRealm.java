@@ -119,13 +119,13 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         // Get user roles set and related permissions
         for (AccessInfo accessInfo : accessInfos.getItems()) {
 
-            for (AccessPermission accessPermission : accessInfo.getPermissions()) {
+            for (AccessPermission accessPermission : accessInfo.getAccessPermissions()) {
                 Permission p = accessPermission.getPermission();
                 info.addStringPermission(p.toString());
                 logger.trace("User: {} has permission: {}", username, p);
             }
 
-            for (AccessRole accessRole : accessInfo.getRoles()) {
+            for (AccessRole accessRole : accessInfo.getAccessRoles()) {
 
                 Role role = accessRole.getRole();
                 info.addRole(role.getName());
