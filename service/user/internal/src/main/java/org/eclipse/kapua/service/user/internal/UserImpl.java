@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.UserType;
 
 /**
  * User entity implementation.
@@ -51,6 +52,14 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User
     @Basic
     @Column(name = "phone_number")
     private String            phoneNumber;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", updatable = false)
+    private UserType          userType;
+    
+    @Basic
+    @Column(name = "external_id", updatable = false)
+    private String            externalId;
 
     /**
      * Constructor
@@ -119,5 +128,26 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User
     public void setPhoneNumber(String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public UserType getUserType() {
+        return userType;
+    }
+
+    @Override
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+        
+    }
+
+    @Override
+    public String getExternalId() {
+        return externalId;
+    }
+
+    @Override
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 }

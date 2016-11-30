@@ -30,7 +30,9 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "displayName",
                        "email",
-                       "phoneNumber" },
+                       "phoneNumber",
+                       "userType",
+                       "externalId" },
          factoryClass = UserXmlRegistry.class,
          factoryMethod = "newUserCreator")
 public interface UserCreator extends KapuaNamedEntityCreator<User>
@@ -67,7 +69,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User>
     public void setEmail(String email);
 
     /**
-     * Get the phine number
+     * Get the phone number
      * 
      * @return
      */
@@ -80,4 +82,34 @@ public interface UserCreator extends KapuaNamedEntityCreator<User>
      * @param phoneNumber
      */
     public void setPhoneNumber(String phoneNumber);
+    
+    /**
+     * Get the user type
+     * 
+     * @return
+     */
+    @XmlElement(name = "userType")
+    public UserType getUserType();
+
+    /**
+     * Set the user type
+     * 
+     * @param phoneNumber
+     */
+    public void setUserType(UserType userType);
+    
+    /**
+     * Get the external ID
+     * 
+     * @return
+     */
+    @XmlElement(name = "externalId")
+    public String getExternalId();
+
+    /**
+     * Set the external ID
+     * 
+     * @param externalId
+     */
+    public void setExternalId(String externalId);
 }

@@ -49,6 +49,8 @@ public class UserDAO extends ServiceDAO
         userImpl.setDisplayName(userCreator.getDisplayName());
         userImpl.setEmail(userCreator.getEmail());
         userImpl.setPhoneNumber(userCreator.getPhoneNumber());
+        userImpl.setUserType(userCreator.getUserType());
+        userImpl.setExternalId(userCreator.getExternalId());
 
         return ServiceDAO.create(em, userImpl);
     }

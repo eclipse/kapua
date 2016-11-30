@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserType;
 
 /**
  * User creator service implementation.
@@ -30,6 +31,8 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     private String            displayName;
     private String            email;
     private String            phoneNumber;
+    private UserType          userType = UserType.INTERNAL;
+    private String            externalId;
 
     /**
      * Constructor
@@ -76,5 +79,25 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     public void setPhoneNumber(String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
+    }
+
+    
+    public UserType getUserType() {
+        return userType;
+    }
+
+    
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    
+    public String getExternalId() {
+        return externalId;
+    }
+
+    
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 }

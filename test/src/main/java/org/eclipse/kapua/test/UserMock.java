@@ -21,6 +21,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.UserType;
 
 public class UserMock implements User
 {
@@ -28,7 +29,9 @@ public class UserMock implements User
     private KapuaEid id;
     private KapuaId scopeId;
     private String name;
-    
+    private UserType userType;
+    private String externalId;
+
     public UserMock(KapuaId scopeId, String name)
     {
         this.id = new KapuaEid(BigInteger.valueOf(longId++));
@@ -195,5 +198,24 @@ public class UserMock implements User
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+    public UserType getUserType() {
+        return userType;
+    }
 
+    @Override
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    @Override
+    public String getExternalId() {
+        return externalId;
+    }
+
+    @Override
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
 }
