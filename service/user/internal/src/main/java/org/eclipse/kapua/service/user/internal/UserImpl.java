@@ -54,7 +54,7 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User
     private String            phoneNumber;
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_type", updatable = false)
+    @Column(name = "user_type", updatable = false, nullable = false)
     private UserType          userType;
     
     @Basic
