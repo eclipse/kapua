@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
  * {@link AccessInfo} creator definition.<br>
- * It is used to assign a set of {@link Role}s and {@link Permission}s to the referenced {@link User}.<br>
+ * It is used to assign a set of {@link Domain}s and {@link Permission}s to the referenced {@link User}.<br>
  * 
  * @since 1.0.0
  */
@@ -63,20 +63,20 @@ public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
     public KapuaId getUserId();
 
     /**
-     * Sets the set of {@link Role} ids to assign to the {@link AccessInfo} created entity.
+     * Sets the set of {@link Domain} ids to assign to the {@link AccessInfo} created entity.
      * It up to the implementation class to make a clone of the set or use the given set.
      * 
      * @param roleIds
-     *            The set of {@link Role} ids.
+     *            The set of {@link Domain} ids.
      * @since 1.0.0
      */
     public void setRoleIds(Set<KapuaId> roleIds);
 
     /**
-     * Gets the set of {@link Role} ids added to this {@link AccessInfoCreator}.
+     * Gets the set of {@link Domain} ids added to this {@link AccessInfoCreator}.
      * The implementation must return the reference of the set and not make a clone.
      * 
-     * @return The set of {@link Role} ids.
+     * @return The set of {@link Domain} ids.
      * @since 1.0.0
      */
     @XmlElementWrapper(name = "roleIds")
