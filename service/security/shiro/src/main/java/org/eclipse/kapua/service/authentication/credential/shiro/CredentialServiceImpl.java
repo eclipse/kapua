@@ -64,13 +64,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.write, credentialCreator.getScopeId()));
 
-        return entityManagerSession.onEntityManagerInsert(em -> {
-            em.beginTransaction();
-            Credential credential = CredentialDAO.create(em, credentialCreator);
-            credential = CredentialDAO.find(em, credential.getId());
-            em.commit();
-            return credential;
-        });
+        return entityManagerSession.onTransactedInsert(em -> CredentialDAO.create(em, credentialCreator));
     }
 
     @Override
@@ -93,18 +87,14 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.write, credential.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
+        return entityManagerSession.onTransactedResult(em -> {
             Credential currentUser = CredentialDAO.find(em, credential.getId());
             if (currentUser == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credential.getId());
             }
 
             // Passing attributes??
-            em.beginTransaction();
-            CredentialDAO.update(em, credential);
-            em.commit();
-
-            return CredentialDAO.find(em, credential.getId());
+            return CredentialDAO.update(em, credential);
         });
     }
 
@@ -123,9 +113,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.read, scopeId));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return CredentialDAO.find(em, credentialId);
-        });
+        return entityManagerSession.onResult(em -> CredentialDAO.find(em, credentialId));
     }
 
     @Override
@@ -144,9 +132,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return CredentialDAO.query(em, query);
-        });
+        return entityManagerSession.onResult(em -> CredentialDAO.query(em, query));
     }
 
     @Override
@@ -165,9 +151,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> {
-            return CredentialDAO.count(em, query);
-        });
+        return entityManagerSession.onResult(em -> CredentialDAO.count(em, query));
     }
 
     @Override
@@ -186,14 +170,11 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.delete, scopeId));
 
-        entityManagerSession.onEntityManagerAction(em -> {
+        entityManagerSession.onTransactedAction(em -> {
             if (CredentialDAO.find(em, credentialId) == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
             }
-
-            em.beginTransaction();
             CredentialDAO.delete(em, credentialId);
-            em.commit();
         });
     }
 
