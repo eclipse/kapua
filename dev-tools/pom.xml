@@ -13,4 +13,41 @@
     <artifactId>kapua-dev-tools</artifactId>
     <name>${project.artifactId}</name>
 
+    <profiles>
+        <profile>
+            <id>liquibase</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <version>3.0.5</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>${h2.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <changeLogFile>src/main/database/liquibase.sql</changeLogFile>
+                            <driver>org.h2.Driver</driver>
+                            <url>jdbc:h2:mem:test</url>
+                            <username></username>
+                            <password></password>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>update</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
