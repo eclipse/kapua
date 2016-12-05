@@ -388,7 +388,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
 
                 // 4) find device
                 Context loginFindClientIdTimeContext = metricLoginFindClientIdTime.time();
-                deviceConnection = deviceConnectionService.findByClientId(scopeId, clientId);
+                deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                 loginFindClientIdTimeContext.stop();
 
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
@@ -405,7 +405,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                     deviceConnectionCreator.setProtocol("MQTT");
                     deviceConnectionCreator.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnectionCreator.setUserId(userId);
-                    deviceConnection = deviceConnectionService.create(deviceConnectionCreator);
+                    deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.create(deviceConnectionCreator));
                 }
                 else {
                     deviceConnection.setClientIp(clientIp);
@@ -413,7 +413,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                     deviceConnection.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnection.setUserId(userId);
                     deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
-                    deviceConnectionService.update(deviceConnection);
+                    final DeviceConnection deviceConnectionToUpdate = deviceConnection;
+                    KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.update(deviceConnectionToUpdate));
                     // TODO implement the banned status
                     // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
                     // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
