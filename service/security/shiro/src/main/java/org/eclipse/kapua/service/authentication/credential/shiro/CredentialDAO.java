@@ -66,7 +66,7 @@ public class CredentialDAO extends ServiceDAO
         //
         // Update user
         CredentialImpl credentialImpl = (CredentialImpl) credential;
-
+        credential.setCredentialKey(AuthenticationUtils.cryptCredential(credential.getCredentialKey()));
         return ServiceDAO.update(em, CredentialImpl.class, credentialImpl);
     }
 

@@ -24,6 +24,13 @@ import org.eclipse.kapua.model.id.KapuaId;
 public interface CredentialFactory extends KapuaObjectFactory
 {
     /**
+     * Create a new {@link Credential}
+     * 
+     * @return Credential the new Credential
+     */
+    public Credential newCredential();
+    
+    /**
      * Create a new {@link CredentialCreator} for the specific credential type
      * 
      * @param scopeId
@@ -33,5 +40,20 @@ public interface CredentialFactory extends KapuaObjectFactory
      * @return
      */
     public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey);
+    
+    /**
+     * Creates a new credential result list
+     * 
+     * @return
+     */
+    public CredentialListResult newCredentialListResult();
+    
+    /**
+     * Creates a new credential query for the specified scope identifier
+     * 
+     * @param scopeId
+     * @return
+     */
+    public CredentialQuery newQuery(KapuaId scopeId);
 
 }

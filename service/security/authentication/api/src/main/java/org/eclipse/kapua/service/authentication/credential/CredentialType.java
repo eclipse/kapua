@@ -24,6 +24,6 @@ public enum CredentialType
      * Password
      */
     PASSWORD,
-    // API_KEY
+    API_KEY
     ;
 }

@@ -23,7 +23,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
@@ -46,21 +45,18 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
 {
     private static final long serialVersionUID = -7921424688644169175L;
 
-    @XmlElement(name = "userId")
     @Embedded
     @AttributeOverrides({
                           @AttributeOverride(name = "eid", column = @Column(name = "user_id", updatable = false, nullable = false))
     })
     private KapuaEid          userId;
 
-    @XmlElement(name = "credentialType")
     @Enumerated(EnumType.STRING)
     @Column(name = "credential_type", updatable = false, nullable = false)
     private CredentialType    credentialType;
 
-    @XmlElement(name = "credentialKey")
     @Basic
-    @Column(name = "credential_key", updatable = false, nullable = false)
+    @Column(name = "credential_key", nullable = false)
     private String            credentialKey;
 
     /**
@@ -103,6 +99,22 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     public String getCredentialKey()
     {
         return credentialKey;
+    }
+
+    @Override
+    public void setUserId(KapuaId userId) {
+        this.userId = (KapuaEid)userId;
+    }
+
+    @Override
+    public void setCredentialType(CredentialType credentialType) {
+        this.credentialType = credentialType;
+        
+    }
+
+    @Override
+    public void setCredentialKey(String credentialKey) {
+        this.credentialKey = credentialKey;
     }
 
 }

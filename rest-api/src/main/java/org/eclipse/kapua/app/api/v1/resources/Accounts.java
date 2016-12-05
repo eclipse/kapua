@@ -349,7 +349,6 @@ public class Accounts extends AbstractKapuaResource
      * Deletes the Account specified by the "accountId" path parameter.
      *
      * @param accountId The id of the Account to be deleted.
-     * @return The updated created Account object.
      */
 	@ApiOperation(value = "Delete an Account",
             notes = "Deletes an account based on the information provided in accountId parameter.")

@@ -22,5 +22,6 @@ public class CredentialPredicates
 {
 
     public static final String USER_ID = "userId";
+    public static final String CREDENTIAL_TYPE = "credentialType";
 
 }
