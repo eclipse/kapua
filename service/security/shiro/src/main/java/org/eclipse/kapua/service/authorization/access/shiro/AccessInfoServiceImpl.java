@@ -72,16 +72,11 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
                 // If (role == null) then roleId does not exists or it isn't in the same scope.
                 if (role == null) {
                     throw new KapuaAuthorizationException(KapuaAuthorizationErrorCodes.ENTITY_SCOPE_MISSMATCH, null, "Role not found in the scope: " + accessInfoCreator.getScopeId());
-            }
+                }
             }
         }
 
-        return entityManagerSession.onEntityManagerInsert(em -> {
-            em.beginTransaction();
-            AccessInfo accessInfo = AccessInfoDAO.create(em, accessInfoCreator);
-            em.commit();
-            return accessInfo;
-        });
+        return entityManagerSession.onTransactedInsert(em -> AccessInfoDAO.create(em, accessInfoCreator));
     }
 
     @Override
@@ -97,7 +92,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.read, scopeId));
 
-        return entityManagerSession.onEntityManagerResult(em -> AccessInfoDAO.find(em, accessInfoId));
+        return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, accessInfoId));
     }
 
     @Override
@@ -113,7 +108,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> AccessInfoDAO.query(em, query));
+        return entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
     }
 
     @Override
@@ -129,7 +124,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onEntityManagerResult(em -> AccessInfoDAO.count(em, query));
+        return entityManagerSession.onResult(em -> AccessInfoDAO.count(em, query));
     }
 
     @Override
@@ -140,14 +135,12 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.write, scopeId));
 
-        entityManagerSession.onEntityManagerAction(em -> {
+        entityManagerSession.onTransactedAction(em -> {
             if (AccessInfoDAO.find(em, accessInfoId) == null) {
                 throw new KapuaEntityNotFoundException(AccessPermission.TYPE, accessInfoId);
-        }
+            }
 
-            em.beginTransaction();
             AccessInfoDAO.delete(em, accessInfoId);
-            em.commit();
         });
     }
 }

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import javax.persistence.PersistenceException;
+
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -30,7 +32,7 @@ public class EntityManagerSession {
     private final EntityManagerFactory entityManagerFactory;
     private static final int MAX_INSERT_ALLOWED_RETRY = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY);
 
-    private TransactionManager transacted    = new TransactionManagerTransacted();
+    private TransactionManager transacted = new TransactionManagerTransacted();
     private TransactionManager notTransacted = new TransactionManagerNotTransacted();
 
     /**
@@ -53,8 +55,7 @@ public class EntityManagerSession {
      * @param entityManagerActionCallback
      * @throws KapuaException
      */
-    public <T> void onAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException
-    {
+    public <T> void onAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException {
         _onAction(entityManagerActionCallback, notTransacted);
     }
 
@@ -67,13 +68,11 @@ public class EntityManagerSession {
      * @param entityManagerActionCallback
      * @throws KapuaException
      */
-    public <T> void onTransactedAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException
-    {
+    public <T> void onTransactedAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException {
         _onAction(entityManagerActionCallback, transacted);
     }
 
-    private <T> void _onAction(EntityManagerActionCallback entityManagerActionCallback, TransactionManager transactionManager) throws KapuaException
-    {
+    private <T> void _onAction(EntityManagerActionCallback entityManagerActionCallback, TransactionManager transactionManager) throws KapuaException {
         EntityManager manager = null;
         try {
             manager = entityManagerFactory.createEntityManager();
@@ -103,8 +102,7 @@ public class EntityManagerSession {
      * @return
      * @throws KapuaException
      */
-    public <T> T onResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException
-    {
+    public <T> T onResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException {
         return _onResult(entityManagerResultCallback, notTransacted);
     }
 
@@ -118,13 +116,11 @@ public class EntityManagerSession {
      * @return
      * @throws KapuaException
      */
-    public <T> T onTransactedResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException
-    {
+    public <T> T onTransactedResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException {
         return _onResult(entityManagerResultCallback, transacted);
     }
 
-    private <T> T _onResult(EntityManagerResultCallback<T> entityManagerResultCallback, TransactionManager transactionManager) throws KapuaException
-    {
+    private <T> T _onResult(EntityManagerResultCallback<T> entityManagerResultCallback, TransactionManager transactionManager) throws KapuaException {
         EntityManager manager = null;
         try {
             manager = entityManagerFactory.createEntityManager();
@@ -157,8 +153,7 @@ public class EntityManagerSession {
      * @return
      * @throws KapuaException
      */
-    public <T> T onInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback) throws KapuaException
-    {
+    public <T> T onInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback) throws KapuaException {
         return _onInsert(entityManagerInsertCallback, notTransacted);
     }
 
@@ -174,13 +169,11 @@ public class EntityManagerSession {
      * @return
      * @throws KapuaException
      */
-    public <T> T onTransactedInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback) throws KapuaException
-    {
+    public <T> T onTransactedInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback) throws KapuaException {
         return _onInsert(entityManagerInsertCallback, transacted);
     }
 
-    private <T> T _onInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback, TransactionManager transactionManager) throws KapuaException
-    {
+    private <T> T _onInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback, TransactionManager transactionManager) throws KapuaException {
         boolean succeeded = false;
         int retry = 0;
         EntityManager manager = entityManagerFactory.createEntityManager();
@@ -192,8 +185,7 @@ public class EntityManagerSession {
                     instance = entityManagerInsertCallback.onInsert(manager);
                     transactionManager.commit(manager);
                     succeeded = true;
-                }
-                catch (KapuaEntityExistsException e) {
+                } catch (KapuaEntityExistsException e) {
                     if (manager != null) {
                         manager.rollback();
                     }
@@ -203,26 +195,22 @@ public class EntityManagerSession {
                         manager.rollback();
                         throw KapuaExceptionUtils.convertPersistenceException(e);
                     }
-                }
-                catch (PersistenceException e) {
+                } catch (PersistenceException e) {
                     if (manager != null) {
                         manager.rollback();
                     }
                     throw KapuaExceptionUtils.convertPersistenceException(e);
                 }
-            }
-            while (!succeeded);
-        }
-        catch (Exception e) {
-                    if (manager != null) {
-                        manager.rollback();
-                }
-                    throw KapuaExceptionUtils.convertPersistenceException(e);
-                }
-        finally {
+            } while (!succeeded);
+        } catch (Exception e) {
             if (manager != null) {
-            manager.close();
-        }
+                manager.rollback();
+            }
+            throw KapuaExceptionUtils.convertPersistenceException(e);
+        } finally {
+            if (manager != null) {
+                manager.close();
+            }
         }
         return instance;
     }
