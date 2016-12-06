@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 
 /**
  * Permission definition.<br>

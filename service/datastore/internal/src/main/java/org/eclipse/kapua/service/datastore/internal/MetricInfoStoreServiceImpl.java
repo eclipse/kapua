@@ -23,9 +23,11 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.MetricInfoStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsMessageField;
@@ -59,9 +61,10 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
     private AuthorizationService authorizationService;
     private PermissionFactory    permissionFactory;
 
-    public MetricInfoStoreServiceImpl()
-    {
-        super(MetricInfoStoreService.class.getName(), DatastoreDomain.DATASTORE, DatastoreEntityManagerFactory.getInstance());
+    private static final Domain datastoreDomain = new DatastoreDomain();
+
+    public MetricInfoStoreServiceImpl() {
+        super(MetricInfoStoreService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
@@ -91,8 +94,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
 
     @Override
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -118,8 +120,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
             EsMetricDAO.connection(EsClient.getcurrent())
                        .instance(everyIndex, EsSchema.METRIC_TYPE_NAME)
                        .deleteById(id.toString());
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -128,8 +129,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
 
     @Override
     public MetricInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -157,8 +157,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
 
     @Override
     public MetricInfoListResult query(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -187,8 +186,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
                                 .query(query);
 
             return result;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -197,8 +195,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
 
     @Override
     public long count(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -227,8 +224,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
                                 .count(query);
 
             return result;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -237,8 +233,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
 
     @Override
     public void delete(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -265,8 +260,7 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
                        .deleteByQuery(query);
 
             return;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -274,18 +268,16 @@ public class MetricInfoStoreServiceImpl extends AbstractKapuaConfigurableService
     }
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Check Access
         // TODO add enum for actions
-        Permission permission = permissionFactory.newPermission(DatastoreDomain.DATASTORE, action, scopeId);
+        Permission permission = permissionFactory.newPermission(datastoreDomain, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 
     private AccountInfo getAccountServicePlan(KapuaId scopeId)
-        throws KapuaException
-    {
+            throws KapuaException {
         Account account = accountService.find(scopeId);
         return new AccountInfo(account, new LocalServicePlan(this.getConfigValues(account.getId())));
     }

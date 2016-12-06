@@ -40,27 +40,19 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
-import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.internal.UserDomain;
 
 public class KapuaGwtModelConverter {
 
@@ -126,7 +118,7 @@ public class KapuaGwtModelConverter {
      * @since 1.0.0
      */
     public static GwtPermission convert(Permission permission) {
-        return new GwtPermission(convert(permission.getDomain()),
+        return new GwtPermission(convertDomain(permission.getDomain()),
                 convert(permission.getAction()),
                 convert(permission.getTargetScopeId()));
     }
@@ -174,26 +166,26 @@ public class KapuaGwtModelConverter {
      * 
      * @since 1.0.0
      */
-    public static GwtDomain convert(String domain) {
+    public static GwtDomain convertDomain(String domain) {
         GwtDomain gwtDomain = null;
 
-        if (AccountDomain.ACCOUNT.equals(domain)) {
+        if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.account;
-        } else if (CredentialDomain.CREDENTIAL.equals(domain)) {
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.credential;
-        } else if (DatastoreDomain.DATA_STORE.equals(domain)) {
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.datastore;
-        } else if (DeviceDomain.DEVICE.equals(domain)) {
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device;
-        } else if (DeviceConnectionDomain.DEVICE_CONNECTION.equals(domain)) {
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device_connection;
-        } else if (DeviceEventDomain.DEVICE_EVENT.equals(domain)) {
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device_event;
-        } else if (DeviceManagementDomain.DEVICE_MANAGEMENT.equals(domain)) {
-            gwtDomain = GwtDomain.device_management;
-        } else if (RoleDomain.ROLE.equals(domain)) {
+            // } else if (DeviceManagementDomain.DEVICE_MANAGEMENT.equals(domain)) {
+            // gwtDomain = GwtDomain.device_management;
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.role;
-        } else if (UserDomain.USER.equals(domain)) {
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.user;
         }
         // else if (UserPermissionDomain.USER_PERMISSION.equals(domain)) {

@@ -38,13 +38,16 @@ import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
-import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +56,12 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     private static final long serialVersionUID = -3919578632016541047L;
 
     private static final Logger s_logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
+
+    private static final Domain accountDomain = new AccountDomain();
+    private static final Domain deviceDomain = new DeviceDomain();
+    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
+    private static final Domain datastoreDomain = new DatastoreDomain();
+    private static final Domain userDomain = new UserDomain();
 
     public static final String SESSION_CURRENT = "console.current.session";
     public static final String SESSION_CURRENT_USER = "console.current.user";
@@ -144,24 +153,24 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
-        boolean hasAccountCreate = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccountRead = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, kapuaSession.getScopeId()));
-        boolean hasAccountUpdate = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccountDelete = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.delete, kapuaSession.getScopeId()));
-        boolean hasAccountAll = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, null, null));
+        boolean hasAccountCreate = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasAccountRead = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasAccountUpdate = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasAccountDelete = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.delete, kapuaSession.getScopeId()));
+        boolean hasAccountAll = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, null, null));
 
-        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, kapuaSession.getScopeId()));
-        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.delete, kapuaSession.getScopeId()));
-        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.delete, kapuaSession.getScopeId()));
+        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.write, kapuaSession.getScopeId()));
 
-        boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission("data", Actions.read, kapuaSession.getScopeId()));
+        boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission(datastoreDomain, Actions.read, kapuaSession.getScopeId()));
 
-        boolean hasUserCreate = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.write, kapuaSession.getScopeId()));
-        boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.read, kapuaSession.getScopeId()));
-        boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.write, kapuaSession.getScopeId()));
-        boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.delete, kapuaSession.getScopeId()));
+        boolean hasUserCreate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.delete, kapuaSession.getScopeId()));
 
         //
         // Get account info

@@ -21,20 +21,18 @@ import org.eclipse.kapua.commons.jpa.EntityManagerSession;
  * @since 1.0
  *
  */
-public class AbstractKapuaService
-{
-    
-    protected EntityManagerSession entityManagerSession;
+public class AbstractKapuaService {
+
     protected EntityManagerFactory entityManagerFactory;
+    protected EntityManagerSession entityManagerSession;
 
     /**
      * Constructor
      * 
      * @param entityManagerFactory
      */
-    protected AbstractKapuaService(EntityManagerFactory entityManagerFactory)
-    {
+    protected AbstractKapuaService(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
-        entityManagerSession = new EntityManagerSession(entityManagerFactory);
+        this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
     }
 }

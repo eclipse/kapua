@@ -27,6 +27,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
@@ -59,6 +60,8 @@ import org.xml.sax.SAXException;
 @KapuaProvider
 public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
 
+    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId, String configurationId, String configurationComponentPid, Long timeout)
@@ -73,7 +76,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -156,7 +159,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -244,7 +247,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
 
         //
         // Prepare the request

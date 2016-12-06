@@ -25,6 +25,8 @@
 		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
+		<api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
+		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.account.AccountFactory</api>
@@ -35,6 +37,7 @@
 	<packages>
 		<!-- <package>org.eclipse.kapua.service.authentication.credential.shiro</package>
 		<package>org.eclipse.kapua.service.authentication.shiro</package> -->
+		<package>org.eclipse.kapua.service.authorization.domain.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.permission.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.access.shiro</package>
