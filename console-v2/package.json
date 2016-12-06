@@ -20,7 +20,7 @@
     "url": "https://github.com/eclipse/kapua/issues"
   },
   "author": "",
-  "license": "ISC",
+  "license": "EPL-1.0",
   "devDependencies": {
     "concurrently": "^3.1.0"
   }
