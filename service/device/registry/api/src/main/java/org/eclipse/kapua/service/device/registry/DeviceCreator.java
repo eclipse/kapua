@@ -34,6 +34,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 @XmlRootElement(name = "deviceCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "clientId",
+        "status",
         "connectionId",
         "displayName",
         "serialNumber",
