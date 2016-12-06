@@ -16,27 +16,54 @@ Feature: User Service
     database.
 
 Scenario: Creating user 
-    Create user with name kapua-user and persist it in database. Then try to
-    find it.
+    Create user with all User entity fields set and persist it in database. Then try to
+    find it by name and check all the fields.
 
-    Given User with name "kapua-user" in scope with id 42 
-    When I create user 
-    And I search for user with name "kapua-user" 
-    Then I find user with name "kapua-user" 
-    
+    Given I have following user
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    When I search for user with name "kapua-u1"
+    Then I find user
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+
+Scenario: Create user with short name
+    Create user that has less than required 3 characters in name.
+
+    Given I have following user
+        | name | displayName        | email              | phoneNumber     | status  |
+        | u1   |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    Then I get Kapua exception
+
+Scenario: Create user that has more than DB allowed length
+    Create user with name that contains 280 characters.
+
+    Given I have following user
+        | name | displayName        | email              | phoneNumber     | status  |
+        | uuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaa  |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    Then I get Kapua exception
+
+
+Scenario: Create user with special characters in his name
+    Create user with #$% characters in his name
+
 Scenario: Update user 
-    First create user with name kapua-user and persist him in database,
-    then find that same user and modify its name to kapua-modified and persist
-    this user to database. At the end check that user name is changed to 
-    kapua-modified.
+    First create user with all User entity fields set. Then persist this user in database.
+    After that find that same user and modify all the fields by appending modified.
+    Persist changes to database. At the end check that changes ware persisted
 
-    Given User with name "kapua-user" in scope with id 42 
-    When I create user 
-    And I find user with name "kapua-user" 
-    And I change name to "kapua-modified" 
-    Then I find user with name "kapua-modified" 
-    
-Scenario: Delete user 
+    Given I have following user
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    And I search for user with name "kapua-u1"
+    And I change user to
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1-mod |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
+    And I search for user with name "kapua-u1-mod"
+    Then I find user
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1-mod |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
+
+    Scenario: Delete user
     Create user with name kapua-user. Then delete this user and check it is
     deleted. This means that if trying to search user, no such user is found.
 
@@ -62,8 +89,31 @@ Scenario: Count user
     Given User with name "kapua-user" in scope with id 42 
     When I create user 
     And I count for users in scope with id 42 
-    Then I count 1 user 
-    
+    Then I count 1 user
+
+Scenario: Find user by id
+    Create user with all User entity fields set. When user is created it receives
+    user id. Use this user id to search for user. Then check that user found is the same
+    user as the one created. Check all fields.
+
+    Given I have following user
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    When I search for created user by id
+    Then I find user
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+
+Scenario: Find user by name
+    Create user with all User entity fields set. Use user name to search for user.
+    Check that user found is the same user as the one created. Check all fields.
+
+    Given I have following user
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    When I search for created user by name
+    Then I find user
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+
 #Scenario: Create user that already exist
 #    Create user whit name kapua-user and than try to persist it two times.
 #    KapuaException should be thrown in such scenario.
@@ -115,15 +165,31 @@ Scenario: Create multiple users
     Create three ordinary users in same scopeId and then count to see if there are 3 users in
     that scopeId.
 
-    Given I have following users 
-        | username | scopeId  |
-        | kapua-u1 |    42    |
-        | kapua-u2 |    42    |
-        | kapua-u3 |    42    |
-    When I count users in scope 42 
-    Then I count 3 users 
-    
-Scenario: Get metadata 
+    Given I have following users
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
+        | kapua-u2 |    Kapua User 2    | kapua_u2@kapua.com | +386 31 323 222 | ENABLED |
+        | kapua-u3 |    Kapua User 3    | kapua_u3@kapua.com | +386 31 323 333 | ENABLED |
+    When I count users in scope 42
+    Then I count 3 users
+
+Scenario: Find multiple users
+    Create three ordinary users in same scopeId and then find all users and see if there are
+    users with same data as those created.
+
+    Given I have following users
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
+        | kapua-u2 |    Kapua User 2    | kapua_u2@kapua.com | +386 31 323 222 | ENABLED |
+        | kapua-u3 |    Kapua User 3    | kapua_u3@kapua.com | +386 31 323 333 | ENABLED |
+    When I search for users
+    Then I find users
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
+        | kapua-u2 |    Kapua User 2    | kapua_u2@kapua.com | +386 31 323 222 | ENABLED |
+        | kapua-u3 |    Kapua User 3    | kapua_u3@kapua.com | +386 31 323 333 | ENABLED |
+
+Scenario: Get metadata
     Query for service specific metadata.
 
     When I retrieve metadata
