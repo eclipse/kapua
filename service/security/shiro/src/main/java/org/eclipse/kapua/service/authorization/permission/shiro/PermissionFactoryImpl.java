@@ -32,24 +32,21 @@ import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException
  * @since 1.0
  *
  */
-public class PermissionFactoryImpl implements PermissionFactory
-{
+public class PermissionFactoryImpl implements PermissionFactory {
+
     @Override
-    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId)
-    {
+    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId) {
         return new PermissionImpl(domain, action, targetScopeId);
     }
 
     @Override
-    public RolePermission newRolePermission(KapuaId scopeId, String domain, Actions action, KapuaId targetScopeId)
-    {
-        return new RolePermissionImpl(scopeId, domain, action, targetScopeId);
+    public RolePermission newRolePermission(KapuaId scopeId, Permission p) {
+        return new RolePermissionImpl(scopeId, p);
     }
 
     @Override
     public Permission parseString(String stringPermission)
-        throws KapuaException
-    {
+            throws KapuaException {
         StringTokenizer st = new StringTokenizer(stringPermission, ":");
         int iTokensCount = st.countTokens();
         if (iTokensCount < 1 || iTokensCount > 3) {
@@ -70,8 +67,7 @@ public class PermissionFactoryImpl implements PermissionFactory
             try {
                 BigInteger kapuaId = new BigInteger(st.nextToken());
                 scopeTargetId = new KapuaEid(kapuaId);
-            }
-            catch (IllegalArgumentException iae) {
+            } catch (IllegalArgumentException iae) {
                 throw new KapuaAuthorizationException(KapuaAuthorizationErrorCodes.INVALID_STRING_PERMISSION, iae, stringPermission);
             }
         }

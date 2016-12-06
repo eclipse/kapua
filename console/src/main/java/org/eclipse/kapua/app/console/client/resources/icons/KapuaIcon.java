@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.resources.icons;
 
-import org.eclipse.kapua.app.console.client.widget.color.Color;
+import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
 
 import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.Element;
@@ -53,6 +53,15 @@ public class KapuaIcon extends Text {
             switch (emSize) {
             case 2:
                 sb.append(" fa-2x' ");
+                break;
+            case 3:
+                sb.append(" fa-3x' ");
+                break;
+            case 4:
+                sb.append(" fa-4x' ");
+                break;
+            case 5:
+                sb.append(" fa-5x' ");
                 break;
             default:
                 sb.append(" fa-lg' ");

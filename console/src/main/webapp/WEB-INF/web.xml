@@ -49,6 +49,7 @@
         <url-pattern>/exporter_device/*</url-pattern>
         <url-pattern>/exporter_device_event/*</url-pattern>
         <url-pattern>/settings/*</url-pattern>
+        <url-pattern>/role/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
 	</filter-mapping>
@@ -76,6 +77,7 @@
         <url-pattern>/exporter_usage/*</url-pattern>
         <url-pattern>/exporter_device/*</url-pattern>
         <url-pattern>/exporter_device_event/*</url-pattern>
+        <url-pattern>/role/*</url-pattern>
         <url-pattern>/settings/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
    <!--
@@ -187,6 +189,16 @@
         <servlet-name>deviceManagementServlet</servlet-name>
         <url-pattern>/deviceManagement</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>roleServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtRoleServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>roleServlet</servlet-name>
+        <url-pattern>/role</url-pattern>
+    </servlet-mapping>
+
 
 	<servlet>
 		<servlet-name>userServlet</servlet-name>

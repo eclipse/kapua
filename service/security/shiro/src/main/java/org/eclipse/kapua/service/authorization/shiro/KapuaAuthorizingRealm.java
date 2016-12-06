@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.util.concurrent.Callable;
-
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -30,47 +28,39 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoPredicates;
 import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermission;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionQuery;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionService;
-import org.eclipse.kapua.service.authorization.user.permission.shiro.UserPermissionPredicates;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JPA-based Apache Shiro {@link AuthorizingRealm} implementation.
- * 
- * @since 1.0
- * 
+ * The JPA-based application's one and only configured Apache Shiro Realm.
  */
-public class KapuaAuthorizingRealm extends AuthorizingRealm
-{
-    private static final Logger logger     = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
+public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
-    /**
-     * Realm name
-     */
-    public static final String  REALM_NAME = "kapuaAuthorizingRealm";
+    private static final Logger logger = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
 
-    /**
-     * Constructor
-     * 
-     * @throws KapuaException
-     */
-    public KapuaAuthorizingRealm() throws KapuaException
-    {
+    public static final String REALM_NAME = "kapuaAuthorizingRealm";
+
+    public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
     }
 
-    @Override
+    /**
+     * Authorization.
+     */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals)
-        throws AuthenticationException
-    {
+            throws AuthenticationException {
         //
         // Extract principal
         String username = (String) principals.getPrimaryPrincipal();
@@ -79,33 +69,20 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm
         //
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
+
         UserService userService = locator.getService(UserService.class);
-        UserPermissionService userPermissionService = locator.getService(UserPermissionService.class);
-        UserPermissionFactory userPermissionFactory = locator.getFactory(UserPermissionFactory.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
 
         //
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPriviledge(new Callable<User>() {
-
-                @Override
-                public User call()
-                    throws Exception
-                {
-                    return userService.findByName(username);
-                }
-            });
-        }
-        catch (Exception e) {
-        	//to preserve the original exception message (if possible)
-        	if (e instanceof AuthenticationException) {
-				throw (AuthenticationException) e;
-			}
-			else {
-				throw new ShiroException("Error while find user!", e);
-			}
+            user = KapuaSecurityUtils.doPriviledge(() -> userService.findByName(username));
+        } catch (AuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ShiroException("Error while find user!", e);
         }
 
         //
@@ -115,52 +92,60 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm
         }
 
         //
-        // Get user permissions set
-        UserPermissionQuery query = userPermissionFactory.newQuery(user.getScopeId());
-        KapuaPredicate predicate = new AttributePredicate<KapuaId>(UserPermissionPredicates.USER_ID, user.getId());
-        query.setPredicate(predicate);
+        // Get user access infos
+        AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(user.getScopeId());
+        KapuaPredicate predicate = new AttributePredicate<KapuaId>(AccessInfoPredicates.USER_ID, user.getId());
+        accessInfoQuery.setPredicate(predicate);
 
-        final KapuaListResult<UserPermission> userPermissions;
+        final KapuaListResult<AccessInfo> accessInfos;
         try {
-            userPermissions = KapuaSecurityUtils.doPriviledge(new Callable<KapuaListResult<UserPermission>>() {
-
-                @Override
-                public KapuaListResult<UserPermission> call()
-                    throws Exception
-                {
-                    return userPermissionService.query(query);
-                }
-            });
+            accessInfos = KapuaSecurityUtils.doPriviledge(() -> accessInfoService.query(accessInfoQuery));
+        } catch (AuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ShiroException("Error while find access info!", e);
         }
-        catch (Exception e) {
-        	//to preserve the original exception message (if possible)
-        	if (e instanceof AuthenticationException) {
-				throw (AuthenticationException) e;
-			}
-			else {
-				throw new ShiroException("Error while find permissions!", e);
-			}
+
+        //
+        // Check existence
+        if (accessInfos == null) {
+            throw new UnknownAccountException();
         }
 
         //
         // Create SimpleAuthorizationInfo with principals permissions
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        for (UserPermission userPermission : userPermissions.getItems()) {
 
-            Permission p = permissionFactory.newPermission(userPermission.getPermission().getDomain(),
-                                                           userPermission.getPermission().getAction(),
-                                                           userPermission.getPermission().getTargetScopeId());
+        // Get user roles set and related permissions
+        for (AccessInfo accessInfo : accessInfos.getItems()) {
 
-            logger.trace("Username: {} has permission: {}", username, p);
-            info.addStringPermission(p.toString());
+            for (AccessPermission accessPermission : accessInfo.getAccessPermissions()) {
+                Permission p = accessPermission.getPermission();
+                info.addStringPermission(p.toString());
+                logger.trace("User: {} has permission: {}", username, p);
+            }
+
+            for (AccessRole accessRole : accessInfo.getAccessRoles()) {
+
+                Role role = accessRole.getRole();
+                info.addRole(role.getName());
+                for (RolePermission rolePermission : role.getRolePermissions()) {
+
+                    Permission p = rolePermission.getPermission();
+                    info.addStringPermission(p.toString());
+                    logger.trace("Role: {} has permission: {}", role, p);
+                }
+            }
+
         }
 
+        //
+        // Return authorization info
         return info;
     }
 
     @Override
-    public boolean supports(AuthenticationToken authenticationToken)
-    {
+    public boolean supports(AuthenticationToken authenticationToken) {
         /**
          * This method always returns false as it works only as AuthorizingReam.
          */
@@ -169,8 +154,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
-        throws AuthenticationException
-    {
+            throws AuthenticationException {
         /**
          * This method can always return null as it does not support any authentication token.
          */

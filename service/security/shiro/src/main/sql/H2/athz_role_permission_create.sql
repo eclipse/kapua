@@ -21,8 +21,8 @@ CREATE TABLE athz_role_permission (
   action					VARCHAR(64),
   target_scope_id		    BIGINT(21),
   
-  PRIMARY KEY (id)
-
+  PRIMARY KEY (id),
+--  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE CASCADE
 ) DEFAULT CHARSET=utf8;
 
 CREATE UNIQUE INDEX idx_role_permission_scope_id ON athz_role_permission (role_id, domain, action, target_scope_id);

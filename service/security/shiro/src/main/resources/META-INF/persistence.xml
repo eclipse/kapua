@@ -11,8 +11,7 @@
         Eurotech - initial API and implementation
    
  -->
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
-	version="2.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
 	<persistence-unit name="kapua-authentication" transaction-type="RESOURCE_LOCAL">
 
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
@@ -38,12 +37,13 @@
         
         <!-- Authorization -->
         <class>org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl</class>
-        <class>org.eclipse.kapua.service.authorization.user.permission.shiro.UserPermissionImpl</class>
 
         <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
 
-        <class>org.eclipse.kapua.service.authorization.user.role.shiro.UserRolesImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl</class>
          
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>

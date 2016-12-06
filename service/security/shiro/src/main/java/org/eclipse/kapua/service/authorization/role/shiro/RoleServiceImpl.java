@@ -12,23 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.Set;
+import java.util.Iterator;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * Role service implementation.
@@ -36,21 +38,18 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
  * @since 1.0
  *
  */
-public class RoleServiceImpl extends AbstractKapuaService implements RoleService
-{
+public class RoleServiceImpl extends AbstractKapuaService implements RoleService {
 
-    public RoleServiceImpl()
-    {
-        super(AuthenticationEntityManagerFactory.getInstance());
+    public RoleServiceImpl() {
+        super(AuthorizationEntityManagerFactory.getInstance());
     }
 
     @Override
     public Role create(RoleCreator roleCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
-        ArgumentValidator.notNull(roleCreator.getRoles(), "roleCreator.permissions");
+        ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
 
         //
         // Check Access
@@ -59,6 +58,41 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.write, roleCreator.getScopeId()));
         return entityManagerSession.onTransactedInsert(em -> RoleDAO.create(em, roleCreator));
+    }
+
+    @Override
+    public Role update(Role role) throws KapuaException {
+        ArgumentValidator.notNull(role, "role");
+        ArgumentValidator.notEmptyOrNull(role.getName(), "role.name");
+        ArgumentValidator.notNull(role.getRolePermissions(), "role.permissions");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.write, role.getScopeId()));
+        return entityManagerSession.onTransactedInsert(em -> {
+
+            Role currentRole = RoleDAO.find(em, role.getId());
+            if (currentRole == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
+            }
+
+            //
+            // Force deletion of deleted RolePermissions.
+            // Eclipse Link does not seems to take care about
+            Iterator<RolePermission> rolePermissionsIterator = currentRole.getRolePermissions().iterator();
+            while (rolePermissionsIterator.hasNext()) {
+                RolePermission currentRolePermission = rolePermissionsIterator.next();
+
+                if (!role.getRolePermissions().contains(currentRolePermission)) {
+                    ServiceDAO.delete(em, RolePermissionImpl.class, currentRolePermission.getId());
+                }
+            }
+
+            return RoleDAO.update(em, role);
+        });
     }
 
     @Override
@@ -79,8 +113,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public Role find(KapuaId scopeId, KapuaId roleId)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(roleId, "roleId");
 
@@ -96,8 +129,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public RoleListResult query(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -113,8 +145,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
 
     @Override
     public long count(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -126,13 +157,5 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
         authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
-    }
-
-    @Override
-    public RoleListResult merge(Set<RoleCreator> newPermissions)
-        throws KapuaException
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

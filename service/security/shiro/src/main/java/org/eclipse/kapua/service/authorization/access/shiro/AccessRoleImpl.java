@@ -1,0 +1,146 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
+package org.eclipse.kapua.service.authorization.access.shiro;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
+
+/**
+ * {@link AccessRole} implementation.
+ * 
+ * @since 1.0.0
+ */
+@Entity(name = "AccessRole")
+@Table(name = "athz_access_role")
+public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
+
+    private static final long serialVersionUID = 8400951097610833058L;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "access_info_id"))
+    })
+    private KapuaEid accessId;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private RoleImpl role;
+
+    /**
+     * Empty constructor required by JPA.
+     * 
+     * @since 1.0.0
+     */
+    protected AccessRoleImpl() {
+        super();
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param scopeId
+     *            The scope id to set for this {@link AccessRole}.
+     * @since 1.0.0
+     */
+    public AccessRoleImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
+    /**
+     * Constructor.<br>
+     * Creates a clone of the given {@link AccessRole}.
+     * 
+     * @param accessRole
+     *            The {@link AccessRole} to clone.
+     * @throws KapuaException
+     *             If the given {@link AccessRole} is incompatible with the implementation-specific type.
+     * @since 1.0.0
+     */
+    public AccessRoleImpl(AccessRole accessRole) throws KapuaException {
+        super((AbstractKapuaEntity) accessRole);
+
+        setAccessId(accessRole.getAccessId());
+        setRole(accessRole.getRole());
+    }
+
+    @Override
+    public void setAccessId(KapuaId accessId) {
+        if (accessId != null) {
+            this.accessId = new KapuaEid(accessId);
+        } else {
+            this.accessId = null;
+        }
+    }
+
+    @Override
+    public KapuaId getAccessId() {
+        return accessId;
+    }
+
+    @Override
+    public void setRole(Role role) throws KapuaException {
+        this.role = new RoleImpl(role);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public RoleImpl getRole() {
+        return role;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((accessId == null) ? 0 : accessId.hashCode());
+        result = prime * result + ((role == null) ? 0 : role.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AccessRoleImpl other = (AccessRoleImpl) obj;
+        if (accessId == null) {
+            if (other.accessId != null)
+                return false;
+        } else if (!accessId.equals(other.accessId))
+            return false;
+        if (role == null) {
+            if (other.role != null)
+                return false;
+        } else if (!role.equals(other.role))
+            return false;
+        return true;
+    }
+}

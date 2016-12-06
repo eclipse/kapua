@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
@@ -19,24 +21,10 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 /**
  * Kapua query definition.
  *
- * @param <E> query entity domain
+ * @param <E>
+ *            query entity domain
  */
-public interface KapuaQuery<E extends KapuaEntity>
-{
-
-    /**
-     * Get the query offset
-     * 
-     * @return
-     */
-    public Integer getOffset();
-
-    /**
-     * Get the query limit
-     * 
-     * @return
-     */
-    public Integer getLimit();
+public interface KapuaQuery<E extends KapuaEntity> {
 
     /**
      * set the query offset
@@ -46,11 +34,27 @@ public interface KapuaQuery<E extends KapuaEntity>
     public void setOffset(Integer offset);
 
     /**
+     * Get the query offset
+     * 
+     * @return
+     */
+    @XmlElement(name = "offset")
+    public Integer getOffset();
+
+    /**
      * Set the query limit
      * 
      * @param limit
      */
     public void setLimit(Integer limit);
+
+    /**
+     * Get the query limit
+     * 
+     * @return
+     */
+    @XmlElement(name = "limit")
+    public Integer getLimit();
 
     /**
      * Set the code identifier
@@ -64,6 +68,7 @@ public interface KapuaQuery<E extends KapuaEntity>
      * 
      * @return
      */
+    @XmlElement(name = "scopeId")
     public KapuaId getScopeId();
 
     /**
@@ -78,6 +83,7 @@ public interface KapuaQuery<E extends KapuaEntity>
      * 
      * @return
      */
+    @XmlElement(name = "predicate")
     public KapuaPredicate getPredicate();
 
     /**
@@ -92,14 +98,8 @@ public interface KapuaQuery<E extends KapuaEntity>
      * 
      * @return
      */
+    @XmlElement(name = "sortCriteria")
     public KapuaSortCriteria getSortCriteria();
-
-    /**
-     * Get query fetch style
-     * 
-     * @return
-     */
-    public KapuaFetchStyle getFetchStyle();
 
     /**
      * Set query fetch style
@@ -107,4 +107,13 @@ public interface KapuaQuery<E extends KapuaEntity>
      * @param fetchStyle
      */
     public void setFetchStyle(KapuaFetchStyle fetchStyle);
+
+    /**
+     * Get query fetch style
+     * 
+     * @return
+     */
+    @XmlElement(name = "fetchStyle")
+    public KapuaFetchStyle getFetchStyle();
+
 }

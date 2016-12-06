@@ -12,56 +12,71 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 
 /**
- * Permission definition.
+ * Permission definition.<br>
+ * A permission can be associated to a {@link User} (using {@link AccessInfo} entity) or a {@link Role}.<br>
+ * Permissions enable the assignee to do {@link Actions} under specified domains and in specified scopes.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface Permission
-{
+public interface Permission {
 
     /**
-     * Set the domain
+     * Sets the domain on which the {@link Permission} gives access.
      * 
      * @param domain
+     *            The domain of the {@link Permission}.
+     * @since 1.0.0
      */
     public void setDomain(String domain);
 
     /**
-     * Get the domain
+     * Gets the domain on which the {@link Permission} gives access.
      * 
-     * @return
+     * @return The domain on which the {@link Permission} gives access.
+     * @since 1.0.0
      */
+    @XmlElement(name = "domain")
     public String getDomain();
 
     /**
-     * Set the action for this permission
+     * Sets the {@link Actions} that this {@link Permission} allows to do on the domain.
      * 
      * @param action
+     *            The {@link Action} that this {@link Permission} allows
+     * @since 1.0.0
      */
     public void setAction(Actions action);
 
     /**
-     * Get the action for this permission
+     * Gets the {@link Actions} that this {@link Permission} allows to do on the domain.
      * 
-     * @return
+     * @return The {@link Actions} that this {@link Permission} allows.
+     * @since 1.0.0
      */
+    @XmlElement(name = "action")
     public Actions getAction();
 
     /**
-     * Set the target permission scope identifier
+     * Sets the target scope id that this {@link Permission} gives access.
      * 
      * @param targetScopeId
+     *            The target scope id that this {@link Permission} gives access.
+     * @since 1.0.0
      */
     public void setTargetScopeId(KapuaId targetScopeId);
 
     /**
-     * Get the target permission scope identifier
+     * Gets the target scope id that this {@link Permission} gives access.
      * 
-     * @return
+     * @return The target scope id that this {@link Permission} gives access.
+     * @since 1.0.0
      */
+    @XmlElement(name = "targetScopeId")
     public KapuaId getTargetScopeId();
 }

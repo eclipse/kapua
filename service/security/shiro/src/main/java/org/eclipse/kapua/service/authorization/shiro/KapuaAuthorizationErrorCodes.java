@@ -20,10 +20,14 @@ import org.eclipse.kapua.KapuaErrorCode;
  * since 1.0
  * 
  */
-public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode
-{
+public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     /**
      * Invalid string permission representation
      */
-    INVALID_STRING_PERMISSION
+    INVALID_STRING_PERMISSION,
+
+    /**
+     * One or more embedded entities is not found or does not match the scopeId of the root entity
+     */
+    ENTITY_SCOPE_MISSMATCH
 }

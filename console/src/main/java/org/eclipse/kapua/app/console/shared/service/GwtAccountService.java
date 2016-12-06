@@ -14,11 +14,11 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.GwtAccountCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;

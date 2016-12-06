@@ -15,12 +15,10 @@ package org.eclipse.kapua.service.authorization.role;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * Role result list definition.
+ * {@link Role} list result definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface RoleListResult extends KapuaListResult<Role>
-{
+public interface RoleListResult extends KapuaListResult<Role> {
 
 }

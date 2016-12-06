@@ -15,7 +15,14 @@ CREATE TABLE athz_role (
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
   created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)  NOT NULL,
+  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+
   name 						VARCHAR(255)  NOT NULL,
+  
+  optlock                   INT UNSIGNED,
+  attributes				TEXT,
+  properties                TEXT,
   
   PRIMARY KEY (id)
 

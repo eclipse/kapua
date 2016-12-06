@@ -26,7 +26,7 @@ public class DeleteButton extends Button {
 
     public DeleteButton(SelectionListener<ButtonEvent> listener) {
         super(MSGS.buttonRemove(),
-                new KapuaIcon(IconSet.EDIT),
+                new KapuaIcon(IconSet.REMOVE),
                 listener);
     }
 }

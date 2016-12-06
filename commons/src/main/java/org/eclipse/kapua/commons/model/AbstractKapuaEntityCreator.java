@@ -14,7 +14,6 @@ package org.eclipse.kapua.commons.model;
 
 import java.io.Serializable;
 
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -22,14 +21,15 @@ import org.eclipse.kapua.model.id.KapuaId;
 /**
  * Kapua entity base creator service (reference abstract implementation).
  *
- * @param <E> entity type
+ * @param <E>
+ *            entity type
  * 
  * @since 1.0
  * 
  */
 @SuppressWarnings("serial")
-public abstract class AbstractKapuaEntityCreator<E extends KapuaEntity> implements KapuaEntityCreator<E>, Serializable
-{
+public abstract class AbstractKapuaEntityCreator<E extends KapuaEntity> implements KapuaEntityCreator<E>, Serializable {
+
     protected KapuaId scopeId;
 
     /**
@@ -37,20 +37,28 @@ public abstract class AbstractKapuaEntityCreator<E extends KapuaEntity> implemen
      * 
      * @param scopeId
      */
-    protected AbstractKapuaEntityCreator(KapuaId scopeId)
-    {
-        this.scopeId = scopeId;
+    protected AbstractKapuaEntityCreator(KapuaId scopeId) {
+        super();
+        setScopeId(scopeId);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
+    protected AbstractKapuaEntityCreator(AbstractKapuaEntityCreator<E> abstractEntityCreator) {
+        this(abstractEntityCreator.getScopeId());
     }
 
     @Override
-    public KapuaId getScopeId()
-    {
+    public KapuaId getScopeId() {
         return scopeId;
     }
 
     @Override
-    public void setScopeId(KapuaId scopeId)
-    {
-        this.scopeId = (KapuaEid) scopeId;
+    public void setScopeId(KapuaId scopeId) {
+
+        this.scopeId = scopeId;
     }
 }

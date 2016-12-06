@@ -18,13 +18,13 @@ import java.util.Properties;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.shared.model.GwtAccountCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -45,16 +45,14 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 /**
  * The server side implementation of the RPC service.
  */
-public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService
-{
+public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
 
     @SuppressWarnings("unused")
     private static final Logger s_logger         = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
     private static final long   serialVersionUID = 3314502846487119577L;
 
     public GwtAccount create(GwtXSRFToken xsrfToken, GwtAccountCreator gwtAccountCreator)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
@@ -85,26 +83,23 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             Account account = accountService.create(accountCreator);
 
             // convert to GwtAccount and return
-            gwtAccount = KapuaGwtConverter.convert(account);
-        }
-        catch (Throwable t) {
+            gwtAccount = KapuaGwtModelConverter.convert(account);
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return gwtAccount;
     }
 
     public GwtAccount find(String accountIdString)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         GwtAccount gwtAccount = null;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
-            gwtAccount = KapuaGwtConverter.convert(accountService.find(accountId));
-        }
-        catch (Throwable t) {
+            gwtAccount = KapuaGwtModelConverter.convert(accountService.find(accountId));
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
@@ -112,8 +107,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String accountIdString)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -141,8 +135,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationCity", account.getOrganization().getCity()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationState", account.getOrganization().getStateProvinceCounty()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationCountry", account.getOrganization().getCountry()));
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
@@ -150,8 +143,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     public GwtAccount updateAccountProperties(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
@@ -169,29 +161,19 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 property = new Properties();
             }
 
-            if (gwtAccount.getUnescapedDashboardPreferredTopic() != null) {
-                property.put("topic", gwtAccount.getUnescapedDashboardPreferredTopic());
-            }
-
-            if (gwtAccount.getUnescapedDashboardPreferredMetric() != null) {
-                property.put("metric", gwtAccount.getUnescapedDashboardPreferredMetric());
-            }
-
             account.setEntityProperties(property);
             account = accountService.update(account);
 
             // convert to GwtAccount and return
-            gwtAccountUpdated = KapuaGwtConverter.convert(account);
-        }
-        catch (Throwable t) {
+            gwtAccountUpdated = KapuaGwtModelConverter.convert(account);
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return gwtAccountUpdated;
     }
 
     public GwtAccount update(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
@@ -218,17 +200,15 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             account = accountService.update(account);
 
             // convert to GwtAccount and return
-            gwtAccountUpdated = KapuaGwtConverter.convert(account);
-        }
-        catch (Throwable t) {
+            gwtAccountUpdated = KapuaGwtModelConverter.convert(account);
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return gwtAccountUpdated;
     }
 
     public void delete(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
@@ -242,15 +222,13 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             if (account != null) {
                 accountService.delete(account.getScopeId(), account.getId());
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
     }
 
     public ListLoadResult<GwtAccount> findAll(String scopeIdString)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
 
         List<GwtAccount> gwtAccountList = new ArrayList<GwtAccount>();
         KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
@@ -262,10 +240,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             KapuaListResult<Account> list = accountService.query(query);
             for (Account account : list.getItems()) {
-                gwtAccountList.add(KapuaGwtConverter.convert(account));
+                gwtAccountList.add(KapuaGwtModelConverter.convert(account));
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
@@ -273,8 +250,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     public ListLoadResult<GwtAccount> findChildren(String parentAccountId, boolean recoursive)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -287,10 +263,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             KapuaListResult<Account> list = accountService.query(query);
             for (Account account : list.getItems()) {
-                gwtAccountList.add(KapuaGwtConverter.convert(account));
+                gwtAccountList.add(KapuaGwtModelConverter.convert(account));
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
@@ -298,8 +273,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     public ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String parentAccountId, boolean recoursive)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
 
         List<GwtAccountStringListItem> gwtAccountStrings = new ArrayList<GwtAccountStringListItem>();
@@ -317,8 +291,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 gwtAccountStrings.add(item);
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
@@ -327,18 +300,16 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public GwtAccount findByAccountName(String accountName)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         GwtAccount gwtAccount = null;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountService accountService = locator.getService(AccountService.class);
             Account account = accountService.findByName(accountName);
             if (account != null) {
-                gwtAccount = KapuaGwtConverter.convert(account);
+                gwtAccount = KapuaGwtModelConverter.convert(account);
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 

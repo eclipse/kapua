@@ -12,102 +12,148 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
-import java.io.Serializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GwtPermission extends KapuaBaseModel implements Serializable {
+public class GwtPermission extends KapuaBaseModel {
 
     private static final long serialVersionUID = -7753268319786525424L;
 
     /**
-     * Defines the domain of the object protected by the Permission
+     * Defines the domain of the object protected by the {@link GwtPermission}
      */
-    public enum Domain {
-        account, user, data, device, rule, apis, broker, system, simcard, simprovider, certificate, self;
+    public enum GwtDomain implements IsSerializable, Enum {
+        account, //
+        credential, //
+        datastore, //
+        device_connection, //
+        device, //
+        device_event, //
+        device_management, //
+        role, //
+        user, //
+        user_permission, //
     }
 
     /**
-     * Defines the actions allowed by the Permission
+     * Defines the actions allowed by the {@link GwtPermission}
      */
-    public enum Action {
-        view, manage, connect, all;
+    public enum GwtAction implements IsSerializable, Enum {
+        read, //
+        write, //
+        delete, //
+        connect, //
+        exec;
+
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
 
-    private Domain m_domain;
-    private Action m_action;
-    private long m_accountId;
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <X> X get(String property) {
+        if ("domainEnum".equals(property)) {
+            return (X) (GwtDomain.valueOf(getDomain()));
+        } else if ("actionEnum".equals(property)) {
+            return (X) (GwtAction.valueOf(getAction()));
+        } else {
+            return super.get(property);
+        }
+    }
+
+    /**
+     * Gwt Permission constructor.
+     */
+    public GwtPermission() {
+        super();
+    }
 
     /**
      * Gwt Permission constructor.
      * 
      * @param domain
+     *            The {@link GwtDomain} of the permission
      * @param action
-     * @param accountId
+     *            The {@link GwtAction} of the permission
+     * @param targetScopeId
+     *            The target scope id of the permission
      */
-    public GwtPermission(Domain domain, Action action, long accountId) {
-        m_domain = domain;
-        m_action = action;
-        m_accountId = accountId;
+    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId) {
+        this();
+        setDomain(domain != null ? domain.name() : null);
+        setAction(action != null ? action.name() : null);
+        setTargetScopeId(targetScopeId);
     }
 
     /**
-     * Gwt Permission constructor.
+     * Returns the string representation for this {@link GwtPermission} in the following format:
+     * <p>
+     * {domain}[:{action}[:{targetScopeId]]
+     * </p>
      * 
-     * @param domain
-     * @param action
+     * @return the formatted string representation of this {@link GwtPermission}
+     * @since 1.0.0
      */
-    public GwtPermission(Domain domain, Action action) {
-        m_domain = domain;
-        m_action = action;
-        m_accountId = -1;
-    }
-
-    /**
-     * Gwt Permission constructor.
-     * 
-     * @param domain
-     */
-    public GwtPermission(Domain domain) {
-        m_domain = domain;
-        m_action = null;
-        m_accountId = -1;
-    }
-
-    /**
-     * Returns the string representation for this Permission
-     */
+    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(m_domain.name());
-        if (m_action != null) {
+        sb.append(getDomainEnum().name());
+
+        if (getAction() != null) {
             sb.append(":")
-                    .append(m_action.name());
+                    .append(getActionEnum().name());
         }
-        if (m_accountId >= 0) {
+        if (getTargetScopeId() != null) {
             sb.append(":")
-                    .append(String.valueOf(m_accountId));
+                    .append(getTargetScopeId());
         }
         return sb.toString();
     }
 
     /**
-     * @return the domain
+     * @return the domain of this permission
+     * @since 1.0.0
      */
-    public Domain getDomain() {
-        return m_domain;
+    public String getDomain() {
+        return get("domain");
+    }
+
+    public GwtDomain getDomainEnum() {
+        return get("domainEnum");
+    }
+
+    public void setDomain(String domain) {
+        set("domain", domain);
     }
 
     /**
-     * @return the action
+     * @return the action of this permission
+     * @since 1.0.0
      */
-    public Action getAction() {
-        return m_action;
+    public String getAction() {
+        return get("action");
+    }
+
+    public GwtAction getActionEnum() {
+        return get("actionEnum");
+    }
+
+    public void setAction(String action) {
+        set("action", action);
     }
 
     /**
-     * @return the accountId
+     * @return the target scope id of this permission
+     * @since 1.0.0
      */
-    public long getAccountId() {
-        return m_accountId;
+    public String getTargetScopeId() {
+        return get("targetScopeId");
     }
+
+    public void setTargetScopeId(String targetScopeId) {
+        set("targetScopeId", targetScopeId);
+    }
+
 }

@@ -20,7 +20,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
 /**
  * Device DAO
@@ -41,7 +40,7 @@ public class DeviceDAO extends ServiceDAO {
         Device device = new DeviceImpl(deviceCreator.getScopeId());
 
         device.setClientId(deviceCreator.getClientId());
-        device.setStatus(DeviceStatus.ENABLED);
+        device.setStatus(deviceCreator.getStatus());
         device.setDisplayName(deviceCreator.getDisplayName());
         device.setLastEventOn(null);
         device.setLastEventType(null);

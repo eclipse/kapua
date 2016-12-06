@@ -43,7 +43,7 @@ CREATE TABLE dvc_device (
   custom_attribute_3        VARCHAR(255),
   custom_attribute_4        VARCHAR(255),
   custom_attribute_5        VARCHAR(255),
-  credentials_mode          VARCHAR(64)   NOT NULL DEFAULT 'INHERITED',
+  credentials_mode          VARCHAR(64)   NOT NULL,
   preferred_user_id			BIGINT(21)    DEFAULT 0,
   optlock                   INT UNSIGNED,
   attributes             	TEXT,  

@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.device.management.command;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -30,11 +32,12 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionService;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
@@ -138,18 +141,18 @@ public class DeviceCommandManagementServiceTest extends Assert {
 
         //
         // User permission creation
-        UserPermissionService userPermissionService = locator.getService(UserPermissionService.class);
-        UserPermissionFactory userPermissionFactory = locator.getFactory(UserPermissionFactory.class);
-        UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(account.getId());
-
+        AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
-        userPermissionCreator.setUserId(user.getId());
-        userPermissionCreator.setPermission(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE,
-                Actions.connect,
-                account.getId()));
+        Set<Permission> permissions = new HashSet<>();
+        permissions.add(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE, Actions.connect, account.getId()));
 
-        userPermissionService.create(userPermissionCreator);
+        AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
+        accessInfoCreator.setUserId(user.getId());
+        accessInfoCreator.setPermissions(permissions);
+
+        accessInfoService.create(accessInfoCreator);
 
         //
         // User credentials creation
