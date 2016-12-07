@@ -22,12 +22,10 @@
 		
 		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesService</api>
 		
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
@@ -50,8 +48,6 @@
 		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
 		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
 		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
-		
-		<api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
 		
 		<api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
 		<api>org.eclipse.kapua.service.datastore.MessageStoreService</api>

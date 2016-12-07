@@ -21,12 +21,10 @@
 		<api>org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory</api>
 		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesService</api>
 		
 		<!-- Uncomment as needed --> 
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
@@ -53,7 +51,6 @@
 		<!-- <api>org.eclipse.kapua.service.datastore.TopicInfoStoreService</api> -->
 		<!-- <api>org.eclipse.kapua.service.datastore.MetricInfoStoreService</api> -->
 		
-		<api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
 		<api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
 		
 		<api>org.eclipse.kapua.transport.TransportClientFactory</api>

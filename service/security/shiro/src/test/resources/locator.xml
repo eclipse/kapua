@@ -19,26 +19,25 @@
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
-		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.permission.UserPermissionService</api>
-		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesFactory</api>
-		<api>org.eclipse.kapua.service.authorization.user.role.UserRolesService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
+		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.account.AccountFactory</api>
 		<api>org.eclipse.kapua.service.account.AccountService</api>
 		<api>org.eclipse.kapua.service.user.UserFactory</api>
 		<api>org.eclipse.kapua.service.user.UserService</api>
-		<api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
 	</provided>
 	<packages>
-		<package>org.eclipse.kapua.service.authentication.credential.shiro</package>
-		<package>org.eclipse.kapua.service.authentication.shiro</package>
+		<!-- <package>org.eclipse.kapua.service.authentication.credential.shiro</package>
+		<package>org.eclipse.kapua.service.authentication.shiro</package> -->
 		<package>org.eclipse.kapua.service.authorization.permission.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
-		<package>org.eclipse.kapua.service.authorization.user.permission.shiro</package>
-		<package>org.eclipse.kapua.service.authorization.user.role.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.access.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.shiro</package>
-		<package>org.eclipse.kapua.service.generator.id.sequence</package>
 		<package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.account</package>
+		<package>org.eclipse.kapua.test.authentication</package>
 	</packages>
 </locator-config>

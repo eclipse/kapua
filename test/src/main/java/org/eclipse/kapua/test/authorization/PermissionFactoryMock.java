@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.test.auth;
+package org.eclipse.kapua.test.authorization;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -22,6 +22,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 @TestService
+@KapuaProvider
 public class PermissionFactoryMock implements PermissionFactory
 {
 

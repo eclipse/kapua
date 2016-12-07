@@ -18,7 +18,6 @@
 		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
 		<api>org.eclipse.kapua.service.user.UserService</api>
-		<api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
 		<!-- 
 		<provide>
 			<api></api>
@@ -29,8 +28,8 @@
 	<packages>
 		<package>org.eclipse.kapua.commons</package>
 		<package>org.eclipse.kapua.service.account.internal</package>
-		<package>org.eclipse.kapua.service.generator.id.sequence</package>
 		<package>org.eclipse.kapua.test.user</package>
-		<package>org.eclipse.kapua.test.auth</package>
+		<package>org.eclipse.kapua.test.authentication</package>
+		<package>org.eclipse.kapua.test.authorization</package>
 	</packages>
 </locator-config>

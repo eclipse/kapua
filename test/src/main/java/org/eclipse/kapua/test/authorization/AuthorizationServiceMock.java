@@ -10,23 +10,32 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
+package org.eclipse.kapua.test.authorization;
 
-package org.eclipse.kapua.test.auth;
-
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.TestService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 
 @TestService
 @KapuaProvider
-public class UsernamePasswordTokenFactoryMock implements UsernamePasswordTokenFactory
+public class AuthorizationServiceMock implements AuthorizationService
 {
 
     @Override
-    public UsernamePasswordToken newInstance(String username, char[] password)
+    public boolean isPermitted(Permission permission)
+        throws KapuaException
     {
-        return new UsernamePasswordTokenMock(username, password);
+        // Always true
+        return true;
+    }
+
+    @Override
+    public void checkPermission(Permission permission)
+        throws KapuaException
+    {
+        // Never thorws
     }
 
 }
