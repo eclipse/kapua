@@ -31,7 +31,7 @@ echo 'ElasticSearch server started.'
 
 echo 'Staring SQL database'
 
-oc new-app ${DOCKER_ACCOUNT}/h2 --name=sql -n eclipse-kapua
+oc new-app ${DOCKER_ACCOUNT}/kapua-sql --name=sql -n eclipse-kapua
 
 echo 'SQL database started'
 
