@@ -51,7 +51,7 @@
 
             <properties>
                 <liquibase.host>${SQL_SERVICE_HOST}</liquibase.host>
-                <liquibase.port>1521</liquibase.port>
+                <liquibase.port>3306</liquibase.port>
                 <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
             </properties>
 
