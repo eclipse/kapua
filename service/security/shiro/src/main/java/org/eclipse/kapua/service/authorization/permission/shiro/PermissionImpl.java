@@ -22,8 +22,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -36,7 +34,6 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * @since 1.0
  */
 @Embeddable
-@XmlAccessorType(XmlAccessType.FIELD)
 public class PermissionImpl implements Permission, Serializable {
 
     private static final long serialVersionUID = 1480557438886065675L;

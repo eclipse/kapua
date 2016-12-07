@@ -150,10 +150,10 @@ public class Credentials extends AbstractKapuaResource {
      * Updates a credential based on the information provided in Credential parameter.
      *
      * @param credential Provides the information to update the credential.
-     * @return The updated created Credential object.
+     * @return The updated Credential object.
      */
     @ApiOperation(value = "Update a Credential",
-            notes = "Updates a credential based on the information provided in Credential aparameter.",
+            notes = "Updates a credential based on the information provided in Credential parameter.",
             response = Credential.class)
     @PUT
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})

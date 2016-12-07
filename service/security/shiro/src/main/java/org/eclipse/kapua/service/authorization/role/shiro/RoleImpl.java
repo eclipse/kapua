@@ -23,7 +23,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
@@ -42,14 +41,13 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
 
     private static final long serialVersionUID = -3760818776351242930L;
 
-    @XmlElement(name = "name")
     @Basic
     @Column(name = "name")
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Set<RolePermissionImpl> permissions;
+    private Set<RolePermissionImpl> rolePermissions;
 
     protected RoleImpl() {
         super();
@@ -90,11 +88,11 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
 
     @Override
     public void setRolePermissions(Set<RolePermission> permissions) {
-        this.permissions = new HashSet<>();
+        this.rolePermissions = new HashSet<>();
 
         if (permissions != null) {
             for (RolePermission p : permissions) {
-                this.permissions.add(new RolePermissionImpl(p));
+                this.rolePermissions.add(new RolePermissionImpl(p));
             }
         }
     }
@@ -102,7 +100,7 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
     @Override
     @SuppressWarnings("unchecked")
     public Set<RolePermissionImpl> getRolePermissions() {
-        return permissions;
+        return rolePermissions;
     }
 
     @Override
@@ -110,7 +108,7 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((permissions == null) ? 0 : permissions.hashCode());
+        result = prime * result + ((rolePermissions == null) ? 0 : rolePermissions.hashCode());
         return result;
     }
 
@@ -128,10 +126,10 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (permissions == null) {
-            if (other.permissions != null)
+        if (rolePermissions == null) {
+            if (other.rolePermissions != null)
                 return false;
-        } else if (!permissions.equals(other.permissions))
+        } else if (!rolePermissions.equals(other.rolePermissions))
             return false;
         return true;
     }

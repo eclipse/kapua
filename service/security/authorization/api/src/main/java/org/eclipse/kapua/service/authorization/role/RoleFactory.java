@@ -52,4 +52,20 @@ public interface RoleFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public RoleQuery newQuery(KapuaId scopeId);
+    
+    /**
+     * Instantiate a new {@link RoleListResult} implementing object.
+     * 
+     * @return A instance of the implementing class of {@link RoleListResult}.
+     * @since 1.0.0
+     */
+    public RoleListResult newRoleListResult();
+    
+    /**
+     * Instantiate a new {@link RolePermission} implementing object.
+     * 
+     * @return A instance of the implementing class of {@link RolePermission}.
+     * @since 1.0.0
+     */
+    public RolePermission newRolePermission();
 }
