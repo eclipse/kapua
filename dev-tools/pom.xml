@@ -52,6 +52,8 @@
             <properties>
                 <liquibase.host>${SQL_SERVICE_HOST}</liquibase.host>
                 <liquibase.port>3306</liquibase.port>
+                <liquibase.url.options></liquibase.url.options>
+                <liquibase.url>jdbc:h2:tcp://${liquibase.host}:${liquibase.port}/kapua;${liquibase.url.options}</liquibase.url>
                 <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
             </properties>
 
@@ -64,7 +66,7 @@
                         <configuration>
                             <changeLogFile>src/main/database/liquibase.sql</changeLogFile>
                             <driver>org.h2.Driver</driver>
-                            <url>jdbc:h2:tcp://${liquibase.host}:${liquibase.port}/kapua;schema=KAPUADB;INIT=CREATE SCHEMA IF NOT EXISTS KAPUADB;</url>
+                            <url>${liquibase.url}</url>
                             <username></username>
                             <password></password>
                         </configuration>
