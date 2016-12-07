@@ -27,8 +27,10 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
@@ -64,7 +66,7 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
     public Role update(Role role) throws KapuaException {
         ArgumentValidator.notNull(role, "role");
         ArgumentValidator.notEmptyOrNull(role.getName(), "role.name");
-        ArgumentValidator.notNull(role.getRolePermissions(), "role.permissions");
+//        ArgumentValidator.notNull(role.getRolePermissions(), "role.permissions");
 
         //
         // Check Access

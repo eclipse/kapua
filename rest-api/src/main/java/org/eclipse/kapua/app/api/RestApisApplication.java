@@ -12,18 +12,30 @@
 package org.eclipse.kapua.app.api;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
+import org.xml.sax.SAXException;
 
 import io.swagger.jaxrs.listing.ApiListingResource;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
@@ -45,6 +57,11 @@ public class RestApisApplication extends ResourceConfig {
 		register(RestApiJAXBContextProvider.class);
 		register(KapuaSerializableBodyWriter.class);
 		register(ListBodyWriter.class);
+		
+		
+		
+		
+		
 		// Hook the swagger-ui
 //		registerClasses(ApiListingResource.class,
 //						SwaggerSerializers.class);
@@ -70,5 +87,19 @@ public class RestApisApplication extends ResourceConfig {
 			}
 
 		});
+		
+//		Role ri = new RoleImpl((KapuaId)null);
+//        RolePermission rpi = new RolePermissionImpl(null, new PermissionImpl("asd", Actions.connect, null));
+//        Set<RolePermission> set = new HashSet<>();
+//        set.add(rpi);
+//        ri.setRolePermissions(set);
+//        String marshalled = XmlUtil.marshal(ri);
+//        try {
+//            Role ri2 = XmlUtil.unmarshal(marshalled, Role.class);
+//        } catch (XMLStreamException | FactoryConfigurationError | SAXException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        System.out.println("");
 	}
 }

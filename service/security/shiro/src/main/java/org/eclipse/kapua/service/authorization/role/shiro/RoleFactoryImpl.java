@@ -16,6 +16,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 
 /**
@@ -39,6 +41,16 @@ public class RoleFactoryImpl implements RoleFactory {
     @Override
     public RoleQuery newQuery(KapuaId scopeId) {
         return new RoleQueryImpl(scopeId);
+    }
+
+    @Override
+    public RoleListResult newRoleListResult() {
+        return new RoleListResultImpl();
+    }
+    
+    @Override
+    public RolePermission newRolePermission() {
+        return new RolePermissionImpl();
     }
 
 }

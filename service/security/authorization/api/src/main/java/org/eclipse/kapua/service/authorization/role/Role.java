@@ -14,8 +14,13 @@ package org.eclipse.kapua.service.authorization.role;
 
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -28,6 +33,12 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "role")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "name", 
+                      "rolePermissions" },
+        factoryClass = RoleXmlRegistry.class, 
+        factoryMethod = "newRole")
 public interface Role extends KapuaUpdatableEntity {
 
     public static final String TYPE = "role";
