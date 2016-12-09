@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
  * Configurable JDBC connection URL resolver implementation. Can be configured using Kubernetes service discovery or
@@ -46,8 +47,8 @@ public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnect
                 .append(";");
 
         // Optional connection parameters
-        String schema = config.getString(SystemSettingKey.DB_SCHEMA);
-        if (schema != null) {
+        String schema = firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        if (isNotBlank(schema)) {
         	dbConnectionString.append("schema=")
         		.append(schema)
         		.append(";");

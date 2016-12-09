@@ -106,6 +106,12 @@ public enum SystemSettingKey implements SettingKey
      * Database schema name
      */
     DB_SCHEMA("commons.db.schema"),
+
+    /**
+     * Database schema name
+     */
+    DB_SCHEMA_ENV("COMMONS_DB_SCHEMA"),
+
     /**
      * Database timezone to use
      */
