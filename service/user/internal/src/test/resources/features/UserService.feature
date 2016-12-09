@@ -46,6 +46,11 @@ Scenario: Create user that has more than DB allowed length
 Scenario: Create user with special characters in his name
     Create user with #$% characters in his name
 
+    Given I have following user
+        | name      | displayName        | email              | phoneNumber     | status  |
+        | ###$$$%%% | Kapua User 1       | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    Then I get Kapua exception
+
 Scenario: Update user 
     First create user with all User entity fields set. Then persist this user in database.
     After that find that same user and modify all the fields by appending modified.
@@ -114,14 +119,14 @@ Scenario: Find user by name
     Then I find user
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
 
-#Scenario: Create user that already exist
-#    Create user whit name kapua-user and than try to persist it two times.
-#    KapuaException should be thrown in such scenario.
+Scenario: Create user that already exist
+    Create user whit name kapua-user and than try to persist it two times.
+    KapuaException should be thrown in such scenario.
 
-#    Given User with name "kapua-user" in scope with id 42
-#    When I create user
-#    And I create same user
-#    Then I get Kapua exception
+    Given User with name "kapua-user" in scope with id 42
+    When I create user
+    And I create same user
+    Then I get Kapua exception
     
 Scenario: Update user that doesn't exist 
     Create user that is not persisted and than run update statement on that user.
@@ -193,32 +198,4 @@ Scenario: Get metadata
     Query for service specific metadata.
 
     When I retrieve metadata
-    Then I have metadata 
-    
-Scenario: Retrieve default lockout policy value
-    Default lockout policy is set to true and true should be returned as
-    default value.
-
-    When I retrieve "boolean" metadata with id "lockoutPolicy.enabled" in scope 42
-    Then I receive "boolean" metadata with value "true" 
-
-Scenario: Retrieve default lockoutPolicy maxFailures value
-    Default lockout policy maximum failures is number of consecutive login failures before
-    the user gets locked. Valid if lockout policy is enabled. Default value is 3.
-
-    When I retrieve "integer" metadata with id "lockoutPolicy.maxFailures" in scope 42
-    Then I receive "integer" metadata with value "3" 
-
-Scenario: Retrieve default lockoutPolicy resetAfter value
-    Default lockout policy amount of time in seconds required after the last login failure
-    to automatically reset the failure counter. Default value is 3600 seconds.
-
-    When I retrieve "integer" metadata with id "lockoutPolicy.resetAfter" in scope 42
-    Then I receive "integer" metadata with value "3600" 
-
-Scenario: Retrieve default lockoutPolicy lockDuration value
-    Default lockout policy amount of time in seconds required after the last login failure
-    to automatically unlock the user. Default vale is 10800.
-
-    When I retrieve "integer" metadata with id "lockoutPolicy.lockDuration" in scope 42
-    Then I receive "integer" metadata with value "10800" 
+    Then I have metadata
