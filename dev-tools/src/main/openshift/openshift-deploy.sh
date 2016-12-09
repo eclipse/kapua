@@ -48,7 +48,7 @@ echo 'Broker started'
 
 echo 'Starting web console'
 
-oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n eclipse-kapua
+oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n eclipse-kapua -eCOMMONS_DB_SCHEMA=' '
 
 ##oc expose svc/kapua-console
 
