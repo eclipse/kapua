@@ -27,4 +27,4 @@ ADD liquibase.sql /root/kapua/dev-tools/src/main/database/
 # Cache Maven dependencies
 RUN mvn clean install liquibase:help
 # Prepare final command
-CMD ["/usr/share/maven/bin/mvn", "-Pliquibase"]
+ENTRYPOINT ["/usr/share/maven/bin/mvn", "-Pliquibase"]
