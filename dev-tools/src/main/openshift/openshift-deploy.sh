@@ -59,3 +59,8 @@ echo 'Starting rest api'
 oc new-app ${DOCKER_ACCOUNT}/kapua-api:latest -n eclipse-kapua
 
 echo 'Rest api started'
+
+## Applying DB schema
+
+SQL_HOST=`oc get service | grep sql | awk '{print $2}'`
+docker run -it -e SQL_SERVICE_HOST=${SQL_HOST} ${DOCKER_ACCOUNT}/kapua-liquibase
