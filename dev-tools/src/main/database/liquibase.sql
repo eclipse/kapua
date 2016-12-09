@@ -118,7 +118,14 @@ CREATE TABLE athz_role (
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
   created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)  NOT NULL,
+  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+
   name 						VARCHAR(255)  NOT NULL,
+
+  optlock                   INT UNSIGNED,
+  attributes				TEXT,
+  properties                TEXT,
 
   PRIMARY KEY (id)
 
@@ -416,3 +423,109 @@ CREATE INDEX idx_user_scope_id ON usr_user (scope_id);
 INSERT INTO `usr_user` (`scope_id`, `id`, `name`, `created_on`, `created_by`, `modified_on`, `modified_by`, `status`, `display_name`, `email`, `phone_number`, `optlock`, `attributes`, `properties`)
 		VALUES (1, 1, 'kapua-sys',    CURRENT_TIMESTAMP(), 1, CURRENT_TIMESTAMP(), 1, 'ENABLED', 'Kapua Sysadmin', 'kapua-sys@eclipse.org',    '+1 555 123 4567', 0, NULL, NULL),
 		       (1, 2, 'kapua-broker', CURRENT_TIMESTAMP(), 1, CURRENT_TIMESTAMP(), 1, 'ENABLED', 'Kapua Broker',   'kapua-broker@eclipse.org', '+1 555 123 4567', 0, NULL, NULL);
+
+--changeset hekonsek:18
+
+CREATE TABLE athz_access_info (
+  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)  NOT NULL,
+  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+
+  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
+
+  optlock                   INT UNSIGNED,
+  attributes				TEXT,
+  properties                TEXT,
+
+  PRIMARY KEY (id)
+
+) DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, user_id);
+
+--changeset hekonsek:19
+
+INSERT INTO athz_access_info
+	VALUES
+		(1, 1, NOW(), 1, NOW(), 1, 1, 0, '', ''),
+		(1, 2, NOW(), 1, NOW(), 1, 2, 0, '', '');
+
+--changeset hekonsek:20
+
+CREATE TABLE athz_access_permission (
+  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+
+  access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
+
+  domain					VARCHAR(64)	  NOT NULL,
+  action					VARCHAR(64)	  NOT NULL,
+  target_scope_id			BIGINT(21)	  UNSIGNED,
+
+  PRIMARY KEY (id),
+--  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
+
+) DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId ON athz_access_permission (scope_id, access_info_id, domain, action, target_scope_id);
+
+--changeset hekonsek:21
+
+INSERT INTO athz_access_permission
+	VALUES
+		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1); -- kapua-broker assigned of permission: broker:connect:1
+
+--changeset hekonsek:22
+
+CREATE TABLE athz_access_role (
+  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+
+  access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
+  role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
+
+  PRIMARY KEY (id),
+--  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE,
+--  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE RESTRICT
+
+) DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);
+
+--changeset hekonsek:23
+
+INSERT INTO athz_access_role
+	VALUES
+		(1, 1, NOW(), 1, 1, 1); -- kapua-sys assigned of role admin
+
+--changeset hekonsek:24
+
+INSERT INTO athz_role
+	VALUES
+		(1, 1, NOW(), 1, NOW(), 1, 'admin', 0, '','');
+
+--changeset hekonsek:25
+
+INSERT INTO athz_role_permission
+	VALUES
+		(1, 1, NOW(), 1, 1, 'account', null, null),
+		(1, 2, NOW(), 1, 1, 'user', null, null),
+		(1, 3, NOW(), 1, 1, 'device_event', null, null),
+		(1, 4, NOW(), 1, 1, 'device_connection', null, null),
+		(1, 5, NOW(), 1, 1, 'device', null, null),
+		(1, 6, NOW(), 1, 1, 'data', null, null),
+		(1, 7, NOW(), 1, 1, 'broker', null, null),
+		(1, 8, NOW(), 1, 1, 'credential', null, null),
+		(1, 9, NOW(), 1, 1, 'role', null, null),
+		(1, 10, NOW(), 1, 1, 'user_permission', null, null),
+		(1, 11, NOW(), 1, 1, 'device_lifecycle', null, null),
+		(1, 12, NOW(), 1, 1, 'device_management', null, null),
+		(1, 13, NOW(), 1, 1, 'account', null, null),
+		(1, 14, NOW(), 1, 1, 'account', null, null);
