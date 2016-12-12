@@ -10,17 +10,15 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.role.shiro;
+package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
- * Role list result implementation.
+ * {@link RolePermission} query definition.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
+ *
  */
-public class RoleListResultImpl extends KapuaListResultImpl<Role> implements RoleListResult {
+public interface RolePermissionQuery extends KapuaQuery<RolePermission> {
 }

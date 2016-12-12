@@ -37,6 +37,9 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
@@ -55,8 +58,8 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageX
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
-import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotXmlRegistry;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotXmlRegistry;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -138,7 +141,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     RoleCreator.class,
                     RoleXmlRegistry.class,
                     Permission.class,
-                    RolePermission.class
+                    RolePermission.class,
+                    RolePermissionListResult.class,
+                    RolePermissionCreator.class,
+                    RolePermissionXmlRegistry.class
+
             }, null);
         } catch (Exception e) {
             throw new RuntimeException(e);

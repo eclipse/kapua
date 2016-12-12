@@ -20,11 +20,14 @@ org.eclipse.kapua.service.authentication.credential.CredentialFactory
 org.eclipse.kapua.service.authentication.credential.CredentialService
 org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory
 org.eclipse.kapua.service.authorization.AuthorizationService
-org.eclipse.kapua.service.authorization.permission.PermissionFactory
-org.eclipse.kapua.service.authorization.role.RoleService
-org.eclipse.kapua.service.authorization.role.RoleFactory
 org.eclipse.kapua.service.authorization.access.AccessInfoFactory
 org.eclipse.kapua.service.authorization.access.AccessInfoService
+org.eclipse.kapua.service.authorization.role.RoleService
+org.eclipse.kapua.service.authorization.role.RoleFactory
+org.eclipse.kapua.service.authorization.role.RolePermissionService
+org.eclipse.kapua.service.authorization.role.RolePermissionFactory
+org.eclipse.kapua.service.authorization.permission.PermissionFactory
+
 org.eclipse.kapua.service.datastore.DatastoreObjectFactory
 org.eclipse.kapua.service.datastore.MessageStoreService
 org.eclipse.kapua.service.datastore.AssetInfoStoreService

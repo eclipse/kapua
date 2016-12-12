@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
 /**
  * {@link Role} service definition.
@@ -23,7 +24,7 @@ import org.eclipse.kapua.service.KapuaEntityService;
  * @since 1.0.0
  *
  */
-public interface RoleService extends KapuaEntityService<Role, RoleCreator> {
+public interface RoleService extends KapuaEntityService<Role, RoleCreator>, KapuaUpdatableEntityService<Role> {
 
     /**
      * Creates a new {@link Role} based on the parameters provided in the {@link RoleCreator}.<br>

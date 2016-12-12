@@ -38,10 +38,8 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  */
 @XmlRootElement(name = "rolePermission")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "roleId", 
-                      "permission" },
-        factoryClass = RoleXmlRegistry.class, 
-        factoryMethod = "newRolePermission")
+@XmlType(propOrder = { "roleId",
+        "permission" }, factoryClass = RolePermissionXmlRegistry.class, factoryMethod = "newRolePermission")
 public interface RolePermission extends KapuaEntity {
 
     public static final String TYPE = "rolePermission";
@@ -65,8 +63,8 @@ public interface RolePermission extends KapuaEntity {
      * @return The {@link Role} id.
      * @since 1.0.0
      */
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @XmlElement(name = "roleId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getRoleId();
 
     /**

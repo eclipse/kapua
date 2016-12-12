@@ -12,23 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * {@link Role} implementation.
@@ -45,10 +37,6 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Set<RolePermissionImpl> rolePermissions;
-
     protected RoleImpl() {
         super();
     }
@@ -64,7 +52,6 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
         super((AbstractKapuaUpdatableEntity) role);
 
         setName(role.getName());
-        setRolePermissions(role.getRolePermissions());
     }
 
     /**
@@ -87,28 +74,10 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
     }
 
     @Override
-    public void setRolePermissions(Set<RolePermission> permissions) {
-        this.rolePermissions = new HashSet<>();
-
-        if (permissions != null) {
-            for (RolePermission p : permissions) {
-                this.rolePermissions.add(new RolePermissionImpl(p));
-            }
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Set<RolePermissionImpl> getRolePermissions() {
-        return rolePermissions;
-    }
-
-    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((rolePermissions == null) ? 0 : rolePermissions.hashCode());
         return result;
     }
 
@@ -126,11 +95,7 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (rolePermissions == null) {
-            if (other.rolePermissions != null)
-                return false;
-        } else if (!rolePermissions.equals(other.rolePermissions))
-            return false;
         return true;
     }
+
 }

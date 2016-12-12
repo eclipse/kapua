@@ -125,8 +125,6 @@ public class GwtKapuaModelConverter {
             rolePermissions.add(rp);
         }
 
-        role.setRolePermissions(rolePermissions);
-
         //
         // Return converted
         return role;

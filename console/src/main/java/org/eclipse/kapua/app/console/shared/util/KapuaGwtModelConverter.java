@@ -87,10 +87,10 @@ public class KapuaGwtModelConverter {
 
         // Convert list of Role permissions
         Set<GwtRolePermission> gwtRolePermissions = new HashSet<GwtRolePermission>();
-        for (RolePermission rolePermission : role.getRolePermissions()) {
-            GwtRolePermission gwtRolePermission = convert(rolePermission);
-            gwtRolePermissions.add(gwtRolePermission);
-        }
+        // for (RolePermission rolePermission : role.getRolePermissions()) {
+        // GwtRolePermission gwtRolePermission = convert(rolePermission);
+        // gwtRolePermissions.add(gwtRolePermission);
+        // }
 
         gwtRole.setPermissions(gwtRolePermissions);
 

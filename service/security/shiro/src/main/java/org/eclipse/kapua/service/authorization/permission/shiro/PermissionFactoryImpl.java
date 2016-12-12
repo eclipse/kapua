@@ -40,8 +40,8 @@ public class PermissionFactoryImpl implements PermissionFactory {
     }
 
     @Override
-    public RolePermission newRolePermission(KapuaId scopeId, Permission p) {
-        return new RolePermissionImpl(scopeId, p);
+    public RolePermission newRolePermission(KapuaId scopeId, Permission permission) {
+        return new RolePermissionImpl(scopeId, permission);
     }
 
     @Override

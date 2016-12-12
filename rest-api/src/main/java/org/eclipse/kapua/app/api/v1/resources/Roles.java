@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
@@ -43,19 +42,17 @@ import io.swagger.annotations.ApiParam;
 @Api("Roles")
 @Path("/roles")
 public class Roles extends AbstractKapuaResource {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final RoleService roleService = locator.getService(RoleService.class);
     private final RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
-    
+
     /**
      * Returns the list of all the roles for the current account.
      *
      * @return The list of requested Roles objects.
      */
-    @ApiOperation(value = "Get the Roles for the current account", 
-                  notes = "Returns the list of all the roles available for the current account.",
-                  response = Role.class,
-                  responseContainer = "RoleListResult")
+    @ApiOperation(value = "Get the Roles for the current account", notes = "Returns the list of all the roles available for the current account.", response = Role.class, responseContainer = "RoleListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RoleListResult getRoles() {
@@ -69,15 +66,13 @@ public class Roles extends AbstractKapuaResource {
         }
         return rolesList;
     }
-    
+
     /**
      * Returns the role for the given id.
      *
      * @return The requested dole.
      */
-    @ApiOperation(value = "Get the Role for the given id", 
-                  notes = "Returns the role for the given id.",
-                  response = Role.class)
+    @ApiOperation(value = "Get the Role for the given id", notes = "Returns the role for the given id.", response = Role.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("{id}")
@@ -92,22 +87,20 @@ public class Roles extends AbstractKapuaResource {
         }
         return role;
     }
-    
+
     /**
      * Creates a new Role based on the information provided in RoleCreator parameter.
      *
-     * @param roleCreator Provides the information for the new Role to be created.
+     * @param roleCreator
+     *            Provides the information for the new Role to be created.
      * @return The newly created Role object.
      */
-    @ApiOperation(value = "Create a Role",
-            notes = "Creates a new Role based on the information provided in RoleCreator parameter.",
-            response = Role.class)
+    @ApiOperation(value = "Create a Role", notes = "Creates a new Role based on the information provided in RoleCreator parameter.", response = Role.class)
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Role createRole(
-            @ApiParam(value = "Provides the information for the new Role to be created", required = true) 
-            RoleCreator roleCreator) {
+            @ApiParam(value = "Provides the information for the new Role to be created", required = true) RoleCreator roleCreator) {
 
         Role role = null;
         try {
@@ -118,19 +111,18 @@ public class Roles extends AbstractKapuaResource {
         }
         return returnNotNullEntity(role);
     }
-    
+
     /**
      * Deletes the Role specified by the "roleId" path parameter.
      *
-     * @param roleId The id of the Role to be deleted.
+     * @param roleId
+     *            The id of the Role to be deleted.
      */
-    @ApiOperation(value = "Delete a Role",
-            notes = "Deletes a role based on the information provided in roleId parameter.")
+    @ApiOperation(value = "Delete a Role", notes = "Deletes a role based on the information provided in roleId parameter.")
     @DELETE
     @Path("{roleId}")
     public Response deleteRole(
-            @ApiParam(value = "The id of the Role to be deleted", required = true)
-            @PathParam("roleId") String roleId) {
+            @ApiParam(value = "The id of the Role to be deleted", required = true) @PathParam("roleId") String roleId) {
         try {
             KapuaId roleKapuaId = KapuaEid.parseCompactId(roleId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -140,36 +132,26 @@ public class Roles extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-    
+
     /**
      * Updates a role based on the information provided in Role parameter.
      *
-     * @param role Provides the information to update the role.
+     * @param role
+     *            Provides the information to update the role.
      * @return The updated Role object.
      */
-    @ApiOperation(value = "Update a Role",
-            notes = "Updates a role based on the information provided in role parameter.",
-            response = Role.class)
+    @ApiOperation(value = "Update a Role", notes = "Updates a role based on the information provided in role parameter.", response = Role.class)
     @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Role updateRole(
-            @ApiParam(value = "Provides the information to update the role", required = true) 
-            Role role) {
+            @ApiParam(value = "Provides the information to update the role", required = true) Role role) {
         try {
-            ((RoleImpl)role).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
+            ((RoleImpl) role).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
             role = roleService.update(role);
         } catch (Throwable t) {
             handleException(t);
         }
         return returnNotNullEntity(role);
-    }
-    
-    @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("test")
-    public Role test(Role rp) {
-        return rp;
     }
 }
