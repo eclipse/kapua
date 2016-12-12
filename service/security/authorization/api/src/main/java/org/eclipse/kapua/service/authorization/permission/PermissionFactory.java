@@ -43,12 +43,12 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * 
      * @param scopeId
      *            The scope id of the new {@link RolePemrission}.
-     * @param p
+     * @param permission
      *            The {@link Permission} of the {@link RolePermission}.
      * @return A instance of the implementing class of {@link RolePermission}.
      * @since 1.0.0
      */
-    public RolePermission newRolePermission(KapuaId scopeId, Permission p);
+    public RolePermission newRolePermission(KapuaId scopeId, Permission permission);
 
     /**
      * Parse the {@link Permission} {@link String} representation to build a new {@link Permission}.

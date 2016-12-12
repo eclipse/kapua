@@ -17,35 +17,35 @@ import javax.xml.bind.annotation.XmlRegistry;
 import org.eclipse.kapua.locator.KapuaLocator;
 
 @XmlRegistry
-public class RoleXmlRegistry {
+public class RolePermissionXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final RoleFactory factory = locator.getFactory(RoleFactory.class);
+    private final RolePermissionFactory factory = locator.getFactory(RolePermissionFactory.class);
 
     /**
-     * Creates a new role instance
+     * Creates a new {@link RolePermission} instance
      * 
      * @return
      */
-    public Role newRole() {
-        return factory.newRole(null);
+    public RolePermission newRolePermission() {
+        return factory.newRolePermission();
     }
 
     /**
-     * Creates a new role creator instance
+     * Creates a new {@link RolePermission} instance
      * 
      * @return
      */
-    public RoleCreator newRoleCreator() {
+    public RolePermissionCreator newCreator() {
         return factory.newCreator(null);
     }
 
     /**
-     * Creates a new role creator instance
+     * Creates a new {@link RolePermission} instance
      * 
      * @return
      */
-    public RoleListResult newRoleListResult() {
-        return factory.newRoleListResult();
+    public RolePermissionListResult newRolePermissionListResult() {
+        return factory.newRolePermissionListResult();
     }
 }

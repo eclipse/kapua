@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.shiro;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
@@ -29,10 +30,11 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleCreatorImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
@@ -96,7 +98,9 @@ public class RoleServiceTest extends KapuaTest {
             assertNotNull(role.getModifiedBy());
             assertNotNull(role.getModifiedOn());
 
-            Set<RolePermission> rolePermissions = role.getRolePermissions();
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermissionListResult rolePermissionsListResult = rolePermissionService.findByRoleId(role.getScopeId(), role.getId());
+            List<RolePermission> rolePermissions = rolePermissionsListResult.getItems();
             assertNotNull(rolePermissions);
             assertEquals(1, rolePermissions.size());
 
@@ -137,18 +141,17 @@ public class RoleServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             Role role = roleService.create(roleCreator);
 
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermissionListResult rolePermissionsListResult = rolePermissionService.findByRoleId(role.getScopeId(), role.getId());
+            List<RolePermission> rolePermissions = rolePermissionsListResult.getItems();
+
             assertNotNull(role);
-            assertEquals(roleCreator.getPermissions().size(), role.getRolePermissions().size());
+            assertEquals(roleCreator.getPermissions().size(), rolePermissions.size());
 
             //
             // Update
             role.setName("updated-" + new Date().getTime());
 
-            Permission permission4 = permissionFactory.newPermission("testDomain", Actions.write, scope);
-            Permission permission5 = permissionFactory.newPermission("testDomain", Actions.read, scope);
-
-            role.getRolePermissions().add(new RolePermissionImpl(scope, permission4));
-            role.getRolePermissions().add(new RolePermissionImpl(scope, permission5));
             Role roleUpdated1 = roleService.update(role);
 
             //
@@ -161,46 +164,6 @@ public class RoleServiceTest extends KapuaTest {
             assertEquals(role.getCreatedOn(), roleUpdated1.getCreatedOn());
             assertEquals(role.getModifiedBy(), roleUpdated1.getModifiedBy());
             assertNotEquals(role.getModifiedOn(), roleUpdated1.getModifiedOn());
-
-            Set<RolePermission> rolePermissions = role.getRolePermissions();
-            Set<RolePermission> rolePermissionsUpdated = roleUpdated1.getRolePermissions();
-            assertFalse(rolePermissions == rolePermissionsUpdated);
-            assertNotNull(rolePermissions);
-            assertNotNull(rolePermissionsUpdated);
-            assertEquals(rolePermissions.size(), rolePermissionsUpdated.size());
-
-            for (RolePermission rolePermission : rolePermissions) {
-                for (RolePermission rolePermissionUpdated : rolePermissionsUpdated) {
-
-                    if (rolePermission.getPermission().equals(rolePermissionUpdated.getPermission())) {
-
-                        assertEquals(rolePermission.getPermission().getDomain(), rolePermissionUpdated.getPermission().getDomain());
-                        assertEquals(rolePermission.getPermission().getAction(), rolePermissionUpdated.getPermission().getAction());
-                        assertEquals(rolePermission.getPermission().getTargetScopeId(), rolePermissionUpdated.getPermission().getTargetScopeId());
-                    }
-                }
-            }
-
-            //
-            // Update delete permission
-            roleUpdated1.getRolePermissions().remove(new RolePermissionImpl(scope, permission3));
-            Role roleUpdated2 = roleService.update(roleUpdated1);
-
-            //
-            // Assert
-            assertNotNull(roleUpdated1);
-            assertEquals(roleUpdated1.getScopeId(), roleUpdated2.getScopeId());
-            assertEquals(roleUpdated1.getScopeId(), roleUpdated2.getScopeId());
-            assertEquals(roleUpdated1.getName(), roleUpdated2.getName());
-            assertEquals(roleUpdated1.getCreatedBy(), roleUpdated2.getCreatedBy());
-            assertEquals(roleUpdated1.getCreatedOn(), roleUpdated2.getCreatedOn());
-            assertEquals(roleUpdated1.getModifiedBy(), roleUpdated2.getModifiedBy());
-
-            assertEquals(roleUpdated1.getRolePermissions().size(), roleUpdated2.getRolePermissions().size());
-
-            for (RolePermission rp : roleUpdated2.getRolePermissions()) {
-                assertNotEquals(new RolePermissionImpl(scope, permission3), rp);
-            }
 
             return null;
         });
@@ -246,26 +209,6 @@ public class RoleServiceTest extends KapuaTest {
             assertEquals(role.getCreatedOn(), roleFound.getCreatedOn());
             assertEquals(role.getModifiedBy(), roleFound.getModifiedBy());
             assertEquals(role.getModifiedOn(), roleFound.getModifiedOn());
-
-            Set<RolePermission> rolePermissions = role.getRolePermissions();
-            Set<RolePermission> rolePermissionsFound = roleFound.getRolePermissions();
-            assertFalse(rolePermissions == rolePermissionsFound);
-            assertNotNull(rolePermissions);
-            assertNotNull(rolePermissionsFound);
-            assertEquals(rolePermissions.size(), rolePermissionsFound.size());
-
-            RolePermission rolePermission = rolePermissions.iterator().next();
-            RolePermission rolePermissionFound = rolePermissionsFound.iterator().next();
-            assertFalse(rolePermission == rolePermissionFound);
-            assertNotNull(rolePermission);
-            assertNotNull(rolePermissionFound);
-            assertEquals(rolePermission.getCreatedBy(), rolePermissionFound.getCreatedBy());
-            assertEquals(rolePermission.getCreatedOn(), rolePermissionFound.getCreatedOn());
-            assertEquals(rolePermission.getRoleId(), rolePermissionFound.getRoleId());
-            assertEquals(rolePermission.getPermission().getDomain(), rolePermissionFound.getPermission().getDomain());
-            assertEquals(rolePermission.getPermission().getAction(), rolePermissionFound.getPermission().getAction());
-            assertEquals(rolePermission.getPermission().getTargetScopeId(), rolePermissionFound.getPermission().getTargetScopeId());
-
             return null;
         });
     }
@@ -318,24 +261,11 @@ public class RoleServiceTest extends KapuaTest {
             assertEquals(role.getModifiedBy(), roleFound.getModifiedBy());
             assertEquals(role.getModifiedOn(), roleFound.getModifiedOn());
 
-            Set<RolePermission> rolePermissions = role.getRolePermissions();
-            Set<RolePermission> rolePermissionsFound = roleFound.getRolePermissions();
-            assertFalse(rolePermissions == rolePermissionsFound);
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermissionListResult rolePermissionsListResult = rolePermissionService.findByRoleId(role.getScopeId(), role.getId());
+            List<RolePermission> rolePermissions = rolePermissionsListResult.getItems();
             assertNotNull(rolePermissions);
-            assertNotNull(rolePermissionsFound);
-            assertEquals(rolePermissions.size(), rolePermissionsFound.size());
-
-            RolePermission rolePermission = rolePermissions.iterator().next();
-            RolePermission rolePermissionFound = rolePermissionsFound.iterator().next();
-            assertFalse(rolePermission == rolePermissionFound);
-            assertNotNull(rolePermission);
-            assertNotNull(rolePermissionFound);
-            assertEquals(rolePermission.getCreatedBy(), rolePermissionFound.getCreatedBy());
-            assertEquals(rolePermission.getCreatedOn(), rolePermissionFound.getCreatedOn());
-            assertEquals(rolePermission.getRoleId(), rolePermissionFound.getRoleId());
-            assertEquals(rolePermission.getPermission().getDomain(), rolePermissionFound.getPermission().getDomain());
-            assertEquals(rolePermission.getPermission().getAction(), rolePermissionFound.getPermission().getAction());
-            assertEquals(rolePermission.getPermission().getTargetScopeId(), rolePermissionFound.getPermission().getTargetScopeId());
+            assertEquals(permissions.size(), rolePermissions.size());
 
             return null;
         });
@@ -370,6 +300,12 @@ public class RoleServiceTest extends KapuaTest {
             Role roleFound = roleService.find(scope, role.getId());
             assertNotNull(roleFound);
 
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermissionListResult rolePermissionsListResult = rolePermissionService.findByRoleId(role.getScopeId(), role.getId());
+            List<RolePermission> rolePermissions = rolePermissionsListResult.getItems();
+            assertNotNull(rolePermissions);
+            assertEquals(permissions.size(), rolePermissions.size());
+
             //
             // Delete
             roleService.delete(scope, role.getId());
@@ -378,6 +314,12 @@ public class RoleServiceTest extends KapuaTest {
             // Assert
             roleFound = roleService.find(scope, role.getId());
             assertNull(roleFound);
+
+            rolePermissionsListResult = rolePermissionService.findByRoleId(role.getScopeId(), role.getId());
+            rolePermissions = rolePermissionsListResult.getItems();
+            assertNotNull(rolePermissions);
+            assertEquals(0, rolePermissions.size());
+
             return null;
         });
     }

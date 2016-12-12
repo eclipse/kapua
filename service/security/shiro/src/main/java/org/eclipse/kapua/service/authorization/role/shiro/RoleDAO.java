@@ -12,20 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * Role DAO
@@ -49,30 +43,18 @@ public class RoleDAO extends ServiceDAO {
 
         role.setName(creator.getName());
 
-        if (creator.getPermissions() != null) {
-            Set<RolePermission> rolePermissions = new HashSet<>();
-            for (Permission p : creator.getPermissions()) {
-                rolePermissions.add(new RolePermissionImpl(role.getScopeId(), p));
-
-            }
-            role.setRolePermissions(rolePermissions);
-        }
-
-        // Remove duplicates from role permissions
-        cleanDuplicates(role);
-
         return ServiceDAO.create(em, role);
     }
 
+    /**
+     * Updates and returns the updated {@link Role}
+     * 
+     * @param em
+     * @param role
+     * @return
+     */
     public static Role update(EntityManager em, Role role) {
-
-        //
-        // Update Role
         RoleImpl roleImpl = (RoleImpl) role;
-
-        // Remove duplicates from role permissions
-        cleanDuplicates(roleImpl);
-
         return ServiceDAO.update(em, RoleImpl.class, roleImpl);
     }
 
@@ -122,28 +104,4 @@ public class RoleDAO extends ServiceDAO {
             throws KapuaException {
         return ServiceDAO.count(em, Role.class, RoleImpl.class, roleQuery);
     }
-
-    //
-    // Private methods
-    //
-    protected static void cleanDuplicates(Role role) {
-
-        Set<RolePermission> rolePermissions = role.getRolePermissions();
-
-        Iterator<RolePermission> iRpA = rolePermissions.iterator();
-        while (iRpA.hasNext()) {
-            Permission pA = iRpA.next().getPermission();
-
-            Iterator<RolePermission> iRpB = rolePermissions.iterator();
-            while (iRpB.hasNext()) {
-                Permission pB = iRpB.next().getPermission();
-
-                if (pA != pB && pA.equals(pB)) {
-                    iRpA.remove();
-                    break;
-                }
-            }
-        }
-    }
-
 }

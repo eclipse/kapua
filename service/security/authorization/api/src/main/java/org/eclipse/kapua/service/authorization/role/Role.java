@@ -12,17 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 
@@ -35,10 +30,8 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
  */
 @XmlRootElement(name = "role")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name", 
-                      "rolePermissions" },
-        factoryClass = RoleXmlRegistry.class, 
-        factoryMethod = "newRole")
+@XmlType(propOrder = { "name" }, //
+        factoryClass = RoleXmlRegistry.class, factoryMethod = "newRole")
 public interface Role extends KapuaUpdatableEntity {
 
     public static final String TYPE = "role";
@@ -65,27 +58,4 @@ public interface Role extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "name")
     public String getName();
-
-    /**
-     * Sets the set of {@link RolePermission} of this {@link Role}.<br>
-     * It up to the implementation class to make a clone of the set or use the given set.
-     * 
-     * @param rolePermissions
-     *            The set of {@link RolePermission}.
-     * @throws KapuaException
-     *             If the given set is incompatible with the implementation-specific field.
-     * @since 1.0.0
-     */
-    public void setRolePermissions(Set<RolePermission> rolePermissions);
-
-    /**
-     * Gets the set of {@link RolePermission} of this {@link Role}.<br>
-     * The implementation must return the reference of the set and not make a clone.
-     * 
-     * @return The set of {@link RolePermission}.
-     * @since 1.0.0
-     */
-    @XmlElementWrapper(name = "rolePermissions")
-    @XmlElement(name = "rolePermission")
-    public <R extends RolePermission> Set<R> getRolePermissions();
 }

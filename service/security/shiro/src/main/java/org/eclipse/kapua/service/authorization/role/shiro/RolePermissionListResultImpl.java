@@ -13,14 +13,14 @@
 package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 
 /**
- * Role list result implementation.
+ * {@link RolePermission} list result implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-public class RoleListResultImpl extends KapuaListResultImpl<Role> implements RoleListResult {
+public class RolePermissionListResultImpl extends KapuaListResultImpl<RolePermission> implements RolePermissionListResult {
 }

@@ -25,6 +25,9 @@ org.eclipse.kapua.service.authorization.access.AccessInfoFactory
 org.eclipse.kapua.service.authorization.access.AccessInfoService
 org.eclipse.kapua.service.authorization.role.RoleService
 org.eclipse.kapua.service.authorization.role.RoleFactory
+org.eclipse.kapua.service.authorization.role.RolePermissionService
+org.eclipse.kapua.service.authorization.role.RolePermissionFactory
+
 
 org.eclipse.kapua.service.device.registry.DeviceFactory
 org.eclipse.kapua.service.device.registry.DeviceRegistryService

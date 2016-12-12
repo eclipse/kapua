@@ -15,21 +15,21 @@ package org.eclipse.kapua.service.authorization.permission;
 import javax.xml.bind.annotation.XmlRegistry;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleFactory;
 
 @XmlRegistry
 public class PermissionXmlRegistry {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final PermissionFactory factory = locator.getFactory(PermissionFactory.class);
-    
+
     /**
      * Creates a new permission instance
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Permission newPermission()
-    {
+    public Permission newPermission() {
         return factory.newPermission(null, null, null);
     }
 }

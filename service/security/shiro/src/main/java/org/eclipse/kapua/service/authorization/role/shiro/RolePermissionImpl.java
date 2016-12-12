@@ -72,11 +72,20 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
      * Constructor
      * 
      * @param scopeId
-     * @param p
      */
-    public RolePermissionImpl(KapuaId scopeId, Permission p) {
+    public RolePermissionImpl(KapuaId scopeId) {
         super(scopeId);
-        setPermission(p);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     * @param permission
+     */
+    public RolePermissionImpl(KapuaId scopeId, Permission permission) {
+        this(scopeId);
+        setPermission(permission);
     }
 
     @Override
@@ -95,8 +104,6 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     public void setPermission(Permission permission) {
         if (permission != null) {
             this.permission = new PermissionImpl(permission);
-        } else {
-            permission = null;
         }
     }
 

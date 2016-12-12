@@ -15,6 +15,7 @@ package org.eclipse.kapua.model;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -29,7 +30,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * @since 1.0
  *
  */
-@XmlType(propOrder = { "id", "type", "scopeId", "createdOn", "createdBy" })
+@XmlType(propOrder = { "id", "scopeId", "createdOn", "createdBy" })
 public interface KapuaEntity extends KapuaSerializable {
 
     /**
@@ -48,7 +49,7 @@ public interface KapuaEntity extends KapuaSerializable {
      */
     public void setId(KapuaId id);
 
-    @XmlElement(name = "type")
+    @XmlTransient
     public String getType();
 
     /**

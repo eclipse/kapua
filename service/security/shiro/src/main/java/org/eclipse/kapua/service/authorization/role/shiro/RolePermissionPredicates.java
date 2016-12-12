@@ -12,15 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
- * Role list result implementation.
+ * Query predicate attribute name for {@link RolePermission} entity.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-public class RoleListResultImpl extends KapuaListResultImpl<Role> implements RoleListResult {
+public class RolePermissionPredicates {
+
+    /**
+     * Role id
+     */
+    public static final String ROLE_ID = "roleId";
 }
