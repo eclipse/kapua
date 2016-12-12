@@ -9,8 +9,7 @@
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
     "lodash": "^4.17.2",
-    "request": "^2.79.0",
-    "routing-controllers": "^0.6.6"
+    "request": "^2.79.0"
   },
   "devDependencies": {
     "concurrently": "^3.1.0",
