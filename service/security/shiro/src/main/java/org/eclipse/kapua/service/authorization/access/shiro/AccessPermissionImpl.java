@@ -42,7 +42,7 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "access_info_id", nullable = false, updatable = false))
     })
-    private KapuaEid accessId;
+    private KapuaEid accessInfoId;
 
     @Embedded
     private PermissionImpl permission;
@@ -71,22 +71,22 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     public AccessPermissionImpl(AccessPermission accessPermission) {
         super((AbstractKapuaEntity) accessPermission);
 
-        setAccessId(accessPermission.getAccessId());
+        setAccessInfoId(accessPermission.getAccessInfoId());
         setPermission(accessPermission.getPermission());
     }
 
     @Override
-    public void setAccessId(KapuaId userId) {
+    public void setAccessInfoId(KapuaId userId) {
         if (userId != null) {
-            this.accessId = new KapuaEid(userId);
+            this.accessInfoId = new KapuaEid(userId);
         } else {
-            this.accessId = null;
+            this.accessInfoId = null;
         }
     }
 
     @Override
-    public KapuaId getAccessId() {
-        return accessId;
+    public KapuaId getAccessInfoId() {
+        return accessInfoId;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((accessId == null) ? 0 : accessId.hashCode());
+        result = prime * result + ((accessInfoId == null) ? 0 : accessInfoId.hashCode());
         result = prime * result + ((permission == null) ? 0 : permission.hashCode());
         return result;
     }
@@ -122,10 +122,10 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
         if (getClass() != obj.getClass())
             return false;
         AccessPermissionImpl other = (AccessPermissionImpl) obj;
-        if (accessId == null) {
-            if (other.accessId != null)
+        if (accessInfoId == null) {
+            if (other.accessInfoId != null)
                 return false;
-        } else if (!accessId.equals(other.accessId))
+        } else if (!accessInfoId.equals(other.accessInfoId))
             return false;
         if (permission == null) {
             if (other.permission != null)

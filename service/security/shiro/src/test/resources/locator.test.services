@@ -17,6 +17,10 @@ org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory
 org.eclipse.kapua.service.authorization.AuthorizationService
 org.eclipse.kapua.service.authorization.access.AccessInfoFactory
 org.eclipse.kapua.service.authorization.access.AccessInfoService
+org.eclipse.kapua.service.authorization.access.AccessPermissionFactory
+org.eclipse.kapua.service.authorization.access.AccessPermissionService
+org.eclipse.kapua.service.authorization.access.AccessRoleFactory
+org.eclipse.kapua.service.authorization.access.AccessRoleService
 org.eclipse.kapua.service.authorization.permission.PermissionFactory
 org.eclipse.kapua.service.authorization.role.RoleFactory
 org.eclipse.kapua.service.authorization.role.RoleService

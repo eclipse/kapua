@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -23,10 +20,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermission;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 
 /**
  * Access Info DAO
@@ -50,28 +43,28 @@ public class AccessInfoDAO extends ServiceDAO {
 
         accessInfo.setUserId(creator.getUserId());
 
-        if (creator.getPermissions() != null) {
-            Set<AccessPermission> accessPermissions = new HashSet<>();
-            for (Permission p : creator.getPermissions()) {
-                AccessPermission accessPermission = new AccessPermissionImpl(creator.getScopeId());
-                accessPermission.setPermission(p);
-                accessPermissions.add(accessPermission);
-            }
-
-            accessInfo.setAccessPermissions(accessPermissions);
-        }
-
-        if (creator.getRoleIds() != null) {
-            Set<AccessRole> accessRoles = new HashSet<>();
-
-            for (KapuaId rId : creator.getRoleIds()) {
-                AccessRole accessRole = new AccessRoleImpl(creator.getScopeId());
-                accessRole.setRole(RoleDAO.find(em, rId));
-                accessRoles.add(accessRole);
-            }
-
-            accessInfo.setAccessRoles(accessRoles);
-        }
+        // if (creator.getPermissions() != null) {
+        // Set<AccessPermission> accessPermissions = new HashSet<>();
+        // for (Permission p : creator.getPermissions()) {
+        // AccessPermission accessPermission = new AccessPermissionImpl(creator.getScopeId());
+        // accessPermission.setPermission(p);
+        // accessPermissions.add(accessPermission);
+        // }
+        //
+        // accessInfo.setAccessPermissions(accessPermissions);
+        // }
+        //
+        // if (creator.getRoleIds() != null) {
+        // Set<AccessRole> accessRoles = new HashSet<>();
+        //
+        // for (KapuaId rId : creator.getRoleIds()) {
+        // AccessRole accessRole = new AccessRoleImpl(creator.getScopeId());
+        // accessRole.setRole(RoleDAO.find(em, rId));
+        // accessRoles.add(accessRole);
+        // }
+        //
+        // accessInfo.setAccessRoles(accessRoles);
+        // }
 
         return ServiceDAO.create(em, accessInfo);
     }

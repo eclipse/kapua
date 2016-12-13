@@ -17,9 +17,6 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.eclipse.kapua.KapuaException;
@@ -27,8 +24,6 @@ import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 
 /**
  * {@link AccessRole} implementation.
@@ -45,11 +40,13 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "access_info_id"))
     })
-    private KapuaEid accessId;
+    private KapuaEid accessInfoId;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private RoleImpl role;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "role_id"))
+    })
+    private KapuaEid roleId;
 
     /**
      * Empty constructor required by JPA.
@@ -84,41 +81,44 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     public AccessRoleImpl(AccessRole accessRole) throws KapuaException {
         super((AbstractKapuaEntity) accessRole);
 
-        setAccessId(accessRole.getAccessId());
-        setRole(accessRole.getRole());
+        setAccessInfoId(accessRole.getAccessInfoId());
+        setRoleId(accessRole.getRoleId());
     }
 
     @Override
-    public void setAccessId(KapuaId accessId) {
+    public void setAccessInfoId(KapuaId accessId) {
         if (accessId != null) {
-            this.accessId = new KapuaEid(accessId);
+            this.accessInfoId = new KapuaEid(accessId);
         } else {
-            this.accessId = null;
+            this.accessInfoId = null;
         }
     }
 
     @Override
-    public KapuaId getAccessId() {
-        return accessId;
+    public KapuaId getAccessInfoId() {
+        return roleId;
     }
 
     @Override
-    public void setRole(Role role) throws KapuaException {
-        this.role = new RoleImpl(role);
+    public void setRoleId(KapuaId accessId) {
+        if (accessId != null) {
+            this.roleId = new KapuaEid(accessId);
+        } else {
+            this.roleId = null;
+        }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public RoleImpl getRole() {
-        return role;
+    public KapuaId getRoleId() {
+        return roleId;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((accessId == null) ? 0 : accessId.hashCode());
-        result = prime * result + ((role == null) ? 0 : role.hashCode());
+        result = prime * result + ((accessInfoId == null) ? 0 : accessInfoId.hashCode());
+        result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
         return result;
     }
 
@@ -131,15 +131,15 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
         if (getClass() != obj.getClass())
             return false;
         AccessRoleImpl other = (AccessRoleImpl) obj;
-        if (accessId == null) {
-            if (other.accessId != null)
+        if (accessInfoId == null) {
+            if (other.accessInfoId != null)
                 return false;
-        } else if (!accessId.equals(other.accessId))
+        } else if (!accessInfoId.equals(other.accessInfoId))
             return false;
-        if (role == null) {
-            if (other.role != null)
+        if (roleId == null) {
+            if (other.roleId != null)
                 return false;
-        } else if (!role.equals(other.role))
+        } else if (!roleId.equals(other.roleId))
             return false;
         return true;
     }
