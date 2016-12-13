@@ -27,6 +27,18 @@ public class AbstractKapuaSettingTest {
         assertThat(path).isNotEmpty();
     }
 
+    @Test
+    public void shouldReadEnvUsingDotNotation() {
+        // Given
+        System.setProperty("FOO_BAR_BAZ", "qux");
+
+        // When
+        String path = new TestSetting().property("foo.bar.baz");
+
+        // Then
+        assertThat(path).isEqualTo("qux");
+    }
+
     static class TestSetting extends AbstractKapuaSetting {
 
         String property(String key) {

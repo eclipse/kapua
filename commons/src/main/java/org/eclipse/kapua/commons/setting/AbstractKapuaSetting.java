@@ -45,7 +45,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      */
     protected AbstractKapuaSetting(String configResourceName)
     {
-        CompositeConfiguration compositeConfig = new CompositeConfiguration();
+        CompositeConfiguration compositeConfig = new EnvFriendlyConfiguration();
         compositeConfig.addConfiguration(new SystemConfiguration());
         compositeConfig.addConfiguration(new EnvironmentConfiguration());
         try {
