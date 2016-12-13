@@ -31,10 +31,14 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -46,6 +50,8 @@ public class Roles extends AbstractKapuaResource {
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final RoleService roleService = locator.getService(RoleService.class);
     private final RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+    private final RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+    private final RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
 
     /**
      * Returns the list of all the roles for the current account.
@@ -153,5 +159,92 @@ public class Roles extends AbstractKapuaResource {
             handleException(t);
         }
         return returnNotNullEntity(role);
+    }
+    
+    /**
+     * Returns the list of all the role permissions for the given role.
+     *
+     * @return The list of requested RolePermission objects.
+     */
+    @ApiOperation(value = "Get the RolePermissions for the given role", notes = "Returns the list of all the role permissions available for the given role.", response = RolePermission.class, responseContainer = "RolePermissionListResult")
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("{roleId}/permission")
+    public RolePermissionListResult getRolePermissions(@PathParam("roleId") String roleId) {
+        RolePermissionListResult rolePermissionsList = rolePermissionFactory.newRolePermissionListResult();
+        try {
+            KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+            KapuaId roleKapuaId = KapuaEid.parseCompactId(roleId);
+            rolePermissionsList = rolePermissionService.findByRoleId(scopeId, roleKapuaId);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return rolePermissionsList;
+    }
+    
+    /**
+     * Returns the role permission for the given id.
+     *
+     * @return The role permission for the given id.
+     */
+    @ApiOperation(value = "Get the RolePermission for the given id", notes = "Returns the role permission for the given id.", response = RolePermission.class)
+    @GET
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("{roleId}/permission/{rolePermissionId}")
+    public RolePermission getRolePermission(@PathParam("rolePermissionId") String rolePermissionId) {
+        RolePermission rolePermission = rolePermissionFactory.newRolePermission();
+        try {
+            KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+            KapuaId rolePermissionKapuaId = KapuaEid.parseCompactId(rolePermissionId);
+            rolePermission = rolePermissionService.find(scopeId, rolePermissionKapuaId);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return rolePermission;
+    }
+    
+    /**
+     * Deletes the RolePermission specified by the "rolePermissionId" path parameter.
+     *
+     * @param rolePermissionId
+     *            The id of the RolePermission to be deleted.
+     */
+    @ApiOperation(value = "Delete a RolePermission", notes = "Deletes a role permission based on the information provided in rolePermissionId parameter.")
+    @DELETE
+    @Path("{roleId}/permission/{rolePermissionId}")
+    public Response deleteRolePermission(
+            @ApiParam(value = "The id of the RolePermission to be deleted", required = true) @PathParam("rolePermissionId") String rolePermissionId) {
+        try {
+            KapuaId rolePermissionKapuaId = KapuaEid.parseCompactId(rolePermissionId);
+            KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+            rolePermissionService.delete(scopeId, rolePermissionKapuaId);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return Response.ok().build();
+    }
+    
+    /**
+     * Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.
+     *
+     * @param rolePermissionCreator
+     *            Provides the information for the new RolePermission to be created.
+     * @return The newly created RolePermission object.
+     */
+    @ApiOperation(value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
+    @POST
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("{roleId}/permission")
+    public RolePermission createRolePermission(
+            @ApiParam(value = "Provides the information for the new RolePermission to be created", required = true) RolePermissionCreator rolePermissionCreator) {
+        RolePermission rolePermission = null;
+        try {
+            rolePermissionCreator.setScopeId(KapuaSecurityUtils.getSession().getScopeId());
+            rolePermission = rolePermissionService.create(rolePermissionCreator);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return returnNotNullEntity(rolePermission);
     }
 }
