@@ -13,9 +13,11 @@
 package org.eclipse.kapua.service.authorization.access;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
@@ -25,7 +27,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * informations like {@link AccessPermission#getCreatedBy()} and{@link AccessPermission#getCreatedOn()}.<br>
  * <br>
  * This is a not editable entity so it can be only removed or created and therefore any change to
- * {@link AccessPermission#getAccessId()} and {@link AccessPermission#getPermission()} property is forbidden.
+ * {@link AccessPermission#getAccessInfoId()} and {@link AccessPermission#getPermission()} property is forbidden.
  * 
  * @since 1.0.0
  */
@@ -44,7 +46,7 @@ public interface AccessPermission extends KapuaEntity {
      *            The {@link AccessInfo} id.
      * @since 1.0.0
      */
-    public void setAccessId(KapuaId accessId);
+    public void setAccessInfoId(KapuaId accessId);
 
     /**
      * Gets the {@link AccessInfo} id of which this {@link AccessPermission} belongs.
@@ -52,8 +54,9 @@ public interface AccessPermission extends KapuaEntity {
      * @return The {@link AccessInfo} id.
      * @since 1.0.0
      */
-    @XmlElement(name = "accessId")
-    public KapuaId getAccessId();
+    @XmlElement(name = "accessInfoId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getAccessInfoId();
 
     /**
      * Sets the {@link Permission} that this {@link AccessPermission} has.<br>

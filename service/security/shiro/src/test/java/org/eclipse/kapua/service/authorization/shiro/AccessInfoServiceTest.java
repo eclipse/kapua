@@ -25,6 +25,10 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -85,6 +89,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
 
             assertNotNull(accessInfo);
+            assertEquals(accessInfoCreator.getUserId(), accessInfo.getUserId());
             return null;
         });
     }
@@ -120,9 +125,13 @@ public class AccessInfoServiceTest extends KapuaTest {
             //
             // Verify
             assertNotNull(accessInfo);
-            assertNotNull(accessInfo);
-            assertNotNull(accessInfo.getAccessPermissions());
-            assertEquals(accessInfoCreator.getPermissions().size(), accessInfo.getAccessPermissions().size());
+
+            // Access Permissions
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessPermissions);
+            assertEquals(accessInfoCreator.getPermissions().size(), accessPermissions.getSize());
             return null;
         });
     }
@@ -169,8 +178,13 @@ public class AccessInfoServiceTest extends KapuaTest {
             //
             // Verify
             assertNotNull(accessInfo);
-            assertNotNull(accessInfo.getAccessRoles());
-            assertEquals(accessInfoCreator.getRoleIds().size(), accessInfo.getAccessRoles().size());
+
+            // Access Roles
+            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+            AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessRoles);
+            assertEquals(accessInfoCreator.getRoleIds().size(), accessRoles.getSize());
 
             return null;
         });
@@ -221,19 +235,26 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
 
             assertNotNull(accessInfo);
-            assertNotNull(accessInfo.getAccessRoles());
-            assertEquals(accessInfoCreator.getRoleIds().size(), accessInfo.getAccessRoles().size());
-            assertEquals(accessInfoCreator.getPermissions().size(), accessInfo.getAccessPermissions().size());
+
+            // Access Permissions
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessPermissions);
+            assertEquals(accessInfoCreator.getPermissions().size(), accessPermissions.getSize());
+
+            // Access Roles
+            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+            AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessRoles);
+            assertEquals(accessInfoCreator.getRoleIds().size(), accessRoles.getSize());
 
             //
             // Find
             AccessInfo accessInfoFound = accessInfoService.find(accessInfo.getScopeId(), accessInfo.getId());
 
             assertNotNull(accessInfoFound);
-            assertEquals(accessInfo.getAccessRoles().size(), accessInfoFound.getAccessRoles().size());
-            assertEquals(accessInfo.getAccessRoles().iterator().next(), accessInfoFound.getAccessRoles().iterator().next());
-            assertEquals(accessInfo.getAccessPermissions().iterator().next(), accessInfoFound.getAccessPermissions().iterator().next());
-
             return null;
         });
     }
@@ -278,9 +299,20 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
 
             assertNotNull(accessInfo);
-            assertNotNull(accessInfo.getAccessRoles());
-            assertEquals(accessInfoCreator.getRoleIds().size(), accessInfo.getAccessRoles().size());
 
+            // Access Permissions
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessPermissions);
+            assertEquals(accessInfoCreator.getPermissions().size(), accessPermissions.getSize());
+
+            // Access Roles
+            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+            AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessRoles);
+            assertEquals(accessInfoCreator.getRoleIds().size(), accessRoles.getSize());
             Role roleFound = roleService.find(role.getScopeId(), role.getId());
             assertNotNull(roleFound);
 
@@ -292,6 +324,18 @@ public class AccessInfoServiceTest extends KapuaTest {
             // Verify
             AccessInfo accessInfoFound = accessInfoService.find(accessInfo.getScopeId(), accessInfo.getId());
             assertNull(accessInfoFound);
+
+            // Access Permissions
+            accessPermissions = accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessPermissions);
+            assertEquals(0, accessPermissions.getSize());
+
+            // Access Roles
+            accessRoles = accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId());
+
+            assertNotNull(accessRoles);
+            assertEquals(0, accessRoles.getSize());
 
             // Verify role not deleted
             roleFound = roleService.find(role.getScopeId(), role.getId());

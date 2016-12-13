@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
@@ -74,6 +75,9 @@ public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo
 
     @Override
     public Set<KapuaId> getRoleIds() {
+        if (roleIds == null) {
+            roleIds = new HashSet<>();
+        }
         return roleIds;
     }
 
@@ -85,6 +89,9 @@ public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo
 
     @Override
     public Set<Permission> getPermissions() {
+        if (permissions == null) {
+            permissions = new HashSet<>();
+        }
         return permissions;
     }
 

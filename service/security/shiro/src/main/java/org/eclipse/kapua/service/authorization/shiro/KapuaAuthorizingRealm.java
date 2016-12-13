@@ -33,13 +33,18 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoPredicates;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
@@ -121,18 +126,50 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         // Get user roles set and related permissions
         for (AccessInfo accessInfo : accessInfos.getItems()) {
 
-            for (AccessPermission accessPermission : accessInfo.getAccessPermissions()) {
+            // Access Permissions
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionListResult accessPermissions;
+            try {
+                accessPermissions = KapuaSecurityUtils.doPriviledge(() -> accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+            } catch (AuthenticationException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new ShiroException("Error while find access permissions!", e);
+            }
+
+            for (AccessPermission accessPermission : accessPermissions.getItems()) {
                 Permission p = accessPermission.getPermission();
                 info.addStringPermission(p.toString());
                 logger.trace("User: {} has permission: {}", username, p);
             }
 
-            for (AccessRole accessRole : accessInfo.getAccessRoles()) {
+            // Access Role Id
+            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+            AccessRoleListResult accessRoles;
+            try {
+                accessRoles = KapuaSecurityUtils.doPriviledge(() -> accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+            } catch (AuthenticationException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new ShiroException("Error while find access role ids!", e);
+            }
 
-                Role role = accessRole.getRole();
+            RoleService roleService = locator.getService(RoleService.class);
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            for (AccessRole accessRole : accessRoles.getItems()) {
+
+                KapuaId roleId = accessRole.getRoleId();
+
+                Role role;
+                try {
+                    role = KapuaSecurityUtils.doPriviledge(() -> roleService.find(accessRole.getScopeId(), roleId));
+                } catch (AuthenticationException e) {
+                    throw e;
+                } catch (Exception e) {
+                    throw new ShiroException("Error while find access role ids!", e);
+                }
+
                 info.addRole(role.getName());
-
-                RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
                 final RolePermissionListResult rolePermissions;
                 try {
                     rolePermissions = KapuaSecurityUtils.doPriviledge(() -> rolePermissionService.findByRoleId(role.getScopeId(), role.getId()));

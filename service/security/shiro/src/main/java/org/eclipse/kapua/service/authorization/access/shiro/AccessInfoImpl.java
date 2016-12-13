@@ -12,18 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.eclipse.kapua.KapuaException;
@@ -31,8 +24,6 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessPermission;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
 
 /**
  * {@link AccessInfo} implementation.
@@ -51,13 +42,13 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
     })
     private KapuaEid userId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "access_info_id", referencedColumnName = "id")
-    private Set<AccessRoleImpl> roles;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "access_info_id", referencedColumnName = "id")
-    private Set<AccessPermissionImpl> permissions;
+    // @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // @JoinColumn(name = "access_info_id", referencedColumnName = "id")
+    // private Set<AccessRoleImpl> roles;
+    //
+    // @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // @JoinColumn(name = "access_info_id", referencedColumnName = "id")
+    // private Set<AccessPermissionImpl> permissions;
 
     /**
      * Empty constructor required by JPA.
@@ -94,8 +85,8 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
         super((AbstractKapuaUpdatableEntity) accessInfo);
 
         setUserId(accessInfo.getUserId());
-        setAccessRoles(accessInfo.getAccessRoles());
-        setAccessPermissions(accessInfo.getAccessPermissions());
+        // setAccessRoles(accessInfo.getAccessRoles());
+        // setAccessPermissions(accessInfo.getAccessPermissions());
     }
 
     @Override
@@ -112,41 +103,41 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
         return userId;
     }
 
-    @Override
-    public void setAccessRoles(Set<AccessRole> accessRoles) throws KapuaException {
-
-        if (accessRoles != null) {
-            this.roles = new HashSet<>();
-            for (AccessRole ac : accessRoles) {
-                this.roles.add(new AccessRoleImpl(ac));
-            }
-        } else {
-            this.roles = null;
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Set<AccessRoleImpl> getAccessRoles() {
-        return roles;
-    }
-
-    @Override
-    public void setAccessPermissions(Set<AccessPermission> accessPermissions) {
-        if (accessPermissions != null) {
-            this.permissions = new HashSet<>();
-            for (AccessPermission p : accessPermissions) {
-                this.permissions.add(new AccessPermissionImpl(p));
-            }
-        } else {
-            this.permissions = null;
-        }
-
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Set<AccessPermissionImpl> getAccessPermissions() {
-        return this.permissions;
-    }
+    // @Override
+    // public void setAccessRoles(Set<AccessRole> accessRoles) throws KapuaException {
+    //
+    // if (accessRoles != null) {
+    // this.roles = new HashSet<>();
+    // for (AccessRole ac : accessRoles) {
+    // this.roles.add(new AccessRoleImpl(ac));
+    // }
+    // } else {
+    // this.roles = null;
+    // }
+    // }
+    //
+    // @Override
+    // @SuppressWarnings("unchecked")
+    // public Set<AccessRoleImpl> getAccessRoles() {
+    // return roles;
+    // }
+    //
+    // @Override
+    // public void setAccessPermissions(Set<AccessPermission> accessPermissions) {
+    // if (accessPermissions != null) {
+    // this.permissions = new HashSet<>();
+    // for (AccessPermission p : accessPermissions) {
+    // this.permissions.add(new AccessPermissionImpl(p));
+    // }
+    // } else {
+    // this.permissions = null;
+    // }
+    //
+    // }
+    //
+    // @Override
+    // @SuppressWarnings("unchecked")
+    // public Set<AccessPermissionImpl> getAccessPermissions() {
+    // return this.permissions;
+    // }
 }
