@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaEntity;
@@ -31,6 +35,10 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "accessPermission")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "accessInfoId",
+        "permission" }, factoryClass = AccessPermissionXmlRegistry.class, factoryMethod = "newAccessPermission")
 public interface AccessPermission extends KapuaEntity {
 
     public static final String TYPE = "accessPermission";

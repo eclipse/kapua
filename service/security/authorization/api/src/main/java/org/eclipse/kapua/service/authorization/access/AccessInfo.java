@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -28,6 +32,11 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * 
  * @since 1.0.0
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "userId" },
+         factoryClass = AccessInfoXmlRegistry.class, 
+         factoryMethod = "newAccessInfo")
 public interface AccessInfo extends KapuaUpdatableEntity {
 
     public static final String TYPE = "accessInfo";

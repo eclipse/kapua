@@ -29,7 +29,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * 
  * @since 1.0.0
  */
-@XmlRootElement(name = "accessPermissionCreator")
+@XmlRootElement(name = "accessRoleCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "accessInfoId", "roleId" },//
         factoryClass = AccessRoleXmlRegistry.class, factoryMethod = "newCreator")

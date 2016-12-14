@@ -15,8 +15,12 @@ package org.eclipse.kapua.service.authorization.access;
 import java.security.Permissions;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaEntityCreator;
@@ -30,6 +34,13 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * 
  * @since 1.0.0
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "userId",
+                       "roleIds",
+                       "permissions" },
+         factoryClass = AccessInfoXmlRegistry.class, 
+         factoryMethod = "newAccessInfoCreator")
 public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
 
     /**
@@ -48,6 +59,7 @@ public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
      * @since 1.0.0
      */
     @XmlElement(name = "userId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getUserId();
 
     /**
