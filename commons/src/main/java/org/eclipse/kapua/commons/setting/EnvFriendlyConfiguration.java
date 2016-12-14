@@ -10,9 +10,9 @@
 package org.eclipse.kapua.commons.setting;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterators;
 import org.apache.commons.configuration.CompositeConfiguration;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,10 +22,12 @@ public class EnvFriendlyConfiguration extends CompositeConfiguration {
 
     @Override
     public Iterator<String> getKeys() {
-        Iterator<String> keys = super.getKeys();
-        List<String> envKeys = ImmutableList.copyOf(keys).stream().map(this::envKey).collect(toList());
-        Iterators.addAll(envKeys, keys);
-        return envKeys.iterator();
+        List<String> keys = ImmutableList.copyOf(super.getKeys());
+        List<String> envKeys = keys.stream().map(this::envKey).collect(toList());
+        List<String> result = new ArrayList<>();
+        result.addAll(keys);
+        result.addAll(envKeys);
+        return result.iterator();
     }
 
     @Override
