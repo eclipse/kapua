@@ -37,9 +37,25 @@ public interface AccessInfoFactory extends KapuaObjectFactory {
      * 
      * @param scopeId
      *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessInfoCreator}.
+     * @return A instance of the implementing class of {@link AccessInfoQuery}.
      * @since 1.0.0
      */
     public AccessInfoQuery newQuery(KapuaId scopeId);
+    
+    /**
+     * Instantiate a new {@link AccessInfoListResult} implementing object.
+     * 
+     * @return A instance of the implementing class of {@link AccessInfoListResult}.
+     * @since 1.0.0
+     */
+    public AccessInfoListResult newAccessInfoListResult();
+    
+    /**
+     * Instantiate a new {@link AccessInfo} implementing object.
+     * 
+     * @return A instance of the implementing class of {@link AccessInfo}.
+     * @since 1.0.0
+     */
+    public AccessInfo newAccessInfo();
 
 }

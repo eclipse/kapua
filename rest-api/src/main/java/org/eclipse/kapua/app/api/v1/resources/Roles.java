@@ -76,7 +76,7 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Returns the role for the given id.
      *
-     * @return The requested dole.
+     * @return The requested role.
      */
     @ApiOperation(value = "Get the Role for the given id", notes = "Returns the role for the given id.", response = Role.class)
     @GET
@@ -166,7 +166,7 @@ public class Roles extends AbstractKapuaResource {
      *
      * @return The list of requested RolePermission objects.
      */
-    @ApiOperation(value = "Get the RolePermissions for the given role", notes = "Returns the list of all the role permissions available for the given role.", response = RolePermission.class, responseContainer = "RolePermissionListResult")
+    @ApiOperation(value = "Get the list of the RolePermissions for the given role", notes = "Returns the list of all the role permissions available for the given role.", response = RolePermission.class, responseContainer = "RolePermissionListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("{roleId}/permission")

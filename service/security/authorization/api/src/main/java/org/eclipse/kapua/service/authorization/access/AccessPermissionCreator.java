@@ -32,7 +32,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  */
 @XmlRootElement(name = "accessPermissionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "roleId", "permission" },//
+@XmlType(propOrder = { "accessInfoId", "permission" },//
         factoryClass = AccessPermissionXmlRegistry.class, factoryMethod = "newCreator")
 public interface AccessPermissionCreator extends KapuaEntityCreator<AccessPermission> {
 

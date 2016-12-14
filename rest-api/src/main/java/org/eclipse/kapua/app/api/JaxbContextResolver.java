@@ -33,6 +33,18 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoXmlRegistry;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionXmlRegistry;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
@@ -144,7 +156,19 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     RolePermission.class,
                     RolePermissionListResult.class,
                     RolePermissionCreator.class,
-                    RolePermissionXmlRegistry.class
+                    RolePermissionXmlRegistry.class,
+                    AccessInfo.class,
+                    AccessInfoListResult.class,
+                    AccessInfoCreator.class,
+                    AccessInfoXmlRegistry.class,
+                    AccessPermission.class,
+                    AccessPermissionListResult.class,
+                    AccessPermissionCreator.class,
+                    AccessPermissionXmlRegistry.class,
+                    AccessRole.class,
+                    AccessRoleListResult.class,
+                    AccessRoleCreator.class,
+                    AccessRoleXmlRegistry.class
 
             }, null);
         } catch (Exception e) {
