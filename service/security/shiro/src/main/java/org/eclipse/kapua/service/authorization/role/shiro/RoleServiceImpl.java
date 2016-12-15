@@ -96,18 +96,6 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
                 throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
             }
 
-            // //
-            // // Force deletion of deleted RolePermissions.
-            // // Eclipse Link does not seems to take care about
-            // Iterator<RolePermission> rolePermissionsIterator = currentRole.getRolePermissions().iterator();
-            // while (rolePermissionsIterator.hasNext()) {
-            // RolePermission currentRolePermission = rolePermissionsIterator.next();
-            //
-            // if (!role.getRolePermissions().contains(currentRolePermission)) {
-            // ServiceDAO.delete(em, RolePermissionImpl.class, currentRolePermission.getId());
-            // }
-            // }
-
             return RoleDAO.update(em, role);
         });
     }
