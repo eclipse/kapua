@@ -12,94 +12,63 @@
 package org.eclipse.kapua.app.api;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
-import org.xml.sax.SAXException;
-
-import io.swagger.jaxrs.listing.ApiListingResource;
-import io.swagger.jaxrs.listing.SwaggerSerializers;
 
 public class RestApisApplication extends ResourceConfig {
 
-	public RestApisApplication() throws JAXBException {
-		packages("org.eclipse.kapua.app.api", "org.eclipse.kapua.service.account", "org.eclipse.kapua.service.account.internal",
-		         "org.eclipse.kapua.service.user", "org.eclipse.kapua.service.user.internal");
+    public RestApisApplication() throws JAXBException {
+        packages("org.eclipse.kapua.app.api",//
+                "org.eclipse.kapua.service.account", //
+                "org.eclipse.kapua.service.account.internal",//
+                "org.eclipse.kapua.service.user", //
+                "org.eclipse.kapua.service.user.internal");
 
-		// Bind media type to resource extension
-		HashMap<String, MediaType> mappedMediaTypes = new HashMap<String, MediaType>();
-		mappedMediaTypes.put("xml", MediaType.APPLICATION_XML_TYPE);
-		mappedMediaTypes.put("json", MediaType.APPLICATION_JSON_TYPE);
+        // Bind media type to resource extension
+        HashMap<String, MediaType> mappedMediaTypes = new HashMap<>();
+        mappedMediaTypes.put("xml", MediaType.APPLICATION_XML_TYPE);
+        mappedMediaTypes.put("json", MediaType.APPLICATION_JSON_TYPE);
 
-		property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
-		register(UriConnegFilter.class);
-		register(JaxbContextResolver.class);
-		register(RestApiJAXBContextProvider.class);
-		register(KapuaSerializableBodyWriter.class);
-		register(ListBodyWriter.class);
-		
-		
-		
-		
-		
-		// Hook the swagger-ui
-//		registerClasses(ApiListingResource.class,
-//						SwaggerSerializers.class);
+        property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
+        register(UriConnegFilter.class);
+        register(JaxbContextResolver.class);
+        register(RestApiJAXBContextProvider.class);
+        register(KapuaSerializableBodyWriter.class);
+        register(ListBodyWriter.class);
 
-		register(new ContainerLifecycleListener() {
+        // Hook the swagger-ui
+        register(new ContainerLifecycleListener() {
 
-			@Override
-			public void onStartup(Container container) {
-				ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
+            @Override
+            public void onStartup(Container container) {
+                ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
 
-				RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
- 				XmlUtil.setContextProvider(provider);
-			}
+                RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
+                XmlUtil.setContextProvider(provider);
+            }
 
-			@Override
-			public void onReload(Container container) {
-				//Nothing todo
-			}
+            @Override
+            /**
+             * Nothing to do
+             */
+            public void onReload(Container container) {
+            }
 
-			@Override
-			public void onShutdown(Container container) {
-				//Nothing todo
-			}
-
-		});
-		
-//		Role ri = new RoleImpl((KapuaId)null);
-//        RolePermission rpi = new RolePermissionImpl(null, new PermissionImpl("asd", Actions.connect, null));
-//        Set<RolePermission> set = new HashSet<>();
-//        set.add(rpi);
-//        ri.setRolePermissions(set);
-//        String marshalled = XmlUtil.marshal(ri);
-//        try {
-//            Role ri2 = XmlUtil.unmarshal(marshalled, Role.class);
-//        } catch (XMLStreamException | FactoryConfigurationError | SAXException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        System.out.println("");
-	}
+            @Override
+            /**
+             * Nothing to do
+             */
+            public void onShutdown(Container container) {
+            }
+        });
+    }
 }

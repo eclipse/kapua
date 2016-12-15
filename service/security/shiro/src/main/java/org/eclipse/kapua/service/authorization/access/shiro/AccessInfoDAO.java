@@ -22,81 +22,61 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 
 /**
- * Access Info DAO
+ * {@link AccessInfo) DAO
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 public class AccessInfoDAO extends ServiceDAO {
 
     /**
-     * Creates and return new access info
+     * Creates and return new {@link AccessInfo)
      * 
      * @param em
      * @param creator
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
     public static AccessInfo create(EntityManager em, AccessInfoCreator creator)
             throws KapuaException {
         AccessInfo accessInfo = new AccessInfoImpl(creator.getScopeId());
-
         accessInfo.setUserId(creator.getUserId());
-
-        // if (creator.getPermissions() != null) {
-        // Set<AccessPermission> accessPermissions = new HashSet<>();
-        // for (Permission p : creator.getPermissions()) {
-        // AccessPermission accessPermission = new AccessPermissionImpl(creator.getScopeId());
-        // accessPermission.setPermission(p);
-        // accessPermissions.add(accessPermission);
-        // }
-        //
-        // accessInfo.setAccessPermissions(accessPermissions);
-        // }
-        //
-        // if (creator.getRoleIds() != null) {
-        // Set<AccessRole> accessRoles = new HashSet<>();
-        //
-        // for (KapuaId rId : creator.getRoleIds()) {
-        // AccessRole accessRole = new AccessRoleImpl(creator.getScopeId());
-        // accessRole.setRole(RoleDAO.find(em, rId));
-        // accessRoles.add(accessRole);
-        // }
-        //
-        // accessInfo.setAccessRoles(accessRoles);
-        // }
-
         return ServiceDAO.create(em, accessInfo);
     }
 
     /**
-     * Find the access info by user access info identifier
+     * Find the {@link AccessInfo) by user {@link AccessInfo) identifier
      * 
      * @param em
      * @param accessInfoId
      * @return
+     * @since 1.0.0
      */
     public static AccessInfo find(EntityManager em, KapuaId accessInfoId) {
         return em.find(AccessInfoImpl.class, accessInfoId);
     }
 
     /**
-     * Delete the access info by access info identifier
+     * Delete the {@link AccessInfo) by {@link AccessInfo) identifier
      * 
      * @param em
      * @param accessInfoId
+     * @since 1.0.0
      */
     public static void delete(EntityManager em, KapuaId accessInfoId) {
         ServiceDAO.delete(em, AccessInfoImpl.class, accessInfoId);
     }
 
     /**
-     * Return the access info list matching the provided query
+     * Return the {@link AccessInfo) list matching the provided query
      * 
      * @param em
      * @param accessInfoQuery
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static AccessInfoListResult query(EntityManager em, KapuaQuery<AccessInfo> accessInfoQuery)
             throws KapuaException {
@@ -104,12 +84,13 @@ public class AccessInfoDAO extends ServiceDAO {
     }
 
     /**
-     * Return the access info count matching the provided query
+     * Return the {@link AccessInfo) count matching the provided query
      * 
      * @param em
      * @param accessInfoQuery
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static long count(EntityManager em, KapuaQuery<AccessInfo> accessInfoQuery)
             throws KapuaException {

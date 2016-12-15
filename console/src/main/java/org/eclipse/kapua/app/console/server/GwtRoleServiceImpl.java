@@ -193,15 +193,6 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Modified On", role.getModifiedOn()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("Entity", "Modified By", KapuaGwtModelConverter.convert(role.getModifiedBy())));
                 gwtRoleDescription.add(new GwtGroupedNVPair("Role", "Name", role.getName()));
-
-                // for (RolePermission rolePermission : role.getRolePermissions()) {
-                // GwtRolePermission gwtRolePermission = KapuaGwtModelConverter.convert(rolePermission);
-                //
-                // gwtRoleDescription.add(new GwtGroupedNVPair("Permission - " + rolePermission.toString(), "Domain", gwtRolePermission.getDomain()));
-                // gwtRoleDescription.add(new GwtGroupedNVPair("Permission - " + rolePermission.toString(), "Action", gwtRolePermission.getAction()));
-                // gwtRoleDescription.add(new GwtGroupedNVPair("Permission - " + rolePermission.toString(), "Target Scope Id", gwtRolePermission.getTargetScopeId()));
-                // gwtRoleDescription.add(new GwtGroupedNVPair("Permission - " + rolePermission.toString(), "Added On", gwtRolePermission.getCreatedOn()));
-                // }
             }
 
         } catch (Throwable t) {
@@ -226,13 +217,6 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // Find
             Role role = roleService.find(scopeId, roleId);
-
-            // If there are results
-            if (role != null) {
-                // for (RolePermission rolePermission : role.getRolePermissions()) {
-                // gwtRolePermissions.add(KapuaGwtModelConverter.convert(rolePermission));
-                // }
-            }
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

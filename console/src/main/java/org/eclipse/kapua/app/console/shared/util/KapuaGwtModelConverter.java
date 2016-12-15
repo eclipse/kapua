@@ -13,8 +13,6 @@
 package org.eclipse.kapua.app.console.shared.util;
 
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
@@ -84,15 +82,6 @@ public class KapuaGwtModelConverter {
         //
         // Convert other attributes
         gwtRole.setName(role.getName());
-
-        // Convert list of Role permissions
-        Set<GwtRolePermission> gwtRolePermissions = new HashSet<GwtRolePermission>();
-        // for (RolePermission rolePermission : role.getRolePermissions()) {
-        // GwtRolePermission gwtRolePermission = convert(rolePermission);
-        // gwtRolePermissions.add(gwtRolePermission);
-        // }
-
-        gwtRole.setPermissions(gwtRolePermissions);
 
         //
         // Return converted entity
