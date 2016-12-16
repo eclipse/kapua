@@ -22,6 +22,8 @@ CREATE TABLE usr_user (
   display_name           	VARCHAR(255),
   email                  	VARCHAR(255),
   phone_number           	VARCHAR(64),
+  user_type					VARCHAR(64)   NOT NULL DEFAULT 'INTERNAL',
+  external_id				VARCHAR(255),
   optlock               	INT UNSIGNED,
   attributes             	TEXT,  
   properties             	TEXT,  

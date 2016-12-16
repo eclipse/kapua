@@ -2,6 +2,7 @@ package org.eclipse.kapua.test;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserType;
 
 public class UserCreatorMock implements UserCreator
 {
@@ -11,6 +12,28 @@ public class UserCreatorMock implements UserCreator
     private String displayName;
     private String email;
     private String phoneNumber;
+    private UserType userType;
+    
+    public UserType getUserType() {
+        return userType;
+    }
+
+    
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
+    
+    public String getExternalId() {
+        return externalId;
+    }
+
+    
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
+    private String externalId;
     
     @Override
     public String getName()

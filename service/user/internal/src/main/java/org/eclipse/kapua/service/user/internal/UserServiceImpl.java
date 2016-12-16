@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.UserType;
 
 /**
  * User service implementation.
@@ -60,6 +61,12 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         ArgumentValidator.match(userCreator.getName(), ArgumentValidator.NAME_REGEXP, "name");
         // ArgumentValidator.match(userCreator.getRawPassword(), ArgumentValidator.PASSWORD_REGEXP, "rawPassword");
         ArgumentValidator.match(userCreator.getEmail(), ArgumentValidator.EMAIL_REGEXP, "email");
+        ArgumentValidator.notNull(userCreator.getUserType(), "userType");
+        if (userCreator.getUserType() != UserType.INTERNAL) {
+            ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "externalId");
+        } else {
+            ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "externalId");
+        }
 
         //
         // Check Access
@@ -81,6 +88,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
         ArgumentValidator.match(user.getName(), ArgumentValidator.NAME_REGEXP, "name");
         // ArgumentValidator.match(user.getRawPassword(), ArgumentValidator.PASSWORD_REGEXP, "rawPassword");
         ArgumentValidator.match(user.getEmail(), ArgumentValidator.EMAIL_REGEXP, "email");
+        if (user.getUserType() != UserType.INTERNAL) {
+            ArgumentValidator.notEmptyOrNull(user.getExternalId(), "externalId");
+        } else {
+            ArgumentValidator.isEmptyOrNull(user.getExternalId(), "externalId");
+        }
         validateSystemUser(user.getName());
 
         //
@@ -95,6 +107,12 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
             User currentUser = UserDAO.find(em, user.getId());
             if (currentUser == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
+            }
+            if (user.getUserType() != null && currentUser.getUserType() != user.getUserType()) {
+                throw new KapuaIllegalArgumentException("userType", user.getUserType().toString());
+            }
+            if (user.getExternalId() != null && currentUser.getExternalId() != user.getExternalId()) {
+                throw new KapuaIllegalArgumentException("externalId", user.getExternalId());
             }
             return UserDAO.update(em, user);
         });
