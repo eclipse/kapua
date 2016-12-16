@@ -19,9 +19,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Device is an object representing a device or gateway connected to the Kapua platform.<br>
@@ -101,6 +103,7 @@ public interface Device extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "connectionId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getConnectionId();
 
     /**
@@ -464,6 +467,7 @@ public interface Device extends KapuaUpdatableEntity {
      * @return
      */
     @XmlElement(name = "preferredUserId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getPreferredUserId();
 
     /**
