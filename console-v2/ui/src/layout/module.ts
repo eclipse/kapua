@@ -1,4 +1,5 @@
 import LayoutCtrl from "./controllers/LayoutCtrl";
+import ExternalModulesList from "./services/externalModulesList.service";
 
 import "./assets/styles/layout.scss";
 
@@ -14,4 +15,5 @@ angular.module("app.layout", ["ui.router"])
             }
         });
     }])
-    .controller("LayoutCtrl", ["$http", "$state", "localStorageService", "$auth", "kapuaConfig", "$rootScope", LayoutCtrl]);
+    .controller("LayoutCtrl", ["$http", "$state", "localStorageService", "$auth", "kapuaConfig", "$rootScope", "ExternalModulesList", LayoutCtrl])
+    .service("ExternalModulesList", [ExternalModulesList]);
