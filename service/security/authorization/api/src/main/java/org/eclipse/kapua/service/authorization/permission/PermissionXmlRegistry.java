@@ -30,6 +30,6 @@ public class PermissionXmlRegistry {
      * @since 1.0.0
      */
     public Permission newPermission() {
-        return factory.newPermission((String) null, null, null);
+        return factory.newPermission(null, null, null);
     }
 }

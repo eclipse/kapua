@@ -43,11 +43,6 @@ public class PermissionFactoryImpl implements PermissionFactory {
     }
 
     @Override
-    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId) {
-        return new PermissionImpl(domain, action, targetScopeId);
-    }
-
-    @Override
     public RolePermission newRolePermission(KapuaId scopeId, Permission permission) {
         return new RolePermissionImpl(scopeId, permission);
     }

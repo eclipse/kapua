@@ -29,12 +29,6 @@ public class PermissionFactoryMock implements PermissionFactory
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId) {
-        return newPermission(domain.getName(), action, targetScopeId);
-    }
-
-    @Override
-    public Permission newPermission(String domain, Actions action, KapuaId targetScopeId) {
-        // TODO Auto-generated method stub
         return null;
     }
 
