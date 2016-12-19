@@ -39,6 +39,8 @@ import org.apache.activemq.filter.DestinationMapEntry;
 import org.apache.activemq.security.AuthorizationEntry;
 import org.apache.activemq.security.DefaultAuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
+import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.util.ThreadContext;
@@ -98,7 +100,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
 {
     private static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
-    private Map<String, ConnectorDescriptor> connectorsDescriptorMap;
+    private final static Map<String, ConnectorDescriptor> connectorsDescriptorMap = ConnectorDescriptorLoader.loadConnectorDescriptors();
 
     private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<String, ConnectionId>();
 
@@ -149,8 +151,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
     public KapuaSecurityBrokerFilter(Broker next) throws KapuaException
     {
         super(next);
-
-        connectorsDescriptorMap = ConnectorDescriptorLoader.loadConnectorDescriptors();
 
         // login
         metricLoginSuccess = metricsService.getCounter("security", "login", "success", "count");
@@ -203,6 +203,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
     {
         logger.info(">>> Security broker filter: calling stop...");
         super.stop();
+    }
+
+    public static ConnectorDescriptor getConnectoreDescriptor(String connectionName)
+    {
+        return connectorsDescriptorMap.get(connectionName);
     }
 
     // ------------------------------------------------------------------
@@ -517,7 +522,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
 
                 String clientId = kapuaPrincipal.getClientId();
                 KapuaId accountId = kapuaPrincipal.getAccountId();
-                String username = kapuaSecurityContext.getUserName();
+                String username = kapuaPrincipal.getName();
                 String remoteAddress = (context.getConnection() != null) ? context.getConnection().getRemoteAddress() : "";
 
                 KapuaId scopeId = ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getAccountId();
@@ -628,6 +633,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
     private void _send(ProducerBrokerExchange producerExchange, Message messageSend)
         throws Exception
     {
+        if (StringUtils.containsNone(messageSend.getDestination().getPhysicalName(), new char[] { '+', '#' })) {
+            String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {}",
+                                                  messageSend.getDestination());
+            throw new SecurityException(message);
+        }
         if (!isBrokerContext(producerExchange.getConnectionContext())) {
             KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(producerExchange.getConnectionContext());
             // if (!kapuaSecurityContext.getAuthorizedWriteDests().contains(messageSend.getDestination()))
@@ -639,7 +649,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                                                           kapuaSecurityContext.getUserName(),
                                                           ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId(),
                                                           ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientIp(),
-                                                          kapuaSecurityContext.getConnectionId(),
+                                                          kapuaSecurityContext.getBrokerConnectionId(),
                                                           messageSend.getDestination());
                     logger.warn(message);
                     metricPublishMessageSizeNotAllowed.update(messageSend.getSize());
@@ -651,9 +661,9 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                 // kapuaSecurityContext.getAuthorizedWriteDests().put(messageSend.getDestination(), messageSend.getDestination());
             }
             // }
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, kapuaSecurityContext.getConnectionId());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, kapuaSecurityContext.getConnectorDescriptor());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, kapuaSecurityContext.getKapuaSession());
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, (kapuaSecurityContext.getKapuaConnectionId() != null ? kapuaSecurityContext.getKapuaConnectionId().toCompactId() : null));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, kapuaSecurityContext.getConnectorDescriptor().getConnectorName());
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession()));
         }
         if (messageSend.getContent() != null) {
             metricPublishMessageSizeAllowed.update(messageSend.getContent().length);
@@ -725,7 +735,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter
                                                           kapuaSecurityContext.getUserName(),
                                                           ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId(),
                                                           ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientIp(),
-                                                          kapuaSecurityContext.getConnectionId(),
+                                                          kapuaSecurityContext.getBrokerConnectionId(),
                                                           info.getDestination());
                     logger.warn(message);
                     subscribeNotAllowedMessages.inc();

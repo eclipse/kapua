@@ -34,7 +34,6 @@ public class KapuaPrincipalImpl implements KapuaPrincipal
      */
     private String  tokenId;
     private KapuaId userId;
-    private String  username;
     private KapuaId accountId;
     private String  clientId;
     private String  clientIp;
@@ -49,15 +48,15 @@ public class KapuaPrincipalImpl implements KapuaPrincipal
      */
     public KapuaPrincipalImpl(AccessToken accessToken, String username, String clientId, String clientIp)
     {
-        this.username = username;
         this.tokenId = accessToken.getTokenId();
         this.userId = accessToken.getUserId();
         this.accountId = accessToken.getScopeId();
         this.clientId = clientId;
         this.clientIp = clientIp;
-        name = (new StringBuilder()).append(accountId != null ? accountId : "null").append(":").append(username).toString();
+        name = username;
     }
 
+    @Override
     public String getName()
     {
         return name;
@@ -95,7 +94,7 @@ public class KapuaPrincipalImpl implements KapuaPrincipal
         int result = 1;
         result = prime * result
                  + ((accountId == null) ? 0 : accountId.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -115,11 +114,11 @@ public class KapuaPrincipalImpl implements KapuaPrincipal
         }
         else if (!accountId.equals(other.accountId))
             return false;
-        if (username == null) {
-            if (other.username != null)
+        if (name == null) {
+            if (other.name != null)
                 return false;
         }
-        else if (!username.equals(other.username))
+        else if (!name.equals(other.name))
             return false;
         return true;
     }

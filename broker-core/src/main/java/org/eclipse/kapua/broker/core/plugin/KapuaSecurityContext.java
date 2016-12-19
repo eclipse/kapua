@@ -32,7 +32,7 @@ public class KapuaSecurityContext extends SecurityContext {
 	
     private KapuaPrincipal   principal;
     private KapuaSession        kapuaSession;
-    private KapuaId          connectionId;
+    private KapuaId             kapuaConnectionId;
     private Set<Principal>   principals;
     private ConnectorDescriptor connectorDescriptor;
     private ConnectionId        brokerConnectionId;
@@ -45,7 +45,7 @@ public class KapuaSecurityContext extends SecurityContext {
 
     public KapuaSecurityContext(KapuaPrincipal     principal,
                               AuthorizationMap authMap,
-                              KapuaId connectionId,
+                                KapuaId kapuaConnectionId,
                               ConnectionId brokerConnectionId,
                               ConnectorDescriptor connectorDescriptor) {
         super(principal.getName());
@@ -56,7 +56,7 @@ public class KapuaSecurityContext extends SecurityContext {
         principals.add(principal);
 
         this.authMap = authMap;
-        this.connectionId = connectionId;
+        this.kapuaConnectionId = kapuaConnectionId;
         this.connectorDescriptor = connectorDescriptor;
         this.brokerConnectionId = brokerConnectionId;
     }
@@ -76,9 +76,9 @@ public class KapuaSecurityContext extends SecurityContext {
         return authMap;
     }
 
-    public KapuaId getConnectionId()
+    public KapuaId getKapuaConnectionId()
     {
-        return connectionId;
+        return kapuaConnectionId;
     }
 
     public ConnectionId getBrokerConnectionId()

@@ -27,11 +27,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 public interface KapuaPrincipal extends Principal, java.io.Serializable {
 
     /**
-     * Return the user name
-     */
-    public String getName();
-    
-    /**
      * Return the token identifier
      * 
      * @return
