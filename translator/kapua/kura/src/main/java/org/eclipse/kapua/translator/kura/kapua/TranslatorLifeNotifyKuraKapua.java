@@ -51,6 +51,10 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
 
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.class.toString(), kuraNotifyMessage.getChannel().getScope());
+        }
+
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
 

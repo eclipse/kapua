@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
@@ -48,6 +49,10 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
+
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.class.toString(), kuraBirthMessage.getChannel().getScope());
+        }
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());

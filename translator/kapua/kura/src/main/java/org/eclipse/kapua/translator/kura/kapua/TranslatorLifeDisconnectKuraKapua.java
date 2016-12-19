@@ -51,6 +51,10 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraDisconnectMessage.getChannel().getScope());
 
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.class.toString(), kuraDisconnectMessage.getChannel().getScope());
+        }
+
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(), kuraDisconnectMessage.getChannel().getClientId());
         if (device == null) {
