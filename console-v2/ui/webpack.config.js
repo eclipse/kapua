@@ -1,4 +1,5 @@
 var HtmlWebpackPlugin = require("html-webpack-plugin");
+var failPlugin = require("webpack-fail-plugin");
 var webpack = require("webpack");
 
 module.exports = {
@@ -49,6 +50,7 @@ module.exports = {
             jQuery: "jquery",
             "window.jQuery": "jquery",
             "window.jquery": "jquery"
-        })
+        }),
+        failPlugin
     ]
 }

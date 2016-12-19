@@ -15,3 +15,6 @@
 
 # Prevent further updates to server/conf/public.key
 server/conf/public.key
+
+# NodeJS installed from Maven Plugin
+node/
