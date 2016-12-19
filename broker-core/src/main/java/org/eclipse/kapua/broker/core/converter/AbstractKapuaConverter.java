@@ -28,6 +28,8 @@ import org.eclipse.kapua.broker.core.message.JmsUtil;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MESSAGE_TYPE;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.metric.MetricsService;
@@ -80,9 +82,13 @@ public abstract class AbstractKapuaConverter
         if ((Message) message.getJmsMessage() instanceof javax.jms.BytesMessage) {
             try {
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                KapuaId connectionId = (KapuaId) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID);
-                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL);
-                return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId);
+                String connectionId = (String) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID);
+                KapuaId kapuaConnectionId = null;
+                if (connectionId != null) {
+                    kapuaConnectionId = KapuaEid.parseCompactId(connectionId);
+                }
+                ConnectorDescriptor connectorDescriptor = KapuaSecurityBrokerFilter.getConnectoreDescriptor((String) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL));
+                return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, kapuaConnectionId);
             }
             catch (JMSException e) {
                 metricConverterErrorMessage.inc();
