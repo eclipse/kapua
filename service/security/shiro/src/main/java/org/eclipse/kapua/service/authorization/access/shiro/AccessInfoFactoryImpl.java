@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class AccessInfoFactoryImpl implements AccessInfoFactory {
 
     @Override

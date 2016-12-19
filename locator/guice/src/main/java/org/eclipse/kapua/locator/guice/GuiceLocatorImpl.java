@@ -15,6 +15,7 @@ package org.eclipse.kapua.locator.guice;
 import com.google.inject.ConfigurationException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;

@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountQuery;
 
 /**
- * Account query implementation.
+ * User roles factory service implementation.
  * 
  * @since 1.0
  * 

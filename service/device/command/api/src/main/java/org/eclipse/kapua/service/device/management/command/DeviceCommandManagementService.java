@@ -17,7 +17,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
- * Device command service definition.
+ * Id generator service implementation.<br>
+ * This implementation return a sequence.
  * 
  * @since 1.0
  *

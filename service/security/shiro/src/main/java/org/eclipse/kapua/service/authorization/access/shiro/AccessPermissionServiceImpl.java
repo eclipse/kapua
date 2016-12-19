@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
  * @since 1.0
  *
  */
+@KapuaProvider
 public class AccessPermissionServiceImpl extends AbstractKapuaService implements AccessPermissionService {
 
     public AccessPermissionServiceImpl() {

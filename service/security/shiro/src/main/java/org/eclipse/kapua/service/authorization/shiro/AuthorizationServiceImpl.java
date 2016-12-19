@@ -19,6 +19,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
@@ -28,6 +29,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * since 1.0
  * 
  */
+@KapuaProvider
 public class AuthorizationServiceImpl implements AuthorizationService
 {
 

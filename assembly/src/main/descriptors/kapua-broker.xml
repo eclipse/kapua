@@ -135,6 +135,7 @@
                 <include>com.h2database:h2</include>
                 <include>com.google.protobuf:protobuf-java</include>
                 <include>org.apache.shiro:shiro-core</include>
+                <include>org.elasticsearch:elasticsearch</include>
 
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-service-api</include>

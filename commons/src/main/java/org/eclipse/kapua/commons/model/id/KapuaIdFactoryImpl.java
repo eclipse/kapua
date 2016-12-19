@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.id;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 
@@ -20,6 +21,7 @@ import org.eclipse.kapua.model.id.KapuaIdFactory;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class KapuaIdFactoryImpl implements KapuaIdFactory {
 
 	@Override

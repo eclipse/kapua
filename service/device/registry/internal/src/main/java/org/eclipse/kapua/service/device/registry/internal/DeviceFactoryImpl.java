@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceFactoryImpl implements DeviceFactory
 {
 

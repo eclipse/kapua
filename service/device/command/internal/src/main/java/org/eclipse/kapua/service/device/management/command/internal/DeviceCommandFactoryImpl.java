@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandFactory;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
@@ -22,6 +23,7 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceCommandFactoryImpl implements DeviceCommandFactory
 {
 

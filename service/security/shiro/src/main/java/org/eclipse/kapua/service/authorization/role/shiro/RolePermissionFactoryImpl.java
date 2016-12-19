@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class RolePermissionFactoryImpl implements RolePermissionFactory {
 
     @Override

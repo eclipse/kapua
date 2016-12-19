@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.user.UserQuery;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class UserFactoryImpl implements UserFactory
 {
     @Override

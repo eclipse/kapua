@@ -1,0 +1,71 @@
+<!--
+    Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<locator-config>
+	<provided>
+		<api>org.eclipse.kapua.service.account.AccountFactory</api>
+		<api>org.eclipse.kapua.service.account.AccountService</api>
+		<api>org.eclipse.kapua.service.user.UserFactory</api>
+		<api>org.eclipse.kapua.service.user.UserService</api>
+		<api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
+		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
+		<api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
+		<api>org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory</api>
+		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
+		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
+		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
+		
+		<!-- Uncomment as needed --> 
+		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
+		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
+		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
+		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
+		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
+		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
+		<!-- <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain</api> -->
+		<api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
+		<!-- <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api> -->
+		<!-- <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api> -->
+		<api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
+		<api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
+		<api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
+		<api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
+		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
+		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
+		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
+		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
+		<!-- <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api> -->
+		<!-- <api>org.eclipse.kapua.service.datastore.MessageStoreService</api> -->
+		<!-- <api>org.eclipse.kapua.service.datastore.AssetInfoStoreService</api> -->
+		<!-- <api>org.eclipse.kapua.service.datastore.TopicInfoStoreService</api> -->
+		<!-- <api>org.eclipse.kapua.service.datastore.MetricInfoStoreService</api> -->
+		
+		<api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+		
+		<api>org.eclipse.kapua.transport.TransportClientFactory</api>
+		
+		<api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+	</provided>
+	<packages>
+		<package>org.eclipse.kapua.commons</package>
+		<package>org.eclipse.kapua.service</package>
+		<package>org.eclipse.kapua.transport</package>
+	</packages>
+</locator-config>

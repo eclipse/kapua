@@ -31,19 +31,15 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Ignoring those tests until we have build fixed. Then we should enabled embedded MariaDB and turn tests on again.
- */
 @Ignore
-public class AccountServiceTest extends AbstractAccountServiceTest
-{
+public class AccountServiceTest extends AbstractAccountServiceTest {
+
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(AccountServiceTest.class);
 
     @Test
     public void testCreate()
-        throws Exception
-    {
+            throws Exception {
         // KapuaPeid accountPeid = KapuaEidGenerator.generate();//
         KapuaId scopeId = new KapuaEid(BigInteger.valueOf(1));
 
@@ -73,8 +69,7 @@ public class AccountServiceTest extends AbstractAccountServiceTest
 
     @Test
     public void testUpdate()
-        throws Exception
-    {
+            throws Exception {
         // KapuaPeid accountPeid = KapuaEidGenerator.generate();//
         KapuaId scopeId = new KapuaEid(BigInteger.valueOf(1));
 
@@ -113,8 +108,7 @@ public class AccountServiceTest extends AbstractAccountServiceTest
 
     @Test
     public void testDelete()
-        throws Exception
-    {
+            throws Exception {
         // KapuaPeid accountPeid = KapuaEidGenerator.generate();//
         KapuaId scopeId = new KapuaEid(BigInteger.valueOf(1));
 
@@ -130,8 +124,7 @@ public class AccountServiceTest extends AbstractAccountServiceTest
 
         try {
             account = accountService.find(account.getScopeId(), account.getId());
-        }
-        catch (KapuaEntityNotFoundException ex) {
+        } catch (KapuaEntityNotFoundException ex) {
             account = null;
         }
 
@@ -140,8 +133,7 @@ public class AccountServiceTest extends AbstractAccountServiceTest
 
     @Test
     public void testFind()
-        throws Exception
-    {
+            throws Exception {
         // KapuaPeid accountPeid = KapuaEidGenerator.generate();//
         KapuaId scopeId = new KapuaEid(BigInteger.valueOf(1));
 
@@ -168,9 +160,9 @@ public class AccountServiceTest extends AbstractAccountServiceTest
     }
 
     @Test
+    @Ignore
     public void testConfiguration()
-        throws Exception
-    {
+            throws Exception {
         // KapuaPeid accountPeid = KapuaEidGenerator.generate();//
         KapuaId scopeId = new KapuaEid(BigInteger.valueOf(1));
 
@@ -184,8 +176,7 @@ public class AccountServiceTest extends AbstractAccountServiceTest
         assertTrue(null == null);
     }
 
-    private AccountCreator getTestAccountCreator(KapuaId scopeId, long random)
-    {
+    private AccountCreator getTestAccountCreator(KapuaId scopeId, long random) {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         long accountSerial = (new Date()).getTime();

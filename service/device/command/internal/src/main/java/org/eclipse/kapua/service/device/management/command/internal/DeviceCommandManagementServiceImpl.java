@@ -16,6 +16,7 @@ import java.util.Date;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -41,6 +42,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DeviceCommandManagementServiceImpl implements DeviceCommandManagementService
 {
     @SuppressWarnings({ "rawtypes", "unchecked" })
