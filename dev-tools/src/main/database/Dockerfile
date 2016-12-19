@@ -17,6 +17,7 @@ RUN apt-get install -qq maven
 
 # Download Maven project
 RUN apt-get install -qq git
+RUN echo 'Downloading project...'
 RUN git clone https://github.com/eclipse/kapua.git
 WORKDIR kapua/dev-tools
 RUN git checkout develop
