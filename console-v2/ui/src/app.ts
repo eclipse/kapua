@@ -52,8 +52,9 @@ angular.module("app", [
             });
 
             $rootScope.$on("$locationChangeSuccess", function () {
+                // FIXME not working! find another solution
                 if (!$state.transition) {
-                    $state.go("login");
+                    // $state.go("login");
                 } else {
                     $state.transition.then((transitionResult: any) => {
                         if (transitionResult.name.indexOf("kapua.") === 0 && !$auth.isAuthenticated()) {
