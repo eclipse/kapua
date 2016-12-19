@@ -1,0 +1,1 @@
+angular.module("app.commons", []).constant("kapuaConfig", require("../kapua-console.config.json"));

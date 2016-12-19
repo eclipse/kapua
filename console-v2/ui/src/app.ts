@@ -1,27 +1,31 @@
 import "angular-patternfly";
 import "angular-ui-router";
 import "angular-local-storage";
+import "angular-patternfly/node_modules/patternfly/node_modules/datatables/media/js/jquery.dataTables.js";
 
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly.css";
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css";
 import "angular-patternfly/dist/styles/angular-patternfly.css";
 
-import "./constants/module.ts";
+import "./commons/module.ts";
 import "./login/module.ts";
 import "./layout/module.ts";
 import "./welcome/module.ts";
 import "./users/module.ts";
+import "./devices/module.ts";
 
 angular.module("app", [
+    "ui.bootstrap",
     "ui.router",
     "patternfly",
     "patternfly.charts",
     "LocalStorageModule",
-    "app.constants",
+    "app.commons",
     "app.login",
     "app.layout",
     "app.welcome",
-    "app.users"
+    "app.users",
+    "app.devices"
 ])
     .config(["$locationProvider", "$urlRouterProvider", (
         $locationProvider: angular.ILocationProvider,

@@ -27,7 +27,8 @@ module.exports = {
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
             { test: /\.(png|jpe?g|gif)$/, loader: "url?limit=25000" },
             { test: /\.html$/, exclude: /node_modules/, loader: "html" },
-            { test: /\.json$/, loader: "json" }
+            { test: /\.json$/, loader: "json" },
+            { test: require.resolve("angular-patternfly/node_modules/patternfly/node_modules/jquery"), loader: 'expose?jQuery!expose?$!expose?jquery!expose?window.jQuery!expose?window.jquery' }
         ]
     },
     plugins: [
