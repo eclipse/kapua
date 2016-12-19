@@ -12,15 +12,19 @@
 <locator-config>
 	<provided>
 		<api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
-		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
-		<api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
 		<api>org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory</api>
 		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.account.AccountFactory</api>

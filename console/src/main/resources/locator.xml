@@ -24,8 +24,14 @@
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
+		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 		
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
