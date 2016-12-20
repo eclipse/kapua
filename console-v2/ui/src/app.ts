@@ -15,6 +15,7 @@ import "./users/module.ts";
 import "./devices/module.ts";
 
 angular.module("app", [
+    "ngAnimate",
     "ui.bootstrap",
     "ui.router",
     "patternfly",
