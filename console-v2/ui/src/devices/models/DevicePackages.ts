@@ -1,4 +1,3 @@
-<!--
 /*******************************************************************************
 * Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
 *                                                                               
@@ -11,10 +10,7 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
--->
-<div>
-  <div>
-    Device detail. id: {{:: vm.$stateParams["id"] }}
-  </div>
-  <div class="col-md-3" pf-aggregate-status-card head-title="Installed Packages" show-top-border="true" status="vm.packagesStatus"></div>
-</div>
+interface DevicePackages {
+  devicePackage: DevicePackage[];
+  type: string;
+}

@@ -43,4 +43,4 @@ angular.module("app.devices", [])
         }])
     .controller("DevicesListCtrl", ["$http", "$modal", DevicesListCtrl])
     .controller("DeleteDevicesModalCtrl", ["$modalInstance", "$http", "id", DeleteDevicesModalCtrl])
-    .controller("DeviceDetailCtrl", ["$stateParams", DeviceDetailCtrl]);
+    .controller("DeviceDetailCtrl", ["$stateParams", "$http", DeviceDetailCtrl]);
