@@ -105,9 +105,12 @@
                                         <srcFile>src/main/sql/H2/athz_access_info_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_access_role_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_access_permission_drop.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/athz_group_drop.sql</srcFile>
+<<<<<<< HEAD
                                         <srcFile>src/main/sql/H2/athz_domain_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_domain_actions_drop.sql</srcFile>
+=======
+                                        <srcFile>src/main/sql/H2/athz_group_drop.sql</srcFile>
+>>>>>>> Added group service implementation
 
                                         <srcFile>src/main/sql/H2/atht_credential_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_role_create.sql</srcFile>
@@ -115,9 +118,12 @@
                                         <srcFile>src/main/sql/H2/athz_access_info_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_access_role_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_access_permission_create.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/athz_group_create.sql</srcFile>
+<<<<<<< HEAD
                                         <srcFile>src/main/sql/H2/athz_domain_create.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_domain_actions_create.sql</srcFile>
+=======
+                                        <srcFile>src/main/sql/H2/athz_group_create.sql</srcFile>
+>>>>>>> Added group service implementation
 
                                         <srcFile>src/main/sql/H2/atht_credential_seed.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_role_seed.sql</srcFile>
@@ -125,9 +131,12 @@
                                         <srcFile>src/main/sql/H2/athz_access_info_seed.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_access_role_seed.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_access_permission_seed.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/athz_group_seed.sql</srcFile>
+<<<<<<< HEAD
                                         <srcFile>src/main/sql/H2/athz_domain_seed.sql</srcFile>
                                         <srcFile>src/main/sql/H2/athz_domain_actions_seed.sql</srcFile>
+=======
+                                        <srcFile>src/main/sql/H2/athz_group_seed.sql</srcFile>
+>>>>>>> Added group service implementation
                                     </srcFiles>
                                 </configuration>
                             </execution>

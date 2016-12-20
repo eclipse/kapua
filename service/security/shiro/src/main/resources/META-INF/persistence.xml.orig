@@ -36,11 +36,19 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
         <!-- Authorization -->
+<<<<<<< HEAD
+        <class>org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl</class>
+
+        <class>org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl</class>
+
+        <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
+        <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+=======
+>>>>>>> Added group service implementation
+
         <class>org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImpl</class>
         <class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl</class>
-
-        <class>org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl</class>
 
         <class>org.eclipse.kapua.service.authorization.group.shiro.GroupImpl</class>
         <class>org.eclipse.kapua.service.authorization.group.shiro.GroupPermissionImpl</class>
@@ -49,7 +57,7 @@
 
         <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
-
+         
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
