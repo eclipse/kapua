@@ -22,7 +22,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 
 let kapuaServerConf = require("../conf/kapua-server.config.json");
-let privateKey = fs.readFileSync(path.resolve(__dirname, "../conf/public.key"));
+let publicKey = fs.readFileSync(path.resolve(__dirname, "../conf/public.key"));
 
 namespace Route {
     export class OAuthLogin {
@@ -53,7 +53,7 @@ namespace Route {
             let token = _.replace(<string>req.headers["authorization"], "Bearer ", "");
             if (token) {
                 try {
-                    let decoded = jwt.verify(token, privateKey);
+                    let decoded = jwt.verify(token, publicKey);
                 } catch (err) {
                     res.sendStatus(401);
                     return;
