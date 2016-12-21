@@ -14,6 +14,7 @@
 import DevicesListCtrl from "./controllers/DevicesListCtrl";
 import DeleteDevicesModalCtrl from "./controllers/DeleteDevicesModalCtrl";
 import DeviceDetailCtrl from "./controllers/DeviceDetailCtrl";
+import DeviceDetailPackagesCtrl from "./controllers/DeviceDetailPackagesCtrl";
 
 import "./assets/styles/devices.scss";
 
@@ -35,12 +36,22 @@ angular.module("app.devices", [])
                     url: "/:id",
                     views: {
                         "kapuaView@kapua": {
-                            template: require("./views/device-detail.html"),
+                            template: require("./views/device-details.html"),
                             controller: "DeviceDetailCtrl as vm"
+                        }
+                    }
+                })
+                .state("kapua.devices.detail.packages", {
+                    url: "/packages",
+                    views: {
+                        "kapuaView@kapua": {
+                            template: require("./views/device-details/packages.html"),
+                            controller: "DeviceDetailPackagesCtrl as vm"
                         }
                     }
                 });
         }])
     .controller("DevicesListCtrl", ["$http", "$modal", DevicesListCtrl])
     .controller("DeleteDevicesModalCtrl", ["$modalInstance", "$http", "id", DeleteDevicesModalCtrl])
-    .controller("DeviceDetailCtrl", ["$stateParams", "$http", DeviceDetailCtrl]);
+    .controller("DeviceDetailCtrl", ["$stateParams", "$http", DeviceDetailCtrl])
+    .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$http", DeviceDetailPackagesCtrl]);
