@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import java.math.BigInteger;
 
@@ -31,6 +32,7 @@ import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate
 import static org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPriviledge;
 import static org.eclipse.kapua.service.device.registry.DeviceCredentialsMode.LOOSE;
 
+@Ignore
 public class DeviceRegistryServiceTest extends KapuaTest {
 
     DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
