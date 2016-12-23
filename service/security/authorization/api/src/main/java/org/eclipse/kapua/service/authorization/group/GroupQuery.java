@@ -10,13 +10,15 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.service.authorization.group;
+
+import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
- * Kapua service definition. (Marker interface)
+ * {@link Group} query definition.
  * 
  * @since 1.0.0
- * 
+ *
  */
-public interface KapuaService {
+public interface GroupQuery extends KapuaQuery<Group> {
 }

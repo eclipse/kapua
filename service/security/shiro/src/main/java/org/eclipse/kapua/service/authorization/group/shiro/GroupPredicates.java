@@ -10,13 +10,22 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.service.authorization.group.shiro;
+
+import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 
 /**
- * Kapua service definition. (Marker interface)
+ * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Group} entity.
  * 
- * @since 1.0.0
+ * @since 1.0
  * 
  */
-public interface KapuaService {
+public class GroupPredicates {
+
+    /**
+     * {@link Group} name
+     */
+    public static final String NAME = "name";
+
 }

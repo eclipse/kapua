@@ -10,13 +10,16 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.service.authorization.group.shiro;
+
+import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupListResult;
 
 /**
- * Kapua service definition. (Marker interface)
+ * {@link GroupListResult} implementation.
  * 
  * @since 1.0.0
- * 
  */
-public interface KapuaService {
+public class GroupListResultImpl extends KapuaListResultImpl<Group> implements GroupListResult {
 }

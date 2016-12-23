@@ -24,7 +24,8 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 /**
  * Kapua query abstract reference implementation.
  *
- * @param <E> query entity domain
+ * @param <E>
+ *            query entity domain
  * 
  * @since 1.0
  * 
@@ -45,6 +46,18 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
      */
     public AbstractKapuaQuery() {
         sortCriteria = new FieldSortCriteria("id", SortOrder.DESCENDING);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     *            The scope id of the {@link Query}
+     */
+    public AbstractKapuaQuery(KapuaId scopeId) {
+        this();
+
+        setScopeId(scopeId);
     }
 
     @Override
