@@ -446,6 +446,11 @@
                 <artifactId>kapua-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- External dependencies -->
             <dependency>
@@ -550,6 +555,7 @@
         <module>translator</module>
         <module>broker-core</module>
         <module>test</module>
+        <module>qa</module>
 
         <!-- Applications -->
         <module>console</module>

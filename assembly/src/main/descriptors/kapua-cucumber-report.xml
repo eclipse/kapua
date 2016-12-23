@@ -31,6 +31,11 @@
             <outputDirectory>/device-registry-service</outputDirectory>
             <directory>../service/device/registry/internal/target/cucumber</directory>
         </fileSet>
+
+        <fileSet>
+            <outputDirectory>/user-service-i9n</outputDirectory>
+            <directory>../qa/target/cucumber/UserServiceI9n</directory>
+        </fileSet>
     </fileSets>
 
 </assembly>

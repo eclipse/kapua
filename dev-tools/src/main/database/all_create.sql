@@ -1,18 +1,14 @@
--- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
---
--- All rights reserved. This program and the accompanying materials
--- are made available under the terms of the Eclipse Public License v1.0
--- which accompanies this distribution, and is available at
--- http://www.eclipse.org/legal/epl-v10.html
---
--- Contributors:
---     Eurotech - initial API and implementation
--- *******************************************************************************
-
---liquibase formatted sql
-
---changeset hekonsek:1
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
 
 CREATE TABLE act_account (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
@@ -45,56 +41,6 @@ CREATE TABLE act_account (
 
 CREATE INDEX idx_account_scope_id ON act_account (scope_id);
 
---changeset hekonsek:2
-
-INSERT INTO `act_account` (
-	`scope_id`,
-	`id`,
-	`name`,
-	`created_on`,
-	`created_by`,
-	`modified_on`,
-	`modified_by`,
-	`org_name`,
-	`org_person_name`,
-	`org_email`,
-	`org_phone_number`,
-	`org_address_line_1`,
-	`org_address_line_2`,
-	`org_address_line_3`,
-	`org_zip_postcode`,
-	`org_city`,
-	`org_state_province_county`,
-	`org_country`,
-	`parent_account_path`,
-	`optlock`,
-	`attributes`,
-	`properties`)
-VALUES (NULL,
-		1,
-		'kapua-sys',
-		CURRENT_TIMESTAMP(),
-		1,
-		CURRENT_TIMESTAMP(),
-		1,
-		'kapua-org',
-		'Kapua Sysadmin',
-		'kapua-sys@eclipse.org',
-		'+1 555 123 4567',
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-        NULL,
-		'\1',
-		0,
-		NULL,
-		NULL);
-
---changeset hekonsek:3
-
 CREATE TABLE atht_credential (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -117,13 +63,27 @@ CREATE TABLE atht_credential (
 CREATE INDEX idx_atht_credential_scope_id ON atht_credential (scope_id);
 CREATE INDEX idx_atht_credential_user_id ON atht_credential (scope_id, user_id);
 
---changeset hekonsek:4
+CREATE TABLE atht_access_token (
+  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on            	TIMESTAMP(3),
+  modified_by            	BIGINT(21)    UNSIGNED,
 
-INSERT INTO atht_credential (`scope_id`, `id`, `created_on`, `created_by`, `modified_on`, `modified_by`, `user_id`, `credential_type`, `credential_key`, `optlock`)
-		VALUES ('1', '1', CURRENT_TIMESTAMP(), '1', CURRENT_TIMESTAMP(), '1', '1', 'PASSWORD', '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0'),
-			   ('1', '2', CURRENT_TIMESTAMP(), '1', CURRENT_TIMESTAMP(), '1', '2', 'PASSWORD', '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0');
+  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
+  token_id					TEXT	      NOT NULL,
+  expires_on				TIMESTAMP(3)  NOT NULL,
 
---changeset hekonsek:5
+  optlock               	INT UNSIGNED,
+  attributes             	TEXT,
+  properties             	TEXT,
+
+  PRIMARY KEY (id)
+) DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
+CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
 
 CREATE TABLE athz_role (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -145,8 +105,6 @@ CREATE TABLE athz_role (
 
 CREATE UNIQUE INDEX idx_role_name ON athz_role (scope_id, name);
 
---changeset hekonsek:6
-
 CREATE TABLE athz_role_permission (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -163,8 +121,6 @@ CREATE TABLE athz_role_permission (
 ) DEFAULT CHARSET=utf8;
 
 CREATE UNIQUE INDEX idx_role_permission_scope_id ON athz_role_permission (role_id, domain, action, target_scope_id);
-
---changeset hekonsek:7
 
 CREATE TABLE athz_user_permission (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -183,36 +139,6 @@ CREATE TABLE athz_user_permission (
 
 CREATE UNIQUE INDEX idx_user_permission_scope_id ON athz_user_permission (scope_id, user_id, domain, action, target_scope_id);
 
---changeset hekonsek:8
-
-INSERT INTO athz_user_permission (`scope_id`, `id`, `created_on`, `created_by`, `user_id`, `domain`)
-		VALUES 	('1', '1', CURRENT_TIMESTAMP(), '1', '1', 'account'),
-			   	('1', '2', CURRENT_TIMESTAMP(), '1', '1', 'user'),
-				('1', '3', CURRENT_TIMESTAMP(), '1', '1', 'device_event'),
-				('1', '4', CURRENT_TIMESTAMP(), '1', '1', 'device_connection'),
-				('1', '5', CURRENT_TIMESTAMP(), '1', '1', 'device'),
-				('1', '6', CURRENT_TIMESTAMP(), '1', '1', 'data'),
-				('1', '7', CURRENT_TIMESTAMP(), '1', '1', 'broker'),
-				('1', '8', CURRENT_TIMESTAMP(), '1', '1', 'credential'),
-				('1', '9', CURRENT_TIMESTAMP(), '1', '1', 'role'),
-				('1', '10', CURRENT_TIMESTAMP(), '1', '1', 'user_permission'),
-				('1', '11', CURRENT_TIMESTAMP(), '1', '1', 'device_lifecycle'),
-				('1', '12', CURRENT_TIMESTAMP(), '1', '1', 'device_management'),
-				('1', '101', CURRENT_TIMESTAMP(), '1', '2', 'account'),
-				('1', '102', CURRENT_TIMESTAMP(), '1', '2', 'user'),
-				('1', '103', CURRENT_TIMESTAMP(), '1', '2', 'device_event'),
-				('1', '104', CURRENT_TIMESTAMP(), '1', '2', 'device_connection'),
-				('1', '105', CURRENT_TIMESTAMP(), '1', '2', 'device'),
-				('1', '106', CURRENT_TIMESTAMP(), '1', '2', 'data'),
-				('1', '107', CURRENT_TIMESTAMP(), '1', '2', 'broker'),
-				('1', '108', CURRENT_TIMESTAMP(), '1', '2', 'credential'),
-				('1', '109', CURRENT_TIMESTAMP(), '1', '2', 'role'),
-				('1', '110', CURRENT_TIMESTAMP(), '1', '2', 'user_permission'),
-				('1', '111', CURRENT_TIMESTAMP(), '1', '2', 'device_lifecycle'),
-				('1', '112', CURRENT_TIMESTAMP(), '1', '2', 'device_management');
-
---changeset hekonsek:9
-
 CREATE TABLE athz_user_role (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -227,8 +153,6 @@ CREATE TABLE athz_user_role (
 
 CREATE INDEX idx_user_role_scope_id ON athz_user_role (scope_id, user_id);
 
---changeset hekonsek:10
-
 CREATE TABLE athz_user_role_roles (
   user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
   role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -236,8 +160,6 @@ CREATE TABLE athz_user_role_roles (
   PRIMARY KEY (user_id, role_id)
 
 ) DEFAULT CHARSET=utf8;
-
---changeset hekonsek:11
 
 CREATE TABLE dvc_device_connection (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -260,8 +182,6 @@ CREATE TABLE dvc_device_connection (
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_connection_status_id ON dvc_device_connection (scope_id, id, connection_status);
-
---changeset hekonsek:12
 
 CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
@@ -332,8 +252,6 @@ CREATE INDEX idx_device_c2_dn ON dvc_device (scope_id, custom_attribute_2, displ
 CREATE INDEX idx_device_c2_le ON dvc_device (scope_id, custom_attribute_2, last_event_on);
 CREATE INDEX idx_device_preferred_user_id ON dvc_device (scope_id, preferred_user_id);
 
---changeset hekonsek:13
-
 CREATE TABLE dvc_device_event (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -367,8 +285,6 @@ CREATE TABLE dvc_device_event (
 
 CREATE INDEX idx_device_event_id ON dvc_device_event (scope_id, device_id, resource, action);
 
---changeset hekonsek:14
-
 CREATE TABLE sys_configuration (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
   id                         BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -385,8 +301,6 @@ CREATE TABLE sys_configuration (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_configurationScopeId ON sys_configuration (scope_id);
-
---changeset hekonsek:15
 
 CREATE TABLE collision_entity_test (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -406,8 +320,6 @@ CREATE TABLE collision_entity_test (
 
 CREATE INDEX idx_collision_entity_test_scope_id ON collision_entity_test (scope_id);
 
---changeset hekonsek:16
-
 CREATE TABLE usr_user (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -423,20 +335,13 @@ CREATE TABLE usr_user (
   optlock               	INT UNSIGNED,
   attributes             	TEXT,
   properties             	TEXT,
-
+  user_type					VARCHAR(64)   NOT NULL DEFAULT 'INTERNAL',
+  external_id				VARCHAR(255),
   PRIMARY KEY (id),
   CONSTRAINT usr_uc_name UNIQUE (name)
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_user_scope_id ON usr_user (scope_id);
-
---changeset hekonsek:17
-
-INSERT INTO `usr_user` (`scope_id`, `id`, `name`, `created_on`, `created_by`, `modified_on`, `modified_by`, `status`, `display_name`, `email`, `phone_number`, `optlock`, `attributes`, `properties`)
-		VALUES (1, 1, 'kapua-sys',    CURRENT_TIMESTAMP(), 1, CURRENT_TIMESTAMP(), 1, 'ENABLED', 'Kapua Sysadmin', 'kapua-sys@eclipse.org',    '+1 555 123 4567', 0, NULL, NULL),
-		       (1, 2, 'kapua-broker', CURRENT_TIMESTAMP(), 1, CURRENT_TIMESTAMP(), 1, 'ENABLED', 'Kapua Broker',   'kapua-broker@eclipse.org', '+1 555 123 4567', 0, NULL, NULL);
-
---changeset hekonsek:18
 
 CREATE TABLE athz_access_info (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -458,15 +363,6 @@ CREATE TABLE athz_access_info (
 
 CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, user_id);
 
---changeset hekonsek:19
-
-INSERT INTO athz_access_info
-	VALUES
-		(1, 1, NOW(), 1, NOW(), 1, 1, 0, '', ''),
-		(1, 2, NOW(), 1, NOW(), 1, 2, 0, '', '');
-
---changeset hekonsek:20
-
 CREATE TABLE athz_access_permission (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -486,14 +382,6 @@ CREATE TABLE athz_access_permission (
 
 CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId ON athz_access_permission (scope_id, access_info_id, domain, action, target_scope_id);
 
---changeset hekonsek:21
-
-INSERT INTO athz_access_permission
-	VALUES
-		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1); -- kapua-broker assigned of permission: broker:connect:1
-
---changeset hekonsek:22
-
 CREATE TABLE athz_access_role (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -504,40 +392,6 @@ CREATE TABLE athz_access_role (
   role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
 
   PRIMARY KEY (id),
---  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE,
---  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE RESTRICT
-
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);
-
---changeset hekonsek:23
-
-INSERT INTO athz_access_role
-	VALUES
-		(1, 1, NOW(), 1, 1, 1); -- kapua-sys assigned of role admin
-
---changeset hekonsek:24
-
-INSERT INTO athz_role
-	VALUES
-		(1, 1, NOW(), 1, NOW(), 1, 'admin', 0, '','');
-
---changeset hekonsek:25
-
-INSERT INTO athz_role_permission
-	VALUES
-		(1, 1, NOW(), 1, 1, 'account', null, null),
-		(1, 2, NOW(), 1, 1, 'user', null, null),
-		(1, 3, NOW(), 1, 1, 'device_event', null, null),
-		(1, 4, NOW(), 1, 1, 'device_connection', null, null),
-		(1, 5, NOW(), 1, 1, 'device', null, null),
-		(1, 6, NOW(), 1, 1, 'data', null, null),
-		(1, 7, NOW(), 1, 1, 'broker', null, null),
-		(1, 8, NOW(), 1, 1, 'credential', null, null),
-		(1, 9, NOW(), 1, 1, 'role', null, null),
-		(1, 10, NOW(), 1, 1, 'user_permission', null, null),
-		(1, 11, NOW(), 1, 1, 'device_lifecycle', null, null),
-		(1, 12, NOW(), 1, 1, 'device_management', null, null),
-		(1, 13, NOW(), 1, 1, 'account', null, null),
-		(1, 14, NOW(), 1, 1, 'account', null, null);
