@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -32,8 +33,9 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 public final class DeviceValidation {
 
     private final PermissionFactory permissionFactory;
-
     private final AuthorizationService authorizationService;
+
+    private static final Domain deviceDomain = new DeviceDomain();
 
     /**
      * Constructs
@@ -58,7 +60,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), "deviceCreator.clientId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.write, deviceCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, deviceCreator.getScopeId()));
 
         return deviceCreator;
     }
@@ -75,7 +77,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(device.getId(), "device.id");
         ArgumentValidator.notNull(device.getScopeId(), "v.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.write, device.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId()));
 
         return device;
     }
@@ -91,7 +93,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, scopeId));
     }
 
     /**
@@ -104,7 +106,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId()));
     }
 
     /**
@@ -117,7 +119,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId()));
     }
 
     /**
@@ -131,7 +133,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(deviceId, "device.id");
         ArgumentValidator.notNull(scopeId, "device.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.delete, scopeId));
     }
 
     /**
@@ -145,7 +147,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, scopeId));
     }
 
 }

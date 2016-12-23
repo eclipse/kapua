@@ -19,6 +19,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
@@ -43,13 +44,14 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
  *
  */
 @KapuaProvider
-public class DeviceCommandManagementServiceImpl implements DeviceCommandManagementService
-{
+public class DeviceCommandManagementServiceImpl implements DeviceCommandManagementService {
+
+    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -61,7 +63,7 @@ public class DeviceCommandManagementServiceImpl implements DeviceCommandManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.execute, scopeId));
 
         //
         // Prepare the request

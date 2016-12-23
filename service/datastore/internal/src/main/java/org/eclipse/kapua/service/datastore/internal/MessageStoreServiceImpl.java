@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import static java.util.concurrent.TimeUnit.DAYS;
+
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
@@ -33,8 +35,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDatastoreException;
@@ -99,6 +103,8 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
 
+    private static final Domain datastoreDomain = new DatastoreDomain();
+
     private final EsSchema       esSchema;
     private final int            maxTopicDepth;
 
@@ -108,7 +114,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                       PermissionFactory permissionFactory, EsSchema esSchema,
                                       int maxTopicDepth, Object metadataUpdateSync) {
 
-        super(MessageStoreService.class.getName(), DatastoreDomain.DATASTORE, DatastoreEntityManagerFactory.getInstance());
+        super(MessageStoreService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
         this.accountService = accountService;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
@@ -117,9 +123,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         this.metadataUpdateSync = metadataUpdateSync;
     }
 
-
-    public MessageStoreServiceImpl()
-    {
+    public MessageStoreServiceImpl() {
         this(locator.getService(AccountService.class), locator.getService(AuthorizationService.class),
                 locator.getFactory(PermissionFactory.class), new EsSchema(),
                 DatastoreSettings.getInstance().getInt(DatastoreSettingKey.CONFIG_TOPIC_MAX_DEPTH), new Object());
@@ -127,8 +131,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     public StorableId store(KapuaId scopeId, MessageCreator messageCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(messageCreator, "messageCreator");
 
         MessageImpl messageImpl = new MessageImpl();
@@ -141,8 +144,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     private StorableId store(KapuaId scopeId, Message message)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -203,8 +205,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                      receivedOn,
                                      ttl,
                                      accountServicePlan.getMetricsIndexBy());
-        }
-        catch (Exception e) { // TODO create e new datastore exception
+        } catch (Exception e) { // TODO create e new datastore exception
             // TODO manage execeptions
             // CassandraUtils.handleException(e);
             // TODO Remove
@@ -215,8 +216,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -242,8 +242,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             EsMessageDAO.connection(EsClient.getcurrent())
                         .instance(everyIndex, EsSchema.MESSAGE_TYPE_NAME)
                         .deleteById(id.toString());
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -252,8 +251,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     public Message find(KapuaId scopeId, StorableId id, MessageFetchStyle fetchStyle)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -277,8 +275,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                 throw KapuaException.internalError("Method not implemented.");
 
             return null;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -287,8 +284,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     public MessageListResult query(KapuaId scopeId, MessageQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -317,8 +313,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                  .query(query);
 
             return result;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -326,8 +321,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     public long count(KapuaId scopeId, MessageQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -356,8 +350,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                  .count(query);
 
             return result;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -366,8 +359,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     public void delete(KapuaId scopeId, MessageQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -395,8 +387,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                         .deleteByQuery(query);
 
             return;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -404,8 +395,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Check Access
 
@@ -420,8 +410,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     private AccountInfo getAccountServicePlan(KapuaId scopeId)
-        throws KapuaException
-    {
+            throws KapuaException {
         Account account = accountService.find(scopeId);
         return new AccountInfo(account, new LocalServicePlan(this.getConfigValues(account.getId())));
     }
@@ -433,8 +422,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                     long receivedOn,
                                     long ttl,
                                     MetricsIndexBy indexBy)
-        throws IOException, ParseException, EsDatastoreException, KapuaInvalidTopicException
-    {
+            throws IOException, ParseException, EsDatastoreException, KapuaInvalidTopicException {
 
         // Extract schema metadata
         EsSchema.Metadata schemaMetadata = this.esSchema.synch(accountName, indexedOn);
@@ -465,8 +453,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     private void updateIndividually(EsSchema.Metadata schemaMetadata, EsDocumentBuilder docBuilder)
-        throws UnknownHostException, EsDatastoreException
-    {
+            throws UnknownHostException, EsDatastoreException {
 
         String indexName = schemaMetadata.getPublicIndexName();
         String messageTypeName = schemaMetadata.getMessageTypeName();
@@ -496,8 +483,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                              .instance(kapuaIndexName, topicTypeName)
                                              .upsert(docBuilder.getTopicId(), docBuilder.getTopicBuilder());
                         logger.debug(String.format("Upsert on topic succesfully executed [%s.%s, %s]", kapuaIndexName, topicTypeName, response.getId()));
-                    }
-                    catch (DocumentAlreadyExistsException exc) {
+                    } catch (DocumentAlreadyExistsException exc) {
                         logger.trace(String.format("Upsert failed because topic already exists [%s, %s]", docBuilder.getTopicId(), exc.getMessage()));
                     }
                     // Update cache if topic update is completed successfully
@@ -570,8 +556,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
                                              .instance(kapuaIndexName, assetTypeName)
                                              .upsert(docBuilder.getAssetId(), docBuilder.getAssetBuilder());
                         logger.debug(String.format("Upsert on asset succesfully executed [%s.%s, %s]", kapuaIndexName, topicTypeName, response.getId()));
-                    }
-                    catch (DocumentAlreadyExistsException exc) {
+                    } catch (DocumentAlreadyExistsException exc) {
                         logger.trace(String.format("Upsert failed because asset already exists [%s, %s]", docBuilder.getAssetId(), exc.getMessage()));
                     }
                     // Update cache if asset update is completed successfully
@@ -582,8 +567,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     private void resetCache(String accountName, String topic)
-        throws Exception
-    {
+            throws Exception {
 
         boolean isAnyAsset;
         boolean isAssetToDelete = false;
@@ -598,8 +582,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
             if (semTopic.isEmpty() && !isAnyAsset)
                 isAssetToDelete = true;
-        }
-        else {
+        } else {
             isAnyAsset = true;
             semTopic = "";
             isAssetToDelete = true;

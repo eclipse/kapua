@@ -12,17 +12,58 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
+import com.google.common.collect.Lists;
+
 /**
- * User permission domain.<br>
- * Used to describe the user permission domain in the {@link Permission}.
+ * Access info domain.<br>
+ * Used to describe the access info domain in the {@link Permission}.
  * 
  * @since 1.0
  *
  */
-public interface AccessInfoDomain {
-	
-    String ACCESS_INFO = "user_permission";
+public class AccessInfoDomain extends AbstractKapuaEntity implements Domain {
 
+    private static final long serialVersionUID = 3782336558657796495L;
+
+    private String name = "accessInfo";
+    private String serviceName = "accessInfoService";
+    private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    @Override
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    @Override
+    public void setActions(Set<Actions> actions) {
+        this.actions = actions;
+    }
+
+    @Override
+    public Set<Actions> getActions() {
+        return actions;
+    }
 }

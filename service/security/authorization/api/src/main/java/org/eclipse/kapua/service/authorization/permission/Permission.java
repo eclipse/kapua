@@ -22,10 +22,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 
 /**
  * Permission definition.<br>
- * A permission can be associated to a {@link User} (using {@link AccessInfo} entity) or a {@link Role}.<br>
+ * A permission can be associated to a {@link User} (using {@link AccessInfo} entity) or a {@link Domain}.<br>
  * Permissions enable the assignee to do {@link Actions} under specified domains and in specified scopes.
  * 
  * @since 1.0.0

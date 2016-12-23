@@ -27,6 +27,8 @@
 		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
+		<api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
+		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>

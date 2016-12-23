@@ -38,6 +38,8 @@
         <!-- Authorization -->
         <class>org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl</class>
 
+        <class>org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl</class>
+
         <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
         <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
 

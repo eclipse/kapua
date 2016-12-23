@@ -31,6 +31,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -41,11 +42,8 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
-import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
-import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
@@ -229,40 +227,40 @@ public class GwtKapuaModelConverter {
      * 
      * @since 1.0.0
      */
-    public static String convert(GwtDomain gwtDomain) {
-        String domain = null;
+    public static Domain convert(GwtDomain gwtDomain) {
+        Domain domain = null;
 
         if (gwtDomain != null) {
             switch (gwtDomain) {
             case account:
-                domain = AccountDomain.ACCOUNT;
+                domain = new AccountDomain();
                 break;
             case credential:
-                domain = CredentialDomain.CREDENTIAL;
+                domain = new CredentialDomain();
                 break;
             case datastore:
-                domain = DatastoreDomain.DATA_STORE;
+                domain = null;// new DatastoreDomain();
                 break;
             case device:
-                domain = DeviceDomain.DEVICE;
+                domain = null;// new DeviceDomain();
                 break;
             case device_connection:
-                domain = DeviceConnectionDomain.DEVICE_CONNECTION;
+                domain = new DeviceConnectionDomain();
                 break;
             case device_event:
-                domain = DeviceEventDomain.DEVICE_EVENT;
+                domain = new DeviceEventDomain();
                 break;
             case device_management:
-                domain = DeviceManagementDomain.DEVICE_MANAGEMENT;
+                domain = null;// new DeviceManagementDomain();
                 break;
             case role:
-                domain = RoleDomain.ROLE;
+                domain = new RoleDomain();
                 break;
             case user:
-                domain = UserDomain.USER;
+                domain = new UserDomain();
                 break;
             case user_permission:
-                // domain = UserPermissionDomain.USER_PERMISSION;
+                domain = null;// UserPermissionDomain.USER_PERMISSION;
                 break;
             }
         }

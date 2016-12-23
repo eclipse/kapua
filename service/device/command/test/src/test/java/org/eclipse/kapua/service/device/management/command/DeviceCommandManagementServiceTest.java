@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -69,6 +70,8 @@ import org.junit.Test;
 
 @Ignore
 public class DeviceCommandManagementServiceTest extends Assert {
+
+    private static final Domain deviceLifecycleDomain = new DeviceLifecycleDomain();
 
     protected static Random random = new Random();
     protected static KapuaLocator locator = KapuaLocator.getInstance();
@@ -146,7 +149,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
         Set<Permission> permissions = new HashSet<>();
-        permissions.add(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE, Actions.connect, account.getId()));
+        permissions.add(permissionFactory.newPermission(deviceLifecycleDomain, Actions.connect, account.getId()));
 
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(user.getId());

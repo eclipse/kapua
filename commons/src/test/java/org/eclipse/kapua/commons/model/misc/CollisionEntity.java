@@ -26,32 +26,30 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 
 @Entity(name = "CollisionEntity")
 @Table(name = "collision_entity_test")
-public class CollisionEntity extends AbstractKapuaNamedEntity
-{
+public class CollisionEntity extends AbstractKapuaNamedEntity {
 
     private static final long serialVersionUID = -4404075555024329043L;
 
     private static CollisionIdGenerator collisionIdGenerator;
 
+    public static final String TYPE = "collisionEntity";
+
     @Basic
     @Column(name = "test_field")
     private String testField;
 
-    public String getType()
-    {
-        return "CollisionEntity";
+    public String getType() {
+        return TYPE;
     }
 
-    public static void initializeCollisionIdGenerator(CollisionIdGenerator collisionIdGenerator)
-    {
+    public static void initializeCollisionIdGenerator(CollisionIdGenerator collisionIdGenerator) {
         CollisionEntity.collisionIdGenerator = collisionIdGenerator;
     }
 
-    public CollisionEntity()
-    {}
+    public CollisionEntity() {
+    }
 
-    public CollisionEntity(String testField)
-    {
+    public CollisionEntity(String testField) {
         this.testField = testField;
     }
 
@@ -63,16 +61,14 @@ public class CollisionEntity extends AbstractKapuaNamedEntity
     @PrePersist
     @Override
     protected void prePersistsAction()
-        throws KapuaException
-    {
+            throws KapuaException {
         this.id = new KapuaEid(collisionIdGenerator.generate());
 
         this.createdBy = new KapuaEid(new BigInteger("1"));
         this.createdOn = new Date();
     }
 
-    public String getTestField()
-    {
+    public String getTestField() {
         return testField;
     }
 

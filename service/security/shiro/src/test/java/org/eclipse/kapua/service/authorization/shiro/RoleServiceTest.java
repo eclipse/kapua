@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -46,6 +47,8 @@ public class RoleServiceTest extends KapuaTest {
 
     public static String DEFAULT_FILTER = "athz_*.sql";
     public static String DROP_FILTER = "athz_*_drop.sql";
+
+    private static final Domain testDomain = new TestDomain();
 
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
 
@@ -73,7 +76,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission("testDomain", Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 
@@ -127,8 +130,8 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission1 = permissionFactory.newPermission("testDomain", Actions.read, scope);
-            Permission permission3 = permissionFactory.newPermission("testDomain", Actions.delete, scope);
+            Permission permission1 = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            Permission permission3 = permissionFactory.newPermission(testDomain, Actions.delete, scope);
 
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission1);
@@ -178,7 +181,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission("testDomain", Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
 
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
@@ -222,7 +225,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission("testDomain", Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
 
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
@@ -280,7 +283,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission("testDomain", Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
 
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);

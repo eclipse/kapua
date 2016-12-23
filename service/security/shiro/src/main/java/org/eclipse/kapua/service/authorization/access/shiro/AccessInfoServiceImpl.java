@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
@@ -53,6 +54,8 @@ import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException
 @KapuaProvider
 public class AccessInfoServiceImpl extends AbstractKapuaService implements AccessInfoService {
 
+    private static final Domain accessInfoDomain = new AccessInfoDomain();
+
     /**
      * Constructor.<br>
      * It initialize the {@link AbstractEntityManagerFactory} with the specific {@link AuthorizationEntityManagerFactory#getInstance()}.
@@ -73,7 +76,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.write, accessInfoCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.write, accessInfoCreator.getScopeId()));
 
         RoleService roleService = locator.getService(RoleService.class);
         if (accessInfoCreator.getRoleIds() != null) {
@@ -130,7 +133,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, accessInfoId));
     }
@@ -146,7 +149,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
     }
@@ -162,7 +165,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> AccessInfoDAO.count(em, query));
     }
@@ -173,7 +176,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AccessInfoDomain.ACCESS_INFO, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.write, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
             if (AccessInfoDAO.find(em, accessInfoId) == null) {
