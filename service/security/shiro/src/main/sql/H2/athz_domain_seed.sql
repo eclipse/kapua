@@ -12,14 +12,18 @@
 
 INSERT INTO athz_domain
 	VALUES
-		(NULL, 1, NOW(), 1, 'account','accountService'),
-		(NULL, 2, NOW(), 1, 'broker','brokerService'),
-		(NULL, 3, NOW(), 1, 'device','deviceService'),
-		(NULL, 4, NOW(), 1, 'device_management','device_management'),
-		(NULL, 5, NOW(), 1, 'device_event','deviceEventService'),
-		(NULL, 6, NOW(), 1, 'device_lifecycle','deviceLifecycleService'),
-		(NULL, 7, NOW(), 1, 'data','datastoreService'),
-		(NULL, 8, NOW(), 1, 'credential','credentialService'),
-		(NULL, 9, NOW(), 1, 'access_info','accessInfoService'),
-		(NULL, 10, NOW(), 1, 'role','roleService'),
-		(NULL, 11, NOW(), 1, 'user','userService');
+		(NULL,  1, NOW(), 1, 'account',				'accountService'),
+		(NULL,  2, NOW(), 1, 'accessInfo',			'accessInfoService'),
+		(NULL,  3, NOW(), 1, 'broker',				'brokerService'),
+		(NULL,  4, NOW(), 1, 'credential',			'credentialService'),
+		(NULL,  5, NOW(), 1, 'device',				'deviceService'),
+		(NULL,  6, NOW(), 1, 'device_connection',	'deviceConnectionService'),
+		(NULL,  7, NOW(), 1, 'device_management',	'deviceManagementService'),
+		(NULL,  8, NOW(), 1, 'device_event',		'deviceEventService'),
+		(NULL,  9, NOW(), 1, 'device_lifecycle',	'deviceLifecycleService'),
+		(NULL, 10, NOW(), 1, 'data',				'datastoreService'),
+		(NULL, 11, NOW(), 1, 'domain',				'domainService'),
+		(NULL, 12, NOW(), 1, 'group',				'groupService'),
+		(NULL, 13, NOW(), 1, 'access_info',			'accessInfoService'),
+		(NULL, 14, NOW(), 1, 'role',				'roleService'),
+		(NULL, 15, NOW(), 1, 'user',				'userService');
