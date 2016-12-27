@@ -10,6 +10,9 @@
 
 #!/usr/bin/env bash
 
+#minishift start
+#eval $(minishift docker-env)
+
 #oc login
 #oc new-project eclipse-kapua --description="Open source IoT Platform" --display-name="Eclipse Kapua"
 
@@ -50,8 +53,6 @@ echo 'Starting web console'
 
 oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n eclipse-kapua -eCOMMONS_DB_SCHEMA=' '
 
-##oc expose svc/kapua-console
-
 echo 'Web console started.'
 
 echo 'Starting rest api'
@@ -64,3 +65,14 @@ echo 'Rest api started'
 
 SQL_HOST=`oc get service | grep sql | awk '{print $2}'`
 docker run -it -e SQL_SERVICE_HOST=${SQL_HOST} ${DOCKER_ACCOUNT}/kapua-liquibase
+
+## Start router
+
+#oc adm policy add-scc-to-user hostnetwork -z router
+
+#oc adm router --create
+
+## Expose web console
+
+#oc expose svc/kapua-console
+
