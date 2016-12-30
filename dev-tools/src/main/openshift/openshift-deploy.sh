@@ -26,7 +26,7 @@ if [ -z "${ELASTIC_SEARCH_MEMORY}" ]; then
   ELASTIC_SEARCH_MEMORY='512M'
 fi
 
-oc new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch -n eclipse-kapua
+oc new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch:2.4 -n eclipse-kapua
 
 echo 'ElasticSearch server started.'
 
