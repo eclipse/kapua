@@ -39,7 +39,7 @@ public interface CredentialFactory extends KapuaObjectFactory
      * @param credentialKey
      * @return
      */
-    public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey);
+    public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialSubject credentialSubject, KapuaId credentialSubjectId);
     
     /**
      * Creates a new credential result list

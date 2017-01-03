@@ -21,6 +21,8 @@ CREATE TABLE atht_credential (
   user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
   credential_type			VARCHAR(64)	  NOT NULL,
   credential_key			VARCHAR(255)  NOT NULL,
+  credential_subject		VARCHAR(64)   NOT NULL,
+  credential_subject_id		BIGINT(21)	  UNSIGNED NOT NULL,
   
   optlock               	INT UNSIGNED,
   attributes             	TEXT,  

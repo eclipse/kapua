@@ -110,7 +110,9 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
                 credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
                         credentialCreator.getUserId(),
                         credentialCreator.getCredentialType(),
-                        fullKey);
+                        fullKey,
+                        credentialCreator.getCredentialSubject(),
+                        credentialCreator.getCredentialSubjectId());
 
                 break;
             case PASSWORD:

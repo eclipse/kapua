@@ -121,10 +121,13 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             CredentialService credentialService = locator.getService(CredentialService.class);
             CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
+            // FIXME add Credential Subject interface
             CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
                     user.getId(),
                     CredentialType.PASSWORD,
-                    gwtUserCreator.getPassword());
+                    gwtUserCreator.getPassword(),
+                    null,
+                    null);
             credentialService.create(credentialCreator);
 
             // convert to GwtAccount and return
