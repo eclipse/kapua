@@ -34,7 +34,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "userId", 
                        "credentialType",
-                       "credentialKey"},
+                       "credentialKey",
+                       "credentialSubject",
+                       "credentialSubjectId"},
         factoryClass = CredentialXmlRegistry.class, 
         factoryMethod = "newCredential")
 public interface Credential extends KapuaUpdatableEntity
@@ -86,4 +88,31 @@ public interface Credential extends KapuaUpdatableEntity
      * @param credentialKey
      */
     public void setCredentialKey(String credentialKey);
+    
+    /**
+     * Return the credential subject
+     * 
+     * @return
+     */
+    @XmlElement(name = "credentialSubject")
+    public CredentialSubject getCredentialSubject();
+    
+    /**
+     * Sets the user credential subject
+     */
+    public void setCredentialSubject(CredentialSubject credentialSubject);
+    
+    /**
+     * Return the credential subject id
+     * 
+     * @return
+     */
+    @XmlElement(name = "credentialSubjectId")
+    public KapuaId getCredentialSubjectId();
+    
+    /**
+     * Sets the user credential subject id
+     */
+    public void setCredentialSubjectId(KapuaId credentialSubjectId);
+    
 }

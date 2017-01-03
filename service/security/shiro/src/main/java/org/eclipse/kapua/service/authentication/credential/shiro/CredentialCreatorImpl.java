@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialSubject;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
 /**
@@ -37,26 +38,33 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     private CredentialType credentialType;
 
     @XmlElement(name = "credentialKey")
-    private String credentialKey;
+    private String            credentialKey;
+    
+    @XmlElement(name = "credentialSubject")
+    private CredentialSubject credentialSubject;
+    
+    @XmlElement(name = "credentialSubjectId")
+    private KapuaId           credentialSubjectId;
 
     /**
      * Constructor
      * 
-     * @param scopeId
-     *            scope identifier
-     * @param userId
-     *            user identifier
-     * @param credentialType
-     *            credential type (see {@link CredentialType} for the allowed values)
-     * @param credentialKey
-     *            credential key
+     * @param scopeId scope identifier
+     * @param userId user identifier
+     * @param credentialType credential type (see {@link CredentialType} for the allowed values)
+     * @param credentialKey credential key
+     * @param credentialSubject credential subject (see {@link CredentialSubject} for the allowed values)
+     * @param credentialSubjectId credential subject id
      */
-    public CredentialCreatorImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
+    public CredentialCreatorImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialSubject credentialSubject, KapuaId credentialSubjectId)
+    {
         super(scopeId);
 
         this.userId = userId;
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
+        this.credentialSubject = credentialSubject;
+        this.credentialSubjectId = credentialSubjectId;
     }
 
     @Override
@@ -85,5 +93,25 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     @Override
     public void setCredentialPlainKey(String credentialKey) {
         this.credentialKey = credentialKey;
+    }
+
+    @Override
+    public CredentialSubject getCredentialSubject() {
+        return credentialSubject;
+    }
+
+    @Override
+    public void setCredentialSubject(CredentialSubject credentialSubject) {
+        this.credentialSubject = credentialSubject;
+    }
+
+    @Override
+    public KapuaId getCredentialSubjectId() {
+        return credentialSubjectId;
+    }
+
+    @Override
+    public void setCredentialSubjectId(KapuaId credentialSubjectId) {
+        this.credentialSubjectId = credentialSubjectId;
     }
 }

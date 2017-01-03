@@ -33,7 +33,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "userId",
                       "credentialType",
-                      "credentialPlainKey"},
+                      "credentialPlainKey",
+                      "credentialSubject",
+                      "credentialSubjectId"},
          factoryClass = CredentialXmlRegistry.class,
          factoryMethod = "newCredentialCreator")
 public interface CredentialCreator extends KapuaEntityCreator<Credential>
@@ -70,6 +72,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      * @param credentialType
      */
     public void setCredentialType(CredentialType credentialType);
+    
     /**
      * Return the plain credential (unencrypted value).
      * 
@@ -84,4 +87,36 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      * @param plainKey
      */
     public void setCredentialPlainKey(String plainKey);
+    
+    /**
+     * Return the credential subject.<br>
+     * The returned object will depend on the authentication algorithm.
+     * 
+     * @return
+     */
+    @XmlElement(name = "credentialSubject")
+    public CredentialSubject getCredentialSubject();
+
+    /**
+     * Set the credential subject
+     * 
+     * @param credentialSubject
+     */
+    public void setCredentialSubject(CredentialSubject credentialSubject);
+    
+    /**
+     * Return the credential subject identifier
+     * 
+     * @return
+     */
+    @XmlElement(name = "credentialSubjectId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getCredentialSubjectId();
+
+    /**
+     * Set the credential subject id
+     * 
+     * @param credentialSubjectId
+     */
+    public void setCredentialSubjectId(KapuaId credentialSubjectId);
 }

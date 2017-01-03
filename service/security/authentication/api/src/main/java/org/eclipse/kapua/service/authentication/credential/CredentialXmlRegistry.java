@@ -48,6 +48,6 @@ public class CredentialXmlRegistry {
      */
     public CredentialCreator newCredentialCreator()
     {
-        return factory.newCreator(null, null, null, null);
+        return factory.newCreator(null, null, null, null, null, null);
     }
 }
