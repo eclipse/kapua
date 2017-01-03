@@ -17,12 +17,13 @@ import java.security.SecureRandom;
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -37,7 +38,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.KapuaExistingCredentialException;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -53,8 +53,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  *
  */
 @KapuaProvider
-public class CredentialServiceImpl extends AbstractKapuaService implements CredentialService
-{
+public class CredentialServiceImpl extends AbstractKapuaService implements CredentialService {
 
     private static final Domain credentialDomain = new CredentialDomain();
 
@@ -95,8 +94,8 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
                 SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 
                 KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_PRE_LENGTH);
-                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_APIKEY_KEY_LENGTH);
+                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
 
                 byte[] bPre = new byte[preLength];
                 random.nextBytes(bPre);
@@ -174,7 +173,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
 
             if (currentCredential.getCredentialType() != credential.getCredentialType()) {
                 throw new KapuaIllegalArgumentException("credentialType", credential.getCredentialType().toString());
-        }
+            }
 
             // Passing attributes??
             return CredentialDAO.update(em, credential);
@@ -336,7 +335,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            authorizationService.checkPermission(permissionFactory.newPermission(CredentialDomain.CREDENTIAL, Actions.read, credential.getId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(credentialDomain, Actions.read, credential.getId()));
         }
 
         return credential;

@@ -80,9 +80,9 @@ public class CredentialDAO extends ServiceDAO {
     public static Credential update(EntityManager em, Credential credential)
             throws KapuaException {
         //
-        // Update user
+        // Update credential
         CredentialImpl credentialImpl = (CredentialImpl) credential;
-        credential.setCredentialKey(AuthenticationUtils.cryptCredential(credential.getCredentialKey()));
+
         return ServiceDAO.update(em, CredentialImpl.class, credentialImpl);
     }
 

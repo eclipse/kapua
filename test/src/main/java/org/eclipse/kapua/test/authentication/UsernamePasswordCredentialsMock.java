@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.test;
+package org.eclipse.kapua.test.authentication;
 
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import java.util.Date;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 
@@ -23,6 +24,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class AccessTokenFactoryImpl implements AccessTokenFactory {
 
     @Override

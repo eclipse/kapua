@@ -10,23 +10,26 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-
 package org.eclipse.kapua.test.authentication;
 
-import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.locator.guice.TestService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordToken;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 
-@TestService
-@KapuaProvider
-public class UsernamePasswordTokenFactoryMock implements UsernamePasswordTokenFactory
-{
+public class JwtCredentialsMock implements JwtCredentials {
+
+    private String jwt;
+
+    public JwtCredentialsMock(String jwt) {
+        this.jwt = jwt;
+    }
 
     @Override
-    public UsernamePasswordToken newInstance(String username, char[] password)
-    {
-        return new UsernamePasswordTokenMock(username, password);
+    public String getJwt() {
+        return this.jwt;
+    }
+
+    @Override
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 
 }

@@ -10,26 +10,26 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.test;
+package org.eclipse.kapua.test.authentication;
 
-import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 
-public class JwtCredentialsMock implements JwtCredentials {
+public class AccessTokenCredentialsMock implements AccessTokenCredentials {
 
-    private String jwt;
+    private String tokenId;
 
-    public JwtCredentialsMock(String jwt) {
-        this.jwt = jwt;
+    public AccessTokenCredentialsMock(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     @Override
-    public String getJwt() {
-        return this.jwt;
+    public String getTokenId() {
+        return this.tokenId;
     }
 
     @Override
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
 }

@@ -40,6 +40,15 @@ public interface AccessToken extends KapuaUpdatableEntity {
     public String getTokenId();
 
     /**
+     * Sets the token id
+     * 
+     * @param tokenId
+     *            The token id.
+     * @since 1.0
+     */
+    public void setTokenId(String tokenId);
+
+    /**
      * Return the user identifier
      * 
      * @return
@@ -47,6 +56,14 @@ public interface AccessToken extends KapuaUpdatableEntity {
      * @since 1.0
      */
     public KapuaId getUserId();
+
+    /**
+     * Sets the {@link User} id of this {@link AccessToken}
+     * 
+     * @param userId
+     *            The {@link User} id to set.
+     */
+    public void setUserId(KapuaId userId);
 
     /**
      * Gets the expire date of this token.

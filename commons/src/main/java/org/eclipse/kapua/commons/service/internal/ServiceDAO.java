@@ -77,8 +77,8 @@ public class ServiceDAO {
         //
         // Creating entity
         try {
-        em.persist(entity);
-        em.flush();
+            em.persist(entity);
+            em.flush();
             em.refresh(entity);
         } catch (EntityExistsException e) {
             throw new KapuaEntityExistsException(e, entity.getId());
@@ -262,8 +262,8 @@ public class ServiceDAO {
                 entityRoot.getModel());
 
         if (expr != null) {
-        criteriaSelectQuery.where(expr);
-
+            criteriaSelectQuery.where(expr);
+        }
         // ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
         // Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
         //
@@ -296,7 +296,7 @@ public class ServiceDAO {
         } else {
             order = cb.asc(entityRoot.get(entityType.getSingularAttribute("id")));
         }
-            criteriaSelectQuery.orderBy(order);
+        criteriaSelectQuery.orderBy(order);
 
         //
         // QUERY!
@@ -344,6 +344,7 @@ public class ServiceDAO {
      * @return
      * @throws KapuaException
      */
+    // @SuppressWarnings({ "rawtypes", "unchecked" })
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <I extends KapuaEntity, E extends I> long count(EntityManager em,
             Class<I> interfaceClass,
@@ -361,8 +362,6 @@ public class ServiceDAO {
         // SELECT
         criteriaSelectQuery.select(cb.count(entityRoot));
 
-        //
-        // WHERE
         //
         // WHERE
         KapuaPredicate kapuaPredicates = kapuaQuery.getPredicate();
@@ -442,7 +441,7 @@ public class ServiceDAO {
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> exprs = new ArrayList<Expression<Boolean>>();
+        List<Expression<Boolean>> exprs = new ArrayList<>();
         for (KapuaPredicate pred : andPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
@@ -457,7 +456,7 @@ public class ServiceDAO {
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> exprs = new ArrayList<Expression<Boolean>>();
+        List<Expression<Boolean>> exprs = new ArrayList<>();
         for (KapuaPredicate pred : andPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
@@ -552,7 +551,7 @@ public class ServiceDAO {
                     throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
                 }
                 break;
-                
+
             default:
             case EQUAL:
                 expr = cb.equal(entityRoot.get(attribute), attrValue);

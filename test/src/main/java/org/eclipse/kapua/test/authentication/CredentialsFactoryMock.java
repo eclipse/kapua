@@ -11,8 +11,9 @@
  *
  *******************************************************************************/
 
-package org.eclipse.kapua.test;
+package org.eclipse.kapua.test.authentication;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -21,6 +22,7 @@ import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
 @TestService
+@KapuaProvider
 public class CredentialsFactoryMock implements CredentialsFactory {
 
     @Override

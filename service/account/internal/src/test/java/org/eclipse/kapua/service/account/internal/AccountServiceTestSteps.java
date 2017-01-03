@@ -150,7 +150,7 @@ public class AccountServiceTestSteps extends KapuaTest {
         mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
-        KapuaSession kapuaSession = new KapuaSession(null, null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE), "kapua-sys");
+        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
         KapuaSecurityUtils.setSession(kapuaSession);
     }
 
