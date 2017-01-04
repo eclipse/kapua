@@ -57,6 +57,7 @@ public class LoginDialog extends Dialog {
 
     public Button reset;
     public Button login;
+    public Button ssoLogin;
     public Status status;
 
     private boolean allowMainScreen;
@@ -162,9 +163,24 @@ public class LoginDialog extends Dialog {
                 onSubmit();
             }
         });
+        
+        ssoLogin = new Button(MSGS.loginSsoLogin());
+        ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                doSsoLogin();
+            }
+            
+        });
 
         addButton(reset);
         addButton(login);
+        addButton(ssoLogin);
+    }
+
+    protected void doSsoLogin() {
+        System.out.println("SSO Login button pressed!");
     }
 
     // Window references
