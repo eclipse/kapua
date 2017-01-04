@@ -19,6 +19,14 @@
         
         <Icon resource="OSGI-INF/message-store-service.png" size="32"/>
 
+		<AD id="enabled"  
+            name="messageStore.expirationDate"
+            type="String"
+            cardinality="0" 
+            required="true"
+            description="Data storage expiration date (may differ from account expiration date).">
+        </AD>
+        
         <AD id="enabled"  
             name="messageStore.enabled"
             type="Boolean"
@@ -33,7 +41,7 @@
             type="Integer"
             cardinality="0" 
             required="true"
-            default="0" 
+            default="30" 
             min="0"
             description="Message retention period in days."/>
         
@@ -43,8 +51,23 @@
             cardinality="0" 
             required="true"
             default="0" 
-            min="0"
             description="Total data usage per month."/>
+            
+        <AD id="dataIndexBy"  
+            name="dataIndexBy"
+            type="String"
+            cardinality="0" 
+            required="true"
+            default="DEVICE_TIMESTAMP" 
+            description="Data index by (server timestamp or device timestamp)"/>
+            
+        <AD id="metricsIndexBy"  
+            name="metricsIndexBy"
+            type="String"
+            cardinality="0" 
+            required="true"
+            default="TIMESTAMP" 
+            description="Metric index by (timestamp, value or none)"/>
 
     </OCD>
     

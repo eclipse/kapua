@@ -35,7 +35,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-authorization-api</artifactId>
         </dependency>
-
+        
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-api</artifactId>
@@ -72,10 +72,27 @@
             <artifactId>kapua-test</artifactId>
             <scope>test</scope>
         </dependency>
+		<!-- jna is required to run a elasticsearch instance in embedded mode -->
+		<dependency>
+		    <groupId>net.java.dev.jna</groupId>
+		    <artifactId>jna</artifactId>
+		    <version>4.1.0</version>
+            <scope>test</scope>
+		</dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-internal</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-shiro</artifactId>
+        </dependency>
+        
     </dependencies>
 </project>

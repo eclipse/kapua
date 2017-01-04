@@ -10,18 +10,22 @@
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import org.elasticsearch.client.transport.TransportClient;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.UnknownHostException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EsClientTest {
+@Ignore
+public class EsClientTest
+{
 
     @Test
-    public void elascticSearchClientShouldDefaultToLocalhost() throws EsDatastoreException, UnknownHostException {
+    public void elascticSearchClientShouldDefaultToLocalhost() throws EsDatastoreException, UnknownHostException
+    {
         // When
-        TransportClient client = (TransportClient) EsClient.getcurrent();
+        TransportClient client = (TransportClient) ElasticsearchClient.getInstance();
 
         // Then
         String host = client.listedNodes().get(0).address().getHost();

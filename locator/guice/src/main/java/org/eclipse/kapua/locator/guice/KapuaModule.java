@@ -30,6 +30,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 
 public class KapuaModule extends AbstractModule {
 	
@@ -94,7 +95,7 @@ public class KapuaModule extends AbstractModule {
 					for(Class<?> clazz:extendedClassInfo) {
 						if (kapuaObject.isAssignableFrom(clazz)) {
 							ServiceResolver resolver = ServiceResolver.newInstance(kapuaObject, clazz);
-							bind(resolver.getServiceClass()).to(resolver.getImplementationClass());
+							bind(resolver.getServiceClass()).to(resolver.getImplementationClass()).in(Singleton.class);
 							logger.info("Bind Kapua service {} to {}",kapuaObject, clazz);
 							isClassBound = true;
 							break;
@@ -111,7 +112,7 @@ public class KapuaModule extends AbstractModule {
 					for(Class clazz:extendedClassInfo) {
 						if (kapuaObject.isAssignableFrom(clazz)) {
 							FactoryResolver resolver = FactoryResolver.newInstance(kapuaObject, clazz);
-							bind(resolver.getFactoryClass()).to(resolver.getImplementationClass());
+							bind(resolver.getFactoryClass()).to(resolver.getImplementationClass()).in(Singleton.class);
 							logger.info("Bind Kapua factory {} to {}",kapuaObject, clazz);
 							isClassBound = true;
 							break;

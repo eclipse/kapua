@@ -23,17 +23,4 @@ import org.eclipse.kapua.message.KapuaMessage;
 public interface KapuaDataMessage extends KapuaMessage<KapuaDataChannel, KapuaDataPayload>
 {
 
-    /**
-     * Get client identifier
-     * 
-     * @return
-     */
-    public String getClientId();
-
-    /**
-     * Set client identifier
-     * 
-     * @param clientId
-     */
-    public void setClientId(String clientId);
 }

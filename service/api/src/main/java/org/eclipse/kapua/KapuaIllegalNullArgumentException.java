@@ -20,7 +20,7 @@ package org.eclipse.kapua;
  * @since 1.0
  * 
  */
-public class KapuaIllegalNullArgumentException extends KapuaException 
+public class KapuaIllegalNullArgumentException extends KapuaIllegalArgumentException 
 {
     private static final long serialVersionUID = -8762712571192128282L;
 
@@ -30,6 +30,6 @@ public class KapuaIllegalNullArgumentException extends KapuaException
      * @param argumentName
      */
     public KapuaIllegalNullArgumentException(String argumentName) {
-        super(KapuaErrorCodes.ILLEGAL_NULL_ARGUMENT, argumentName);
+        super(KapuaErrorCodes.ILLEGAL_NULL_ARGUMENT, argumentName, null);
     }
 }

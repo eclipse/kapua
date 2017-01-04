@@ -197,7 +197,7 @@
 	<!-- ASSISTANTS -->
 	<bean id="deviceMessageListener" class="org.eclipse.kapua.broker.core.listener.DeviceMessageListener" >
 	</bean>
-	<bean id="dataMessageListener" class="org.eclipse.kapua.broker.core.listener.DataMessageListener" >
+	<bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DataStorageMessageProcessor" >
 	</bean>
 	<!-- ERROR -->
 	<bean id="errorMessageListener" class="org.eclipse.kapua.broker.core.listener.ErrorMessageListener" >
@@ -294,7 +294,7 @@
 		            <!-- otherwise data messages -->
 					<otherwise>
 						<bean ref="kapuaDataConverter" method="convertToData"/>
-						<to uri="bean:dataMessageListener?method=processDataMessage" />
+						<to uri="bean:dataStorageMessageProcessor?method=processMessage" />
 					</otherwise>
 	            </choice>
 	            <bean ref="kapuaCamelFilter" method="unbindSession" />

@@ -40,13 +40,16 @@
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
-
-		<api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
+		
+		<!-- datastore -->
 		<api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
-		<api>org.eclipse.kapua.service.datastore.AssetInfoStoreService</api>
-		<api>org.eclipse.kapua.service.datastore.TopicInfoStoreService</api>
-		<api>org.eclipse.kapua.service.datastore.MetricInfoStoreService</api>
-
+		<api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
+		<api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
+		<api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
+		<!-- datastore scope configuration -->
+		<api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+        <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
+		
 		<api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
 		<api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
@@ -77,5 +80,6 @@
 		<package>org.eclipse.kapua.service</package>
 		<package>org.eclipse.kapua.transport</package>
 		<package>org.eclipse.kapua.message</package>
+		<package>org.eclipse.kapua.model.config</package>
 	</packages>
 </locator-config>

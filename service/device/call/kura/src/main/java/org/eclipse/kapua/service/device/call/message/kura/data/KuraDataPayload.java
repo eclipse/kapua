@@ -182,8 +182,8 @@ public class KuraDataPayload implements DevicePayload
         try {
             protoMsg = KuraPayloadProto.KuraPayload.parseFrom(bytes);
         }
-        catch (InvalidProtocolBufferException ipbe) {
-            throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ipbe, (Object[]) null);
+        catch (InvalidProtocolBufferException | ExceptionInInitializerError ipbe) {
+            throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ipbe, new Object[] { ipbe.getMessage() });
         }
 
         //

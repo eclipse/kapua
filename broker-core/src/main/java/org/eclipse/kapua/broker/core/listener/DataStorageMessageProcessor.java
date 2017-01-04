@@ -16,9 +16,7 @@ import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.model.MessageCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +29,7 @@ import com.codahale.metrics.Timer.Context;
  *
  * @since 1.0
  */
-@UriEndpoint(title = "Data storage message processor", syntax = "bean:dataStorageMessageListener", scheme = "bean")
+@UriEndpoint(title = "Data storage message processor", syntax = "bean:dataStorageMessageProcessor", scheme = "bean")
 public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>>
 {
 
@@ -45,7 +43,6 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     private Timer metricStorageDataSaveTime;
 
     private MessageStoreService    messageStoreService    = KapuaLocator.getInstance().getService(MessageStoreService.class);
-    private DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
 
     public DataStorageMessageProcessor()
     {
@@ -64,7 +61,6 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     @Override
     public void processMessage(CamelKapuaMessage<?> message)
     {
-        metricStorageMessage.inc();
 
         // TODO filter alert topic???
         //
@@ -72,8 +68,10 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
         // data messages
         try {
             Context metricStorageDataSaveTimeContext = metricStorageDataSaveTime.time();
-            MessageCreator mc = datastoreObjectFactory.newMessageCreator();
-            messageStoreService.store(message.getMessage().getScopeId(), mc);
+            logger.debug("Received data message from device channel: client id '{}' - {}",
+                         new Object[] { message.getMessage().getClientId(), message.getMessage().getChannel().toString() });
+            messageStoreService.store(message.getMessage());
+            metricStorageMessage.inc();
             metricStorageDataSaveTimeContext.stop();
         }
         catch (KapuaException e) {
@@ -81,5 +79,6 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
             logger.error("An error occurred while storing message: {}", e.getCode().toString());
         }
     }
+
 
 }

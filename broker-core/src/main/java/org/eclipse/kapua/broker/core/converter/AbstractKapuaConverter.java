@@ -81,8 +81,9 @@ public abstract class AbstractKapuaConverter {
             try {
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
                 KapuaId connectionId = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, KapuaId.class);
+                String clientId = (String) message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID);
                 ConnectorDescriptor connectorDescriptor = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, ConnectorDescriptor.class);
-                return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId);
+                return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
             } catch (JMSException e) {
                 metricConverterErrorMessage.inc();
                 logger.error("Exception converting message {}", e.getMessage(), e);

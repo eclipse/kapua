@@ -30,6 +30,20 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
 {
 
     /**
+     * Get client identifier
+     * 
+     * @return
+     */
+    public String getClientId();
+
+    /**
+     * Set client identifier
+     * 
+     * @param clientId
+     */
+    public void setClientId(String clientId);
+
+    /**
      * Get the message identifier
      * 
      * @return

@@ -26,18 +26,4 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage
 {
 
-    private String clientId;
-
-    @Override
-    public String getClientId()
-    {
-        return clientId;
-    }
-
-    @Override
-    public void setClientId(String clientId)
-    {
-        this.clientId = clientId;
-    }
-
 }

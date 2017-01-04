@@ -31,4 +31,15 @@ public class KapuaIllegalArgumentException extends KapuaException
     public KapuaIllegalArgumentException(String argName, String argValue) {
         super(KapuaErrorCodes.ILLEGAL_ARGUMENT, argName, argValue);
     }
+
+    /**
+     * Constructor
+     * 
+     * @param code
+     * @param argName
+     * @param argValue
+     */
+    protected KapuaIllegalArgumentException(KapuaErrorCodes code, String argName, String argValue) {
+        super(code, argName, argValue);
+    }
 }
