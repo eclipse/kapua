@@ -111,3 +111,6 @@ velocity.log
 #
 Vagrantfile
 .vagrant
+
+# Temporarly hide consoleV2 folder until it's merged from its branch
+console-v2/
