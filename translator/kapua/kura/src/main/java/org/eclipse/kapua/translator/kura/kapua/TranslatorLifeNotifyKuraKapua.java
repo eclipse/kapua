@@ -36,13 +36,11 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage>
-{
+public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
 
     @Override
     public KapuaNotifyMessage translate(KuraNotifyMessage kuraNotifyMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaNotifyMessage kapuaNotifyMessage = new KapuaNotifyMessageImpl();
         kapuaNotifyMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
         kapuaNotifyMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
@@ -52,7 +50,7 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
         Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
 
         if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.class.toString(), kuraNotifyMessage.getChannel().getScope());
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraNotifyMessage.getChannel().getScope());
         }
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
@@ -61,7 +59,7 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.class.toString(), kuraNotifyMessage.getChannel().getClientId());
         }
-        
+
         kapuaNotifyMessage.setDeviceId(device.getId());
         kapuaNotifyMessage.setScopeId(account.getId());
         kapuaNotifyMessage.setCapturedOn(kuraNotifyMessage.getPayload().getTimestamp());
@@ -73,16 +71,14 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
     }
 
     private KapuaNotifyChannel translate(KuraNotifyChannel kuraNotifyChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaNotifyChannel kapuaNotifyChannel = new KapuaNotifyChannelImpl();
         kapuaNotifyChannel.setClientId(kuraNotifyChannel.getClientId());
         return kapuaNotifyChannel;
     }
 
     private KapuaNotifyPayload translate(KuraNotifyPayload kuraNotifyPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaNotifyPayload kapuaNotifyPayload = new KapuaNotifyPayloadImpl();
         kapuaNotifyPayload.setBody(kuraNotifyPayload.getBody());
         kapuaNotifyPayload.setProperties(kuraNotifyPayload.getMetrics());
@@ -90,14 +86,12 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
     }
 
     @Override
-    public Class<KuraNotifyMessage> getClassFrom()
-    {
+    public Class<KuraNotifyMessage> getClassFrom() {
         return KuraNotifyMessage.class;
     }
 
     @Override
-    public Class<KapuaNotifyMessage> getClassTo()
-    {
+    public Class<KapuaNotifyMessage> getClassTo() {
         return KapuaNotifyMessage.class;
     }
 

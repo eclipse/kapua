@@ -36,13 +36,11 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnectMessage, KapuaDisconnectMessage>
-{
+public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnectMessage, KapuaDisconnectMessage> {
 
     @Override
     public KapuaDisconnectMessage translate(KuraDisconnectMessage kuraDisconnectMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaDisconnectMessage kapuaDisconnectMessage = new KapuaDisconnectMessageImpl();
         kapuaDisconnectMessage.setChannel(translate(kuraDisconnectMessage.getChannel()));
         kapuaDisconnectMessage.setPayload(translate(kuraDisconnectMessage.getPayload()));
@@ -52,13 +50,13 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
         Account account = accountService.findByName(kuraDisconnectMessage.getChannel().getScope());
 
         if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.class.toString(), kuraDisconnectMessage.getChannel().getScope());
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraDisconnectMessage.getChannel().getScope());
         }
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(), kuraDisconnectMessage.getChannel().getClientId());
         if (device == null) {
-        	throw new KapuaEntityNotFoundException(Device.class.toString(), kuraDisconnectMessage.getChannel().getClientId());
+            throw new KapuaEntityNotFoundException(Device.class.toString(), kuraDisconnectMessage.getChannel().getClientId());
         }
 
         kapuaDisconnectMessage.setDeviceId(device.getId());
@@ -72,29 +70,25 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
     }
 
     private KapuaDisconnectChannel translate(KuraDisconnectChannel kuraDisconnectChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaDisconnectChannel kapuaDisconnectChannel = new KapuaDisconnectChannelImpl();
         kapuaDisconnectChannel.setClientId(kuraDisconnectChannel.getClientId());
         return kapuaDisconnectChannel;
     }
 
     private KapuaDisconnectPayload translate(KuraDisconnectPayload kuraDisconnectPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KapuaDisconnectPayloadImpl(kuraDisconnectPayload.getUptime(),
-                                              kuraDisconnectPayload.getDisplayName());
+                kuraDisconnectPayload.getDisplayName());
     }
 
     @Override
-    public Class<KuraDisconnectMessage> getClassFrom()
-    {
+    public Class<KuraDisconnectMessage> getClassFrom() {
         return KuraDisconnectMessage.class;
     }
 
     @Override
-    public Class<KapuaDisconnectMessage> getClassTo()
-    {
+    public Class<KapuaDisconnectMessage> getClassTo() {
         return KapuaDisconnectMessage.class;
     }
 

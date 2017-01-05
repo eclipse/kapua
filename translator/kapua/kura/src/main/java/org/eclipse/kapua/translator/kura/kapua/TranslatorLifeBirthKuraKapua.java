@@ -36,12 +36,11 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage>
-{
+public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage> {
+
     @Override
     public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaBirthMessage kapuaBirthMessage = new KapuaBirthMessageImpl();
         kapuaBirthMessage.setChannel(translate(kuraBirthMessage.getChannel()));
         kapuaBirthMessage.setPayload(translate(kuraBirthMessage.getPayload()));
@@ -51,7 +50,7 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
         Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
 
         if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.class.toString(), kuraBirthMessage.getChannel().getScope());
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraBirthMessage.getChannel().getScope());
         }
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
@@ -60,8 +59,7 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
         kapuaBirthMessage.setScopeId(account.getId());
         if (device != null) {
             kapuaBirthMessage.setDeviceId(device.getId());
-        }
-        else {
+        } else {
             kapuaBirthMessage.setClientId(kuraBirthMessage.getChannel().getClientId());
         }
         kapuaBirthMessage.setCapturedOn(kuraBirthMessage.getPayload().getTimestamp());
@@ -73,57 +71,53 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
     }
 
     private KapuaBirthChannel translate(KuraBirthChannel kuraBirthChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaBirthChannel kapuaBirthChannel = new KapuaBirthChannelImpl();
         kapuaBirthChannel.setClientId(kuraBirthChannel.getClientId());
         return kapuaBirthChannel;
     }
 
     private KapuaBirthPayload translate(KuraBirthPayload kuraBirthPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KapuaBirthPayloadImpl(
-                                         kuraBirthPayload.getUptime(),
-                                         kuraBirthPayload.getDisplayName(),
-                                         kuraBirthPayload.getModelName(),
-                                         kuraBirthPayload.getModelId(),
-                                         kuraBirthPayload.getPartNumber(),
-                                         kuraBirthPayload.getSerialNumber(),
-                                         kuraBirthPayload.getFirmware(),
-                                         kuraBirthPayload.getFirmwareVersion(),
-                                         kuraBirthPayload.getBios(),
-                                         kuraBirthPayload.getBiosVersion(),
-                                         kuraBirthPayload.getOs(),
-                                         kuraBirthPayload.getOsVersion(),
-                                         kuraBirthPayload.getJvm(),
-                                         kuraBirthPayload.getJvmVersion(),
-                                         kuraBirthPayload.getJvmProfile(),
-                                         kuraBirthPayload.getContainerFramework(),
-                                         kuraBirthPayload.getContainerFrameworkVersion(),
-                                         kuraBirthPayload.getApplicationFramework(),
-                                         kuraBirthPayload.getApplicationFrameworkVersion(),
-                                         kuraBirthPayload.getConnectionInterface(),
-                                         kuraBirthPayload.getConnectionIp(),
-                                         kuraBirthPayload.getAcceptEncoding(),
-                                         kuraBirthPayload.getApplicationIdentifiers(),
-                                         kuraBirthPayload.getAvailableProcessors(),
-                                         kuraBirthPayload.getTotalMemory(),
-                                         kuraBirthPayload.getOsArch(),
-                                         kuraBirthPayload.getModemImei(),
-                                         kuraBirthPayload.getModemImsi(),
-                                         kuraBirthPayload.getModemIccid());
+                kuraBirthPayload.getUptime(),
+                kuraBirthPayload.getDisplayName(),
+                kuraBirthPayload.getModelName(),
+                kuraBirthPayload.getModelId(),
+                kuraBirthPayload.getPartNumber(),
+                kuraBirthPayload.getSerialNumber(),
+                kuraBirthPayload.getFirmware(),
+                kuraBirthPayload.getFirmwareVersion(),
+                kuraBirthPayload.getBios(),
+                kuraBirthPayload.getBiosVersion(),
+                kuraBirthPayload.getOs(),
+                kuraBirthPayload.getOsVersion(),
+                kuraBirthPayload.getJvm(),
+                kuraBirthPayload.getJvmVersion(),
+                kuraBirthPayload.getJvmProfile(),
+                kuraBirthPayload.getContainerFramework(),
+                kuraBirthPayload.getContainerFrameworkVersion(),
+                kuraBirthPayload.getApplicationFramework(),
+                kuraBirthPayload.getApplicationFrameworkVersion(),
+                kuraBirthPayload.getConnectionInterface(),
+                kuraBirthPayload.getConnectionIp(),
+                kuraBirthPayload.getAcceptEncoding(),
+                kuraBirthPayload.getApplicationIdentifiers(),
+                kuraBirthPayload.getAvailableProcessors(),
+                kuraBirthPayload.getTotalMemory(),
+                kuraBirthPayload.getOsArch(),
+                kuraBirthPayload.getModemImei(),
+                kuraBirthPayload.getModemImsi(),
+                kuraBirthPayload.getModemIccid());
     }
 
     @Override
-    public Class<KuraBirthMessage> getClassFrom()
-    {
+    public Class<KuraBirthMessage> getClassFrom() {
         return KuraBirthMessage.class;
     }
 
     @Override
-    public Class<KapuaBirthMessage> getClassTo()
-    {
+    public Class<KapuaBirthMessage> getClassTo() {
         return KapuaBirthMessage.class;
     }
 
