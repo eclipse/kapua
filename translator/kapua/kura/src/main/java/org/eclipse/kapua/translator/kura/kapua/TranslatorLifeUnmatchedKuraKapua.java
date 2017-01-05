@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
@@ -33,13 +34,11 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMessage, KapuaUnmatchedMessage>
-{
+public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMessage, KapuaUnmatchedMessage> {
 
     @Override
     public KapuaUnmatchedMessage translate(KuraUnmatchedMessage kuraUnmatchedMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaUnmatchedMessage kapuaUnmatchedMessage = new KapuaUnmatchedMessageImpl();
         kapuaUnmatchedMessage.setChannel(translate(kuraUnmatchedMessage.getChannel()));
         kapuaUnmatchedMessage.setPayload(translate(kuraUnmatchedMessage.getPayload()));
@@ -47,6 +46,10 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraUnmatchedMessage.getChannel().getScope());
+
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraUnmatchedMessage.getChannel().getScope());
+        }
 
         // no device information since may it uses an mqtt connection pooling with devices not registered in the device tables
         kapuaUnmatchedMessage.setScopeId(account.getId());
@@ -59,16 +62,14 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
     }
 
     private KapuaUnmatchedChannel translate(KuraUnmatchedChannel kuraUnmatchedChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaUnmatchedChannel kapuaUnmatchedChannel = new KapuaUnmatchedChannelImpl();
         kapuaUnmatchedChannel.setClientId(kuraUnmatchedChannel.getClientId());
         return kapuaUnmatchedChannel;
     }
 
     private KapuaUnmatchedPayload translate(KuraUnmatchedPayload kuraUnmatchedPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaUnmatchedPayload kapuaUnmatchedPayload = new KapuaUnmatchedPayloadImpl();
         kapuaUnmatchedPayload.setBody(kuraUnmatchedPayload.getBody());
         kapuaUnmatchedPayload.setProperties(kuraUnmatchedPayload.getMetrics());
@@ -76,14 +77,12 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
     }
 
     @Override
-    public Class<KuraUnmatchedMessage> getClassFrom()
-    {
+    public Class<KuraUnmatchedMessage> getClassFrom() {
         return KuraUnmatchedMessage.class;
     }
 
     @Override
-    public Class<KapuaUnmatchedMessage> getClassTo()
-    {
+    public Class<KapuaUnmatchedMessage> getClassTo() {
         return KapuaUnmatchedMessage.class;
     }
 

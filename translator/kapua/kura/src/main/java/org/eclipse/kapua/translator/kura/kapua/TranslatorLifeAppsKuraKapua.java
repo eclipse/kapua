@@ -36,12 +36,11 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, KapuaAppsMessage>
-{
+public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, KapuaAppsMessage> {
+
     @Override
     public KapuaAppsMessage translate(KuraAppsMessage kuraAppsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaAppsMessage kapuaAppsMessage = new KapuaAppsMessageImpl();
         kapuaAppsMessage.setChannel(translate(kuraAppsMessage.getChannel()));
         kapuaAppsMessage.setPayload(translate(kuraAppsMessage.getPayload()));
@@ -50,12 +49,16 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraAppsMessage.getChannel().getScope());
 
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraAppsMessage.getChannel().getScope());
+        }
+
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.class.toString(), kuraAppsMessage.getChannel().getClientId());
         }
-        
+
         kapuaAppsMessage.setDeviceId(device.getId());
         kapuaAppsMessage.setScopeId(account.getId());
         kapuaAppsMessage.setCapturedOn(kuraAppsMessage.getPayload().getTimestamp());
@@ -67,57 +70,53 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
     }
 
     private KapuaAppsChannel translate(KuraAppsChannel kuraAppsChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaAppsChannel kapuaAppsChannel = new KapuaAppsChannelImpl();
         kapuaAppsChannel.setClientId(kuraAppsChannel.getClientId());
         return kapuaAppsChannel;
     }
 
     private KapuaAppsPayload translate(KuraAppsPayload kuraAppsPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KapuaAppsPayloadImpl(
-                                        kuraAppsPayload.getUptime(),
-                                        kuraAppsPayload.getDisplayName(),
-                                        kuraAppsPayload.getModelName(),
-                                        kuraAppsPayload.getModelId(),
-                                        kuraAppsPayload.getPartNumber(),
-                                        kuraAppsPayload.getSerialNumber(),
-                                        kuraAppsPayload.getFirmware(),
-                                        kuraAppsPayload.getFirmwareVersion(),
-                                        kuraAppsPayload.getBios(),
-                                        kuraAppsPayload.getBiosVersion(),
-                                        kuraAppsPayload.getOs(),
-                                        kuraAppsPayload.getOsVersion(),
-                                        kuraAppsPayload.getJvm(),
-                                        kuraAppsPayload.getJvmVersion(),
-                                        kuraAppsPayload.getJvmProfile(),
-                                        kuraAppsPayload.getContainerFramework(),
-                                        kuraAppsPayload.getContainerFrameworkVersion(),
-                                        kuraAppsPayload.getApplicationFramework(),
-                                        kuraAppsPayload.getApplicationFrameworkVersion(),
-                                        kuraAppsPayload.getConnectionInterface(),
-                                        kuraAppsPayload.getConnectionIp(),
-                                        kuraAppsPayload.getAcceptEncoding(),
-                                        kuraAppsPayload.getApplicationIdentifiers(),
-                                        kuraAppsPayload.getAvailableProcessors(),
-                                        kuraAppsPayload.getTotalMemory(),
-                                        kuraAppsPayload.getOsArch(),
-                                        kuraAppsPayload.getModemImei(),
-                                        kuraAppsPayload.getModemImsi(),
-                                        kuraAppsPayload.getModemIccid());
+                kuraAppsPayload.getUptime(),
+                kuraAppsPayload.getDisplayName(),
+                kuraAppsPayload.getModelName(),
+                kuraAppsPayload.getModelId(),
+                kuraAppsPayload.getPartNumber(),
+                kuraAppsPayload.getSerialNumber(),
+                kuraAppsPayload.getFirmware(),
+                kuraAppsPayload.getFirmwareVersion(),
+                kuraAppsPayload.getBios(),
+                kuraAppsPayload.getBiosVersion(),
+                kuraAppsPayload.getOs(),
+                kuraAppsPayload.getOsVersion(),
+                kuraAppsPayload.getJvm(),
+                kuraAppsPayload.getJvmVersion(),
+                kuraAppsPayload.getJvmProfile(),
+                kuraAppsPayload.getContainerFramework(),
+                kuraAppsPayload.getContainerFrameworkVersion(),
+                kuraAppsPayload.getApplicationFramework(),
+                kuraAppsPayload.getApplicationFrameworkVersion(),
+                kuraAppsPayload.getConnectionInterface(),
+                kuraAppsPayload.getConnectionIp(),
+                kuraAppsPayload.getAcceptEncoding(),
+                kuraAppsPayload.getApplicationIdentifiers(),
+                kuraAppsPayload.getAvailableProcessors(),
+                kuraAppsPayload.getTotalMemory(),
+                kuraAppsPayload.getOsArch(),
+                kuraAppsPayload.getModemImei(),
+                kuraAppsPayload.getModemImsi(),
+                kuraAppsPayload.getModemIccid());
     }
 
     @Override
-    public Class<KuraAppsMessage> getClassFrom()
-    {
+    public Class<KuraAppsMessage> getClassFrom() {
         return KuraAppsMessage.class;
     }
 
     @Override
-    public Class<KapuaAppsMessage> getClassTo()
-    {
+    public Class<KapuaAppsMessage> getClassTo() {
         return KapuaAppsMessage.class;
     }
 
