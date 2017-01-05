@@ -15,6 +15,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
@@ -40,16 +41,15 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  * @since 1.0
  *
  */
-public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessage, CommandResponseMessage>
-{
-    private static final String                              CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessage, CommandResponseMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static Map<CommandMetrics, CommandAppProperties> metricsDictionary;
 
     /**
      * Constructor
      */
-    public TranslatorAppCommandKuraKapua()
-    {
+    public TranslatorAppCommandKuraKapua() {
         metricsDictionary = new HashMap<>();
 
         metricsDictionary.put(CommandMetrics.APP_ID, CommandAppProperties.APP_NAME);
@@ -64,13 +64,16 @@ public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessag
 
     @Override
     public CommandResponseMessage translate(KuraResponseMessage kuraMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
+        }
 
         CommandResponseChannel commandResponseChannel = translate(kuraMessage.getChannel());
 
@@ -95,13 +98,12 @@ public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessag
     }
 
     private CommandResponseChannel translate(KuraResponseChannel kuraChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER,
-                                          null,
-                                          kuraChannel.getMessageClassification());
+                    null,
+                    kuraChannel.getMessageClassification());
         }
 
         CommandResponseChannel kapuaChannel = new CommandResponseChannel();
@@ -110,14 +112,14 @@ public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessag
 
         if (!CommandMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME,
-                                          null,
-                                          appIdTokens[0]);
+                    null,
+                    appIdTokens[0]);
         }
 
         if (!CommandMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION,
-                                          null,
-                                          appIdTokens[1]);
+                    null,
+                    appIdTokens[1]);
         }
 
         kapuaChannel.setAppName(CommandAppProperties.APP_NAME);
@@ -129,8 +131,7 @@ public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessag
     }
 
     private CommandResponsePayload translate(KuraResponsePayload kuraPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         CommandResponsePayload commandResponsePayload = new CommandResponsePayload();
 
         Map<String, Object> metrics = kuraPayload.getMetrics();
@@ -152,14 +153,12 @@ public class TranslatorAppCommandKuraKapua extends Translator<KuraResponseMessag
     }
 
     @Override
-    public Class<KuraResponseMessage> getClassFrom()
-    {
+    public Class<KuraResponseMessage> getClassFrom() {
         return KuraResponseMessage.class;
     }
 
     @Override
-    public Class<CommandResponseMessage> getClassTo()
-    {
+    public Class<CommandResponseMessage> getClassTo() {
         return CommandResponseMessage.class;
     }
 
