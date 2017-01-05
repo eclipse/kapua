@@ -87,12 +87,14 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 // Set validator
                 KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
                 List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
-
+                List<String> expectedIssuers = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED);
+                
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setVerificationKeyResolver(httpsJwksKeyResolver) // Set resolver key
                         .setRequireIssuedAt() // Set require reserved claim: iat
                         .setRequireExpirationTime() // Set require reserved claim: exp
                         .setRequireSubject() // // Set require reserved claim: sub
+                        .setExpectedIssuers(true, expectedIssuers.toArray(new String[expectedIssuers.size()]))
                         .setExpectedAudience(audiences.toArray(new String[audiences.size()]))
                         .build();
 
@@ -132,7 +134,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
             if (issuer.endsWith("/")) {
                 issuer = issuer.substring(0, issuer.length() - 1);
             }
-
+            
             // Check against cache
             if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
                 uri = ISSUER_JWKSURI_CACHE.get(issuer);
