@@ -55,13 +55,13 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.authentication.AccessToken;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -145,7 +145,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
     private AuthorizationService authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
     private PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-    private UsernamePasswordTokenFactory credentialsFactory = KapuaLocator.getInstance().getFactory(UsernamePasswordTokenFactory.class);
+    private CredentialsFactory credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
     private AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
     private DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
     private DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
@@ -315,7 +315,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             loginPreCheckTimeContext.stop();
 
             Context loginShiroLoginTimeContext = metricLoginShiroLoginTime.time();
-            AuthenticationCredentials credentials = credentialsFactory.newInstance(username, password.toCharArray());
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray());
             AccessToken accessToken = authenticationService.login(credentials);
 
             KapuaId scopeId = accessToken.getScopeId();
@@ -448,18 +448,18 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             if (e instanceof KapuaAuthenticationException) {
                 KapuaAuthenticationException kapuaException = (KapuaAuthenticationException) e;
                 KapuaErrorCode errorCode = kapuaException.getCode();
-                if (errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_USERNAME) ||
-                        errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS) ||
-                        errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TOKEN_PROVIDED)) {
+                if (errorCode.equals(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL) ||
+                        errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS) ||
+                        errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED)) {
                     logger.warn("Invalid username or password for user {} ({})", username, e.getMessage());
                     // activeMQ will map CredentialException into a CONNECTION_REFUSED_BAD_USERNAME_OR_PASSWORD message (see javadoc on top of this method)
                     CredentialException ce = new CredentialException("Invalid username and/or password or disabled or expired account!");
                     ce.setStackTrace(e.getStackTrace());
                     metricLoginInvalidUserPassword.inc();
                     throw ce;
-                } else if (errorCode.equals(KapuaAuthenticationErrorCodes.LOCKED_USERNAME) ||
-                        errorCode.equals(KapuaAuthenticationErrorCodes.DISABLED_USERNAME) ||
-                        errorCode.equals(KapuaAuthenticationErrorCodes.EXPIRED_CREDENTIALS)) {
+                } else if (errorCode.equals(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL) ||
+                        errorCode.equals(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL) ||
+                        errorCode.equals(KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS)) {
                     logger.warn("User {} not authorized ({})", username, e.getMessage());
                     // activeMQ-MQ will map SecurityException into a CONNECTION_REFUSED_NOT_AUTHORIZED message (see javadoc on top of this method)
                     SecurityException se = new SecurityException("User not authorized!");
@@ -498,9 +498,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 KapuaPrincipal kapuaPrincipal = ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal());
                 KapuaSession kapuaSession = new KapuaSession(null,
                         kapuaPrincipal.getAccountId(),
-                        kapuaPrincipal.getAccountId(),
-                        kapuaPrincipal.getUserId(),
-                        kapuaPrincipal.getName());
+                        kapuaPrincipal.getUserId());
                 KapuaSecurityUtils.setSession(kapuaSession);
 
                 String clientId = kapuaPrincipal.getClientId();

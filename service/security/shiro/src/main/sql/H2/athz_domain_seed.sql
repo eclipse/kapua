@@ -25,5 +25,6 @@ INSERT INTO athz_domain
 		(NULL, 11, NOW(), 1, 'domain',				'domainService'),
 		(NULL, 12, NOW(), 1, 'group',				'groupService'),
 		(NULL, 13, NOW(), 1, 'access_info',			'accessInfoService'),
-		(NULL, 14, NOW(), 1, 'role',				'roleService'),
-		(NULL, 15, NOW(), 1, 'user',				'userService');
+		(NULL, 14, NOW(), 1, 'access_token',		'accessTokenService'),
+		(NULL, 15, NOW(), 1, 'role',				'roleService'),
+		(NULL, 16, NOW(), 1, 'user',				'userService');

@@ -13,14 +13,17 @@
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
+import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 
 /**
  * Credential DAO.
@@ -28,8 +31,7 @@ import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
  * @since 1.0
  *
  */
-public class CredentialDAO extends ServiceDAO
-{
+public class CredentialDAO extends ServiceDAO {
 
     /**
      * Creates and return new credential
@@ -40,15 +42,30 @@ public class CredentialDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static Credential create(EntityManager em, CredentialCreator credentialCreator)
-        throws KapuaException
-    {
-        //
-        // Create User
-        CredentialImpl credentialImpl = new CredentialImpl(credentialCreator.getScopeId(),
-                                                           credentialCreator.getUserId(),
-                                                           credentialCreator.getCredentialType(),
-                                                           AuthenticationUtils.cryptCredential(credentialCreator.getCredentialPlainKey()));
+            throws KapuaException {
 
+        //
+        // Crypto credential
+        String cryptedCredential;
+        switch (credentialCreator.getCredentialType()) {
+        case API_KEY:
+            cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
+            break;
+        case PASSWORD:
+        default:
+            cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
+            break;
+        }
+
+        //
+        // Create Credential
+        CredentialImpl credentialImpl = new CredentialImpl(credentialCreator.getScopeId(),
+                credentialCreator.getUserId(),
+                credentialCreator.getCredentialType(),
+                cryptedCredential);
+
+        //
+        // Do create
         return ServiceDAO.create(em, credentialImpl);
     }
 
@@ -61,12 +78,11 @@ public class CredentialDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static Credential update(EntityManager em, Credential credential)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
-        // Update user
+        // Update credential
         CredentialImpl credentialImpl = (CredentialImpl) credential;
-        credential.setCredentialKey(AuthenticationUtils.cryptCredential(credential.getCredentialKey()));
+
         return ServiceDAO.update(em, CredentialImpl.class, credentialImpl);
     }
 
@@ -76,8 +92,7 @@ public class CredentialDAO extends ServiceDAO
      * @param em
      * @param credentialId
      */
-    public static void delete(EntityManager em, KapuaId credentialId)
-    {
+    public static void delete(EntityManager em, KapuaId credentialId) {
         ServiceDAO.delete(em, CredentialImpl.class, credentialId);
     }
 
@@ -88,8 +103,7 @@ public class CredentialDAO extends ServiceDAO
      * @param credentialId
      * @return
      */
-    public static Credential find(EntityManager em, KapuaId credentialId)
-    {
+    public static Credential find(EntityManager em, KapuaId credentialId) {
         return em.find(CredentialImpl.class, credentialId);
     }
 
@@ -102,8 +116,7 @@ public class CredentialDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static CredentialListResult query(EntityManager em, KapuaQuery<Credential> credentialQuery)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.query(em, Credential.class, CredentialImpl.class, new CredentialListResultImpl(), credentialQuery);
     }
 
@@ -116,9 +129,26 @@ public class CredentialDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery<Credential> credentialQuery)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.count(em, Credential.class, CredentialImpl.class, credentialQuery);
     }
 
+    //
+    // Private methods
+    //
+    private static String cryptPassword(String credentialPlainKey) throws KapuaException {
+        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
+    }
+
+    private static String cryptApiKey(String credentialPlainKey) throws KapuaException {
+        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+        int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+        String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
+
+        String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
+        hashedValue += preSeparator; // Add separator
+        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length() - 1)); // Bcrypt the rest
+
+        return hashedValue;
+    }
 }

@@ -26,49 +26,49 @@ import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 
 public class RestApisApplication extends ResourceConfig {
 
-    public RestApisApplication() throws JAXBException {
+	public RestApisApplication() throws JAXBException {
         packages("org.eclipse.kapua.app.api",//
                 "org.eclipse.kapua.service.account", //
                 "org.eclipse.kapua.service.account.internal",//
                 "org.eclipse.kapua.service.user", //
                 "org.eclipse.kapua.service.user.internal");
 
-        // Bind media type to resource extension
+		// Bind media type to resource extension
         HashMap<String, MediaType> mappedMediaTypes = new HashMap<>();
-        mappedMediaTypes.put("xml", MediaType.APPLICATION_XML_TYPE);
-        mappedMediaTypes.put("json", MediaType.APPLICATION_JSON_TYPE);
+		mappedMediaTypes.put("xml", MediaType.APPLICATION_XML_TYPE);
+		mappedMediaTypes.put("json", MediaType.APPLICATION_JSON_TYPE);
 
-        property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
-        register(UriConnegFilter.class);
-        register(JaxbContextResolver.class);
-        register(RestApiJAXBContextProvider.class);
-        register(KapuaSerializableBodyWriter.class);
-        register(ListBodyWriter.class);
+		property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
+		register(UriConnegFilter.class);
+		register(JaxbContextResolver.class);
+		register(RestApiJAXBContextProvider.class);
+		register(KapuaSerializableBodyWriter.class);
+		register(ListBodyWriter.class);
+		register(CORSResponseFilter.class);
 
-        // Hook the swagger-ui
-        register(new ContainerLifecycleListener() {
+		register(new ContainerLifecycleListener() {
 
-            @Override
-            public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
+			@Override
+			public void onStartup(Container container) {
+				ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
 
-                RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
-                XmlUtil.setContextProvider(provider);
-            }
+				RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
+ 				XmlUtil.setContextProvider(provider);
+			}
 
-            @Override
+			@Override
             /**
              * Nothing to do
              */
-            public void onReload(Container container) {
-            }
+			public void onReload(Container container) {
+			}
 
-            @Override
+			@Override
             /**
              * Nothing to do
              */
-            public void onShutdown(Container container) {
-            }
-        });
-    }
+			public void onShutdown(Container container) {
+			}
+		});
+	}
 }

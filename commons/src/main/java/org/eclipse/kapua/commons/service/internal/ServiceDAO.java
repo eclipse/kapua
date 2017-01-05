@@ -170,29 +170,31 @@ public class ServiceDAO {
      * @param em
      * @param clazz
      * @param name
-     *            name of the entity to find
+     *            name of the field from which to search
+     * @param value
+     *            value of the field from which to search
      * @return
      */
-    public static <E extends KapuaEntity> E findByName(EntityManager em, Class<E> clazz, String name) {
+    public static <E extends KapuaEntity> E findByField(EntityManager em, Class<E> clazz, String name, String value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(clazz);
 
         //
         // FROM
-        Root<E> userRoot = criteriaSelectQuery.from(clazz);
+        Root<E> entityRoot = criteriaSelectQuery.from(clazz);
 
         //
         // SELECT
-        criteriaSelectQuery.select(userRoot);
+        criteriaSelectQuery.select(entityRoot);
 
         // name
-        ParameterExpression<String> pName = cb.parameter(String.class, "name");
-        criteriaSelectQuery.where(cb.equal(userRoot.get("name"), pName));
+        ParameterExpression<String> pName = cb.parameter(String.class, name);
+        criteriaSelectQuery.where(cb.equal(entityRoot.get(name), pName));
 
         //
         // QUERY!
         TypedQuery<E> query = em.createQuery(criteriaSelectQuery);
-        query.setParameter(pName.getName(), name);
+        query.setParameter(pName.getName(), value);
 
         List<E> result = query.getResultList();
         E user = null;
@@ -262,6 +264,22 @@ public class ServiceDAO {
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
+        // ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
+        // Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
+        //
+        // Map<ParameterExpression, Object> binds = new HashMap<>();
+        // binds.put(scopeIdParam, kapuaQuery.getScopeId());
+        // Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaQuery.getPredicate(),
+        // binds,
+        // cb,
+        // entityRoot,
+        // entityRoot.getModel());
+        //
+        // if (expr == null) {
+        // criteriaSelectQuery.where(scopeIdExpr);
+        // } else {
+        // criteriaSelectQuery.where(cb.and(scopeIdExpr, expr));
+        // }
 
         //
         // ORDER BY
@@ -326,6 +344,7 @@ public class ServiceDAO {
      * @return
      * @throws KapuaException
      */
+    // @SuppressWarnings({ "rawtypes", "unchecked" })
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <I extends KapuaEntity, E extends I> long count(EntityManager em,
             Class<I> interfaceClass,
@@ -343,8 +362,6 @@ public class ServiceDAO {
         // SELECT
         criteriaSelectQuery.select(cb.count(entityRoot));
 
-        //
-        // WHERE
         //
         // WHERE
         KapuaPredicate kapuaPredicates = kapuaQuery.getPredicate();
@@ -424,7 +441,7 @@ public class ServiceDAO {
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> exprs = new ArrayList<Expression<Boolean>>();
+        List<Expression<Boolean>> exprs = new ArrayList<>();
         for (KapuaPredicate pred : andPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
@@ -439,7 +456,7 @@ public class ServiceDAO {
             Root<E> entityRoot,
             EntityType<E> entityType)
             throws KapuaException {
-        List<Expression<Boolean>> exprs = new ArrayList<Expression<Boolean>>();
+        List<Expression<Boolean>> exprs = new ArrayList<>();
         for (KapuaPredicate pred : andPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);

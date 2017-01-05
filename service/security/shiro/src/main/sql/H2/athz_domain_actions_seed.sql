@@ -70,4 +70,8 @@ INSERT INTO athz_domain_actions
 		
 		(15, 'read'),
 		(15, 'write'),
-		(15, 'delete');
+		(15, 'delete'),
+		
+		(16, 'read'),
+		(16, 'write'),
+		(16, 'delete');

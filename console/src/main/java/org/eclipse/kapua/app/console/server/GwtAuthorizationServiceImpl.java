@@ -34,16 +34,15 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
-import org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -59,7 +58,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
     private static final Domain accountDomain = new AccountDomain();
     private static final Domain deviceDomain = new DeviceDomain();
-    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
     private static final Domain datastoreDomain = new DatastoreDomain();
     private static final Domain userDomain = new UserDomain();
 
@@ -83,9 +81,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-            UsernamePasswordTokenFactory credentialsFactory = locator.getFactory(UsernamePasswordTokenFactory.class);
-            AuthenticationCredentials credentials = credentialsFactory.newInstance(gwtLoginCredentials.getUsername(),
-                    gwtLoginCredentials.getPassword().toCharArray());
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword().toCharArray());
 
             // Login
             authenticationService.login(credentials);

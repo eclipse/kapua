@@ -12,12 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+
+import java.math.BigInteger;
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -32,17 +37,21 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.*;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Mockito;
 
-import java.math.BigInteger;
-import java.text.MessageFormat;
-import java.util.*;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 
 /**
  * Implementation of Gherkin steps used in UserService.feature scenarios.
@@ -125,7 +134,7 @@ public class UserServiceSteps extends KapuaTest {
         // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
         // All operations on database are performed using system user.
         User user = userService.findByName("kapua-sys");
-        KapuaSession kapuaSession = new KapuaSession(null, null, user.getScopeId(), user.getId(), user.getName());
+        KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId());
         KapuaSecurityUtils.setSession(kapuaSession);
 
         // Set KapuaMetatypeFactory for Metatype configuration
@@ -212,7 +221,7 @@ public class UserServiceSteps extends KapuaTest {
         queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();
-        for (User userItem: users) {
+        for (User userItem : users) {
             iFoundUsers.add(new ComparableUser(userItem));
         }
     }
@@ -266,7 +275,7 @@ public class UserServiceSteps extends KapuaTest {
     public void findUsersFull(List<UserImpl> userList) throws Exception {
         for (User userItem : userList) {
             if (iFoundUsers.contains(new ComparableUser(userItem))) {
-                for (ComparableUser foundUserItem: iFoundUsers) {
+                for (ComparableUser foundUserItem : iFoundUsers) {
                     if (foundUserItem.equals(new ComparableUser(userItem))) {
                         User origUser = foundUserItem.getUser();
 
@@ -305,6 +314,7 @@ public class UserServiceSteps extends KapuaTest {
         KapuaEid usrId = new KapuaEid(BigInteger.valueOf(userId));
         user = userService.find(scpId, usrId);
     }
+
     @When("^I search for created user by id$")
     public void searchUserById() throws Exception {
         user = userService.find(user.getId(), user.getScopeId());
@@ -464,8 +474,10 @@ public class UserServiceSteps extends KapuaTest {
      * Create User object with user data filed with quasi random data for user name,
      * email, display name. Scope id and user id is set to test wide id.
      *
-     * @param userId unique user id
-     * @param scopeId user scope id
+     * @param userId
+     *            unique user id
+     * @param scopeId
+     *            user scope id
      * @return User instance
      */
     private User createUserInstance(int userId, int scopeId) {
@@ -506,6 +518,7 @@ public class UserServiceSteps extends KapuaTest {
     // * Inner Classes *
     // *****************
     private class ComparableUser {
+
         private User user;
 
         ComparableUser(User user) {
