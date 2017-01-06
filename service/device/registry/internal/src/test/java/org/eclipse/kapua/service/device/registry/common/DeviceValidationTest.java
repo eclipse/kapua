@@ -22,6 +22,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.internal.DeviceCreatorImpl;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.mockito.Mockito;
 
 import static java.math.BigInteger.ONE;
@@ -29,6 +30,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 
+@Ignore
 public class DeviceValidationTest {
 
     AuthorizationService authorizationService = mock(AuthorizationService.class);
