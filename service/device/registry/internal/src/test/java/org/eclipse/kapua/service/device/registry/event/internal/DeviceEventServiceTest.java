@@ -35,6 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class DeviceEventServiceTest extends KapuaTest {
 
     DeviceEventService deviceEventService = KapuaLocator.getInstance().getService(DeviceEventService.class);
