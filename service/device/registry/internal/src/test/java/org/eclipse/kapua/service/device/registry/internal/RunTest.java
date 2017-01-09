@@ -18,7 +18,13 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features", plugin = { "pretty", "html:target/cucumber",
-        "json:target/cucumber.json" }, monochrome = true)
+@CucumberOptions(features = "classpath:features", 
+                 glue = { "org.eclipse.kapua.service.device.registry.common", 
+                          "org.eclipse.kapua.service.device.registry.internal"},
+                 plugin = { "pretty", 
+                            "html:target/cucumber",
+                            "json:target/cucumber.json" }, 
+                 monochrome = true)
+
 public class RunTest {
 }
