@@ -26,6 +26,11 @@
             <outputDirectory>/user-service</outputDirectory>
             <directory>../service/user/internal/target/cucumber</directory>
         </fileSet>
+
+        <fileSet>
+            <outputDirectory>/device-registry-service</outputDirectory>
+            <directory>../service/device/registry/internal/target/cucumber</directory>
+        </fileSet>
     </fileSets>
 
 </assembly>
