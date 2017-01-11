@@ -13,15 +13,14 @@
 package org.eclipse.kapua.service.authorization.access;
 
 /**
- * Query predicate attribute name for {@link AccessInfo} entity.
+ * Query predicates attribute name for {@link AccessInfo} entity.
  * 
  * @since 1.0.0
  * 
  */
 public class AccessInfoPredicates {
 
-    /**
-     * User id
-     */
-    public static final String USER_ID = "userId";
+    public static final String SUBJECT = "subject";
+    public static final String SUBJECT_TYPE = SUBJECT + ".subjectType";
+    public static final String SUBJECT_ID = SUBJECT + ".subjectId";
 }

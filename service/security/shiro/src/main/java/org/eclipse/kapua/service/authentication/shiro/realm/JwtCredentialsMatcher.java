@@ -33,7 +33,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -70,13 +69,13 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
         //
         // Info data
-        LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
-        Credential infoCredential = (Credential) info.getCredentials();
+        // LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
+        // Credential infoCredential = (Credential) info.getCredentials();
 
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (jwt.equals(infoCredential.getCredentialKey())) {
+        // if (jwt.equals(infoCredential.getSecret())) {
             try {
 
                 URI jwksUri = resolveJwksUri(jwt);
@@ -88,7 +87,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
                 List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
                 List<String> expectedIssuers = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED);
-                
+
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setVerificationKeyResolver(httpsJwksKeyResolver) // Set resolver key
                         .setRequireIssuedAt() // Set require reserved claim: iat
@@ -108,7 +107,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
             } catch (InvalidJwtException e) {
                 logger.error("Error while validating JWT credentials", e);
             }
-        }
+        // }
 
         return credentialMatch;
     }
@@ -134,7 +133,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
             if (issuer.endsWith("/")) {
                 issuer = issuer.substring(0, issuer.length() - 1);
             }
-            
+
             // Check against cache
             if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
                 uri = ISSUER_JWKSURI_CACHE.get(issuer);

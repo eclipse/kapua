@@ -19,7 +19,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -47,13 +46,14 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         //
         // Info data
         LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
-        User infoUser = (User) info.getPrincipals().getPrimaryPrincipal();
         Credential infoCredential = (Credential) info.getCredentials();
 
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (tokenUsername.equals(infoUser.getName()) && CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) && BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey())) {
+        if (tokenUsername.equals(infoCredential.getKey()) && //
+                CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) && //
+                BCrypt.checkpw(tokenPassword, infoCredential.getSecret())) {
             credentialMatch = true;
 
             // FIXME: if true cache token password for authentication performance improvement

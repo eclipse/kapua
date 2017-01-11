@@ -14,55 +14,39 @@ package org.eclipse.kapua.service.authentication;
 
 import java.security.Principal;
 
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
- * Kapua {@link Principal} implementation.<br>
- * Uniquely identifies a user.
+ * Kapua {@link Principal}.<br>
+ * Extends {@link Principal} with additional properties used by the broker.<br>
+ * Uniquely identifies a {@link Device}.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-// TODO it's an object used by both authorization and authentication... should leave it in authentication module?
 public interface KapuaPrincipal extends Principal, java.io.Serializable {
 
     /**
-     * Return the user name
-     */
-    public String getName();
-    
-    /**
-     * Return the token identifier
+     * Returns the {@link AccessToken} of this session.
      * 
-     * @return
+     * @return The {@link AccessToken} of this session.
+     * @since 1.0.0
      */
-    public String getTokenId();
-    
-    /**
-     * Return the user id
-     * 
-     * @return
-     */
-    public KapuaId getUserId();
+    public AccessToken getAccessToken();
 
     /**
-     * Retur the account it
+     * Returns the remote client IP address from which the user should be connected.
      * 
-     * @return
-     */
-    public KapuaId getAccountId();
-
-    /**
-     * Return the remote client ip from which the user should be connected
-     * 
-     * @return
+     * @return The remote client IP address from which the user should be connected.
+     * @since 1.0.0
      */
     public String getClientIp();
 
     /**
-     * Return the client identifiers from which the user should be connected
+     * Returns the client identifiers from which the user should be connected.
      * 
-     * @return
+     * @return The client identifiers from which the user should be connected.
+     * @since 1.0.0
      */
     public String getClientId();
 

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -25,91 +23,71 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
  * @since 1.0
  *
  */
-public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<DeviceConnection> implements DeviceConnectionCreator
-{
+public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<DeviceConnection> implements DeviceConnectionCreator {
+
     private static final long serialVersionUID = 2740394157765904615L;
 
-    @XmlElement(name = "clientId")
-    private String            clientId;
-
-    @XmlElement(name = "userId")
-    private KapuaId           userId;
-
-    @XmlElement(name = "protocol")
-    private String            protocol;
-
-    @XmlElement(name = "clientIp")
-    private String            clientIp;
-
-    @XmlElement(name = "serverIp")
-    private String            serverIp;
+    private String clientId;
+    private KapuaId credentialId;
+    private String protocol;
+    private String clientIp;
+    private String serverIp;
 
     /**
      * Constructor
      * 
      * @param scopeId
      */
-    public DeviceConnectionCreatorImpl(KapuaId scopeId)
-    {
+    public DeviceConnectionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public KapuaId getUserId()
-    {
-        return userId;
+    public KapuaId getCredentialId() {
+        return credentialId;
     }
 
     @Override
-    public void setUserId(KapuaId userId)
-    {
-        this.userId = userId;
+    public void setCredentialId(KapuaId credentialId) {
+        this.credentialId = credentialId;
     }
 
     @Override
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return protocol;
     }
 
     @Override
-    public void setProtocol(String protocol)
-    {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
-    public String getClientIp()
-    {
+    public String getClientIp() {
         return clientIp;
     }
 
     @Override
-    public void setClientIp(String clientIp)
-    {
+    public void setClientIp(String clientIp) {
         this.clientIp = clientIp;
     }
 
     @Override
-    public String getServerIp()
-    {
+    public String getServerIp() {
         return serverIp;
     }
 
     @Override
-    public void setServerIp(String serverIp)
-    {
+    public void setServerIp(String serverIp) {
         this.serverIp = serverIp;
     }
 }

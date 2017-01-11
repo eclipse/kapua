@@ -7,12 +7,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
 import java.util.concurrent.Callable;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authorization.subject.SubjectFactory;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Kapua security utility to handle the bind/unbind operation of the Kapua session into the thread context.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaSecurityUtils {
 
@@ -31,8 +35,8 @@ public class KapuaSecurityUtils {
     private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<>();
 
     /**
-     * Return the {@link KapuaSession} associated to the current thread session.
-     *
+     * Returns the {@link KapuaSession} associated to the current thread session.
+     * 
      * @return
      */
     public static KapuaSession getSession() {
@@ -40,8 +44,8 @@ public class KapuaSecurityUtils {
     }
 
     /**
-     * Bound the {@link KapuaSession} to the current thread session.
-     *
+     * Bounds the {@link KapuaSession} to the current thread session.
+     * 
      * @param session
      */
     public static void setSession(KapuaSession session) {
@@ -49,16 +53,16 @@ public class KapuaSecurityUtils {
     }
 
     /**
-     * Clear the {@link KapuaSession} from the current thread session.
+     * Clears the {@link KapuaSession} from the current thread session.
      */
     public static void clearSession() {
         threadSession.remove();
     }
 
     /**
-     * Execute the {@link Callable} in a privileged context.<br>
+     * Executes the {@link Callable} in a privileged context.<br>
      * Trusted mode means that checks for permissions and role will pass.
-     *
+     * 
      * @param privilegedAction
      *            The {@link Callable} action to be executed.
      * @return The result of the {@link Callable} action.
@@ -74,6 +78,12 @@ public class KapuaSecurityUtils {
         KapuaSession currentSession = null;
 
         if (previousSession == null) {
+
+			// KapuaLocator locator = KapuaLocator.getInstance();
+            // SubjectFactory subjectFactory = locator.getFactory(SubjectFactory.class);
+
+            // session = new KapuaSession(null, KapuaEid.ONE, subjectFactory.newSubject(SubjectType.USER, KapuaEid.ONE));
+
             logger.debug("==> create new session");
             currentSession = new KapuaSession();
             currentSession.setTrustedMode(true);

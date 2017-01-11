@@ -12,106 +12,108 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
-import org.eclipse.kapua.service.authentication.credential.CredentialSubject;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
- * Credential creator implementation.
+ * {@link CredentialCreator} implementation.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential> implements CredentialCreator {
 
     private static final long serialVersionUID = -5020680413729882095L;
 
-    @XmlElement(name = "userId")
-    private KapuaId userId;
-
-    @XmlElement(name = "credentialType")
-    private CredentialType credentialType;
-
-    @XmlElement(name = "credentialKey")
-    private String            credentialKey;
-    
-    @XmlElement(name = "credentialSubject")
-    private CredentialSubject credentialSubject;
-    
-    @XmlElement(name = "credentialSubjectId")
-    private KapuaId           credentialSubjectId;
+    private SubjectType subjectType;
+    private KapuaId subjectId;
+    private CredentialType type;
+    private String key;
+    private String plainSecret;
 
     /**
-     * Constructor
+     * Constructor.
      * 
-     * @param scopeId scope identifier
-     * @param userId user identifier
-     * @param credentialType credential type (see {@link CredentialType} for the allowed values)
-     * @param credentialKey credential key
-     * @param credentialSubject credential subject (see {@link CredentialSubject} for the allowed values)
-     * @param credentialSubjectId credential subject id
+     * @param scopeId
+     *            The scope id in which create the {@link Credential}.
+     * @param subjectType
+     *            The {@link SubjectType} for which create the {@link Credential}.
+     * @param subjectId
+     *            The subject id for which create the {@link Credential}.
+     * @param type
+     *            The {@link CredentialType} of the new {@link Credential}.
+     * @param key
+     *            The key of the {@link Credential}.
+     * @param plainSecret
+     *            The plain secret of the {@link Credential}.
+     * @since 1.0.0
      */
-    public CredentialCreatorImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialSubject credentialSubject, KapuaId credentialSubjectId)
+    public CredentialCreatorImpl(KapuaId scopeId, //
+            SubjectType subjectType,
+            KapuaId subjectId,//
+            CredentialType type, //
+            String key,
+            String plainSecret) //
     {
         super(scopeId);
 
-        this.userId = userId;
-        this.credentialType = credentialType;
-        this.credentialKey = credentialKey;
-        this.credentialSubject = credentialSubject;
-        this.credentialSubjectId = credentialSubjectId;
+        setSubjectType(subjectType);
+        setSubjectId(subjectId);
+        setType(type);
+        setKey(key);
+        setPlainSecret(plainSecret);
     }
 
     @Override
-    public KapuaId getUserId() {
-        return userId;
-    }
-    
-    public void setUserId(KapuaId userId) {
-        this.userId = userId;
+    public SubjectType getSubjectType() {
+        return subjectType;
     }
 
     @Override
-    public CredentialType getCredentialType() {
-        return credentialType;
-    }
-    
-    public void setCredentialType(CredentialType credentialType) {
-        this.credentialType = credentialType;
+    public void setSubjectType(SubjectType subjectType) {
+        this.subjectType = subjectType;
     }
 
     @Override
-    public String getCredentialPlainKey() {
-        return credentialKey;
-    }
-    
-    @Override
-    public void setCredentialPlainKey(String credentialKey) {
-        this.credentialKey = credentialKey;
+    public KapuaId getSubjectId() {
+        return subjectId;
     }
 
     @Override
-    public CredentialSubject getCredentialSubject() {
-        return credentialSubject;
+    public void setSubjectId(KapuaId subjectId) {
+        this.subjectId = subjectId;
     }
 
     @Override
-    public void setCredentialSubject(CredentialSubject credentialSubject) {
-        this.credentialSubject = credentialSubject;
+    public CredentialType getType() {
+        return type;
     }
 
     @Override
-    public KapuaId getCredentialSubjectId() {
-        return credentialSubjectId;
+    public void setType(CredentialType type) {
+        this.type = type;
     }
 
     @Override
-    public void setCredentialSubjectId(KapuaId credentialSubjectId) {
-        this.credentialSubjectId = credentialSubjectId;
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public String getPlainSecret() {
+        return plainSecret;
+    }
+
+    @Override
+    public void setPlainSecret(String plainSecret) {
+        this.plainSecret = plainSecret;
     }
 }

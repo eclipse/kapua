@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
@@ -18,10 +18,11 @@ import java.util.List;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authorization.subject.Subject;
 
 /**
  * Kapua session
- *
+ * 
  * @since 1.0
  */
 public class KapuaSession implements Serializable {
@@ -50,9 +51,9 @@ public class KapuaSession implements Serializable {
     private KapuaId scopeId;
 
     /**
-     * User identifier
+     * Subject identifier
      */
-    private KapuaId userId;
+    private Subject subject;
 
     /**
      * Trusted mode.<br>
@@ -69,7 +70,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Creates a {@link KapuaSession} copy with trusted mode flag set to true (to be used only from trusted classes)
-     *
+     * 
      * @return
      */
     public static KapuaSession createFrom() {
@@ -77,7 +78,7 @@ public class KapuaSession implements Serializable {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
             KapuaSession kapuaSessionCopy = new KapuaSession(kapuaSession.getAccessToken(),
                     kapuaSession.getScopeId(),
-                    kapuaSession.getUserId());
+                    kapuaSession.getSubject());
             kapuaSessionCopy.trustedMode = true;
             return kapuaSessionCopy;
         } else {
@@ -88,7 +89,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Check if the caller is included in the caller list allowed to change the trusted mode flag.
-     *
+     * 
      * @return
      */
     private final static boolean isCallerClassTrusted() {
@@ -107,24 +108,23 @@ public class KapuaSession implements Serializable {
 
     /**
      * Constructs a {@link KapuaSession} with given parameters
-     *
+     * 
      * @param accessToken
-     * @param runAsScopeId
      * @param scopeId
-     * @param userId
+     * @param subject
      */
     public KapuaSession(AccessToken accessToken,
             KapuaId scopeId,
-            KapuaId userId) {
+            Subject subject) {
         this();
         this.accessToken = accessToken;
         this.scopeId = scopeId;
-        this.userId = userId;
+        this.subject = subject;
     }
 
     /**
      * Get the access token
-     *
+     * 
      * @return
      */
     public AccessToken getAccessToken() {
@@ -133,7 +133,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Get the scope identifier
-     *
+     * 
      * @return
      */
     public KapuaId getScopeId() {
@@ -141,18 +141,18 @@ public class KapuaSession implements Serializable {
     }
 
     /**
-     * Get the user identifier
-     *
+     * Get the subject identifier
+     * 
      * @return
      */
-    public KapuaId getUserId() {
-        return userId;
+    public Subject getSubject() {
+        return subject;
     }
 
     /**
      * Set the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
-     *
+     * 
      * @return
      */
     final void setTrustedMode(boolean trustedMode) {
@@ -162,7 +162,7 @@ public class KapuaSession implements Serializable {
     /**
      * Return the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
-     *
+     * 
      * @return
      */
     public final boolean isTrustedMode() {

@@ -45,8 +45,10 @@ import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.authorization.subject.SubjectMock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +152,7 @@ public class AccountServiceTestSteps extends KapuaTest {
         mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
-        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
+        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new SubjectMock(SubjectType.USER, new KapuaEid(BigInteger.ONE)));
         KapuaSecurityUtils.setSession(kapuaSession);
     }
 

@@ -29,9 +29,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountCreator;
-import org.eclipse.kapua.service.account.internal.AccountImpl;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -56,9 +53,7 @@ public class Credentials extends AbstractKapuaResource {
      *
      * @return The list of requested Credential objects.
      */
-    @ApiOperation(value = "Get the Credential for the given id", 
-                  notes = "Returns the credential for the given id.",
-                  response = Credential.class)
+    @ApiOperation(value = "Get the Credential for the given id", notes = "Returns the credential for the given id.", response = Credential.class)
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("{id}")
@@ -73,16 +68,13 @@ public class Credentials extends AbstractKapuaResource {
         }
         return credential;
     }
-    
+
     /**
      * Returns the list of all the credentials for the given user.
      *
      * @return The list of requested Credential objects.
      */
-    @ApiOperation(value = "Get the Credentials for the given user", 
-                  notes = "Returns the list of all the credentials for the given user.",
-                  response = Credential.class,
-                  responseContainer = "CredentialListResult")
+    @ApiOperation(value = "Get the Credentials for the given user", notes = "Returns the list of all the credentials for the given user.", response = Credential.class, responseContainer = "CredentialListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("list/{userId}")
@@ -91,28 +83,26 @@ public class Credentials extends AbstractKapuaResource {
         try {
             KapuaId id = KapuaEid.parseCompactId(userId);
             KapuaSession session = KapuaSecurityUtils.getSession();
-            credentialsListResult = (CredentialListResult) credentialService.findByUserId(session.getScopeId(), id);
+            credentialsListResult = (CredentialListResult) credentialService.findBySubject(session.getScopeId(), session.getSubject(), null);
         } catch (Throwable t) {
             handleException(t);
         }
         return credentialsListResult;
     }
-    
+
     /**
      * Creates a new Credential based on the information provided in CredentialCreator parameter.
      *
-     * @param credentialCreator Provides the information for the new Credential to be created.
+     * @param credentialCreator
+     *            Provides the information for the new Credential to be created.
      * @return The newly created Credential object.
      */
-    @ApiOperation(value = "Create a Credential",
-            notes = "Creates a new Credential based on the information provided in CredentialCreator parameter.",
-            response = Credential.class)
+    @ApiOperation(value = "Create a Credential", notes = "Creates a new Credential based on the information provided in CredentialCreator parameter.", response = Credential.class)
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Credential createCredential(
-            @ApiParam(value = "Provides the information for the new Credential to be created", required = true) 
-            CredentialCreator credentialCreator) {
+            @ApiParam(value = "Provides the information for the new Credential to be created", required = true) CredentialCreator credentialCreator) {
 
         Credential credential = null;
         try {
@@ -123,19 +113,18 @@ public class Credentials extends AbstractKapuaResource {
         }
         return returnNotNullEntity(credential);
     }
-    
+
     /**
      * Deletes the Credential specified by the "credentialId" path parameter.
      *
-     * @param credentialId The id of the Credential to be deleted.
+     * @param credentialId
+     *            The id of the Credential to be deleted.
      */
-    @ApiOperation(value = "Delete a Credential",
-            notes = "Deletes a credential based on the information provided in credentialId parameter.")
+    @ApiOperation(value = "Delete a Credential", notes = "Deletes a credential based on the information provided in credentialId parameter.")
     @DELETE
     @Path("{credentialId}")
     public Response deleteCredential(
-            @ApiParam(value = "The id of the Credential to be deleted", required = true)
-            @PathParam("credentialId") String credentialId) {
+            @ApiParam(value = "The id of the Credential to be deleted", required = true) @PathParam("credentialId") String credentialId) {
         try {
             KapuaId credentialKapuaId = KapuaEid.parseCompactId(credentialId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
@@ -145,24 +134,22 @@ public class Credentials extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-    
+
     /**
      * Updates a credential based on the information provided in Credential parameter.
      *
-     * @param credential Provides the information to update the credential.
+     * @param credential
+     *            Provides the information to update the credential.
      * @return The updated Credential object.
      */
-    @ApiOperation(value = "Update a Credential",
-            notes = "Updates a credential based on the information provided in Credential parameter.",
-            response = Credential.class)
+    @ApiOperation(value = "Update a Credential", notes = "Updates a credential based on the information provided in Credential parameter.", response = Credential.class)
     @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Credential updateCredential(
-            @ApiParam(value = "Provides the information to update the credential", required = true) 
-            Credential credential) {
+            @ApiParam(value = "Provides the information to update the credential", required = true) Credential credential) {
         try {
-            ((CredentialImpl)credential).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
+            ((CredentialImpl) credential).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
             credential = credentialService.update(credential);
         } catch (Throwable t) {
             handleException(t);

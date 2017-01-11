@@ -41,8 +41,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
  * 
  */
 @KapuaProvider
-public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService
-{
+public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService {
 
     private static final Domain deviceConnectonDomain = new DeviceConnectionDomain();
 
@@ -58,7 +57,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         ArgumentValidator.notNull(deviceConnectionCreator, "deviceConnectionCreator");
         ArgumentValidator.notNull(deviceConnectionCreator.getScopeId(), "deviceConnectionCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(deviceConnectionCreator.getClientId(), "deviceConnectionCreator.clientId");
-        ArgumentValidator.notNull(deviceConnectionCreator.getUserId(), "deviceConnectionCreator.userId");
+        ArgumentValidator.notNull(deviceConnectionCreator.getCredentialId(), "deviceConnectionCreator.credentialId");
 
         //
         // Check Access

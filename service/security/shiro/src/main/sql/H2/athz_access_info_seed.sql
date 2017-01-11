@@ -12,5 +12,5 @@
 
 INSERT INTO athz_access_info
 	VALUES
-		(1, 1, NOW(), 1, NOW(), 1, 1, 0, '', ''),
-		(1, 2, NOW(), 1, NOW(), 1, 2, 0, '', '');
+		(1, 1, NOW(), 1, NOW(), 1, 'USER', 1, 0, '', ''),
+		(1, 2, NOW(), 1, NOW(), 1, 'BROKER_CONNECTION', NULL, 0, '', '');

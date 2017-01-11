@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.subject.Subject;
 
 /**
  * Access token service implementation.
@@ -60,8 +61,10 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         // Argument Validation
         ArgumentValidator.notNull(accessTokenCreator, "accessTokenCreator");
         ArgumentValidator.notNull(accessTokenCreator.getScopeId(), "accessTokenCreator.scopeId");
+        ArgumentValidator.notNull(accessTokenCreator.getSubjectType(), "accessTokenCreator.subjectType");
+        // ArgumentValidator.notNull(accessTokenCreator.getSubjectId(), "accessTokenCreator.subjectId");
+        ArgumentValidator.notNull(accessTokenCreator.getCredentialId(), "accessTokenCreator.credentialId");
         ArgumentValidator.notNull(accessTokenCreator.getTokenId(), "accessTokenCreator.tokenId");
-        ArgumentValidator.notNull(accessTokenCreator.getUserId(), "accessTokenCreator.userId");
         ArgumentValidator.notNull(accessTokenCreator.getExpiresOn(), "accessTokenCreator.expiresOn");
 
         //
@@ -84,7 +87,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         ArgumentValidator.notNull(accessToken, "accessToken");
         ArgumentValidator.notNull(accessToken.getId(), "accessToken.id");
         ArgumentValidator.notNull(accessToken.getScopeId(), "accessToken.scopeId");
-        ArgumentValidator.notNull(accessToken.getUserId(), "accessToken.userId");
+        ArgumentValidator.notNull(accessToken.getSubject().getSubjectType(), "accessTokenCreator.subject.type");
+        ArgumentValidator.notNull(accessToken.getSubject().getId(), "accessTokenCreator.subject.id");
         ArgumentValidator.notNull(accessToken.getExpiresOn(), "accessToken.expiresOn");
 
         //
@@ -192,12 +196,12 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId)
+    public AccessTokenListResult findBySubject(KapuaId scopeId, Subject subject)
             throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(userId, "userId");
+        ArgumentValidator.notNull(subject, "subject");
 
         //
         // Check Access
@@ -209,7 +213,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<KapuaId>(AccessTokenPredicates.USER_ID, userId);
+        KapuaPredicate predicate = new AttributePredicate<>(AccessTokenPredicates.SUBJECT, subject);
         query.setPredicate(predicate);
 
         //

@@ -42,7 +42,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
         DeviceConnection deviceConnection = new DeviceConnectionImpl(deviceConnectionCreator.getScopeId());
         deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
         deviceConnection.setClientId(deviceConnectionCreator.getClientId());
-        deviceConnection.setUserId(deviceConnectionCreator.getUserId());
+        deviceConnection.setCredentialId(deviceConnectionCreator.getCredentialId());
         deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
         deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
         deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());

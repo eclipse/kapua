@@ -225,7 +225,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     @PreUpdate
     protected void preUpdateAction()
             throws KapuaException {
-        this.modifiedBy = (KapuaEid) KapuaSecurityUtils.getSession().getUserId();
+        this.modifiedBy = (KapuaEid) KapuaSecurityUtils.getSession().getSubject().getId();
         this.modifiedOn = new Date();
     }
 }

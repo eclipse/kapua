@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.authorization.subject.Subject;
 
 /**
  * {@link AccessInfo} service definition.
@@ -63,6 +64,20 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     public AccessInfo find(KapuaId scopeId, KapuaId accessInfoId)
+            throws KapuaException;
+
+    /**
+     * Returns the {@link AccessInfo} searching by the {@link Subject}.
+     * 
+     * @param subject
+     *            The {@link Subject} to filter results.
+     * 
+     * @return The {@link AccessInfo} matching the given parameters.
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    public AccessInfo findBySubject(Subject subject)
             throws KapuaException;
 
     /**

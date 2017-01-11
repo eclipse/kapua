@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.KapuaNamedEntity;
@@ -29,20 +30,19 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "status",
-                       "displayName",
-                       "email",
-                       "phoneNumber",
-                       "userType",
-                       "externalId"
-                     },
-         factoryClass = UserXmlRegistry.class, 
-         factoryMethod = "newUser")
-public interface User extends KapuaNamedEntity
-{
+        "displayName",
+        "email",
+        "phoneNumber",
+        "userType",
+        "externalId"
+}, factoryClass = UserXmlRegistry.class, factoryMethod = "newUser")
+public interface User extends KapuaNamedEntity {
+
+    @XmlTransient
     public static final String TYPE = "user";
 
-    default public String getType()
-    {
+    @XmlTransient
+    public default String getType() {
         return TYPE;
     }
 
@@ -105,7 +105,7 @@ public interface User extends KapuaNamedEntity
      * @param phoneNumber
      */
     public void setPhoneNumber(String phoneNumber);
-    
+
     /**
      * Get the user type
      * 
@@ -117,10 +117,10 @@ public interface User extends KapuaNamedEntity
     /**
      * Set the user type
      * 
-     * @param phoneNumber
+     * @param userType
      */
     public void setUserType(UserType userType);
-    
+
     /**
      * Get the external ID
      * 

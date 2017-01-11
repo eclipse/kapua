@@ -14,15 +14,18 @@ package org.eclipse.kapua.service.authentication;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
  * Username and password {@link LoginCredentials} definition.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 @XmlRootElement(name = "usernamePasswordCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -30,31 +33,56 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public interface UsernamePasswordCredentials extends LoginCredentials {
 
     /**
-     * return the username
+     * Returns the {@link CredentialSubjectType}.
      * 
-     * @return
+     * @return The {@link CredentialSubjectType}.
+     * @since 1.0.0
      */
+    @XmlTransient
+    public SubjectType getSubjectType();
+
+    /**
+     * Sets the {@link CredentialSubjectType}.
+     * 
+     * @param subjectType
+     *            The {@link CredentialSubjectType}.
+     * @since 1.0.0
+     */
+    public void setSubjectType(SubjectType subjectType);
+
+    /**
+     * Returns the username.
+     * 
+     * @return The username.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "username")
     public String getUsername();
 
     /**
      * Set the username
      * 
      * @param username
+     * @since 1.0.0
      */
     public void setUsername(String username);
 
     /**
-     * return the password
+     * Returns the password.
      * 
-     * @return
+     * @return The password.
+     * @since 1.0.0
      */
     @XmlJavaTypeAdapter(StringToCharArrayAdapter.class)
+    @XmlElement(name = "password")
     public char[] getPassword();
 
     /**
-     * Set the password
+     * Sets the password.
      * 
      * @param password
+     *            The password.
+     * @since 1.0.0
      */
     public void setPassword(char[] password);
 }

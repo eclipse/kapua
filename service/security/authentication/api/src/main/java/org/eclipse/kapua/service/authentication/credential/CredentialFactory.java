@@ -14,45 +14,63 @@ package org.eclipse.kapua.service.authentication.credential;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
- * Credential factory service definition.
+ * {@link Credential} factory service definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-public interface CredentialFactory extends KapuaObjectFactory
-{
+public interface CredentialFactory extends KapuaObjectFactory {
+
     /**
-     * Create a new {@link Credential}
+     * Creates a new {@link Credential}.
      * 
-     * @return Credential the new Credential
+     * @return A {@link Credential} instance.
      */
     public Credential newCredential();
-    
+
     /**
-     * Create a new {@link CredentialCreator} for the specific credential type
+     * Creates a new {@link CredentialCreator} instance with the given parameters.
      * 
      * @param scopeId
-     * @param userId
-     * @param credentialType
-     * @param credentialKey
-     * @return
+     *            The scope id to set.
+     * @param subjectType
+     *            The {@link SubjectType} to set.
+     * @param subjectId
+     *            The subject id to set.
+     * @param type
+     *            The {@link CredentialType} to set.
+     * @param key
+     *            The key to set.
+     * @param secret
+     *            The plain secret to set.
+     * @return A new {@link CredentialCreator} instance.
      */
-    public CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialSubject credentialSubject, KapuaId credentialSubjectId);
-    
+    public CredentialCreator newCreator(
+            KapuaId scopeId,
+            SubjectType subjectType,
+            KapuaId subjectId,
+            CredentialType type,
+            String key,
+            String secret);
+
     /**
-     * Creates a new credential result list
+     * Creates a new {@link CredentialListResult} instance.
      * 
-     * @return
+     * @return A new {@link CredentialListResult} instance.
+     * @since 1.0.0
      */
     public CredentialListResult newCredentialListResult();
-    
+
     /**
-     * Creates a new credential query for the specified scope identifier
+     * Creates a new {@link CredentialQuery} for the specified scope identifier
      * 
      * @param scopeId
-     * @return
+     *            The scope id in which query.
+     * @return A new instance of {@link CredentialQuery}.
+     * @since 1.0.0
      */
     public CredentialQuery newQuery(KapuaId scopeId);
 

@@ -13,12 +13,16 @@
 package org.eclipse.kapua.service.authentication.token;
 
 /**
- * Access Token predicates used to build query predicates.
+ * {@link AccessToken} predicates used to build query predicates.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
 public class AccessTokenPredicates {
+
+    public static final String SUBJECT = "subject";
+    public static final String SUBJECT_TYPE = SUBJECT + ".subjectType";
+    public static final String SUBJECT_ID = SUBJECT + ".subjectId";
 
     public static final String TOKEN_ID = "tokenId";
     public static final String USER_ID = "userId";

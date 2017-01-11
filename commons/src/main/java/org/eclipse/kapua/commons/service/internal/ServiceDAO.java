@@ -182,7 +182,7 @@ public class ServiceDAO {
 
         SQLException innerExc = (SQLException) cause;
         return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
-    }
+        }
 
     /**
      * Update entity utility method
@@ -538,7 +538,21 @@ public class ServiceDAO {
         Expression<Boolean> expr;
         String attrName = attrPred.getAttributeName();
         Object attrValue = attrPred.getAttributeValue();
-        SingularAttribute attribute = entityType.getSingularAttribute(attrName);
+
+        // Fields to query properties of embedded attributes of the root entity
+        boolean embeddedAttribute = attrName.contains(".");
+        String embeddedAttributeName;
+        String embeddableAttributeName = null;
+
+        SingularAttribute attribute;
+        if (embeddedAttribute) {
+            embeddedAttributeName = attrName.split("\\.")[0];
+            embeddableAttributeName = attrName.split("\\.")[1];
+            attribute = entityType.getSingularAttribute(embeddedAttributeName);
+        } else {
+            attribute = entityType.getSingularAttribute(attrName);
+        }
+
         if (attrValue instanceof Object[] && ((Object[]) attrValue).length == 1) {
             Object[] attrValues = (Object[]) attrValue;
             attrValue = attrValues[0];
@@ -620,7 +634,11 @@ public class ServiceDAO {
 
             case EQUAL:
             default:
+                if (embeddedAttribute) {
+                    expr = cb.equal(entityRoot.get(attribute).get(embeddableAttributeName), attrValue);
+                } else {
                 expr = cb.equal(entityRoot.get(attribute), attrValue);
+                }
                 break;
             }
         }

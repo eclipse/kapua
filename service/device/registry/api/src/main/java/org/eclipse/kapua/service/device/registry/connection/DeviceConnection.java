@@ -12,21 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.credential.Credential;
 
 /**
- * Device connection entity definition.
+ * {@link DeviceConnection} entity definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface DeviceConnection extends KapuaUpdatableEntity
-{
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public interface DeviceConnection extends KapuaUpdatableEntity {
+
     public static final String TYPE = "deviceConnection";
 
-    default public String getType()
-    {
+    public default String getType() {
         return TYPE;
     }
 
@@ -35,6 +42,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity
      * 
      * @return
      */
+    @XmlElement(name = "connectionStatus")
     public DeviceConnectionStatus getStatus();
 
     /**
@@ -49,6 +57,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity
      * 
      * @return
      */
+    @XmlElement(name = "clientId")
     public String getClientId();
 
     /**
@@ -59,24 +68,27 @@ public interface DeviceConnection extends KapuaUpdatableEntity
     public void setClientId(String clientId);
 
     /**
-     * Get the user identifier
+     * Gets the {@link Credential} id used to establish this connection.
      * 
      * @return
      */
-    public KapuaId getUserId();
+    @XmlElement(name = "credentialId")
+    public KapuaId getCredentialId();
 
     /**
-     * Set the user identifier
+     * Sets the {@link Credential} id used to establish this connection.
      * 
-     * @param userId
+     * @param credentialId
+     *            The {@link Credential} id used to establish this connection.
      */
-    public void setUserId(KapuaId userId);
+    public void setCredentialId(KapuaId credentialId);
 
     /**
      * Get the device protocol
      * 
      * @return
      */
+    @XmlElement(name = "protocol")
     public String getProtocol();
 
     /**
@@ -91,6 +103,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity
      * 
      * @return
      */
+    @XmlElement(name = "clientIp")
     public String getClientIp();
 
     /**
@@ -105,6 +118,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity
      * 
      * @return
      */
+    @XmlElement(name = "serverIp")
     public String getServerIp();
 
     /**

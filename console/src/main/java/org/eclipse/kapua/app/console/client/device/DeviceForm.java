@@ -16,8 +16,8 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
@@ -67,46 +67,43 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class DeviceForm extends Window
-{
+public class DeviceForm extends Window {
 
-    private static final ConsoleMessages                             MSGS             = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final GwtDeviceServiceAsync                              gwtDeviceService = GWT.create(GwtDeviceService.class);
-    private final GwtUserServiceAsync                                gwtUserService   = GWT.create(GwtUserService.class);
-    private final GwtSecurityTokenServiceAsync                       gwtXSRFService   = GWT.create(GwtSecurityTokenService.class);
+    private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    private FormPanel                                                m_formPanel;
-    private GwtDevice                                                m_selectedDevice;
-    private GwtSession                                               m_currentSession;
+    private FormPanel m_formPanel;
+    private GwtDevice m_selectedDevice;
+    private GwtSession m_currentSession;
 
     // General info fields
-    private LabelField                                               clientIdLabel;
-    private TextField<String>                                        clientIdField;
-    private TextField<String>                                        displayNameField;
+    private LabelField clientIdLabel;
+    private TextField<String> clientIdField;
+    private TextField<String> displayNameField;
     private SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceStatus> statusCombo;
 
     // Security Options fields
-    private SimpleComboBox<String>                                   credentialsTightCombo;
-    private ComboBox<GwtUser>                                        deviceUserCombo;
-    private CheckBox                                                 allowCredentialsChangeCheckbox;
+    private SimpleComboBox<String> credentialsTightCombo;
+    private ComboBox<GwtUser> deviceUserCombo;
+    private CheckBox allowCredentialsChangeCheckbox;
 
     // Custom attributes
-    private TextField<String>                                        customAttribute1Field;
-    private TextField<String>                                        customAttribute2Field;
-    private TextField<String>                                        customAttribute3Field;
-    private TextField<String>                                        customAttribute4Field;
-    private TextField<String>                                        customAttribute5Field;
+    private TextField<String> customAttribute1Field;
+    private TextField<String> customAttribute2Field;
+    private TextField<String> customAttribute3Field;
+    private TextField<String> customAttribute4Field;
+    private TextField<String> customAttribute5Field;
 
-    private NumberField                                              optlock;
+    private NumberField optlock;
 
-    public DeviceForm(GwtSession currentSession)
-    {
+    public DeviceForm(GwtSession currentSession) {
         this(null, currentSession);
     }
 
-    public DeviceForm(GwtDevice gwtDevice, GwtSession currentSession)
-    {
+    public DeviceForm(GwtDevice gwtDevice, GwtSession currentSession) {
         m_selectedDevice = gwtDevice;
         m_currentSession = currentSession;
 
@@ -114,13 +111,12 @@ public class DeviceForm extends Window
         setLayout(new FitLayout());
         setResizable(false);
         setHeading(m_selectedDevice == null ? MSGS.deviceFormHeadingNew()
-                                            : MSGS.deviceFormHeadingEdit(m_selectedDevice.getDisplayName() != null ? m_selectedDevice.getDisplayName() : m_selectedDevice.getClientId()));
+                : MSGS.deviceFormHeadingEdit(m_selectedDevice.getDisplayName() != null ? m_selectedDevice.getDisplayName() : m_selectedDevice.getClientId()));
 
         DialogUtils.resizeDialog(this, 550, 570);
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
         FormData formData = new FormData("-20");
@@ -221,11 +217,11 @@ public class DeviceForm extends Window
 
         // Device User
         RpcProxy<ListLoadResult<GwtUser>> deviceUserProxy = new RpcProxy<ListLoadResult<GwtUser>>() {
+
             @Override
-            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtUser>> callback)
-            {
+            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtUser>> callback) {
                 gwtUserService.findAll(m_currentSession.getSelectedAccount().getId(),
-                                       callback);
+                        callback);
             }
         };
 
@@ -310,9 +306,9 @@ public class DeviceForm extends Window
 
         Button submitButton = new Button(MSGS.deviceFormSubmitButton());
         submitButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
             @Override
-            public void handleEvent(BaseEvent be)
-            {
+            public void handleEvent(BaseEvent be) {
                 // make sure all visible fields are valid before performing the action
                 for (Field<?> field : m_formPanel.getFields()) {
                     if (field.isVisible() && !field.isValid()) {
@@ -343,37 +339,33 @@ public class DeviceForm extends Window
                     //
                     // Getting XSRF token
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+
                         @Override
-                        public void onFailure(Throwable ex)
-                        {
+                        public void onFailure(Throwable ex) {
                             FailureHandler.handle(ex);
                         }
 
                         @Override
-                        public void onSuccess(GwtXSRFToken token)
-                        {
+                        public void onSuccess(GwtXSRFToken token) {
                             gwtDeviceService.createDevice(token, gwtDeviceCreator, new AsyncCallback<GwtDevice>() {
+
                                 @Override
-                                public void onFailure(Throwable caught)
-                                {
+                                public void onFailure(Throwable caught) {
                                     FailureHandler.handle(caught);
                                 }
 
-                                public void onSuccess(final GwtDevice gwtDevice)
-                                {
+                                public void onSuccess(final GwtDevice gwtDevice) {
                                     //
                                     // Getting XSRF token
                                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
                                         @Override
-                                        public void onFailure(Throwable ex)
-                                        {
+                                        public void onFailure(Throwable ex) {
                                             FailureHandler.handle(ex);
                                         }
 
                                         @Override
-                                        public void onSuccess(GwtXSRFToken token)
-                                        {
+                                        public void onSuccess(GwtXSRFToken token) {
                                             hide();
                                             ConsoleInfo.display(MSGS.info(), MSGS.deviceUpdateSuccess());
                                         }
@@ -393,7 +385,6 @@ public class DeviceForm extends Window
                     // Security Options
                     m_selectedDevice.setCredentialsTight(GwtDeviceCredentialsTight.getEnumFromLabel(credentialsTightCombo.getSimpleValue()).name());
                     m_selectedDevice.setCredentialsAllowChange(allowCredentialsChangeCheckbox.getValue());
-                    m_selectedDevice.setDeviceUserId(deviceUserCombo.getValue().getId());
 
                     // Custom attributes
                     m_selectedDevice.setCustomAttribute1(unescapeValue(customAttribute1Field.getValue()));
@@ -408,36 +399,32 @@ public class DeviceForm extends Window
                     //
                     // Getting XSRF token
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+
                         @Override
-                        public void onFailure(Throwable ex)
-                        {
+                        public void onFailure(Throwable ex) {
                             FailureHandler.handle(ex);
                         }
 
                         @Override
-                        public void onSuccess(GwtXSRFToken token)
-                        {
+                        public void onSuccess(GwtXSRFToken token) {
                             gwtDeviceService.updateAttributes(token, m_selectedDevice, new AsyncCallback<GwtDevice>() {
-                                public void onFailure(Throwable caught)
-                                {
+
+                                public void onFailure(Throwable caught) {
                                     FailureHandler.handle(caught);
                                 }
 
-                                public void onSuccess(GwtDevice gwtDevice)
-                                {
+                                public void onSuccess(GwtDevice gwtDevice) {
                                     //
                                     // Getting XSRF token
                                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
                                         @Override
-                                        public void onFailure(Throwable ex)
-                                        {
+                                        public void onFailure(Throwable ex) {
                                             FailureHandler.handle(ex);
                                         }
 
                                         @Override
-                                        public void onSuccess(GwtXSRFToken token)
-                                        {
+                                        public void onSuccess(GwtXSRFToken token) {
                                             hide();
                                             ConsoleInfo.display(MSGS.info(), m_selectedDevice == null ? MSGS.deviceCreationSuccess() : MSGS.deviceUpdateSuccess());
                                         }
@@ -453,9 +440,9 @@ public class DeviceForm extends Window
 
         Button cancelButton = new Button(MSGS.deviceFormCancelButton());
         cancelButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
             @Override
-            public void handleEvent(BaseEvent be)
-            {
+            public void handleEvent(BaseEvent be) {
                 hide();
             }
         });
@@ -474,8 +461,7 @@ public class DeviceForm extends Window
         }
     }
 
-    private void populateFields()
-    {
+    private void populateFields() {
         if (m_selectedDevice != null) {
             // General info data
             clientIdLabel.setText(m_selectedDevice.getClientId());
@@ -485,19 +471,6 @@ public class DeviceForm extends Window
             // Security options data
             credentialsTightCombo.setSimpleValue(m_selectedDevice.getCredentialTightEnum().getLabel());
             allowCredentialsChangeCheckbox.setValue(m_selectedDevice.getCredentialsAllowChange());
-            gwtUserService.find(m_currentSession.getSelectedAccount().getId(), m_selectedDevice.getDeviceUserId(), new AsyncCallback<GwtUser>() {
-                @Override
-                public void onFailure(Throwable caught)
-                {
-                    FailureHandler.handle(caught);
-                }
-
-                @Override
-                public void onSuccess(GwtUser gwtUser)
-                {
-                    deviceUserCombo.setValue(gwtUser);
-                }
-            });
 
             // Custom attributes data
             customAttribute1Field.setValue(m_selectedDevice.getUnescapedCustomAttribute1());
@@ -511,8 +484,7 @@ public class DeviceForm extends Window
         }
     }
 
-    private void makeNewEditAppearance()
-    {
+    private void makeNewEditAppearance() {
         // New
         if (m_selectedDevice == null) {
             clientIdLabel.hide();
@@ -525,8 +497,7 @@ public class DeviceForm extends Window
 
             if (m_selectedDevice.getCredentialTightEnum().equals(GwtDeviceCredentialsTight.LOOSE)) {
                 allowCredentialsChangeCheckbox.hide();
-            }
-            else {
+            } else {
 
                 if (m_selectedDevice.getCredentialTightEnum().equals(GwtDeviceCredentialsTight.INHERITED)) {
                     allowCredentialsChangeCheckbox.hide();
@@ -535,8 +506,7 @@ public class DeviceForm extends Window
         }
     }
 
-    private String unescapeValue(String value)
-    {
+    private String unescapeValue(String value) {
         return KapuaSafeHtmlUtils.htmlUnescape(value);
     }
 }

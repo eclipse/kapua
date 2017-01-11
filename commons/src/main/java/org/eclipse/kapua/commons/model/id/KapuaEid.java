@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.util.Base64;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -31,7 +32,10 @@ public class KapuaEid implements KapuaId, Serializable {
 
     private static final long serialVersionUID = 8998805462408705432L;
 
-    protected BigInteger eid;
+    @Transient
+    public static final KapuaEid ONE = new KapuaEid(BigInteger.ONE);
+
+    protected BigInteger      eid;
 
     /**
      * Constructor

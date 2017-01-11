@@ -11,24 +11,26 @@ package org.eclipse.kapua.test;
  * Eurotech - initial API and implementation
  *******************************************************************************/
 
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
 
 import java.util.Random;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.*;
+import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
-import org.junit.AfterClass;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
 
 public class KapuaTest extends Assert {
 
@@ -43,8 +45,7 @@ public class KapuaTest extends Assert {
     protected static KapuaId adminScopeId;
 
     @Before
-    public void setUp() {
-
+    public void setUpTest() {
 
         LOG.debug("Setting up test...");
         if (!isInitialized) {
@@ -57,12 +58,12 @@ public class KapuaTest extends Assert {
 
                 AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
                 CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-                authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray()));
+                authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(SubjectType.USER, username, password.toCharArray()));
 
                 //
                 // Get current user Id
-                adminUserId = KapuaSecurityUtils.getSession().getUserId();
                 adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
+                adminUserId = KapuaSecurityUtils.getSession().getSubject().getId();
             } catch (KapuaException exc) {
                 exc.printStackTrace();
             }
@@ -70,19 +71,35 @@ public class KapuaTest extends Assert {
         }
     }
 
-    @AfterClass
-    public static void tearDown() {
-        LOG.debug("Stopping Kapua test context.");
-        isInitialized = false;
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+    @After
+    public void tearDownTest() {
 
-            authenticationService.logout();
-        } catch (KapuaException exc) {
-            exc.printStackTrace();
+        LOG.debug("Tearing down test...");
+        if (isInitialized) {
+            LOG.debug("Kapua test context is not initialized. Initializing...");
+            try {
+                AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+                authenticationService.logout();
+            } catch (KapuaException exc) {
+                exc.printStackTrace();
+            }
+            isInitialized = false;
         }
     }
+
+    // @AfterClass
+    // public static void tearDown() {
+    // LOG.debug("Stopping Kapua test context.");
+    // isInitialized = false;
+    // try {
+    // KapuaLocator locator = KapuaLocator.getInstance();
+    // AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+    //
+    // authenticationService.logout();
+    // } catch (KapuaException exc) {
+    // exc.printStackTrace();
+    // }
+    // }
 
     //
     // Test utility methods
@@ -100,9 +117,12 @@ public class KapuaTest extends Assert {
     /**
      * Generates a random {@link String} from the given parameters
      *
-     * @param chars length of the generated {@link String}
-     * @param letters whether or not use chars
-     * @param numbers whether or not use numbers
+     * @param chars
+     *            length of the generated {@link String}
+     * @param letters
+     *            whether or not use chars
+     * @param numbers
+     *            whether or not use numbers
      *
      * @return the generated {@link String}
      */
@@ -118,6 +138,5 @@ public class KapuaTest extends Assert {
         EntityManagerSession entityManagerSession = new EntityManagerSession(entityManagerFactory);
         entityManagerSession.onTransactedAction(entityManager -> new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager));
     }
-
 
 }

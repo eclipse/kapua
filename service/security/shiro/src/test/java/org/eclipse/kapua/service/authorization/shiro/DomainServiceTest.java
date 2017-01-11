@@ -36,8 +36,8 @@ import org.junit.Test;
 
 public class DomainServiceTest extends KapuaTest {
 
-    public static String DEFAULT_FILTER = "athz_*.sql";
-    public static String DROP_FILTER = "athz_*_drop.sql";
+    public static String DEFAULT_FILTER = "ath*.sql";
+    public static String DROP_FILTER = "ath*_drop.sql";
 
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
 

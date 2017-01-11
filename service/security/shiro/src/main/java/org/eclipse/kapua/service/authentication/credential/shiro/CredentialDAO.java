@@ -16,15 +16,15 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
-import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
+import org.eclipse.kapua.service.authorization.subject.SubjectFactory;
 
 /**
  * Credential DAO.
@@ -47,25 +47,17 @@ public class CredentialDAO extends ServiceDAO {
 
         //
         // Crypto credential
-        String cryptedCredential;
-        switch (credentialCreator.getCredentialType()) {
-        case API_KEY:
-            cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
-            break;
-        case PASSWORD:
-        default:
-            cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
-            break;
-        }
+        String cryptedCredential = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialCreator.getPlainSecret());
 
         //
         // Create Credential
+        SubjectFactory subjectFactory = KapuaLocator.getInstance().getFactory(SubjectFactory.class);
+
         CredentialImpl credentialImpl = new CredentialImpl(credentialCreator.getScopeId(),
-                                                           credentialCreator.getUserId(),
-                                                           credentialCreator.getCredentialType(),
-                                                           cryptedCredential,
-                                                           credentialCreator.getCredentialSubject(),
-                                                           credentialCreator.getCredentialSubjectId());
+                subjectFactory.newSubject(credentialCreator.getSubjectType(), credentialCreator.getSubjectId()),
+                credentialCreator.getType(),
+                credentialCreator.getKey(),
+                cryptedCredential);
 
         //
         // Do create
@@ -141,19 +133,19 @@ public class CredentialDAO extends ServiceDAO {
     //
     // Private methods
     //
-    private static String cryptPassword(String credentialPlainKey) throws KapuaException {
-        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey);
-    }
-
-    private static String cryptApiKey(String credentialPlainKey) throws KapuaException {
-        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
-        String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
-
-        String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
-        hashedValue += preSeparator; // Add separator
-        hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length() - 1)); // Bcrypt the rest
-
-        return hashedValue;
-    }
+    // private static String cryptPassword(String credentialPlainKey) throws KapuaException {
+    // return
+    // }
+    //
+    // private static String cryptApiKey(String credentialPlainKey) throws KapuaException {
+    // KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+    // int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+    // String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
+    //
+    // String hashedValue = credentialPlainKey.substring(0, preLength); // Add the pre in clear text
+    // hashedValue += preSeparator; // Add separator
+    // hashedValue += AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, credentialPlainKey.substring(preLength, credentialPlainKey.length() - 1)); // Bcrypt the rest
+    //
+    // return hashedValue;
+    // }
 }

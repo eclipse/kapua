@@ -16,11 +16,13 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
+import org.eclipse.kapua.service.authorization.subject.SubjectFactory;
 
 /**
  * Access token DAO.
@@ -31,7 +33,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 public class AccessTokenDAO extends ServiceDAO {
 
     /**
-     * Creates and return new access token
+     * Creates and return new {@link AccessToken}.
      * 
      * @param em
      * @param accessTokenCreator
@@ -40,10 +42,12 @@ public class AccessTokenDAO extends ServiceDAO {
      */
     public static AccessToken create(EntityManager em, AccessTokenCreator accessTokenCreator)
             throws KapuaException {
-        //
-        // Create User
-        AccessTokenImpl accessTokenImpl = new AccessTokenImpl(accessTokenCreator.getScopeId(),
-                accessTokenCreator.getUserId(),
+        SubjectFactory subjectFactory = KapuaLocator.getInstance().getFactory(SubjectFactory.class);
+
+        AccessTokenImpl accessTokenImpl = new AccessTokenImpl(
+                accessTokenCreator.getScopeId(),
+                subjectFactory.newSubject(accessTokenCreator.getSubjectType(), accessTokenCreator.getSubjectId()),
+                accessTokenCreator.getCredentialId(),
                 accessTokenCreator.getTokenId(),
                 accessTokenCreator.getExpiresOn());
 
