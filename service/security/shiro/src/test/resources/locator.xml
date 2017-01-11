@@ -11,11 +11,15 @@
  -->
 <locator-config>
 	<provided>
+        <api>org.eclipse.kapua.service.account.AccountFactory</api>
+		<api>org.eclipse.kapua.service.account.AccountService</api>
+
 		<api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
         <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
-        
 		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
         <api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
+        <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
+        <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
 		
         <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
@@ -35,16 +39,15 @@
 		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
-		
-        <api>org.eclipse.kapua.service.account.AccountFactory</api>
-		<api>org.eclipse.kapua.service.account.AccountService</api>
-		
+		<api>org.eclipse.kapua.service.authorization.subject.SubjectFactory</api>
+        
         <api>org.eclipse.kapua.service.user.UserFactory</api>
 		<api>org.eclipse.kapua.service.user.UserService</api>
 	</provided>
 	<packages>
 		<package>org.eclipse.kapua.service.authentication.credential.shiro</package>
-		<!-- <package>org.eclipse.kapua.service.authentication.shiro</package> -->
+		<package>org.eclipse.kapua.service.authentication.shiro</package>
+        <package>org.eclipse.kapua.service.authentication.token.shiro</package>
 		
         <package>org.eclipse.kapua.service.authorization.domain.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.permission.shiro</package>
@@ -53,9 +56,9 @@
 		<package>org.eclipse.kapua.service.authorization.access.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.shiro</package>
+        <package>org.eclipse.kapua.service.authorization.subject.shiro</package>
 		
-        <package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.account</package>
-		<package>org.eclipse.kapua.test.authentication</package>
+        <package>org.eclipse.kapua.test.user</package>
 	</packages>
 </locator-config>

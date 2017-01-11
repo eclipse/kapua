@@ -22,10 +22,14 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
@@ -431,4 +435,36 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
         this.preferredUserId = (KapuaEid) preferredUserId;
     }
 
+    /**
+     * This methods needs override because {@link Device}s can be created from the broker plugin.
+     */
+    @Override
+    protected void prePersistsAction()
+            throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
+            super.prePersistsAction();
+        } else {
+            this.id = new KapuaEid(IdGenerator.generate());
+
+            this.createdBy = KapuaEid.ONE;
+            this.createdOn = new Date();
+
+            this.modifiedBy = this.createdBy;
+            this.modifiedOn = this.createdOn;
+        }
+    }
+
+    /**
+     * This methods needs override because {@link Device}s can be created from the broker plugin.
+     */
+    @PreUpdate
+    protected void preUpdateAction()
+            throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
+            super.preUpdateAction();
+        } else {
+            this.modifiedBy = KapuaEid.ONE;
+            this.modifiedOn = new Date();
+        }
+    }
 }

@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.authentication;
 
+import java.math.BigInteger;
+import java.util.Date;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -22,12 +26,14 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
+import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 
 @TestService
 @KapuaProvider
 public class AuthenticationServiceMock implements AuthenticationService {
+
+    private AccessToken accessToken = null;
 
     public AuthenticationServiceMock() {
     }
@@ -41,31 +47,56 @@ public class AuthenticationServiceMock implements AuthenticationService {
         UsernamePasswordCredentialsMock usrPwdCredentialsMock = (UsernamePasswordCredentialsMock) authenticationToken;
 
         KapuaLocator serviceLocator = KapuaLocator.getInstance();
-        UserService userService = serviceLocator.getService(UserService.class);
-        User user = userService.findByName(usrPwdCredentialsMock.getUsername());
+        AccessTokenCreator accessTokenCreator = new AccessTokenCreatorMock(new KapuaEid(BigInteger.ONE));
+        accessTokenCreator.setSubjectType(usrPwdCredentialsMock.getSubjectType());
+        accessTokenCreator.setSubjectId(new KapuaEid(BigInteger.ONE));
+        accessTokenCreator.setTokenId("tokenId");
+        accessTokenCreator.setExpiresOn(new Date(new Date().getTime() + 18000000));
 
-        KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId());
+        AccessTokenService accessTokenService = serviceLocator.getService(AccessTokenService.class);
+        accessToken = accessTokenService.create(accessTokenCreator);
+
+        KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getSubject());
         KapuaSecurityUtils.setSession(kapuaSession);
-        // TODO Auto-generated method stub
-        return null;
+
+        return accessToken;
     }
 
     @Override
     public void logout()
             throws KapuaException {
+        if (accessToken != null) {
+            KapuaLocator serviceLocator = KapuaLocator.getInstance();
+            AccessTokenService accessTokenService = serviceLocator.getService(AccessTokenService.class);
+            accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId());
+            accessToken = null;
+        }
+
         KapuaSecurityUtils.clearSession();
     }
 
     @Override
     public AccessToken findAccessToken(String tokenId)
             throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
+        KapuaLocator serviceLocator = KapuaLocator.getInstance();
+        AccessTokenService accessTokenService = serviceLocator.getService(AccessTokenService.class);
+        return accessTokenService.findByTokenId(tokenId);
     }
 
     @Override
     public void authenticate(SessionCredentials sessionCredentials) throws KapuaException {
-        // TODO Auto-generated method stub
+        if (!(sessionCredentials instanceof AccessTokenCredentialsMock))
+            throw KapuaException.internalError("Unmanaged credentials type");
+
+        AccessTokenCredentialsMock accessTokenCredentialsMock = (AccessTokenCredentialsMock) sessionCredentials;
+
+        if (accessToken == null) {
+            KapuaException.internalError("null Access Token in session!");
+        }
+
+        if (!accessToken.getTokenId().equals(accessTokenCredentialsMock.getTokenId())) {
+            KapuaException.internalError("Invalid AccessToken provided: " + accessTokenCredentialsMock.getTokenId());
+        }
 
     }
 

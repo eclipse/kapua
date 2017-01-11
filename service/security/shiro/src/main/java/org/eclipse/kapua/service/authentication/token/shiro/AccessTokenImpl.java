@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -25,7 +26,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.KapuaException;
@@ -35,6 +35,8 @@ import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authorization.subject.Subject;
+import org.eclipse.kapua.service.authorization.subject.shiro.SubjectImpl;
 
 /**
  * Access token entity implementation.
@@ -50,19 +52,19 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     private static final long serialVersionUID = -6003387376828196787L;
 
-    @XmlElement(name = "userId")
+    @Embedded
+    private SubjectImpl subject;
+
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "user_id", updatable = false, nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "credential_id", nullable = false))
     })
-    private KapuaEid userId;
+    private KapuaEid credentialId;
 
-    @XmlElement(name = "tokenId")
     @Basic
     @Column(name = "token_id", updatable = false, nullable = false)
     private String tokenId;
 
-    @XmlElement(name = "expiresOn")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "expires_on", nullable = false)
     private Date expiresOn;
@@ -75,33 +77,46 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
-     * @param userId
-     *            user identifier
      * @param scopeId
-     *            scope identifier
+     * @param subject
      * @param tokenId
-     *            token identifier
      * @param expiresOn
-     *            token expiration date
      */
-    public AccessTokenImpl(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn) {
+    public AccessTokenImpl(KapuaId scopeId, Subject subject, KapuaId credentialId, String tokenId, Date expiresOn) {
         super(scopeId);
-        setUserId(userId);
+        setSubject(subject);
+        setCredentialId(credentialId);
         setTokenId(tokenId);
         setExpiresOn(expiresOn);
     }
 
     @Override
-    public KapuaId getUserId() {
-        return userId;
+    public Subject getSubject() {
+        return subject;
     }
 
     @Override
-    public void setUserId(KapuaId userId) {
-        if (userId != null) {
-            this.userId = new KapuaEid(userId);
+    public void setSubject(Subject subject) {
+        if (subject != null) {
+            this.subject = new SubjectImpl(subject);
+        } else {
+            this.subject = null;
+        }
+    }
+
+    @Override
+    public KapuaId getCredentialId() {
+        return credentialId;
+    }
+
+    @Override
+    public void setCredentialId(KapuaId credentialId) {
+        if (credentialId != null) {
+            this.credentialId = new KapuaEid(credentialId);
+        } else {
+            this.credentialId = null;
         }
     }
 
@@ -135,7 +150,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     protected void prePersistsAction()
             throws KapuaException {
         this.id = new KapuaEid(IdGenerator.generate());
-        this.createdBy = userId;
+        this.createdBy = new KapuaEid(BigInteger.ONE);
         this.createdOn = new Date();
         this.modifiedBy = this.createdBy;
         this.modifiedOn = this.createdOn;

@@ -12,32 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import java.security.Principal;
-
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
- * Kapua {@link Principal} implementation
+ * {@link KapuaPrincipal} implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public class KapuaPrincipalImpl implements KapuaPrincipal
-{
+public class KapuaPrincipalImpl implements KapuaPrincipal {
 
     private static final long serialVersionUID = -3999313290528918167L;
 
-    private String  name;
+    private String name;
     /**
-     * Token Id coming from the KapuaSession. It's used to keep the KapuaPrincipal aligned with the KapuaSession
+     * Access Token coming from the KapuaSession.
+     * It's used to keep the KapuaPrincipal aligned with the KapuaSession
      */
-    private String  tokenId;
-    private KapuaId userId;
-    private String  username;
-    private KapuaId accountId;
-    private String  clientId;
-    private String  clientIp;
+    private AccessToken accessToken;
+
+    private String username;
+    private String clientId;
+    private String clientIp;
 
     /**
      * Create a KapuaPrincipal with the supplied name.
@@ -47,61 +43,44 @@ public class KapuaPrincipalImpl implements KapuaPrincipal
      * @param clientId
      * @param clientIp
      */
-    public KapuaPrincipalImpl(AccessToken accessToken, String username, String clientId, String clientIp)
-    {
+    public KapuaPrincipalImpl(AccessToken accessToken, String username, String clientId, String clientIp) {
+        this.accessToken = accessToken;
+
         this.username = username;
-        this.tokenId = accessToken.getTokenId();
-        this.userId = accessToken.getUserId();
-        this.accountId = accessToken.getScopeId();
         this.clientId = clientId;
         this.clientIp = clientIp;
-        name = (new StringBuilder()).append(accountId != null ? accountId : "null").append(":").append(username).toString();
+
+        this.name = (new StringBuilder()).append(accessToken.getScopeId() != null ? accessToken.getScopeId() : "null").append(":").append(username).toString();
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getTokenId()
-    {
-        return tokenId;
+    public AccessToken getAccessToken() {
+        return accessToken;
     }
 
-    public KapuaId getUserId()
-    {
-        return userId;
-    }
-
-    public KapuaId getAccountId()
-    {
-        return accountId;
-    }
-
-    public String getClientIp()
-    {
+    public String getClientIp() {
         return clientIp;
     }
 
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                 + ((accountId == null) ? 0 : accountId.hashCode());
+                + ((accessToken.getScopeId() == null) ? 0 : accessToken.getScopeId().hashCode());
         result = prime * result + ((username == null) ? 0 : username.hashCode());
         return result;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
@@ -109,17 +88,15 @@ public class KapuaPrincipalImpl implements KapuaPrincipal
         if (getClass() != obj.getClass())
             return false;
         KapuaPrincipalImpl other = (KapuaPrincipalImpl) obj;
-        if (accountId == null) {
-            if (other.accountId != null)
+        if (accessToken.getScopeId() == null) {
+            if (other.accessToken.getScopeId() != null)
                 return false;
-        }
-        else if (!accountId.equals(other.accountId))
+        } else if (!accessToken.getScopeId().equals(other.accessToken.getScopeId()))
             return false;
         if (username == null) {
             if (other.username != null)
                 return false;
-        }
-        else if (!username.equals(other.username))
+        } else if (!username.equals(other.username))
             return false;
         return true;
     }

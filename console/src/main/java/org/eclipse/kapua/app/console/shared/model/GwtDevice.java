@@ -377,12 +377,12 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         set("lastEventType", lastEventType);
     }
 
-    public String getDeviceUserId() {
-        return (String) get("deviceUserId");
+    public String getCredentialId() {
+        return (String) get("credentialId");
     }
 
-    public void setDeviceUserId(String deviceUserId) {
-        set("deviceUserId", deviceUserId);
+    public void setCredentialId(String credentialId) {
+        set("credentialId", credentialId);
     }
 
     public String getIccid() {

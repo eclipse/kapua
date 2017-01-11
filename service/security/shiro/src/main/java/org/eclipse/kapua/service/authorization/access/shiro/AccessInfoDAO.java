@@ -15,11 +15,13 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.subject.SubjectFactory;
 
 /**
  * {@link AccessInfo) DAO
@@ -41,8 +43,11 @@ public class AccessInfoDAO extends ServiceDAO {
      */
     public static AccessInfo create(EntityManager em, AccessInfoCreator creator)
             throws KapuaException {
+
+        SubjectFactory subjectFactory = KapuaLocator.getInstance().getFactory(SubjectFactory.class);
+
         AccessInfo accessInfo = new AccessInfoImpl(creator.getScopeId());
-        accessInfo.setUserId(creator.getUserId());
+        accessInfo.setSubject(subjectFactory.newSubject(creator.getSubjectType(), creator.getSubjectId()));
         return ServiceDAO.create(em, accessInfo);
     }
 

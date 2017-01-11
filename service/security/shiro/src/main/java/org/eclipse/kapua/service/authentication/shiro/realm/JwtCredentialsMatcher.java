@@ -33,7 +33,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -70,43 +69,43 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
         //
         // Info data
-        LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
-        Credential infoCredential = (Credential) info.getCredentials();
+        // LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
+        // Credential infoCredential = (Credential) info.getCredentials();
 
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (jwt.equals(infoCredential.getCredentialKey())) {
-            try {
+        // if (jwt.equals(infoCredential.getSecret())) {
+        try {
 
-                URI jwksUri = resolveJwksUri(jwt);
-                HttpsJwks httpsJkws = new HttpsJwks(jwksUri.toString());
-                HttpsJwksVerificationKeyResolver httpsJwksKeyResolver = new HttpsJwksVerificationKeyResolver(httpsJkws);
+            URI jwksUri = resolveJwksUri(jwt);
+            HttpsJwks httpsJkws = new HttpsJwks(jwksUri.toString());
+            HttpsJwksVerificationKeyResolver httpsJwksKeyResolver = new HttpsJwksVerificationKeyResolver(httpsJkws);
 
-                //
-                // Set validator
-                KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
+            //
+            // Set validator
+            KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+            List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
 
-                JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                        .setVerificationKeyResolver(httpsJwksKeyResolver) // Set resolver key
-                        .setRequireIssuedAt() // Set require reserved claim: iat
-                        .setRequireExpirationTime() // Set require reserved claim: exp
-                        .setRequireSubject() // // Set require reserved claim: sub
-                        .setExpectedAudience(audiences.toArray(new String[audiences.size()]))
-                        .build();
+            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setVerificationKeyResolver(httpsJwksKeyResolver) // Set resolver key
+                    .setRequireIssuedAt() // Set require reserved claim: iat
+                    .setRequireExpirationTime() // Set require reserved claim: exp
+                    .setRequireSubject() // // Set require reserved claim: sub
+                    .setExpectedAudience(audiences.toArray(new String[audiences.size()]))
+                    .build();
 
-                //
-                // This validates JWT
-                jwtConsumer.processToClaims(jwt);
+            //
+            // This validates JWT
+            jwtConsumer.processToClaims(jwt);
 
-                credentialMatch = true;
+            credentialMatch = true;
 
-                // FIXME: if true cache token password for authentication performance improvement
-            } catch (InvalidJwtException e) {
-                logger.error("Error while validating JWT credentials", e);
-            }
+            // FIXME: if true cache token password for authentication performance improvement
+        } catch (InvalidJwtException e) {
+            logger.error("Error while validating JWT credentials", e);
         }
+        // }
 
         return credentialMatch;
     }

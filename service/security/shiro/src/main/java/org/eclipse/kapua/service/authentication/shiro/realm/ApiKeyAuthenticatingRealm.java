@@ -17,7 +17,6 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
@@ -32,17 +31,16 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * {@link ApiKeyCredentials} based {@link AuthenticatingRealm} implementation.
  * 
- * since 1.0
+ * @since 1.0.0
  * 
  */
 public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
@@ -78,13 +76,11 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         //
         // Get Services
         KapuaLocator locator;
-        UserService userService;
         AccountService accountService;
         CredentialService credentialService;
 
         try {
             locator = KapuaLocator.getInstance();
-            userService = locator.getService(UserService.class);
             accountService = locator.getService(AccountService.class);
             credentialService = locator.getService(CredentialService.class);
         } catch (KapuaRuntimeException kre) {
@@ -93,10 +89,9 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
 
         //
         // Find credentials
-        // FIXME: manage multiple credentials and multiple credentials type
         final Credential credential;
         try {
-            credential = KapuaSecurityUtils.doPriviledge(() -> credentialService.findByApiKey(tokenApiKey));
+            credential = KapuaSecurityUtils.doPriviledge(() -> credentialService.findByKey(tokenApiKey, SubjectType.USER, CredentialType.API_KEY));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -109,31 +104,10 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         //
-        // Get the associated user by name
-        final User user;
-        try {
-            user = KapuaSecurityUtils.doPriviledge(() -> userService.find(credential.getScopeId(), credential.getUserId()));
-        } catch (AuthenticationException ae) {
-            throw ae;
-        } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
-        }
-
-        // Check existence
-        if (user == null) {
-            throw new UnknownAccountException();
-        }
-
-        // Check disabled
-        if (UserStatus.DISABLED.equals(user.getStatus())) {
-            throw new DisabledAccountException();
-        }
-
-        //
         // Find account
         final Account account;
         try {
-            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(user.getScopeId()));
+            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(credential.getScopeId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -147,10 +121,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
 
         //
         // BuildAuthenticationInfo
-        return new LoginAuthenticationInfo(getName(),
-                account,
-                user,
-                credential);
+        return new LoginAuthenticationInfo(getName(), credential);
     }
 
     @Override
@@ -162,8 +133,9 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
 
         Subject currentSubject = SecurityUtils.getSubject();
         Session session = currentSubject.getSession();
-        session.setAttribute("scopeId", kapuaInfo.getUser().getScopeId());
-        session.setAttribute("userId", kapuaInfo.getUser().getId());
+        session.setAttribute("scopeId", kapuaInfo.getScopeId());
+        session.setAttribute("subject", kapuaInfo.getSubject());
+        session.setAttribute("credentials", kapuaInfo.getCredentials());
     }
 
     @Override

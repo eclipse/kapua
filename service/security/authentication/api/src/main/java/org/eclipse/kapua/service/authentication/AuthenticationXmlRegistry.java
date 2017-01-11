@@ -25,7 +25,7 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public UsernamePasswordCredentials newUsernamePasswordCredentials() {
-        return credentialsFactory.newUsernamePasswordCredentials(null, null);
+        return credentialsFactory.newUsernamePasswordCredentials(null, null, null);
     }
 
     /**

@@ -16,36 +16,46 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.authorization.subject.Subject;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
- * Credential service definition.
+ * {@link Credential} service definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface CredentialService extends KapuaEntityService<Credential, CredentialCreator>, KapuaUpdatableEntityService<Credential> {
 
     /**
-     * Return the credential list result looking by user identifier (and also scope identifier)
+     * Returns the {@link CredentialListResult} searching by the {@link SubjectType} and the subject {@link KapuaId}.
      * 
      * @param scopeId
-     * @param userId
-     * @return
+     *            The scope id in which to search.
+     * @param subject
+     *            The {@link Subject} to filter results.
+     * @param type
+     *            The {@link CredentialType} to filter results. Optional.
+     * 
+     * @return The {@link CredentialListResult} matching the given parameters.
      * @throws KapuaException
      * 
-     * @since 1.0
+     * @since 1.0.0
      */
-    public CredentialListResult findByUserId(KapuaId scopeId, KapuaId userId)
+    public CredentialListResult findBySubject(KapuaId scopeId, Subject subject, CredentialType type)
             throws KapuaException;
 
     /**
-     * Returns the {@link Credential} of type {@link CredentialType#API_KEY} matching the given parameters
+     * Returns the {@link Credential} found for the given parameters.
      * 
-     * @param tokenApiKey
-     *            The API key to match
-     * @return The matched {@link Credential}
+     * @param key
+     *            The {@link Credential} key to match.
+     * @param subjectType
+     *            The {@link SubjectType} to match.
+     * @param type
+     *            The {@link CredentialType} to match.
+     * @return The {@link Credential} found for the given parameters.
      * @throws KapuaException
-     * @since 1.0
+     * @since 1.0.0
      */
-    public Credential findByApiKey(String tokenApiKey) throws KapuaException;
+    public Credential findByKey(String key, SubjectType subjectType, CredentialType type) throws KapuaException;
 }

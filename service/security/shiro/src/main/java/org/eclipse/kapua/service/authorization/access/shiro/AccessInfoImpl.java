@@ -12,18 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.subject.Subject;
+import org.eclipse.kapua.service.authorization.subject.shiro.SubjectImpl;
 
 /**
  * {@link AccessInfo} implementation.
@@ -37,10 +35,7 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
     private static final long serialVersionUID = -3760818776351242930L;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false, updatable = false))
-    })
-    private KapuaEid userId;
+    private SubjectImpl subject;
 
     /**
      * Empty constructor required by JPA.
@@ -76,20 +71,21 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
     public AccessInfoImpl(AccessInfo accessInfo) throws KapuaException {
         super((AbstractKapuaUpdatableEntity) accessInfo);
 
-        setUserId(accessInfo.getUserId());
+        setSubject(accessInfo.getSubject());
     }
 
     @Override
-    public void setUserId(KapuaId userId) {
-        if (userId != null) {
-            this.userId = new KapuaEid(userId.getId());
+    public Subject getSubject() {
+        return subject;
+    }
+
+    @Override
+    public void setSubject(Subject subject) {
+        if (subject != null) {
+            this.subject = new SubjectImpl(subject);
         } else {
-            this.userId = null;
+            this.subject = null;
         }
     }
 
-    @Override
-    public KapuaId getUserId() {
-        return userId;
-    }
 }

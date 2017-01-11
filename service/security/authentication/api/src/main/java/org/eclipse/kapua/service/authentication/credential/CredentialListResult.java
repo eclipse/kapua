@@ -15,12 +15,11 @@ package org.eclipse.kapua.service.authentication.credential;
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * Credential list result definition.
+ * {@link Credential} list result definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-public interface CredentialListResult extends KapuaListResult<Credential>
-{
+public interface CredentialListResult extends KapuaListResult<Credential> {
 
 }

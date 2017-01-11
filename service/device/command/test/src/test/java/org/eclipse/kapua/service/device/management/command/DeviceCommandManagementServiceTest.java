@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialSubject;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -40,6 +39,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
@@ -93,11 +93,11 @@ public class DeviceCommandManagementServiceTest extends Assert {
 
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray()));
+            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(SubjectType.USER, username, password.toCharArray()));
 
             //
             // Get current user Id
-            adminUserId = KapuaSecurityUtils.getSession().getUserId();
+            adminUserId = KapuaSecurityUtils.getSession().getSubject().getId();
             adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
 
             //
@@ -153,7 +153,8 @@ public class DeviceCommandManagementServiceTest extends Assert {
         permissions.add(permissionFactory.newPermission(deviceLifecycleDomain, Actions.connect, account.getId()));
 
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
-        accessInfoCreator.setUserId(user.getId());
+        accessInfoCreator.setSubjectType(SubjectType.DEVICE);
+        accessInfoCreator.setSubjectId(user.getId());
         accessInfoCreator.setPermissions(permissions);
 
         accessInfoService.create(accessInfoCreator);
@@ -163,11 +164,11 @@ public class DeviceCommandManagementServiceTest extends Assert {
         CredentialService credentialService = locator.getService(CredentialService.class);
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
         CredentialCreator credentialCreator = credentialFactory.newCreator(account.getId(),
+                SubjectType.DEVICE,
                 user.getId(),
                 CredentialType.PASSWORD,
-                "kapua-password",
-                CredentialSubject.USER,
-                user.getId());
+                userName,
+                "kapua-password");
 
         credentialService.create(credentialCreator);
 

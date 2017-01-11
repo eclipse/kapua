@@ -10,19 +10,17 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.credential;
-
+package org.eclipse.kapua.service.authorization.subject;
 
 /**
- * Available credential subject
+ * Available {@link Subject}s
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-public enum CredentialSubject
-{
-    USER,
-    DEVICE,
-    GROUP
-    ;
+public enum SubjectType {
+    USER,//
+    DEVICE, //
+    BROKER_CONNECTION, //
+    GROUP;
 }

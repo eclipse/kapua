@@ -355,8 +355,6 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             // Security Stuff
             device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
-            KapuaId deviceUserId = KapuaEid.parseCompactId(gwtDevice.getDeviceUserId());
-            device.setPreferredUserId(deviceUserId);
 
             // Custom attributes
             device.setCustomAttribute1(gwtDevice.getUnescapedCustomAttribute1());

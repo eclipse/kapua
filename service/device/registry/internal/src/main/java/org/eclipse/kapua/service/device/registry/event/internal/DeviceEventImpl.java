@@ -27,8 +27,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -44,45 +47,45 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
  */
 @Entity
 @Table(name = "dvc_device_event")
-public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
-{
+public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent {
+
     private static final long serialVersionUID = 7142819355352738950L;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "device_id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "device_id", nullable = false, updatable = false))
     })
-    private KapuaEid          deviceId;
+    private KapuaEid deviceId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "received_on", updatable = false, nullable = false)
-    private Date              receivedOn;
+    private Date receivedOn;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent_on", updatable = false)
-    private Date              sentOn;
+    private Date sentOn;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "longitude", column = @Column(name = "pos_longitude", updatable = false)),
-                          @AttributeOverride(name = "latitude", column = @Column(name = "pos_latitude", updatable = false)),
-                          @AttributeOverride(name = "altitude", column = @Column(name = "pos_altitude", updatable = false)),
-                          @AttributeOverride(name = "precision", column = @Column(name = "pos_precision", updatable = false)),
-                          @AttributeOverride(name = "heading", column = @Column(name = "pos_heading", updatable = false)),
-                          @AttributeOverride(name = "speed", column = @Column(name = "pos_speed", updatable = false)),
-                          @AttributeOverride(name = "timestamp", column = @Column(name = "pos_timestamp", updatable = false)),
-                          @AttributeOverride(name = "satellites", column = @Column(name = "pos_satellites", updatable = false)),
-                          @AttributeOverride(name = "status", column = @Column(name = "pos_status", updatable = false))
+            @AttributeOverride(name = "longitude", column = @Column(name = "pos_longitude", updatable = false)),
+            @AttributeOverride(name = "latitude", column = @Column(name = "pos_latitude", updatable = false)),
+            @AttributeOverride(name = "altitude", column = @Column(name = "pos_altitude", updatable = false)),
+            @AttributeOverride(name = "precision", column = @Column(name = "pos_precision", updatable = false)),
+            @AttributeOverride(name = "heading", column = @Column(name = "pos_heading", updatable = false)),
+            @AttributeOverride(name = "speed", column = @Column(name = "pos_speed", updatable = false)),
+            @AttributeOverride(name = "timestamp", column = @Column(name = "pos_timestamp", updatable = false)),
+            @AttributeOverride(name = "satellites", column = @Column(name = "pos_satellites", updatable = false)),
+            @AttributeOverride(name = "status", column = @Column(name = "pos_status", updatable = false))
     })
     private KapuaPositionImpl position;
 
     @Basic
     @Column(name = "resource", updatable = false, nullable = false)
-    private String            resource;
+    private String resource;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "action", updatable = false, nullable = false)
-    private KapuaMethod       action;
+    private KapuaMethod action;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "response_code", updatable = false, nullable = false)
@@ -90,13 +93,12 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
 
     @Lob
     @Column(name = "event_message", updatable = false, nullable = false)
-    private String            eventMessage;
+    private String eventMessage;
 
     /**
      * Constructor
      */
-    protected DeviceEventImpl()
-    {
+    protected DeviceEventImpl() {
         super();
     }
 
@@ -105,56 +107,47 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
      * 
      * @param scopeId
      */
-    public DeviceEventImpl(KapuaId scopeId)
-    {
+    public DeviceEventImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public KapuaId getDeviceId()
-    {
+    public KapuaId getDeviceId() {
         return deviceId;
     }
 
     @Override
-    public void setDeviceId(KapuaId deviceId)
-    {
+    public void setDeviceId(KapuaId deviceId) {
         this.deviceId = (KapuaEid) deviceId;
     }
 
     @Override
-    public Date getSentOn()
-    {
+    public Date getSentOn() {
         return sentOn;
     }
 
     @Override
-    public void setSentOn(Date sentOn)
-    {
+    public void setSentOn(Date sentOn) {
         this.sentOn = sentOn;
     }
 
     @Override
-    public Date getReceivedOn()
-    {
+    public Date getReceivedOn() {
         return receivedOn;
     }
 
     @Override
-    public void setReceivedOn(Date receivedOn)
-    {
+    public void setReceivedOn(Date receivedOn) {
         this.receivedOn = receivedOn;
     }
 
     @Override
-    public KapuaPosition getPosition()
-    {
+    public KapuaPosition getPosition() {
         return position;
     }
 
     @Override
-    public void setPosition(KapuaPosition position)
-    {
+    public void setPosition(KapuaPosition position) {
         if (position != null) {
             this.position = new KapuaPositionImpl();
             this.position.setAltitude(position.getAltitude());
@@ -170,51 +163,58 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent
     }
 
     @Override
-    public String getResource()
-    {
+    public String getResource() {
         return resource;
     }
 
     @Override
-    public void setResource(String resource)
-    {
+    public void setResource(String resource) {
         this.resource = resource;
     }
 
     @Override
-    public KapuaMethod getAction()
-    {
+    public KapuaMethod getAction() {
         return action;
     }
 
     @Override
-    public void setAction(KapuaMethod action)
-    {
+    public void setAction(KapuaMethod action) {
         this.action = action;
     }
 
     @Override
-    public KapuaResponseCode getResponseCode()
-    {
+    public KapuaResponseCode getResponseCode() {
         return responseCode;
     }
 
     @Override
-    public void setResponseCode(KapuaResponseCode responseCode)
-    {
+    public void setResponseCode(KapuaResponseCode responseCode) {
         this.responseCode = responseCode;
     }
 
     @Override
-    public String getEventMessage()
-    {
+    public String getEventMessage() {
         return eventMessage;
     }
 
     @Override
-    public void setEventMessage(String eventMessage)
-    {
+    public void setEventMessage(String eventMessage) {
         this.eventMessage = eventMessage;
     }
 
+    /**
+     * This methods needs override because {@link DeviceEvent}s can be created from the broker plugin.
+     */
+    @Override
+    protected void prePersistsAction()
+            throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
+            super.prePersistsAction();
+        } else {
+            this.id = new KapuaEid(IdGenerator.generate());
+
+            this.createdBy = KapuaEid.ONE;
+            this.createdOn = new Date();
+        }
+    }
 }

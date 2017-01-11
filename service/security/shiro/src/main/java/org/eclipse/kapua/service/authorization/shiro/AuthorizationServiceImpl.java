@@ -24,25 +24,21 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Authorization service implementation.
+ * {@link AuthorizationService} implementation.
  * 
- * since 1.0
- * 
+ * since 1.0.0
  */
 @KapuaProvider
-public class AuthorizationServiceImpl implements AuthorizationService
-{
+public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public boolean isPermitted(Permission permission)
-        throws KapuaException
-    {
+            throws KapuaException {
         boolean isPermitted = true;
 
         try {
             checkPermission(permission);
-        }
-        catch (AuthorizationException e) {
+        } catch (AuthorizationException e) {
             isPermitted = false;
         }
 
@@ -51,8 +47,7 @@ public class AuthorizationServiceImpl implements AuthorizationService
 
     @Override
     public void checkPermission(Permission permission)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaSession session = KapuaSecurityUtils.getSession();
 
         // FIXME: this should throw something like unauthenticated exception

@@ -38,8 +38,7 @@ import org.eclipse.kapua.service.user.UserType;
  *
  */
 @KapuaProvider
-public class UserServiceImpl extends AbstractKapuaConfigurableService implements UserService
-{
+public class UserServiceImpl extends AbstractKapuaConfigurableService implements UserService {
 
     private static final long serialVersionUID = 4319929212203916781L;
     private final KapuaLocator locator = KapuaLocator.getInstance();
@@ -52,7 +51,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
     public UserServiceImpl() {
         super(UserService.class.getName(), userDomain, UserEntityManagerFactory.getInstance());
     }
-    
+
     @Override
     public User create(UserCreator userCreator)
             throws KapuaException {

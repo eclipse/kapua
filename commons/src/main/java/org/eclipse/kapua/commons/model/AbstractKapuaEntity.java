@@ -167,7 +167,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
             throws KapuaException {
         this.id = new KapuaEid(IdGenerator.generate());
 
-        this.createdBy = new KapuaEid(KapuaSecurityUtils.getSession().getUserId().getId());
+        this.createdBy = new KapuaEid(KapuaSecurityUtils.getSession().getSubject().getId());
         this.createdOn = new Date();
     }
 

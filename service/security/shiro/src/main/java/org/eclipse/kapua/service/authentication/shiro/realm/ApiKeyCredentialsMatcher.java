@@ -45,19 +45,17 @@ public class ApiKeyCredentialsMatcher implements CredentialsMatcher {
         // Match token with info
         boolean credentialMatch = false;
         if (CredentialType.API_KEY.equals(infoCredential.getCredentialType())) {
-            String fullApiKey = infoCredential.getCredentialKey();
 
             KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
 
-            int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
-            String tokenPre = tokenApiFullKey.substring(0, preLength);
-            String tokenKey = tokenApiFullKey.substring(preLength, tokenApiFullKey.length());
+            int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
+            String tokenKey = tokenApiFullKey.substring(0, keyLength);
+            String tokenSecret = tokenApiFullKey.substring(keyLength, tokenApiFullKey.length());
 
-            String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
-            String infoPre = fullApiKey.split(preSeparator)[0];
-            String infoHashedKey = fullApiKey.split(preSeparator)[1];
+            String infoKey = infoCredential.getKey();
+            String infoHashedSecret = infoCredential.getSecret();
 
-            if (tokenPre.equals(infoPre) && BCrypt.checkpw(tokenKey, infoHashedKey)) {
+            if (tokenKey.equals(infoKey) && BCrypt.checkpw(tokenSecret, infoHashedSecret)) {
                 credentialMatch = true;
 
                 // FIXME: if true cache token password for authentication performance improvement

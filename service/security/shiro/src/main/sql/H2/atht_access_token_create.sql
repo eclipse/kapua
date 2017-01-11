@@ -18,7 +18,10 @@ CREATE TABLE atht_access_token (
   modified_on            	TIMESTAMP(3),
   modified_by            	BIGINT(21)    UNSIGNED,
   
-  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
+  subject_type				VARCHAR(64)   NOT NULL,
+  subject_id				BIGINT(21)	  UNSIGNED,
+  
+  credential_id				BIGINT(21)	  UNSIGNED NOT NULL,
   token_id					TEXT	      NOT NULL,
   expires_on				TIMESTAMP(3)  NOT NULL,
   
@@ -30,4 +33,4 @@ CREATE TABLE atht_access_token (
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
-CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
+CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, subject_type, subject_id);

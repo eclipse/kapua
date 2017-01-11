@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
+import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -20,69 +22,60 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
 /**
- * Device connection entity.
+ * {@link DeviceConnection} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 @Entity(name = "DeviceConnection")
 @Table(name = "dvc_device_connection")
-public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implements DeviceConnection
-{
-    private static final long      serialVersionUID = 8928343233144731836L;
+public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implements DeviceConnection {
 
-    @XmlElement(name = "connectionStatus")
+    private static final long serialVersionUID = 8928343233144731836L;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "connection_status", nullable = false)
     private DeviceConnectionStatus connectionStatus;
 
-    @XmlElement(name = "clientId")
     @Basic
     @Column(name = "client_id", nullable = false, updatable = false)
-    private String                 clientId;
+    private String clientId;
 
-    @XmlElement(name = "userId")
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "credential_id", nullable = false))
     })
-    private KapuaEid               userId;
+    private KapuaEid credentialId;
 
-    @XmlElement(name = "protocol")
     @Basic
     @Column(name = "protocol", nullable = false)
-    private String                 protocol;
+    private String protocol;
 
-    @XmlElement(name = "clientIp")
     @Basic
     @Column(name = "client_ip")
-    private String                 clientIp;
+    private String clientIp;
 
-    @XmlElement(name = "serverIp")
     @Basic
     @Column(name = "server_ip")
-    private String                 serverIp;
+    private String serverIp;
 
     /**
      * Constructor
      */
-    protected DeviceConnectionImpl()
-    {
+    protected DeviceConnectionImpl() {
         super();
     }
 
@@ -91,80 +84,104 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
      * 
      * @param scopeId
      */
-    public DeviceConnectionImpl(KapuaId scopeId)
-    {
+    public DeviceConnectionImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public DeviceConnectionStatus getStatus()
-    {
+    public DeviceConnectionStatus getStatus() {
         return connectionStatus;
     }
 
     @Override
-    public void setStatus(DeviceConnectionStatus connectionStatus)
-    {
+    public void setStatus(DeviceConnectionStatus connectionStatus) {
         this.connectionStatus = connectionStatus;
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public KapuaId getUserId()
-    {
-        return userId;
+    public KapuaId getCredentialId() {
+        return credentialId;
     }
 
     @Override
-    public void setUserId(KapuaId userId)
-    {
-        this.userId = (KapuaEid) userId;
+    public void setCredentialId(KapuaId credentialId) {
+        if (credentialId != null) {
+            this.credentialId = new KapuaEid(credentialId);
+        } else {
+            this.credentialId = null;
+        }
     }
 
     @Override
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return protocol;
     }
 
     @Override
-    public void setProtocol(String protocol)
-    {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
     @Override
-    public String getClientIp()
-    {
+    public String getClientIp() {
         return clientIp;
     }
 
     @Override
-    public void setClientIp(String clientIp)
-    {
+    public void setClientIp(String clientIp) {
         this.clientIp = clientIp;
     }
 
     @Override
-    public String getServerIp()
-    {
+    public String getServerIp() {
         return serverIp;
     }
 
     @Override
-    public void setServerIp(String serverIp)
-    {
+    public void setServerIp(String serverIp) {
         this.serverIp = serverIp;
+    }
+
+    /**
+     * This methods needs override because {@link DeviceConnection}s can be created from the broker plugin.
+     */
+    @Override
+    protected void prePersistsAction()
+            throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
+            super.prePersistsAction();
+        } else {
+            this.id = new KapuaEid(IdGenerator.generate());
+
+            this.createdBy = KapuaEid.ONE;
+            this.createdOn = new Date();
+
+            this.modifiedBy = this.createdBy;
+            this.modifiedOn = this.createdOn;
+        }
+    }
+
+    /**
+     * This methods needs override because {@link DeviceConnection}s can be created from the broker plugin.
+     */
+    @PreUpdate
+    protected void preUpdateAction()
+            throws KapuaException {
+        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
+            super.preUpdateAction();
+        } else {
+            this.modifiedBy = KapuaEid.ONE;
+            this.modifiedOn = new Date();
+        }
     }
 }

@@ -18,7 +18,9 @@ CREATE TABLE athz_access_info (
   modified_on               TIMESTAMP(3)  NOT NULL,
   modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
   
-  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
+  subject_type				VARCHAR(64)   NOT NULL,
+  subject_id				BIGINT(21)	  UNSIGNED,
+
   
   optlock                   INT UNSIGNED,
   attributes				TEXT,
@@ -28,4 +30,4 @@ CREATE TABLE athz_access_info (
   
 ) DEFAULT CHARSET=utf8;
 
-CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, user_id);
+CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, subject_type, subject_id);
