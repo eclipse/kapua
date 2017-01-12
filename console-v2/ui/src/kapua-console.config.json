@@ -5,7 +5,7 @@
             "custom1": {
                 "name": "oauth2",
                 "clientId": "console",
-                "redirectUri": "http://localhost:3000",
+                "redirectUri": "http://localhost:3000/login",
                 "authorizationEndpoint": "http://localhost:9090/auth/realms/master/protocol/openid-connect/auth",
                 "url": "http://localhost:3000/oauth/authenticate",
                 "responseType": [

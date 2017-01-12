@@ -53,9 +53,14 @@
     "webpack-fail-plugin": "^1.0.5"
   },
   "scripts": {
+<<<<<<< HEAD
     "test": "karma start --NODE_ENV=test",
+    "postinstall": "typings install",
+=======
+    "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "concurrently \"typings install\" \"npm rebuild node-sass\"",
     "build": "webpack",
+>>>>>>> impl-consoleV2
     "start": "webpack",
     "start:dev": "webpack -dw --color",
     "webpack:w": "webpack-dev-server -d --port 3000"
