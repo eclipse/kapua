@@ -4,7 +4,6 @@
   "description": "Kapua admin console written in HTML and AngularJS",
   "main": "index.js",
   "dependencies": {
-    "@types/angular-mocks": "~1.5.5",
     "@types/jasmine": "~2.5.37",
     "angular-local-storage": "^0.5.0",
     "angular-patternfly": "^3.15.0",
@@ -26,8 +25,9 @@
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.24.1",
     "istanbul": "~0.4.5",
-    "istanbul-instrumenter-loader": "~1.0.0",
+    "istanbul-instrumenter-loader": "~0.2.0",
     "jasmine": "~2.5.2",
+    "jquery": "^3.1.1",
     "json-loader": "^0.5.4",
     "karma": "~1.3.0",
     "karma-babel-preprocessor": "^6.0.1",
