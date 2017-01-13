@@ -402,6 +402,11 @@
                 <artifactId>kapua-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console-v2</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- External dependencies -->
             <dependency>
@@ -505,7 +510,8 @@
         <!-- Applications -->
         <module>console</module>
         <module>rest-api</module>
-        
+        <module>console-v2</module>
+
         <!-- Assembly -->
         <module>assembly</module>
     </modules>

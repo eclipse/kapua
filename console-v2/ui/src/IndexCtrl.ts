@@ -10,34 +10,31 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-#login-view {
-    background-image: url(../img/login-background.jpeg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: right top;
-    background-size:cover;
-    height: 100%;
-}
+export default class IndexCtrl {
+  private showHeader: boolean;
+  private notifications = [];
+  private closeNotification;
 
-#kapua-logo-container {
-    height: 78px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-}
+  constructor(private $rootScope: angular.IRootScopeService, private Notifications) {
+    $rootScope.$on("$stateChangeSuccess", (
+      event: angular.IAngularEvent,
+      toState: angular.ui.IState,
+      toParams,
+      fromState: angular.ui.IState,
+      fromParams
+    ) => {
+      this.showHeader = toState.name.indexOf("kapua.") === 0;
+    });
+    this.notifications = Notifications.data;
 
-#kapua-logo {
-    height: 48px;
-}
+    // FIXME - To become a class method with PF4
+    this.closeNotification = (data) => {
+      this.Notifications.remove(data);
+    };
+  }
 
-#login-form-container {
-    position: absolute;
-    top: 45%;
-    background-color: rgba(255, 255, 255, 0.5);
-    width: 100%;
-    #details {
-        padding-top: 20px;
-    }
+  closeNotification2(data) {
+    console.log(this);
+    this.Notifications.remove(data);
+  }
 }
-

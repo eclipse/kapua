@@ -1,4 +1,17 @@
+/*******************************************************************************
+* Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
+*                                                                               
+* All rights reserved. This program and the accompanying materials              
+* are made available under the terms of the Eclipse Public License v1.0         
+* which accompanies this distribution, and is available at                      
+* http://www.eclipse.org/legal/epl-v10.html                                     
+*                                                                               
+* Contributors:                                                                 
+*     Eurotech - initial API and implementation                                 
+*                                                                               
+*******************************************************************************/
 var HtmlWebpackPlugin = require("html-webpack-plugin");
+var failPlugin = require("webpack-fail-plugin");
 var webpack = require("webpack");
 
 module.exports = {
@@ -27,7 +40,8 @@ module.exports = {
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
             { test: /\.(png|jpe?g|gif)$/, loader: "url?limit=25000" },
             { test: /\.html$/, exclude: /node_modules/, loader: "html" },
-            { test: /\.json$/, loader: "json" }
+            { test: /\.json$/, loader: "json" },
+            { test: require.resolve("angular-patternfly/node_modules/patternfly/node_modules/jquery"), loader: 'expose?jQuery!expose?$!expose?jquery!expose?window.jQuery!expose?window.jquery' }
         ]
     },
     plugins: [
@@ -48,6 +62,7 @@ module.exports = {
             jQuery: "jquery",
             "window.jQuery": "jquery",
             "window.jquery": "jquery"
-        })
+        }),
+        failPlugin
     ]
 }

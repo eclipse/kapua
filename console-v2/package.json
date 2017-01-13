@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "concurrently \"cd server && npm i\" \"cd ui && npm i\"",
-    "start": "npm run console && npm run server",
-    "start:dev": "concurrently \"npm run console:dev\" \"npm run server:dev\"",
-    "console": "cd ui && npm start",
-    "console:dev": "cd ui && npm run start:dev",
+    "build": "concurrently \"npm run build:ui\" \"npm run build:server\"",
+    "build:ui": "cd ui && npm run build",
+    "build:server": "cd server && npm run build",
+    "start": "npm run ui && npm run server",
+    "start:dev": "concurrently -p \"[{name} - {time}]\" -n \"UI,SERVER\" \"npm run ui:dev\" \"npm run server:dev\"",
+    "ui": "cd ui && npm start",
+    "ui:dev": "cd ui && npm run start:dev",
     "server": "cd server && npm start",
     "server:dev": "cd server && npm run start:dev"
   },

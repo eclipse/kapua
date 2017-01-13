@@ -10,34 +10,27 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-#login-view {
-    background-image: url(../img/login-background.jpeg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: right top;
-    background-size:cover;
-    height: 100%;
+interface Device {
+  acceptEncoding: string;
+  applicationIdentifiers: string;
+  biosVersion: string;
+  clientId: string;
+  connectionId: string;
+  createdBy: string;
+  createdOn: string;
+  devoceCredentialsMode: string;
+  displayName: string;
+  firmwareVersion: string;
+  id: string;
+  jvmVersion: string;
+  modelId: string;
+  modifiedBy: string;
+  modifiedOn: string;
+  optlock: number;
+  osVersion: string;
+  osgiFrameworkVersion: string;
+  scopeId: string;
+  serialNumber: string;
+  status: string;
+  type: string;
 }
-
-#kapua-logo-container {
-    height: 78px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-#kapua-logo {
-    height: 48px;
-}
-
-#login-form-container {
-    position: absolute;
-    top: 45%;
-    background-color: rgba(255, 255, 255, 0.5);
-    width: 100%;
-    #details {
-        padding-top: 20px;
-    }
-}
-

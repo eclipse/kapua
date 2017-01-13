@@ -1,3 +1,15 @@
+/*******************************************************************************
+* Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
+*                                                                               
+* All rights reserved. This program and the accompanying materials              
+* are made available under the terms of the Eclipse Public License v1.0         
+* which accompanies this distribution, and is available at                      
+* http://www.eclipse.org/legal/epl-v10.html                                     
+*                                                                               
+* Contributors:                                                                 
+*     Eurotech - initial API and implementation                                 
+*                                                                               
+*******************************************************************************/
 "use strict";
 
 import * as express from "express";
@@ -10,7 +22,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 
 let kapuaServerConf = require("../conf/kapua-server.config.json");
-let privateKey = fs.readFileSync(path.resolve(__dirname, "../conf/public.key"));
+let publicKey = fs.readFileSync(path.resolve(__dirname, "../conf/public.key"));
 
 namespace Route {
     export class OAuthLogin {
@@ -41,7 +53,7 @@ namespace Route {
             let token = _.replace(<string>req.headers["authorization"], "Bearer ", "");
             if (token) {
                 try {
-                    let decoded = jwt.verify(token, privateKey);
+                    let decoded = jwt.verify(token, publicKey);
                 } catch (err) {
                     res.sendStatus(401);
                     return;

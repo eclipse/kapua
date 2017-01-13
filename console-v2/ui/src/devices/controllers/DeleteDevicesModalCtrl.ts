@@ -10,34 +10,16 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-#login-view {
-    background-image: url(../img/login-background.jpeg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: right top;
-    background-size:cover;
-    height: 100%;
+export default class DeleteDevicesModalCtrl {
+  constructor(private $modalInstance: angular.ui.bootstrap.IModalServiceInstance,
+              private $http: angular.IHttpService,
+              private id: any) { }
+  ok() {
+    this.$http.delete(`api/devices/${this.id}`).then((deleteResult) => {
+      this.$modalInstance.close("ok");
+    });
+  }
+  cancel() {
+    this.$modalInstance.dismiss("cancel");
+  }
 }
-
-#kapua-logo-container {
-    height: 78px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-#kapua-logo {
-    height: 48px;
-}
-
-#login-form-container {
-    position: absolute;
-    top: 45%;
-    background-color: rgba(255, 255, 255, 0.5);
-    width: 100%;
-    #details {
-        padding-top: 20px;
-    }
-}
-

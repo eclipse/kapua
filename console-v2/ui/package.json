@@ -7,7 +7,6 @@
     "angular-local-storage": "^0.5.0",
     "angular-patternfly": "^3.15.0",
     "angular-ui-router": "^0.3.2",
-    "ngstorage-webpack": "^2.2.2",
     "oclazyload": "^1.0.9",
     "satellizer": "^0.15.5"
   },
@@ -25,17 +24,19 @@
     "style-loader": "^0.13.1",
     "ts-loader": "^1.1.0",
     "tslint": "^3.15.1",
-    "typescript": "^2.0.8",
+    "typescript": "^2.1.4",
     "typings": "^1.5.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.3",
-    "webpack-dev-server": "^1.16.2"
+    "webpack-dev-server": "^1.16.2",
+    "webpack-fail-plugin": "^1.0.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "typings install",
+    "postinstall": "concurrently \"typings install\" \"npm rebuild node-sass\"",
+    "build": "webpack",
     "start": "webpack",
-    "start:dev": "webpack -dw",
+    "start:dev": "webpack -dw --color",
     "webpack:w": "webpack-dev-server -d --port 3000"
   },
   "repository": {

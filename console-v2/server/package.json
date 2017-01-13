@@ -21,6 +21,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "typings install",
+    "build": "tsc",
     "start": "tsc && node dist/main.js",
     "start:dev": "concurrently \"tsc -w\" \"nodemon --debug --watch dist --watch conf -e js,json,key\""
   },

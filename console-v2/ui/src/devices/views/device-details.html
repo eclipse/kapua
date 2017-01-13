@@ -1,3 +1,4 @@
+<!--
 /*******************************************************************************
 * Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
 *                                                                               
@@ -10,34 +11,19 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-#login-view {
-    background-image: url(../img/login-background.jpeg);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: right top;
-    background-size:cover;
-    height: 100%;
-}
-
-#kapua-logo-container {
-    height: 78px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-#kapua-logo {
-    height: 48px;
-}
-
-#login-form-container {
-    position: absolute;
-    top: 45%;
-    background-color: rgba(255, 255, 255, 0.5);
-    width: 100%;
-    #details {
-        padding-top: 20px;
-    }
-}
-
+-->
+<div>
+  <h3>
+    Device detail
+  </h3>
+  <div>
+    ID: {{:: vm.$stateParams["id"] }}
+  </div>
+  <div>
+    Display name: {{ vm.device.displayName }}
+  </div>
+  <div>
+    Client ID: {{ vm.device.clientId }}
+  </div>
+  <div class="col-md-3" pf-aggregate-status-card head-title="Installed Packages" show-top-border="true" status="vm.packagesStatus"></div>
+</div>
