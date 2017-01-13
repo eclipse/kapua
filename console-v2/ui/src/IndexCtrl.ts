@@ -10,28 +10,31 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-export default class LayoutCtrl {
-    public navigationItems;
-    constructor(
-        private $http: angular.IHttpService,
-        private $state: angular.ui.IStateService,
-        private localStorageService: angular.local.storage.ILocalStorageService,
-        private $auth,
-        private kapuaConfig,
-        private $rootScope: angular.IRootScopeService,
-        private externalModulesList,
-    ) { 
-        this.navigationItems = externalModulesList.getModules();
-    }
+export default class IndexCtrl {
+  private showHeader: boolean;
+  private notifications = [];
+  private closeNotification;
 
-    private getLogoImage() {
-        return require("../assets/img/logo-white.svg");
-    }
+  constructor(private $rootScope: angular.IRootScopeService, private Notifications) {
+    $rootScope.$on("$stateChangeSuccess", (
+      event: angular.IAngularEvent,
+      toState: angular.ui.IState,
+      toParams,
+      fromState: angular.ui.IState,
+      fromParams
+    ) => {
+      this.showHeader = toState.name.indexOf("kapua.") === 0;
+    });
+    this.notifications = Notifications.data;
 
-    private doLogout() {
-        this.$http.post("/api/authentication/logout", {}).then((response: angular.IHttpPromiseCallbackArg<any>) => {
-            this.$auth.logout();
-            this.$state.go("login");
-        });
-    }
+    // FIXME - To become a class method with PF4
+    this.closeNotification = (data) => {
+      this.Notifications.remove(data);
+    };
+  }
+
+  closeNotification2(data) {
+    console.log(this);
+    this.Notifications.remove(data);
+  }
 }

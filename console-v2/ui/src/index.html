@@ -12,11 +12,12 @@
 *                                                                               
 *******************************************************************************/
 -->
-<html ng-app="app" ng-strict-di ng-class="{ 'layout-pf layout-pf-fixed': $root.showHeader }">
+<html ng-app="app" ng-controller="IndexCtrl as vm" ng-strict-di ng-class="{ 'layout-pf layout-pf-fixed': vm.showHeader }">
     <head>
         <base href="/">
     </head>
     <body>
+        <div pf-toast-notification-list notifications="vm.notifications" close-callback="vm.closeNotification2"></div>
         <ui-view name="mainView"></ui-view>
     </body>
 </html>

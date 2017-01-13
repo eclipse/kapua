@@ -19,12 +19,16 @@ import "angular-patternfly/node_modules/patternfly/dist/css/patternfly.css";
 import "angular-patternfly/node_modules/patternfly/dist/css/patternfly-additions.css";
 import "angular-patternfly/dist/styles/angular-patternfly.css";
 
+import "./index.scss";
+
 import "./commons/module.ts";
 import "./login/module.ts";
 import "./layout/module.ts";
 import "./welcome/module.ts";
 import "./users/module.ts";
 import "./devices/module.ts";
+
+import IndexCtrl from "./IndexCtrl";
 
 angular.module("app", [
     "ngAnimate",
@@ -40,18 +44,37 @@ angular.module("app", [
     "app.users",
     "app.devices"
 ])
-    .config(["$locationProvider", "$urlRouterProvider", (
+    .config(["$locationProvider", "$urlRouterProvider", "$httpProvider", (
         $locationProvider: angular.ILocationProvider,
-        $urlRouterProvider: angular.ui.IUrlRouterProvider
+        $urlRouterProvider: angular.ui.IUrlRouterProvider,
+        $httpProvider: angular.IHttpProvider
     ) => {
         $locationProvider.html5Mode({ enabled: true, requireBase: false });
         $urlRouterProvider.otherwise("/login");
+        $httpProvider.interceptors.push(["$q", "Notifications",
+            (
+                $q: angular.IQService,
+                Notifications
+            ) => {
+                return {
+                    responseError: function (response: angular.IHttpPromiseCallbackArg<any>) {
+                        Notifications.message(
+                            "danger",
+                            "Error",
+                            response.data,
+                            true
+                        );
+                        return $q.reject(response);
+                    }
+                };
+            }]);
     }])
-    .run(["$state", "$rootScope", "$auth",
+    .run(["$state", "$rootScope", "$auth", "Notifications",
         (
             $state: angular.ui.IStateService,
             $rootScope: angular.IRootScopeService,
-            $auth
+            $auth,
+            Notifications
         ) => {
             $rootScope.$on("$stateChangeStart", (
                 event: angular.IAngularEvent,
@@ -64,14 +87,5 @@ angular.module("app", [
                     $state.go("login");
                 }
             });
-
-            $rootScope.$on("$stateChangeSuccess", (
-                event: angular.IAngularEvent,
-                toState: angular.ui.IState,
-                toParams,
-                fromState: angular.ui.IState,
-                fromParams
-            ) => {
-                $rootScope["showHeader"] = toState.name.indexOf("kapua.") === 0;
-            });
-        }]);
+        }])
+        .controller("IndexCtrl", ["$rootScope", "Notifications", IndexCtrl]);
