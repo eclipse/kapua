@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -180,7 +181,7 @@ public class LoginDialog extends Dialog {
     }
 
     protected void doSsoLogin() {
-        System.out.println("SSO Login button pressed!");
+        Window.Location.assign("/sso");
     }
 
     // Window references
