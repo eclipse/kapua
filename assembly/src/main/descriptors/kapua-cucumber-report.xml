@@ -23,6 +23,11 @@
         </fileSet>
 
         <fileSet>
+            <outputDirectory>/account-service</outputDirectory>
+            <directory>../service/account/internal/target/cucumber</directory>
+        </fileSet>
+
+        <fileSet>
             <outputDirectory>/user-service</outputDirectory>
             <directory>../service/user/internal/target/cucumber</directory>
         </fileSet>
