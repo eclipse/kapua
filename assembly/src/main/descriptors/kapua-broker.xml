@@ -135,7 +135,10 @@
                 <include>com.h2database:h2</include>
                 <include>com.google.protobuf:protobuf-java</include>
                 <include>org.apache.shiro:shiro-core</include>
-                <include>org.elasticsearch:elasticsearch</include>
+				<include>org.elasticsearch:elasticsearch</include>
+				<include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
+				<include>org.apache.commons:commons-pool2</include>
+				<include>org.bitbucket.b_c:jose4j</include>
 
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-service-api</include>
