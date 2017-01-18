@@ -34,7 +34,7 @@ public interface Domain extends KapuaEntity {
 
     public static final String TYPE = "role";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

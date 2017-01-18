@@ -135,7 +135,7 @@ public class UserServiceSteps extends KapuaTest {
 
         // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
         // All operations on database are performed using system user.
-        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new SubjectMock(SubjectType.USER, new KapuaEid(BigInteger.ONE)));
+        KapuaSession kapuaSession = new KapuaSession(null, KapuaEid.ONE, new SubjectMock(SubjectType.USER, KapuaEid.ONE));
         KapuaSecurityUtils.setSession(kapuaSession);
 
         // Set KapuaMetatypeFactory for Metatype configuration

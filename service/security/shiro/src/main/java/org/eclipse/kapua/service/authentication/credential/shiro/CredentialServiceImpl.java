@@ -59,6 +59,8 @@ import org.eclipse.kapua.service.user.UserService;
 @KapuaProvider
 public class CredentialServiceImpl extends AbstractKapuaService implements CredentialService {
 
+    // private static final Logger logger = LoggerFactory.getLogger(CredentialServiceImpl.class);
+
     private static final String SHA1PRNG = "SHA1PRNG";
     private static final Domain credentialDomain = new CredentialDomain();
 
@@ -122,7 +124,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
 
         //
         // Do create
-        return entityManagerSession.onInsert(em -> {
+        return entityManagerSession.onTransactedInsert(em -> {
 
             Credential credential = CredentialDAO.create(em, credentialCreator);
 
@@ -325,7 +327,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
 
             //
             // Parse the result
-            if (credentialListResult != null && credentialListResult.getSize() == 1) {
+            if (credentialListResult.getSize() == 1) {
                 credential = credentialListResult.getItem(0);
             }
 

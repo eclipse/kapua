@@ -33,8 +33,6 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link UsernamePasswordCredentials} based {@link AuthenticatingRealm} implementation.
@@ -44,8 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
 
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(UserPassAuthenticatingRealm.class);
+    // private static final Logger s_logger = LoggerFactory.getLogger(UserPassAuthenticatingRealm.class);
 
     /**
      * Realm name
