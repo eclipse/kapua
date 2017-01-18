@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
@@ -34,8 +35,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
+import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -96,6 +99,36 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
+
+    @Override
+    public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials) throws GwtKapuaException {
+     // VIP
+        // keep this here to make sure we initialize the logger.
+        // Without the following, console logger may not log anything when deployed into tomcat.
+        s_logger.info(">>> THIS IS INFO <<<");
+        s_logger.warn(">>> THIS IS WARN <<<");
+        s_logger.debug(">>> THIS IS DEBUG <<<");
+
+        GwtSession gwtSession = null;
+        try {
+            // Get the user
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken());
+
+            // Login
+            authenticationService.login(credentials);
+
+            // Get the session infos
+            gwtSession = establishSession();
+        } catch (Throwable t) {
+            logout();
+            KapuaExceptionHandler.handle(t);
+        }
+        return gwtSession;
+    }
+    
     /**
      * Return the currently authenticated user or null if no session has been established.
      */

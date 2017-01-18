@@ -66,8 +66,8 @@ public class SsoCallbackServlet extends HttpServlet {
         inputReader.close();
 
         // Get and clean jwks_uri property
-        JsonValue accessToken = jsonObject.get("access_token");
+        String accessToken = jsonObject.getString("access_token");
         
-        resp.sendRedirect("http://localhost:8889/console.jsp?access_token=" + accessToken);
+        resp.sendRedirect("http://localhost:8889/console.jsp?gwt.codesvr=127.0.0.1:9997&access_token=" + accessToken);
     }    
 }

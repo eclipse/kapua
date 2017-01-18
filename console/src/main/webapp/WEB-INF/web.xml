@@ -223,14 +223,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>ssoServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.servlet.SsoServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ssoServlet</servlet-name>
-        <url-pattern>/sso</url-pattern>
-    </servlet-mapping>
-    <servlet>
         <servlet-name>ssoCallbackServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.servlet.SsoCallbackServlet</servlet-class>
     </servlet>

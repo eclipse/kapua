@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
@@ -164,7 +165,7 @@ public class LoginDialog extends Dialog {
                 onSubmit();
             }
         });
-        
+
         ssoLogin = new Button(MSGS.loginSsoLogin());
         ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -172,7 +173,7 @@ public class LoginDialog extends Dialog {
             public void componentSelected(ButtonEvent ce) {
                 doSsoLogin();
             }
-            
+
         });
 
         addButton(reset);
@@ -181,7 +182,8 @@ public class LoginDialog extends Dialog {
     }
 
     protected void doSsoLogin() {
-        Window.Location.assign("/sso");
+        Window.Location
+                .assign("http://localhost:9090/auth/realms/master/protocol/openid-connect/auth?scope=openid&response_type=code&client_id=console&state=af0ifjsldkj&redirect_uri=http://localhost:8889/sso/callback");
     }
 
     // Window references
@@ -202,10 +204,36 @@ public class LoginDialog extends Dialog {
     // Login
     public void performLogin() {
 
-        final GwtLoginCredential crendentials = new GwtLoginCredential(username.getValue(), password.getValue());
+        final GwtLoginCredential credentials = new GwtLoginCredential(username.getValue(), password.getValue());
 
         // FIXME: use some Credentials object instead of using GwtUser!
-        gwtAuthorizationService.login(crendentials, new AsyncCallback<GwtSession>() {
+        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
+                reset();
+            }
+
+            @Override
+            public void onSuccess(final GwtSession gwtSession) {
+                currentSession = gwtSession;
+                callMainScreen();
+            }
+        });
+    }
+
+    public void performSsoLogin(String authToken) {
+        username.setEnabled(false);
+        password.setEnabled(false);
+        reset.setEnabled(false);
+        login.setEnabled(false);
+        ssoLogin.setEnabled(false);
+
+        final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
+
+        // FIXME: use some Credentials object instead of using GwtUser!
+        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
