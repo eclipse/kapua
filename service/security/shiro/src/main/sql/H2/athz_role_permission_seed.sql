@@ -29,10 +29,12 @@ INSERT INTO athz_role_permission
 		(1,	10, NOW(), 1, 1, 'access_token',		null, null, null),
 
 		(1, 11, NOW(), 1, 1, 'access_info',			null, null, null),
+		(1, 12, NOW(), 1, 1, 'domain',				null, null, null),
+		(1, 13, NOW(), 1, 1, 'group',				null, null, null),
 		(1, 12, NOW(), 1, 1, 'role',				null, null, null),
 		
 		(1, 13, NOW(), 1, 1, 'user',				null, null, null),
-
+		
 		(1, 14, NOW(), 1, 1, 'domain',				null, null, null),
 
 		(1, 15, NOW(), 1, 1, 'group',       null, null, null),

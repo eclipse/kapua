@@ -38,30 +38,8 @@ CREATE TABLE act_account (
   FOREIGN KEY (scope_id) REFERENCES act_account(id) ON DELETE RESTRICT,
   CONSTRAINT act_accountName UNIQUE (name)
 ) DEFAULT CHARSET=utf8;
-
 CREATE INDEX idx_account_scope_id ON act_account (scope_id);
 
-CREATE TABLE atht_credential (
-  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on            	TIMESTAMP(3),
-  modified_by            	BIGINT(21)    UNSIGNED,
-
-  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
-  credential_type			VARCHAR(64)	  NOT NULL,
-  credential_key			VARCHAR(255)  NOT NULL,
-
-  optlock               	INT UNSIGNED,
-  attributes             	TEXT,
-  properties             	TEXT,
-
-  PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8;
-
-CREATE INDEX idx_atht_credential_scope_id ON atht_credential (scope_id);
-CREATE INDEX idx_atht_credential_user_id ON atht_credential (scope_id, user_id);
 
 CREATE TABLE atht_access_token (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -71,9 +49,37 @@ CREATE TABLE atht_access_token (
   modified_on            	TIMESTAMP(3),
   modified_by            	BIGINT(21)    UNSIGNED,
 
-  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
+  subject_type				VARCHAR(64)   NOT NULL,
+  subject_id				BIGINT(21)	  UNSIGNED,
+
+  credential_id				BIGINT(21)	  UNSIGNED NOT NULL,
   token_id					TEXT	      NOT NULL,
   expires_on				TIMESTAMP(3)  NOT NULL,
+  
+  optlock               	INT UNSIGNED,
+  attributes             	TEXT,
+  properties             	TEXT,
+
+  PRIMARY KEY (id)
+) DEFAULT CHARSET=utf8;
+CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
+CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, subject_type, subject_id);
+
+
+CREATE TABLE atht_credential (
+  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on            	TIMESTAMP(3),
+  modified_by            	BIGINT(21)    UNSIGNED,
+
+  subject_type				VARCHAR(64)   NOT NULL,
+  subject_id				BIGINT(21)	  UNSIGNED,
+
+  type						VARCHAR(64)	  NOT NULL,
+  key						VARCHAR(255)  NOT NULL,
+  secret				 	VARCHAR(255)  NOT NULL,
 
   optlock               	INT UNSIGNED,
   attributes             	TEXT,
@@ -81,12 +87,116 @@ CREATE TABLE atht_access_token (
 
   PRIMARY KEY (id)
 ) DEFAULT CHARSET=utf8;
+CREATE INDEX idx_atht_credential_scope_id ON atht_credential (scope_id);
+CREATE INDEX idx_atht_credential_subject_type_subject_id ON atht_credential (scope_id, subject_type, subject_id);
+CREATE INDEX idx_atht_credential_type_credential_key ON atht_credential (type, key);
 
-CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
-CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
+
+CREATE TABLE athz_access_info (
+  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)  NOT NULL,
+  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+
+  subject_type				VARCHAR(64)   NOT NULL,
+  subject_id				BIGINT(21)	  UNSIGNED,
+
+
+  optlock                   INT UNSIGNED,
+  attributes				TEXT,
+  properties                TEXT,
+
+  PRIMARY KEY (id)
+
+) DEFAULT CHARSET=utf8;
+CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, subject_type, subject_id);
+
+
+CREATE TABLE athz_access_permission (
+  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+
+  access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
+  
+  domain					VARCHAR(64)   NOT NULL,
+  action					VARCHAR(64),
+  target_scope_id			BIGINT(21)	  UNSIGNED,
+    
+  PRIMARY KEY (id),
+--  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
+  
+) DEFAULT CHARSET=utf8;
+CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId ON athz_access_permission (scope_id, access_info_id, domain, action, target_scope_id);
+
+
+CREATE TABLE athz_access_role (
+  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL, 
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  
+  access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
+  role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
+    
+  PRIMARY KEY (id),
+--  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE,
+--  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE RESTRICT
+  
+) DEFAULT CHARSET=utf8;
+CREATE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);
+
+
+CREATE TABLE athz_domain (
+  scope_id             		BIGINT(21) 	  UNSIGNED,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+
+  name 						VARCHAR(255)  NOT NULL,
+  serviceName 				VARCHAR(1023)  NOT NULL,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
+
+  PRIMARY KEY (id)
+
+) DEFAULT CHARSET=utf8;
+CREATE UNIQUE INDEX idx_domain_name ON athz_domain (name);
+
+
+CREATE TABLE athz_domain_actions (
+  domain_id                 BIGINT(21) 	  UNSIGNED NOT NULL,
+  action					VARCHAR(255)  NOT NULL,
+  
+  PRIMARY KEY (domain_id, action)
+ 
+) DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE athz_group (
+  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)  NOT NULL,
+  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+
+  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
+  domain					VARCHAR(64)   NOT NULL,
+  action					VARCHAR(64),
+  target_scope_id		    BIGINT(21)    UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
+
+  PRIMARY KEY (id)
+
+) DEFAULT CHARSET=utf8;
+CREATE UNIQUE INDEX idx_group_name ON athz_group (scope_id, name);
+
 
 CREATE TABLE athz_role (
-  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
+  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
   created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
@@ -98,12 +208,12 @@ CREATE TABLE athz_role (
   optlock                   INT UNSIGNED,
   attributes				TEXT,
   properties                TEXT,
-
+  
   PRIMARY KEY (id)
 
 ) DEFAULT CHARSET=utf8;
-
 CREATE UNIQUE INDEX idx_role_name ON athz_role (scope_id, name);
+
 
 CREATE TABLE athz_role_permission (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -114,54 +224,13 @@ CREATE TABLE athz_role_permission (
   role_id             	    BIGINT(21) 	  UNSIGNED,
   domain					VARCHAR(64)   NOT NULL,
   action					VARCHAR(64),
-  target_scope_id		    BIGINT(21)    UNSIGNED,
-  group_id             	    BIGINT(21) 	  UNSIGNED,
+  target_scope_id		    BIGINT(21),
 
-  PRIMARY KEY (id)
-
+  PRIMARY KEY (id),
+--  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE CASCADE
 ) DEFAULT CHARSET=utf8;
-
 CREATE UNIQUE INDEX idx_role_permission_scope_id ON athz_role_permission (role_id, domain, action, target_scope_id);
 
-CREATE TABLE athz_user_permission (
-  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  DEFAULT 0,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-
-  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
-  domain					VARCHAR(64)   NOT NULL,
-  action					VARCHAR(64),
-  target_scope_id		    BIGINT(21)    UNSIGNED,
-  group_id             	    BIGINT(21) 	  UNSIGNED,
-
-  PRIMARY KEY (id)
-
-) DEFAULT CHARSET=utf8;
-
-CREATE UNIQUE INDEX idx_user_permission_scope_id ON athz_user_permission (scope_id, user_id, domain, action, target_scope_id);
-
-CREATE TABLE athz_user_role (
-  scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  DEFAULT 0,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-
-  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
-
-  PRIMARY KEY (id)
-
-) DEFAULT CHARSET=utf8;
-
-CREATE INDEX idx_user_role_scope_id ON athz_user_role (scope_id, user_id);
-
-CREATE TABLE athz_user_role_roles (
-  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
-  role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
-
-  PRIMARY KEY (user_id, role_id)
-
-) DEFAULT CHARSET=utf8;
 
 CREATE TABLE dvc_device_connection (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
@@ -170,20 +239,22 @@ CREATE TABLE dvc_device_connection (
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
   modified_on            	TIMESTAMP(3)  NOT NULL,
   modified_by            	BIGINT(21)    UNSIGNED NOT NULL,
+  
   connection_status		    VARCHAR(20)   NOT NULL,
   client_id					VARCHAR(255)  NOT NULL,
-  user_id        			BIGINT(21)    UNSIGNED NOT NULL,
+  credential_id  			BIGINT(21)    UNSIGNED NOT NULL,  
   protocol       			VARCHAR(64),
   client_ip      			VARCHAR(255),
   server_ip      			VARCHAR(255),
+  
   optlock                   INT UNSIGNED,
   attributes				 TEXT,
   properties                 TEXT,
 
   PRIMARY KEY (scope_id, id)   -- primary key needs to include the partitioning key
 ) DEFAULT CHARSET=utf8;
-
 CREATE INDEX idx_connection_status_id ON dvc_device_connection (scope_id, id, connection_status);
+
 
 CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
@@ -304,24 +375,6 @@ CREATE TABLE sys_configuration (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_configurationScopeId ON sys_configuration (scope_id);
-
-CREATE TABLE collision_entity_test (
-  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  name               	    VARCHAR(255)  NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on            	TIMESTAMP(3),
-  modified_by            	BIGINT(21)    UNSIGNED,
-  optlock                   INT UNSIGNED,
-  test_field             	VARCHAR(255) NOT NULL UNIQUE,
-  attributes				TEXT,
-  properties                TEXT,
-
-  PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8;
-
-CREATE INDEX idx_collision_entity_test_scope_id ON collision_entity_test (scope_id);
 
 CREATE TABLE usr_user (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
