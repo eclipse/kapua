@@ -18,9 +18,10 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features", 
-                 glue = { "org.eclipse.kapua.service.device.registry.common", 
-                          "org.eclipse.kapua.service.device.registry.internal"},
+@CucumberOptions(features = "classpath:features",
+                 glue = { "org.eclipse.kapua.service.device.registry.internal",
+                          "org.eclipse.kapua.service.device.registry.common",
+                          "org.eclipse.kapua.service.device.registry.connection.internal" },
                  plugin = { "pretty", 
                             "html:target/cucumber",
                             "json:target/cucumber.json" }, 
