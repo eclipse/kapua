@@ -14,12 +14,17 @@ package org.eclipse.kapua.commons.security;
 
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Kapua security utility to handle the bind/unbind operation of the Kapua session into the thread context.
  *
  * @since 1.0
  */
 public class KapuaSecurityUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(KapuaSecurityUtils.class);
 
     public static String MDC_USER_ID = "userId";
 
@@ -61,26 +66,27 @@ public class KapuaSecurityUtils {
     public static <T> T doPriviledge(Callable<T> privilegedAction)
             throws Exception {
         T result = null;
+        
+        // get (and keep) the current session
+        KapuaSession previousSession = getSession();
+        KapuaSession currentSession = null;
 
-        KapuaSession session = getSession();
-
-        boolean created = false;
-        if (session == null) {
-            session = new KapuaSession();
-            setSession(session);
-            created = true;
+        if (previousSession == null) {
+            logger.debug("==> create new session");
+            currentSession = new KapuaSession();
+            currentSession.setTrustedMode(true);
         }
+        else {
+            logger.debug("==> clone from previous session");
+            currentSession = KapuaSession.createFrom();
+        }
+        setSession(currentSession);
 
-        session.setTrustedMode(true);
         try {
             result = privilegedAction.call();
         } finally {
-            session.setTrustedMode(false);
-
-            if (created) {
-                clearSession();
-                session = null;
-            }
+            // restore the original session
+            setSession(previousSession);
         }
 
         return result;
