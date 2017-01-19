@@ -15,11 +15,14 @@ package org.eclipse.kapua.app.console.client;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -52,6 +55,7 @@ public class LoginDialog extends Dialog {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
+    private GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
 
     public GwtSession currentSession;
     public TextField<String> username;
@@ -182,8 +186,20 @@ public class LoginDialog extends Dialog {
     }
 
     protected void doSsoLogin() {
-        Window.Location
-                .assign("http://localhost:9090/auth/realms/master/protocol/openid-connect/auth?scope=openid&response_type=code&client_id=console&state=af0ifjsldkj&redirect_uri=http://localhost:8889/sso/callback");
+        gwtSettingService.getSsoLoginUri(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error in SSO Login");
+                
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                Window.Location.assign(result);
+            }
+            
+        });
     }
 
     // Window references

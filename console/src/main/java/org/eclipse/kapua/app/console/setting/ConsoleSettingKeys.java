@@ -29,6 +29,11 @@ public enum ConsoleSettingKeys implements SettingKey {
     FILE_UPLOAD_SIZE_MAX("file.upload.size.max"), //
     FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("file.upload.inmemory.size.threshold"), //
 
+    SITE_HOME_URI("site.home.uri"),
+    SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.openid.server.endpoint.auth"),
+    SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.openid.server.endpoint.token"),
+    SSO_OPENID_CLIENT_ID("sso.openid.client.id"),
+    SSO_OPENID_REDIRECT_URI("sso.openid.redirect.uri"),
     ;
 
     private String key;
