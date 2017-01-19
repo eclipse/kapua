@@ -38,4 +38,9 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
     public String getSsoLoginUri() {
         return settings.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH) + "?scope=openid&response_type=code&client_id=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID)+ "&state=" + UUID.randomUUID() + "&redirect_uri=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI);
     }
+
+    @Override
+    public boolean getSsoEnabled() {
+        return settings.getBoolean(ConsoleSettingKeys.SSO_ENABLE);
+    }
 }

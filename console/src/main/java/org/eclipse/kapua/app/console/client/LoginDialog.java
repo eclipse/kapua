@@ -55,7 +55,7 @@ public class LoginDialog extends Dialog {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
-    private GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
+    private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
 
     public GwtSession currentSession;
     public TextField<String> username;
@@ -131,6 +131,19 @@ public class LoginDialog extends Dialog {
         add(password);
 
         setFocusWidget(username);
+        
+        gwtSettingService.getSsoEnabled(new AsyncCallback<Boolean>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.loginSsoEnabledError(), caught.getLocalizedMessage());
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                ssoLogin.setVisible(result);
+            }
+        });
 
     }
 
@@ -169,7 +182,7 @@ public class LoginDialog extends Dialog {
                 onSubmit();
             }
         });
-
+        
         ssoLogin = new Button(MSGS.loginSsoLogin());
         ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -190,8 +203,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                Window.alert("Error in SSO Login");
-                
+                ConsoleInfo.display(MSGS.loginSsoLogin(), caught.getLocalizedMessage());
             }
 
             @Override
