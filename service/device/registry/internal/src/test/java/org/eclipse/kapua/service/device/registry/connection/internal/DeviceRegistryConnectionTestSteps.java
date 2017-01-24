@@ -180,15 +180,6 @@ public class DeviceRegistryConnectionTestSteps extends KapuaTest {
 
     // The Cucumber test steps
 
-    @Given("^UngaBunga$")
-    public void testUngaBunga()
-            throws KapuaException {
-        KapuaId tmpId1 = new KapuaEid(BigInteger.valueOf(-1));
-        KapuaId tmpId2 = new KapuaEid(BigInteger.valueOf(-2));
-        DeviceConnectionCreator tmpCreator = prepareRegularConnectionCreator(tmpId1, tmpId2);
-        connection = deviceConnectionService.create(tmpCreator);
-    }
-
     @Given("^A regular connection creator$")
     public void createRegularCreator() {
         connectionCreator = prepareRegularConnectionCreator(rootScopeId,
