@@ -130,7 +130,11 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
         // Create User Service tables
         enableH2Connection();
 
-        // Create the account service tables
+        // Drop the Device Registry Service tables
+        scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
+        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        
+        // Create the Device Registry Service tables
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         scriptSession(DeviceEntityManagerFactory.instance(), CREATE_DEVICE_TABLES);
         // XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
@@ -167,7 +171,7 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
     @After
     public void afterScenario()
             throws Exception {
-        // Drop the Account Service tables
+        // Drop the Device Registry Service tables
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
