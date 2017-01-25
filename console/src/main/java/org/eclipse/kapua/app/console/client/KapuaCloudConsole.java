@@ -84,6 +84,7 @@ public class KapuaCloudConsole implements EntryPoint {
          * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
          */
         Log.setUncaughtExceptionHandler();
+        System.out.println("---->");
 
         // Use deferred command to catch initialization exceptions in onModuleLoad2
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -295,6 +296,10 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // Dialog window
         final LoginDialog loginDialog = new LoginDialog();
+
+        // Check if coming from SSO login
+        String accessToken = Window.Location.getParameter("access_token");
+
         loginDialog.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
@@ -332,6 +337,10 @@ public class KapuaCloudConsole implements EntryPoint {
         }
 
         loginDialog.show();
+        
+        if (accessToken != null && !accessToken.isEmpty()) {
+            loginDialog.performSsoLogin(accessToken);
+        }
     }
 
     public Viewport getViewport() {

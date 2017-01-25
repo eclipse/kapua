@@ -15,10 +15,14 @@ package org.eclipse.kapua.app.console.client;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
+
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -36,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -50,6 +55,7 @@ public class LoginDialog extends Dialog {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
+    private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
 
     public GwtSession currentSession;
     public TextField<String> username;
@@ -57,6 +63,7 @@ public class LoginDialog extends Dialog {
 
     public Button reset;
     public Button login;
+    public Button ssoLogin;
     public Status status;
 
     private boolean allowMainScreen;
@@ -124,6 +131,19 @@ public class LoginDialog extends Dialog {
         add(password);
 
         setFocusWidget(username);
+        
+        gwtSettingService.getSsoEnabled(new AsyncCallback<Boolean>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.loginSsoEnabledError(), caught.getLocalizedMessage());
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                ssoLogin.setVisible(result);
+            }
+        });
 
     }
 
@@ -162,9 +182,36 @@ public class LoginDialog extends Dialog {
                 onSubmit();
             }
         });
+        
+        ssoLogin = new Button(MSGS.loginSsoLogin());
+        ssoLogin.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                doSsoLogin();
+            }
+
+        });
 
         addButton(reset);
         addButton(login);
+        addButton(ssoLogin);
+    }
+
+    protected void doSsoLogin() {
+        gwtSettingService.getSsoLoginUri(new AsyncCallback<String>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.loginSsoLogin(), caught.getLocalizedMessage());
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                Window.Location.assign(result);
+            }
+            
+        });
     }
 
     // Window references
@@ -185,10 +232,36 @@ public class LoginDialog extends Dialog {
     // Login
     public void performLogin() {
 
-        final GwtLoginCredential crendentials = new GwtLoginCredential(username.getValue(), password.getValue());
+        final GwtLoginCredential credentials = new GwtLoginCredential(username.getValue(), password.getValue());
 
         // FIXME: use some Credentials object instead of using GwtUser!
-        gwtAuthorizationService.login(crendentials, new AsyncCallback<GwtSession>() {
+        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
+                reset();
+            }
+
+            @Override
+            public void onSuccess(final GwtSession gwtSession) {
+                currentSession = gwtSession;
+                callMainScreen();
+            }
+        });
+    }
+
+    public void performSsoLogin(String authToken) {
+        username.setEnabled(false);
+        password.setEnabled(false);
+        reset.setEnabled(false);
+        login.setEnabled(false);
+        ssoLogin.setEnabled(false);
+
+        final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
+
+        // FIXME: use some Credentials object instead of using GwtUser!
+        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
