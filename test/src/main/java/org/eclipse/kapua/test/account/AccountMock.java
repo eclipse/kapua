@@ -22,150 +22,130 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 
-public class AccountMock implements Account
-{
+public class AccountMock implements Account {
+
     private static long longId = 1;
     private KapuaId id;
     private KapuaId scopeId;
     private String name;
-    
-    public AccountMock(KapuaId scopeId, String name)
-    {
+
+    public AccountMock(KapuaId scopeId, String name) {
         this.id = new KapuaEid(BigInteger.valueOf(longId++));
         this.scopeId = scopeId;
         this.name = name;
     }
-    
+
     @Override
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public Date getModifiedOn()
-    {
+    public Date getModifiedOn() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public KapuaId getModifiedBy()
-    {
+    public KapuaId getModifiedBy() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public int getOptlock()
-    {
+    public int getOptlock() {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public void setOptlock(int optlock)
-    {
+    public void setOptlock(int optlock) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public Properties getEntityAttributes()
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setEntityAttributes(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public Properties getEntityProperties()
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setEntityProperties(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public KapuaId getId()
-    {
+    public KapuaId getId() {
         return this.id;
     }
 
     @Override
-    public KapuaId getScopeId()
-    {
+    public KapuaId getScopeId() {
         return this.scopeId;
     }
 
     @Override
-    public Date getCreatedOn()
-    {
+    public Date getCreatedOn() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public KapuaId getCreatedBy()
-    {
+    public KapuaId getCreatedBy() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Organization getOrganization()
-    {
+    public Organization getOrganization() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganization(Organization organization)
-    {
+    public void setOrganization(Organization organization) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getParentAccountPath()
-    {
+    public String getParentAccountPath() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setParentAccountPath(String parentAccountPath)
-    {
+    public void setParentAccountPath(String parentAccountPath) {
         // TODO Auto-generated method stub
 
     }
 
-	@Override
-	public void setId(KapuaId id) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setId(KapuaId id) {
+        this.id = new KapuaEid(id);
+    }
 
 }

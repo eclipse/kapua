@@ -11,16 +11,20 @@
  -->
 <locator-config>
 	<provided>
+        <api>org.eclipse.kapua.service.account.AccountFactory</api>
+		<api>org.eclipse.kapua.service.account.AccountService</api>
+
 		<api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
         <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
+        <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
+        <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
+        
 		
         <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
 		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
 		
-        <api>org.eclipse.kapua.service.account.AccountFactory</api>
-		<api>org.eclipse.kapua.service.account.AccountService</api>
 
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
 		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>

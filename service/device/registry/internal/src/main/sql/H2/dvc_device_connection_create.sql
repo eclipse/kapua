@@ -16,13 +16,15 @@ CREATE TABLE dvc_device_connection (
   created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
   modified_on            	TIMESTAMP(3)  NOT NULL,
-  modified_by            	BIGINT(21)    UNSIGNED NOT NULL,  
+  modified_by 				BIGINT(21)    UNSIGNED NOT NULL,
+  
   connection_status		    VARCHAR(20)   NOT NULL,
   client_id					VARCHAR(255)  NOT NULL,
-  user_id        			BIGINT(21)    UNSIGNED NOT NULL,  
+  credential_id  			BIGINT(21)    UNSIGNED NOT NULL,  
   protocol       			VARCHAR(64),
   client_ip      			VARCHAR(255),
   server_ip      			VARCHAR(255), 
+  
   optlock                   INT UNSIGNED,
   attributes				 TEXT,
   properties                 TEXT,

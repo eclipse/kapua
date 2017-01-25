@@ -18,9 +18,12 @@ CREATE TABLE atht_credential (
   modified_on            	TIMESTAMP(3),
   modified_by            	BIGINT(21)    UNSIGNED,
   
-  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
-  credential_type			VARCHAR(64)	  NOT NULL,
-  credential_key			VARCHAR(255)  NOT NULL,
+  subject_type				VARCHAR(64)   NOT NULL,
+  subject_id				BIGINT(21)	  UNSIGNED,
+
+  type						VARCHAR(64)	  NOT NULL,
+  key						VARCHAR(255)  NOT NULL,
+  secret				 	VARCHAR(255)  NOT NULL,
   
   optlock               	INT UNSIGNED,
   attributes             	TEXT,  
@@ -30,5 +33,5 @@ CREATE TABLE atht_credential (
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_atht_credential_scope_id ON atht_credential (scope_id);
-CREATE INDEX idx_atht_credential_user_id ON atht_credential (scope_id, user_id);
-CREATE INDEX idx_atht_credential_type_credential_key ON atht_credential (credential_type, credential_key);
+CREATE INDEX idx_atht_credential_subject_type_subject_id ON atht_credential (scope_id, subject_type, subject_id);
+CREATE INDEX idx_atht_credential_type_credential_key ON atht_credential (type, key);

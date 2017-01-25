@@ -264,22 +264,6 @@ public class ServiceDAO {
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-        // ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
-        // Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
-        //
-        // Map<ParameterExpression, Object> binds = new HashMap<>();
-        // binds.put(scopeIdParam, kapuaQuery.getScopeId());
-        // Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaQuery.getPredicate(),
-        // binds,
-        // cb,
-        // entityRoot,
-        // entityRoot.getModel());
-        //
-        // if (expr == null) {
-        // criteriaSelectQuery.where(scopeIdExpr);
-        // } else {
-        // criteriaSelectQuery.where(cb.and(scopeIdExpr, expr));
-        // }
 
         //
         // ORDER BY
@@ -474,7 +458,21 @@ public class ServiceDAO {
         Expression<Boolean> expr;
         String attrName = attrPred.getAttributeName();
         Object attrValue = attrPred.getAttributeValue();
-        SingularAttribute attribute = entityType.getSingularAttribute(attrName);
+
+        // Fields to query properties of embedded attributes of the root entity
+        boolean embeddedAttribute = attrName.contains(".");
+        String embeddedAttributeName;
+        String embeddableAttributeName = null;
+
+        SingularAttribute attribute;
+        if (embeddedAttribute) {
+            embeddedAttributeName = attrName.split("\\.")[0];
+            embeddableAttributeName = attrName.split("\\.")[1];
+            attribute = entityType.getSingularAttribute(embeddedAttributeName);
+        } else {
+            attribute = entityType.getSingularAttribute(attrName);
+        }
+
         if (attrValue instanceof Object[] && ((Object[]) attrValue).length == 1) {
             Object[] attrValues = (Object[]) attrValue;
             attrValue = attrValues[0];
@@ -554,7 +552,11 @@ public class ServiceDAO {
 
             default:
             case EQUAL:
-                expr = cb.equal(entityRoot.get(attribute), attrValue);
+                if (embeddedAttribute) {
+                    expr = cb.equal(entityRoot.get(attribute).get(embeddableAttributeName), attrValue);
+                } else {
+                    expr = cb.equal(entityRoot.get(attribute), attrValue);
+                }
                 break;
             }
         }

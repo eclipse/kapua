@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
  * Access info creator service implementation.
@@ -31,7 +32,8 @@ public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo
 
     private static final long serialVersionUID = 972154225756734130L;
 
-    private KapuaId userId;
+    private SubjectType subjectType;
+    private KapuaId subjectId;
     private Set<KapuaId> roleIds;
     private Set<Permission> permissions;
 
@@ -44,7 +46,8 @@ public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo
     public AccessInfoCreatorImpl(AccessInfoCreator accessInfo) {
         super((AbstractKapuaEntityCreator) accessInfo);
 
-        setUserId(accessInfo.getUserId());
+        setSubjectType(subjectType);
+        setSubjectId(subjectId);
         setRoleIds(accessInfo.getRoleIds());
         setPermissions(accessInfo.getPermissions());
     }
@@ -59,13 +62,23 @@ public class AccessInfoCreatorImpl extends AbstractKapuaEntityCreator<AccessInfo
     }
 
     @Override
-    public void setUserId(KapuaId userId) {
-        this.userId = userId;
+    public SubjectType getSubjectType() {
+        return subjectType;
     }
 
     @Override
-    public KapuaId getUserId() {
-        return userId;
+    public void setSubjectType(SubjectType subjectType) {
+        this.subjectType = subjectType;
+    }
+
+    @Override
+    public KapuaId getSubjectId() {
+        return subjectId;
+    }
+
+    @Override
+    public void setSubjectId(KapuaId subjectId) {
+        this.subjectId = subjectId;
     }
 
     @Override

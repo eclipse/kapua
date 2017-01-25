@@ -92,8 +92,8 @@ public class UserDAO extends ServiceDAO {
     }
 
     /**
-     * Finds the user by name
-     * 
+     * Finds the {@link User} by name
+     *
      * @param em
      * @param name
      * @return

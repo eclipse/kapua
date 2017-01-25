@@ -17,22 +17,26 @@ import java.util.Date;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
- * Credential factory service implementation.
+ * {@link AccessTokenFactory} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
 @KapuaProvider
 public class AccessTokenFactoryImpl implements AccessTokenFactory {
 
     @Override
-    public AccessTokenCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn) {
+    public AccessTokenCreatorImpl newCreator(KapuaId scopeId, SubjectType subjectType, KapuaId subjectId, KapuaId credentialId, String tokenId, Date expiresOn) {
         AccessTokenCreatorImpl accessTokenCreator = new AccessTokenCreatorImpl(scopeId);
-        accessTokenCreator.setUserId(userId);
+        accessTokenCreator.setSubjectType(subjectType);
+        accessTokenCreator.setSubjectId(subjectId);
+        accessTokenCreator.setCredentialId(credentialId);
         accessTokenCreator.setTokenId(tokenId);
         accessTokenCreator.setExpiresOn(expiresOn);
+
         return accessTokenCreator;
     }
 }

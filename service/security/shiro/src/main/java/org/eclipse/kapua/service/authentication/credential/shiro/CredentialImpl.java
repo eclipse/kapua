@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -26,38 +24,39 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authorization.subject.Subject;
+import org.eclipse.kapua.service.authorization.subject.shiro.SubjectImpl;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity(name = "Credential")
 @Table(name = "atht_credential")
 /**
- * Credential implementation.
+ * {@link Credential} implementation.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Credential {
 
     private static final long serialVersionUID = -7921424688644169175L;
 
     @Embedded
-    @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "user_id", updatable = false, nullable = false))
-    })
-    private KapuaEid          userId;
+    private SubjectImpl subject;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "credential_type", updatable = false, nullable = false)
-    private CredentialType    credentialType;
+    @Column(name = "type", updatable = false, nullable = false)
+    private CredentialType type;
 
     @Basic
-    @Column(name = "credential_key", nullable = false)
-    private String            credentialKey;
+    @Column(name = "key", updatable = false, nullable = false)
+    private String key;
+
+    @Basic
+    @Column(name = "secret", updatable = false, nullable = false)
+    private String secret;
 
     /**
      * Constructor
@@ -67,49 +66,70 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param scopeId
-     * @param userId
-     * @param credentialType
-     * @param credentialKey
+     * @param subject
+     * @param type
+     * @param key
+     * @param cryptedSecret
      */
-    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
+    public CredentialImpl(KapuaId scopeId,//
+            Subject subject, //
+            CredentialType type,//
+            String key,//
+            String cryptedSecret) //
+    {
         super(scopeId);
-        this.userId = (KapuaEid) userId;
-        this.credentialType = credentialType;
-        this.credentialKey = credentialKey;
+        setSubject(subject);
+        setCredentialType(type);
+        setKey(key);
+        setSecret(cryptedSecret);
     }
 
     @Override
-    public KapuaId getUserId() {
-        return userId;
+    public Subject getSubject() {
+        return subject;
+    }
+
+    @Override
+    public void setSubject(Subject subject) {
+        if (subject != null) {
+            this.subject = new SubjectImpl(subject);
+        } else {
+            this.subject = null;
+        }
     }
 
     @Override
     public CredentialType getCredentialType() {
-        return credentialType;
-    }
-
-    @Override
-    public String getCredentialKey() {
-        return credentialKey;
-    }
-
-    @Override
-    public void setUserId(KapuaId userId) {
-        this.userId = (KapuaEid)userId;
+        return type;
     }
 
     @Override
     public void setCredentialType(CredentialType credentialType) {
-        this.credentialType = credentialType;
-        
+        this.type = credentialType;
+
     }
 
     @Override
-    public void setCredentialKey(String credentialKey) {
-        this.credentialKey = credentialKey;
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public void setKey(String credentialKey) {
+        this.key = credentialKey;
+    }
+
+    @Override
+    public String getSecret() {
+        return secret;
+    }
+
+    @Override
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
 }

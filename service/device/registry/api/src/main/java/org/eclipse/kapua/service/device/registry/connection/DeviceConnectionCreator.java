@@ -12,57 +12,78 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.authentication.credential.Credential;
 
 /**
- * Device connection creator service definition.
+ * {@link DeviceConnection} creator definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<DeviceConnection>
-{
+@XmlRootElement(name = "deviceConnection")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "clientId", "credentialId", "protocol", "clientIp", "serverIp" })
+public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<DeviceConnection> {
 
     /**
      * Get the client identifier
      * 
      * @return
+     * @since 1.0.0
      */
+    @XmlElement(name = "clientId")
     public String getClientId();
 
     /**
      * Set the client identifier
      * 
      * @param clientId
+     * @since 1.0.0
      */
     public void setClientId(String clientId);
 
     /**
-     * Get the user identifier
+     * Gets the {@link Credential} id.
      * 
      * @return
+     * @since 1.0.0
      */
-    public KapuaId getUserId();
+    @XmlElement(name = "credentialId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getCredentialId();
 
     /**
-     * Set the user identifier
+     * Set the {@link Credential} id.
      * 
-     * @param userId
+     * @param credentialId
+     * @since 1.0.0
      */
-    public void setUserId(KapuaId userId);
+    public void setCredentialId(KapuaId credentialId);
 
     /**
      * Get the device protocol
      * 
      * @return
+     * @since 1.0.0
      */
+    @XmlElement(name = "protocol")
     public String getProtocol();
 
     /**
      * Set the device protocol
      * 
      * @param protocol
+     * @since 1.0.0
      */
     public void setProtocol(String protocol);
 
@@ -70,13 +91,16 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
      * Get the client ip
      * 
      * @return
+     * @since 1.0.0
      */
+    @XmlElement(name = "clientIp")
     public String getClientIp();
 
     /**
      * Set the client ip
      * 
      * @param clientIp
+     * @since 1.0.0
      */
     public void setClientIp(String clientIp);
 
@@ -84,13 +108,16 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
      * Get the server ip
      * 
      * @return
+     * @since 1.0.0
      */
+    @XmlElement(name = "serverIp")
     public String getServerIp();
 
     /**
      * Set the server ip
      * 
      * @param serverIp
+     * @since 1.0.0
      */
     public void setServerIp(String serverIp);
 }

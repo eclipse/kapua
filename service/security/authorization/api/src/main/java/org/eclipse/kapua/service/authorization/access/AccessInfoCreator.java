@@ -26,7 +26,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
  * {@link AccessInfo} creator definition.<br>
@@ -36,31 +38,48 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "userId",
-                       "roleIds",
-                       "permissions" },
-         factoryClass = AccessInfoXmlRegistry.class, 
-         factoryMethod = "newAccessInfoCreator")
+@XmlType(propOrder = { "subjectType",
+        "subjectId",
+        "roleIds",
+        "permissions" }, factoryClass = AccessInfoXmlRegistry.class, factoryMethod = "newAccessInfoCreator")
 public interface AccessInfoCreator extends KapuaEntityCreator<AccessInfo> {
 
     /**
-     * Sets the user identifier.
+     * Returns the {@link SubjectType} of this {@link AccessInfoCreator}.
      * 
-     * @param userId
-     *            The user id to set.
+     * @return The {@link SubjectType} of this {@link AccessInfoCreator}.
      * @since 1.0.0
      */
-    public void setUserId(KapuaId userId);
+    @XmlElement(name = "subjectType")
+    public SubjectType getSubjectType();
 
     /**
-     * Gets the user id.
+     * Sets the {@link SubjectType} of this {@link AccessInfoCreator}.
      * 
-     * @return The user id.
+     * @param subjectType
+     *            The {@link SubjectType} of this {@link AccessInfoCreator}.
      * @since 1.0.0
      */
-    @XmlElement(name = "userId")
+    public void setSubjectType(SubjectType subjectType);
+
+    /**
+     * Return the {@link AccessInfoCreator} subject id.
+     * 
+     * @return The {@link AccessInfoCreator} subject id.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "subjectId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getUserId();
+    public KapuaId getSubjectId();
+
+    /**
+     * Sets the {@link AccessInfoCreator} subject id.
+     * 
+     * @param subjectId
+     *            The {@link AccessInfoCreator} subject id.
+     * @since 1.0.0
+     */
+    public void setSubjectId(KapuaId subjectId);
 
     /**
      * Sets the set of {@link Domain} ids to assign to the {@link AccessInfo} created entity.

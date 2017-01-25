@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
@@ -42,6 +43,7 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
@@ -82,7 +84,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword().toCharArray());
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(SubjectType.USER, gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword().toCharArray());
 
             // Login
             authenticationService.login(credentials);
@@ -109,17 +111,17 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 Session session = currentUser.getSession();
                 gwtSession = (GwtSession) session.getAttribute(SESSION_CURRENT);
 
-                // Store the user information in the sessions
-                String username = (String) currentUser.getPrincipal();
-
-                KapuaLocator locator = KapuaLocator.getInstance();
-                UserService userService = locator.getService(UserService.class);
-                User user = userService.findByName(username);
-
-                // get the session
                 if (gwtSession == null) {
                     gwtSession = establishSession();
                 } else {
+                    KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
+                    KapuaId scopeId = kapuaSession.getScopeId();
+                    KapuaId subjectId = kapuaSession.getSubject().getId();
+
+                    KapuaLocator locator = KapuaLocator.getInstance();
+                    UserService userService = locator.getService(UserService.class);
+                    User user = userService.find(scopeId, subjectId);
+
                     gwtSession.setGwtUser(KapuaGwtModelConverter.convert(user));
                 }
             }
@@ -142,8 +144,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         //
         // Get user info
         UserService userService = locator.getService(UserService.class);
-        User user = userService.find(kapuaSession.getScopeId(),
-                kapuaSession.getUserId());
+        User user = userService.find(kapuaSession.getScopeId(), kapuaSession.getSubject().getId());
 
         //
         // Get permission info

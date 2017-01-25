@@ -35,6 +35,7 @@
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
+        <api>org.eclipse.kapua.service.authorization.subject.SubjectFactory</api>
 		
 		<!-- Uncomment as needed --> 
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>

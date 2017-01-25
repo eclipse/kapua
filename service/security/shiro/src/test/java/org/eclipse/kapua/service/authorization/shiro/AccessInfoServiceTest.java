@@ -37,6 +37,7 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -48,8 +49,8 @@ import org.junit.Test;
 
 public class AccessInfoServiceTest extends KapuaTest {
 
-    public static String DEFAULT_FILTER = "athz_*.sql";
-    public static String DROP_FILTER = "athz_*_drop.sql";
+    public static String DEFAULT_FILTER = "ath*.sql";
+    public static String DROP_FILTER = "ath_drop.sql";
 
     private static final Domain testDomain = new TestDomain();
 
@@ -87,12 +88,14 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
             AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
             AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scope);
-            accessInfoCreator.setUserId(user.getId());
+            accessInfoCreator.setSubjectType(SubjectType.USER);
+            accessInfoCreator.setSubjectId(user.getId());
 
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
 
             assertNotNull(accessInfo);
-            assertEquals(accessInfoCreator.getUserId(), accessInfo.getUserId());
+            assertEquals(accessInfoCreator.getSubjectType(), accessInfo.getSubject().getSubjectType());
+            assertEquals(accessInfoCreator.getSubjectId(), accessInfo.getSubject().getId());
             return null;
         });
     }
@@ -120,7 +123,8 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
             AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
             AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scope);
-            accessInfoCreator.setUserId(user.getId());
+            accessInfoCreator.setSubjectType(SubjectType.USER);
+            accessInfoCreator.setSubjectId(user.getId());
             accessInfoCreator.setPermissions(permissions);
 
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
@@ -173,7 +177,8 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
             AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
             AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scope);
-            accessInfoCreator.setUserId(user.getId());
+            accessInfoCreator.setSubjectType(SubjectType.USER);
+            accessInfoCreator.setSubjectId(user.getId());
             accessInfoCreator.setRoleIds(roleIds);
 
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
@@ -231,7 +236,8 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
             AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
             AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scope);
-            accessInfoCreator.setUserId(user.getId());
+            accessInfoCreator.setSubjectType(SubjectType.USER);
+            accessInfoCreator.setSubjectId(user.getId());
             accessInfoCreator.setRoleIds(roleIds);
             accessInfoCreator.setPermissions(permissions);
 
@@ -296,7 +302,8 @@ public class AccessInfoServiceTest extends KapuaTest {
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
             AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
             AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scope);
-            accessInfoCreator.setUserId(user.getId());
+            accessInfoCreator.setSubjectType(SubjectType.USER);
+            accessInfoCreator.setSubjectId(user.getId());
             accessInfoCreator.setRoleIds(roleIds);
 
             AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);

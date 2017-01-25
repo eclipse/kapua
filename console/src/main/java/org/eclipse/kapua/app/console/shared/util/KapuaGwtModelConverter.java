@@ -361,7 +361,7 @@ public class KapuaGwtModelConverter {
 
             gwtDevice.setGwtDeviceConnectionStatus(connection.getStatus().toString());
             gwtDevice.setConnectionIp(connection.getClientIp());
-            gwtDevice.setDeviceUserId(connection.getUserId().toCompactId());
+            gwtDevice.setCredentialId(connection.getCredentialId().toCompactId());
         }
         return gwtDevice;
     }

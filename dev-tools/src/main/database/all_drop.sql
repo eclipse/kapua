@@ -12,34 +12,23 @@
 
 DROP TABLE IF EXISTS act_account;
 
+DROP TABLE IF EXISTS atht_access_token;
 DROP TABLE IF EXISTS atht_credential;
 
-DROP TABLE IF EXISTS atht_access_token;
-
+DROP TABLE IF EXISTS athz_access_info;
+DROP TABLE IF EXISTS athz_access_permission;
+DROP TABLE IF EXISTS athz_access_role;
+DROP TABLE IF EXISTS athz_domain;
+DROP TABLE IF EXISTS athz_domain_actions;
+DROP TABLE IF EXISTS athz_group;
 DROP TABLE IF EXISTS athz_role;
-
 DROP TABLE IF EXISTS athz_role_permission;
 
-DROP TABLE IF EXISTS athz_user_permission;
-
-DROP TABLE IF EXISTS athz_user_role;
-
-DROP TABLE IF EXISTS athz_user_role_roles;
-
 DROP TABLE IF EXISTS dvc_device_connection;
-
 DROP TABLE IF EXISTS dvc_device;
-
 DROP TABLE IF EXISTS dvc_device_event;
 
 DROP TABLE IF EXISTS sys_configuration;
 
-DROP TABLE IF EXISTS collision_entity_test;
-
 DROP TABLE IF EXISTS usr_user;
 
-DROP TABLE IF EXISTS athz_access_info;
-
-DROP TABLE IF EXISTS athz_access_permission;
-
-DROP TABLE IF EXISTS athz_access_role;

@@ -32,22 +32,22 @@ import org.eclipse.kapua.service.account.AccountService;
 
 @TestService
 @KapuaProvider
-public class AccountServiceMock implements AccountService
-{
+public class AccountServiceMock implements AccountService {
+
     private AccountMock kapuaRootAccount;
     private Map<KapuaId, AccountMock> accounts;
-    
-    public AccountServiceMock()
-    {
+
+    public AccountServiceMock() {
+        kapuaRootAccount = new AccountMock(new KapuaEid(BigInteger.ONE), "kapua-sys");
+        kapuaRootAccount.setId(new KapuaEid(BigInteger.ONE));
+
         accounts = new HashMap<KapuaId, AccountMock>();
-        kapuaRootAccount = new AccountMock(new KapuaEid(BigInteger.valueOf(1)), "kapua-sys");
         accounts.put(kapuaRootAccount.getId(), kapuaRootAccount);
     }
-    
+
     @Override
     public Account create(AccountCreator creator)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         AccountMock account = new AccountMock(creator.getScopeId(), creator.getName());
         return account;
@@ -55,56 +55,49 @@ public class AccountServiceMock implements AccountService
 
     @Override
     public Account find(KapuaId scopeId, KapuaId entityId)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (!accounts.containsKey(entityId))
             throw KapuaException.internalError("User not found");
-        
+
         return accounts.get(entityId);
     }
 
     @Override
     public KapuaListResult<Account> query(KapuaQuery<Account> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public long count(KapuaQuery<Account> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public void delete(KapuaId scopeId, KapuaId accountId)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (!accounts.containsKey(accountId))
             throw KapuaException.internalError("User not found");
-        
+
         AccountMock accountMock = accounts.remove(accountId);
     }
 
     @Override
     public Account update(Account account)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (!accounts.containsKey(account.getId()))
             throw KapuaException.internalError("User not found");
-        
+
         AccountMock accountMock = accounts.get(account.getId());
         return accountMock;
     }
 
     @Override
     public Account findByName(String name)
-        throws KapuaException
-    {
+            throws KapuaException {
         Iterator<AccountMock> accountMocks = accounts.values().iterator();
-        while(accountMocks.hasNext())
-        {
+        while (accountMocks.hasNext()) {
             AccountMock accountMock = accountMocks.next();
             if (accountMock.getName() != null && accountMock.getName().equals(name))
                 return accountMock;
@@ -114,39 +107,34 @@ public class AccountServiceMock implements AccountService
 
     @Override
     public KapuaTocd getConfigMetadata()
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public Map<String, Object> getConfigValues(KapuaId scopeId)
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public void setConfigValues(KapuaId scopeId, Map<String, Object> values)
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public Account find(KapuaId id)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (!accounts.containsKey(id))
             throw KapuaException.internalError("User not found");
-        
+
         return accounts.get(id);
     }
 
     @Override
     public AccountListResult findChildsRecursively(KapuaId accountId)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

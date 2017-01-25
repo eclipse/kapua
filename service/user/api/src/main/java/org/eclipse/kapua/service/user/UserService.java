@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
@@ -29,10 +28,9 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * 
  */
 public interface UserService extends KapuaEntityService<User, UserCreator>,
-                             KapuaUpdatableEntityService<User>,
-                             KapuaNamedEntityService<User>,
-                             KapuaConfigurableService
-{
+        KapuaUpdatableEntityService<User>,
+        KapuaConfigurableService {
+
     /**
      * Creates a new user under the account specified in the UserCreator.<br>
      * The returned User object does not have its access information, roles
@@ -43,19 +41,20 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     public User create(UserCreator userCreator)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Updates an User in the database and returns the refreshed/reloaded entity instance.<br>
      * The returned User object does not have its access information, roles
      * and permissions, loaded.
      *
-     * @param user to be update
+     * @param user
+     *            to be update
      * @return
      * @throws KapuaException
      */
     public User update(User user)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Delete the supplied User.
@@ -64,7 +63,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     public void delete(User user)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Returns the User with the specified Id; returns null if the user is not found.<br>
@@ -75,20 +74,22 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @throws KapuaException
      */
     public User find(KapuaId accountId, KapuaId userId)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
-     * Returns the User with the specified username; returns null if the user is not found.
+     * Returns the User with the specified user name
      *
-     * @return
+     * @param name
+     *            The name to search.
+     * @return The {@link User} with the specified name or {@code null} if the user is not found.
      * @throws KapuaException
      */
     public User findByName(String name)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Queries for all users
      */
     public UserListResult query(KapuaQuery<User> query)
-        throws KapuaException;
+            throws KapuaException;
 }

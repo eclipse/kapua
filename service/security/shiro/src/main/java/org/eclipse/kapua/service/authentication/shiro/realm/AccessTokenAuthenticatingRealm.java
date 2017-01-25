@@ -19,7 +19,6 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.realm.AuthenticatingRealm;
@@ -35,9 +34,6 @@ import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,13 +87,11 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         //
         // Get Services
         KapuaLocator locator;
-        UserService userService;
         AccountService accountService;
         AccessTokenService accessTokenService;
 
         try {
             locator = KapuaLocator.getInstance();
-            userService = locator.getService(UserService.class);
             accountService = locator.getService(AccountService.class);
             accessTokenService = locator.getService(AccessTokenService.class);
         } catch (KapuaRuntimeException kre) {
@@ -127,31 +121,10 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         //
-        // Get the associated user by name
-        final User user;
-        try {
-            user = KapuaSecurityUtils.doPriviledge(() -> userService.find(accessToken.getScopeId(), accessToken.getUserId()));
-        } catch (AuthenticationException ae) {
-            throw ae;
-        } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
-        }
-
-        // Check existence
-        if (user == null) {
-            throw new UnknownAccountException();
-        }
-
-        // Check disabled
-        if (UserStatus.DISABLED.equals(user.getStatus())) {
-            throw new DisabledAccountException();
-        }
-
-        //
         // Find account
         final Account account;
         try {
-            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(user.getScopeId()));
+            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(accessToken.getScopeId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -165,10 +138,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
 
         //
         // BuildAuthenticationInfo
-        return new SessionAuthenticationInfo(getName(),
-                account,
-                user,
-                accessToken);
+        return new SessionAuthenticationInfo(getName(), accessToken);
     }
 
     @Override
@@ -183,7 +153,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         //
         // Set kapua session
         AccessToken accessToken = kapuaInfo.getAccessToken();
-        KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getUserId());
+        KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getSubject());
         KapuaSecurityUtils.setSession(kapuaSession);
 
         //

@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authorization.subject.Subject;
 
 /**
  * Kapua session
@@ -50,9 +51,9 @@ public class KapuaSession implements Serializable {
     private KapuaId scopeId;
 
     /**
-     * User identifier
+     * Subject identifier
      */
-    private KapuaId userId;
+    private Subject subject;
 
     /**
      * Trusted mode.<br>
@@ -77,7 +78,7 @@ public class KapuaSession implements Serializable {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
             KapuaSession kapuaSessionCopy = new KapuaSession(kapuaSession.getAccessToken(),
                     kapuaSession.getScopeId(),
-                    kapuaSession.getUserId());
+                    kapuaSession.getSubject());
             kapuaSessionCopy.trustedMode = true;
             return kapuaSessionCopy;
         } else {
@@ -109,17 +110,16 @@ public class KapuaSession implements Serializable {
      * Constructs a {@link KapuaSession} with given parameters
      * 
      * @param accessToken
-     * @param runAsScopeId
      * @param scopeId
-     * @param userId
+     * @param subject
      */
     public KapuaSession(AccessToken accessToken,
             KapuaId scopeId,
-            KapuaId userId) {
+            Subject subject) {
         this();
         this.accessToken = accessToken;
         this.scopeId = scopeId;
-        this.userId = userId;
+        this.subject = subject;
     }
 
     /**
@@ -141,12 +141,12 @@ public class KapuaSession implements Serializable {
     }
 
     /**
-     * Get the user identifier
+     * Get the subject identifier
      * 
      * @return
      */
-    public KapuaId getUserId() {
-        return userId;
+    public Subject getSubject() {
+        return subject;
     }
 
     /**

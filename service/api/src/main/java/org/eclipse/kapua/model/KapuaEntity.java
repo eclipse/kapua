@@ -27,7 +27,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * Kapua base entity definition.<br>
  * All the Kapua entities will be an extension of this entity.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 @XmlType(propOrder = { "id", "scopeId", "createdOn", "createdBy" })

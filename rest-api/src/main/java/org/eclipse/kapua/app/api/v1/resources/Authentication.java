@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +51,7 @@ public class Authentication extends AbstractKapuaResource {
     public AccessToken loginUsernamePassword(UsernamePasswordCredentials authenticationCredentials) {
         AccessToken accessToken = null;
         try {
+            authenticationCredentials.setSubjectType(SubjectType.USER);
             accessToken = authenticationService.login(authenticationCredentials);
         } catch (Throwable t) {
             handleException(t);

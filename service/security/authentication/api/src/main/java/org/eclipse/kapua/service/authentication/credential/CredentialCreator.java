@@ -22,66 +22,115 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
- * Credential creator service definition.
+ * {@link Credential} creator definition.
  * 
  * @since 1.0
  *
  */
-@XmlRootElement(name="credentialCreator")
+@XmlRootElement(name = "credentialCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId",
-                      "credentialType",
-                      "credentialPlainKey"},
-         factoryClass = CredentialXmlRegistry.class,
-         factoryMethod = "newCredentialCreator")
-public interface CredentialCreator extends KapuaEntityCreator<Credential>
-{
+@XmlType(propOrder = {
+        "subjectType",
+        "subjectId",
+        "type",
+        "key",
+        "plainSecret",
+}, //
+        factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
+public interface CredentialCreator extends KapuaEntityCreator<Credential> {
 
     /**
-     * Return the user identifier
+     * Returns the {@link SubjectType} of this {@link CredentialCreator}.
      * 
-     * @return
+     * @return The {@link SubjectType} of this {@link CredentialCreator}.
+     * @since 1.0.0
      */
-    @XmlElement(name = "userId")
+    @XmlElement(name = "subjectType")
+    public SubjectType getSubjectType();
+
+    /**
+     * Sets the {@link SubjectType} of this {@link CredentialCreator}.
+     * 
+     * @param subjectType
+     *            The {@link SubjectType} of this {@link CredentialCreator}.
+     * @since 1.0.0
+     */
+    public void setSubjectType(SubjectType subjectType);
+
+    /**
+     * Return the {@link Credential} subject id.
+     * 
+     * @return The {@link Credential} subject id.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "subjectId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getUserId();
+    public KapuaId getSubjectId();
 
     /**
-     * Set the credential user id
+     * Sets the {@link Credential} subject id.
      * 
-     * @param userId
+     * @param subjectId
+     *            The {@link Credential} subject id.
+     * @since 1.0.0
      */
-    public void setUserId(KapuaId userId);
-    
-    /**
-     * Return the credential type.<br>
-     * The returned object will depend on the authentication algorithm.
-     * 
-     * @return
-     */
-    @XmlElement(name = "credentialType")
-    public CredentialType getCredentialType();
+    public void setSubjectId(KapuaId subjectId);
 
     /**
-     * Set the credential type
+     * Returns the {@link CredentialType}.
      * 
-     * @param credentialType
+     * @return The {@link CredentialType}.
+     * @since 1.0.0
      */
-    public void setCredentialType(CredentialType credentialType);
+    @XmlElement(name = "type")
+    public CredentialType getType();
+
     /**
-     * Return the plain credential (unencrypted value).
+     * Sets the {@link CredentialType}.
      * 
-     * @return
+     * @param type
+     *            The {@link CredentialType}.
+     * @since 1.0.0
      */
-    @XmlElement(name = "credentialKey")
-    public String getCredentialPlainKey();
-    
+    public void setType(CredentialType type);
+
     /**
-     * Set the credential plain key
+     * Returns the {@link CredentialCreator} key.
      * 
-     * @param plainKey
+     * @return The plain {@link CredentialCreator} key.
+     * @since 1.0.0
      */
-    public void setCredentialPlainKey(String plainKey);
+    @XmlElement(name = "key")
+    public String getKey();
+
+    /**
+     * Sets the {@link CredentialCreator} key.
+     * 
+     * @param key
+     *            The {@link CredentialCreator} key.
+     * @since 1.0.0
+     */
+    public void setKey(String key);
+
+    /**
+     * Returns the plain {@link CredentialCreator} secret (unencrypted value).
+     * 
+     * @return The plain {@link CredentialCreator} secret (unencrypted value).
+     * @since 1.0.0
+     */
+    @XmlElement(name = "plainSecret")
+    public String getPlainSecret();
+
+    /**
+     * Sets the {@link CredentialCreator} plain secret.
+     * 
+     * @param plainSecret
+     *            The {@link CredentialCreator} plain secret.
+     * @since 1.0.0
+     */
+    public void setPlainSecret(String plainSecret);
+
 }

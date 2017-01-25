@@ -37,6 +37,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
@@ -44,6 +45,7 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.authorization.subject.SubjectMock;
 import org.mockito.Mockito;
 
 import cucumber.api.Scenario;
@@ -133,8 +135,7 @@ public class UserServiceSteps extends KapuaTest {
 
         // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
         // All operations on database are performed using system user.
-        User user = userService.findByName("kapua-sys");
-        KapuaSession kapuaSession = new KapuaSession(null, user.getScopeId(), user.getId());
+        KapuaSession kapuaSession = new KapuaSession(null, KapuaEid.ONE, new SubjectMock(SubjectType.USER, KapuaEid.ONE));
         KapuaSecurityUtils.setSession(kapuaSession);
 
         // Set KapuaMetatypeFactory for Metatype configuration
