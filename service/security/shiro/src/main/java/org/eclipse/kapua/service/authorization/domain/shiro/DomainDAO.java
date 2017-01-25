@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -75,9 +76,11 @@ public class DomainDAO extends ServiceDAO {
      *            The {@link EntityManager} that holds the transaction.
      * @param domainId
      *            The {@link Domain} id to delete.
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Domain} is not found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId domainId) {
+    public static void delete(EntityManager em, KapuaId domainId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DomainImpl.class, domainId);
     }
 

@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.authorization.group.Groupable;
 
 /**
  * Device is an object representing a device or gateway connected to the Kapua platform.<br>
@@ -34,7 +35,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "device")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "clientId",
+@XmlType(propOrder = {
+        "groupId",
+        "clientId",
         "connectionId",
         "status",
         "displayName",
@@ -74,11 +77,11 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         // "connectionInterface",
         // "gpsAltitude"
 }, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDevice")
-public interface Device extends KapuaUpdatableEntity {
+public interface Device extends KapuaUpdatableEntity, Groupable {
 
     public static final String TYPE = "dvce";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

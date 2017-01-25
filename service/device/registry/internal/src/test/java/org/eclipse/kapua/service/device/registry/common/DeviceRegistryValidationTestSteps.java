@@ -17,23 +17,28 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 
 import java.math.BigInteger;
-import java.security.acl.Permission;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.id.KapuaIdFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.internal.DeviceCreatorImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Mockito;
@@ -68,9 +73,13 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
     Scenario scenario;
 
     // Device validator object
-    DeviceValidation deviceValidator = null;
+    // DeviceValidation deviceValidator = null;
+
+    // Commons related objects
+    KapuaIdFactory kapuaIdFactory = new KapuaIdFactoryImpl();
 
     // Device registry related objects
+    DeviceRegistryService deviceRegistryService = new DeviceRegistryServiceImpl();
     DeviceFactory deviceFactory = new DeviceFactoryImpl();
     DeviceCreator deviceCreator = null;
     DeviceImpl device = null;
@@ -96,22 +105,23 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
 
         // Inject mocked Authorization Service method checkPermission
         AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
-        // TODO: Check why does this line needs an explicit cast!
-        Mockito.doNothing().when(mockedAuthorization).checkPermission(
-                (org.eclipse.kapua.service.authorization.permission.Permission) any(Permission.class));
-        mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
-                mockedAuthorization);
+        Mockito.doNothing().when(mockedAuthorization).checkPermission(any(Permission.class));
+        mockLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
 
         // Inject mocked Permission Factory
         PermissionFactory mockedPermissionFactory = mock(PermissionFactory.class);
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
-                mockedPermissionFactory);
+        mockLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
 
-        // Instantiate the validation object
-        deviceValidator = new DeviceValidation(mockedPermissionFactory, mockedAuthorization);
+        // Inject commons objects
+        mockLocator.setMockedFactory(KapuaIdFactory.class, kapuaIdFactory);
+
+        // Inject the validation object
+        mockLocator.setMockedService(DeviceRegistryService.class, deviceRegistryService);
+        mockLocator.setMockedFactory(DeviceFactory.class, deviceFactory);
+        // deviceValidator = new DeviceValidation();
 
         // Set KapuaMetatypeFactory for Metatype configuration
-        mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
+        mockLocator.setMockedFactory(KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
         KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
@@ -190,7 +200,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
             throws KapuaException {
         try {
             exceptionCaught = false;
-            deviceValidator.validateCreatePreconditions(deviceCreator);
+            DeviceValidation.validateCreatePreconditions(deviceCreator);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -201,7 +211,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
             throws KapuaException {
         try {
             exceptionCaught = false;
-            deviceValidator.validateUpdatePreconditions(device);
+            DeviceValidation.validateUpdatePreconditions(device);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -227,7 +237,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
 
         try {
             exceptionCaught = false;
-            deviceValidator.validateFindPreconditions(scope, dev);
+            DeviceValidation.validateFindPreconditions(scope, dev);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -253,7 +263,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
 
         try {
             exceptionCaught = false;
-            deviceValidator.validateFindByClientIdPreconditions(scope, client);
+            DeviceValidation.validateFindByClientIdPreconditions(scope, client);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -279,7 +289,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
 
         try {
             exceptionCaught = false;
-            deviceValidator.validateDeletePreconditions(scope, dev);
+            DeviceValidation.validateDeletePreconditions(scope, dev);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -290,7 +300,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
             throws KapuaException {
         try {
             exceptionCaught = false;
-            deviceValidator.validateQueryPreconditions(query);
+            DeviceValidation.validateQueryPreconditions(query);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -301,7 +311,7 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
             throws KapuaException {
         try {
             exceptionCaught = false;
-            deviceValidator.validateCountPreconditions(query);
+            DeviceValidation.validateCountPreconditions(query);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }

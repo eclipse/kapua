@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
+import javax.security.auth.Subject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,9 +26,9 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 
 /**
- * Permission definition.<br>
- * A permission can be associated to a {@link User} (using {@link AccessInfo} entity) or a {@link Domain}.<br>
- * Permissions enable the assignee to do {@link Actions} under specified domains and in specified scopes.
+ * {@link Permission} definition.<br>
+ * A permission can be associated to a {@link Subject} (using {@link AccessInfo} entity) or a {@link Domain}.<br>
+ * {@link Permission}s enable the assignee to do {@link Actions} under specified {@link Domain} and in specified scopes.
  * 
  * @since 1.0.0
  */
@@ -35,9 +36,13 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "domain",
         "action",
-        "targetScopeId"
+        "targetScopeId",
+        "groupId"
 }, factoryClass = PermissionXmlRegistry.class, factoryMethod = "newPermission")
 public interface Permission {
+
+    public static final String WILDCARD = "*";
+    public static final String SEPARATOR = ":";
 
     /**
      * Sets the domain on which the {@link Permission} gives access.
@@ -93,4 +98,23 @@ public interface Permission {
     @XmlElement(name = "targetScopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getTargetScopeId();
+
+    /**
+     * Sets the {@link Group} id that this {@link Permission} gives access.
+     * 
+     * @param groupId
+     *            The {@link Group} id that this {@link Permission} gives access.
+     * @since 1.0.0
+     */
+    public void setGroupId(KapuaId groupId);
+
+    /**
+     * Gets the {@link Group} id that this {@link Permission} gives access.
+     * 
+     * @return The {@link Group} id that this {@link Permission} gives access.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "groupId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getGroupId();
 }

@@ -13,6 +13,9 @@
 CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	    UNSIGNED NOT NULL,
+  
+  group_id             	    BIGINT(21) 	    UNSIGNED,
+  
   client_id                 VARCHAR(255)    NOT NULL,
   connection_id             BIGINT(21) 	    UNSIGNED NULL,
   created_on             	TIMESTAMP(3)    NULL,
@@ -45,6 +48,7 @@ CREATE TABLE dvc_device (
   custom_attribute_5        VARCHAR(255),
   credentials_mode          VARCHAR(64)   NOT NULL,
   preferred_user_id			BIGINT(21)    DEFAULT 0,
+  
   optlock                   INT UNSIGNED,
   attributes             	TEXT,  
   properties             	TEXT,   

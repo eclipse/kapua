@@ -83,5 +83,5 @@ public interface RolePermission extends KapuaEntity {
      * @return The {@link Permission} that this {@link RolePermission} has.
      */
     @XmlElement(name = "permission")
-    public Permission getPermission();
+    public <P extends Permission> P getPermission();
 }

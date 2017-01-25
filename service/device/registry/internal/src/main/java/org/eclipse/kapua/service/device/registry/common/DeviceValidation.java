@@ -13,39 +13,47 @@
 package org.eclipse.kapua.service.device.registry.common;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 
 /**
  * Provides logic used to validate preconditions required to execute the device service operation.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 public final class DeviceValidation {
 
-    private final PermissionFactory permissionFactory;
-    private final AuthorizationService authorizationService;
-
     private static final Domain deviceDomain = new DeviceDomain();
 
-    /**
-     * Constructs
-     * 
-     * @param permissionFactory
-     * @param authorizationService
-     */
-    public DeviceValidation(PermissionFactory permissionFactory, AuthorizationService authorizationService) {
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
+    private static final AuthorizationService authorizationService;
+    private static final PermissionFactory permissionFactory;
+
+    private static final DeviceRegistryService deviceRegistryService;
+    private static final DeviceFactory deviceFactory;
+
+    static {
+        authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+
+        deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+        deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
     }
 
     /**
@@ -55,12 +63,12 @@ public final class DeviceValidation {
      * @return
      * @throws KapuaException
      */
-    public DeviceCreator validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
+    public static DeviceCreator validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), "deviceCreator.clientId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, deviceCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
 
         return deviceCreator;
     }
@@ -72,12 +80,15 @@ public final class DeviceValidation {
      * @return
      * @throws KapuaException
      */
-    public Device validateUpdatePreconditions(Device device) throws KapuaException {
+    public static Device validateUpdatePreconditions(Device device) throws KapuaException {
         ArgumentValidator.notNull(device, "device");
         ArgumentValidator.notNull(device.getId(), "device.id");
-        ArgumentValidator.notNull(device.getScopeId(), "v.scopeId");
+        ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId()));
+        KapuaId groupId = findCurrentGroupId(device.getScopeId(), device.getId());
+
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), groupId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), device.getGroupId()));
 
         return device;
     }
@@ -89,11 +100,12 @@ public final class DeviceValidation {
      * @param entityId
      * @throws KapuaException
      */
-    public void validateFindPreconditions(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+    public static void validateFindPreconditions(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(entityId, "entityId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, scopeId));
+        KapuaId groupId = findCurrentGroupId(scopeId, entityId);
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, groupId));
     }
 
     /**
@@ -102,11 +114,11 @@ public final class DeviceValidation {
      * @param query
      * @throws KapuaException
      */
-    public void validateQueryPreconditions(KapuaQuery<Device> query) throws KapuaException {
+    public static void validateQueryPreconditions(KapuaQuery<Device> query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId(), Group.ANY));
     }
 
     /**
@@ -115,11 +127,11 @@ public final class DeviceValidation {
      * @param query
      * @throws KapuaException
      */
-    public void validateCountPreconditions(KapuaQuery<Device> query) throws KapuaException {
+    public static void validateCountPreconditions(KapuaQuery<Device> query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId(), Group.ANY));
     }
 
     /**
@@ -129,11 +141,12 @@ public final class DeviceValidation {
      * @param deviceId
      * @throws KapuaException
      */
-    public void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
-        ArgumentValidator.notNull(deviceId, "device.id");
-        ArgumentValidator.notNull(scopeId, "device.scopeId");
+    public static void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(deviceId, "id");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.delete, scopeId));
+        KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.delete, scopeId, groupId));
     }
 
     /**
@@ -143,11 +156,48 @@ public final class DeviceValidation {
      * @param clientId
      * @throws KapuaException
      */
-    public void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
+    public static void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
-
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, scopeId));
     }
 
+    private static KapuaId findCurrentGroupId(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+        DeviceQuery query = deviceFactory.newQuery(scopeId);
+        // query.setSelect
+        query.setPredicate(new AttributePredicate<>(DevicePredicates.ENTITY_ID, entityId));
+
+        DeviceListResult results = null;
+        try {
+            results = KapuaSecurityUtils.doPriviledge(() -> (DeviceListResult) deviceRegistryService.query(query));
+        } catch (Exception e) {
+            throw KapuaException.internalError(e, "Error while searching groupId");
+        }
+
+        KapuaId groupId = null;
+        if (results != null && !results.isEmpty()) {
+            groupId = results.getItem(0).getGroupId();
+        }
+
+        return groupId;
+    }
+
+    // private static KapuaId findCurrentGroupId(KapuaId scopeId, String clientId) throws KapuaException {
+    // DeviceQuery query = deviceFactory.newQuery(scopeId);
+    // // query.setSelect
+    // query.setPredicate(new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId));
+    //
+    // DeviceListResult results = null;
+    // try {
+    // results = KapuaSecurityUtils.doPriviledge(() -> (DeviceListResult) deviceRegistryService.query(query));
+    // } catch (Exception e) {
+    // throw KapuaException.internalError(e, "Error while searching groupId");
+    // }
+    //
+    // KapuaId groupId = null;
+    // if (results != null && !results.isEmpty()) {
+    // groupId = results.getFirstItem().getGroupId();
+    // }
+    //
+    // return groupId;
+    // }
 }

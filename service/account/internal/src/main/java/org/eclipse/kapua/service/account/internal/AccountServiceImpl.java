@@ -45,8 +45,8 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  *
  */
 @KapuaProvider
-public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService
-{
+public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService {
+
     private static final long serialVersionUID = -312489270279852500L;
 
     private static final Domain accountDomain = new AccountDomain();
@@ -303,9 +303,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> {
-            return AccountDAO.query(em, query);
-        });
+        return entityManagerSession.onResult(em -> AccountDAO.query(em, query));
     }
 
     @Override

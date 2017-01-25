@@ -31,6 +31,8 @@ public class DeviceDomain extends AbstractKapuaEntity implements Domain {
 
     private static final long serialVersionUID = 3782336558657796495L;
 
+    public static final DeviceDomain INSTANCE = new DeviceDomain();
+
     private String name = "device";
     private String serviceName = "deviceRegistryService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));

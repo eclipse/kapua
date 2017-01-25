@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Interface used to mark group-able entities.
@@ -35,6 +39,8 @@ public interface Groupable {
      * @return The {@link Group} id assigned to this entity.
      * @since 1.0.0
      */
+    @XmlElement(name = "groupId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getGroupId();
 
 }

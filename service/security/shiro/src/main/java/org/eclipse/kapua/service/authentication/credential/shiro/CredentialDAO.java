@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -91,8 +92,10 @@ public class CredentialDAO extends ServiceDAO {
      * 
      * @param em
      * @param credentialId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Credential} is now found.
      */
-    public static void delete(EntityManager em, KapuaId credentialId) {
+    public static void delete(EntityManager em, KapuaId credentialId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, CredentialImpl.class, credentialId);
     }
 

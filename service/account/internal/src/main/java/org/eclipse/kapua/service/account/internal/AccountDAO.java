@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
@@ -54,8 +55,7 @@ public class AccountDAO {
         organizationImpl.setStateProvinceCounty(accountCreator.getOrganizationStateProvinceCounty());
         organizationImpl.setCountry(accountCreator.getOrganizationCountry());
 
-        AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(),
-                accountCreator.getName());
+        AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
         accountImpl.setOrganization(organizationImpl);
 
         return ServiceDAO.create(em, accountImpl);
@@ -83,8 +83,10 @@ public class AccountDAO {
      * 
      * @param em
      * @param accountId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link Account} is not found
      */
-    public static void delete(EntityManager em, KapuaId accountId) {
+    public static void delete(EntityManager em, KapuaId accountId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, AccountImpl.class, accountId);
     }
 

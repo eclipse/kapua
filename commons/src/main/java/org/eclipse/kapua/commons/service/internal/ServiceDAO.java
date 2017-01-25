@@ -22,7 +22,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
@@ -34,6 +33,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaEntityExistsException;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -43,6 +43,7 @@ import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -60,6 +61,8 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 public class ServiceDAO {
 
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
+
+    private static final String LIKE = "%";
 
     protected ServiceDAO() {
     }
@@ -103,15 +106,13 @@ public class ServiceDAO {
         while (cause != null && !(cause instanceof SQLException)) {
             cause = cause.getCause();
         }
+
         if (cause == null) {
             return false;
         }
+
         SQLException innerExc = (SQLException) cause;
-        if (SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState())) {
-            return true;
-        } else {
-            return false;
-        }
+        return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
     }
 
     /**
@@ -122,8 +123,10 @@ public class ServiceDAO {
      * @param entity
      *            entity to be updated
      * @return
+     * @throws KapuaEntityNotFoundException
+     *             If entity is not found.
      */
-    public static <E extends KapuaUpdatableEntity> E update(EntityManager em, Class<E> clazz, E entity) {
+    public static <E extends KapuaUpdatableEntity> E update(EntityManager em, Class<E> clazz, E entity) throws KapuaEntityNotFoundException {
         //
         // Checking existence
         E entityToUpdate = em.find(clazz, entity.getId());
@@ -138,6 +141,8 @@ public class ServiceDAO {
             em.merge(entity);
             em.flush();
             em.refresh(entityToUpdate);
+        } else {
+            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entity.getId());
         }
 
         return entityToUpdate;
@@ -150,8 +155,12 @@ public class ServiceDAO {
      * @param clazz
      * @param entityId
      *            entity id of the entity to be deleted
+     * 
+     * @throws KapuaEntityNotFoundException
+     *             If entity is not found.
      */
-    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId entityId) {
+    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId entityId)
+            throws KapuaEntityNotFoundException {
         //
         // Checking existence
         E entityToDelete = em.find(clazz, entityId);
@@ -161,6 +170,8 @@ public class ServiceDAO {
         if (entityToDelete != null) {
             em.remove(entityToDelete);
             em.flush();
+        } else {
+            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entityId);
         }
     }
 
@@ -244,7 +255,7 @@ public class ServiceDAO {
 
             AndPredicate scopedAndPredicate = new AndPredicate();
 
-            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>("scopeId", kapuaQuery.getScopeId());
+            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -264,22 +275,6 @@ public class ServiceDAO {
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-        // ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
-        // Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
-        //
-        // Map<ParameterExpression, Object> binds = new HashMap<>();
-        // binds.put(scopeIdParam, kapuaQuery.getScopeId());
-        // Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaQuery.getPredicate(),
-        // binds,
-        // cb,
-        // entityRoot,
-        // entityRoot.getModel());
-        //
-        // if (expr == null) {
-        // criteriaSelectQuery.where(scopeIdExpr);
-        // } else {
-        // criteriaSelectQuery.where(cb.and(scopeIdExpr, expr));
-        // }
 
         //
         // ORDER BY
@@ -294,7 +289,7 @@ public class ServiceDAO {
             }
 
         } else {
-            order = cb.asc(entityRoot.get(entityType.getSingularAttribute("id")));
+            order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityPredicates.ENTITY_ID)));
         }
         criteriaSelectQuery.orderBy(order);
 
@@ -369,7 +364,7 @@ public class ServiceDAO {
 
             AndPredicate scopedAndPredicate = new AndPredicate();
 
-            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>("scopeId", kapuaQuery.getScopeId());
+            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -481,23 +476,25 @@ public class ServiceDAO {
         }
         if (attrValue instanceof Object[]) {
             Object[] attrValues = (Object[]) attrValue;
-            Expression<?> inPredicate = entityRoot.get(attribute);
-            In inExpr = cb.in(inPredicate);
-            for (Object value : attrValues) {
-                inExpr.value(value);
+            Expression<?> orPredicate = entityRoot.get(attribute);
+
+            Predicate[] orPredicates = new Predicate[attrValues.length];
+            for (int i = 0; i < attrValues.length; i++) {
+                orPredicates[i] = cb.equal(orPredicate, attrValues[i]);
             }
-            expr = inExpr;
+
+            expr = cb.and(cb.or(orPredicates));
         } else {
             switch (attrPred.getOperator()) {
             case LIKE:
                 ParameterExpression<String> pl = cb.parameter(String.class);
-                binds.put(pl, "%" + attrValue + "%");
+                binds.put(pl, LIKE + attrValue + LIKE);
                 expr = cb.like((Expression<String>) entityRoot.get(attribute), pl);
                 break;
 
             case STARTS_WITH:
                 ParameterExpression<String> psw = cb.parameter(String.class);
-                binds.put(psw, attrValue + "%");
+                binds.put(psw, attrValue + LIKE);
                 expr = cb.like((Expression<String>) entityRoot.get(attribute), psw);
                 break;
 
@@ -552,8 +549,8 @@ public class ServiceDAO {
                 }
                 break;
 
-            default:
             case EQUAL:
+            default:
                 expr = cb.equal(entityRoot.get(attribute), attrValue);
                 break;
             }
