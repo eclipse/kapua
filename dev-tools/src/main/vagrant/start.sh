@@ -26,7 +26,7 @@ then
 	sh demo/start-demo.sh
 elif [ $1 = 'base-box' ]
 then
-	echo '======> create base box'
+	echo '======> create/update base box'
 	sh baseBox/create-base-box.sh
 else 
 	echo 'unknown parameter value'
