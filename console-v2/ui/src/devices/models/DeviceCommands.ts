@@ -1,4 +1,3 @@
-<!--
 /*******************************************************************************
 * Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
 *                                                                               
@@ -11,23 +10,7 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
--->
-<div>
-  <h3>
-    Device detail
-  </h3>
-  <div>
-    ID: {{:: vm.$stateParams["id"] }}
-  </div>
-  <div>
-    Display name: {{ vm.device.displayName }}
-  </div>
-  <div>
-    Client ID: {{ vm.device.clientId }}
-  </div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Installed Packages" show-top-border="true" status="vm.packagesStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Bundles" show-top-border="true" status="vm.bundlesStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Events" show-top-border="true" status="vm.eventsStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Commands" show-top-border="true" status="vm.commandsStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Configurations" show-top-border="true" status="vm.configurationsStatus"></div>
-</div>
+interface DeviceCommands {
+    deviceCommand: DeviceCommand[];
+    type: string;
+}
