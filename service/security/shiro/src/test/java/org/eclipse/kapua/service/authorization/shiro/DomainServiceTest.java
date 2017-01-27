@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
@@ -56,7 +68,7 @@ public class DomainServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + System.currentTimeMillis(), DomainServiceTest.class.getName() + System.currentTimeMillis());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainServiceTest.class.getName() + random.nextLong());
             domainCreator.setActions(domainActions);
 
             DomainService domainService = locator.getService(DomainService.class);
@@ -92,7 +104,7 @@ public class DomainServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + System.currentTimeMillis(), DomainServiceTest.class.getName() + System.currentTimeMillis());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainServiceTest.class.getName() + random.nextLong());
             domainCreator.setActions(domainActions);
 
             DomainService domainService = locator.getService(DomainService.class);
@@ -137,7 +149,7 @@ public class DomainServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + System.currentTimeMillis(), DomainServiceTest.class.getName() + System.currentTimeMillis());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainServiceTest.class.getName() + random.nextLong());
             domainCreator.setActions(domainActions);
 
             Domain domain1 = domainService.create(domainCreator);
@@ -147,7 +159,7 @@ public class DomainServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            domainCreator = domainFactory.newCreator("test-" + System.currentTimeMillis(), DomainServiceTest.class.getName() + System.currentTimeMillis());
+            domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainServiceTest.class.getName() + random.nextLong());
             domainCreator.setActions(domainActions);
 
             Domain domain2 = domainService.create(domainCreator);
@@ -204,7 +216,7 @@ public class DomainServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + System.currentTimeMillis(), DomainServiceTest.class.getName() + System.currentTimeMillis());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainServiceTest.class.getName() + random.nextLong());
             domainCreator.setActions(domainActions);
 
             DomainService domainService = locator.getService(DomainService.class);

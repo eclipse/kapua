@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,7 +63,7 @@ public class GroupServiceTest extends KapuaTest {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create group
-            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + new Date().getTime());
+            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             //
             // Create
@@ -92,7 +92,7 @@ public class GroupServiceTest extends KapuaTest {
         KapuaSecurityUtils.doPriviledge(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
-            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + new Date().getTime());
+            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
             Group group = groupService.create(groupCreator);
@@ -103,8 +103,8 @@ public class GroupServiceTest extends KapuaTest {
 
             //
             // Update
-            group.setName("updated-" + new Date().getTime());
-
+            group.setName("updated-" + random.nextLong());
+            Thread.sleep(50); // Added some delay to make sure the modification time-stamps are really different
             Group groupUpdated1 = groupService.update(group);
 
             //
@@ -130,7 +130,7 @@ public class GroupServiceTest extends KapuaTest {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create Group
-            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + new Date().getTime());
+            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
             Group group = groupService.create(groupCreator);
@@ -165,7 +165,7 @@ public class GroupServiceTest extends KapuaTest {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create group
-            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + new Date().getTime());
+            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
             Group group = groupService.create(groupCreator);
@@ -209,7 +209,7 @@ public class GroupServiceTest extends KapuaTest {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create group
-            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + new Date().getTime());
+            GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
             Group group = groupService.create(groupCreator);
