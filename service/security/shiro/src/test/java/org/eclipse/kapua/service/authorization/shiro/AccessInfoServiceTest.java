@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -80,7 +80,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             // Create mock user
             UserService userService = locator.getService(UserService.class);
             UserFactory userFactory = locator.getFactory(UserFactory.class);
-            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + System.currentTimeMillis());
+            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + random.nextLong());
             User user = userService.create(userCreator);
 
             // Create access info
@@ -107,7 +107,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             // Create mock user
             UserService userService = locator.getService(UserService.class);
             UserFactory userFactory = locator.getFactory(UserFactory.class);
-            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + System.currentTimeMillis());
+            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + random.nextLong());
             User user = userService.create(userCreator);
 
             // Create permission
@@ -149,7 +149,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             // Create mock user
             UserService userService = locator.getService(UserService.class);
             UserFactory userFactory = locator.getFactory(UserFactory.class);
-            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + System.currentTimeMillis());
+            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + random.nextLong());
             User user = userService.create(userCreator);
 
             // Create permission
@@ -162,7 +162,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             RoleCreator roleCreator = roleFactory.newCreator(scope);
-            roleCreator.setName("testRole-" + System.currentTimeMillis());
+            roleCreator.setName("testRole-" + random.nextLong());
             roleCreator.setPermissions(permissions);
             Role role = roleService.create(roleCreator);
 
@@ -203,7 +203,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             // Create mock user
             UserService userService = locator.getService(UserService.class);
             UserFactory userFactory = locator.getFactory(UserFactory.class);
-            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + System.currentTimeMillis());
+            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + random.nextLong());
             User user = userService.create(userCreator);
 
             // Create permission
@@ -220,7 +220,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             RoleCreator roleCreator = roleFactory.newCreator(scope);
-            roleCreator.setName("testRole-" + System.currentTimeMillis());
+            roleCreator.setName("testRole-" + random.nextLong());
             roleCreator.setPermissions(permissionsRole);
             Role role = roleService.create(roleCreator);
 
@@ -272,7 +272,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             // Create mock user
             UserService userService = locator.getService(UserService.class);
             UserFactory userFactory = locator.getFactory(UserFactory.class);
-            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + System.currentTimeMillis());
+            UserCreator userCreator = userFactory.newCreator(scope, "test-user-" + random.nextLong());
             User user = userService.create(userCreator);
 
             // Create permission
@@ -285,7 +285,7 @@ public class AccessInfoServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             RoleCreator roleCreator = roleFactory.newCreator(scope);
-            roleCreator.setName("testRole-" + System.currentTimeMillis());
+            roleCreator.setName("testRole-" + random.nextLong());
             roleCreator.setPermissions(permissions);
             Role role = roleService.create(roleCreator);
 

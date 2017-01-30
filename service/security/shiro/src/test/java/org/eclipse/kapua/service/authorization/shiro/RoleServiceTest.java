@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -82,7 +82,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create role
             RoleCreator roleCreator = new RoleCreatorImpl(scope);
-            roleCreator.setName("test-" + new Date().getTime());
+            roleCreator.setName("test-" + random.nextLong());
             roleCreator.setPermissions(permissions);
 
             //
@@ -138,7 +138,7 @@ public class RoleServiceTest extends KapuaTest {
             permissions.add(permission3);
 
             RoleCreator roleCreator = new RoleCreatorImpl(scope);
-            roleCreator.setName("test-" + new Date().getTime());
+            roleCreator.setName("test-" + random.nextLong());
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
@@ -153,8 +153,8 @@ public class RoleServiceTest extends KapuaTest {
 
             //
             // Update
-            role.setName("updated-" + new Date().getTime());
-
+            role.setName("updated-" + random.nextLong());
+            Thread.sleep(50); // Added some delay to make sure the modification time-stamps are really different
             Role roleUpdated1 = roleService.update(role);
 
             //
@@ -188,7 +188,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create Role
             RoleCreator roleCreator = new RoleCreatorImpl(scope);
-            roleCreator.setName("test-" + new Date().getTime());
+            roleCreator.setName("test-" + random.nextLong());
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
@@ -232,7 +232,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create role
             RoleCreator roleCreator = new RoleCreatorImpl(scope);
-            roleCreator.setName("test-" + new Date().getTime());
+            roleCreator.setName("test-" + random.nextLong());
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
@@ -290,7 +290,7 @@ public class RoleServiceTest extends KapuaTest {
 
             // Create role
             RoleCreator roleCreator = new RoleCreatorImpl(scope);
-            roleCreator.setName("test-" + new Date().getTime());
+            roleCreator.setName("test-" + random.nextLong());
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
