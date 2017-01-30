@@ -114,7 +114,8 @@ CREATE TABLE athz_role_permission (
   role_id             	    BIGINT(21) 	  UNSIGNED,
   domain					VARCHAR(64)   NOT NULL,
   action					VARCHAR(64),
-  target_scope_id		    BIGINT(21),
+  target_scope_id		    BIGINT(21)    UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
 
   PRIMARY KEY (id)
 
@@ -131,7 +132,8 @@ CREATE TABLE athz_user_permission (
   user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
   domain					VARCHAR(64)   NOT NULL,
   action					VARCHAR(64),
-  target_scope_id		    BIGINT(21),
+  target_scope_id		    BIGINT(21)    UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
 
   PRIMARY KEY (id)
 
@@ -186,6 +188,7 @@ CREATE INDEX idx_connection_status_id ON dvc_device_connection (scope_id, id, co
 CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	    UNSIGNED NOT NULL,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
   client_id                 VARCHAR(255)    NOT NULL,
   connection_id             BIGINT(21) 	    UNSIGNED NULL,
   created_on             	TIMESTAMP(3)    NULL,
@@ -372,8 +375,9 @@ CREATE TABLE athz_access_permission (
   access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
 
   domain					VARCHAR(64)	  NOT NULL,
-  action					VARCHAR(64)	  NOT NULL,
+  action					VARCHAR(64),
   target_scope_id			BIGINT(21)	  UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
 
   PRIMARY KEY (id),
 --  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE

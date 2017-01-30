@@ -97,7 +97,7 @@ public class KapuaGwtModelConverter {
 
         //
         // Convert other attributes
-        GwtPermission gwtPermission = convert(rolePermission.getPermission());
+        GwtPermission gwtPermission = convert((Permission) rolePermission.getPermission());
 
         gwtRolePermission.setRoleId(convert(rolePermission.getRoleId()));
         gwtRolePermission.setDomain(gwtPermission.getDomain());

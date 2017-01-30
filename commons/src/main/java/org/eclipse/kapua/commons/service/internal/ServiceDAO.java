@@ -22,7 +22,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
@@ -34,15 +33,21 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaEntityExistsException;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -51,15 +56,82 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaOrPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.Groupable;
+import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Service DAO utility methods
+ * {@link ServiceDAO} utility methods.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 public class ServiceDAO {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceDAO.class);
+
+    private static final AccessInfoService accessInfoService;
+    private static final AccessInfoFactory accessInfoFactory;
+
+    private static final AccessPermissionService accessPermissionService;
+    private static final AccessRoleService accessRoleService;
+
+    private static final RoleService roleService;
+    private static final RolePermissionService rolePermissionService;
+
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
+
+    private static final String LIKE = "%";
+
+    static {
+        KapuaLocator locator = null;
+        try {
+            locator = KapuaLocator.getInstance();
+        } catch (ExceptionInInitializerError kre) {
+            LOG.warn("KapuaLocator not available! Access Group featue may be not suppoted!", kre);
+        }
+
+        if (locator != null) {
+            accessInfoService = KapuaLocator.getInstance().getService(AccessInfoService.class);
+            accessInfoFactory = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
+
+            accessPermissionService = KapuaLocator.getInstance().getService(AccessPermissionService.class);
+            accessRoleService = KapuaLocator.getInstance().getService(AccessRoleService.class);
+
+            roleService = KapuaLocator.getInstance().getService(RoleService.class);
+            rolePermissionService = KapuaLocator.getInstance().getService(RolePermissionService.class);
+        } else {
+            accessInfoService = null;
+            accessInfoFactory = null;
+
+            accessPermissionService = null;
+            accessRoleService = null;
+
+            roleService = null;
+            rolePermissionService = null;
+        }
+
+    }
 
     protected ServiceDAO() {
     }
@@ -103,15 +175,13 @@ public class ServiceDAO {
         while (cause != null && !(cause instanceof SQLException)) {
             cause = cause.getCause();
         }
+
         if (cause == null) {
             return false;
         }
+
         SQLException innerExc = (SQLException) cause;
-        if (SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState())) {
-            return true;
-        } else {
-            return false;
-        }
+        return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
     }
 
     /**
@@ -122,8 +192,10 @@ public class ServiceDAO {
      * @param entity
      *            entity to be updated
      * @return
+     * @throws KapuaEntityNotFoundException
+     *             If entity is not found.
      */
-    public static <E extends KapuaUpdatableEntity> E update(EntityManager em, Class<E> clazz, E entity) {
+    public static <E extends KapuaUpdatableEntity> E update(EntityManager em, Class<E> clazz, E entity) throws KapuaEntityNotFoundException {
         //
         // Checking existence
         E entityToUpdate = em.find(clazz, entity.getId());
@@ -138,6 +210,8 @@ public class ServiceDAO {
             em.merge(entity);
             em.flush();
             em.refresh(entityToUpdate);
+        } else {
+            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entity.getId());
         }
 
         return entityToUpdate;
@@ -150,8 +224,12 @@ public class ServiceDAO {
      * @param clazz
      * @param entityId
      *            entity id of the entity to be deleted
+     * 
+     * @throws KapuaEntityNotFoundException
+     *             If entity is not found.
      */
-    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId entityId) {
+    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId entityId)
+            throws KapuaEntityNotFoundException {
         //
         // Checking existence
         E entityToDelete = em.find(clazz, entityId);
@@ -161,6 +239,8 @@ public class ServiceDAO {
         if (entityToDelete != null) {
             em.remove(entityToDelete);
             em.flush();
+        } else {
+            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entityId);
         }
     }
 
@@ -244,7 +324,7 @@ public class ServiceDAO {
 
             AndPredicate scopedAndPredicate = new AndPredicate();
 
-            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>("scopeId", kapuaQuery.getScopeId());
+            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -264,22 +344,6 @@ public class ServiceDAO {
         if (expr != null) {
             criteriaSelectQuery.where(expr);
         }
-        // ParameterExpression<Long> scopeIdParam = cb.parameter(Long.class);
-        // Expression<Boolean> scopeIdExpr = cb.equal(entityRoot.get("scopeId"), scopeIdParam);
-        //
-        // Map<ParameterExpression, Object> binds = new HashMap<>();
-        // binds.put(scopeIdParam, kapuaQuery.getScopeId());
-        // Expression<Boolean> expr = handleKapuaQueryPredicates(kapuaQuery.getPredicate(),
-        // binds,
-        // cb,
-        // entityRoot,
-        // entityRoot.getModel());
-        //
-        // if (expr == null) {
-        // criteriaSelectQuery.where(scopeIdExpr);
-        // } else {
-        // criteriaSelectQuery.where(cb.and(scopeIdExpr, expr));
-        // }
 
         //
         // ORDER BY
@@ -294,7 +358,7 @@ public class ServiceDAO {
             }
 
         } else {
-            order = cb.asc(entityRoot.get(entityType.getSingularAttribute("id")));
+            order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityPredicates.ENTITY_ID)));
         }
         criteriaSelectQuery.orderBy(order);
 
@@ -369,7 +433,7 @@ public class ServiceDAO {
 
             AndPredicate scopedAndPredicate = new AndPredicate();
 
-            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>("scopeId", kapuaQuery.getScopeId());
+            AttributePredicate<KapuaId> scopeId = new AttributePredicate<>(KapuaEntityPredicates.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -481,23 +545,25 @@ public class ServiceDAO {
         }
         if (attrValue instanceof Object[]) {
             Object[] attrValues = (Object[]) attrValue;
-            Expression<?> inPredicate = entityRoot.get(attribute);
-            In inExpr = cb.in(inPredicate);
-            for (Object value : attrValues) {
-                inExpr.value(value);
+            Expression<?> orPredicate = entityRoot.get(attribute);
+
+            Predicate[] orPredicates = new Predicate[attrValues.length];
+            for (int i = 0; i < attrValues.length; i++) {
+                orPredicates[i] = cb.equal(orPredicate, attrValues[i]);
             }
-            expr = inExpr;
+
+            expr = cb.and(cb.or(orPredicates));
         } else {
             switch (attrPred.getOperator()) {
             case LIKE:
                 ParameterExpression<String> pl = cb.parameter(String.class);
-                binds.put(pl, "%" + attrValue + "%");
+                binds.put(pl, LIKE + attrValue + LIKE);
                 expr = cb.like((Expression<String>) entityRoot.get(attribute), pl);
                 break;
 
             case STARTS_WITH:
                 ParameterExpression<String> psw = cb.parameter(String.class);
-                binds.put(psw, attrValue + "%");
+                binds.put(psw, attrValue + LIKE);
                 expr = cb.like((Expression<String>) entityRoot.get(attribute), psw);
                 break;
 
@@ -552,12 +618,106 @@ public class ServiceDAO {
                 }
                 break;
 
-            default:
             case EQUAL:
+            default:
                 expr = cb.equal(entityRoot.get(attribute), attrValue);
                 break;
             }
         }
         return expr;
+    }
+
+    /**
+     * Handles the {@link Groupable} property of the {@link KapuaEntity}.
+     * 
+     * @param query
+     *            The {@link DeviceQuery} to manage.
+     * @param domain
+     *            The {@link Domain} inside which the {@link KapuaQuery} param targets.
+     * @param groupPredicateName
+     *            The name of the {@link Group} id field.
+     * @since 1.0.0
+     */
+    @SuppressWarnings("rawtypes")
+    protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) {
+
+        if (accessInfoFactory != null) {
+            KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
+            if (kapuaSession != null) {
+                try {
+                    KapuaId userId = kapuaSession.getUserId();
+
+                    AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(kapuaSession.getScopeId());
+                    accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPriviledge(() -> accessInfoService.query(accessInfoQuery));
+
+                    List<Permission> groupPermissions = new ArrayList<>();
+                    if (!accessInfos.isEmpty()) {
+
+                        AccessInfo accessInfo = accessInfos.getFirstItem();
+                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPriviledge(() -> accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+
+                        for (AccessPermission ap : accessPermissions.getItems()) {
+                            Permission p = ap.getPermission();
+                            if (domain.getName().equals(p.getDomain())) {
+                                if (p.getAction() == null || Actions.read.equals(p.getAction())) {
+                                    if (p.getGroupId() == null) {
+                                        groupPermissions.clear();
+                                        break;
+                                    } else {
+                                        groupPermissions.add(p);
+                                    }
+                                }
+                            }
+                        }
+
+                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPriviledge(() -> accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+
+                        for (AccessRole ar : accessRoles.getItems()) {
+                            KapuaId roleId = ar.getRoleId();
+
+                            Role role = KapuaSecurityUtils.doPriviledge(() -> roleService.find(ar.getScopeId(), roleId));
+
+                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPriviledge(() -> rolePermissionService.findByRoleId(role.getScopeId(), role.getId()));
+
+                            for (RolePermission rp : rolePermissions.getItems()) {
+
+                                Permission p = rp.getPermission();
+                                if (domain.getName().equals(p.getDomain())) {
+                                    if (p.getAction() == null || Actions.read.equals(p.getAction())) {
+                                        if (p.getGroupId() == null) {
+                                            groupPermissions.clear();
+                                            break;
+                                        } else {
+                                            groupPermissions.add(p);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    AndPredicate andPredicate = new AndPredicate();
+                    if (!groupPermissions.isEmpty()) {
+                        int i = 0;
+                        KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
+                        for (Permission p : groupPermissions) {
+                            groupsIds[i++] = p.getGroupId();
+                        }
+                        andPredicate.and(new AttributePredicate<>(groupPredicateName, groupsIds));
+                    }
+
+                    if (query.getPredicate() != null) {
+                        andPredicate.and(query.getPredicate());
+                    }
+
+                    query.setPredicate(andPredicate);
+                } catch (Exception e) {
+                    KapuaException.internalError(e, "Error while grouping!");
+                }
+            }
+        } else {
+            LOG.warn("Access Group is disabled");
+        }
     }
 }

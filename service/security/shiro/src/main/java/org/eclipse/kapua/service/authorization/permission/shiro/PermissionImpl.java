@@ -23,8 +23,16 @@ import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import org.apache.shiro.authz.UnauthorizedException;
+import org.apache.shiro.authz.permission.WildcardPermission;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
@@ -34,7 +42,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * @since 1.0
  */
 @Embeddable
-public class PermissionImpl implements Permission, Serializable {
+public class PermissionImpl extends WildcardPermission implements Permission, org.apache.shiro.authz.Permission, Serializable {
 
     private static final long serialVersionUID = 1480557438886065675L;
 
@@ -43,7 +51,7 @@ public class PermissionImpl implements Permission, Serializable {
     private String domain;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "action", nullable = false, updatable = false)
+    @Column(name = "action", updatable = false)
     private Actions action;
 
     @Embedded
@@ -51,6 +59,12 @@ public class PermissionImpl implements Permission, Serializable {
             @AttributeOverride(name = "eid", column = @Column(name = "target_scope_id", updatable = false))
     })
     private KapuaEid targetScopeId;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "group_id", updatable = false))
+    })
+    private KapuaEid groupId;
 
     /**
      * Constructor
@@ -60,30 +74,36 @@ public class PermissionImpl implements Permission, Serializable {
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param permission
+     *            The {@link Permission} to parse.
+     * @since 1.0.0
      */
     public PermissionImpl(Permission permission) {
-        this();
-
-        setDomain(permission.getDomain());
-        setAction(permission.getAction());
-        setTargetScopeId(permission.getTargetScopeId());
+        this(
+                permission.getDomain(),
+                permission.getAction(),
+                permission.getTargetScopeId(),
+                permission.getGroupId());
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param domain
      * @param action
      * @param targetScopeId
+     * @param groupId
      */
-    public PermissionImpl(String domain, Actions action, KapuaId targetScopeId) {
-        this();
+    public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
+
         setDomain(domain);
         setAction(action);
         setTargetScopeId(targetScopeId);
+        setGroupId(groupId);
+
+        setParts(toString());
     }
 
     @Override
@@ -110,6 +130,8 @@ public class PermissionImpl implements Permission, Serializable {
     public void setTargetScopeId(KapuaId targetScopeId) {
         if (targetScopeId != null) {
             this.targetScopeId = new KapuaEid(targetScopeId);
+        } else {
+            this.targetScopeId = null;
         }
     }
 
@@ -119,17 +141,58 @@ public class PermissionImpl implements Permission, Serializable {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(domain);
+    public void setGroupId(KapuaId groupId) {
+        if (groupId != null) {
+            this.groupId = new KapuaEid(groupId);
+        } else {
+            this.groupId = null;
+        }
+    }
 
-        if (action != null) {
-            sb.append(":")
-                    .append(action.name());
+    @Override
+    public KapuaId getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * This methods needs to be overridden to support Access {@link Group} feature.<br>
+     * 
+     * {@link KapuaEntityService}s that access a specific {@link KapuaEntity} (i.e. {@link KapuaEntityService#create(KapuaEntityCreator)}, {@link KapuaEntityService#delete(KapuaId, KapuaId)})
+     * can make the control taking in consideration of the {@link Group#getId()} parameter as it is known.<br>
+     * 
+     * Instead, methods that access multiple {@link KapuaEntity}s (i.e. {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)})
+     * cannot make a direct control of the {@link Group#getId()} parameter as it is not known and they can be a lot.<br>
+     * The access control then, is performed by hiding the data that a {@link Subject} cannot see instead of throwing {@link UnauthorizedException}.
+     * 
+     * The access control for {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)}) must specify that {@link KapuaEid#ANY} group assigned to the permission is
+     * enough to pass the {@link AuthorizationService#checkPermission(Permission)}.
+     * 
+     */
+    @Override
+    public boolean implies(org.apache.shiro.authz.Permission p) {
+
+        Permission permission = (Permission) p;
+
+        if (Group.ANY.equals(permission.getGroupId())) {
+            setGroupId(null);
         }
-        if (targetScopeId != null) {
-            sb.append(":")
-                    .append(targetScopeId.getId());
-        }
+
+        setParts(toString());
+        return super.implies(p);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(domain) //
+                .append(Permission.SEPARATOR) //
+                .append(action != null ? action.name() : Permission.WILDCARD) //
+                .append(Permission.SEPARATOR) //
+                .append(targetScopeId != null ? targetScopeId.getId() : Permission.WILDCARD) //
+                .append(Permission.SEPARATOR) //
+                .append(groupId != null ? groupId.getId() : Permission.WILDCARD);
+
         return sb.toString();
     }
 
@@ -140,6 +203,7 @@ public class PermissionImpl implements Permission, Serializable {
         result = prime * result + ((action == null) ? 0 : action.hashCode());
         result = prime * result + ((domain == null) ? 0 : domain.hashCode());
         result = prime * result + ((targetScopeId == null) ? 0 : targetScopeId.hashCode());
+        result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
         return result;
     }
 
@@ -163,6 +227,11 @@ public class PermissionImpl implements Permission, Serializable {
             if (other.targetScopeId != null)
                 return false;
         } else if (!targetScopeId.equals(other.targetScopeId))
+            return false;
+        if (groupId == null) {
+            if (other.groupId != null)
+                return false;
+        } else if (!groupId.equals(other.groupId))
             return false;
         return true;
     }

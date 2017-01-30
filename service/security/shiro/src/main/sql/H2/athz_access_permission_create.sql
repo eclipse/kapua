@@ -19,12 +19,13 @@ CREATE TABLE athz_access_permission (
   access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
   
   domain					VARCHAR(64)	  NOT NULL,
-  action					VARCHAR(64)	  NOT NULL,
+  action					VARCHAR(64),
   target_scope_id			BIGINT(21)	  UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
     
   PRIMARY KEY (id),
 --  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
   
 ) DEFAULT CHARSET=utf8;
 
-CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId ON athz_access_permission (scope_id, access_info_id, domain, action, target_scope_id);
+CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId_groupId ON athz_access_permission (scope_id, access_info_id, domain, action, target_scope_id, group_id);

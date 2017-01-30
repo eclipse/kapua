@@ -70,6 +70,14 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     public E getItem(int i);
 
     /**
+     * Returns the first element in the {@link KapuaListResult}.<br>
+     * It returns {@code null} if first element does not exist.
+     * 
+     * @return The first element in the {@link KapuaListResult} or {@code null} if not present.
+     */
+    public E getFirstItem();
+
+    /**
      * Return the result list size
      * 
      * @return

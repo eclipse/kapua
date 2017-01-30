@@ -12,9 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
-import javax.xml.bind.annotation.XmlElement;
+import java.math.BigInteger;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
@@ -29,9 +35,12 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
  */
 public interface Group extends KapuaUpdatableEntity {
 
+    @XmlTransient
+    public static final KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
+
     public static final String TYPE = "group";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

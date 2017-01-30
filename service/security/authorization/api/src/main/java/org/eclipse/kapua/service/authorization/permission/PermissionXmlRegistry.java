@@ -23,13 +23,13 @@ public class PermissionXmlRegistry {
     private final PermissionFactory factory = locator.getFactory(PermissionFactory.class);
 
     /**
-     * Creates a new permission instance
+     * Creates a new {@link Permission} instance
      * 
-     * @return
+     * @return A new {@link Permission} instance
      * 
      * @since 1.0.0
      */
     public Permission newPermission() {
-        return factory.newPermission(null, null, null);
+        return factory.newPermission(null, null, null, null);
     }
 }

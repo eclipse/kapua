@@ -33,6 +33,8 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
 public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implements DeviceCreator {
 
     private static final long serialVersionUID = 8628137091890107296L;
+
+    private KapuaId groupId;
     private String clientId;
     private DeviceStatus status = DeviceStatus.ENABLED;
     private KapuaId connectionId;
@@ -67,6 +69,16 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
      */
     protected DeviceCreatorImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    @Override
+    public KapuaId getGroupId() {
+        return groupId;
+    }
+
+    @Override
+    public void setGroupId(KapuaId groupId) {
+        this.groupId = groupId;
     }
 
     @Override

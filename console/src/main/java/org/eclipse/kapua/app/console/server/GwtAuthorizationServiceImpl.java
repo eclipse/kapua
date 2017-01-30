@@ -175,8 +175,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         //
         // Get user info
         UserService userService = locator.getService(UserService.class);
-        User user = userService.find(kapuaSession.getScopeId(),
-                kapuaSession.getUserId());
+        User user = userService.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
 
         //
         // Get permission info

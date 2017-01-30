@@ -108,6 +108,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Permission getPermission() {
         return permission;
     }

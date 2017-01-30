@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -63,8 +64,10 @@ public class AccessRoleDAO extends ServiceDAO {
      * 
      * @param em
      * @param accessPermissionId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link AccessRole} is not found.
      */
-    public static void delete(EntityManager em, KapuaId accessRoleId) {
+    public static void delete(EntityManager em, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, AccessRoleImpl.class, accessRoleId);
     }
 

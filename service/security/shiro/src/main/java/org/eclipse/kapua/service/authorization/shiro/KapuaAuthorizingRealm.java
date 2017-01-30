@@ -30,6 +30,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -38,8 +39,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoPredicates;
-import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
@@ -55,9 +55,9 @@ import org.slf4j.LoggerFactory;
  */
 public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
-    private static final Logger logger     = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
 
-    public static final String  REALM_NAME = "kapuaAuthorizingRealm";
+    public static final String REALM_NAME = "kapuaAuthorizingRealm";
 
     public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
@@ -89,8 +89,8 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         } catch (AuthenticationException e) {
             throw e;
         } catch (Exception e) {
-				throw new ShiroException("Error while find user!", e);
-			}
+            throw new ShiroException("Error while find user!", e);
+        }
 
         //
         // Check existence
@@ -135,12 +135,12 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 throw e;
             } catch (Exception e) {
                 throw new ShiroException("Error while find access permissions!", e);
-        }
+            }
 
             for (AccessPermission accessPermission : accessPermissions.getItems()) {
-                Permission p = accessPermission.getPermission();
-                info.addStringPermission(p.toString());
+                PermissionImpl p = accessPermission.getPermission();
                 logger.trace("User: {} has permission: {}", username, p);
+                info.addObjectPermission(p);
             }
 
             // Access Role Id
@@ -152,7 +152,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 throw e;
             } catch (Exception e) {
                 throw new ShiroException("Error while find access role ids!", e);
-			}
+            }
 
             RoleService roleService = locator.getService(RoleService.class);
             RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
@@ -166,7 +166,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
                 } catch (AuthenticationException e) {
                     throw e;
                 } catch (Exception e) {
-                    throw new ShiroException("Error while find access role ids!", e);
+                    throw new ShiroException("Error while find role ids!", e);
                 }
 
                 info.addRole(role.getName());
@@ -179,12 +179,11 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
 
                 for (RolePermission rolePermission : rolePermissions.getItems()) {
 
-                    Permission p = rolePermission.getPermission();
-            info.addStringPermission(p.toString());
+                    PermissionImpl p = rolePermission.getPermission();
                     logger.trace("Role: {} has permission: {}", role, p);
-        }
+                    info.addObjectPermission(p);
+                }
             }
-
         }
 
         //
@@ -192,20 +191,20 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         return info;
     }
 
+    /**
+     * This method always returns false as it works only as AuthorizingReam.
+     */
     @Override
     public boolean supports(AuthenticationToken authenticationToken) {
-        /**
-         * This method always returns false as it works only as AuthorizingReam.
-         */
         return false;
     }
 
+    /**
+     * This method can always return null as it does not support any authentication token.
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
             throws AuthenticationException {
-        /**
-         * This method can always return null as it does not support any authentication token.
-         */
         return null;
     }
 

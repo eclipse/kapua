@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,18 +10,24 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.access.shiro;
+package org.eclipse.kapua.model;
 
 /**
- * Query predicate attribute name for access info entity.
+ * {@link KapuaUpdatableEntity} query predicates.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
+ *
  */
-public class AccessInfoPredicates {
+public interface KapuaUpdatableEntityPredicates extends KapuaEntityPredicates {
 
     /**
-     * User id
+     * {@link KapuaUpdatableEntity} modified on date.
      */
-    public static final String USER_ID = "userId";
+    public static final String MODIFIED_ON = "modifiedOn";
+
+    /**
+     * {@link KapuaUpdatableEntity} modified by id.
+     */
+    public static final String MODIFIED_BY = "modifiedBy";
+
 }

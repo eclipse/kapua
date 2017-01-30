@@ -41,6 +41,8 @@
 		
         <api>org.eclipse.kapua.service.user.UserFactory</api>
 		<api>org.eclipse.kapua.service.user.UserService</api>
+        
+        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
 	</provided>
 	<packages>
 		<package>org.eclipse.kapua.service.authentication.credential.shiro</package>
@@ -57,5 +59,7 @@
         <package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.account</package>
 		<package>org.eclipse.kapua.test.authentication</package>
+        
+        <package>org.eclipse.kapua.commons.model.id</package>
 	</packages>
 </locator-config>

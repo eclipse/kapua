@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -56,8 +57,10 @@ public class GroupDAO extends ServiceDAO {
      * @param group
      *            The {@link Group} to update
      * @return The updated {@link Group}.
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Group} is not found.
      */
-    public static Group update(EntityManager em, Group group) {
+    public static Group update(EntityManager em, Group group) throws KapuaEntityNotFoundException {
         GroupImpl groupImpl = (GroupImpl) group;
         return ServiceDAO.update(em, GroupImpl.class, groupImpl);
     }
@@ -83,9 +86,11 @@ public class GroupDAO extends ServiceDAO {
      *            The {@link EntityManager} that holds the transaction.
      * @param groupId
      *            The {@link Group} id to delete.
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Group} is not found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId groupId) {
+    public static void delete(EntityManager em, KapuaId groupId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, GroupImpl.class, groupId);
     }
 

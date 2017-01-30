@@ -12,62 +12,68 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+
 /**
- * Device query predicates.
+ * {@link DeviceQuery} predicates.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class DevicePredicates
-{
+public interface DevicePredicates extends KapuaUpdatableEntityPredicates {
+
+    /**
+     * Group id.
+     */
+    public static final String GROUP_ID = "groupId";
+
     /**
      * Client identifier
      */
-    public static final String CLIENT_ID                     = "clientId";
+    public static final String CLIENT_ID = "clientId";
     /**
      * Display name
      */
-    public static final String DISPLAY_NAME                  = "displayName";
+    public static final String DISPLAY_NAME = "displayName";
     /**
      * Serial number
      */
-    public static final String SERIAL_NUMBER                 = "serialNumber";
+    public static final String SERIAL_NUMBER = "serialNumber";
     /**
      * Imei
      */
-    public static final String IMEI                          = "imei";
+    public static final String IMEI = "imei";
     /**
      * Imsi
      */
-    public static final String IMSI                          = "imsi";
+    public static final String IMSI = "imsi";
     /**
      * Iccd
      */
-    public static final String ICCID                         = "iccid";
+    public static final String ICCID = "iccid";
     /**
      * Model identifier
      */
-    public static final String MODEL_ID                      = "modelId";
+    public static final String MODEL_ID = "modelId";
     /**
      * Bios version
      */
-    public static final String BIOS_VERSION                  = "biosVersion";
+    public static final String BIOS_VERSION = "biosVersion";
     /**
      * Firmware version
      */
-    public static final String FIRMWARE_VERSION              = "firmwareVersion";
+    public static final String FIRMWARE_VERSION = "firmwareVersion";
     /**
      * Operating system version
      */
-    public static final String OS_VERSION                    = "osVersion";
+    public static final String OS_VERSION = "osVersion";
     /**
      * Jvm version
      */
-    public static final String JVM_VERSION                   = "jvmVersion";
+    public static final String JVM_VERSION = "jvmVersion";
     /**
      * Osgi framework version
      */
-    public static final String OSGI_FRAMEWORK_VERSION        = "osgiFrameworkVersion";
+    public static final String OSGI_FRAMEWORK_VERSION = "osgiFrameworkVersion";
     /**
      * Application framework version
      */
@@ -75,57 +81,57 @@ public class DevicePredicates
     /**
      * Application identifier
      */
-    public static final String APPLICATION_IDENTIFIERS       = "applicationIdentifiers";
+    public static final String APPLICATION_IDENTIFIERS = "applicationIdentifiers";
     /**
      * Custom attribute 1
      */
-    public static final String CUSTOM_ATTRIBUTE_1            = "customAttribute1";
+    public static final String CUSTOM_ATTRIBUTE_1 = "customAttribute1";
     /**
      * Custom attribute 2
      */
-    public static final String CUSTOM_ATTRIBUTE_2            = "customAttribute2";
+    public static final String CUSTOM_ATTRIBUTE_2 = "customAttribute2";
     /**
      * Custom attribute 3
      */
-    public static final String CUSTOM_ATTRIBUTE_3            = "customAttribute3";
+    public static final String CUSTOM_ATTRIBUTE_3 = "customAttribute3";
     /**
      * Custom attribute 4
      */
-    public static final String CUSTOM_ATTRIBUTE_4            = "customAttribute4";
+    public static final String CUSTOM_ATTRIBUTE_4 = "customAttribute4";
     /**
      * Custom attribute 5
      */
-    public static final String CUSTOM_ATTRIBUTE_5            = "customAttribute5";
+    public static final String CUSTOM_ATTRIBUTE_5 = "customAttribute5";
     /**
      * Accept encoding
      */
-    public static final String ACCEPT_ENCODING               = "acceptEncoding";
+    public static final String ACCEPT_ENCODING = "acceptEncoding";
     /**
      * Gps longitude
      */
-    public static final String GPS_LONGITUDE                 = "gpsLongitude";
+    public static final String GPS_LONGITUDE = "gpsLongitude";
     /**
      * Gps latitude
      */
-    public static final String GPS_LATITUDE                  = "gpsLatitude";
+    public static final String GPS_LATITUDE = "gpsLatitude";
     /**
      * Connection ip
      */
-    public static final String CONNECTION_STATUS             = "connectionIp";
+    public static final String CONNECTION_STATUS = "connectionIp";
     /**
      * Device status
      */
-    public static final String STATUS                        = "status";
+    public static final String STATUS = "status";
     /**
      * Credentials mode
      */
-    public static final String CREDENTIALS_MODE              = "credentialsMode";
+    public static final String CREDENTIALS_MODE = "credentialsMode";
     /**
      * Preferred user identifier
      */
-    public static final String PREFERRED_USER_ID             = "preferredUserId";
+    public static final String PREFERRED_USER_ID = "preferredUserId";
     /**
      * Last event on
      */
-    public static final String LAST_EVENT_ON                 = "lastEventOn";
+    public static final String LAST_EVENT_ON = "lastEventOn";
 }

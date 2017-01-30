@@ -66,20 +66,6 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>, K
     public Group find(KapuaId scopeId, KapuaId groupId)
             throws KapuaException;
 
-    // /**
-    // * Finds the {@link Group} by the service name.
-    // *
-    // * @param scopeId
-    // * The scope id in which to search.
-    // * @param name
-    // * The {@link Group#getName()} to search.
-    // * @return The {@link Group} found or {@code null} if no entity was found.
-    // * @throws KapuaException
-    // * @since 1.0.0
-    // */
-    // public Group findByName(KapuaId scopeId, String name)
-    // throws KapuaException;
-
     /**
      * Returns the {@link GroupListResult} with elements matching the provided query.
      * 
