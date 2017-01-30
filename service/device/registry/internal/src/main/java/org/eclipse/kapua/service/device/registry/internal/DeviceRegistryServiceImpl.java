@@ -128,7 +128,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaService implements D
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
 
         DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
-        KapuaPredicate predicate = new AttributePredicate<String>(DevicePredicates.CLIENT_ID, clientId);
+        KapuaPredicate predicate = new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId);
         query.setPredicate(predicate);
 
         //

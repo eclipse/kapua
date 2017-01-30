@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.security;
 
 import java.util.concurrent.Callable;
 
+import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,16 +58,18 @@ public class KapuaSecurityUtils {
 
     /**
      * Execute the {@link Callable} in a privileged context.<br>
-     * Trusted mode means that no checks for permissions and rights will fail.
+     * Trusted mode means that checks for permissions and role will pass.
      * 
      * @param privilegedAction
-     * @return
-     * @throws Exception
+     *            The {@link Callable} action to be executed.
+     * @return The result of the {@link Callable} action.
+     * @throws KapuaException
+     * @since 1.0.0
      */
     public static <T> T doPriviledge(Callable<T> privilegedAction)
-            throws Exception {
+            throws KapuaException {
         T result = null;
-        
+
         // get (and keep) the current session
         KapuaSession previousSession = getSession();
         KapuaSession currentSession = null;
@@ -75,8 +78,7 @@ public class KapuaSecurityUtils {
             logger.debug("==> create new session");
             currentSession = new KapuaSession();
             currentSession.setTrustedMode(true);
-        }
-        else {
+        } else {
             logger.debug("==> clone from previous session");
             currentSession = KapuaSession.createFrom();
         }
@@ -84,6 +86,10 @@ public class KapuaSecurityUtils {
 
         try {
             result = privilegedAction.call();
+        } catch (KapuaException ke) {
+            throw ke;
+        } catch (Exception e) {
+            throw KapuaException.internalError(e);
         } finally {
             // restore the original session
             setSession(previousSession);

@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,24 +32,22 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  *
  */
-public class KapuaDoPrivilegeTest
-{
+public class KapuaDoPrivilegeTest {
 
     private static Logger logger = LoggerFactory.getLogger(KapuaDoPrivilegeTest.class);
 
-    private final static int MAX_EXECUTION                   = 10;
-    private final static int CONCURRENT_THREAD               = 20;
+    private final static int MAX_EXECUTION = 10;
+    private final static int CONCURRENT_THREAD = 20;
     private final static int FIX_WAIT_TIME_FOR_EXECUTION_END = 30000;
 
-    private static long      maxRandomWait;
+    private static long maxRandomWait;
 
     @Test
     /**
      * Test the correctness of the doPrivilege for nested calls.
      * It performs MAX_EXECUTION nested calls end check the correctness of the KapuaSession by checking if the instance id before and after the nested call is the same.
      */
-    public void testNestedDoPrivilege() throws Exception
-    {
+    public void testNestedDoPrivilege() throws Exception {
         maxRandomWait = 0;
 
         (new DoPrivilegeCallable("noMultiThread")).invokeCode();
@@ -62,13 +58,12 @@ public class KapuaDoPrivilegeTest
      * Test the correctness of the doPrivilege for nested calls spanned between few threads. All threads startup is scheduled at the same time.
      * It performs MAX_EXECUTION nested calls end check the correctness of the KapuaSession by checking if the instance id before and after the nested call is the same.
      */
-    public void testNestedDoPrivilegeMultiThreadSync() throws Exception
-    {
+    public void testNestedDoPrivilegeMultiThreadSync() throws Exception {
         maxRandomWait = 100;
         ScheduledExecutorService es = Executors.newScheduledThreadPool(CONCURRENT_THREAD);
         long executionTimeOut = MAX_EXECUTION * maxRandomWait + FIX_WAIT_TIME_FOR_EXECUTION_END;
         List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<ScheduledFuture<Void>>();
-        for (int i=0; i<CONCURRENT_THREAD; i++) {
+        for (int i = 0; i < CONCURRENT_THREAD; i++) {
             doPrivilegeList.add(es.schedule(new DoPrivilegeCallable("sync_random_wait_" + i), 0, TimeUnit.MILLISECONDS));
         }
         waitForTermination(doPrivilegeList, executionTimeOut);
@@ -89,13 +84,12 @@ public class KapuaDoPrivilegeTest
      * Test the correctness of the doPrivilege for nested calls spanned between few threads. Threads startup delay is spanned between 0 and 200msec and between 0 and 100msec.
      * It performs MAX_EXECUTION nested calls end check the correctness of the KapuaSession by checking if the instance id before and after the nested call is the same.
      */
-    public void testNestedDoPrivilegeMultiThreadNoSync() throws Exception
-    {
+    public void testNestedDoPrivilegeMultiThreadNoSync() throws Exception {
         maxRandomWait = 100;
         ScheduledExecutorService es = Executors.newScheduledThreadPool(CONCURRENT_THREAD);
         long executionTimeOut = MAX_EXECUTION * maxRandomWait + FIX_WAIT_TIME_FOR_EXECUTION_END;
         List<ScheduledFuture<Void>> doPrivilegeList = new ArrayList<ScheduledFuture<Void>>();
-        for (int i=0; i<CONCURRENT_THREAD; i++) {
+        for (int i = 0; i < CONCURRENT_THREAD; i++) {
             long delay = (long) (Math.random() * 200d);
             logger.debug("Delay: ", new Object[] { delay });
             doPrivilegeList.add(es.schedule(new DoPrivilegeCallable("nosync_random_wait_" + i), delay, TimeUnit.MILLISECONDS));
@@ -115,8 +109,7 @@ public class KapuaDoPrivilegeTest
         waitForTermination(doPrivilegeList, executionTimeOut);
     }
 
-    private void waitForTermination(List<ScheduledFuture<Void>> scheduledList, long timeOut) throws InterruptedException
-    {
+    private void waitForTermination(List<ScheduledFuture<Void>> scheduledList, long timeOut) throws InterruptedException {
         boolean done = true;
         long maxAttempt = timeOut / 200;
         int attempt = 0;
@@ -130,44 +123,37 @@ public class KapuaDoPrivilegeTest
             }
             Thread.sleep(200);
             assertTrue("Timeout waiting for execution [" + timeOut + " msec]. The task is not yet completed!", attempt++ <= maxAttempt);
-        }
-        while (!done);
+        } while (!done);
         assertTrue("The task is not yet completed!", done);
     }
 
     private String getKapuaSessionId() {
         KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
-        if (kapuaSession!=null) {
+        if (kapuaSession != null) {
             return kapuaSession.toString();
-        }
-        else {
+        } else {
             return null;
         }
     }
 
-    private class DoPrivilegeCallable implements Callable<Void>
-    {
+    private class DoPrivilegeCallable implements Callable<Void> {
 
         private String callableName;
 
-        public DoPrivilegeCallable(String callableName)
-        {
+        public DoPrivilegeCallable(String callableName) {
             this.callableName = callableName;
         }
 
         @Override
-        public Void call() throws Exception
-        {
+        public Void call() throws Exception {
             return doPrivilegeCode(0);
         }
 
-        public Void invokeCode() throws Exception
-        {
+        public Void invokeCode() throws Exception {
             return doPrivilegeCode(0);
         }
 
-        private Void doPrivilegeCode(final Integer executionProgress) throws Exception
-        {
+        private Void doPrivilegeCode(final Integer executionProgress) throws Exception {
             logger.debug(callableName + ": DoPriviledge call {}", executionProgress.intValue());
             String originalKapuaSessionId = getKapuaSessionId();
 
@@ -180,8 +166,9 @@ public class KapuaDoPrivilegeTest
 
             String kapuaSessionId = getKapuaSessionId();
 
-            logger.debug("Execution: {} - KapuaSession object ID before {} - and after {} the nested DoPriviledge call", new Object[] { executionProgress.intValue(), originalKapuaSessionId, kapuaSessionId });
-            assertEquals("Wrong session ID!!! the do priledge method corrupted the KapuaSession", kapuaSessionId, originalKapuaSessionId);
+            logger.debug("Execution: {} - KapuaSession object ID before {} - and after {} the nested DoPriviledge call",
+                    new Object[] { executionProgress.intValue(), originalKapuaSessionId, kapuaSessionId });
+            assertEquals("Wrong session ID!!! The do priledge method corrupted the KapuaSession", kapuaSessionId, originalKapuaSessionId);
             return (Void) null;
         }
 

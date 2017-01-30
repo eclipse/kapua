@@ -86,6 +86,22 @@ public interface Device extends KapuaUpdatableEntity, Groupable {
     }
 
     /**
+     * Get the group identifier
+     * 
+     * @return
+     */
+    @XmlElement(name = "groupId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getGroupId();
+
+    /**
+     * Set the group identifier
+     * 
+     * @param groupId
+     */
+    public void setGroupId(KapuaId groupId);
+
+    /**
      * Get the client identifier
      * 
      * @return

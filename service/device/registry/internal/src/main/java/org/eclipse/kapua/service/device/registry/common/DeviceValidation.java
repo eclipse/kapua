@@ -17,11 +17,13 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -43,6 +45,7 @@ public final class DeviceValidation {
     private static final Domain deviceDomain = new DeviceDomain();
 
     private static final AuthorizationService authorizationService;
+    private static final GroupService groupService;
     private static final PermissionFactory permissionFactory;
 
     private static final DeviceRegistryService deviceRegistryService;
@@ -50,10 +53,14 @@ public final class DeviceValidation {
 
     static {
         authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        groupService = KapuaLocator.getInstance().getService(GroupService.class);
         permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
 
         deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
         deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+    }
+
+    private DeviceValidation() {
     }
 
     /**
@@ -67,6 +74,10 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), "deviceCreator.clientId");
+
+        if (deviceCreator.getGroupId() != null) {
+            ArgumentValidator.notNull(groupService.find(deviceCreator.getScopeId(), deviceCreator.getGroupId()), "deviceCreator.groupId");
+        }
 
         authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
 
@@ -85,9 +96,14 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(device.getId(), "device.id");
         ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
 
-        KapuaId groupId = findCurrentGroupId(device.getScopeId(), device.getId());
+        // Check that current user can manage the current group of the device
+        KapuaId currentGroupId = findCurrentGroupId(device.getScopeId(), device.getId());
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), currentGroupId));
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), groupId));
+        // Check that current user can manage the target group of the device
+        if (device.getGroupId() != null) {
+            ArgumentValidator.notNull(groupService.find(device.getScopeId(), device.getGroupId()), "device.groupId");
+        }
         authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), device.getGroupId()));
 
         return device;
@@ -155,15 +171,32 @@ public final class DeviceValidation {
      * @param scopeId
      * @param clientId
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
+
+        // Check access is performed by the query method.
     }
 
+    /**
+     * Finds the current {@link Group} id assigned to the given {@link Device} id.
+     * 
+     * @param scopeId
+     *            The scope {@link KapuaId} of the {@link Device}
+     * @param entityId
+     *            The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
+     * @return The {@link Group} id found.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
     private static KapuaId findCurrentGroupId(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+        //
+        // FIXME introduce the capability in KapuaQuery to select single values instead of selecting the whole object.
+        //
+
         DeviceQuery query = deviceFactory.newQuery(scopeId);
-        // query.setSelect
         query.setPredicate(new AttributePredicate<>(DevicePredicates.ENTITY_ID, entityId));
 
         DeviceListResult results = null;
@@ -175,29 +208,9 @@ public final class DeviceValidation {
 
         KapuaId groupId = null;
         if (results != null && !results.isEmpty()) {
-            groupId = results.getItem(0).getGroupId();
+            groupId = results.getFirstItem().getGroupId();
         }
 
         return groupId;
     }
-
-    // private static KapuaId findCurrentGroupId(KapuaId scopeId, String clientId) throws KapuaException {
-    // DeviceQuery query = deviceFactory.newQuery(scopeId);
-    // // query.setSelect
-    // query.setPredicate(new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId));
-    //
-    // DeviceListResult results = null;
-    // try {
-    // results = KapuaSecurityUtils.doPriviledge(() -> (DeviceListResult) deviceRegistryService.query(query));
-    // } catch (Exception e) {
-    // throw KapuaException.internalError(e, "Error while searching groupId");
-    // }
-    //
-    // KapuaId groupId = null;
-    // if (results != null && !results.isEmpty()) {
-    // groupId = results.getFirstItem().getGroupId();
-    // }
-    //
-    // return groupId;
-    // }
 }

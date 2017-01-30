@@ -38,10 +38,14 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -52,17 +56,82 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaOrPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.Groupable;
+import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Service DAO utility methods
+ * {@link ServiceDAO} utility methods.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 public class ServiceDAO {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceDAO.class);
+
+    private static final AccessInfoService accessInfoService;
+    private static final AccessInfoFactory accessInfoFactory;
+
+    private static final AccessPermissionService accessPermissionService;
+    private static final AccessRoleService accessRoleService;
+
+    private static final RoleService roleService;
+    private static final RolePermissionService rolePermissionService;
 
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
 
     private static final String LIKE = "%";
+
+    static {
+        KapuaLocator locator = null;
+        try {
+            locator = KapuaLocator.getInstance();
+        } catch (ExceptionInInitializerError kre) {
+            LOG.warn("KapuaLocator not available! Access Group featue may be not suppoted!", kre);
+        }
+
+        if (locator != null) {
+            accessInfoService = KapuaLocator.getInstance().getService(AccessInfoService.class);
+            accessInfoFactory = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
+
+            accessPermissionService = KapuaLocator.getInstance().getService(AccessPermissionService.class);
+            accessRoleService = KapuaLocator.getInstance().getService(AccessRoleService.class);
+
+            roleService = KapuaLocator.getInstance().getService(RoleService.class);
+            rolePermissionService = KapuaLocator.getInstance().getService(RolePermissionService.class);
+        } else {
+            accessInfoService = null;
+            accessInfoFactory = null;
+
+            accessPermissionService = null;
+            accessRoleService = null;
+
+            roleService = null;
+            rolePermissionService = null;
+        }
+
+    }
 
     protected ServiceDAO() {
     }
@@ -556,5 +625,99 @@ public class ServiceDAO {
             }
         }
         return expr;
+    }
+
+    /**
+     * Handles the {@link Groupable} property of the {@link KapuaEntity}.
+     * 
+     * @param query
+     *            The {@link DeviceQuery} to manage.
+     * @param domain
+     *            The {@link Domain} inside which the {@link KapuaQuery} param targets.
+     * @param groupPredicateName
+     *            The name of the {@link Group} id field.
+     * @since 1.0.0
+     */
+    @SuppressWarnings("rawtypes")
+    protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) {
+
+        if (accessInfoFactory != null) {
+            KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
+            if (kapuaSession != null) {
+                try {
+                    KapuaId userId = kapuaSession.getUserId();
+
+                    AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(kapuaSession.getScopeId());
+                    accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPriviledge(() -> accessInfoService.query(accessInfoQuery));
+
+                    List<Permission> groupPermissions = new ArrayList<>();
+                    if (!accessInfos.isEmpty()) {
+
+                        AccessInfo accessInfo = accessInfos.getFirstItem();
+                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPriviledge(() -> accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+
+                        for (AccessPermission ap : accessPermissions.getItems()) {
+                            Permission p = ap.getPermission();
+                            if (domain.getName().equals(p.getDomain())) {
+                                if (p.getAction() == null || Actions.read.equals(p.getAction())) {
+                                    if (p.getGroupId() == null) {
+                                        groupPermissions.clear();
+                                        break;
+                                    } else {
+                                        groupPermissions.add(p);
+                                    }
+                                }
+                            }
+                        }
+
+                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPriviledge(() -> accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+
+                        for (AccessRole ar : accessRoles.getItems()) {
+                            KapuaId roleId = ar.getRoleId();
+
+                            Role role = KapuaSecurityUtils.doPriviledge(() -> roleService.find(ar.getScopeId(), roleId));
+
+                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPriviledge(() -> rolePermissionService.findByRoleId(role.getScopeId(), role.getId()));
+
+                            for (RolePermission rp : rolePermissions.getItems()) {
+
+                                Permission p = rp.getPermission();
+                                if (domain.getName().equals(p.getDomain())) {
+                                    if (p.getAction() == null || Actions.read.equals(p.getAction())) {
+                                        if (p.getGroupId() == null) {
+                                            groupPermissions.clear();
+                                            break;
+                                        } else {
+                                            groupPermissions.add(p);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    AndPredicate andPredicate = new AndPredicate();
+                    if (!groupPermissions.isEmpty()) {
+                        int i = 0;
+                        KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
+                        for (Permission p : groupPermissions) {
+                            groupsIds[i++] = p.getGroupId();
+                        }
+                        andPredicate.and(new AttributePredicate<>(groupPredicateName, groupsIds));
+                    }
+
+                    if (query.getPredicate() != null) {
+                        andPredicate.and(query.getPredicate());
+                    }
+
+                    query.setPredicate(andPredicate);
+                } catch (Exception e) {
+                    KapuaException.internalError(e, "Error while grouping!");
+                }
+            }
+        } else {
+            LOG.warn("Access Group is disabled");
+        }
     }
 }
