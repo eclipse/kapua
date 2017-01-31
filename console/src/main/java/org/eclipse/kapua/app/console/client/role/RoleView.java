@@ -24,6 +24,8 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 
 public class RoleView extends EntityView<GwtRole> {
 
+    private RoleGrid roleGrid;
+    
     public RoleView(GwtSession gwtSession) {
         super(gwtSession);
     }
@@ -38,13 +40,15 @@ public class RoleView extends EntityView<GwtRole> {
 
     @Override
     public EntityGrid<GwtRole> getEntityGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
-        return new RoleGrid(entityView, currentSession);
+        if (roleGrid == null) {
+            roleGrid = new RoleGrid(entityView, currentSession);
+        }
+        return roleGrid;
     }
 
     @Override
-    public EntityFilterPanel getEntityFilterPanel(EntityView<GwtRole> entityView, GwtSession currentSession2) {
-        // TODO Auto-generated method stub
-        return null;
+    public EntityFilterPanel<GwtRole> getEntityFilterPanel(EntityView<GwtRole> entityView, GwtSession currentSession) {
+        return new RoleFilterPanel(this, currentSession);
     }
 
 }

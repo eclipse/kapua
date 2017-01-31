@@ -21,8 +21,10 @@ import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -52,7 +54,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected BasePagingLoader<PagingLoadResult<M>> entityLoader;
     protected ListStore<M> entityStore;
     protected PagingToolBar entityPagingToolbar;
-
+        
     protected EntityGrid(EntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
         //
@@ -155,8 +157,16 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     public void refresh() {
         entityLoader.load();
+        entityPagingToolbar.enable();
     }
-
+    
+    public void refresh(GwtQuery query) {
+//        m_filterPredicates = predicates;
+        setFilterQuery(query);
+        entityLoader.load();
+        entityPagingToolbar.enable();
+    }
+    
     protected void selectionChangedEvent(M selectedItem) {
         if (parentEntityView != null) {
             parentEntityView.setSelectedEntity(selectedItem);
@@ -171,4 +181,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         return entityGrid.getSelectionModel();
     }
 
+    protected abstract GwtQuery getFilterQuery();
+    
+    protected abstract void setFilterQuery(GwtQuery filterQuery);
 }
