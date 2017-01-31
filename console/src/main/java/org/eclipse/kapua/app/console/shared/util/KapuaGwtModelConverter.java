@@ -372,7 +372,8 @@ public class KapuaGwtModelConverter {
         gwtDeviceEvent.setSentOn(deviceEvent.getSentOn());
         gwtDeviceEvent.setReceivedOn(deviceEvent.getReceivedOn());
         gwtDeviceEvent.setEventType(deviceEvent.getResource());
-
+        gwtDeviceEvent.setGwtActionType(deviceEvent.getAction().toString());
+        gwtDeviceEvent.setGwtResponseCode(deviceEvent.getResponseCode().toString());
         String escapedMessage = KapuaSafeHtmlUtils.htmlEscape(deviceEvent.getEventMessage());
         gwtDeviceEvent.setEventMessage(escapedMessage);
 
