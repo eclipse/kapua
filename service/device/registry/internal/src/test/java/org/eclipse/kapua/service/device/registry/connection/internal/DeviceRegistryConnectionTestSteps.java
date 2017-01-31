@@ -44,6 +44,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceTestSteps;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.authorization.subject.SubjectMock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +162,7 @@ public class DeviceRegistryConnectionTestSteps extends KapuaTest {
         mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
-        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
+        KapuaSession kapuaSession = new KapuaSession(null, KapuaEid.ONE, SubjectMock.KAPUA_SYS);
         KapuaSecurityUtils.setSession(kapuaSession);
 
         // Default the scope ID to the root ID and the user ID to the system user ID

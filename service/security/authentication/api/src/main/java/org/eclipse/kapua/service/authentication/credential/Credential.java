@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.service.authorization.subject.Subject;
+import org.eclipse.kapua.model.subject.Subject;
 
 /**
  * {@link Credential} definition.<br>

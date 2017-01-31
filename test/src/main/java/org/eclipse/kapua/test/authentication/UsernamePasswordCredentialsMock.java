@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.authentication;
 
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 public class UsernamePasswordCredentialsMock implements UsernamePasswordCredentials {
 

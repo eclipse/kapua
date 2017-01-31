@@ -13,11 +13,9 @@ package org.eclipse.kapua.commons.security;
 
 import java.util.concurrent.Callable;
 
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.authorization.subject.SubjectFactory;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,13 +77,12 @@ public class KapuaSecurityUtils {
 
         if (previousSession == null) {
 
-			// KapuaLocator locator = KapuaLocator.getInstance();
+            // KapuaLocator locator = KapuaLocator.getInstance();
             // SubjectFactory subjectFactory = locator.getFactory(SubjectFactory.class);
-
             // session = new KapuaSession(null, KapuaEid.ONE, subjectFactory.newSubject(SubjectType.USER, KapuaEid.ONE));
 
             logger.debug("==> create new session");
-            currentSession = new KapuaSession();
+            currentSession = new KapuaSession(null, KapuaEid.ONE, SubjectImpl.KAPUA_SYS);
             currentSession.setTrustedMode(true);
         } else {
             logger.debug("==> clone from previous session");

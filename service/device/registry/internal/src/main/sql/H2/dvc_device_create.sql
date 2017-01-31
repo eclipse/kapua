@@ -14,14 +14,18 @@ CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	    UNSIGNED NOT NULL,
   
+  created_on             	TIMESTAMP(3) 	NOT NULL,
+  created_by_type			VARCHAR(64)   	NOT NULL,
+  created_by_id            	BIGINT(21)    	UNSIGNED NOT NULL,
+  
+  modified_on            	TIMESTAMP(3)  	NOT NULL,
+  modified_by_type			VARCHAR(64)   	NOT NULL,
+  modified_by_id            BIGINT(21)    	UNSIGNED NOT NULL,
+
   group_id             	    BIGINT(21) 	    UNSIGNED,
   
   client_id                 VARCHAR(255)    NOT NULL,
   connection_id             BIGINT(21) 	    UNSIGNED NULL,
-  created_on             	TIMESTAMP(3)    NULL,
-  created_by             	BIGINT(21)      UNSIGNED NOT NULL,
-  modified_on            	TIMESTAMP       NULL,
-  modified_by            	BIGINT(21)      UNSIGNED NOT NULL,
   status                 	VARCHAR(64)     NOT NULL DEFAULT 'ENABLED',
   display_name              VARCHAR(255), 
   last_event_on             TIMESTAMP(3)    NULL DEFAULT NULL,
@@ -47,6 +51,7 @@ CREATE TABLE dvc_device (
   custom_attribute_4        VARCHAR(255),
   custom_attribute_5        VARCHAR(255),
   credentials_mode          VARCHAR(64)   NOT NULL,
+  
   preferred_user_id			BIGINT(21)    DEFAULT 0,
   
   optlock                   INT UNSIGNED,

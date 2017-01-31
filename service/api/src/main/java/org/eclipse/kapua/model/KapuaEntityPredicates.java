@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
+import java.util.Date;
+
+import org.eclipse.kapua.model.subject.Subject;
+
 /**
  * {@link KapuaEntity} query predicates.
  * 
@@ -31,12 +35,12 @@ public interface KapuaEntityPredicates {
     public static final String ENTITY_ID = "id";
 
     /**
-     * {@link KapuaEntity} created on date.
+     * {@link KapuaEntity} created on {@link Date}.
      */
     public static final String CREATED_ON = "createdOn";
 
     /**
-     * {@link KapuaEntity} created by id.
+     * {@link KapuaEntity} created by {@link Subject}.
      */
     public static final String CREATED_BY = "createdBy";
 

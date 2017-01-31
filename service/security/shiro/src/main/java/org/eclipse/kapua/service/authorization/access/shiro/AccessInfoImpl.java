@@ -18,10 +18,10 @@ import javax.persistence.Table;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.subject.Subject;
-import org.eclipse.kapua.service.authorization.subject.shiro.SubjectImpl;
 
 /**
  * {@link AccessInfo} implementation.

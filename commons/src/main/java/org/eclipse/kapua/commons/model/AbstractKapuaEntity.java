@@ -27,19 +27,18 @@ import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 
 /**
- * Kapua base entity reference abstract implementation.
+ * {@link KapuaEntity} abstract implementation.
  * 
- * @see KapuaEntity
- * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 @SuppressWarnings("serial")
@@ -65,9 +64,10 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "created_by", nullable = false, updatable = false))
+            @AttributeOverride(name = "subjectType", column = @Column(name = "created_by_type", nullable = false, updatable = false)),
+            @AttributeOverride(name = "subjectId.eid", column = @Column(name = "created_by_id", nullable = false, updatable = false))
     })
-    protected KapuaEid createdBy;
+    private SubjectImpl createdBy;
 
     /**
      * Constructor
@@ -94,9 +94,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      */
     public AbstractKapuaEntity(KapuaId scopeId) {
         this();
-        if (scopeId != null) {
-            this.scopeId = new KapuaEid(scopeId.getId());
-        }
+        setScopeId(scopeId);
     }
 
     @Override
@@ -106,9 +104,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     @Override
     public void setId(KapuaId id) {
-        if (id != null) {
-            this.id = new KapuaEid(id);
-        }
+        this.id = id != null ? new KapuaEid(id) : null;
     }
 
     @Override
@@ -122,9 +118,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * @param scopeId
      */
     public void setScopeId(KapuaId scopeId) {
-        if (scopeId != null) {
-            this.scopeId = new KapuaEid(scopeId);
-        }
+        this.scopeId = scopeId != null ? new KapuaEid(scopeId) : null;
     }
 
     @Override
@@ -142,7 +136,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     }
 
     @Override
-    public KapuaId getCreatedBy() {
+    public Subject getCreatedBy() {
         return createdBy;
     }
 
@@ -151,24 +145,19 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * 
      * @param createdBy
      */
-    public void setCreatedBy(KapuaId createdBy) {
-        if (createdBy != null) {
-            this.createdBy = new KapuaEid(createdBy);
-        }
+    public void setCreatedBy(Subject createdBy) {
+        this.createdBy = createdBy != null ? new SubjectImpl(createdBy) : null;
     }
 
     /**
-     * Before update action to correctly set the modified on and modified by fields
+     * Before persist action we need to correctly set the {@link #createdOn} and {@link #createdBy} fields.
      * 
-     * @throws KapuaException
+     * @since 1.0.0
      */
     @PrePersist
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(IdGenerator.generate());
-
-        this.createdBy = new KapuaEid(KapuaSecurityUtils.getSession().getSubject().getId());
-        this.createdOn = new Date();
+    protected void prePersistsAction() {
+        setId(new KapuaEid(IdGenerator.generate()));
+        setCreatedBy(KapuaSecurityUtils.getSession().getSubject());
+        setCreatedOn(new Date());
     }
-
 }

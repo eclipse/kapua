@@ -13,14 +13,16 @@
 package org.eclipse.kapua.model;
 
 /**
- * Kapua updateable entity creator service definition.
+ * {@link KapuaUpdatableEntityCreator} definition.<br>
+ * All the {@link KapuaUpdatableEntityCreator}s will be an extension of this entity.<br>
  *
- * @param <E> entity type
+ * This class extends {@link KapuaEntityCreator} and adds further properties to updatable creator model objects in Kapua.
+ *
+ * @param <E>
+ *            The {@link KapuaEntity} of which this {@link KapuaUpdatableEntityCreator} is the creator model.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
-public interface KapuaUpdatableEntityCreator<E extends KapuaEntity> extends KapuaEntityCreator<E>
-{
+public interface KapuaUpdatableEntityCreator<E extends KapuaEntity> extends KapuaEntityCreator<E> {
 
 }

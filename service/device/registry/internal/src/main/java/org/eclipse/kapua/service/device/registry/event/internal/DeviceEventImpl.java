@@ -27,11 +27,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -202,19 +199,19 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
         this.eventMessage = eventMessage;
     }
 
-    /**
-     * This methods needs override because {@link DeviceEvent}s can be created from the broker plugin.
-     */
-    @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
-            super.prePersistsAction();
-        } else {
-            this.id = new KapuaEid(IdGenerator.generate());
-
-            this.createdBy = KapuaEid.ONE;
-            this.createdOn = new Date();
-        }
-    }
+    // /**
+    // * This methods needs override because {@link DeviceEvent}s can be created from the broker plugin.
+    // */
+    // @Override
+    // protected void prePersistsAction()
+    // throws KapuaException {
+    // if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
+    // super.prePersistsAction();
+    // } else {
+    // this.id = new KapuaEid(IdGenerator.generate());
+    //
+    // this.createdBy = KapuaEid.ONE;
+    // this.createdOn = new Date();
+    // }
+    // }
 }

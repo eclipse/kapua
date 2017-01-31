@@ -39,12 +39,12 @@
 		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
-		<api>org.eclipse.kapua.service.authorization.subject.SubjectFactory</api>
 		
         <api>org.eclipse.kapua.service.user.UserFactory</api>
 		<api>org.eclipse.kapua.service.user.UserService</api>
         
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+        <api>org.eclipse.kapua.model.subject.SubjectFactory</api>
 	</provided>
 	<packages>
 		<package>org.eclipse.kapua.service.authentication.credential.shiro</package>
@@ -58,11 +58,11 @@
 		<package>org.eclipse.kapua.service.authorization.access.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.shiro</package>
-        <package>org.eclipse.kapua.service.authorization.subject.shiro</package>
 		
 		<package>org.eclipse.kapua.test.account</package>
         <package>org.eclipse.kapua.test.user</package>
         
+        <package>org.eclipse.kapua.commons.model.subject</package>
         <package>org.eclipse.kapua.commons.model.id</package>
 	</packages>
 </locator-config>

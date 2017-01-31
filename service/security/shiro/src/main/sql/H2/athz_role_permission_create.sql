@@ -13,12 +13,14 @@
 CREATE TABLE athz_role_permission (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  
   created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
+  
   role_id             	    BIGINT(21) 	  UNSIGNED,
   
-  domain					VARCHAR(64)   NOT NULL,
+  domain					VARCHAR(64),
   action					VARCHAR(64),
   target_scope_id		    BIGINT(21)	  UNSIGNED,
   group_id             	    BIGINT(21) 	  UNSIGNED,

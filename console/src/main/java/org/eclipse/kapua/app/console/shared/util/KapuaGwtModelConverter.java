@@ -545,7 +545,7 @@ public class KapuaGwtModelConverter {
         convertEntity((KapuaEntity) kapuaEntity, (GwtEntityModel) gwtEntity);
 
         gwtEntity.setModifiedOn(kapuaEntity.getModifiedOn());
-        gwtEntity.setModifiedBy(convert(kapuaEntity.getModifiedBy()));
+        gwtEntity.setModifiedBy(convert(kapuaEntity.getModifiedBy().getId()));
         gwtEntity.setOptlock(kapuaEntity.getOptlock());
     }
 
@@ -564,6 +564,6 @@ public class KapuaGwtModelConverter {
         gwtEntity.setScopeId(convert(kapuaEntity.getScopeId()));
         gwtEntity.setId(convert(kapuaEntity.getId()));
         gwtEntity.setCreatedOn(kapuaEntity.getCreatedOn());
-        gwtEntity.setCreatedBy(convert(kapuaEntity.getCreatedBy()));
+        gwtEntity.setCreatedBy(convert(kapuaEntity.getCreatedBy().getId()));
     }
 }

@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.subject;
+package org.eclipse.kapua.model.subject;
 
 /**
  * Available {@link Subject}s
@@ -20,7 +20,5 @@ package org.eclipse.kapua.service.authorization.subject;
  */
 public enum SubjectType {
     USER,//
-    DEVICE, //
-    BROKER_CONNECTION, //
-    GROUP;
+    BROKER_CONNECTION;
 }

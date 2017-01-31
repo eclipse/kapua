@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.eclipse.kapua.model.subject.SubjectType;
 
 /**
  * Username and password {@link LoginCredentials} definition.

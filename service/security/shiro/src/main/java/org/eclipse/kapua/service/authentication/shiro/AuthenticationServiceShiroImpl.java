@@ -332,7 +332,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         //
         // Extract userId and scope id from the shiro session
         KapuaEid scopeId = (KapuaEid) session.getAttribute("scopeId");
-        org.eclipse.kapua.service.authorization.subject.Subject subject = (org.eclipse.kapua.service.authorization.subject.Subject) session.getAttribute("subject");
+        org.eclipse.kapua.model.subject.Subject subject = (org.eclipse.kapua.model.subject.Subject) session.getAttribute("subject");
         Credential credentials = (Credential) session.getAttribute("credentials");
 
         //
@@ -394,7 +394,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Kapua claims
         KapuaEid scopeId = (KapuaEid) session.getAttribute("scopeId");
-        org.eclipse.kapua.service.authorization.subject.Subject subject = (org.eclipse.kapua.service.authorization.subject.Subject) session.getAttribute("subject");
+        org.eclipse.kapua.model.subject.Subject subject = (org.eclipse.kapua.model.subject.Subject) session.getAttribute("subject");
 
         // Jwts.builder().setIssuer(issuer)
         // .setIssuedAt(issuedAtDate)

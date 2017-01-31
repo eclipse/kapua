@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.misc;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -23,6 +22,7 @@ import javax.persistence.Table;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 
 @Entity(name = "CollisionEntity")
 @Table(name = "collision_entity_test")
@@ -53,23 +53,24 @@ public class CollisionEntity extends AbstractKapuaNamedEntity {
         this.testField = testField;
     }
 
+    public String getTestField() {
+        return testField;
+    }
+
     /**
-     * Before update action to correctly set the modified on and modified by fields
+     * Before create action to correctly set the modified on and modified by fields
      * 
      * @throws KapuaException
      */
     @PrePersist
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(collisionIdGenerator.generate());
+    protected void prePersistsAction() {
+        setId(new KapuaEid(collisionIdGenerator.generate()));
 
-        this.createdBy = new KapuaEid(new BigInteger("1"));
-        this.createdOn = new Date();
+        setCreatedBy(SubjectImpl.KAPUA_SYS);
+        setCreatedOn(new Date());
+        setModifiedBy(SubjectImpl.KAPUA_SYS);
+        setModifiedOn(new Date());
+
     }
-
-    public String getTestField() {
-        return testField;
-    }
-
 }

@@ -18,10 +18,10 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +51,9 @@ public class AuthenticationServiceTest extends AbstractAuthenticationServiceTest
         Subject currentSubject = SecurityUtils.getSubject();
 
         assertTrue(currentSubject.isAuthenticated());
-        assertTrue(currentSubject.getPrincipal() instanceof org.eclipse.kapua.service.authorization.subject.Subject);
+        assertTrue(currentSubject.getPrincipal() instanceof org.eclipse.kapua.model.subject.Subject);
 
-        org.eclipse.kapua.service.authorization.subject.Subject subject = (org.eclipse.kapua.service.authorization.subject.Subject) currentSubject.getPrincipal();
+        org.eclipse.kapua.model.subject.Subject subject = (org.eclipse.kapua.model.subject.Subject) currentSubject.getPrincipal();
 
         assertEquals(SubjectType.USER, subject.getSubjectType());
         assertEquals(new KapuaEid(BigInteger.ONE), subject.getId());

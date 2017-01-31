@@ -16,27 +16,32 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Kapua named entity definition.
+ * {@link KapuaNamedEntity} definition.<br>
+ * All the {@link KapuaNamedEntity}es will be an extension of this entity.<br>
  * 
- * @since 1.0
+ * A 'named' entity is a entity that has a 'name' field which must be unique within the platform.
+ * 
+ * @since 1.0.0
  * 
  */
-@XmlType(propOrder = {"name" })
-public interface KapuaNamedEntity extends KapuaUpdatableEntity 
-{
+@XmlType(propOrder = { "name" })
+public interface KapuaNamedEntity extends KapuaUpdatableEntity {
 
     /**
-     * Get the entity name
+     * Gets the {@link KapuaNamedEntity} name.
      * 
-     * @return
+     * @return The {@link KapuaNamedEntity} name.
+     * @since 1.0.0
      */
-	@XmlElement(name="name")
+    @XmlElement(name = "name")
     public String getName();
 
     /**
-     * Set the entity name
+     * Sets the {@link KapuaNamedEntity} name.
      * 
      * @param name
+     *            The {@link KapuaNamedEntity} name.
+     * @since 1.0.0
      */
     public void setName(String name);
 }

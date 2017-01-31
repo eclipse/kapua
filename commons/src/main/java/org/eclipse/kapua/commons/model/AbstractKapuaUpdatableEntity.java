@@ -32,16 +32,16 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 
 /**
- * Kapua updatable entity default abstract implementation.
+ * {@link KapuaUpdatableEntity} abstract implementation.
  *
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
@@ -54,9 +54,10 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "modified_by"))
+            @AttributeOverride(name = "subjectType", column = @Column(name = "modified_by_type", nullable = false, updatable = true)),
+            @AttributeOverride(name = "subjectId.eid", column = @Column(name = "modified_by_id", nullable = false, updatable = true))
     })
-    protected KapuaEid modifiedBy;
+    protected SubjectImpl modifiedBy;
 
     @Version
     @Column(name = "optlock")
@@ -116,7 +117,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     }
 
     @Override
-    public KapuaId getModifiedBy() {
+    public Subject getModifiedBy() {
         return modifiedBy;
     }
 
@@ -125,10 +126,8 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
      * 
      * @param modifiedBy
      */
-    public void setModifiedBy(KapuaId modifiedBy) {
-        if (modifiedBy != null) {
-            this.modifiedBy = new KapuaEid(modifiedBy);
-        }
+    public void setModifiedBy(Subject modifiedBy) {
+        this.modifiedBy = modifiedBy != null ? new SubjectImpl(modifiedBy) : null;
     }
 
     @Override
@@ -155,6 +154,8 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
             try {
                 props.load(new StringReader(attributes));
             } catch (IOException e) {
+                // FIXME Throwing KapuaException internal error is too aggressive and doed not provide any information to the caller
+                // Better throw KapuaIllegalArgumentException
                 KapuaException.internalError(e);
             }
         }
@@ -170,6 +171,8 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
                 props.store(writer, null);
                 attributes = writer.toString();
             } catch (IOException e) {
+                // FIXME Throwing KapuaException internal error is too aggressive and doed not provide any information to the caller
+                // Better throw KapuaIllegalArgumentException
                 KapuaException.internalError(e);
             }
         }
@@ -189,6 +192,8 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
             try {
                 props.load(new StringReader(properties));
             } catch (IOException e) {
+                // FIXME Throwing KapuaException internal error is too aggressive and doed not provide any information to the caller
+                // Better throw KapuaIllegalArgumentException
                 KapuaException.internalError(e);
             }
         }
@@ -204,28 +209,28 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
                 props.store(writer, null);
                 properties = writer.toString();
             } catch (IOException e) {
+                // FIXME Throwing KapuaException internal error is too aggressive and doed not provide any information to the caller
+                // Better throw KapuaIllegalArgumentException
                 KapuaException.internalError(e);
             }
         }
     }
 
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
+    protected void prePersistsAction() {
         super.prePersistsAction();
-        this.modifiedBy = this.createdBy;
-        this.modifiedOn = this.createdOn;
+        setModifiedBy(getCreatedBy());
+        setModifiedOn(getCreatedOn());
     }
 
     /**
-     * Before update action to correctly set the modified on and modified by fields
+     * Before update action we need to correctly set the {@link #modifiedOn} and {@link #modifiedBy} fields.
      * 
      * @throws KapuaException
      */
     @PreUpdate
-    protected void preUpdateAction()
-            throws KapuaException {
-        this.modifiedBy = (KapuaEid) KapuaSecurityUtils.getSession().getSubject().getId();
-        this.modifiedOn = new Date();
+    protected void preUpdateAction() {
+        setModifiedBy(KapuaSecurityUtils.getSession().getSubject());
+        setModifiedOn(new Date());
     }
 }

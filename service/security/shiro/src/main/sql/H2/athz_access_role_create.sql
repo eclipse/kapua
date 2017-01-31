@@ -13,8 +13,10 @@
 CREATE TABLE athz_access_role (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL, 
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
   
   access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
   role_id					BIGINT(21) 	  UNSIGNED NOT NULL,

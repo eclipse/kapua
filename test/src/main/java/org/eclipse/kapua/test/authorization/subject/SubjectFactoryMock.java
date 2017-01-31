@@ -14,9 +14,9 @@ package org.eclipse.kapua.test.authorization.subject;
 
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.subject.Subject;
-import org.eclipse.kapua.service.authorization.subject.SubjectFactory;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectFactory;
+import org.eclipse.kapua.model.subject.SubjectType;
 
 /**
  * {@link SubjectFactory} implementation.

@@ -37,7 +37,6 @@
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
-        <api>org.eclipse.kapua.service.authorization.subject.SubjectFactory</api>
 		
         <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
         <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
@@ -74,6 +73,7 @@
 		
 		<api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
 		<api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+        <api>org.eclipse.kapua.model.subject.SubjectFactory</api>
 	</provided>
 	<packages>
 		<package>org.eclipse.kapua.commons</package>

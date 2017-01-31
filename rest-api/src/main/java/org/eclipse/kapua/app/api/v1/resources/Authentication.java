@@ -19,12 +19,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

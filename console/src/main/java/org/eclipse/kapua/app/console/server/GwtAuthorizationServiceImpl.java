@@ -33,10 +33,10 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
@@ -46,7 +46,6 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
@@ -101,10 +100,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
-
     @Override
     public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials) throws GwtKapuaException {
-     // VIP
+        // VIP
         // keep this here to make sure we initialize the logger.
         // Without the following, console logger may not log anything when deployed into tomcat.
         s_logger.info(">>> THIS IS INFO <<<");
@@ -130,7 +128,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         }
         return gwtSession;
     }
-    
+
     /**
      * Return the currently authenticated user or null if no session has been established.
      */
@@ -151,8 +149,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                     KapuaId scopeId = kapuaSession.getScopeId();
                     KapuaId subjectId = kapuaSession.getSubject().getId();
 
-                KapuaLocator locator = KapuaLocator.getInstance();
-                UserService userService = locator.getService(UserService.class);
+                    KapuaLocator locator = KapuaLocator.getInstance();
+                    UserService userService = locator.getService(UserService.class);
                     User user = userService.find(scopeId, subjectId);
 
                     gwtSession.setGwtUser(KapuaGwtModelConverter.convert(user));

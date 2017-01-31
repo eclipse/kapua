@@ -13,11 +13,13 @@
 CREATE TABLE athz_domain (
   scope_id             		BIGINT(21) 	  UNSIGNED,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  
   created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
 
   name 						VARCHAR(255)  NOT NULL,
-  serviceName 				VARCHAR(1023)  NOT NULL,
+  serviceName 				VARCHAR(1023) NOT NULL,
     
   PRIMARY KEY (id)
 

@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -39,7 +40,6 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
@@ -153,7 +153,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         permissions.add(permissionFactory.newPermission(deviceLifecycleDomain, Actions.connect, account.getId()));
 
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
-        accessInfoCreator.setSubjectType(SubjectType.DEVICE);
+        accessInfoCreator.setSubjectType(SubjectType.BROKER_CONNECTION);
         accessInfoCreator.setSubjectId(user.getId());
         accessInfoCreator.setPermissions(permissions);
 
@@ -164,7 +164,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         CredentialService credentialService = locator.getService(CredentialService.class);
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
         CredentialCreator credentialCreator = credentialFactory.newCreator(account.getId(),
-                SubjectType.DEVICE,
+                SubjectType.BROKER_CONNECTION,
                 user.getId(),
                 CredentialType.PASSWORD,
                 userName,

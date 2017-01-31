@@ -12,4 +12,4 @@
 
 INSERT INTO athz_access_role
 	VALUES
-		(1, 1, NOW(), 1, 1, 1); -- kapua-sys assigned of role admin 
+		(1, 1, NOW(), 'USER', 1, 1, 1); -- kapua-sys assigned of role admin 

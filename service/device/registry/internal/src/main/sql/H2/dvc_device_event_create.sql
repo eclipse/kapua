@@ -13,8 +13,10 @@
 CREATE TABLE dvc_device_event (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL DEFAULT 0,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
   
   device_id					BIGINT(21) 	  UNSIGNED NOT NULL,
   received_on				TIMESTAMP(3)  NOT NULL DEFAULT 0,

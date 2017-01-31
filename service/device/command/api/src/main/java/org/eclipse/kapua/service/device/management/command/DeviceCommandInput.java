@@ -14,13 +14,12 @@ package org.eclipse.kapua.service.device.management.command;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.KapuaEntity;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * Device command input entity definition.
@@ -43,6 +42,12 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 }, factoryClass = DeviceCommandXmlRegistry.class, factoryMethod = "newCommandInput")
 public interface DeviceCommandInput extends KapuaEntity {
 
+    public static final String TYPE = "deviceCommandInput";
+
+    public default String getType() {
+        return TYPE;
+    }
+
     /**
      * Get the device command
      * 
@@ -50,7 +55,7 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "command")
     public String getCommand();
-    
+
     /**
      * Set the device command
      * 
@@ -65,13 +70,13 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "password")
     public String getPassword();
-    
+
     /**
      * Set the device password
      * 
      * @param password
      */
-    public void setPassword(String password);    
+    public void setPassword(String password);
 
     /**
      * Get command arguments
@@ -81,13 +86,13 @@ public interface DeviceCommandInput extends KapuaEntity {
     @XmlElementWrapper(name = "arguments")
     @XmlElement(name = "argument")
     public String[] getArguments();
-    
+
     /**
      * Set command arguments
      * 
      * @param arguments
      */
-    public void setArguments(String[] arguments);    
+    public void setArguments(String[] arguments);
 
     /**
      * Get the command timeout
@@ -96,7 +101,7 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "timeout")
     public Integer getTimeout();
-    
+
     /**
      * Set the command timeout
      * 
@@ -111,7 +116,7 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "workingDir")
     public String getWorkingDir();
-    
+
     /**
      * Set the working directory
      * 
@@ -126,13 +131,13 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "body")
     public byte[] getBody();
-    
+
     /**
      * Set the command input body
      * 
      * @param bytes
      */
-    public void setBody(byte[] bytes);    
+    public void setBody(byte[] bytes);
 
     /**
      * Get the environment attributes
@@ -141,14 +146,14 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "environment")
     public String[] getEnvironment();
-    
+
     /**
      * Set the environment attributes
      * 
      * @param environment
      */
     public void setEnvironment(String[] environment);
-    
+
     /**
      * Get the asynchronous run flag
      * 
@@ -156,7 +161,7 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "runAsynch")
     public boolean isRunAsynch();
-    
+
     /**
      * Set the asynchronous run flag
      * 
@@ -171,7 +176,7 @@ public interface DeviceCommandInput extends KapuaEntity {
      */
     @XmlElement(name = "stdin")
     public String getStdin();
-    
+
     /**
      * Set the device standard input
      * 

@@ -18,9 +18,9 @@ import javax.persistence.Embedded;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authorization.subject.Subject;
 import org.eclipse.kapua.test.authorization.subject.SubjectMock;
 
 /**

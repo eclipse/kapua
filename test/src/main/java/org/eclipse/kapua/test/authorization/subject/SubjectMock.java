@@ -17,9 +17,10 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.subject.Subject;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectType;
 
 /**
  * {@link Subject} implementation.
@@ -29,6 +30,8 @@ import org.eclipse.kapua.service.authorization.subject.SubjectType;
  */
 @Embeddable
 public class SubjectMock implements Subject, Serializable {
+
+    public static final Subject KAPUA_SYS = new SubjectImpl(SubjectType.USER, KapuaEid.ONE);
 
     private static final long serialVersionUID = -7744516663474475457L;
 

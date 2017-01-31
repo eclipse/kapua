@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.authentication;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.eclipse.kapua.model.subject.SubjectType;
 
 /**
  * {@link Credentials} factory definition.

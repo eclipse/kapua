@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -28,15 +27,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.subject.SubjectImpl;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.authorization.subject.Subject;
-import org.eclipse.kapua.service.authorization.subject.shiro.SubjectImpl;
 
 /**
  * Access token entity implementation.
@@ -53,6 +49,10 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     private static final long serialVersionUID = -6003387376828196787L;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "subjectType", column = @Column(name = "subject_type", nullable = false, updatable = true)),
+            @AttributeOverride(name = "subjectId.eid", column = @Column(name = "subject_id", nullable = false, updatable = true))
+    })
     private SubjectImpl subject;
 
     @Embedded
@@ -140,19 +140,19 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
         this.expiresOn = expiresOn;
     }
 
-    /**
-     * The {@link AbstractKapuaUpdatableEntity#prePersistAction} is overridden because the property {@link AbstractKapuaEntity#createdBy}
-     * must be set to the current userId instead of the user in session, which is not set at the time of the creation of this {@link AccessToken}.
-     * 
-     * @since 1.0.0
-     */
-    @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(IdGenerator.generate());
-        this.createdBy = new KapuaEid(BigInteger.ONE);
-        this.createdOn = new Date();
-        this.modifiedBy = this.createdBy;
-        this.modifiedOn = this.createdOn;
-    }
+    // /**
+    // * The {@link AbstractKapuaUpdatableEntity#prePersistAction} is overridden because the property {@link AbstractKapuaEntity#createdBy}
+    // * must be set to the current userId instead of the user in session, which is not set at the time of the creation of this {@link AccessToken}.
+    // *
+    // * @since 1.0.0
+    // */
+    // @Override
+    // protected void prePersistsAction()
+    // throws KapuaException {
+    // this.id = new KapuaEid(IdGenerator.generate());
+    // this.createdBy = new KapuaEid(BigInteger.ONE);
+    // this.createdOn = new Date();
+    // this.modifiedBy = this.createdBy;
+    // this.modifiedOn = this.createdOn;
+    // }
 }

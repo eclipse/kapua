@@ -56,6 +56,7 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaOrPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
@@ -182,7 +183,7 @@ public class ServiceDAO {
 
         SQLException innerExc = (SQLException) cause;
         return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
-        }
+    }
 
     /**
      * Update entity utility method
@@ -637,7 +638,7 @@ public class ServiceDAO {
                 if (embeddedAttribute) {
                     expr = cb.equal(entityRoot.get(attribute).get(embeddableAttributeName), attrValue);
                 } else {
-                expr = cb.equal(entityRoot.get(attribute), attrValue);
+                    expr = cb.equal(entityRoot.get(attribute), attrValue);
                 }
                 break;
             }
@@ -663,10 +664,10 @@ public class ServiceDAO {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
             if (kapuaSession != null) {
                 try {
-                    KapuaId userId = kapuaSession.getUserId();
+                    Subject subject = kapuaSession.getSubject();
 
                     AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(kapuaSession.getScopeId());
-                    accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+                    accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.SUBJECT, subject));
                     AccessInfoListResult accessInfos = KapuaSecurityUtils.doPriviledge(() -> accessInfoService.query(accessInfoQuery));
 
                     List<Permission> groupPermissions = new ArrayList<>();

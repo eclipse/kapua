@@ -13,15 +13,18 @@
 CREATE TABLE athz_access_info (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  
   created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on               TIMESTAMP(3)  NOT NULL,
-  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
+  
+  modified_on            	TIMESTAMP(3)  NOT NULL,
+  modified_by_type			VARCHAR(64)   NOT NULL,
+  modified_by_id            BIGINT(21)    UNSIGNED NOT NULL,
   
   subject_type				VARCHAR(64)   NOT NULL,
   subject_id				BIGINT(21)	  UNSIGNED,
 
-  
   optlock                   INT UNSIGNED,
   attributes				TEXT,
   properties                TEXT,

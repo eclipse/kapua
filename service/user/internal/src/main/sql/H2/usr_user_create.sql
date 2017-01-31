@@ -14,16 +14,22 @@ CREATE TABLE usr_user (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
   name               	    VARCHAR(255)  NOT NULL,
+  
   created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on            	TIMESTAMP(3),
-  modified_by            	BIGINT(21)    UNSIGNED,
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
+  
+  modified_on            	TIMESTAMP(3)  NOT NULL,
+  modified_by_type			VARCHAR(64)   NOT NULL,
+  modified_by_id            BIGINT(21)    UNSIGNED NOT NULL,
+  
   status                 	VARCHAR(64)   NOT NULL DEFAULT 'ENABLED',
   display_name           	VARCHAR(255),
   email                  	VARCHAR(255),
   phone_number           	VARCHAR(64),
   user_type					VARCHAR(64)   NOT NULL DEFAULT 'INTERNAL',
   external_id				VARCHAR(255),
+  
   optlock               	INT UNSIGNED,
   attributes             	TEXT,  
   properties             	TEXT,  

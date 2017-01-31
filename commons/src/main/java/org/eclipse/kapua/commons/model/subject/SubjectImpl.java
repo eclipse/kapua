@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.subject.shiro;
+package org.eclipse.kapua.commons.model.subject;
 
 import java.io.Serializable;
 
@@ -21,22 +21,25 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.subject.Subject;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectType;
 
 /**
  * {@link Subject} implementation.
  * 
  * @since 1.0.0
- *
  */
 @Embeddable
 public class SubjectImpl implements Subject, Serializable {
 
     private static final long serialVersionUID = -7744516663474475457L;
+
+    @Transient
+    public static final Subject KAPUA_SYS = new SubjectImpl(SubjectType.USER, KapuaEid.ONE);
 
     @Enumerated(EnumType.STRING)
     @Column(name = "subject_type", updatable = false, nullable = false)

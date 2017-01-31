@@ -16,8 +16,8 @@ import java.util.Date;
 
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
  * {@link AccessTokenFactory} implementation.

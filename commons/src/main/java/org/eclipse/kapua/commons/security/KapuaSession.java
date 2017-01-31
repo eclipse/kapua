@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.authorization.subject.Subject;
 
 /**
  * Kapua session
@@ -29,7 +29,7 @@ public class KapuaSession implements Serializable {
 
     private static final long serialVersionUID = -3831904230950408142L;
 
-    public final static String KAPUA_SESSION_KEY = "KapuaSession";
+    public static final String KAPUA_SESSION_KEY = "KapuaSession";
 
     private static List<String> trustedClasses = new ArrayList<String>();
     private static final String TRUST_CLASS_METHOD_PATTERN = "{0}.{1}";

@@ -12,4 +12,4 @@
 
 INSERT INTO athz_access_permission
 	VALUES
-		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1 
+		(1, 1, NOW(), 'USER', 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1:* 

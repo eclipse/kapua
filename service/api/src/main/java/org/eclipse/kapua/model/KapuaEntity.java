@@ -22,59 +22,66 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.subject.Subject;
 
 /**
- * Kapua base entity definition.<br>
- * All the Kapua entities will be an extension of this entity.
+ * {@link KapuaEntity} definition.<br>
+ * All the {@link KapuaEntity}es will be an extension of this entity.
+ * 
+ * This base class provides the basic properties of a model object in Kapua.
  * 
  * @since 1.0.0
- *
  */
 @XmlType(propOrder = { "id", "scopeId", "createdOn", "createdBy" })
 public interface KapuaEntity extends KapuaSerializable {
 
+    @XmlTransient
+    public String getType();
+
     /**
-     * Get the Kapua identifier for the entity
+     * Gets the {@link KapuaId} of this {@link KapuaEntity}.
      * 
-     * @return
+     * @return The {@link KapuaId} of this {@link KapuaEntity}.
+     * @since 1.0.0
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getId();
 
     /**
-     * Set the Kapua identifier for the entity
+     * Sets the {@link KapuaId} of this {@link KapuaEntity}.
      * 
      * @param id
+     *            The {@link KapuaId} to set.
+     * @since 1.0.0
      */
     public void setId(KapuaId id);
 
-    @XmlTransient
-    public String getType();
-
     /**
-     * Get the Kapua scope identifier for the entity
+     * Gets the scope {@link KapuaId} of this {@link KapuaEntity}.
      * 
-     * @return
+     * @return The scope {@link KapuaId} of this {@link KapuaEntity}.
+     * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
 
     /**
-     * Get the created on date
+     * Gets the {@link Date} of creation of this {@link KapuaEntity}.
      * 
-     * @return
+     * @return The created on {@link Date} of this {@link KapuaEntity}.
+     * @since 1.0.0
      */
     @XmlElement(name = "createdOn")
     public Date getCreatedOn();
 
     /**
-     * Set the created by Kapua identifier
+     * Gets the {@link Subject} that has created this {@link KapuaEntity}.
      * 
-     * @return
+     * @return The {@link Subject} that created this {@link KapuaEntity}.
+     * @since 1.0.0
      */
     @XmlElement(name = "createdBy")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getCreatedBy();
+    public Subject getCreatedBy();
 }

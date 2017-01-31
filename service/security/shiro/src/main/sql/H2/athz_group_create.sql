@@ -13,10 +13,14 @@
 CREATE TABLE athz_group (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+   
   created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on               TIMESTAMP(3)  NOT NULL,
-  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_by_type			VARCHAR(64)   NOT NULL,
+  created_by_id            	BIGINT(21)    UNSIGNED NOT NULL,
+  
+  modified_on            	TIMESTAMP(3)  NOT NULL,
+  modified_by_type			VARCHAR(64)   NOT NULL,
+  modified_by_id            BIGINT(21)    UNSIGNED NOT NULL,
 
   name 						VARCHAR(255)  NOT NULL,
   

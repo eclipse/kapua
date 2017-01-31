@@ -122,7 +122,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     protected void preUpdateAction()
             throws KapuaException {
         if (getCreatedBy() == null) {
-            setCreatedBy(KapuaSecurityUtils.getSession().getSubject().getId());
+            setCreatedBy(KapuaSecurityUtils.getSession().getSubject());
         }
 
         if (getCreatedOn() == null) {

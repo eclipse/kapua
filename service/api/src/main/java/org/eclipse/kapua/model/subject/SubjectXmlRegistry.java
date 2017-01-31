@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.subject;
+package org.eclipse.kapua.model.subject;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

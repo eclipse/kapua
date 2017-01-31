@@ -19,6 +19,7 @@ import java.util.Properties;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 
@@ -52,7 +53,7 @@ public class AccountMock implements Account {
     }
 
     @Override
-    public KapuaId getModifiedBy() {
+    public Subject getModifiedBy() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -114,7 +115,7 @@ public class AccountMock implements Account {
     }
 
     @Override
-    public KapuaId getCreatedBy() {
+    public Subject getCreatedBy() {
         // TODO Auto-generated method stub
         return null;
     }

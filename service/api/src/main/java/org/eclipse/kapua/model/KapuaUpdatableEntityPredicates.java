@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
+import org.eclipse.kapua.model.subject.Subject;
+
 /**
  * {@link KapuaUpdatableEntity} query predicates.
  * 
@@ -26,7 +28,7 @@ public interface KapuaUpdatableEntityPredicates extends KapuaEntityPredicates {
     public static final String MODIFIED_ON = "modifiedOn";
 
     /**
-     * {@link KapuaUpdatableEntity} modified by id.
+     * {@link KapuaUpdatableEntity} modified by {@link Subject}.
      */
     public static final String MODIFIED_BY = "modifiedBy";
 

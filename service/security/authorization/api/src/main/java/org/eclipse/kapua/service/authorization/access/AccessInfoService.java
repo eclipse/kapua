@@ -15,8 +15,8 @@ package org.eclipse.kapua.service.authorization.access;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.authorization.subject.Subject;
 
 /**
  * {@link AccessInfo} service definition.

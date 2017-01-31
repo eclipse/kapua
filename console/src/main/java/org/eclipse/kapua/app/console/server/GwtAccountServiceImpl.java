@@ -48,8 +48,8 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
 
     @SuppressWarnings("unused")
-    private static final Logger s_logger         = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
-    private static final long   serialVersionUID = 3314502846487119577L;
+    private static final Logger s_logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
+    private static final long serialVersionUID = 3314502846487119577L;
 
     public GwtAccount create(GwtXSRFToken xsrfToken, GwtAccountCreator gwtAccountCreator)
             throws GwtKapuaException {
@@ -64,7 +64,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
 
             AccountCreator accountCreator = accountFactory.newAccountCreator(parentAccountId,
-                                                                             gwtAccountCreator.getAccountName());
+                    gwtAccountCreator.getAccountName());
             accountCreator.setAccountPassword(gwtAccountCreator.getAccountPassword());
 
             accountCreator.setOrganizationName(gwtAccountCreator.getOrganizationName());
@@ -119,9 +119,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedOn", account.getModifiedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", account.getModifiedBy().toCompactId()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountModifiedBy", account.getModifiedBy().getId().toCompactId()));
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedOn", account.getCreatedOn().toString()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", account.getCreatedBy().toCompactId()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountCreatedBy", account.getCreatedBy().getId().toCompactId()));
 
             accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", "deploymentBrokerURL", SystemUtils.getBrokerURI().toString()));
 

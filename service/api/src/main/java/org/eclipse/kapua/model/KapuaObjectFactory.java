@@ -12,12 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
+import org.eclipse.kapua.locator.KapuaLocator;
+
 /**
- * Kapua object factory service definition. (Marker interface)
+ * {@link KapuaObjectFactory} definition.<br>
+ * This interface is a marker interface and it must be applied to all model object factory that needs
+ * service discovery.
  * 
- * @since 1.0
+ * @see {@link KapuaLocator#getFactory(Class)}
+ * @since 1.0.0
  *
  */
-public interface KapuaObjectFactory
-{
+public interface KapuaObjectFactory {
 }

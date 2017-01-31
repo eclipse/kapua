@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -22,14 +20,10 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
@@ -59,6 +53,12 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
             @AttributeOverride(name = "eid", column = @Column(name = "credential_id", nullable = false))
     })
     private KapuaEid credentialId;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "last_credential_id", nullable = false))
+    })
+    private KapuaEid lastCredentialId;
 
     @Basic
     @Column(name = "protocol", nullable = false)
@@ -115,11 +115,17 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Override
     public void setCredentialId(KapuaId credentialId) {
-        if (credentialId != null) {
-            this.credentialId = new KapuaEid(credentialId);
-        } else {
-            this.credentialId = null;
-        }
+        this.credentialId = credentialId != null ? new KapuaEid(credentialId) : null;
+    }
+
+    @Override
+    public KapuaId getLastCredentialId() {
+        return lastCredentialId;
+    }
+
+    @Override
+    public void setLastCredentialId(KapuaId lastCredentialId) {
+        this.lastCredentialId = lastCredentialId != null ? new KapuaEid(lastCredentialId) : null;
     }
 
     @Override
@@ -150,38 +156,5 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     @Override
     public void setServerIp(String serverIp) {
         this.serverIp = serverIp;
-    }
-
-    /**
-     * This methods needs override because {@link DeviceConnection}s can be created from the broker plugin.
-     */
-    @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
-            super.prePersistsAction();
-        } else {
-            this.id = new KapuaEid(IdGenerator.generate());
-
-            this.createdBy = KapuaEid.ONE;
-            this.createdOn = new Date();
-
-            this.modifiedBy = this.createdBy;
-            this.modifiedOn = this.createdOn;
-        }
-    }
-
-    /**
-     * This methods needs override because {@link DeviceConnection}s can be created from the broker plugin.
-     */
-    @PreUpdate
-    protected void preUpdateAction()
-            throws KapuaException {
-        if (KapuaSecurityUtils.getSession().getSubject().getId() != null) {
-            super.preUpdateAction();
-        } else {
-            this.modifiedBy = KapuaEid.ONE;
-            this.modifiedOn = new Date();
-        }
     }
 }

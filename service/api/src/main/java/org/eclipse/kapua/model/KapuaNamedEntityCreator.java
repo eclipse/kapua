@@ -16,28 +16,33 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Kapua named entity creator service definition.
- *
- * @param <E> entity type
+ * {@link KapuaNamedEntityCreator} definition.<br>
+ * All the {@link KapuaNamedEntityCreator}s will be an extension of this entity.
  * 
- * @since 1.0
+ * @param <E>
+ *            The {@link KapuaNamedEntity} of which this {@link KapuaNamedEntityCreator} is the creator model.
+ * 
+ * @since 1.0.0
  * 
  */
-@XmlType(propOrder = {"name" })
-public interface KapuaNamedEntityCreator<E extends KapuaEntity> extends KapuaUpdatableEntityCreator<E>
-{
+@XmlType(propOrder = { "name" })
+public interface KapuaNamedEntityCreator<E extends KapuaEntity> extends KapuaUpdatableEntityCreator<E> {
+
     /**
-     * Get the entity name
+     * Gets the {@link KapuaNamedEntityCreator} name.
      * 
-     * @return
+     * @return The name assigned to this {@link KapuaNamedEntityCreator}.
+     * @since 1.0.0
      */
-	@XmlElement(name="name")
+    @XmlElement(name = "name")
     public String getName();
 
     /**
-     * Set the entity name
+     * Sets the name that will be assigned to the created {@link KapuaNamedEntity}.
      * 
      * @param name
+     *            The name that will be assigned to the created {@link KapuaNamedEntity}.
+     * @since 1.0.0
      */
     public void setName(String name);
 }

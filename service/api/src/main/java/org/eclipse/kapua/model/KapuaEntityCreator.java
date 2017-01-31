@@ -20,11 +20,11 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
- * Kapua entity base creator service definition.<br>
- * All the Kapua entities base creator service will be an extension of this entity.
+ * {@link KapuaEntityCreator} definition.<br>
+ * All the {@link KapuaEntityCreator}s will be an extension of this entity.
  *
  * @param <E>
- *            entity type
+ *            The {@link KapuaEntity} of which this {@link KapuaEntityCreator} is the creator model.
  * 
  * @since 1.0.0
  * 
@@ -33,18 +33,21 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 public interface KapuaEntityCreator<E extends KapuaEntity> {
 
     /**
-     * Get the Kapua scope identifier
+     * Gets the scope {@link KapuaId} of this {@link KapuaEntityCreator}.
      * 
-     * @return
+     * @return The scope {@link KapuaId} of this {@link KapuaEntityCreator}.
+     * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
 
     /**
-     * Set the Kapua scope identifier
+     * Sets the scope {@link KapuaId} in which create the {@link KapuaEntity}.
      * 
      * @param scopeId
+     *            The scope {@link KapuaId} in which create the {@link KapuaEntity}.
+     * @since 1.0.0
      */
     public void setScopeId(KapuaId scopeId);
 }

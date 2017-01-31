@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.authentication;
 
-import java.math.BigInteger;
 import java.util.Date;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.authorization.subject.Subject;
 import org.eclipse.kapua.test.authorization.subject.SubjectMock;
 
 /**
@@ -35,7 +33,7 @@ public class AccessTokenMock extends AbstractKapuaUpdatableEntity implements Acc
 
     private static final long serialVersionUID = -6003387376828196787L;
 
-    private SubjectMock subject;
+    private Subject subject;
     private KapuaId credentialId;
     private String tokenId;
     private Date expiresOn;
@@ -69,11 +67,7 @@ public class AccessTokenMock extends AbstractKapuaUpdatableEntity implements Acc
 
     @Override
     public void setSubject(Subject subject) {
-        if (subject != null) {
-            this.subject = new SubjectMock(subject);
-        } else {
-            this.subject = null;
-        }
+        this.subject = subject != null ? new SubjectMock(subject) : subject;
     }
 
     @Override
@@ -113,12 +107,11 @@ public class AccessTokenMock extends AbstractKapuaUpdatableEntity implements Acc
      * @since 1.0.0
      */
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(IdGenerator.generate());
-        this.createdBy = new KapuaEid(BigInteger.ONE);
-        this.createdOn = new Date();
-        this.modifiedBy = this.createdBy;
-        this.modifiedOn = this.createdOn;
+    protected void prePersistsAction() {
+        setId(new KapuaEid(IdGenerator.generate()));
+        setCreatedBy(SubjectMock.KAPUA_SYS);
+        setCreatedOn(new Date());
+        setModifiedBy(getCreatedBy());
+        setModifiedOn(getModifiedOn());
     }
 }

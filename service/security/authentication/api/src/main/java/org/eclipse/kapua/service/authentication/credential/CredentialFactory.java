@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authentication.credential;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
+import org.eclipse.kapua.model.subject.SubjectType;
 
 /**
  * {@link Credential} factory service definition.

@@ -13,12 +13,12 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authorization.subject.SubjectType;
 
 /**
  * {@link CredentialsFactory} factory implementation.
