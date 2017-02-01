@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+
+ -->
+
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://activemq.apache.org/schema/core
+         http://activemq.apache.org/schema/core/activemq-core.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd
+         http://www.springframework.org/schema/util
+         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+    <!-- ============================================================== -->
+    <!--                     TEST CODE                                  -->
+    <!-- ============================================================== -->
+    <!-- ==============================================================
+            AMQP CLIENT AND CONNECTION POOL TEST
+     ==============================================================  -->
+
+    <!-- spring connection pool -->
+    <!--
+    <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+        <property name="connectionFactory" ref="cachingConnectionFactory" />
+        <property name="cacheLevel" value="2" />
+    </bean>
+    <bean id="cachingConnectionFactory"
+        class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="amqRemoteConnectionFactory" />
+    </bean>
+    <bean id="amqRemoteConnectionFactory" class="org.apache.qpid.client.AMQConnectionFactory">
+        <constructor-arg value="amqp://admin:admin@localhost:6000/forwardedTopic?brokerlist='localhost:6000'" />
+    </bean>
+    -->
+
+    <!-- rough client -->
+    <!--
+    <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+       <property name="connectionFactory">
+         <bean class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
+           <constructor-arg index="0" type="java.lang.String" value="amqp://guest:guest@localhost:6000/forwardedTopic" />
+         </bean>
+       </property>
+    </bean>
+     -->
+
+    <!-- Pooled connection factory -->
+    <!--
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+        init-method="start" destroy-method="stop">
+        <property name="maxConnections" value="10" />
+        <property name="maximumActiveSessionPerConnection" value="10" />
+        <property name="connectionFactory" ref="amqp_connection" />
+    </bean>
+    -->
+
+    <!-- ==============================================================
+            !!!AMQP CLIENT AND CONNECTION POOL WORKING!!!
+     ==============================================================  -->
+    <!-- WORKING CONNECTION POOLING with A-MQ 6.2.1 (camel 2.15.1-red-hat) to fuse 6.2.1 (camel 2.15.1-red-hat).
+    <bean id="myConnectionFactory" class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
+            <constructor-arg index="0" type="java.lang.String" value="amqp://guest:guest@localhost:6000/forwardedTopic" />
+    </bean>
+
+    <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="myConnectionFactory"/>
+        <property name="sessionCacheSize" value="10" /> it's the maximum number of caches sessions
+    </bean>
+    <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+        <property name="connectionFactory" ref="cachingConnectionFactory"/>
+        <property name="cacheLevel" value="2"/>
+    </bean>
+
+    <to uri="amqp:queue:forwardedTopic" />
+
+    -->
+
+    <!-- ==============================================================
+            KAFKA ENDPOINT
+    ==============================================================  -->
+    <!--
+    from http://camel.apache.org/kafka.html
+
+    from("direct:start").process(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                exchange.getIn().setBody("Test Message from Camel Kafka Component Final",String.class);
+                exchange.getIn().setHeader(KafkaConstants.PARTITION_KEY, 0);
+                exchange.getIn().setHeader(KafkaConstants.KEY, "1");
+            }
+        }).to("kafka:localhost:9092?topic=test");
+    with spring beans:
+
+    <bean ref="processorKafkaHeaderSetter" />
+    <recipientList>
+        <header>kafkaDestination</header>
+    </recipientList>
+
+    or without processor:
+
+    <setHeader headerName="topicCleaned">
+        <simple resultType="java.lang.String">${header.JMSDestination.toString().substring(21, ${header.JMSDestination.toString().length()-1})}</simple>
+    </setHeader>
+    <setHeader headerName="kafkaDestination">
+        <simple resultType="java.lang.String">kafka:localhost:9092?serializerClass=kafka.serializer.StringEncoder&amp;topic=${header.topicCleaned}</simple>
+    </setHeader>
+    <recipientList>
+        <header>kafkaDestination</header>
+    </recipientList>
+    -->
+
+    <!-- ==============================================================
+            JDBC CONNECTION
+     ==============================================================  -->
+    <!--
+    <bean id="kapuaDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/kapuadb"/>
+        <property name="username" value="kapua"/>
+        <property name="password" value="Welcome1"/>
+    </bean>
+    -->
+
+    <!-- ==============================================================
+            JDBC CONNECTION POOL
+     ==============================================================  -->
+    <!--
+    <bean id="springDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" >
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/kapuadb"/>
+        <property name="username" value="kapua"/>
+        <property name="password" value="Welcome1"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="initialSize" value="20" />
+        <property name="maxActive" value="30" />
+    </bean>
+    -->
+
+    <!-- ENABLE MULTITHREAD
+        add after the from tag
+        <threads executorServiceRef="executorServiceManager">
+        due to our use case with the concurrentConsumers we have already multithread. We use it only for the endpoint processors
+    -->
+
+</beans>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,13 +18,14 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.DBHelper;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountService;
@@ -45,7 +46,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserService;
@@ -54,25 +54,15 @@ import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
 import org.eclipse.kapua.test.KapuaTest;
 
+import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.*;
-
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
 
 /**
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
+@ScenarioScoped
 public class UserServiceSteps extends KapuaTest {
-
-    /**
-     * Path to root of full DB schema scripts.
-     */
-    public static final String FULL_SCHEMA_PATH = "../dev-tools/src/main/database/";
-
-    /**
-     * Filter for droping full DB schema.
-     */
-    public static final String DROP_FILTER = "all_drop.sql";
 
     /**
      * User service by locator.
@@ -124,14 +114,21 @@ public class UserServiceSteps extends KapuaTest {
      */
     private ComparableUser lastUser;
 
+    /**
+     * Single point to database access.
+     */
+    private DBHelper dbHelper;
+
+    @Inject
+    public UserServiceSteps(DBHelper dbHelper) {
+
+        this.dbHelper = dbHelper;
+    }
+
     @Before
     public void beforeScenario(Scenario scenario) throws KapuaException {
 
         this.isException = false;
-
-        // Create User Service tables
-        enableH2Connection();
-        new KapuaLiquibaseClient(resolveJdbcUrl(), "kapua", "kapua").update();
 
         // Services by default Locator
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -147,9 +144,7 @@ public class UserServiceSteps extends KapuaTest {
     @After
     public void afterScenario() throws KapuaException {
 
-        // Drop User Service tables
-        KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DROP_FILTER);
-
+        dbHelper.deleteAll();
         KapuaSecurityUtils.clearSession();
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2016, 2017 Eurotech and/or its affiliates
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -41,11 +41,58 @@
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 
-		<api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+        <!-- datastore -->
+        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
+        <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
+        <!-- datastore scope configuration -->
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+        <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
+
+        <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
+        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
+        <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
+
+        <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
+        <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
+
+        <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
+        <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
+        <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
+        <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
+
+        <api>org.eclipse.kapua.service.metric.MetricsService</api>
+
+        <api>org.eclipse.kapua.service.user.UserFactory</api>
+        <api>org.eclipse.kapua.service.user.UserService</api>
+
+        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
+
+        <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
+
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
-	</provided>
-	<packages>
-		<package>org.eclipse.kapua.commons</package>
-		<package>org.eclipse.kapua.service</package>
-	</packages>
+
+        <provide>
+            <interceptor>annotation</interceptor>
+            <with>Impl</with>
+        </provide>
+    </provided>
+    <packages>
+        <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.transport</package>
+        <package>org.eclipse.kapua.message</package>
+    </packages>
 </locator-config>
