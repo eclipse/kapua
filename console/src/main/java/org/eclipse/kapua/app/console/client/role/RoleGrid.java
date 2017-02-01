@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 
@@ -34,11 +35,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class RoleGrid extends EntityGrid<GwtRole> {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
-
+    
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
-
+        
+    private GwtRoleQuery query;
+    
     public RoleGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
+        query = new GwtRoleQuery();
+        query.setScopeId(currentSession.getSelectedAccount().getId());
     }
 
     @Override
@@ -52,9 +57,6 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtRole>> callback) {
-                GwtRoleQuery query = new GwtRoleQuery();
-                query.setScopeId(currentSession.getSelectedAccount().getId());
-
                 gwtRoleService.query((PagingLoadConfig) loadConfig,
                         query,
                         callback);
@@ -79,6 +81,16 @@ public class RoleGrid extends EntityGrid<GwtRole> {
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
+    }
+    
+    @Override
+    protected GwtQuery getFilterQuery() {
+        return query;
+    }
+
+    @Override
+    protected void setFilterQuery(GwtQuery filterQuery) {
+        this.query = (GwtRoleQuery)filterQuery;
     }
 
 }

@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 
@@ -104,4 +105,15 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         entityStore.removeAll();
     }
 
+    @Override
+    protected GwtQuery getFilterQuery() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void setFilterQuery(GwtQuery filterQuery) {
+        // TODO Auto-generated method stub
+        
+    }
 }

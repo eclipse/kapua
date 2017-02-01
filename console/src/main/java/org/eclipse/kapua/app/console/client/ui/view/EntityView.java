@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.panel.KapuaBorderLayoutData;
 import org.eclipse.kapua.app.console.client.ui.panel.KapuaTabPanel;
@@ -28,7 +27,6 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
@@ -38,10 +36,10 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
 
     private GwtSession currentSession;
 
-    private EntityFilterPanel filterPanel;
+    private EntityFilterPanel<M> filterPanel;
     private EntityGrid<M> entityGrid;
     private KapuaTabPanel<M> tabsPanel;
-
+    
     public EntityView() {
         super();
 
@@ -66,19 +64,9 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
         // East Panel: Filtering menu
         filterPanel = getEntityFilterPanel(this, currentSession);
         if (filterPanel != null) {
-
-            filterPanel = new EntityFilterPanel(currentSession);
-
-            ContentPanel panel = new ContentPanel();
-            panel.setLayout(new FitLayout());
-            panel.setBorders(false);
-            panel.setBodyBorder(false);
-            panel.setHeading(MSGS.deviceFilteringPanelHeading());
-            panel.add(filterPanel);
-
             KapuaBorderLayoutData eastData = new KapuaBorderLayoutData(LayoutRegion.EAST, 250);
             eastData.setMarginLeft(5);
-            add(panel, eastData);
+            add(filterPanel, eastData);
         }
 
         //
@@ -120,7 +108,7 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
 
     public abstract EntityGrid<M> getEntityGrid(EntityView<M> entityView, GwtSession currentSession);
 
-    public abstract EntityFilterPanel getEntityFilterPanel(EntityView<M> entityView, GwtSession currentSession2);
+    public abstract EntityFilterPanel<M> getEntityFilterPanel(EntityView<M> entityView, GwtSession currentSession2);
 
     public void onUnload() {
         super.onUnload();

@@ -141,7 +141,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             RoleService roleService = locator.getService(RoleService.class);
 
             // Convert from GWT entity
-            RoleQuery roleQuery = GwtKapuaModelConverter.convertQuery(loadConfig, gwtRoleQuery);
+            RoleQuery roleQuery = GwtKapuaModelConverter.convertRoleQuery(loadConfig, gwtRoleQuery);
 
             // query
             RoleListResult roles = roleService.query(roleQuery);

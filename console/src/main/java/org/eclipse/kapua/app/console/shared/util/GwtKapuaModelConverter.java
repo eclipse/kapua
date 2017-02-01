@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -42,6 +43,7 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
+import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.user.internal.UserDomain;
@@ -67,7 +69,7 @@ public class GwtKapuaModelConverter {
      * @return the converted {@link RoleQuery}
      * @since 1.0.0
      */
-    public static RoleQuery convertQuery(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery) {
+    public static RoleQuery convertRoleQuery(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery) {
 
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -75,6 +77,9 @@ public class GwtKapuaModelConverter {
 
         // Convert query
         RoleQuery roleQuery = roleFactory.newQuery(convert(gwtRoleQuery.getScopeId()));
+        if (gwtRoleQuery.getName() != null && gwtRoleQuery.getName() != "") {
+            roleQuery.setPredicate(new AttributePredicate<String>(RolePredicates.ROLE_NAME, gwtRoleQuery.getName()));
+        }
         roleQuery.setOffset(loadConfig.getOffset());
         roleQuery.setLimit(loadConfig.getLimit());
 
