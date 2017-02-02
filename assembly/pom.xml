@@ -71,7 +71,6 @@
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-message-internal</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
@@ -80,7 +79,6 @@
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-datastore-internal</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
@@ -137,7 +135,6 @@
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-packages-internal</artifactId>
-			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -148,7 +145,6 @@
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-translator-kura-jms</artifactId>
-			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -287,7 +283,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>unpack-activemq</id>
@@ -463,7 +458,7 @@
 						<image>
 							<name>${docker.account}/kapua-broker</name>
 							<build>
-								<from>java:8u40</from>
+								<from>java:8</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
 								</assembly>
@@ -481,13 +476,16 @@
 						<image>
 							<name>${docker.account}/kapua-console</name>
 							<build>
-								<from>java:8u40</from>
+								<from>java:8</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console.xml</descriptor>
 								</assembly>
 								<entryPoint>
 								   <shell>/maven/bin/catalina.sh run</shell>
 								</entryPoint>
+								<env>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
 								<ports>
 									<port>8080</port>
 								</ports>
@@ -501,13 +499,16 @@
 						<image>
 							<name>${docker.account}/kapua-api</name>
 							<build>
-								<from>java:8u40</from>
+								<from>java:8</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-api.xml</descriptor>
 								</assembly>
 								<entryPoint>
 								   <shell>/maven/bin/catalina.sh run</shell>
 								</entryPoint>
+								<env>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
 								<ports>
 									<port>8080</port>
 								</ports>
