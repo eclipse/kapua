@@ -36,12 +36,12 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
     private static String httpErrorTemplate = "<!doctype html>" +
             "<html>" +
             "   <head>" +
-            "      <title>Kapua&copy; Console - ${statusCode}</title>" +
+            "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
             "      <style>body {padding: 10px;}h1 {color: #1E80B0;}pre {display: none}.label {font-weight: bold;} .message {}</style>" +
             "   </head>" +
             "   <body>" +
             "      <div>" +
-            "         <h1>Kapua&copy;</h1>" +
+            "         <h1>Eclipse Kapua&trade;</h1>" +
             "         <table>" +
             "            <tr>" +
             "               <td class='label'>HTTP Error Code:</td>" +
@@ -63,12 +63,12 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
     private static String throwableErrorTemplate = "<!doctype html>" +
             "<html>" +
             "   <head>" +
-            "      <title>Kapua&copy; Console - ${statusCode}</title>" +
+            "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
             "      <style>body {padding: 10px;}h1 {color: #1E80B0;}pre {display: none}.label {font-weight: bold;} .message {}</style>" +
             "   </head>" +
             "   <body>" +
             "      <div>" +
-            "         <h1>Kapua&copy;</h1>" +
+            "         <h1>Eclipse Kapua&trade;</h1>" +
             "         <table>" +
             "            <tr>" +
             "               <td class='label'>HTTP Error Code:</td>" +
