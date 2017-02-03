@@ -194,7 +194,7 @@ public class WestNavigationView extends LayoutContainer {
                 } else if ("user".equals(selectedId)) {
 
                     UserView userView = new UserView(m_currentSession);
-                    userView.setAccount(m_currentSession.getSelectedAccount());
+//                    userView.setAccount(m_currentSession.getSelectedAccount());
 
                     panel.setIcon(new KapuaIcon(IconSet.USERS));
                     panel.setHeading(MSGS.users());
@@ -204,7 +204,7 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.layout();
                     dashboardSelected = false;
 
-                    userView.refresh();
+//                    userView.refresh();
                 } else if ("role".equals(selectedId)) {
 
                     panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));

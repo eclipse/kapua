@@ -20,10 +20,13 @@ import java.util.Set;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
+import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,6 +38,10 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
+import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -44,7 +51,10 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -261,5 +271,43 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
 
         return new BaseListLoadResult<GwtUser>(gwtUserList);
+    }
+
+    @Override
+    public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) throws GwtKapuaException {
+        //
+        // Do query
+        int totalLength = 0;
+        List<GwtUser> gwtUsers = new ArrayList<GwtUser>();
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            UserService userService = locator.getService(UserService.class);
+
+            // Convert from GWT entity
+            UserQuery userQuery = GwtKapuaModelConverter.convertUserQuery(loadConfig, gwtUserQuery);
+
+            // query
+            UserListResult users = userService.query(userQuery);
+
+            // If there are results
+            if (!users.isEmpty()) {
+                // count
+                if (users.getSize() >= loadConfig.getLimit()) {
+                    totalLength = new Long(userService.count(userQuery)).intValue();
+                } else {
+                    totalLength = users.getSize();
+                }
+
+                // Converto to GWT entity
+                for (User u : users.getItems()) {
+                    gwtUsers.add(KapuaGwtModelConverter.convert(u));
+                }
+            }
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+        return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);
     }
 }

@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 
 public class GwtSession extends KapuaBaseModel implements Serializable {
 

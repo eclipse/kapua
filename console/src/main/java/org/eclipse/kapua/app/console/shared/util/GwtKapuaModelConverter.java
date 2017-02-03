@@ -24,12 +24,14 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -46,7 +48,10 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.internal.UserDomain;
+import org.eclipse.kapua.service.user.internal.UserPredicates;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -86,6 +91,35 @@ public class GwtKapuaModelConverter {
         //
         // Return converted
         return roleQuery;
+    }
+    
+    /**
+     * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
+     * 
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtRoleQuery
+     *            the {@link GwtRoleQuery} to convert
+     * @return the converted {@link RoleQuery}
+     * @since 1.0.0
+     */
+    public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
+
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        UserFactory userFactory = locator.getFactory(UserFactory.class);
+
+        // Convert query
+        UserQuery userQuery = userFactory.newQuery(convert(gwtUserQuery.getScopeId()));
+        if (gwtUserQuery.getName() != null && gwtUserQuery.getName() != "") {
+            userQuery.setPredicate(new AttributePredicate<String>(UserPredicates.USER_NAME, gwtUserQuery.getName(), Operator.LIKE));
+        }
+        userQuery.setOffset(loadConfig.getOffset());
+        userQuery.setLimit(loadConfig.getLimit());
+
+        //
+        // Return converted
+        return userQuery;
     }
 
     /**

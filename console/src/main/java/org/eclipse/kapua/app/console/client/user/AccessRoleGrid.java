@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,17 +10,18 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.role;
+package org.eclipse.kapua.app.console.client.user;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
@@ -32,23 +33,17 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class RoleGrid extends EntityGrid<GwtRole> {
 
-    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+public class AccessRoleGrid extends EntityGrid<GwtRole> {
     
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
-        
-    private GwtRoleQuery query;
     
-    public RoleGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
-        super(entityView, currentSession);
-        query = new GwtRoleQuery();
-        query.setScopeId(currentSession.getSelectedAccount().getId());
-    }
+    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    @Override
-    protected RoleToolbarGrid getToolbar() {
-        return new RoleToolbarGrid(currentSession);
+    private String userId = null;
+    
+    public AccessRoleGrid(EntityView<GwtRole> entityView, GwtSession currentSession) {
+        super(entityView, currentSession);
     }
 
     @Override
@@ -57,9 +52,12 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtRole>> callback) {
-                gwtRoleService.query((PagingLoadConfig) loadConfig,
-                        query,
-                        callback);
+                if (userId != null) {
+                    gwtRoleService.getByUserId((PagingLoadConfig) loadConfig,
+                            currentSession.getSelectedAccount().getId(),
+                            userId,
+                            callback);
+                }
             }
         };
     }
@@ -67,30 +65,39 @@ public class RoleGrid extends EntityGrid<GwtRole> {
     @Override
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
+        
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRoleColumnHeaderId(), 100);
+        columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("name", MSGS.gridRoleColumnHeaderName(), 400);
         columnConfigs.add(columnConfig);
-
+        
         columnConfig = new ColumnConfig("createdBy", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdOn", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
     }
     
-    @Override
-    public GwtQuery getFilterQuery() {
-        return query;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override
-    public void setFilterQuery(GwtQuery filterQuery) {
-        this.query = (GwtRoleQuery)filterQuery;
+    protected GwtQuery getFilterQuery() {
+        return null;
     }
 
+    @Override
+    protected void setFilterQuery(GwtQuery filterQuery) { }
+
+    @Override
+    protected EntityCRUDToolbar<GwtRole> getToolbar() {
+        // TODO Auto-generated method stub
+        return super.getToolbar();
+    }
+    
 }

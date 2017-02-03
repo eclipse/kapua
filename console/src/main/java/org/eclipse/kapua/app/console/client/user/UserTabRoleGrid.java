@@ -1,0 +1,61 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
+package org.eclipse.kapua.app.console.client.user;
+
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+
+import com.google.gwt.user.client.Element;
+
+public class UserTabRoleGrid extends KapuaTabItem<GwtUser> {
+
+    AccessRoleGrid accessRoleGrid;
+
+    private final GwtSession currentSession;
+
+    public UserTabRoleGrid(GwtSession currentSession) {
+        super("Roles", new KapuaIcon(IconSet.STREET_VIEW));
+        this.currentSession = currentSession;
+        accessRoleGrid = new AccessRoleGrid(null, currentSession);
+    }
+
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
+
+        add(accessRoleGrid);
+    }
+
+    @Override
+    public void setEntity(GwtUser gwtUser) {
+        super.setEntity(gwtUser);
+        if (gwtUser != null) {
+            accessRoleGrid.setUserId(gwtUser.getId());
+        } else {
+            accessRoleGrid.setUserId(null);
+        }
+    }
+
+    @Override
+    protected void doRefresh() {
+        // if (selectedEntity != null) {
+        accessRoleGrid.refresh();
+        // } else {
+        // accessRoleGrid.clear();
+        // }
+    }
+
+}

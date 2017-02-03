@@ -10,11 +10,13 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.shared.model.user;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
 
 public class GwtUserPermission extends KapuaBaseModel implements Serializable
 {

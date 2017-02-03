@@ -10,7 +10,9 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.shared.model.user;
+
+import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

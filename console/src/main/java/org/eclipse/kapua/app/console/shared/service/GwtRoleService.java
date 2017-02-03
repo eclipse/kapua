@@ -49,4 +49,7 @@ public interface GwtRoleService extends RemoteService {
 
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
             throws GwtKapuaException;
+    
+    public PagingLoadResult<GwtRole> getByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
+            throws GwtKapuaException;
 }
