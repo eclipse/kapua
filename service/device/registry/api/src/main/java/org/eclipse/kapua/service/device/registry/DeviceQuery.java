@@ -17,10 +17,9 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 /**
  * Device query definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface DeviceQuery extends KapuaQuery<Device>
-{
+public interface DeviceQuery extends KapuaQuery<Device> {
 
 }

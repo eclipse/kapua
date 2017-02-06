@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
@@ -132,12 +131,11 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
      * @since 1.0.0
      */
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(IdGenerator.generate());
-        this.createdBy = userId;
-        this.createdOn = new Date();
-        this.modifiedBy = this.createdBy;
-        this.modifiedOn = this.createdOn;
+    protected void prePersistsAction() {
+        setId(new KapuaEid(IdGenerator.generate()));
+        setCreatedBy(userId);
+        setCreatedOn(new Date());
+        setModifiedBy(getCreatedBy());
+        setModifiedOn(getCreatedOn());
     }
 }

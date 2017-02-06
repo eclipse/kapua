@@ -123,10 +123,10 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", connectionStatus.toString()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devClientId", device.getClientId()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devDisplayName", device.getDisplayName()));
-                String lastEventType = device.getLastEventType() != null ? device.getLastEventType().toString() : "";
+                String lastEventType = device.getLastEvent() != null ? device.getLastEvent().getType() : "";
                 pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEventType));
-                if (device.getLastEventOn() != null) {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", String.valueOf(device.getLastEventOn().getTime())));
+                if (device.getLastEvent() != null) {
+                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", String.valueOf(device.getLastEvent().getReceivedOn().getTime())));
                 } else {
                     pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
                 }

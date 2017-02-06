@@ -83,14 +83,14 @@ public class DeviceExporterCsv extends DeviceExporter {
                 cols.add("");
             }
 
-            if (device.getLastEventOn() != null) {
-                cols.add(m_dateFormat.format(device.getLastEventOn()));
+            if (device.getLastEvent() != null) {
+                cols.add(m_dateFormat.format(device.getLastEvent().getReceivedOn()));
             } else {
                 cols.add("");
             }
 
-            if (device.getLastEventType() != null) {
-                cols.add(device.getLastEventType().name());
+            if (device.getLastEvent() != null) {
+                cols.add(device.getLastEvent().getType());
             } else {
                 cols.add("");
             }

@@ -26,16 +26,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
 /**
- * Device connection entity.
- *
- * @since 1.0
+ * {@link DeviceConnection} entity.
+ * 
+ * @since 1.0.0
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,7 +45,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 @Table(name = "dvc_device_connection")
 public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implements DeviceConnection {
 
-    private static final long serialVersionUID = 8928343233144731836L;
+    private static final long      serialVersionUID = 8928343233144731836L;
 
     @XmlElement(name = "connectionStatus")
     @Enumerated(EnumType.STRING)
@@ -53,29 +55,29 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     @XmlElement(name = "clientId")
     @Basic
     @Column(name = "client_id", nullable = false, updatable = false)
-    private String clientId;
+    private String                 clientId;
 
     @XmlElement(name = "userId")
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
+                          @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
     })
-    private KapuaEid userId;
+    private KapuaEid               userId;
 
     @XmlElement(name = "protocol")
     @Basic
     @Column(name = "protocol", nullable = false)
-    private String protocol;
+    private String                 protocol;
 
     @XmlElement(name = "clientIp")
     @Basic
     @Column(name = "client_ip")
-    private String clientIp;
+    private String                 clientIp;
 
     @XmlElement(name = "serverIp")
     @Basic
     @Column(name = "server_ip")
-    private String serverIp;
+    private String                 serverIp;
 
     /**
      * Constructor
@@ -86,11 +88,22 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     /**
      * Constructor
-     *
+     * 
      * @param scopeId
      */
     public DeviceConnectionImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    public DeviceConnectionImpl(DeviceConnection deviceConnection) throws KapuaException {
+        super((KapuaUpdatableEntity) deviceConnection);
+
+        setStatus(deviceConnection.getStatus());
+        setClientId(deviceConnection.getClientId());
+        setUserId(deviceConnection.getUserId());
+        setProtocol(deviceConnection.getProtocol());
+        setClientIp(deviceConnection.getClientIp());
+        setServerIp(deviceConnection.getServerIp());
     }
 
     @Override

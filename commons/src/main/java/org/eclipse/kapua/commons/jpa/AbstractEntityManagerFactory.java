@@ -28,11 +28,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class for JPA operations.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
-public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.commons.jpa.EntityManagerFactory
-{
+public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.commons.jpa.EntityManagerFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
@@ -51,9 +49,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @param datasourceName
      * @param uniqueConstraints
      */
-    protected AbstractEntityManagerFactory(String persistenceUnitName,
-            String datasourceName,
-            Map<String, String> uniqueConstraints) {
+    protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName, Map<String, String> uniqueConstraints) {
         SystemSetting config = SystemSetting.getInstance();
 
         String connectionUrlResolverType = config.getString(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, "DEFAULT");
@@ -86,8 +82,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
             configOverrides.put("eclipselink.connection-pool.default.wait", config.getString(SystemSettingKey.DB_POOL_BORROW_TIMEOUT));
 
             // Standalone JPA
-            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName,
-                    configOverrides);
+            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
         } catch (Throwable ex) {
             LOG.error("Error creating EntityManagerFactory", ex);
             throw new ExceptionInInitializerError(ex);

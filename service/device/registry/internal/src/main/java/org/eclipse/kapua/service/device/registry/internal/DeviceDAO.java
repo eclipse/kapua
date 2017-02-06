@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 /**
  * Device DAO
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 public class DeviceDAO extends ServiceDAO {
@@ -45,8 +45,6 @@ public class DeviceDAO extends ServiceDAO {
         device.setClientId(deviceCreator.getClientId());
         device.setStatus(deviceCreator.getStatus());
         device.setDisplayName(deviceCreator.getDisplayName());
-        device.setLastEventOn(null);
-        device.setLastEventType(null);
         device.setSerialNumber(deviceCreator.getSerialNumber());
         device.setModelId(deviceCreator.getModelId());
         device.setImei(deviceCreator.getImei());
@@ -68,8 +66,8 @@ public class DeviceDAO extends ServiceDAO {
         device.setCredentialsMode(deviceCreator.getCredentialsMode());
         device.setPreferredUserId(deviceCreator.getPreferredUserId());
 
-        // issue #57
         device.setConnectionId(deviceCreator.getConnectionId());
+        device.setLastEventId(deviceCreator.getLastEventId());
 
         return ServiceDAO.create(em, device);
     }

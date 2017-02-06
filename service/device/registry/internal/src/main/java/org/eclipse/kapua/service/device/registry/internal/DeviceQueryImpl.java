@@ -12,26 +12,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
- * Device query implementation.
+ * {@link DeviceQuery} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements DeviceQuery
-{
+public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements DeviceQuery {
 
     /**
      * Constructor
      */
-    private DeviceQueryImpl()
-    {
+    private DeviceQueryImpl() {
         super();
+
+        addFetchAttributes(DevicePredicates.CONNECTION);
+        addFetchAttributes(DevicePredicates.LAST_EVENT);
+
+        setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, SortOrder.ASCENDING));
     }
 
     /**
@@ -39,8 +45,7 @@ public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements Devic
      * 
      * @param scopeId
      */
-    public DeviceQueryImpl(KapuaId scopeId)
-    {
+    public DeviceQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }

@@ -22,16 +22,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 /**
- * DeviceCreator encapsulates all the information needed to create a new Device in the system.<br>
- * The data provided will be used to seed the new Device and its related information.<br>
- * The fields of the DeviceCreator presents the attributes that are searchable for a given device.<br>
+ * {@link DeviceCreator} encapsulates all the information needed to create a new {@link Device} in the system.<br>
+ * The data provided will be used to seed the new {@link Device} and its related information.<br>
+ * The fields of the {@link DeviceCreator} presents the attributes that are searchable for a given device.<br>
  * The DeviceCreator Properties field can be used to provide additional properties associated to the Device;
  * those properties will not be searchable through Device queries.<br>
  * The clientId field of the Device is used to store the MAC address of the primary network interface of the device.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "deviceCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -40,6 +41,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "clientId",
         "status",
         "connectionId",
+        "lastEventId",
         "displayName",
         "serialNumber",
         "modelId",
@@ -126,6 +128,22 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      * @param connectionId
      */
     public void setConnectionId(KapuaId connectionId);
+
+    /**
+     * Get the last {@link DeviceEvent} identifier
+     * 
+     * @return
+     */
+    @XmlElement(name = "lastEventId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getLastEventId();
+
+    /**
+     * Set the last {@link DeviceEvent} identifier.
+     * 
+     * @param lastEventId
+     */
+    public void setLastEventId(KapuaId lastEventId);
 
     /**
      * Get the display name

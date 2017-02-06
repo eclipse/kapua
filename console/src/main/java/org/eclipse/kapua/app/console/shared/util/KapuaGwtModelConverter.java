@@ -470,13 +470,13 @@ public class KapuaGwtModelConverter {
         gwtDevice.setOsgiVersion(device.getOsgiFrameworkVersion());
         gwtDevice.setAcceptEncoding(device.getAcceptEncoding());
         gwtDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
-        gwtDevice.setLastEventOn(device.getLastEventOn());
+        gwtDevice.setLastEventOn(device.getLastEvent().getReceivedOn());
 
         gwtDevice.setIccid(device.getIccid());
         gwtDevice.setImei(device.getImei());
         gwtDevice.setImsi(device.getImsi());
 
-        String lastEventType = device.getLastEventType() != null ? device.getLastEventType().name() : "";
+        String lastEventType = device.getLastEvent() != null ? device.getLastEvent().getType() : "";
         gwtDevice.setLastEventType(lastEventType);
 
         // custom Attributes

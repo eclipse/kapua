@@ -104,16 +104,16 @@ public class DeviceExporterExcel extends DeviceExporter {
                 row.createCell(iColCount++).setCellValue("");
             }
 
-            if (device.getLastEventOn() != null) {
+            if (device.getLastEvent() != null) {
                 cell = row.createCell(iColCount++);
                 cell.setCellStyle(m_dateStyle);
-                cell.setCellValue(device.getLastEventOn());
+                cell.setCellValue(device.getLastEvent().getReceivedOn());
             } else {
                 row.createCell(iColCount++).setCellValue("");
             }
 
-            if (device.getLastEventType() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getLastEventType().name()));
+            if (device.getLastEvent() != null) {
+                row.createCell(iColCount++).setCellValue(truncate(device.getLastEvent().getType()));
             } else {
                 row.createCell(iColCount++).setCellValue("");
             }

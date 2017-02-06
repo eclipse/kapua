@@ -12,14 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 
 /**
- * Kapua query definition.
+ * {@link KapuaQuery} definition.
  *
  * @param <E>
  *            query entity domain
@@ -27,93 +32,128 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 public interface KapuaQuery<E extends KapuaEntity> {
 
     /**
-     * set the query offset
+     * Adds an attribute to the fetch attribute names list
      * 
-     * @param offset
+     * @param fetchAttribute
+     *            The fetch attribute to add to the list.
+     * @since 1.0.0
      */
-    public void setOffset(Integer offset);
+    public void addFetchAttributes(String fetchAttribute);
 
     /**
-     * Get the query offset
+     * Sets the fetch attribute names list.<br>
+     * This list is a list of optional attributes of a {@link KapuaEntity} that can be fetched when querying.
      * 
-     * @return
+     * @param fetchAttributeNames
+     *            The fetch attribute names list.
+     * @since 1.0.0
      */
-    @XmlElement(name = "offset")
-    public Integer getOffset();
+    public void setFetchAttributes(List<String> fetchAttributeNames);
 
     /**
-     * Set the query limit
+     * Gets the fetch attribute names list.
      * 
-     * @param limit
+     * @return The fetch attribute names list.
      */
-    public void setLimit(Integer limit);
+    @XmlElementWrapper(name = "fetchAttributeName")
+    @XmlElement(name = "fetchAttributeName")
+    public List<String> getFetchAttributes();
 
     /**
-     * Get the query limit
-     * 
-     * @return
-     */
-    @XmlElement(name = "limit")
-    public Integer getLimit();
-
-    /**
-     * Set the code identifier
+     * Set the scope {@link KapuaId} in which to query.
      * 
      * @param scopeId
+     *            The scope {@link KapuaId} in which to query.
+     * @since 1.0.0
      */
     public void setScopeId(KapuaId scopeId);
 
     /**
-     * get the scope identifier
+     * Get the scope {@link KapuaId} in which to query.
      * 
-     * @return
+     * @return The scope {@link KapuaId} in which to query.
+     * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
     public KapuaId getScopeId();
 
     /**
-     * Set the query predicate
+     * Sets the {@link KapuaQuery} {@link KapuaPredicate}s.<br>
+     * The {@link KapuaPredicate} can be a simple {@link KapuaAttributePredicate} or a combination
+     * of them by using the {@link KapuaAndPredicate}
      * 
      * @param queryPredicate
+     *            The {@link KapuaQuery} {@link KapuaPredicate}s.
+     * @since 1.0.0
      */
     public void setPredicate(KapuaPredicate queryPredicate);
 
     /**
-     * Get the query predicate
+     * Gets the {@link KapuaQuery} {@link KapuaPredicate}s.
      * 
-     * @return
+     * @return The {@link KapuaQuery} {@link KapuaPredicate}s.
+     * @since 1.0.0
      */
     @XmlElement(name = "predicate")
     public KapuaPredicate getPredicate();
 
     /**
-     * Set query sort criteria
+     * Sets the {@link KapuaQuery} {@link KapuaSortCriteria}.
      * 
      * @param sortCriteria
+     *            The {@link KapuaQuery} {@link KapuaSortCriteria}.
+     * @since 1.0.0
      */
     public void setSortCriteria(KapuaSortCriteria sortCriteria);
 
     /**
-     * Get query sort criteria
+     * Gets the {@link KapuaQuery} {@link KapuaSortCriteria}
      * 
-     * @return
+     * @return The {@link KapuaQuery} {@link KapuaSortCriteria}
+     * @since 1.0.0
      */
     @XmlElement(name = "sortCriteria")
     public KapuaSortCriteria getSortCriteria();
 
     /**
-     * Set query fetch style
+     * Set the {@link KapuaQuery} offset in the result set from which start query.<br>
+     * If set to {@code null} the {@link KapuaQuery} will start from the first result found.
+     * This also mean that {@link #setOffset(Integer)} with {@code 0} or {@code null} will produce the same result.<br>
+     * This method and {@link #setLimit(Integer)} are meant to be used to paginate through the result set.
      * 
-     * @param fetchStyle
+     * @param offset
+     *            The {@link KapuaQuery} offset.
+     * @since 1.0.0
      */
-    public void setFetchStyle(KapuaFetchStyle fetchStyle);
+    public void setOffset(Integer offset);
 
     /**
-     * Get query fetch style
+     * Gets the {@link KapuaQuery} offset.
      * 
-     * @return
+     * @return The {@link KapuaQuery} offset.
+     * @since 1.0.0
      */
-    @XmlElement(name = "fetchStyle")
-    public KapuaFetchStyle getFetchStyle();
+    @XmlElement(name = "offset")
+    public Integer getOffset();
+
+    /**
+     * Sets max number of result that will be fetched by this {@link KapuaEntity}.<br>
+     * If set to {@code null} the {@link KapuaQuery} will be unlimited.<br>
+     * This method and {@link #setOffset(Integer)} are meant to be used to paginate through the result set.
+     * 
+     * @param limit
+     *            The max number of result that will be fetched by this {@link KapuaEntity}.
+     * @since 1.0.0
+     */
+    public void setLimit(Integer limit);
+
+    /**
+     * Gets the {@link KapuaQuery} limit.
+     * 
+     * @return The {@link KapuaQuery} limit.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "limit")
+    public Integer getLimit();
 
 }

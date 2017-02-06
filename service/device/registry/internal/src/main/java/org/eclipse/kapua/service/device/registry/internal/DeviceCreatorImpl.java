@@ -20,15 +20,9 @@ import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
 /**
- * DeviceCreator encapsulates all the information needed to create a new Device in the system.<br>
- * The data provided will be used to seed the new Device and its related information.<br>
- * The fields of the DeviceCreator presents the attributes that are searchable for a given device.<br>
- * The DeviceCreator Properties field can be used to provide additional properties associated to the Device;
- * those properties will not be searchable through Device queries.<br>
- * The clientId field of the Device is used to store the MAC address of the primary network interface of the device.
+ * {@link DeviceCreator} implementation.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implements DeviceCreator {
 
@@ -38,6 +32,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     private String clientId;
     private DeviceStatus status = DeviceStatus.ENABLED;
     private KapuaId connectionId;
+    private KapuaId lastEventId;
     private String displayName;
     private String serialNumber;
     private String modelId;
@@ -107,6 +102,16 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     @Override
     public void setConnectionId(KapuaId connectionId) {
         this.connectionId = connectionId;
+    }
+
+    @Override
+    public KapuaId getLastEventId() {
+        return lastEventId;
+    }
+
+    @Override
+    public void setLastEventId(KapuaId lastEventId) {
+        this.lastEventId = lastEventId;
     }
 
     @Override

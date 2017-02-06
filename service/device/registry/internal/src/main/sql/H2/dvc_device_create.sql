@@ -16,16 +16,17 @@ CREATE TABLE dvc_device (
   
   group_id             	    BIGINT(21) 	    UNSIGNED,
   
-  client_id                 VARCHAR(255)    NOT NULL,
-  connection_id             BIGINT(21) 	    UNSIGNED NULL,
   created_on             	TIMESTAMP(3)    NULL,
   created_by             	BIGINT(21)      UNSIGNED NOT NULL,
   modified_on            	TIMESTAMP       NULL,
   modified_by            	BIGINT(21)      UNSIGNED NOT NULL,
+  
+  client_id                 VARCHAR(255)    NOT NULL,
+  connection_id             BIGINT(21) 	    UNSIGNED NULL,
+  last_event_id             BIGINT(21) 	    UNSIGNED NULL,
+  
   status                 	VARCHAR(64)     NOT NULL DEFAULT 'ENABLED',
   display_name              VARCHAR(255), 
-  last_event_on             TIMESTAMP(3)    NULL DEFAULT NULL,
-  last_event_type           VARCHAR(255),
   serial_number             VARCHAR(255),
   model_id                  VARCHAR(255),
   imei                      VARCHAR(24),
@@ -65,20 +66,14 @@ CREATE INDEX idx_device_serial_number ON dvc_device (scope_id, serial_number);
 CREATE INDEX idx_device_display_name ON dvc_device (scope_id, display_name);
 CREATE INDEX idx_device_status_id ON dvc_device (scope_id, status, client_id);
 CREATE INDEX idx_device_status_dn ON dvc_device (scope_id, status, display_name);
-CREATE INDEX idx_device_status_le ON dvc_device (scope_id, status, last_event_on);
 CREATE INDEX idx_device_model_id ON dvc_device (scope_id, model_id, client_id);
 CREATE INDEX idx_device_model_dn ON dvc_device (scope_id, model_id, display_name);
-CREATE INDEX idx_device_model_le ON dvc_device (scope_id, model_id, last_event_on);
 CREATE INDEX idx_device_esf_id ON dvc_device (scope_id, app_framework_version, client_id);
 CREATE INDEX idx_device_esf_dn ON dvc_device (scope_id, app_framework_version, display_name);
-CREATE INDEX idx_device_esf_le ON dvc_device (scope_id, app_framework_version, last_event_on);
 CREATE INDEX idx_device_app_id ON dvc_device (scope_id, app_identifiers, client_id);
 CREATE INDEX idx_device_app_dn ON dvc_device (scope_id, app_identifiers, display_name);
-CREATE INDEX idx_device_app_le ON dvc_device (scope_id, app_identifiers, last_event_on);
 CREATE INDEX idx_device_c1_id ON dvc_device (scope_id, custom_attribute_1, client_id);
 CREATE INDEX idx_device_c1_dn ON dvc_device (scope_id, custom_attribute_1, display_name);
-CREATE INDEX idx_device_c1_le ON dvc_device (scope_id, custom_attribute_1, last_event_on);
 CREATE INDEX idx_device_c2_id ON dvc_device (scope_id, custom_attribute_2, client_id);
 CREATE INDEX idx_device_c2_dn ON dvc_device (scope_id, custom_attribute_2, display_name);
-CREATE INDEX idx_device_c2_le ON dvc_device (scope_id, custom_attribute_2, last_event_on);
 CREATE INDEX idx_device_preferred_user_id ON dvc_device (scope_id, preferred_user_id);

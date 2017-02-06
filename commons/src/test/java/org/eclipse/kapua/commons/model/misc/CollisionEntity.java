@@ -60,12 +60,11 @@ public class CollisionEntity extends AbstractKapuaNamedEntity {
      */
     @PrePersist
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(collisionIdGenerator.generate());
+    protected void prePersistsAction() {
+        setId(new KapuaEid(collisionIdGenerator.generate()));
 
-        this.createdBy = new KapuaEid(new BigInteger("1"));
-        this.createdOn = new Date();
+        setCreatedBy(new KapuaEid(BigInteger.ONE));
+        setCreatedOn(new Date());
     }
 
     public String getTestField() {

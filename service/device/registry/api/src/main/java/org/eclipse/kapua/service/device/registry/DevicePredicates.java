@@ -34,6 +34,42 @@ public interface DevicePredicates extends KapuaUpdatableEntityPredicates {
      * Display name
      */
     public static final String DISPLAY_NAME = "displayName";
+
+    /**
+     * Connection
+     */
+    public static final String CONNECTION = "connection";
+
+    /**
+     * Connection status
+     */
+    public static final String CONNECTION_STATUS = CONNECTION + ".status";
+
+    /**
+     * Connection protocol
+     */
+    public static final String CONNECTION_PROTOCOL = CONNECTION + ".protocol";
+
+    /**
+     * Connection clientId
+     */
+    public static final String CONNECTION_CLIENT_ID = CONNECTION + ".clientId";
+
+    /**
+     * Last event
+     */
+    public static final String LAST_EVENT = "lastEvent";
+
+    /**
+     * Last event on
+     */
+    public static final String LAST_EVENT_ON = LAST_EVENT + ".receivedOn";
+
+    /**
+     * Last event resource
+     */
+    public static final String LAST_EVENT_RESOURCE = LAST_EVENT + ".resource";
+
     /**
      * Serial number
      */
@@ -114,10 +150,7 @@ public interface DevicePredicates extends KapuaUpdatableEntityPredicates {
      * Gps latitude
      */
     public static final String GPS_LATITUDE = "gpsLatitude";
-    /**
-     * Connection ip
-     */
-    public static final String CONNECTION_STATUS = "connectionIp";
+
     /**
      * Device status
      */
@@ -130,8 +163,4 @@ public interface DevicePredicates extends KapuaUpdatableEntityPredicates {
      * Preferred user identifier
      */
     public static final String PREFERRED_USER_ID = "preferredUserId";
-    /**
-     * Last event on
-     */
-    public static final String LAST_EVENT_ON = "lastEventOn";
 }
