@@ -41,7 +41,7 @@
         <!-- 
             Favicon and title definition
          -->
-        <title>Kapua&copy; Console</title>
+        <title>Eclipse Kapua&trade; Console</title>
         
         <!-- 
             CSS resources
