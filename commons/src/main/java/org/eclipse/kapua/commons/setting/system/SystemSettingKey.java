@@ -115,7 +115,7 @@ public enum SystemSettingKey implements SettingKey
     /**
      * Database timezone to use
      */
-    DB_USE_TIMEZIONE("commons.db.useTimezone"),
+    DB_USE_TIMEZONE("commons.db.useTimezone"),
     /**
      * Database use legacy date time flag
      */
