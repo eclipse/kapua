@@ -26,6 +26,7 @@ import "./login/module.ts";
 import "./layout/module.ts";
 import "./welcome/module.ts";
 import "./users/module.ts";
+import "./roles/module.ts";
 import "./devices/module.ts";
 
 import IndexCtrl from "./IndexCtrl";
@@ -42,6 +43,7 @@ angular.module("app", [
     "app.layout",
     "app.welcome",
     "app.users",
+    "app.roles",
     "app.devices"
 ])
     .config(["$locationProvider", "$urlRouterProvider", "$httpProvider", (

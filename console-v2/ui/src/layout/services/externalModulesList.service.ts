@@ -27,6 +27,11 @@ import {IExternalModulesList} from './iExternalModulesList.service';
                 href: "#/users"
             },
             {
+                title: "Roles",
+                iconClass: "fa fa-user-plus",
+                href: "#/roles"
+            },
+            {
                 title: "Settings",
                 iconClass: "fa fa-cog",
                 href: "#/settings"
