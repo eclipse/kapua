@@ -24,7 +24,12 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import com.opencsv.CSVWriter;
@@ -58,152 +63,102 @@ public class DeviceExporterCsv extends DeviceExporter {
     @Override
     public void append(KapuaListResult<Device> devices)
             throws ServletException, IOException {
+
+        AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
+        Account account = null;
+        try {
+            account = accountService.find(KapuaEid.parseCompactId(m_account));
+        } catch (KapuaException e) {
+            KapuaException.internalError(e);
+        }
+
         for (Device device : devices.getItems()) {
 
             List<String> cols = new ArrayList<String>();
+
+            // Account id
             cols.add(m_account);
 
-            if (device.getClientId() != null) {
-                cols.add(device.getClientId());
-            } else {
-                cols.add("");
-            }
+            // Account name
+            cols.add(account.getName());
 
-            if (device.getStatus() != null) {
-                cols.add(device.getStatus().name());
-            } else {
-                cols.add("");
-            }
+            // Client id
+            cols.add(device.getClientId() != null ? device.getClientId() : BLANK);
 
-            cols.add("");
+            // Device status
+            cols.add(device.getStatus() != null ? device.getStatus().name() : BLANK);
 
-            if (device.getCreatedOn() != null) {
-                cols.add(m_dateFormat.format(device.getCreatedOn()));
-            } else {
-                cols.add("");
-            }
+            // Device connection status
+            cols.add(device.getConnection() != null ? device.getConnection().getStatus().name() : BLANK);
 
-            if (device.getLastEvent() != null) {
-                cols.add(m_dateFormat.format(device.getLastEvent().getReceivedOn()));
-            } else {
-                cols.add("");
-            }
+            // Created on
+            cols.add(device.getCreatedOn() != null ? m_dateFormat.format(device.getCreatedOn()) : BLANK);
 
-            if (device.getLastEvent() != null) {
-                cols.add(device.getLastEvent().getType());
-            } else {
-                cols.add("");
-            }
+            // Last event on
+            cols.add(device.getLastEvent() != null ? m_dateFormat.format(device.getLastEvent().getReceivedOn()) : BLANK);
 
-            cols.add("");
+            // Last event type
+            cols.add(device.getLastEvent() != null ? device.getLastEvent().getResource() : BLANK);
 
-            if (device.getDisplayName() != null) {
-                cols.add(device.getDisplayName());
-            } else {
-                cols.add("");
-            }
+            // Client ip
+            cols.add(device.getConnection() != null ? device.getConnection().getClientIp() : BLANK);
 
-            if (device.getSerialNumber() != null) {
-                cols.add(device.getSerialNumber());
-            } else {
-                cols.add("");
-            }
+            // Display name
+            cols.add(device.getDisplayName() != null ? device.getDisplayName() : BLANK);
 
-            if (device.getImei() != null) {
-                cols.add(device.getImei());
-            } else {
-                cols.add("");
-            }
+            // Serial number
+            cols.add(device.getSerialNumber() != null ? device.getSerialNumber() : BLANK);
 
-            if (device.getImsi() != null) {
-                cols.add(device.getImsi());
-            } else {
-                cols.add("");
-            }
+            // Imei
+            cols.add(device.getImei() != null ? device.getImei() : BLANK);
 
-            if (device.getIccid() != null) {
-                cols.add(device.getIccid());
-            } else {
-                cols.add("");
-            }
+            // Imsi
+            cols.add(device.getImsi() != null ? device.getImsi() : BLANK);
 
-            if (device.getModelId() != null) {
-                cols.add(device.getModelId());
-            } else {
-                cols.add("");
-            }
+            // Iccid
+            cols.add(device.getIccid() != null ? device.getIccid() : BLANK);
 
-            if (device.getBiosVersion() != null) {
-                cols.add(device.getBiosVersion());
-            } else {
-                cols.add("");
-            }
+            // Model Id
+            cols.add(device.getModelId() != null ? device.getModelId() : BLANK);
 
-            if (device.getFirmwareVersion() != null) {
-                cols.add(device.getFirmwareVersion());
-            } else {
-                cols.add("");
-            }
+            // Bios version
+            cols.add(device.getBiosVersion() != null ? device.getBiosVersion() : BLANK);
 
-            if (device.getOsVersion() != null) {
-                cols.add(device.getOsVersion());
-            } else {
-                cols.add("");
-            }
+            // Firmware version
+            cols.add(device.getFirmwareVersion() != null ? device.getFirmwareVersion() : BLANK);
 
-            if (device.getJvmVersion() != null) {
-                cols.add(device.getJvmVersion());
-            } else {
-                cols.add("");
-            }
+            // OS version
+            cols.add(device.getOsVersion() != null ? device.getOsVersion() : BLANK);
 
-            cols.add("");
+            // JVM version
+            cols.add(device.getJvmVersion() != null ? device.getJvmVersion() : BLANK);
 
-            cols.add("");
+            // OSGi framework version
+            cols.add(device.getOsgiFrameworkVersion() != null ? device.getOsgiFrameworkVersion() : BLANK);
 
-            if (device.getApplicationIdentifiers() != null) {
-                cols.add(device.getApplicationIdentifiers());
-            } else {
-                cols.add("");
-            }
+            // Application framework version
+            cols.add(device.getApplicationFrameworkVersion() != null ? device.getApplicationFrameworkVersion() : BLANK);
 
-            if (device.getAcceptEncoding() != null) {
-                cols.add(device.getAcceptEncoding());
-            } else {
-                cols.add("");
-            }
+            // Application identifiers
+            cols.add(device.getApplicationIdentifiers() != null ? device.getApplicationIdentifiers() : BLANK);
 
-            if (device.getCustomAttribute1() != null) {
-                cols.add(device.getCustomAttribute1());
-            } else {
-                cols.add("");
-            }
+            // Accept encoding
+            cols.add(device.getAcceptEncoding() != null ? device.getAcceptEncoding() : BLANK);
 
-            if (device.getCustomAttribute2() != null) {
-                cols.add(device.getCustomAttribute2());
-            } else {
-                cols.add("");
-            }
+            // Custom attribute 1
+            cols.add(device.getCustomAttribute1() != null ? device.getCustomAttribute1() : BLANK);
 
-            if (device.getCustomAttribute3() != null) {
-                cols.add(device.getCustomAttribute3());
-            } else {
-                cols.add("");
-            }
+            // Custom attribute 2
+            cols.add(device.getCustomAttribute2() != null ? device.getCustomAttribute2() : BLANK);
 
-            if (device.getCustomAttribute4() != null) {
-                cols.add(device.getCustomAttribute4());
-            } else {
-                cols.add("");
-            }
+            // Custom attribute 3
+            cols.add(device.getCustomAttribute3() != null ? device.getCustomAttribute3() : BLANK);
 
-            if (device.getCustomAttribute5() != null) {
-                cols.add(device.getCustomAttribute5());
-            } else {
-                cols.add("");
-            }
+            // Custom attribute 4
+            cols.add(device.getCustomAttribute4() != null ? device.getCustomAttribute4() : BLANK);
 
-            cols.add("");
+            // Custom attribute 5
+            cols.add(device.getCustomAttribute5() != null ? device.getCustomAttribute5() : BLANK);
 
             m_writer.writeNext(cols.toArray(new String[] {}));
         }

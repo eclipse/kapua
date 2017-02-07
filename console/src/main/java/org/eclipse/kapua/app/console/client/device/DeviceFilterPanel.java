@@ -37,28 +37,24 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class DeviceFilterPanel extends LayoutContainer
-{
+public class DeviceFilterPanel extends LayoutContainer {
 
-    private static final ConsoleMessages MSGS  = GWT.create(ConsoleMessages.class);
-    private final int                    WIDTH = 200;
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private final int WIDTH = 200;
 
     @SuppressWarnings("unused")
-    private GwtSession                   m_currentSession;
-    private DevicesTable                 m_deviceTable;
+    private GwtSession m_currentSession;
+    private DevicesTable m_deviceTable;
 
-    public DeviceFilterPanel(GwtSession gwtSession)
-    {
+    public DeviceFilterPanel(GwtSession gwtSession) {
         m_currentSession = gwtSession;
     }
 
-    public void setDeviceTable(DevicesTable devicesTable)
-    {
+    public void setDeviceTable(DevicesTable devicesTable) {
         m_deviceTable = devicesTable;
     }
 
-    protected void onRender(final Element parent, int index)
-    {
+    protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
 
         setLayout(new FitLayout());
@@ -182,19 +178,19 @@ public class DeviceFilterPanel extends LayoutContainer
 
         //
         // Esf Version
-        final Label esfVersionLabel = new Label(MSGS.deviceFilteringPanelESFVersion());
-        esfVersionLabel.setWidth(WIDTH);
-        esfVersionLabel.setStyleAttribute("margin", "5px");
-        formPanel.add(esfVersionLabel);
+        final Label iotFrameworkVersionLabel = new Label(MSGS.deviceFilteringPanelESFVersion());
+        iotFrameworkVersionLabel.setWidth(WIDTH);
+        iotFrameworkVersionLabel.setStyleAttribute("margin", "5px");
+        formPanel.add(iotFrameworkVersionLabel);
 
-        final TextField<String> esfVersionField = new TextField<String>();
-        esfVersionField.setName("esfVersion");
-        esfVersionField.setWidth(WIDTH);
-        esfVersionField.setStyleAttribute("margin-top", "0px");
-        esfVersionField.setStyleAttribute("margin-left", "5px");
-        esfVersionField.setStyleAttribute("margin-right", "5px");
-        esfVersionField.setStyleAttribute("margin-bottom", "10px");
-        formPanel.add(esfVersionField);
+        final TextField<String> iotFrameworkVersionField = new TextField<String>();
+        iotFrameworkVersionField.setName("iotFrameworkVersion");
+        iotFrameworkVersionField.setWidth(WIDTH);
+        iotFrameworkVersionField.setStyleAttribute("margin-top", "0px");
+        iotFrameworkVersionField.setStyleAttribute("margin-left", "5px");
+        iotFrameworkVersionField.setStyleAttribute("margin-right", "5px");
+        iotFrameworkVersionField.setStyleAttribute("margin-bottom", "10px");
+        formPanel.add(iotFrameworkVersionField);
 
         //
         // Application Identifiers
@@ -260,8 +256,7 @@ public class DeviceFilterPanel extends LayoutContainer
         searchButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
             @Override
-            public void handleEvent(BaseEvent be)
-            {
+            public void handleEvent(BaseEvent be) {
                 GwtDeviceQueryPredicates predicates = new GwtDeviceQueryPredicates();
 
                 if (clientIdField.getValue() != null && !clientIdField.getValue().trim().isEmpty()) {
@@ -279,8 +274,8 @@ public class DeviceFilterPanel extends LayoutContainer
                 if (!connectionStatusCombo.getValue().getValue().equals(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY)) {
                     predicates.setDeviceConnectionStatus(connectionStatusCombo.getValue().getValue().name());
                 }
-                if (esfVersionField.getValue() != null && !esfVersionField.getValue().trim().isEmpty()) {
-                    predicates.setEsfVersion(unescapeValue(esfVersionField.getValue()));
+                if (iotFrameworkVersionField.getValue() != null && !iotFrameworkVersionField.getValue().trim().isEmpty()) {
+                    predicates.setIotFrameworkVersion(unescapeValue(iotFrameworkVersionField.getValue()));
                 }
                 if (applicationIdentifiersField.getValue() != null && !applicationIdentifiersField.getValue().trim().isEmpty()) {
                     predicates.setApplicationIdentifiers(unescapeValue(applicationIdentifiersField.getValue()));
@@ -298,16 +293,16 @@ public class DeviceFilterPanel extends LayoutContainer
 
         final Button resetButton = new Button(MSGS.deviceFilteringPanelReset());
         resetButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
             @Override
-            public void handleEvent(BaseEvent be)
-            {
+            public void handleEvent(BaseEvent be) {
 
                 clientIdField.setValue("");
                 displayNameField.setValue("");
                 serialNumberField.setValue("");
                 statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.ANY);
                 connectionStatusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY);
-                esfVersionField.setValue("");
+                iotFrameworkVersionField.setValue("");
                 applicationIdentifiersField.setValue("");
                 customAttribute1Field.setValue("");
                 customAttribute2Field.setValue("");
@@ -324,8 +319,7 @@ public class DeviceFilterPanel extends LayoutContainer
         add(formPanel);
     }
 
-    public String unescapeValue(String value)
-    {
+    public String unescapeValue(String value) {
         return KapuaSafeHtmlUtils.htmlUnescape(value);
     }
 }

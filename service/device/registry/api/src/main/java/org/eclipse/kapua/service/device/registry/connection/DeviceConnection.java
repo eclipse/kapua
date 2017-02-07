@@ -40,9 +40,9 @@ public interface DeviceConnection extends KapuaUpdatableEntity
     /**
      * Set the device connection status
      * 
-     * @param connectionStatus
+     * @param status
      */
-    public void setStatus(DeviceConnectionStatus connectionStatus);
+    public void setStatus(DeviceConnectionStatus status);
 
     /**
      * Get the client identifier

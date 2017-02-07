@@ -36,18 +36,18 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeviceExporterServlet extends HttpServlet
-{
+public class DeviceExporterServlet extends HttpServlet {
+
     private static final long serialVersionUID = -2533869595709953567L;
-    private static Logger     s_logger         = LoggerFactory.getLogger(DeviceExporterServlet.class);
+    private static Logger s_logger = LoggerFactory.getLogger(DeviceExporterServlet.class);
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         String reqPathInfo = request.getPathInfo();
         if (reqPathInfo != null) {
             response.sendError(404);
@@ -58,27 +58,24 @@ public class DeviceExporterServlet extends HttpServlet
     }
 
     private void internalDoGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         try {
             // parameter extraction
             String format = request.getParameter("format");
             String scopeIdString = request.getParameter("scopeIdString");
 
             // data exporter
-            DeviceExporter deviceExporter = null;
+            DeviceExporter deviceExporter;
             if ("xls".equals(format)) {
                 deviceExporter = new DeviceExporterExcel(response);
-            }
-            else if ("csv".equals(format)) {
+            } else if ("csv".equals(format)) {
                 deviceExporter = new DeviceExporterCsv(response);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("format");
             }
 
             if (scopeIdString == null || scopeIdString.isEmpty()) {
-                throw new IllegalArgumentException("account");
+                throw new IllegalArgumentException("scopeIdString");
             }
 
             deviceExporter.init(scopeIdString);
@@ -119,6 +116,31 @@ public class DeviceExporterServlet extends HttpServlet
                 andPred = andPred.and(new AttributePredicate<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(deviceStatus)));
             }
 
+            String iotFrameworkVersion = request.getParameter("esfVersion");
+            if (iotFrameworkVersion != null) {
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
+            }
+
+            String applicationIdentifiers = request.getParameter("applicationIdentifiers");
+            if (applicationIdentifiers != null) {
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
+            }
+
+            String customAttribute1 = request.getParameter("customAttribute1");
+            if (customAttribute1 != null) {
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
+            }
+
+            String customAttribute2 = request.getParameter("customAttribute2");
+            if (customAttribute2 != null) {
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
+            }
+
+            String deviceConnectionStatus = request.getParameter("deviceConnectionStatus");
+            if (deviceConnectionStatus != null) {
+                andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
+            }
+
             String sortAttribute = request.getParameter("sortAttribute");
             if (sortAttribute != null && !sortAttribute.isEmpty()) {
 
@@ -126,27 +148,23 @@ public class DeviceExporterServlet extends HttpServlet
                 SortOrder sortOrder;
                 if (sortOrderString != null && !sortOrderString.isEmpty()) {
                     sortOrder = SortOrder.valueOf(sortOrderString);
-                }
-                else {
+                } else {
                     sortOrder = SortOrder.ASCENDING;
                 }
 
                 if (sortAttribute.compareTo("CLIENT_ID") == 0) {
                     dq.setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, sortOrder));
-                }
-                else if (sortAttribute.compareTo("DISPLAY_NAME") == 0) {
+                } else if (sortAttribute.compareTo("DISPLAY_NAME") == 0) {
                     dq.setSortCriteria(new FieldSortCriteria(DevicePredicates.DISPLAY_NAME, sortOrder));
-                }
-                else if (sortAttribute.compareTo("LAST_EVENT_ON") == 0) {
+                } else if (sortAttribute.compareTo("LAST_EVENT_ON") == 0) {
                     dq.setSortCriteria(new FieldSortCriteria(DevicePredicates.LAST_EVENT_ON, sortOrder));
                 }
             }
 
             dq.setPredicate(andPred);
 
-            KapuaListResult<Device> results = null;
+            KapuaListResult<Device> results;
             do {
-
                 dq.setOffset(offset);
                 results = drs.query(dq);
 
@@ -154,29 +172,23 @@ public class DeviceExporterServlet extends HttpServlet
 
                 offset += results.getSize();
                 resultsCount += results.getSize();
-            }
-            while (results.getSize() > 0);
+            } while (results.getSize() > 0);
 
             // Close things up
             deviceExporter.close();
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             response.sendError(400, "Illegal value for query parameter: " + iae.getMessage());
             return;
-        }
-        catch (KapuaEntityNotFoundException eenfe) {
+        } catch (KapuaEntityNotFoundException eenfe) {
             response.sendError(400, eenfe.getMessage());
             return;
-        }
-        catch (KapuaUnauthenticatedException eiae) {
+        } catch (KapuaUnauthenticatedException eiae) {
             response.sendError(401, eiae.getMessage());
             return;
-        }
-        catch (KapuaIllegalAccessException eiae) {
+        } catch (KapuaIllegalAccessException eiae) {
             response.sendError(403, eiae.getMessage());
             return;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             s_logger.error("Error creating device export", e);
             throw new ServletException(e);
         }

@@ -269,11 +269,11 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         set("jvmProfile", jvmProfile);
     }
 
-    public String getEsfKuraVersion() {
+    public String getIotFrameworkVersion() {
         return (String) get("esfKuraVersion");
     }
 
-    public void setEsfKuraVersion(String esfKuraVersion) {
+    public void setIotFrameworkVersion(String esfKuraVersion) {
         set("esfKuraVersion", esfKuraVersion);
     }
 

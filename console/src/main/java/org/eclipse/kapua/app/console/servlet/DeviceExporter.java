@@ -22,9 +22,11 @@ import org.eclipse.kapua.service.device.registry.Device;
 
 public abstract class DeviceExporter {
 
+    protected static final String BLANK = "";
+
     protected static String[] s_deviceProperties = {
+            "Id",
             "Account",
-            // "Id",
             "Client ID",
             "Status",
             "Connection Status",
@@ -55,7 +57,7 @@ public abstract class DeviceExporter {
             "Custom Attribute 3",
             "Custom Attribute 4",
             "Custom Attribute 5",
-            "Certificate Id"
+            // "Certificate Id"
             // "Optlock"
     };
 

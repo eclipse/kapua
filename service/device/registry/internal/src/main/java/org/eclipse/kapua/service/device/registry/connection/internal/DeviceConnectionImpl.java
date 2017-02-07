@@ -47,10 +47,10 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     private static final long      serialVersionUID = 8928343233144731836L;
 
-    @XmlElement(name = "connectionStatus")
+    @XmlElement(name = "status")
     @Enumerated(EnumType.STRING)
-    @Column(name = "connection_status", nullable = false)
-    private DeviceConnectionStatus connectionStatus;
+    @Column(name = "status", nullable = false)
+    private DeviceConnectionStatus status;
 
     @XmlElement(name = "clientId")
     @Basic
@@ -108,12 +108,12 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Override
     public DeviceConnectionStatus getStatus() {
-        return connectionStatus;
+        return status;
     }
 
     @Override
     public void setStatus(DeviceConnectionStatus connectionStatus) {
-        this.connectionStatus = connectionStatus;
+        this.status = connectionStatus;
     }
 
     @Override

@@ -67,6 +67,13 @@ import org.eclipse.kapua.service.user.internal.UserDomain;
 
 public class KapuaGwtModelConverter {
 
+    /**
+     * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
+     *
+     * @param role The {@link Role} to convert.
+     * @return The converted {@link GwtRole}.
+     * @since 1.0.0
+     */
     public static GwtRole convert(Role role) {
         GwtRole gwtRole = new GwtRole();
 
@@ -455,9 +462,10 @@ public class KapuaGwtModelConverter {
 
     public static GwtDevice convert(Device device)
             throws KapuaException {
+
         GwtDevice gwtDevice = new GwtDevice();
-        gwtDevice.setId(device.getId().toCompactId());
-        gwtDevice.setScopeId(device.getScopeId().toCompactId());
+        gwtDevice.setId(convert(device.getId()));
+        gwtDevice.setScopeId(convert(device.getScopeId()));
         gwtDevice.setGwtDeviceStatus(device.getStatus().toString());
         gwtDevice.setClientId(device.getClientId());
         gwtDevice.setDisplayName(device.getDisplayName());
@@ -471,40 +479,29 @@ public class KapuaGwtModelConverter {
         gwtDevice.setAcceptEncoding(device.getAcceptEncoding());
         gwtDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
         gwtDevice.setLastEventOn(device.getLastEvent().getReceivedOn());
-
+        gwtDevice.setIotFrameworkVersion(device.getApplicationFrameworkVersion());
         gwtDevice.setIccid(device.getIccid());
         gwtDevice.setImei(device.getImei());
         gwtDevice.setImsi(device.getImsi());
-
-        String lastEventType = device.getLastEvent() != null ? device.getLastEvent().getType() : "";
-        gwtDevice.setLastEventType(lastEventType);
-
-        // custom Attributes
         gwtDevice.setCustomAttribute1(device.getCustomAttribute1());
         gwtDevice.setCustomAttribute2(device.getCustomAttribute2());
         gwtDevice.setCustomAttribute3(device.getCustomAttribute3());
         gwtDevice.setCustomAttribute4(device.getCustomAttribute4());
         gwtDevice.setCustomAttribute5(device.getCustomAttribute5());
-
         gwtDevice.setOptlock(device.getOptlock());
 
+        // Last device event
+        if (device.getLastEvent() != null) {
+            DeviceEvent lastEvent = device.getLastEvent();
+
+            gwtDevice.setLastEventType(lastEvent.getType());
+            gwtDevice.setLastEventOn(lastEvent.getReceivedOn());
+
+        }
+
         // Device connection
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
-        DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
-
-        DeviceConnectionQuery query = deviceConnectionFactory.newQuery(device.getScopeId());
-        KapuaAndPredicate andPredicate = new AndPredicate();
-        andPredicate = andPredicate.and(new AttributePredicate<String>(DeviceConnectionPredicates.CLIENT_ID, device.getClientId()));
-        // andPredicate = andPredicate.and(new AttributePredicate<DeviceConnectionStatus[]>(DeviceConnectionPredicates.CONNECTION_STATUS,
-        // new DeviceConnectionStatus[] { DeviceConnectionStatus.CONNECTED, DeviceConnectionStatus.MISSING }));
-
-        query.setPredicate(andPredicate);
-
-        KapuaListResult<DeviceConnection> deviceConnections = deviceConnectionService.query(query);
-
-        if (!deviceConnections.isEmpty()) {
-            DeviceConnection connection = deviceConnections.getItem(0);
+        if (device.getConnection() != null) {
+            DeviceConnection connection = device.getConnection();
 
             gwtDevice.setGwtDeviceConnectionStatus(connection.getStatus().toString());
             gwtDevice.setConnectionIp(connection.getClientIp());
