@@ -71,6 +71,7 @@
     </properties>
 
     <build>
+        <defaultGoal>clean install</defaultGoal>
         <pluginManagement>
             <plugins>
                 <plugin>
