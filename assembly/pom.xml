@@ -485,6 +485,9 @@
 								<entryPoint>
 								   <shell>/maven/bin/catalina.sh run</shell>
 								</entryPoint>
+								<env>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
 								<ports>
 									<port>8080</port>
 								</ports>
@@ -505,6 +508,9 @@
 								<entryPoint>
 								   <shell>/maven/bin/catalina.sh run</shell>
 								</entryPoint>
+								<env>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
 								<ports>
 									<port>8080</port>
 								</ports>
