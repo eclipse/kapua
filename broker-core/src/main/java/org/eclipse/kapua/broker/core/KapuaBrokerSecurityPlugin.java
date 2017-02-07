@@ -66,7 +66,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin
         }
         catch (Throwable t) {
             logger.error("Error in plugin installation.", t);
-            throw (SecurityException) new SecurityException(t);
+            throw new SecurityException(t);
         }
     }
 
