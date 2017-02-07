@@ -20,6 +20,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
@@ -34,6 +36,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
+import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -201,6 +207,52 @@ public class GwtKapuaModelConverter {
         //
         // Return converted
         return roleCreator;
+    }
+    
+    /**
+     * Converts a {@link GwtAccessRoleCreator} into a {@link AccessRoleCreator} object for backend usage
+     * 
+     * @param gwtAccessRoleCreator
+     *            the {@link GwtAccessRoleCreator} to convert
+     * @return the converted {@link AccessRoleCreator}
+     * @since 1.0.0
+     */
+    public static AccessRoleCreator convert(GwtAccessRoleCreator gwtAccessRoleCreator) {
+
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
+
+        // Convert scopeId
+        KapuaId scopeId = convert(gwtAccessRoleCreator.getScopeId());
+        AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(scopeId);
+
+        // Convert accessInfoId
+        accessRoleCreator.setAccessInfoId(convert(gwtAccessRoleCreator.getAccessInfoId()));
+        
+        // Convert roleId
+        accessRoleCreator.setRoleId(convert(gwtAccessRoleCreator.getRoleId()));
+
+        //
+        // Return converted
+        return accessRoleCreator;
+    }
+    
+    public static AccessInfoCreator convert(GwtAccessInfoCreator gwtAccessInfoCreator) {
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+
+        // Convert scopeId
+        KapuaId scopeId = convert(gwtAccessInfoCreator.getScopeId());
+        AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scopeId);
+
+        // Convert userId
+        accessInfoCreator.setUserId(convert(gwtAccessInfoCreator.getUserId()));
+
+        //
+        // Return converted
+        return accessInfoCreator;
     }
 
     /**

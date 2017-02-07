@@ -92,7 +92,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         // Data Proxy
         RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();
 
-        // Dara Loader
+        // Data Loader
         entityLoader = new BasePagingLoader<PagingLoadResult<M>>(dataProxy);
 
         // Data Store

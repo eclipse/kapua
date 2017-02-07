@@ -87,4 +87,16 @@ public class GwtRolePermission extends GwtEntityModel {
     public void setTargetScopeId(String targetScopeId) {
         set("targetScopeId", targetScopeId);
     }
+    
+    /**
+     * @return the group id of this permission
+     * @since 1.0.0
+     */
+    public String getGroupId() {
+        return get("groupId");
+    }
+
+    public void setGroupId(String groupId) {
+        set("groupId", groupId);
+    }
 }

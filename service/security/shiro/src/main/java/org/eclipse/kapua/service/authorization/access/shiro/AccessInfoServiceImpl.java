@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -24,7 +25,10 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -136,6 +140,28 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, accessInfoId));
+    }
+    
+    @Override
+    public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "accountId");
+        ArgumentValidator.notNull(userId, "userId");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, scopeId));
+        AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<KapuaId>(AccessInfoPredicates.USER_ID, userId));
+        AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
+        if (!result.isEmpty()) {
+            return result.getFirstItem();
+        } else {
+            return null;
+        }
     }
 
     @Override

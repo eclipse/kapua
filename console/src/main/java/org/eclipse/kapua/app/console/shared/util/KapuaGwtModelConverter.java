@@ -25,6 +25,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
@@ -40,6 +42,8 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -78,6 +82,77 @@ public class KapuaGwtModelConverter {
         //
         // Return converted entity
         return gwtRole;
+    }
+    
+    /**
+     * Merges a {@link Role} and a {@link AccessRole} into a {@link GwtRole} object for GWT usage.
+     * 
+     * @param role
+     *            The {@link Role} to merge.
+     * @param role
+     *            The {@link AccessRole} to merge.
+     * @return The converted {@link GwtRole}.
+     * @since 1.0.0
+     */
+    public static GwtAccessRole convert(Role role, AccessRole accessRole) {
+        GwtAccessRole gwtAccessRole = new GwtAccessRole();
+
+        //
+        // Covert commons attributes
+        convertEntity(accessRole, gwtAccessRole);
+        
+        //
+        // Convert other attributes
+        gwtAccessRole.setRoleName(role.getName());
+        gwtAccessRole.setRoleId(role.getId().toCompactId());
+        gwtAccessRole.setAccessInfoId(accessRole.getAccessInfoId().toCompactId());
+        //
+        // Return converted entity
+        return gwtAccessRole;
+    }
+    
+    /**
+     * Converts a {@link AccessRole} into a {@link GwtAccessRole} object for GWT usage.
+     * 
+     * @param accessRole
+     *            The {@link AccessRole} to convert.
+     * @return The converted {@link GwtAccessRole}.
+     * @since 1.0.0
+     */
+    public static GwtAccessRole convert(AccessRole accessRole) {
+        GwtAccessRole gwtAccessRole = new GwtAccessRole();
+
+        //
+        // Covert commons attributes
+        convertEntity(accessRole, gwtAccessRole);
+        
+        gwtAccessRole.setRoleId(accessRole.getRoleId().toCompactId());
+        gwtAccessRole.setAccessInfoId(accessRole.getAccessInfoId().toCompactId());
+
+        //
+        // Return converted entity
+        return gwtAccessRole;
+    }
+    
+    /**
+     * Converts a {@link AccessInfo} into a {@link GwtAccessInfo} object for GWT usage.
+     * 
+     * @param accessInfo
+     *            The {@link AccessInfo} to convert.
+     * @return The converted {@link GwtAccessInfo}.
+     * @since 1.0.0
+     */
+    public static GwtAccessInfo convert(AccessInfo accessInfo) {
+        GwtAccessInfo gwtAccessInfo = new GwtAccessInfo();
+        //
+        // Covert commons attributes
+        convertEntity(accessInfo, gwtAccessInfo);
+        
+        gwtAccessInfo.setUserId(accessInfo.getUserId().toCompactId());
+        
+        //
+        // Return converted entity
+        return gwtAccessInfo;
     }
 
     /**

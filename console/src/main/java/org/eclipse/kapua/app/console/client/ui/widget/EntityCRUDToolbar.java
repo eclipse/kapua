@@ -63,6 +63,11 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     public EntityCRUDToolbar(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
+    
+    public EntityCRUDToolbar(GwtSession currentSession, boolean showEdit) {
+        this.currentSession = currentSession;
+        this.editEntityButtonShow = showEdit;
+    }
 
     @Override
     protected void onRender(Element target, int index) {
@@ -216,5 +221,61 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
     public void setEntityGrid(EntityGrid<M> entityGrid) {
         this.entityGrid = entityGrid;
         this.gridSelectionModel = entityGrid.getSelectionModel();
+    }
+    
+    protected void disableButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.disable();            
+        }
+        
+        if (editEntityButton != null) {
+            editEntityButton.disable();
+        }
+        
+        if (deleteEntityButton != null) {
+            deleteEntityButton.disable();
+        }
+
+        if (refreshEntityButton != null) {
+            refreshEntityButton.disable();
+        }
+    }
+    
+    protected void enableButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.enable();            
+        }
+        
+        if (editEntityButton != null) {
+            editEntityButton.enable();
+        }
+        
+        if (deleteEntityButton != null) {
+            deleteEntityButton.enable();
+        }
+
+        if (refreshEntityButton != null) {
+            refreshEntityButton.enable();
+        }
+    }
+
+    
+    public AddButton getAddEntityButton() {
+        return addEntityButton;
+    }
+
+    
+    public EditButton getEditEntityButton() {
+        return editEntityButton;
+    }
+
+    
+    public DeleteButton getDeleteEntityButton() {
+        return deleteEntityButton;
+    }
+
+    
+    public RefreshButton getRefreshEntityButton() {
+        return refreshEntityButton;
     }
 }

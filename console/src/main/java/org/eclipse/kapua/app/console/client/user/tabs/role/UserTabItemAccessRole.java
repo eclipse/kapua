@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.user;
+package org.eclipse.kapua.app.console.client.user.tabs.role;
 
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
@@ -20,22 +20,18 @@ import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 
 import com.google.gwt.user.client.Element;
 
-public class UserTabRoleGrid extends KapuaTabItem<GwtUser> {
+public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
 
-    AccessRoleGrid accessRoleGrid;
+    UserTabAccessRoleGrid accessRoleGrid;
 
-    private final GwtSession currentSession;
-
-    public UserTabRoleGrid(GwtSession currentSession) {
+    public UserTabItemAccessRole(GwtSession currentSession) {
         super("Roles", new KapuaIcon(IconSet.STREET_VIEW));
-        this.currentSession = currentSession;
-        accessRoleGrid = new AccessRoleGrid(null, currentSession);
+        accessRoleGrid = new UserTabAccessRoleGrid(null, currentSession);
     }
 
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-
         add(accessRoleGrid);
     }
 
@@ -44,18 +40,16 @@ public class UserTabRoleGrid extends KapuaTabItem<GwtUser> {
         super.setEntity(gwtUser);
         if (gwtUser != null) {
             accessRoleGrid.setUserId(gwtUser.getId());
+            ((UserTabAccessRoleToolbar)accessRoleGrid.getToolbar()).setUserId(gwtUser.getId());
         } else {
             accessRoleGrid.setUserId(null);
+            ((UserTabAccessRoleToolbar)accessRoleGrid.getToolbar()).setUserId(null);
         }
     }
 
     @Override
     protected void doRefresh() {
-        // if (selectedEntity != null) {
         accessRoleGrid.refresh();
-        // } else {
-        // accessRoleGrid.clear();
-        // }
     }
 
 }

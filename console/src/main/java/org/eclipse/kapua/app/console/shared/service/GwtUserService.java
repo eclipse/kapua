@@ -80,7 +80,7 @@ public interface GwtUserService extends RemoteService {
      * @throws GwtKapuaException
      * 
      */
-    public ListLoadResult<GwtUser> findAll(String scopeIdStirng)
+    public ListLoadResult<GwtUser> findAll(String scopeIdString)
         throws GwtKapuaException;
 
     /**

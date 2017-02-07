@@ -37,6 +37,17 @@ public interface GwtRoleService extends RemoteService {
 
     public GwtRole find(String scopeShortId, String roleShortId)
             throws GwtKapuaException;
+    
+    /**
+     * Returns the list of all Roles which belong to an account.
+     * 
+     * @param scopeIdStirng
+     * @return
+     * @throws GwtKapuaException
+     * 
+     */
+    public ListLoadResult<GwtRole> findAll(String scopeIdStirng)
+        throws GwtKapuaException;
 
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery)
             throws GwtKapuaException;
@@ -48,8 +59,5 @@ public interface GwtRoleService extends RemoteService {
             throws GwtKapuaException;
 
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
-            throws GwtKapuaException;
-    
-    public PagingLoadResult<GwtRole> getByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
             throws GwtKapuaException;
 }
