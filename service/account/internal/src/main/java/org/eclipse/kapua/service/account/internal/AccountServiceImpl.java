@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.account.internal;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.TypedQuery;
 
@@ -133,7 +134,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
 
             //
             // Verify unchanged parent account ID and parent account path
-            if (!oldAccount.getScopeId().equals(account.getScopeId())) {
+            if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
                 throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "scopeId");
             }
             if (oldAccount.getParentAccountPath().compareTo(account.getParentAccountPath()) != 0) {
