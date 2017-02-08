@@ -50,15 +50,19 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected AddButton addEntityButton;
     private boolean addEntityButtonShow = true;
+    protected boolean addEntityButtonEnabledOnRender = false;
 
     protected EditButton editEntityButton;
     private boolean editEntityButtonShow = true;
+    protected boolean editEntityButtonEnabledOnRender = false;
 
     protected DeleteButton deleteEntityButton;
     private boolean deleteEntityButtonShow = true;
+    protected boolean deleteEntityButtonEnabledOnRender = false;
 
     protected RefreshButton refreshEntityButton;
     private boolean refreshEntityButtonShow = true;
+    protected boolean refreshEntityButtonEnabledOnRender = false;
 
     public EntityCRUDToolbar(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -75,24 +79,44 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
         if (addEntityButtonShow) {
             addEntityButton = new AddButton(getAddButtonSelectionListener());
+            if (addEntityButtonEnabledOnRender) {
+                addEntityButton.enable();
+            } else {
+                addEntityButton.disable();
+            }
             add(addEntityButton);
             add(new SeparatorToolItem());
         }
 
         if (editEntityButtonShow) {
             editEntityButton = new EditButton(getEditButtonSelectionListener());
+            if (editEntityButtonEnabledOnRender) {
+                editEntityButton.enable();
+            } else {
+                editEntityButton.disable();
+            }
             add(editEntityButton);
             add(new SeparatorToolItem());
         }
 
         if (deleteEntityButtonShow) {
             deleteEntityButton = new DeleteButton(getDeleteButtonSelectionListener());
+            if (deleteEntityButtonEnabledOnRender) {
+                deleteEntityButton.enable();
+            } else {
+                deleteEntityButton.disable();
+            }
             add(deleteEntityButton);
             add(new SeparatorToolItem());
         }
 
         if (refreshEntityButtonShow) {
             refreshEntityButton = new RefreshButton(getRefreshButtonSelectionListener());
+            if (refreshEntityButtonEnabledOnRender) {
+                refreshEntityButton.enable();
+            } else {
+                refreshEntityButton.disable();
+            }
             add(refreshEntityButton);
         }
     }

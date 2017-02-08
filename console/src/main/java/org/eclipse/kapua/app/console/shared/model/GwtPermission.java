@@ -22,16 +22,22 @@ public class GwtPermission extends KapuaBaseModel {
      * Defines the domain of the object protected by the {@link GwtPermission}
      */
     public enum GwtDomain implements IsSerializable, Enum {
+        access_info, //
+        access_token, //
         account, //
+        broker, //
         credential, //
-        datastore, //
-        device_connection, //
+        data, //
         device, //
+        device_connection, //
         device_event, //
+        device_lifecycle, //
         device_management, //
+        domain, //
+        group, //
         role, //
         user, //
-        user_permission, //
+        
     }
 
     /**
@@ -42,7 +48,7 @@ public class GwtPermission extends KapuaBaseModel {
         write, //
         delete, //
         connect, //
-        exec;
+        execute;
 
         @Override
         public String toString() {
@@ -78,12 +84,15 @@ public class GwtPermission extends KapuaBaseModel {
      *            The {@link GwtAction} of the permission
      * @param targetScopeId
      *            The target scope id of the permission
+     * @param groupId
+     *            The group id of the permission
      */
-    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId) {
+    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId, String groupId) {
         this();
         setDomain(domain != null ? domain.name() : null);
         setAction(action != null ? action.name() : null);
         setTargetScopeId(targetScopeId);
+        setGroupId(groupId);
     }
 
     /**
@@ -108,6 +117,12 @@ public class GwtPermission extends KapuaBaseModel {
         if (getTargetScopeId() != null) {
             sb.append(":")
                     .append(getTargetScopeId());
+        }
+        sb.append(":");
+        if (getGroupId() != null) {
+            sb.append(getTargetScopeId());
+        } else {
+            sb.append("*");
         }
         return sb.toString();
     }
@@ -154,6 +169,18 @@ public class GwtPermission extends KapuaBaseModel {
 
     public void setTargetScopeId(String targetScopeId) {
         set("targetScopeId", targetScopeId);
+    }
+    
+    /**
+     * @return the group id of this permission
+     * @since 1.0.0
+     */
+    public String getGroupId() {
+        return get("groupId");
+    }
+
+    public void setGroupId(String groupId) {
+        set("groupId", groupId);
     }
 
 }

@@ -32,4 +32,6 @@ INSERT INTO athz_role_permission
 		(1, 12, NOW(), 1, 1, 'role',				null, null, null),
 		
 		(1, 13, NOW(), 1, 1, 'user',				null, null, null),
+
+		(1, 14, NOW(), 1, 1, 'domain',				null, null, null),
 		

@@ -31,7 +31,7 @@ public class DeviceLifecycleDomain extends AbstractKapuaEntity implements Domain
 
     private static final long serialVersionUID = 3782336558657796495L;
 
-    private String name = "device_lifecicle";
+    private String name = "device_lifecycle";
     private String serviceName = "deviceLifecycleService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
 

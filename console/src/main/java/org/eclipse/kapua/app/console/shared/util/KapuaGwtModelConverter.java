@@ -26,10 +26,12 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -42,21 +44,35 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
+import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoDomain;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainDomain;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
+import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
+import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.internal.UserDomain;
 
 public class KapuaGwtModelConverter {
 
@@ -85,13 +101,13 @@ public class KapuaGwtModelConverter {
     }
     
     /**
-     * Merges a {@link Role} and a {@link AccessRole} into a {@link GwtRole} object for GWT usage.
+     * Merges a {@link Role} and a {@link AccessRole} into a {@link GwtAccessRole} object for GWT usage.
      * 
      * @param role
      *            The {@link Role} to merge.
-     * @param role
+     * @param accessRole
      *            The {@link AccessRole} to merge.
-     * @return The converted {@link GwtRole}.
+     * @return The converted {@link GwtAccessRole}.
      * @since 1.0.0
      */
     public static GwtAccessRole convert(Role role, AccessRole accessRole) {
@@ -133,6 +149,41 @@ public class KapuaGwtModelConverter {
         // Return converted entity
         return gwtAccessRole;
     }
+    
+    /**
+     * Converts a {@link AccessPermission} into a {@link GwtAccessPermission} object for GWT usage.
+     * 
+     * @param accessPermission
+     *            The {@link AccessPermission} to convert.
+     * @return The converted {@link GwtAccessPermission}.
+     * @since 1.0.0
+     */
+    public static GwtAccessPermission convert(AccessPermission accessPermission) {
+        GwtAccessPermission gwtAccessPermission = new GwtAccessPermission();
+
+        //
+        // Covert commons attributes
+        convertEntity(accessPermission, gwtAccessPermission);
+        
+        gwtAccessPermission.setAccessInfoId(accessPermission.getAccessInfoId().toCompactId());
+        gwtAccessPermission.setPermissionDomain(accessPermission.getPermission().getDomain());
+        gwtAccessPermission.setPermissionAction(accessPermission.getPermission().getAction().toString());
+        if (accessPermission.getPermission().getTargetScopeId() != null) {
+            gwtAccessPermission.setPermissionTargetScopeId(accessPermission.getPermission().getTargetScopeId().toCompactId());
+        } else {
+            gwtAccessPermission.setPermissionTargetScopeId("*");
+        }
+        if (accessPermission.getPermission().getGroupId() != null) {
+            gwtAccessPermission.setPermissionGroupId(accessPermission.getPermission().getGroupId().toCompactId());
+        } else {
+            gwtAccessPermission.setPermissionGroupId("*");
+        }
+
+        //
+        // Return converted entity
+        return gwtAccessPermission;
+    }
+    
     
     /**
      * Converts a {@link AccessInfo} into a {@link GwtAccessInfo} object for GWT usage.
@@ -195,7 +246,8 @@ public class KapuaGwtModelConverter {
     public static GwtPermission convert(Permission permission) {
         return new GwtPermission(convertDomain(permission.getDomain()),
                 convert(permission.getAction()),
-                convert(permission.getTargetScopeId()));
+                convert(permission.getTargetScopeId()),
+                convert(permission.getGroupId()));
     }
 
     /**
@@ -219,7 +271,7 @@ public class KapuaGwtModelConverter {
                 gwtAction = GwtAction.delete;
                 break;
             case execute:
-                gwtAction = GwtAction.exec;
+                gwtAction = GwtAction.execute;
                 break;
             case read:
                 gwtAction = GwtAction.read;
@@ -244,30 +296,65 @@ public class KapuaGwtModelConverter {
     public static GwtDomain convertDomain(String domain) {
         GwtDomain gwtDomain = null;
 
-        if (new AccountDomain().getName().equals(domain)) {
+        if (new AccessInfoDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.access_info;
+        } else if (new AccessTokenDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.access_token;
+        } else if (new AccountDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.account;
-        } else if (new AccountDomain().getName().equals(domain)) {
+        } else if (new BrokerDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.broker;
+        } else if (new CredentialDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.credential;
-        } else if (new AccountDomain().getName().equals(domain)) {
-            gwtDomain = GwtDomain.datastore;
-        } else if (new AccountDomain().getName().equals(domain)) {
+        } else if (new DatastoreDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.data;
+        } else if (new DeviceDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device;
-        } else if (new AccountDomain().getName().equals(domain)) {
+        } else if (new DeviceConnectionDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device_connection;
-        } else if (new AccountDomain().getName().equals(domain)) {
+        } else if (new DeviceEventDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device_event;
-            // } else if (DeviceManagementDomain.DEVICE_MANAGEMENT.equals(domain)) {
-            // gwtDomain = GwtDomain.device_management;
-        } else if (new AccountDomain().getName().equals(domain)) {
+        } else if (new DeviceLifecycleDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.device_lifecycle;
+        } else if (new DeviceManagementDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.device_management;
+        } else if (new DomainDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.domain;
+        } else if (new GroupDomain().getName().equals(domain)) {
+            gwtDomain = GwtDomain.group;
+        } else if (new RoleDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.role;
-        } else if (new AccountDomain().getName().equals(domain)) {
+        } else if (new UserDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.user;
         }
-        // else if (UserPermissionDomain.USER_PERMISSION.equals(domain)) {
-        // gwtDomain = GwtDomain.user_permission;
-        // }
 
         return gwtDomain;
+    }
+    
+    /**
+     * Converts a {@link String} action into a {@link GwtAction}
+     * 
+     * @param action
+     *            The {@link String} action to convert
+     * @return The converted {@link GwtAction}
+     * 
+     * @since 1.0.0
+     */
+    public static GwtAction convertAction(String action) {
+        return GwtAction.valueOf(action);
+    }
+    
+    /**
+     * Converts a {@link Action} action into a {@link GwtAction}
+     * 
+     * @param action
+     *            The {@link Action} action to convert
+     * @return The converted {@link GwtAction}
+     * 
+     * @since 1.0.0
+     */
+    public static GwtAction convertAction(Action action) {
+        return GwtAction.valueOf(action.toString());
     }
 
     /**
