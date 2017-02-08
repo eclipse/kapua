@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2017 Red Hat Inc
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Red Hat Inc - initial API and implementation
+   
+ -->
+
+<module rename-to="console">
+  <inherits name="org.eclipse.kapua.app.console.console" />
+  
+  <!-- The 'user.agent' propery can be changed to the developer's
+       favorite browser engine for local testing. Just don't check
+       it in every time -->
+  <set-property name="user.agent" value="gecko1_8" />
+</module>

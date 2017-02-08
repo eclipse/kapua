@@ -412,4 +412,33 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <!-- profile to speed up local development builds  -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <configuration>
+                            <!-- we can always enable draft compile -->
+                            <draftCompile>true</draftCompile>
+                            <!-- use "dev" profile, limiting permutations -->
+                            <module>org.eclipse.kapua.app.console.ConsoleDev</module>
+                            <!-- don't optimize -->
+                            <optimizationLevel>0</optimizationLevel>
+                            <!-- enable details -->
+                            <style>DETAILED</style>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
