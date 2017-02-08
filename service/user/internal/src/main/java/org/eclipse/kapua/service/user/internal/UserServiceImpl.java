@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,9 +8,12 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
+
+import java.util.Objects;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -38,8 +41,7 @@ import org.eclipse.kapua.service.user.UserType;
  *
  */
 @KapuaProvider
-public class UserServiceImpl extends AbstractKapuaConfigurableService implements UserService
-{
+public class UserServiceImpl extends AbstractKapuaConfigurableService implements UserService {
 
     private static final long serialVersionUID = 4319929212203916781L;
     private final KapuaLocator locator = KapuaLocator.getInstance();
@@ -52,7 +54,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
     public UserServiceImpl() {
         super(UserService.class.getName(), userDomain, UserEntityManagerFactory.getInstance());
     }
-    
+
     @Override
     public User create(UserCreator userCreator)
             throws KapuaException {
@@ -110,10 +112,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
             if (currentUser == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
             }
-            if (user.getUserType() != null && currentUser.getUserType() != user.getUserType()) {
+            if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
                 throw new KapuaIllegalArgumentException("userType", user.getUserType().toString());
             }
-            if (user.getExternalId() != null && currentUser.getExternalId() != user.getExternalId()) {
+            if (!Objects.equals(currentUser.getExternalId(), user.getExternalId())) {
                 throw new KapuaIllegalArgumentException("externalId", user.getExternalId());
             }
             return UserDAO.update(em, user);
