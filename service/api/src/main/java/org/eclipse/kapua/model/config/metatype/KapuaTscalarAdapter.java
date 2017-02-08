@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.config.metatype;
 
-import org.eclipse.kapua.locator.KapuaLocator;
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import org.eclipse.kapua.locator.KapuaLocator;
 
 public class KapuaTscalarAdapter extends XmlAdapter<String, KapuaTscalar>{
 
