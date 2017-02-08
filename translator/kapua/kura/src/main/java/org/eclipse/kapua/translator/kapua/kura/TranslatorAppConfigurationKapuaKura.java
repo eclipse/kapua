@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
@@ -27,13 +28,10 @@ import org.eclipse.kapua.commons.configuration.metatype.TiconImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
 import org.eclipse.kapua.commons.configuration.metatype.ToptionImpl;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.app.ConfigurationMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
@@ -50,9 +48,6 @@ import org.eclipse.kapua.service.device.management.configuration.internal.Device
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
@@ -62,49 +57,16 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  * @since 1.0
  *
  */
-public class TranslatorAppConfigurationKapuaKura extends Translator<ConfigurationRequestMessage, KuraRequestMessage> {
+public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapuaKura<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static Map<DeviceConfigurationAppProperties, ConfigurationMetrics> propertiesDictionary;
+    private static final Map<DeviceConfigurationAppProperties, ConfigurationMetrics> propertiesDictionary = new HashMap<>();
 
-    /**
-     * Constructor
-     */
-    public TranslatorAppConfigurationKapuaKura() {
-        propertiesDictionary = new HashMap<>();
-
-        propertiesDictionary.put(DeviceConfigurationAppProperties.APP_NAME, ConfigurationMetrics.APP_ID);
+    static {
         propertiesDictionary.put(DeviceConfigurationAppProperties.APP_VERSION, ConfigurationMetrics.APP_VERSION);
     }
 
-    @Override
-    public KuraRequestMessage translate(ConfigurationRequestMessage kapuaMessage) throws KapuaException {
-        //
-        // Kura channel
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.find(kapuaMessage.getScopeId());
-
-        DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceService.find(kapuaMessage.getScopeId(),
-                kapuaMessage.getDeviceId());
-
-        KuraRequestChannel kuraRequestChannel = translate(kapuaMessage.getChannel());
-        kuraRequestChannel.setScope(account.getName());
-        kuraRequestChannel.setClientId(device.getClientId());
-
-        //
-        // Kura payload
-        KuraRequestPayload kuraPayload = translate(kapuaMessage.getPayload());
-
-        //
-        // Return Kura Message
-        return new KuraRequestMessage(kuraRequestChannel,
-                kapuaMessage.getReceivedOn(),
-                kuraPayload);
-    }
-
-    private KuraRequestChannel translate(ConfigurationRequestChannel kapuaChannel) throws KapuaException {
+    protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
@@ -140,8 +102,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
         return kuraRequestChannel;
     }
 
-    private KuraRequestPayload translate(ConfigurationRequestPayload kapuaPayload)
-            throws KapuaException {
+    protected KuraRequestPayload translatePayload(ConfigurationRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         if (kapuaPayload.getBody() != null) {
