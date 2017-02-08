@@ -41,16 +41,15 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMessage, KuraRequestMessage>
-{
-    private static final String                                CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMessage, KuraRequestMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static Map<DeviceSnapshotAppProperties, SnapshotMetrics> propertiesDictionary;
 
     /**
      * Constructor
      */
-    public TranslatorAppSnapshotKapuaKura()
-    {
+    public TranslatorAppSnapshotKapuaKura() {
         propertiesDictionary = new HashMap<>();
 
         propertiesDictionary.put(DeviceSnapshotAppProperties.APP_NAME, SnapshotMetrics.APP_ID);
@@ -58,9 +57,7 @@ public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMe
     }
 
     @Override
-    public KuraRequestMessage translate(SnapshotRequestMessage kapuaMessage)
-        throws KapuaException
-    {
+    public KuraRequestMessage translate(SnapshotRequestMessage kapuaMessage) throws KapuaException {
         //
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -84,17 +81,15 @@ public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMe
 
     }
 
-    private KuraRequestChannel translate(SnapshotRequestChannel kapuaChannel)
-        throws KapuaException
-    {
+    private KuraRequestChannel translate(SnapshotRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
         appIdSb.append(propertiesDictionary.get(DeviceSnapshotAppProperties.APP_NAME).getValue())
-               .append("-")
-               .append(propertiesDictionary.get(DeviceSnapshotAppProperties.APP_VERSION).getValue());
+                .append("-")
+                .append(propertiesDictionary.get(DeviceSnapshotAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
 
@@ -103,18 +98,18 @@ public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMe
         // Build resources
         List<String> resources = new ArrayList<>();
         switch (kapuaChannel.getMethod()) {
-            case EXECUTE:
-                resources.add("rollback");
-                break;
-            case READ:
-                resources.add("snapshots");
-                break;
-            case CREATE:
-            case DELETE:
-            case OPTIONS:
-            case WRITE:
-            default:
-                break;
+        case EXECUTE:
+            resources.add("rollback");
+            break;
+        case READ:
+            resources.add("snapshots");
+            break;
+        case CREATE:
+        case DELETE:
+        case OPTIONS:
+        case WRITE:
+        default:
+            break;
 
         }
 
@@ -130,8 +125,7 @@ public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMe
     }
 
     private KuraRequestPayload translate(SnapshotRequestPayload kapuaPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         if (kapuaPayload.getBody() != null) {
@@ -144,14 +138,12 @@ public class TranslatorAppSnapshotKapuaKura extends Translator<SnapshotRequestMe
     }
 
     @Override
-    public Class<SnapshotRequestMessage> getClassFrom()
-    {
+    public Class<SnapshotRequestMessage> getClassFrom() {
         return SnapshotRequestMessage.class;
     }
 
     @Override
-    public Class<KuraRequestMessage> getClassTo()
-    {
+    public Class<KuraRequestMessage> getClassTo() {
         return KuraRequestMessage.class;
     }
 

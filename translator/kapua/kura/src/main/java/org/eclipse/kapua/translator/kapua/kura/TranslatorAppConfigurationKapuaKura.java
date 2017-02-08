@@ -62,16 +62,15 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  * @since 1.0
  *
  */
-public class TranslatorAppConfigurationKapuaKura extends Translator<ConfigurationRequestMessage, KuraRequestMessage>
-{
-    private static final String                                          CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+public class TranslatorAppConfigurationKapuaKura extends Translator<ConfigurationRequestMessage, KuraRequestMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static Map<DeviceConfigurationAppProperties, ConfigurationMetrics> propertiesDictionary;
 
     /**
      * Constructor
      */
-    public TranslatorAppConfigurationKapuaKura()
-    {
+    public TranslatorAppConfigurationKapuaKura() {
         propertiesDictionary = new HashMap<>();
 
         propertiesDictionary.put(DeviceConfigurationAppProperties.APP_NAME, ConfigurationMetrics.APP_ID);
@@ -79,9 +78,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
     }
 
     @Override
-    public KuraRequestMessage translate(ConfigurationRequestMessage kapuaMessage)
-        throws KapuaException
-    {
+    public KuraRequestMessage translate(ConfigurationRequestMessage kapuaMessage) throws KapuaException {
         //
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -90,7 +87,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
 
         DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
         Device device = deviceService.find(kapuaMessage.getScopeId(),
-                                           kapuaMessage.getDeviceId());
+                kapuaMessage.getDeviceId());
 
         KuraRequestChannel kuraRequestChannel = translate(kapuaMessage.getChannel());
         kuraRequestChannel.setScope(account.getName());
@@ -103,21 +100,19 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
         //
         // Return Kura Message
         return new KuraRequestMessage(kuraRequestChannel,
-                                      kapuaMessage.getReceivedOn(),
-                                      kuraPayload);
+                kapuaMessage.getReceivedOn(),
+                kuraPayload);
     }
 
-    private KuraRequestChannel translate(ConfigurationRequestChannel kapuaChannel)
-        throws KapuaException
-    {
+    private KuraRequestChannel translate(ConfigurationRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
         appIdSb.append(propertiesDictionary.get(DeviceConfigurationAppProperties.APP_NAME).getValue())
-               .append("-")
-               .append(propertiesDictionary.get(DeviceConfigurationAppProperties.APP_VERSION).getValue());
+                .append("-")
+                .append(propertiesDictionary.get(DeviceConfigurationAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
@@ -130,8 +125,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
             if (componentId != null) {
                 resources.add(componentId);
             }
-        }
-        else if (kapuaChannel.getConfigurationId() != null) {
+        } else if (kapuaChannel.getConfigurationId() != null) {
             resources.add("snapshots");
 
             String configurationId = kapuaChannel.getConfigurationId();
@@ -147,20 +141,18 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
     }
 
     private KuraRequestPayload translate(ConfigurationRequestPayload kapuaPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         if (kapuaPayload.getBody() != null) {
             DeviceConfiguration kapuaDeviceConfiguration;
             try {
                 kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()),
-                                                             DeviceConfigurationImpl.class);
-            }
-            catch (Exception e) {
+                        DeviceConfigurationImpl.class);
+            } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                                              e,
-                                              kapuaPayload.getBody());
+                        e,
+                        kapuaPayload.getBody());
             }
 
             KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
@@ -168,11 +160,10 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
             byte[] body;
             try {
                 body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                                              e,
-                                              kapuaPayload.getBody());
+                        e,
+                        kapuaPayload.getBody());
             }
 
             kuraRequestPayload.setBody(body);
@@ -184,8 +175,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
     }
 
     private KuraDeviceConfiguration translate(DeviceConfiguration kapuaDeviceConfiguration)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraDeviceConfiguration kuraDeviceConfiguration = new KuraDeviceConfiguration();
 
         for (DeviceComponentConfiguration kapuaDeviceCompConf : kapuaDeviceConfiguration.getComponentConfigurations()) {
@@ -206,8 +196,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
         return kuraDeviceConfiguration;
     }
 
-    private KapuaTocd translate(KapuaTocd kapuaDefinition)
-    {
+    private KapuaTocd translate(KapuaTocd kapuaDefinition) {
         TocdImpl definition = new TocdImpl();
 
         definition.setId(kapuaDefinition.getId());
@@ -237,7 +226,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
 
             for (Entry<QName, String> entry : kapuaAd.getOtherAttributes().entrySet()) {
                 ad.putOtherAttribute(entry.getKey(),
-                                     entry.getValue());
+                        entry.getValue());
             }
 
             definition.addAD(ad);
@@ -257,14 +246,13 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
 
         for (Entry<QName, String> entry : kapuaDefinition.getOtherAttributes().entrySet()) {
             definition.putOtherAttribute(entry.getKey(),
-                                         entry.getValue());
+                    entry.getValue());
         }
 
         return definition;
     }
 
-    private Map<String, Object> translate(Map<String, Object> kapuaProperties)
-    {
+    private Map<String, Object> translate(Map<String, Object> kapuaProperties) {
         Map<String, Object> properties = new HashMap<>();
         for (Entry<String, Object> entry : kapuaProperties.entrySet()) {
             Object value = entry.getValue();
@@ -273,8 +261,7 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
             // Special management of Password type field
             if (value instanceof Password) {
                 value = new KuraPassword(((Password) value).getPassword());
-            }
-            else if (value instanceof Password[]) {
+            } else if (value instanceof Password[]) {
                 Password[] passwords = (Password[]) value;
                 KuraPassword[] kuraPasswords = new KuraPassword[passwords.length];
 
@@ -289,20 +276,18 @@ public class TranslatorAppConfigurationKapuaKura extends Translator<Configuratio
             //
             // Set property
             properties.put(entry.getKey(),
-                           value);
+                    value);
         }
         return properties;
     }
 
     @Override
-    public Class<ConfigurationRequestMessage> getClassFrom()
-    {
+    public Class<ConfigurationRequestMessage> getClassFrom() {
         return ConfigurationRequestMessage.class;
     }
 
     @Override
-    public Class<KuraRequestMessage> getClassTo()
-    {
+    public Class<KuraRequestMessage> getClassTo() {
         return KuraRequestMessage.class;
     }
 

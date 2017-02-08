@@ -39,16 +39,15 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMessage, KuraRequestMessage>
-{
-    private static final String                              CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMessage, KuraRequestMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static Map<CommandAppProperties, CommandMetrics> propertiesDictionary;
 
     /**
      * Constructor
      */
-    public TranslatorAppCommandKapuaKura()
-    {
+    public TranslatorAppCommandKapuaKura() {
         propertiesDictionary = new HashMap<>();
 
         propertiesDictionary.put(CommandAppProperties.APP_NAME, CommandMetrics.APP_ID);
@@ -66,9 +65,7 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
     }
 
     @Override
-    public KuraRequestMessage translate(CommandRequestMessage kapuaMessage)
-        throws KapuaException
-    {
+    public KuraRequestMessage translate(CommandRequestMessage kapuaMessage) throws KapuaException {
         //
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -77,7 +74,7 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
 
         DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
         Device device = deviceService.find(kapuaMessage.getScopeId(),
-                                           kapuaMessage.getDeviceId());
+                kapuaMessage.getDeviceId());
 
         KuraRequestChannel kuraRequestChannel = translate(kapuaMessage.getChannel());
         kuraRequestChannel.setScope(account.getName());
@@ -90,21 +87,19 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
         //
         // return Kura Message
         return new KuraRequestMessage(kuraRequestChannel,
-                                      kapuaMessage.getReceivedOn(),
-                                      kuraPayload);
+                kapuaMessage.getReceivedOn(),
+                kuraPayload);
     }
 
-    private KuraRequestChannel translate(CommandRequestChannel kapuaChannel)
-        throws KapuaException
-    {
+    private KuraRequestChannel translate(CommandRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
         appIdSb.append(propertiesDictionary.get(CommandAppProperties.APP_NAME).getValue())
-               .append("-")
-               .append(propertiesDictionary.get(CommandAppProperties.APP_VERSION).getValue());
+                .append("-")
+                .append(propertiesDictionary.get(CommandAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
@@ -116,8 +111,7 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
     }
 
     private KuraRequestPayload translate(CommandRequestPayload kapuaPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         //
@@ -150,14 +144,12 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
     }
 
     @Override
-    public Class<CommandRequestMessage> getClassFrom()
-    {
+    public Class<CommandRequestMessage> getClassFrom() {
         return CommandRequestMessage.class;
     }
 
     @Override
-    public Class<KuraRequestMessage> getClassTo()
-    {
+    public Class<KuraRequestMessage> getClassTo() {
         return KuraRequestMessage.class;
     }
 

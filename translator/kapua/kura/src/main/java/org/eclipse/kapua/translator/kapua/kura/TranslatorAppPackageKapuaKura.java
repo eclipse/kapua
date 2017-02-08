@@ -78,8 +78,7 @@ public class TranslatorAppPackageKapuaKura extends Translator<PackageRequestMess
     }
 
     @Override
-    public KuraRequestMessage translate(PackageRequestMessage kapuaMessage)
-            throws KapuaException {
+    public KuraRequestMessage translate(PackageRequestMessage kapuaMessage) throws KapuaException {
         //
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -105,8 +104,7 @@ public class TranslatorAppPackageKapuaKura extends Translator<PackageRequestMess
                 kuraPayload);
     }
 
-    private KuraRequestChannel translate(PackageRequestChannel kapuaChannel)
-            throws KapuaException {
+    private KuraRequestChannel translate(PackageRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
