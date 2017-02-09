@@ -59,8 +59,6 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
             }
         };
     }
-
-    
     
     @Override
     protected void selectionChangedEvent(GwtAccessPermission selectedItem) {
@@ -120,9 +118,10 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
     }
 
     @Override
-    protected EntityCRUDToolbar<GwtAccessPermission> getToolbar() {
+    public EntityCRUDToolbar<GwtAccessPermission> getToolbar() {
         if (toolbar == null) {
             toolbar = new UserTabPermissionToolbar(currentSession);
+            toolbar.setEditButtonVisible(false);
         }
         return toolbar;
     }

@@ -22,11 +22,15 @@ import com.google.gwt.user.client.Element;
 
 public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
 
-    UserTabPermissionGrid permissionGrid;
+    private UserTabPermissionGrid permissionGrid;
 
     public UserTabItemPermission(GwtSession currentSession) {
         super("Permissions", new KapuaIcon(IconSet.CHECK_CIRCLE));
         permissionGrid = new UserTabPermissionGrid(null, currentSession);
+    }
+
+    public UserTabPermissionGrid getPermissionGrid() {
+        return permissionGrid;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
     @Override
     protected void doRefresh() {
         permissionGrid.refresh();
+        permissionGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null);
+        permissionGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 
 }

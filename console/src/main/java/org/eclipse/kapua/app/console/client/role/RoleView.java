@@ -32,8 +32,8 @@ public class RoleView extends EntityView<GwtRole> {
     }
 
     @Override
-    public List<KapuaTabItem<? extends GwtEntityModel>> getTabs(EntityView<GwtRole> entityView, GwtSession currentSession) {
-        List<KapuaTabItem<? extends GwtEntityModel>> tabs = new ArrayList<KapuaTabItem<? extends GwtEntityModel>>();
+    public List<KapuaTabItem<GwtRole>> getTabs(EntityView<GwtRole> entityView, GwtSession currentSession) {
+        List<KapuaTabItem<GwtRole>> tabs = new ArrayList<KapuaTabItem<GwtRole>>();
         tabs.add(new RoleTabDescription());
         tabs.add(new RoleTabPermissionGrid());
         return tabs;

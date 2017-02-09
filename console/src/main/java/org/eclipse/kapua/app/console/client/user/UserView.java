@@ -29,17 +29,26 @@ import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 public class UserView extends EntityView<GwtUser> {
 
     private UserGrid userGrid;
+
+    private UserTabItemAccessRole accessRoleTab;
+    private UserTabItemPermission permissionTab;
     
     public UserView(GwtSession gwtSession) {
         super(gwtSession);
     }
 
     @Override
-    public List<KapuaTabItem<? extends GwtEntityModel>> getTabs(EntityView<GwtUser> entityView, GwtSession currentSession) {
-        List<KapuaTabItem<? extends GwtEntityModel>> tabs = new ArrayList<KapuaTabItem<? extends GwtEntityModel>>();
-        tabs.add(new UserTabItemAccessRole(currentSession));
-        tabs.add(new UserTabItemPermission(currentSession));
-//        tabs.add(new UserTabCredentialGrid());
+    public List<KapuaTabItem<GwtUser>> getTabs(EntityView<GwtUser> entityView, GwtSession currentSession) {
+        List<KapuaTabItem<GwtUser>> tabs = new ArrayList<KapuaTabItem<GwtUser>>();
+        if (accessRoleTab == null) {
+            accessRoleTab = new UserTabItemAccessRole(currentSession);
+            tabs.add(accessRoleTab);
+        }
+        if (permissionTab == null) {
+            permissionTab = new UserTabItemPermission(currentSession);
+            tabs.add(permissionTab);
+        }
+        // tabs.add(new UserTabCredentialGrid());
         return tabs;
     }
 
@@ -54,6 +63,14 @@ public class UserView extends EntityView<GwtUser> {
     @Override
     public EntityFilterPanel<GwtUser> getEntityFilterPanel(EntityView<GwtUser> entityView, GwtSession currentSession) {
         return new UserFilterPanel(this, currentSession);
+    }
+
+    public UserTabItemAccessRole getAccessRoleTab() {
+        return accessRoleTab;
+    }
+
+    public UserTabItemPermission getPermissionTab() {
+        return permissionTab;
     }
 
 }

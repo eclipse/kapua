@@ -22,11 +22,15 @@ import com.google.gwt.user.client.Element;
 
 public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
 
-    UserTabAccessRoleGrid accessRoleGrid;
+    private UserTabAccessRoleGrid accessRoleGrid;
 
     public UserTabItemAccessRole(GwtSession currentSession) {
         super("Roles", new KapuaIcon(IconSet.STREET_VIEW));
         accessRoleGrid = new UserTabAccessRoleGrid(null, currentSession);
+    }
+    
+    public UserTabAccessRoleGrid getAccessRoleGrid() {
+        return accessRoleGrid;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class UserTabItemAccessRole extends KapuaTabItem<GwtUser> {
     @Override
     protected void doRefresh() {
         accessRoleGrid.refresh();
+        accessRoleGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null);
+        accessRoleGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 
 }

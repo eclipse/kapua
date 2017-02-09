@@ -92,9 +92,9 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
         // Center sub panel: Entity sub tabs
         tabsPanel = new KapuaTabPanel<M>();
 
-        List<KapuaTabItem<? extends GwtEntityModel>> tabItems = getTabs(this, currentSession);
+        List<KapuaTabItem<M>> tabItems = getTabs(this, currentSession);
 
-        for (KapuaTabItem<? extends GwtEntityModel> kti : tabItems) {
+        for (KapuaTabItem<M> kti : tabItems) {
             tabsPanel.add(kti);
         }
 
@@ -104,7 +104,7 @@ public abstract class EntityView<M extends GwtEntityModel> extends LayoutContain
         resultContainer.add(tabsPanel, centerData);
     }
 
-    public abstract List<KapuaTabItem<? extends GwtEntityModel>> getTabs(EntityView<M> entityView, GwtSession currentSession);
+    public abstract List<KapuaTabItem<M>> getTabs(EntityView<M> entityView, GwtSession currentSession);
 
     public abstract EntityGrid<M> getEntityGrid(EntityView<M> entityView, GwtSession currentSession);
 

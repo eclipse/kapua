@@ -24,7 +24,6 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;

@@ -21,7 +21,7 @@ import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
@@ -45,16 +45,33 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class UserGrid extends EntityGrid<GwtUser> {
 
     private GwtUserQuery query;
+    private UserGridToolbar toolbar;
     
     private static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
     
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
     
-    public UserGrid(EntityView<GwtUser> entityView, GwtSession currentSession) {
+    public UserGrid(EntityView<GwtUser> entityView, final GwtSession currentSession) {
         super(entityView, currentSession);
         query = new GwtUserQuery();
         query.setScopeId(currentSession.getSelectedAccount().getId());
+    }
+
+    @Override
+    protected void selectionChangedEvent(GwtUser selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        if (selectedItem != null) {
+            if (currentSession.hasUserUpdatePermission()) {
+                getToolbar().getEditEntityButton().setEnabled(true);
+            }
+            if (currentSession.hasUserDeletePermission()) {
+                getToolbar().getDeleteEntityButton().setEnabled(true);
+            }
+        } else {
+            getToolbar().getEditEntityButton().setEnabled(false);
+            getToolbar().getDeleteEntityButton().setEnabled(false);
+        }
     }
 
     @Override
@@ -141,6 +158,14 @@ public class UserGrid extends EntityGrid<GwtUser> {
     @Override
     protected void setFilterQuery(GwtQuery filterQuery) {
         query = (GwtUserQuery) filterQuery;
+    }
+
+    @Override
+    protected EntityCRUDToolbar<GwtUser> getToolbar() {
+        if (toolbar == null) {
+            toolbar = new UserGridToolbar(currentSession);
+        }
+        return toolbar;
     }
 
 }

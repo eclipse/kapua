@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessRoleServiceAsync;
@@ -59,8 +60,6 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
             }
         };
     }
-
-    
     
     @Override
     protected void selectionChangedEvent(GwtAccessRole selectedItem) {
@@ -110,11 +109,11 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
     }
 
     @Override
-    protected EntityCRUDToolbar<GwtAccessRole> getToolbar() {
+    public EntityCRUDToolbar<GwtAccessRole> getToolbar() {
         if (toolbar == null) {
             toolbar = new UserTabAccessRoleToolbar(currentSession);
+            toolbar.setEditButtonVisible(false);
         }
         return toolbar;
     }
-    
 }

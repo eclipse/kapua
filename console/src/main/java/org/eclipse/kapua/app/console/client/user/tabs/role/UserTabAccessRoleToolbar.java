@@ -17,37 +17,18 @@ import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 
+import com.google.gwt.user.client.Element;
+
 public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
 
     private String userId;
     
     public UserTabAccessRoleToolbar(GwtSession currentSession) {
-        super(currentSession, false);
-    }
-      
-    public String getUserId() {
-        return userId;
+        super(currentSession);
     }
     
     public void setUserId(String userId) {
         this.userId = userId;
-        if (isRendered()) {
-            if (userId == null) {
-                addEntityButton.disable();
-                refreshEntityButton.disable();
-            } else {
-                addEntityButton.enable();
-                refreshEntityButton.enable();
-            }
-        } else {
-            if (userId == null) {
-                editEntityButtonEnabledOnRender = false;
-                refreshEntityButtonEnabledOnRender = false;
-            } else {
-                editEntityButtonEnabledOnRender = true;
-                refreshEntityButtonEnabledOnRender = true;
-            }
-        }
     }
 
     @Override
@@ -62,7 +43,18 @@ public class UserTabAccessRoleToolbar extends EntityCRUDToolbar<GwtAccessRole> {
     
     @Override
     protected KapuaDialog getAddDialog() {
-        return new AccessRoleAddDialog(currentSession, userId);
+        AccessRoleAddDialog dialog = null;
+        if (userId != null) {
+            dialog = new AccessRoleAddDialog(currentSession, userId);
+        }
+        return dialog;
     }
 
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+        addEntityButton.setEnabled(userId != null);
+        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+    }
 }
