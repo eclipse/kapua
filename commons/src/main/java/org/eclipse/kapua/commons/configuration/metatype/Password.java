@@ -7,14 +7,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration.metatype;
 
 /**
  * Password
- * 
+ *
  * @since 1.0
  */
 public class Password {
@@ -23,7 +22,7 @@ public class Password {
 
     /**
      * Constructor
-     * 
+     *
      * @param password
      */
     public Password(String password) {
@@ -33,7 +32,7 @@ public class Password {
 
     /**
      * Get password
-     * 
+     *
      * @return
      */
     public String getPassword() {

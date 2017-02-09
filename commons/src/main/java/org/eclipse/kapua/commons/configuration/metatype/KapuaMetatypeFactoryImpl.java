@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration.metatype;
 
@@ -17,62 +17,52 @@ import org.eclipse.kapua.model.config.metatype.*;
 
 /**
  * Kapua metatype objects factory service implementation.
- * 
+ *
  * @since 1.0
  *
  */
 @KapuaProvider
-public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory
-{
+public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory {
 
     /**
      * Locator instance
      */
     private KapuaLocator locator = KapuaLocator.getInstance();
 
-
     @Override
-    public KapuaTocd newKapuaTocd()
-    {
+    public KapuaTocd newKapuaTocd() {
         return new TocdImpl();
     }
 
     @Override
-    public KapuaTad newKapuaTad()
-    {
+    public KapuaTad newKapuaTad() {
         return new TadImpl();
     }
 
     @Override
-    public KapuaTscalar newKapuaTscalar(String type)
-    {
+    public KapuaTscalar newKapuaTscalar(String type) {
         return TscalarImpl.fromValue(type);
     }
 
     @Override
-    public KapuaToption newKapuaToption()
-    {
+    public KapuaToption newKapuaToption() {
         return new ToptionImpl();
     }
 
     @Override
-    public KapuaTicon newKapuaTicon()
-    {
+    public KapuaTicon newKapuaTicon() {
         return new TiconImpl();
     }
 
-    public KapuaTmetadata newKapuaTmetadata()
-    {
+    public KapuaTmetadata newKapuaTmetadata() {
         return new TmetadataImpl();
     }
 
-    public KapuaTdesignate newKapuaTdesignate()
-    {
+    public KapuaTdesignate newKapuaTdesignate() {
         return new TdesignateImpl();
     }
 
-    public KapuaTobject newKapuaTobject()
-    {
+    public KapuaTobject newKapuaTobject() {
         return new TobjectImpl();
     }
 }
