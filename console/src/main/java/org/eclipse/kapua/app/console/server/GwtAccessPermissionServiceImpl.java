@@ -121,7 +121,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                 KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
                 KapuaId userId = GwtKapuaModelConverter.convert(userShortId);
 
-                AccessInfo accessInfo = accessInfoService.find(scopeId, userId);
+                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
                 
                 if (accessInfo != null) {
                     AccessPermissionListResult accessPermissionList = accessPermissionService.findByAccessInfoId(scopeId, accessInfo.getId());
