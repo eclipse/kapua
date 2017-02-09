@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
+* Copyright (c) 2016, 2017 Eurotech and/or its affiliates                       
 *                                                                               
 * All rights reserved. This program and the accompanying materials              
 * are made available under the terms of the Eclipse Public License v1.0         
@@ -10,7 +10,9 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-import RolesListCtrl from "./controllers/RolesListCtrl";
+import RoleListCtrl from "./controllers/RolesListCtrl";
+import RoleDetailCtrl from "./controllers/RoleDetailCtrl";
+import RoleDetailDescriptionCtrl from "./controllers/RoleDetailDescriptionCtrl";
 
 import "./assets/styles/roles.scss";
 
@@ -26,6 +28,26 @@ angular.module("app.roles", [])
                         controller: "RolesListCtrl as vm"
                     }
                 }
-            });
+            })
+            .state("kapua.roles.detail", {
+                    url: "/:idRole",
+                    views: {
+                        "kapuaView@kapua": {
+                            template: require("./views/roles-details.html"),
+                            controller: "RoleDetailCtrl as vm"
+                        }
+                    }
+                })
+                .state("kapua.roles.detail.description", {
+                    url: "/description",
+                    views: {
+                        "kapuaView@kapua": {
+                            template: require("./views/role-details/description.html"),
+                            controller: "RoleDetailDescriptionCtrl as vm"
+                        }
+                    }
+                });
         }])
-    .controller("RolesListCtrl", ["$http", "localStorageService", RolesListCtrl]);
+    .controller("RolesListCtrl", ["$http", "localStorageService", RoleListCtrl])
+    .controller("RoleDetailCtrl", ["$stateParams", "$http", RoleDetailCtrl])
+    .controller("RoleDetailDescriptionCtrl", ["$stateParams", "$http", RoleDetailDescriptionCtrl]);
