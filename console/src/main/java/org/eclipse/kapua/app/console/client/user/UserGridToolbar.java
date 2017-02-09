@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client.user;
 
 import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.client.user.dialog.UserAddDialog;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 
@@ -28,8 +29,7 @@ public class UserGridToolbar extends EntityCRUDToolbar<GwtUser> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        // TODO Auto-generated method stub
-        return super.getAddDialog();
+        return new UserAddDialog(currentSession);
     }
 
     @Override

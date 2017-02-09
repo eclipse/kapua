@@ -9,7 +9,7 @@
  * Contributors:
  * Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.user;
+package org.eclipse.kapua.app.console.client.user.dialog;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConfirmPasswordFieldValidator;

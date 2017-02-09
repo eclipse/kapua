@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.client.user.dialog.UserForm;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.Constants;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
