@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -23,7 +24,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface AccessToken extends KapuaUpdatableEntity {
+public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     public static final String TYPE = "accessToken";
 
