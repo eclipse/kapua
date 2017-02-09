@@ -48,11 +48,11 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
         
         VerticalPanel fieldsPanel = getFieldsPanel();
         
-        final Label clientIdLabel = new Label(ROLE_MSGS.filterFieldAccountNameLabel());
-        clientIdLabel.setWidth(WIDTH);
-        clientIdLabel.setStyleAttribute("margin", "5px");
+        final Label roleNameLabel = new Label(ROLE_MSGS.filterFieldRoleNameLabel());
+        roleNameLabel.setWidth(WIDTH);
+        roleNameLabel.setStyleAttribute("margin", "5px");
 
-        fieldsPanel.add(clientIdLabel);
+        fieldsPanel.add(roleNameLabel);
 
         nameField = new TextField<String>();
         nameField.setName("name");
@@ -79,6 +79,5 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
         query.setScopeId(currentSession.getSelectedAccount().getId());
         entityGrid.refresh(query);
     }
-    
     
 }
