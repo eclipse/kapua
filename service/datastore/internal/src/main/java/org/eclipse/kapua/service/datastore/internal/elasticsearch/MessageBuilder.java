@@ -128,8 +128,7 @@ public class MessageBuilder {
             payload.setBody(body);
         }
 
-        if (payload != null)
-            tmpMessage.setPayload(payload);
+        tmpMessage.setPayload(payload);
 
         this.message = tmpMessage;
         return this;
