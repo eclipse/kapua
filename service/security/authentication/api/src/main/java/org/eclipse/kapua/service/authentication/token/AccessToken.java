@@ -7,8 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token;
 
@@ -20,7 +19,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Access token entity.
- * 
+ *
  * @since 1.0
  *
  */
@@ -34,7 +33,7 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     /**
      * Return the token identifier
-     * 
+     *
      * @return the token identifier
      * @since 1.0
      */
@@ -42,7 +41,7 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     /**
      * Sets the token id
-     * 
+     *
      * @param tokenId
      *            The token id.
      * @since 1.0
@@ -51,16 +50,16 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     /**
      * Return the user identifier
-     * 
+     *
      * @return
-     * 
+     *
      * @since 1.0
      */
     public KapuaId getUserId();
 
     /**
      * Sets the {@link User} id of this {@link AccessToken}
-     * 
+     *
      * @param userId
      *            The {@link User} id to set.
      */
@@ -68,14 +67,14 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     /**
      * Gets the expire date of this token.
-     * 
+     *
      * @since 1.0
      */
     public Date getExpiresOn();
 
     /**
      * Sets the expire date of this token.
-     * 
+     *
      * @param expiresOn
      *            The expire date of this token.
      * @since 1.0
