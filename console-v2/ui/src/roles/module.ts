@@ -13,6 +13,8 @@
 import RoleListCtrl from "./controllers/RolesListCtrl";
 import RoleDetailCtrl from "./controllers/RoleDetailCtrl";
 import RoleDetailDescriptionCtrl from "./controllers/RoleDetailDescriptionCtrl";
+import RoleDetailPermissionsCtrl from "./controllers/RoleDetailPermissionsCtrl";
+import RoleDetailSubjectsCtrl from "./controllers/RoleDetailSubjectsCtrl";
 
 import "./assets/styles/roles.scss";
 
@@ -46,8 +48,28 @@ angular.module("app.roles", [])
                             controller: "RoleDetailDescriptionCtrl as vm"
                         }
                     }
+                })
+                .state("kapua.roles.detail.permissions", {
+                    url: "/permissions",
+                    views: {
+                        "kapuaView@kapua": {
+                            template: require("./views/role-details/permissions.html"),
+                            controller: "RoleDetailPermissionsCtrl as vm"
+                        }
+                    }
+                })
+                .state("kapua.roles.detail.subjects", {
+                    url: "/subjects",
+                    views: {
+                        "kapuaView@kapua": {
+                            template: require("./views/role-details/subjects.html"),
+                            controller: "RoleDetailSubjectsCtrl as vm"
+                        }
+                    }
                 });
         }])
     .controller("RolesListCtrl", ["$http", "localStorageService", RoleListCtrl])
     .controller("RoleDetailCtrl", ["$stateParams", "$http", RoleDetailCtrl])
-    .controller("RoleDetailDescriptionCtrl", ["$stateParams", "$http", RoleDetailDescriptionCtrl]);
+    .controller("RoleDetailDescriptionCtrl", ["$stateParams", "$http", RoleDetailDescriptionCtrl])
+    .controller("RoleDetailPermissionsCtrl", ["$stateParams", "$http", RoleDetailPermissionsCtrl])
+    .controller("RoleDetailSubjectsCtrl", ["$stateParams", "$http", RoleDetailSubjectsCtrl]);

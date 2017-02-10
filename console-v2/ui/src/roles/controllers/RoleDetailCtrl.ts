@@ -12,27 +12,35 @@
 *******************************************************************************/
 export default class RoleDetailCtrl {
     private role: Role;
-    private roleDescriptions: RoleDescriptions;
+    private roleDescription: RoleDescriptions;
+    private RolePermissions: RolePermissions;
+    private roleSubjects: RoleSubjects;
     private descriptionStatus = {
         "title": "Description",
         "count": 0,
         "href": null,
         "iconClass": "fa fa-file-text",
-        "notifications": [
-            // {
-            //     "iconClass": "pficon pficon-error-circle-o",
-            //     "count": 4,
-            //     "href": "#"
-            // },
-            // {
-            //     "iconClass": "pficon pficon-warning-triangle-o",
-            //     "count": 1
-            // }
-        ]
+        "notifications": []
+    };
+    private permissionsStatus = {
+        "title": "Permissions",
+        "count": 1,
+        "href": null,
+        "iconClass": "fa fa-key",
+        "notifications": []
+    };
+    private subjectsStatus = {
+        "title": "Subjects",
+        "count": 2,
+        "href": null,
+        "iconClass": "fa fa-pencil-square-o",
+        "notifications": []
     };
 
     constructor(private $stateParams: angular.ui.IStateParamsService,
         private $http: angular.IHttpService) {
         this.descriptionStatus.href = `roles/${$stateParams["idRole"]}/description`;
+        this.permissionsStatus.href = `roles/${$stateParams["idRole"]}/permissions`;
+        this.subjectsStatus.href = `roles/${$stateParams["idRole"]}/subjects`;
     }
 }
