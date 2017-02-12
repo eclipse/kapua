@@ -55,10 +55,10 @@ public interface GwtUserService extends RemoteService {
     /**
      * Delete the supplied User.
      * 
-     * @param gwtUser
+     * @param gwtUserId
      * @throws GwtKapuaException
      */
-    public void delete(GwtXSRFToken xsfrToken, String accountId, GwtUser gwtUser)
+    public void delete(GwtXSRFToken xsfrToken, String accountId, String gwtUserId)
         throws GwtKapuaException;
 
     /**

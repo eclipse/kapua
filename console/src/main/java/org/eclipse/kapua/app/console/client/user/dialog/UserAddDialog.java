@@ -21,16 +21,11 @@ import org.eclipse.kapua.app.console.client.util.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator;
 import org.eclipse.kapua.app.console.client.util.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
 
-import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -38,11 +33,8 @@ import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.BoxLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

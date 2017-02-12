@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
@@ -38,10 +37,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RoleQuery;
-import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -63,6 +58,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     private static final long serialVersionUID = 7430961652373364113L;
 
+    @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
@@ -141,6 +137,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return gwtUser;
     }
 
+    @Override
     public GwtUser update(GwtXSRFToken xsrfToken, GwtUser gwtUser)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
@@ -214,7 +211,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return gwtUserUpdated;
     }
 
-    public void delete(GwtXSRFToken xsrfToken, String accountId, GwtUser gwtUser)
+    @Override
+    public void delete(GwtXSRFToken xsrfToken, String accountId, String gwtUserId)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
@@ -223,7 +221,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
-            User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUser.getId()));
+            User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUserId));
             if (user != null) {
                 userService.delete(user);
             }
@@ -232,6 +230,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
     }
 
+    @Override
     public GwtUser find(String accountId, String userIdString)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(accountId);
@@ -252,6 +251,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return gwtUser;
     }
 
+    @Override
     public ListLoadResult<GwtUser> findAll(String scopeIdString)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
