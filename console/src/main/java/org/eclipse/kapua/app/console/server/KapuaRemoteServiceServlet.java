@@ -71,10 +71,11 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
                 s_logger.debug("\tFull Request URL\n {}?{}\n\n",
                                req.getRequestURL().toString(),
                                req.getQueryString());
+
+                // forcing the console log out
+                session.invalidate();
             }
 
-            // forcing the console log out
-            session.invalidate();
             s_logger.debug("Session invalidated.");
 
             throw new GwtKapuaException(GwtKapuaErrorCode.XSRF_INVALID_TOKEN, null, "Invalid XSRF token");
