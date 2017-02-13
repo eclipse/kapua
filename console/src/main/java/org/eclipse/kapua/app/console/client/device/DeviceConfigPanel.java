@@ -154,12 +154,12 @@ public class DeviceConfigPanel extends LayoutContainer {
                 } else {
 
                     // iterate over the subfields and extract each value
-                    List<String> multiFieldValues = new ArrayList<String>();
+                    List<String> multiFieldValues = new ArrayList<>();
                     MultiField<?> multiField = (MultiField<?>) field;
                     List<Field<?>> childFields = multiField.getAll();
                     for (int j = 0; j < childFields.size(); j++) {
 
-                        Field<?> childField = (Field<?>) childFields.get(j);
+                        Field<?> childField = childFields.get(j);
                         String value = getUpdatedFieldConfiguration(param, childField);
                         if (value != null) {
                             multiFieldValues.add(value);
