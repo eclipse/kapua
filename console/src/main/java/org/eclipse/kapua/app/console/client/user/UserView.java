@@ -364,7 +364,7 @@ public class UserView extends LayoutContainer {
                                     if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
                                         // A user cannot delete itself
-                                        if (m_currentSession.getGwtUser().getId() == m_grid.getSelectionModel().getSelectedItem().getId()) {
+                                        if (m_currentSession.getGwtUser().getId().equals(m_grid.getSelectionModel().getSelectedItem().getId())) {
                                             ConsoleInfo.display(MSGS.error(), MSGS.userCannotDeleteItself());
                                         } else {
                                             gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
