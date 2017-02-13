@@ -7,8 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user;
 
@@ -103,7 +102,7 @@ public class UserForm extends Window {
 
     /**
      * No new user is allowed for this form. Only the UserManagerForm can create a new user form using this as super constructor
-     * 
+     *
      * @param accountId
      */
     protected UserForm(String accountId) {

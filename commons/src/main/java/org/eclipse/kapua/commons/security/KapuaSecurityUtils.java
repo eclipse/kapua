@@ -7,8 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
@@ -33,7 +32,7 @@ public class KapuaSecurityUtils {
 
     /**
      * Return the {@link KapuaSession} associated to the current thread session.
-     * 
+     *
      * @return
      */
     public static KapuaSession getSession() {
@@ -42,7 +41,7 @@ public class KapuaSecurityUtils {
 
     /**
      * Bound the {@link KapuaSession} to the current thread session.
-     * 
+     *
      * @param session
      */
     public static void setSession(KapuaSession session) {
@@ -59,7 +58,7 @@ public class KapuaSecurityUtils {
     /**
      * Execute the {@link Callable} in a privileged context.<br>
      * Trusted mode means that checks for permissions and role will pass.
-     * 
+     *
      * @param privilegedAction
      *            The {@link Callable} action to be executed.
      * @return The result of the {@link Callable} action.
