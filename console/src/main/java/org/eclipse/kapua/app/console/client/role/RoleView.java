@@ -23,6 +23,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 
+import com.google.gwt.user.client.Window;
+
 public class RoleView extends EntityView<GwtRole> {
 
     private RoleGrid roleGrid;
@@ -35,7 +37,8 @@ public class RoleView extends EntityView<GwtRole> {
     public List<KapuaTabItem<GwtRole>> getTabs(EntityView<GwtRole> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtRole>> tabs = new ArrayList<KapuaTabItem<GwtRole>>();
         tabs.add(new RoleTabDescription());
-        tabs.add(new RoleTabPermissionGrid());
+        tabs.add(new RoleTabPermissionGrid(null,currentSession));
+        tabs.add(new RoleTabSubjectGrid(currentSession));
         return tabs;
     }
 

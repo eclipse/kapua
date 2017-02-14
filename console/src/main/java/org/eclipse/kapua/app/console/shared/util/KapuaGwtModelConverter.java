@@ -53,6 +53,7 @@ import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomai
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.*;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
@@ -71,6 +72,16 @@ public class KapuaGwtModelConverter {
      * @return The converted {@link GwtRole}.
      * @since 1.0.0
      */
+    public static GwtAccessRole convert(AccessRole accessRole) {
+        GwtAccessRole gwtAccessRole = new GwtAccessRole();
+        convertEntity(accessRole, gwtAccessRole);
+        gwtAccessRole.setAccessInfoId(convert(accessRole.getAccessInfoId()));
+        gwtAccessRole.setRoleId(convert(accessRole.getRoleId()));
+
+        return gwtAccessRole;
+
+    }
+
     public static GwtRole convert(Role role) {
         GwtRole gwtRole = new GwtRole();
 

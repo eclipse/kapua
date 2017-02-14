@@ -40,21 +40,23 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
 
+    RolePermissionToolbar rolePermissionToolBar;
     private GwtRole selectedRole;
+    private GwtQuery filterQuery;
 
     protected RolePermissionGrid(EntityView<GwtRolePermission> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
+        
     }
 
     @Override
     protected EntityCRUDToolbar<GwtRolePermission> getToolbar() {
-        EntityCRUDToolbar<GwtRolePermission> toolbar = super.getToolbar();
+        if(rolePermissionToolBar == null){
+            rolePermissionToolBar = new RolePermissionToolbar(currentSession, this);
+        }
 
-        toolbar.setAddButtonVisible(false);
-        toolbar.setEditButtonVisible(false);
-        toolbar.setDeleteButtonVisible(false);
-
-        return toolbar;
+        
+        return rolePermissionToolBar;
     }
 
     @Override
@@ -99,6 +101,9 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     public void setSelectedRole(GwtRole gwtRole) {
         selectedRole = gwtRole;
+        if(rolePermissionToolBar != null){
+            rolePermissionToolBar.setSelectedRole(selectedRole);
+        }
     }
 
     public void clear() {
@@ -107,13 +112,12 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     @Override
     protected GwtQuery getFilterQuery() {
-        // TODO Auto-generated method stub
-        return null;
+        return filterQuery;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
-        // TODO Auto-generated method stub
-        
+    protected void setFilterQuery(GwtQuery query) {
+        this.filterQuery = query;
     }
+
 }

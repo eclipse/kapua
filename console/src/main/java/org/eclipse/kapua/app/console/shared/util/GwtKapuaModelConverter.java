@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleQuery;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
@@ -40,6 +41,8 @@ import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
@@ -100,7 +103,7 @@ public class GwtKapuaModelConverter {
 
         // Convert query
         RoleQuery roleQuery = roleFactory.newQuery(convert(gwtRoleQuery.getScopeId()));
-        if (gwtRoleQuery.getName() != null && gwtRoleQuery.getName() != "") {
+        if (gwtRoleQuery.getName() != null && !gwtRoleQuery.getName().trim().isEmpty()) {
             roleQuery.setPredicate(new AttributePredicate<String>(RolePredicates.ROLE_NAME, gwtRoleQuery.getName()));
         }
         roleQuery.setOffset(loadConfig.getOffset());
@@ -111,6 +114,22 @@ public class GwtKapuaModelConverter {
         return roleQuery;
     }
     
+    public static AccessRoleQuery convertAccessRoleQuery(PagingLoadConfig pagingLoadConfig,
+            GwtAccessRoleQuery gwtRoleQuery) {
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
+        AccessRoleQuery accessRoleQuery = accessRoleFactory
+                .newQuery(convert(gwtRoleQuery.getScopeId()));
+        accessRoleQuery.setPredicate(new AttributePredicate<KapuaId>("roleId",
+                KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
+        accessRoleQuery.setOffset(pagingLoadConfig.getOffset());
+        accessRoleQuery.setLimit(pagingLoadConfig.getLimit());
+
+        return accessRoleQuery;
+
+    }
+
     /**
      * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
      * 
@@ -163,22 +182,24 @@ public class GwtKapuaModelConverter {
         // Convert name
         role.setName(gwtRole.getName());
 
-        // Convert permission associated with role
-        Set<RolePermission> rolePermissions = new HashSet<RolePermission>();
-        for (GwtRolePermission gwtRolePermission : gwtRole.getPermissions()) {
+        if (gwtRole.getPermissions() != null) {
+            // Convert permission associated with role
+            Set<RolePermission> rolePermissions = new HashSet<RolePermission>();
+            for (GwtRolePermission gwtRolePermission : gwtRole.getPermissions()) {
 
-            Permission p = convert(new GwtPermission(gwtRolePermission.getDomainEnum(),
-                    gwtRolePermission.getActionEnum(),
+                Permission p = convert(new GwtPermission(gwtRolePermission.getDomainEnum(),
+                        gwtRolePermission.getActionEnum(),
                     gwtRolePermission.getTargetScopeId(),
                     gwtRolePermission.getGroupId()));
 
-            RolePermission rp = permissionFactory.newRolePermission(//
-                    scopeId, //
-                    p);
-            rp.setId(convert(gwtRolePermission.getId()));
-            rp.setRoleId(role.getId());
+                RolePermission rp = permissionFactory.newRolePermission(//
+                        scopeId, //
+                        p);
+                rp.setId(convert(gwtRolePermission.getId()));
+                rp.setRoleId(role.getId());
 
-            rolePermissions.add(rp);
+                rolePermissions.add(rp);
+            }
         }
 
         //
