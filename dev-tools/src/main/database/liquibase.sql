@@ -156,7 +156,8 @@ CREATE TABLE athz_role_permission (
   role_id             	    BIGINT(21) 	  UNSIGNED,
   domain					VARCHAR(64)   NOT NULL,
   action					VARCHAR(64),
-  target_scope_id		    BIGINT(21),
+  target_scope_id		    BIGINT(21)    UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
 
   PRIMARY KEY (id)
 
@@ -266,6 +267,7 @@ CREATE INDEX idx_connection_status_id ON dvc_device_connection (scope_id, id, co
 CREATE TABLE dvc_device (
   scope_id             	    BIGINT(21) 	    UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	    UNSIGNED NOT NULL,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
   client_id                 VARCHAR(255)    NOT NULL,
   connection_id             BIGINT(21) 	    UNSIGNED NULL,
   created_on             	TIMESTAMP(3)    NULL,
@@ -423,7 +425,8 @@ CREATE TABLE usr_user (
   optlock               	INT UNSIGNED,
   attributes             	TEXT,
   properties             	TEXT,
-
+  user_type               VARCHAR(64)   NOT NULL DEFAULT 'INTERNAL',
+  external_id             VARCHAR(255),
   PRIMARY KEY (id),
   CONSTRAINT usr_uc_name UNIQUE (name)
 ) DEFAULT CHARSET=utf8;
@@ -476,8 +479,9 @@ CREATE TABLE athz_access_permission (
   access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
 
   domain					VARCHAR(64)	  NOT NULL,
-  action					VARCHAR(64)	  NOT NULL,
+  action					VARCHAR(64),
   target_scope_id			BIGINT(21)	  UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
 
   PRIMARY KEY (id),
 --  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
@@ -490,7 +494,7 @@ CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId ON athz_access_per
 
 INSERT INTO athz_access_permission
 	VALUES
-		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1); -- kapua-broker assigned of permission: broker:connect:1
+		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1
 
 --changeset hekonsek:22
 
@@ -527,17 +531,42 @@ INSERT INTO athz_role
 
 INSERT INTO athz_role_permission
 	VALUES
-		(1, 1, NOW(), 1, 1, 'account', null, null),
-		(1, 2, NOW(), 1, 1, 'user', null, null),
-		(1, 3, NOW(), 1, 1, 'device_event', null, null),
-		(1, 4, NOW(), 1, 1, 'device_connection', null, null),
-		(1, 5, NOW(), 1, 1, 'device', null, null),
-		(1, 6, NOW(), 1, 1, 'data', null, null),
-		(1, 7, NOW(), 1, 1, 'broker', null, null),
-		(1, 8, NOW(), 1, 1, 'credential', null, null),
-		(1, 9, NOW(), 1, 1, 'role', null, null),
-		(1, 10, NOW(), 1, 1, 'user_permission', null, null),
-		(1, 11, NOW(), 1, 1, 'device_lifecycle', null, null),
-		(1, 12, NOW(), 1, 1, 'device_management', null, null),
-		(1, 13, NOW(), 1, 1, 'account', null, null),
-		(1, 14, NOW(), 1, 1, 'account', null, null);
+		(1, 1, NOW(), 1, 1, 'account', null, null, null),
+		(1, 2, NOW(), 1, 1, 'user', null, null, null),
+		(1, 3, NOW(), 1, 1, 'device_event', null, null, null),
+		(1, 4, NOW(), 1, 1, 'device_connection', null, null, null),
+		(1, 5, NOW(), 1, 1, 'device', null, null, null),
+		(1, 6, NOW(), 1, 1, 'data', null, null, null),
+		(1, 7, NOW(), 1, 1, 'broker', null, null, null),
+		(1, 8, NOW(), 1, 1, 'credential', null, null, null),
+		(1, 9, NOW(), 1, 1, 'role', null, null, null),
+		(1, 10, NOW(), 1, 1, 'user_permission', null, null, null),
+		(1, 11, NOW(), 1, 1, 'device_lifecycle', null, null, null),
+		(1, 12, NOW(), 1, 1, 'device_management', null, null, null),
+		(1, 13, NOW(), 1, 1, 'account', null, null, null),
+		(1, 14, NOW(), 1, 1, 'account', null, null, null);
+
+--changeset jreimann:26
+
+CREATE TABLE atht_access_token (
+  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
+  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
+  created_on             	TIMESTAMP(3)  NOT NULL,
+  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on            	TIMESTAMP(3),
+  modified_by            	BIGINT(21)    UNSIGNED,
+
+  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
+  token_id					TEXT	      NOT NULL,
+  expires_on				TIMESTAMP(3)  NOT NULL,
+
+  optlock               	INT UNSIGNED,
+  attributes             	TEXT,
+  properties             	TEXT,
+
+  PRIMARY KEY (id)
+) DEFAULT CHARSET=utf8;
+
+CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
+CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
+

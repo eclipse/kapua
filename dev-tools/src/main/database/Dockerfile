@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 Red Hat and/or its affiliates and others
+# Copyright (c) 2016, 2017 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -8,24 +8,21 @@
 #
 ###############################################################################
 
-FROM java:8
+FROM fedora:25
 
 MAINTAINER Henryk Konsek <hekonsek@gmail.com>
 
-RUN apt-get update -qq
-RUN apt-get install -qq maven
+RUN dnf -y install maven git-core
 
 # Download Maven project
-RUN apt-get install -qq git
-RUN echo 'Downloading project...'
-RUN git clone https://github.com/eclipse/kapua.git
-WORKDIR kapua/dev-tools
-RUN git checkout develop
+RUN git clone -b develop https://github.com/eclipse/kapua.git
 
 # Use Liquibase changelog from current build, not downloaded version
-ADD liquibase.sql /root/kapua/dev-tools/src/main/database/
+ADD liquibase.sql /kapua/dev-tools/src/main/database/
 
 # Cache Maven dependencies
-RUN mvn clean install liquibase:help
+RUN mvn -Dmaven.repo.local=/m2-repo -B -f/kapua/dev-tools/pom.xml clean install liquibase:help \
+  && chmod a+rw -R /m2-repo /kapua
+
 # Prepare final command
-ENTRYPOINT ["/usr/share/maven/bin/mvn", "-Pliquibase"]
+ENTRYPOINT mvn -B -Dmaven.repo.local=/m2-repo -Pliquibase -fkapua/dev-tools/pom.xml
