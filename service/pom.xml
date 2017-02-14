@@ -32,6 +32,7 @@
         <module>device</module>
         <module>user</module>
         <module>account</module>
+        <module>liquibase</module>
     </modules>
 
 </project>
