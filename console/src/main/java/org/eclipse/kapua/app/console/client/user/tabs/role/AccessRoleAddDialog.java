@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,12 +21,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessRoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessRoleServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
-import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.*;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -103,9 +98,6 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                 hide();
             }
         });
-        
-        System.out.println("create role");
-
     }
 
     @Override

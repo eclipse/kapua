@@ -38,12 +38,10 @@ public class UserEditDialog extends UserAddDialog {
     public void createBody() {
         super.createBody();
 
-        //
-        // Compile edit form
-        loadRole();
+        loadUser();
     }
-    
-    private void loadRole() {
+
+    private void loadUser() {
         maskDialog();
         gwtUserService.find(selectedUser.getScopeId(), selectedUser.getId(), new AsyncCallback<GwtUser>() {
 

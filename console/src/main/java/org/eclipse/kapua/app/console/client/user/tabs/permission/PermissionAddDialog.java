@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.permission;
 
-import java.util.List;
-
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
@@ -25,15 +24,14 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAsync;
-import org.eclipse.kapua.app.console.shared.service.GwtDomainService;
-import org.eclipse.kapua.app.console.shared.service.GwtDomainServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.*;
+
+import java.util.List;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
@@ -49,16 +47,24 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private final static GwtDomainServiceAsync gwtDomainService = GWT.create(GwtDomainService.class);
     private final static GwtAccessPermissionServiceAsync gwtAccessPermissionService = GWT.create(GwtAccessPermissionService.class);
     private final static GwtAccessInfoServiceAsync gwtAccessInfoService = GWT.create(GwtAccessInfoService.class);
+    private final static GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
 
     private SimpleComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;
     private TextField<String> targetScopeIdTxtField;
-    private TextField<String> groupIdTxtField;
+    private ComboBox<GwtGroup> groupsCombo;
+
+    private final GwtGroup allGroup;
     
     private String accessInfoId;
 
     public PermissionAddDialog(GwtSession currentSession, String userId) {
         super(currentSession);
+
+        allGroup = new GwtGroup();
+        allGroup.setId(null);
+        allGroup.setGroupName("ALL");
+
         gwtAccessInfoService.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
@@ -85,7 +91,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccount().getId());
 
         gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
-        gwtAccessPermissionCreator.setPermission(new GwtPermission(domainsCombo.getValue().getValue(), actionsCombo.getValue().getValue(), targetScopeIdTxtField.getValue(), groupIdTxtField.getValue()));
+        gwtAccessPermissionCreator
+                .setPermission(new GwtPermission(domainsCombo.getValue().getValue(), actionsCombo.getValue().getValue(), targetScopeIdTxtField.getValue(), groupsCombo.getValue().getId()));
 
         gwtAccessPermissionService.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
 
@@ -110,9 +117,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 hide();
             }
         });
-
-        System.out.println("create access permission");
-
     }
 
     @Override
@@ -188,16 +192,40 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         
         actionsCombo.disable();
         permissionFormPanel.add(actionsCombo);
-        
+
         targetScopeIdTxtField = new TextField<String>();
         targetScopeIdTxtField.setFieldLabel(MSGS.dialogAddPermissionTargetScopeId());
+        targetScopeIdTxtField.setValue(currentSession.getSelectedAccount().getId());
+        targetScopeIdTxtField.setEnabled(false);
         
         permissionFormPanel.add(targetScopeIdTxtField);
-        
-        groupIdTxtField = new TextField<String>();
-        groupIdTxtField.setFieldLabel(MSGS.dialogAddPermissionGroupId());
-        
-        permissionFormPanel.add(groupIdTxtField);
+
+        groupsCombo = new ComboBox<GwtGroup>();
+        groupsCombo.setStore(new ListStore<GwtGroup>());
+        groupsCombo.setEditable(false);
+        groupsCombo.setTypeAhead(false);
+        groupsCombo.setAllowBlank(false);
+        groupsCombo.setDisplayField("groupName");
+        groupsCombo.setValueField("id");
+        groupsCombo.setFieldLabel(MSGS.dialogAddPermissionGroupId());
+        actionsCombo.setTriggerAction(TriggerAction.ALL);
+        gwtGroupService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                m_exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
+                m_exitStatus = false;
+                hide();
+            }
+
+            @Override
+            public void onSuccess(List<GwtGroup> result) {
+                groupsCombo.getStore().removeAll();
+                groupsCombo.getStore().add(allGroup);
+                groupsCombo.getStore().add(result);
+            }
+        });
+        permissionFormPanel.add(groupsCombo);
         
         //
         // Add form panel to body

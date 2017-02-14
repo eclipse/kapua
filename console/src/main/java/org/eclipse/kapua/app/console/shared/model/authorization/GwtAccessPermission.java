@@ -26,37 +26,75 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
     public void setAccessInfoId(String accessInfoId) {
         set("accessInfoId", accessInfoId);
     }
-    
+
     public String getPermissionDomain() {
         return get("permissionDomain");
     }
-    
+
     public void setPermissionDomain(String permissionDomain) {
         set("permissionDomain", permissionDomain);
     }
-    
+
     public String getPermissionAction() {
         return get("permissionAction");
     }
-    
+
     public void setPermissionAction(String permissionAction) {
         set("permissionAction", permissionAction);
     }
-    
+
     public String getPermissionTargetScopeId() {
         return get("permissionTargetScopeId");
     }
-    
+
     public void setPermissionTargetScopeId(String permissionTargetScopeId) {
         set("permissionTargetScopeId", permissionTargetScopeId);
     }
-    
+
     public String getPermissionGroupId() {
         return get("permissionGroupId");
     }
-    
+
     public void setPermissionGroupId(String permissionGroupId) {
         set("permissionGroupId", permissionGroupId);
     }
-        
+
+    /**
+     * Returns the string representation for this {@link GwtPermission} in the following format:
+     * <p>
+     * {domain}[:{action}[:{targetScopeId]]
+     * </p>
+     *
+     * @return the formatted string representation of this {@link GwtPermission}
+     * @since 1.0.0
+     */
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(getPermissionDomain());
+
+        sb.append(":");
+        if (getPermissionAction() != null) {
+            sb.append(getPermissionAction());
+        } else {
+            sb.append("*");
+        }
+
+        sb.append(":");
+        if (getPermissionTargetScopeId() != null) {
+            sb.append(getPermissionTargetScopeId());
+        } else {
+            sb.append("*");
+        }
+
+        sb.append(":");
+        if (getPermissionGroupId() != null) {
+            sb.append(getPermissionGroupId());
+        } else {
+            sb.append("*");
+        }
+
+        return sb.toString();
+    }
 }

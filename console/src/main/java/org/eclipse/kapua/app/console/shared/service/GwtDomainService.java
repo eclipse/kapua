@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,13 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.service;
 
-import java.util.List;
-
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 
-import com.extjs.gxt.ui.client.data.ListLoadResult;
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -27,8 +26,8 @@ public interface GwtDomainService extends RemoteService {
 
     /**
      * Returns the list of all Domains which belong to an account.
-     * 
-     * @return a list of {@link Domain} objects
+     *
+     * @return a list of {@link org.eclipse.kapua.service.authorization.domain.Domain} objects
      * @throws GwtKapuaException
      * 
      */
@@ -37,9 +36,9 @@ public interface GwtDomainService extends RemoteService {
     
     /**
      * Returns the list of all Actions which belong to a Domain.
-     * 
-     * @param domainIdStirng    the ID of the domain
-     * @return a list of {@link Action} objects
+     *
+     * @param domainName    the name of the domain
+     * @return a list of {@link org.eclipse.kapua.service.authorization.permission.Action} objects
      * @throws GwtKapuaException
      * 
      */

@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.permission;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
@@ -24,6 +21,9 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermiss
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -75,26 +75,26 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRolePermissionColumnHeaderId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridAccessRoleColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
-        
-        columnConfig = new ColumnConfig("permissionDomain", MSGS.gridRolePermissionColumnHeaderDomain(), 200);
+
+        columnConfig = new ColumnConfig("permissionDomain", MSGS.gridAccessRoleColumnHeaderDomain(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionAction", MSGS.gridRolePermissionColumnHeaderAction(), 200);
+        columnConfig = new ColumnConfig("permissionAction", MSGS.gridAccessRoleColumnHeaderAction(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionTargetScopeId", MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 200);
+        columnConfig = new ColumnConfig("permissionTargetScopeId", MSGS.gridAccessRoleColumnHeaderTargetScopeId(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionGroupId", MSGS.gridRolePermissionColumnHeaderGroupId(), 200);
+        columnConfig = new ColumnConfig("permissionGroupId", MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
         columnConfigs.add(columnConfig);
-        
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridRolePermissionColumnHeaderCreatedBy(), 200);
+
+        columnConfig = new ColumnConfig("createdBy", MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
-        
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridRolePermissionColumnHeaderCreatedOn(), 200);
+
+        columnConfig = new ColumnConfig("createdOn", MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
