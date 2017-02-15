@@ -465,8 +465,11 @@
 									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
 								</assembly>
 								<entryPoint>
-								   <shell>/maven/bin/activemq console</shell>
+									<shell>/maven/bin/activemq console</shell>
 								</entryPoint>
+								<env>
+									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</ACTIVEMQ_OPTS>
+								</env>
 								<ports>
 									<port>1883</port>
 								</ports>
@@ -483,8 +486,11 @@
 									<descriptor>/src/main/descriptors/kapua-console.xml</descriptor>
 								</assembly>
 								<entryPoint>
-								   <shell>/maven/bin/catalina.sh run</shell>
+									<shell>/maven/bin/catalina.sh run</shell>
 								</entryPoint>
+								<env>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
 								<ports>
 									<port>8080</port>
 								</ports>
@@ -503,8 +509,11 @@
 									<descriptor>/src/main/descriptors/kapua-api.xml</descriptor>
 								</assembly>
 								<entryPoint>
-								   <shell>/maven/bin/catalina.sh run</shell>
+									<shell>/maven/bin/catalina.sh run</shell>
 								</entryPoint>
+								<env>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
 								<ports>
 									<port>8080</port>
 								</ports>
