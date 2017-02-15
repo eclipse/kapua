@@ -54,7 +54,7 @@ echo SQL database created
 
 echo Creating broker
 
-oc new-app ${DOCKER_ACCOUNT}/kapua-broker:latest -name=kapua-broker -n "$OPENSHIFT_PROJECT_NAME"
+oc new-app ${DOCKER_ACCOUNT}/kapua-broker:latest -name=kapua-broker -n "$OPENSHIFT_PROJECT_NAME" '-eACTIVEMQ_OPTS=-Dcommons.db.connection.host=localost -Dcommons.db.connection.port=3306 -Dcommons.db.schema='
 
 echo Broker created
 
@@ -63,7 +63,7 @@ echo Broker created
 
 echo Creating web console
 
-oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n "$OPENSHIFT_PROJECT_NAME" -eCOMMONS_DB_SCHEMA=' '
+oc new-app ${DOCKER_ACCOUNT}/kapua-console:latest -n "$OPENSHIFT_PROJECT_NAME" '-eCATALINA_OPTS=-Dcommons.db.connection.host=localost -Dcommons.db.connection.port=3306 -Dcommons.db.schema='
 
 echo Web console created
 
@@ -71,7 +71,7 @@ echo Web console created
 
 echo 'Creating Rest API'
 
-oc new-app ${DOCKER_ACCOUNT}/kapua-api:latest -n "$OPENSHIFT_PROJECT_NAME"
+oc new-app ${DOCKER_ACCOUNT}/kapua-api:latest -n "$OPENSHIFT_PROJECT_NAME" '-eCATALINA_OPTS=-Dcommons.db.connection.host=localost -Dcommons.db.connection.port=3306 -Dcommons.db.schema='
 
 echo 'Rest API created'
 
