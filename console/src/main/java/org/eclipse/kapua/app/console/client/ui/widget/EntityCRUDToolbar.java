@@ -217,4 +217,56 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         this.entityGrid = entityGrid;
         this.gridSelectionModel = entityGrid.getSelectionModel();
     }
+
+    protected void disableButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.disable();
+        }
+
+        if (editEntityButton != null) {
+            editEntityButton.disable();
+        }
+
+        if (deleteEntityButton != null) {
+            deleteEntityButton.disable();
+        }
+
+        if (refreshEntityButton != null) {
+            refreshEntityButton.disable();
+        }
+    }
+
+    protected void enableButtons() {
+        if (addEntityButton != null) {
+            addEntityButton.enable();
+        }
+
+        if (editEntityButton != null) {
+            editEntityButton.enable();
+        }
+
+        if (deleteEntityButton != null) {
+            deleteEntityButton.enable();
+        }
+
+        if (refreshEntityButton != null) {
+            refreshEntityButton.enable();
+        }
+    }
+
+    public AddButton getAddEntityButton() {
+        return addEntityButton;
+    }
+
+    public EditButton getEditEntityButton() {
+        return editEntityButton;
+    }
+
+    public DeleteButton getDeleteEntityButton() {
+        return deleteEntityButton;
+    }
+
+    public RefreshButton getRefreshEntityButton() {
+        return refreshEntityButton;
+    }
 }

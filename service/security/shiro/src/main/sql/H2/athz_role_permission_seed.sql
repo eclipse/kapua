@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *  
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,4 +32,8 @@ INSERT INTO athz_role_permission
 		(1, 12, NOW(), 1, 1, 'role',				null, null, null),
 		
 		(1, 13, NOW(), 1, 1, 'user',				null, null, null),
+
+		(1, 14, NOW(), 1, 1, 'domain',				null, null, null),
+
+		(1, 15, NOW(), 1, 1, 'group',       null, null, null),
 		

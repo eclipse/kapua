@@ -33,7 +33,7 @@ public class AccessInfoDomain extends AbstractKapuaEntity implements Domain {
 
     private static final long serialVersionUID = 3782336558657796495L;
 
-    private String name = "accessInfo";
+    private String name = "access_info";
     private String serviceName = "accessInfoService";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
 

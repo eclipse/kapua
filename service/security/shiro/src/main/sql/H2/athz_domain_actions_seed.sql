@@ -15,39 +15,39 @@ INSERT INTO athz_domain_actions
 		(1, 'read'),
 		(1, 'write'),
 		(1, 'delete'),
-
-		(2, 'read'),
-		(2, 'write'),
-		(2, 'delete'),
 		
-		(3, 'connect'),		
+		(2, 'connect'),		
+
+		(3, 'read'),
+		(3, 'write'),
+		(3, 'delete'),
 
 		(4, 'read'),
 		(4, 'write'),
 		(4, 'delete'),
-
+				
 		(5, 'read'),
 		(5, 'write'),
 		(5, 'delete'),
-				
+		
 		(6, 'read'),
 		(6, 'write'),
 		(6, 'delete'),
+		(6, 'execute'),
+		(6, 'connect'),
 		
 		(7, 'read'),
 		(7, 'write'),
 		(7, 'delete'),
-		(7, 'execute'),
-		(7, 'connect'),
 		
 		(8, 'read'),
 		(8, 'write'),
 		(8, 'delete'),
-		
+
 		(9, 'read'),
 		(9, 'write'),
 		(9, 'delete'),
-
+		
 		(10, 'read'),
 		(10, 'write'),
 		(10, 'delete'),
@@ -70,8 +70,4 @@ INSERT INTO athz_domain_actions
 		
 		(15, 'read'),
 		(15, 'write'),
-		(15, 'delete'),
-		
-		(16, 'read'),
-		(16, 'write'),
-		(16, 'delete');
+		(15, 'delete');

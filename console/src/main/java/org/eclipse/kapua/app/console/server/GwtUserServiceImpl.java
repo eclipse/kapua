@@ -20,10 +20,12 @@ import java.util.Set;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
+import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,7 +46,10 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -53,6 +58,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     private static final long serialVersionUID = 7430961652373364113L;
 
+    @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
@@ -131,6 +137,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return gwtUser;
     }
 
+    @Override
     public GwtUser update(GwtXSRFToken xsrfToken, GwtUser gwtUser)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
@@ -204,7 +211,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return gwtUserUpdated;
     }
 
-    public void delete(GwtXSRFToken xsrfToken, String accountId, GwtUser gwtUser)
+    @Override
+    public void delete(GwtXSRFToken xsrfToken, String accountId, String gwtUserId)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
@@ -213,7 +221,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
-            User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUser.getId()));
+            User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUserId));
             if (user != null) {
                 userService.delete(user);
             }
@@ -222,6 +230,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
     }
 
+    @Override
     public GwtUser find(String accountId, String userIdString)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(accountId);
@@ -242,6 +251,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return gwtUser;
     }
 
+    @Override
     public ListLoadResult<GwtUser> findAll(String scopeIdString)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
@@ -261,5 +271,43 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
 
         return new BaseListLoadResult<GwtUser>(gwtUserList);
+    }
+
+    @Override
+    public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) throws GwtKapuaException {
+        //
+        // Do query
+        int totalLength = 0;
+        List<GwtUser> gwtUsers = new ArrayList<GwtUser>();
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            UserService userService = locator.getService(UserService.class);
+
+            // Convert from GWT entity
+            UserQuery userQuery = GwtKapuaModelConverter.convertUserQuery(loadConfig, gwtUserQuery);
+
+            // query
+            UserListResult users = userService.query(userQuery);
+
+            // If there are results
+            if (!users.isEmpty()) {
+                // count
+                if (users.getSize() >= loadConfig.getLimit()) {
+                    totalLength = new Long(userService.count(userQuery)).intValue();
+                } else {
+                    totalLength = users.getSize();
+                }
+
+                // Converto to GWT entity
+                for (User u : users.getItems()) {
+                    gwtUsers.add(KapuaGwtModelConverter.convert(u));
+                }
+            }
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+        return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);
     }
 }

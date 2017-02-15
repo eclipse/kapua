@@ -43,13 +43,13 @@ public interface DomainService extends KapuaEntityService<Domain, DomainCreator>
      * 
      * @param scopeId
      *            The scope id in which to search.
-     * @param roleId
+     * @param domainId
      *            The {@link Domain} id to search.
      * @return The {@link Domain} found or {@code null} if no entity was found.
      * @throws KapuaException
      * @since 1.0.0
      */
-    public Domain find(KapuaId scopeId, KapuaId roleId)
+    public Domain find(KapuaId scopeId, KapuaId domainId)
             throws KapuaException;
 
     /**

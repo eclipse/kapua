@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
    
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -50,6 +50,11 @@
         <url-pattern>/exporter_device_event/*</url-pattern>
         <url-pattern>/settings/*</url-pattern>
         <url-pattern>/role/*</url-pattern>
+        <url-pattern>/accessrole/*</url-pattern>
+        <url-pattern>/accessinfo/*</url-pattern>
+        <url-pattern>/accesspermission/*</url-pattern>
+        <url-pattern>/domain/*</url-pattern>
+        <url-pattern>/group/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
 	</filter-mapping>
@@ -78,6 +83,11 @@
         <url-pattern>/exporter_device/*</url-pattern>
         <url-pattern>/exporter_device_event/*</url-pattern>
         <url-pattern>/role/*</url-pattern>
+        <url-pattern>/accessrole/*</url-pattern>
+        <url-pattern>/accessinfo/*</url-pattern>
+        <url-pattern>/accesspermission/*</url-pattern>
+        <url-pattern>/domain/*</url-pattern>
+        <url-pattern>/group/*</url-pattern>
         <url-pattern>/settings/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
    <!--
@@ -198,7 +208,51 @@
         <servlet-name>roleServlet</servlet-name>
         <url-pattern>/role</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>accessRoleServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessRoleServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>accessRoleServlet</servlet-name>
+        <url-pattern>/accessrole</url-pattern>
+    </servlet-mapping>
 
+    <servlet>
+        <servlet-name>accessInfoServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessInfoServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>accessInfoServlet</servlet-name>
+        <url-pattern>/accessinfo</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>accessPermissionServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessPermissionServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>accessPermissionServlet</servlet-name>
+        <url-pattern>/accesspermission</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>domainServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtDomainServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>domainServlet</servlet-name>
+        <url-pattern>/domain</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>groupServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtGroupServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>groupServlet</servlet-name>
+        <url-pattern>/group</url-pattern>
+    </servlet-mapping>
 
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
@@ -266,4 +320,5 @@
    		<location>/errorHandler/httpError</location>
  	</error-page>
  	
+
 </web-app>

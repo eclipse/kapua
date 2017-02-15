@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.shared.model;
+package org.eclipse.kapua.app.console.shared.model.user;
 
 import java.io.Serializable;
 

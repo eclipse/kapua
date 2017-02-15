@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermissio
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -56,7 +57,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
         List<GwtRolePermission> newRolePermissions = rolePermissionsGrid.getModels();
         List<GwtPermission> newPermissions = new ArrayList<GwtPermission>();
         for (GwtRolePermission grp : newRolePermissions) {
-            newPermissions.add(new GwtPermission(grp.getDomainEnum(), grp.getActionEnum(), grp.getTargetScopeId()));
+            newPermissions.add(new GwtPermission(grp.getDomainEnum(), grp.getActionEnum(), grp.getTargetScopeId(), grp.getGroupId()));
         }
         gwtRoleCreator.setPermissions(newPermissions);
 

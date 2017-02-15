@@ -45,6 +45,14 @@ public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
         dirty = true;
     }
 
+    public M getSelectedEntity() {
+        return selectedEntity;
+    }
+    
+    public void setSelectedEntity(M selectedEntity) {
+        this.selectedEntity = selectedEntity;
+    }
+
     public void refresh() {
         if (dirty) {
             doRefresh();

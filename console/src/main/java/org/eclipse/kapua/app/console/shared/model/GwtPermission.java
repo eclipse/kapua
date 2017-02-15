@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,16 +22,22 @@ public class GwtPermission extends KapuaBaseModel {
      * Defines the domain of the object protected by the {@link GwtPermission}
      */
     public enum GwtDomain implements IsSerializable, Enum {
+        access_info, //
+        access_token, //
         account, //
+        broker, //
         credential, //
-        datastore, //
-        device_connection, //
+        data, //
         device, //
+        device_connection, //
         device_event, //
+        device_lifecycle, //
         device_management, //
+        domain, //
+        group, //
         role, //
         user, //
-        user_permission, //
+
     }
 
     /**
@@ -42,7 +48,7 @@ public class GwtPermission extends KapuaBaseModel {
         write, //
         delete, //
         connect, //
-        exec;
+        execute;
 
         @Override
         public String toString() {
@@ -71,19 +77,18 @@ public class GwtPermission extends KapuaBaseModel {
 
     /**
      * Gwt Permission constructor.
-     * 
-     * @param domain
-     *            The {@link GwtDomain} of the permission
-     * @param action
-     *            The {@link GwtAction} of the permission
-     * @param targetScopeId
-     *            The target scope id of the permission
+     *
+     * @param domain        The {@link GwtDomain} of the permission
+     * @param action        The {@link GwtAction} of the permission
+     * @param targetScopeId The target scope id of the permission
+     * @param groupId       The group id of the permission
      */
-    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId) {
+    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId, String groupId) {
         this();
         setDomain(domain != null ? domain.name() : null);
         setAction(action != null ? action.name() : null);
         setTargetScopeId(targetScopeId);
+        setGroupId(groupId);
     }
 
     /**
@@ -91,7 +96,7 @@ public class GwtPermission extends KapuaBaseModel {
      * <p>
      * {domain}[:{action}[:{targetScopeId]]
      * </p>
-     * 
+     *
      * @return the formatted string representation of this {@link GwtPermission}
      * @since 1.0.0
      */
@@ -101,14 +106,27 @@ public class GwtPermission extends KapuaBaseModel {
         StringBuilder sb = new StringBuilder();
         sb.append(getDomainEnum().name());
 
+        sb.append(":");
         if (getAction() != null) {
-            sb.append(":")
-                    .append(getActionEnum().name());
+            sb.append(getActionEnum().name());
+        } else {
+            sb.append("*");
         }
+
+        sb.append(":");
         if (getTargetScopeId() != null) {
-            sb.append(":")
-                    .append(getTargetScopeId());
+            sb.append(getTargetScopeId());
+        } else {
+            sb.append("*");
         }
+
+        sb.append(":");
+        if (getGroupId() != null) {
+            sb.append(getTargetScopeId());
+        } else {
+            sb.append("*");
+        }
+
         return sb.toString();
     }
 
@@ -154,6 +172,18 @@ public class GwtPermission extends KapuaBaseModel {
 
     public void setTargetScopeId(String targetScopeId) {
         set("targetScopeId", targetScopeId);
+    }
+
+    /**
+     * @return the group id of this permission
+     * @since 1.0.0
+     */
+    public String getGroupId() {
+        return get("groupId");
+    }
+
+    public void setGroupId(String groupId) {
+        set("groupId", groupId);
     }
 
 }

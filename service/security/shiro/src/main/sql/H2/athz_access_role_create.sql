@@ -25,5 +25,4 @@ CREATE TABLE athz_access_role (
   
 ) DEFAULT CHARSET=utf8;
 
-CREATE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);
-
+CREATE UNIQUE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);

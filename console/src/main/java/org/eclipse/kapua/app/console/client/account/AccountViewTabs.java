@@ -55,12 +55,12 @@ public class AccountViewTabs extends LayoutContainer {
 
     public void setAccount(GwtAccount selectedAccount) {
         m_centerAccountViewGeneralTab.setAccount(selectedAccount);
-        m_centerAccountViewUserTab.setAccount(selectedAccount);
+//        m_centerAccountViewUserTab.setAccount(selectedAccount);
 
         if (m_tabsPanel.getSelectedItem() == m_generalTab) {
             m_centerAccountViewGeneralTab.refresh();
         } else {
-            m_centerAccountViewUserTab.refresh();
+//            m_centerAccountViewUserTab.refresh();
         }
     }
 
@@ -94,7 +94,7 @@ public class AccountViewTabs extends LayoutContainer {
             m_usersTab.addListener(Events.Select, new Listener<ComponentEvent>() {
 
                 public void handleEvent(ComponentEvent be) {
-                    m_centerAccountViewUserTab.refresh();
+//                    m_centerAccountViewUserTab.refresh();
                 }
             });
             m_tabsPanel.add(m_usersTab);

@@ -37,6 +37,17 @@ public interface GwtRoleService extends RemoteService {
 
     public GwtRole find(String scopeShortId, String roleShortId)
             throws GwtKapuaException;
+    
+    /**
+     * Returns the list of all Roles which belong to an account.
+     * 
+     * @param scopeIdStirng
+     * @return
+     * @throws GwtKapuaException
+     * 
+     */
+    public ListLoadResult<GwtRole> findAll(String scopeIdStirng)
+        throws GwtKapuaException;
 
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery)
             throws GwtKapuaException;

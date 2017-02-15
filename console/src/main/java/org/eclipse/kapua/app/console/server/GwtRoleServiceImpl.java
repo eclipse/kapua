@@ -26,10 +26,12 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -246,5 +248,26 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
+    }
+
+    @Override
+    public ListLoadResult<GwtRole> findAll(String scopeIdString) throws GwtKapuaException {
+        KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+        List<GwtRole> gwtRoleList = new ArrayList<GwtRole>();
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            RoleService roleService = locator.getService(RoleService.class);
+            RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+            RoleQuery query = roleFactory.newQuery(scopeId);
+            RoleListResult list = roleService.query(query);
+
+            for (Role role : list.getItems()) {
+                gwtRoleList.add(KapuaGwtModelConverter.convert(role));
+            }
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+        return new BaseListLoadResult<GwtRole>(gwtRoleList);
     }
 }
