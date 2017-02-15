@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
+* Copyright (c) 2016, 2017 Eurotech and/or its affiliates                       
 *                                                                               
 * All rights reserved. This program and the accompanying materials              
 * are made available under the terms of the Eclipse Public License v1.0         
@@ -27,6 +27,7 @@ import "./layout/module.ts";
 import "./welcome/module.ts";
 import "./users/module.ts";
 import "./devices/module.ts";
+import "./roles/module.ts";
 
 import IndexCtrl from "./IndexCtrl";
 
@@ -42,7 +43,8 @@ angular.module("app", [
     "app.layout",
     "app.welcome",
     "app.users",
-    "app.devices"
+    "app.devices",
+    "app.roles"
 ])
     .config(["$locationProvider", "$urlRouterProvider", "$httpProvider", (
         $locationProvider: angular.ILocationProvider,
