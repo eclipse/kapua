@@ -38,13 +38,11 @@ import org.eclipse.kapua.translator.Translator;
  *
  */
 @SuppressWarnings("rawtypes")
-public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessage>
-{
+public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessage> {
 
     @Override
     public KuraMessage translate(KapuaMessage kapuaMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Kura channel
         KuraChannel kuraChannel = translate(kapuaMessage.getChannel());
@@ -55,7 +53,7 @@ public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessag
 
         Account account = accountService.find(kapuaMessage.getScopeId());
         Device device = deviceRegistryService.find(account.getId(),
-                                                   kapuaMessage.getDeviceId());
+                kapuaMessage.getDeviceId());
 
         kuraChannel.setScope(account.getName());
         kuraChannel.setClientId(device.getClientId());
@@ -68,13 +66,11 @@ public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessag
         //
         // Kura Message
         return new KuraMessage<KuraChannel, KuraPayload>(kuraChannel,
-                                                         new Date(),
-                                                         kuraPayload);
+                new Date(),
+                kuraPayload);
     }
 
-    private KuraDataChannel translate(KapuaChannel kapuaChannel)
-        throws KapuaException
-    {
+    private KuraDataChannel translate(KapuaChannel kapuaChannel) throws KapuaException {
         KuraDataChannel kuraChannel = new KuraDataChannel();
         kuraChannel.setSemanticChannelParts(kapuaChannel.getSemanticParts());
 
@@ -83,9 +79,7 @@ public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessag
         return kuraChannel;
     }
 
-    private KuraPayload translate(KapuaPayload kapuaPayload)
-        throws KapuaException
-    {
+    private KuraPayload translate(KapuaPayload kapuaPayload) throws KapuaException {
         KuraPayload kuraPayload = new KuraPayload();
         kuraPayload.getMetrics().putAll(kapuaPayload.getProperties());
         kuraPayload.setBody(kapuaPayload.getBody());
@@ -95,8 +89,7 @@ public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessag
         return kuraPayload;
     }
 
-    private KuraPosition translate(KapuaPosition position)
-    {
+    private KuraPosition translate(KapuaPosition position) {
         KuraPosition kuraPosition = new KuraPosition();
 
         kuraPosition.setAltitude(position.getAltitude());
@@ -115,14 +108,12 @@ public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessag
     }
 
     @Override
-    public Class<KapuaMessage> getClassFrom()
-    {
+    public Class<KapuaMessage> getClassFrom() {
         return KapuaMessage.class;
     }
 
     @Override
-    public Class<KuraMessage> getClassTo()
-    {
+    public Class<KuraMessage> getClassTo() {
         return KuraMessage.class;
     }
 

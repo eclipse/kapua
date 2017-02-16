@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
@@ -18,10 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
@@ -32,9 +30,6 @@ import org.eclipse.kapua.service.device.management.packages.message.internal.Pac
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestChannel;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestMessage;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestPayload;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link PackageRequestMessage} to {@link KuraRequestMessage}
@@ -42,17 +37,12 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorAppPackageKapuaKura extends Translator<PackageRequestMessage, KuraRequestMessage> {
+public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static Map<PackageAppProperties, PackageMetrics> propertiesDictionary;
+    private static final Map<PackageAppProperties, PackageMetrics> propertiesDictionary = new HashMap<>();
 
-    /**
-     * Constructor
-     */
-    public TranslatorAppPackageKapuaKura() {
-        propertiesDictionary = new HashMap<>();
-
+    static {
         propertiesDictionary.put(PackageAppProperties.APP_NAME, PackageMetrics.APP_ID);
         propertiesDictionary.put(PackageAppProperties.APP_VERSION, PackageMetrics.APP_VERSION);
 
@@ -77,36 +67,8 @@ public class TranslatorAppPackageKapuaKura extends Translator<PackageRequestMess
 
     }
 
-    @Override
-    public KuraRequestMessage translate(PackageRequestMessage kapuaMessage)
-            throws KapuaException {
-        //
-        // Kura channel
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.find(kapuaMessage.getScopeId());
 
-        DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceService.find(kapuaMessage.getScopeId(),
-                kapuaMessage.getDeviceId());
-
-        KuraRequestChannel kuraRequestChannel = translate(kapuaMessage.getChannel());
-        kuraRequestChannel.setScope(account.getName());
-        kuraRequestChannel.setClientId(device.getClientId());
-
-        //
-        // Kura payload
-        KuraRequestPayload kuraPayload = translate(kapuaMessage.getPayload());
-
-        //
-        // Return Kura Message
-        return new KuraRequestMessage(kuraRequestChannel,
-                kapuaMessage.getReceivedOn(),
-                kuraPayload);
-    }
-
-    private KuraRequestChannel translate(PackageRequestChannel kapuaChannel)
-            throws KapuaException {
+    protected KuraRequestChannel translateChannel(PackageRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
@@ -143,8 +105,7 @@ public class TranslatorAppPackageKapuaKura extends Translator<PackageRequestMess
         return kuraRequestChannel;
     }
 
-    private KuraRequestPayload translate(PackageRequestPayload kapuaPayload)
-            throws KapuaException {
+    protected KuraRequestPayload translatePayload(PackageRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         Map<String, Object> metrics = kuraRequestPayload.getMetrics();
