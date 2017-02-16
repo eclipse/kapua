@@ -52,6 +52,18 @@ public class GwtCredential extends GwtEntityModel {
         set("credentialType", credentialType);
     }
 
+    public String getSubjectType() {
+        return get("subjectType");
+    }
+
+    public GwtSubjectType getSubjectTypeEnum() {
+        return get("subjectTypeEnum");
+    }
+
+    public void setSubjectType(String subjectType) {
+        set("subjectType", subjectType);
+    }
+
     public String getCredentialKey() {
         return get("credentialKey");
     }

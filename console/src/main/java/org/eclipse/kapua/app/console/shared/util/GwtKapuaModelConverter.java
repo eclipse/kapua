@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.shared.model.authorization.*;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
@@ -29,6 +30,9 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
+import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
+import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
 import org.eclipse.kapua.service.authorization.access.*;
@@ -55,9 +59,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -132,13 +133,13 @@ public class GwtKapuaModelConverter {
     }
 
     /**
-     * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
+     * Converts a {@link GwtUserQuery} into a {@link UserQuery} object for backend usage
      * 
      * @param loadConfig
      *            the load configuration
-     * @param gwtRoleQuery
-     *            the {@link GwtRoleQuery} to convert
-     * @return the converted {@link RoleQuery}
+     * @param gwtUserQuery
+     *            the {@link GwtUserQuery} to convert
+     * @return the converted {@link UserQuery}
      * @since 1.0.0
      */
     public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
@@ -158,6 +159,33 @@ public class GwtKapuaModelConverter {
         //
         // Return converted
         return userQuery;
+    }
+
+    /**
+     * Converts a {@link GwtCredentialQuery} into a {@link CredentialQuery} object for backend usage
+     *
+     * @param loadConfig         the load configuration
+     * @param gwtCredentialQuery the {@link GwtCredentialQuery} to convert
+     * @return the converted {@link CredentialQuery}
+     * @since 1.0.0
+     */
+    public static CredentialQuery convertCredentialQuery(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) {
+
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        // Convert query
+        CredentialQuery credentialQuery = credentialFactory.newQuery(convert(gwtCredentialQuery.getScopeId()));
+        if (gwtCredentialQuery.getKey() != null && !gwtCredentialQuery.getKey().trim().isEmpty()) {
+            credentialQuery.setPredicate(new AttributePredicate<String>(CredentialPredicates.CREDENTIAL_KEY, gwtCredentialQuery.getKey(), Operator.LIKE));
+        }
+        credentialQuery.setOffset(loadConfig.getOffset());
+        credentialQuery.setLimit(loadConfig.getLimit());
+
+        //
+        // Return converted
+        return credentialQuery;
     }
 
     /**
