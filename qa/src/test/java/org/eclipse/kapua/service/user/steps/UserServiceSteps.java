@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,12 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -44,6 +47,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
+import org.eclipse.kapua.service.common.steps.CommonTestData;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserService;
@@ -51,12 +55,18 @@ import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 
-import java.math.BigInteger;
-import java.util.*;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
+@ScenarioScoped
 public class UserServiceSteps extends KapuaTest {
 
     /**
@@ -100,34 +110,19 @@ public class UserServiceSteps extends KapuaTest {
     private AccessInfoService accessInfoService;
 
     /**
-     * Check if exception was fired in step.
+     * Scenario scope user data.
      */
-    private boolean isException;
+    private final UserTestData userData;
+    private final CommonTestData commonData;
 
-    /**
-     * One of two users used in tests - A
-     */
-    ComparableUser userA = null;
-
-    /**
-     * One of two users used in tests - B
-     */
-    ComparableUser userB = null;
-
-    /**
-     * Account that was created by last Account creation step.
-     */
-    private Account lastAccount;
-
-    /**
-     * User that was created by last User creation step.
-     */
-    private ComparableUser lastUser;
+    @Inject
+    public UserServiceSteps(UserTestData userData, CommonTestData commonData) {
+        this.userData = userData;
+        this.commonData = commonData;
+    }
 
     @Before
     public void beforeScenario(Scenario scenario) throws KapuaException {
-
-        this.isException = false;
 
         // Create User Service tables
         enableH2Connection();
@@ -140,6 +135,9 @@ public class UserServiceSteps extends KapuaTest {
         accountService = locator.getService(AccountService.class);
         credentialService = locator.getService(CredentialService.class);
         accessInfoService = locator.getService(AccessInfoService.class);
+
+        userData.clearData();
+        commonData.clearData();
     }
 
     @After
@@ -156,10 +154,10 @@ public class UserServiceSteps extends KapuaTest {
         TestAccount testAccount = accountList.get(0);
         // If accountId is not set in account list, use last created Account for scope id
         if (testAccount.getScopeId() == null) {
-            testAccount.setScopeId(lastAccount.getId().getId());
+            testAccount.setScopeId(userData.lastAccount.getId().getId());
         }
 
-        lastAccount = createAccount(testAccount);
+        userData.lastAccount = createAccount(testAccount);
     }
 
     @Given("^Credentials$")
@@ -171,29 +169,29 @@ public class UserServiceSteps extends KapuaTest {
 
     @Given("^Permissions$")
     public void givenPermissions(List<TestPermission> permissionList) throws Exception {
-        createPermissions(permissionList, lastUser, lastAccount);
+        createPermissions(permissionList, userData.lastUser, userData.lastAccount);
     }
 
     @Given("^User A$")
     public void givenUserA(List<TestUser> userList) throws Exception {
         // User is created within account that was last created in steps
-        HashSet<ComparableUser> createdList = createUsersInList(userList, lastAccount);
+        HashSet<ComparableUser> createdList = createUsersInList(userList, userData.lastAccount);
         Iterator<ComparableUser> userIterator = createdList.iterator();
         while (userIterator.hasNext()) {
-            userA = userIterator.next();
+            userData.userA = userIterator.next();
         }
-        lastUser = userA;
+        userData.lastUser = userData.userA;
     }
 
     @Given("^User B$")
     public void givenUserB(List<TestUser> userList) throws Exception {
         // User is created within account that was last created in steps
-        HashSet<ComparableUser> createdList = createUsersInList(userList, lastAccount);
+        HashSet<ComparableUser> createdList = createUsersInList(userList, userData.lastAccount);
         Iterator<ComparableUser> userIterator = createdList.iterator();
         while (userIterator.hasNext()) {
-            userB = userIterator.next();
+            userData.userB = userIterator.next();
         }
-        lastUser = userB;
+        userData.lastUser = userData.userB;
     }
 
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
@@ -212,21 +210,7 @@ public class UserServiceSteps extends KapuaTest {
                 userService.delete(userToDelete);
             }
         } catch (KapuaException e) {
-            isException = true;
-        }
-    }
-
-    @Then("^I get KapuaException$")
-    public void thenGetKapuaException() throws KapuaException {
-        if (!isException) {
-            fail("Should fail with KapuaException.");
-        }
-    }
-
-    @Then("^I don't get KapuaException$")
-    public void thenDontGetKapuaException() throws KapuaException {
-        if (isException) {
-            fail("Should not fail with KapuaException.");
+            commonData.exceptionCaught = true;
         }
     }
 
@@ -240,8 +224,10 @@ public class UserServiceSteps extends KapuaTest {
      * kapua.
      * Operation is performed in privileged mode, without access and authorization checks.
      *
-     * @param userList list of users in step
-     * @param account  account in which users are created
+     * @param userList
+     *            list of users in step
+     * @param account
+     *            account in which users are created
      * @return Set of created users as ComparableUser Set
      * @throws Exception
      */
@@ -261,7 +247,7 @@ public class UserServiceSteps extends KapuaTest {
                     users.add(new ComparableUser(user));
                 }
             } catch (KapuaException ke) {
-                isException = true;
+                commonData.exceptionCaught = true;
             }
 
             return null;
@@ -276,7 +262,8 @@ public class UserServiceSteps extends KapuaTest {
      * This is not accountId, but account under which it is created. AccountId itself
      * is created automatically.
      *
-     * @param testAccount basic data about account
+     * @param testAccount
+     *            basic data about account
      * @return Kapua Account object
      */
     private Account createAccount(TestAccount testAccount) throws Exception {
@@ -287,7 +274,7 @@ public class UserServiceSteps extends KapuaTest {
                         testAccount.getScopeId()));
                 accountList.add(account);
             } catch (KapuaException ke) {
-                isException = true;
+                commonData.exceptionCaught = true;
             }
 
             return null;
@@ -300,7 +287,8 @@ public class UserServiceSteps extends KapuaTest {
      * Create credentials for specific user, set users password.
      * It finds user by name and sets its password.
      *
-     * @param testCredentials username and open password
+     * @param testCredentials
+     *            username and open password
      * @return created credential
      */
     private Credential createCredentials(TestCredentials testCredentials) throws Exception {
@@ -314,7 +302,7 @@ public class UserServiceSteps extends KapuaTest {
                         user.getId(), testCredentials.getPassword()));
                 credentialList.add(credential);
             } catch (KapuaException ke) {
-                isException = true;
+                commonData.exceptionCaught = true;
             }
 
             return null;
@@ -326,10 +314,13 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * Creates permissions for user with specified account. Permissions are created in priveledged mode.
      *
-     * @param permissionList list of permissions for user, if targetScopeId is not set user scope that is
-     *                       specifed as account
-     * @param user           user for whom permissions are set
-     * @param account        account in which user is defined
+     * @param permissionList
+     *            list of permissions for user, if targetScopeId is not set user scope that is
+     *            specifed as account
+     * @param user
+     *            user for whom permissions are set
+     * @param account
+     *            account in which user is defined
      * @throws Exception
      */
     private void createPermissions(List<TestPermission> permissionList, ComparableUser user, Account account)
@@ -339,7 +330,7 @@ public class UserServiceSteps extends KapuaTest {
             try {
                 accessInfoService.create(accessInfoCreatorCreator(permissionList, user, account));
             } catch (KapuaException ke) {
-                isException = true;
+                commonData.exceptionCaught = true;
             }
 
             return null;
@@ -351,8 +342,10 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * Create account creator.
      *
-     * @param name    account name
-     * @param scopeId acount scope id
+     * @param name
+     *            account name
+     * @param scopeId
+     *            acount scope id
      * @return
      */
     private AccountCreator accountCreatorCreator(String name, BigInteger scopeId) {
@@ -369,9 +362,12 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * Create credential creator for user with password.
      *
-     * @param scopeId  scopeId in which user is
-     * @param userId   userId for which credetntials are set
-     * @param password open password as credetntials
+     * @param scopeId
+     *            scopeId in which user is
+     * @param userId
+     *            userId for which credetntials are set
+     * @param password
+     *            open password as credetntials
      * @return credential creator used for creating credentials
      */
     private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password) {
@@ -402,13 +398,16 @@ public class UserServiceSteps extends KapuaTest {
      * Create accessInfoCreator instance with data about user permissions.
      * If target scope is not defined in permission list use account scope.
      *
-     * @param permissionList list of all permissions
-     * @param user           user for which permissions are set
-     * @param account        that user belongs to
+     * @param permissionList
+     *            list of all permissions
+     * @param user
+     *            user for which permissions are set
+     * @param account
+     *            that user belongs to
      * @return AccessInfoCreator instance for creating user permissions
      */
     private AccessInfoCreator accessInfoCreatorCreator(List<TestPermission> permissionList,
-                                                       ComparableUser user, Account account) {
+            ComparableUser user, Account account) {
 
         PermissionFactory permissionFactory = new PermissionFactoryImpl();
         AccessInfoCreator accessInfoCreator = new AccessInfoFactoryImpl().newCreator(account.getId());

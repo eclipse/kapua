@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
+import java.math.BigInteger;
+
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.service.authorization.permission.Actions;
-
-import java.math.BigInteger;
 
 /**
  * Data object used in Gherkin to transfer Permission data.
