@@ -26,25 +26,6 @@
         <docker.account>kapua</docker.account>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>${docker.account}/kapua-liquibase</name>
-                            <build>
-                                <dockerFileDir>${project.basedir}/src/main/database</dockerFileDir>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <profiles>
         <profile>
             <id>liquibase</id>
@@ -82,26 +63,6 @@
                         </executions>
                     </plugin>
                 </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>docker</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <defaultGoal>clean install docker:build</defaultGoal>
-            </build>
-        </profile>
-
-        <profile>
-            <id>docker-push</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <defaultGoal>clean install docker:build docker:push</defaultGoal>
             </build>
         </profile>
     </profiles>

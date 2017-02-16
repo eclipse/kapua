@@ -3,7 +3,6 @@
 ### Build
 
     mvn -Pdocker
-    mvn -f../dev-tools/ -Pdocker
 
 ### Run
 
