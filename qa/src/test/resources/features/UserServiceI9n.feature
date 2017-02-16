@@ -50,7 +50,7 @@ Feature: User Service Integration
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-b"
-    Then I don't get KapuaException
+    Then No exception was thrown
     And I logout
 
   Scenario: Deleting user in account that is higher in hierarchy
@@ -89,5 +89,5 @@ Feature: User Service Integration
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
     When I try to delete user "kapua-a"
-    Then I get KapuaException
+    Then An exception was thrown
     And I logout
