@@ -31,6 +31,7 @@
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
         <commons-configuration.version>1.9</commons-configuration.version>
+        <commons-lang.version>3.3.2</commons-lang.version>
         <commons-pool.version>2.3</commons-pool.version>
         <eclipselink.version>2.6.3</eclipselink.version>
         <guava.version>19.0</guava.version>
@@ -475,6 +476,11 @@
                 <version>${paho.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.moxy</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
@@ -513,6 +519,11 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
