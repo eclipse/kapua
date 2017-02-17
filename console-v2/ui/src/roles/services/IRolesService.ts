@@ -10,6 +10,7 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-interface RoleSubjects {
-    roleSubject: RoleSubject[];
+interface IRolesService {
+    getRoles(): ng.IPromise<ListResult<Role>>;
+    getPermissionsByRole(roleID: string): ng.IPromise<ListResult<RolePermission>>;
 }

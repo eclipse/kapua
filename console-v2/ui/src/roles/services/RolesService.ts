@@ -10,6 +10,15 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-interface RolePermissions {
-    rolePermission: RolePermission[];
+export default class RolesService implements IRolesService {
+
+    constructor(private $http: ng.IHttpService) {
+    }
+    getRoles(): ng.IPromise<ListResult<Role>> {
+        return this.$http.get("/api/roles");
+    }
+
+    getPermissionsByRole(roleID: string): ng.IPromise<ListResult<RolePermission>> {
+        return this.$http.get("/api/roles/" + roleID + "/permission" );
+    }
 }
