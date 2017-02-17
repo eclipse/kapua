@@ -98,16 +98,10 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("credentialKey", "CREDENTIAL_KEY", 400);
+        columnConfig = new ColumnConfig("username", "USERNAME_KEY", 400);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("credentialType", "CREDENTIAL_TYPE", 400);
-        columnConfigs.add(columnConfig);
-
-        columnConfig = new ColumnConfig("", "SUBJECT_TYPE", 200);
-        columnConfigs.add(columnConfig);
-
-        columnConfig = new ColumnConfig("userId", "SUBJECT_ID", 200);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("", "EXPIRE_DATE", 200);

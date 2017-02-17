@@ -72,4 +72,12 @@ public class GwtCredential extends GwtEntityModel {
         set("credentialKey", credentialKey);
     }
 
+    public String getUsername() {
+        return get("username");
+    }
+
+    public void setUsername(String username) {
+        set("username", username);
+    }
+
 }

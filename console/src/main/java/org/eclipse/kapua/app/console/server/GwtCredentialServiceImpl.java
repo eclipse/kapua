@@ -26,9 +26,13 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -42,9 +46,12 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         // Do query
         int totalLength = 0;
         List<GwtCredential> gwtCredentials = new ArrayList<>();
+
+        Map<KapuaId, User> usersCache = new HashMap<>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
+            UserService userService = locator.getService(UserService.class);
 
             // Convert from GWT entity
             CredentialQuery credentialQuery = GwtKapuaModelConverter.convertCredentialQuery(loadConfig, gwtCredentialQuery);
@@ -62,8 +69,15 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                 }
 
                 // Converto to GWT entity
-                for (Credential u : credentials.getItems()) {
-                    gwtCredentials.add(KapuaGwtModelConverter.convert(u));
+                for (Credential credential : credentials.getItems()) {
+                    User user;
+                    if (!usersCache.containsKey(credential.getUserId())) {
+                        user = userService.find(credential.getScopeId(), credential.getUserId());
+                        usersCache.put(credential.getUserId(), user);
+                    } else {
+                        user = usersCache.get(credential.getUserId());
+                    }
+                    gwtCredentials.add(KapuaGwtModelConverter.convert(credential, user));
                 }
             }
 

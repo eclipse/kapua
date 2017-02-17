@@ -527,12 +527,15 @@ public class KapuaGwtModelConverter {
         return gwtDeviceEvent;
     }
 
-    public static GwtCredential convert(Credential credential) {
+    public static GwtCredential convert(Credential credential, User user) {
         GwtCredential gwtCredential = new GwtCredential();
         convertEntity(credential, gwtCredential);
         gwtCredential.setUserId(credential.getUserId().toCompactId());
         gwtCredential.setCredentialType(credential.getCredentialType().toString());
         gwtCredential.setCredentialKey(credential.getCredentialKey());
+        if (user != null) {
+            gwtCredential.setUsername(user.getName());
+        }
         gwtCredential.setSubjectType(GwtSubjectType.USER.toString());
         return gwtCredential;
     }
