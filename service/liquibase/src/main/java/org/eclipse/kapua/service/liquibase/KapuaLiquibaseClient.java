@@ -23,11 +23,11 @@ import java.util.List;
 
 public class KapuaLiquibaseClient {
 
-    String jdbcUrl;
+    private final String jdbcUrl;
 
-    String username;
+    private final String username;
 
-    String password;
+    private final String password;
 
     public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
         this.jdbcUrl = jdbcUrl;
