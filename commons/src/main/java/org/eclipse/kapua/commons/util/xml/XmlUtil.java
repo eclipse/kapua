@@ -42,12 +42,11 @@ import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
 
 /**
  * Xml utilities
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class XmlUtil
-{
+public class XmlUtil {
+
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(XmlUtil.class);
 
@@ -55,22 +54,20 @@ public class XmlUtil
     private static Map<Class, JAXBContext> contexts = new HashMap<>();
 
     private static JAXBContextProvider jaxbContextProvider;
-    
-    public static void setContextProvider(JAXBContextProvider provider)
-    {
-    	jaxbContextProvider = provider;
+
+    public static void setContextProvider(JAXBContextProvider provider) {
+        jaxbContextProvider = provider;
     }
-    
+
     /**
      * Marshal the object to a String
-     * 
+     *
      * @param object
      * @return
      * @throws JAXBException
      */
     public static String marshal(Object object)
-        throws JAXBException
-    {
+            throws JAXBException {
         StringWriter sw = new StringWriter();
         marshal(object, sw);
         return sw.toString();
@@ -78,15 +75,14 @@ public class XmlUtil
 
     /**
      * Marshal the object to a writer
-     * 
+     *
      * @param object
      * @param w
      * @throws JAXBException
      */
     @SuppressWarnings("rawtypes")
     public static void marshal(Object object, Writer w)
-        throws JAXBException
-    {
+            throws JAXBException {
         Class clazz = object.getClass();
         JAXBContext context = get(clazz);
 
@@ -98,12 +94,10 @@ public class XmlUtil
 
         try {
             marshaller.marshal(object, w);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (e instanceof JAXBException) {
                 throw (JAXBException) e;
-            }
-            else {
+            } else {
                 throw new MarshalException(e.getMessage(), e);
             }
         }
@@ -120,7 +114,7 @@ public class XmlUtil
 
     /**
      * Unmashal the String to an object
-     * 
+     *
      * @param s
      * @param clazz
      * @return
@@ -130,15 +124,14 @@ public class XmlUtil
      * @throws SAXException
      */
     public static <T> T unmarshal(String s, Class<T> clazz)
-        throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException
-    {
+            throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
         StringReader sr = new StringReader(s);
         return unmarshal(sr, clazz);
     }
 
     /**
      * Unmashal the reader to an object
-     * 
+     *
      * @param sr
      * @param clazz
      * @return
@@ -148,14 +141,13 @@ public class XmlUtil
      * @throws SAXException
      */
     public static <T> T unmarshal(Reader sr, Class<T> clazz)
-        throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException
-    {
+            throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
         return unmarshal(sr, clazz, null);
     }
 
     /**
      * Unmarshal method which injects the namespace URI provided in all the elements before attempting the parsing.
-     * 
+     *
      * @param s
      * @param clazz
      * @param nsUri
@@ -166,15 +158,14 @@ public class XmlUtil
      * @throws SAXException
      */
     public static <T> T unmarshal(String s, Class<T> clazz, String nsUri)
-        throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException
-    {
+            throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
         StringReader sr = new StringReader(s);
         return unmarshal(sr, clazz, nsUri);
     }
 
     /**
      * Unmarshal method which injects the namespace URI provided in all the elements before attempting the parsing.
-     * 
+     *
      * @param r
      * @param clazz
      * @param nsUri
@@ -185,10 +176,9 @@ public class XmlUtil
      * @throws SAXException
      */
     public static <T> T unmarshal(Reader r, Class<T> clazz, String nsUri)
-        throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException
-    {
-    	JAXBContext context = get(clazz);
-    	
+            throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
+        JAXBContext context = get(clazz);
+
         ValidationEventCollector valEventHndlr = new ValidationEventCollector();
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setSchema(null);
@@ -197,8 +187,7 @@ public class XmlUtil
         SAXSource saxSource;
         if (nsUri == null) {
             saxSource = new SAXSource(new InputSource(r));
-        }
-        else {
+        } else {
             boolean addNamespace = true;
             XMLReader reader = XMLReaderFactory.createXMLReader();
             XmlNamespaceFilter filter = new XmlNamespaceFilter(nsUri, addNamespace);
@@ -209,11 +198,9 @@ public class XmlUtil
         JAXBElement<T> elem = null;
         try {
             elem = unmarshaller.unmarshal(saxSource, clazz);
-        }
-        catch (JAXBException e) {
+        } catch (JAXBException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new UnmarshalException(e.getMessage(), e);
         }
 
@@ -222,11 +209,11 @@ public class XmlUtil
                 if (valEvent.getSeverity() != ValidationEvent.WARNING) {
                     // throw a new Unmarshall Exception if there is a parsing error
                     String msg = MessageFormat.format("Line {0}, Col: {1}.{2}\tError message: {3}\n\tLinked exception message:{4}",
-                                                      valEvent.getLocator().getLineNumber(),
-                                                      valEvent.getLocator().getColumnNumber(),
-                                                      LINE_SEPARATOR,
-                                                      valEvent.getMessage() != null ? valEvent.getMessage() : "",
-                                                      valEvent.getLinkedException() != null ? valEvent.getLinkedException().getMessage() : "");
+                            valEvent.getLocator().getLineNumber(),
+                            valEvent.getLocator().getColumnNumber(),
+                            LINE_SEPARATOR,
+                            valEvent.getMessage() != null ? valEvent.getMessage() : "",
+                            valEvent.getLinkedException() != null ? valEvent.getLinkedException().getMessage() : "");
                     throw new UnmarshalException(msg, valEvent.getLinkedException());
                 }
             }
@@ -236,13 +223,12 @@ public class XmlUtil
 
     /**
      * Find child element by QName
-     * 
+     *
      * @param node
      * @param qname
      * @return
      */
-    public static Element findChildElement(Node node, QName qname)
-    {
+    public static Element findChildElement(Node node, QName qname) {
         NodeList nl = node.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
 
@@ -258,31 +244,30 @@ public class XmlUtil
         }
         return null;
     }
-    
+
     /**
      * Get the jaxb context for the provided class
-     * 
+     *
      * @param clazz
      * @return
      * @throws JAXBException
      */
     @SuppressWarnings("rawtypes")
-    private static JAXBContext get(Class clazz) throws JAXBException
-    {
-//        JAXBContext context = contexts.get(clazz);
-//        if (context == null) {
-//            context = JAXBContext.newInstance(clazz);
-//            contexts.put(clazz, context);
-//        }
+    private static JAXBContext get(Class clazz) throws JAXBException {
+        //        JAXBContext context = contexts.get(clazz);
+        //        if (context == null) {
+        //            context = JAXBContext.newInstance(clazz);
+        //            contexts.put(clazz, context);
+        //        }
         JAXBContext context;
-    	try {
+        try {
             context = jaxbContextProvider.getJAXBContext();
             if (context == null) {
                 s_logger.warn("No JAXBContext found; using ");
-                context = JAXBContextFactory.createContext(new Class[]{}, null);
+                context = JAXBContextFactory.createContext(new Class[] {}, null);
             }
         } catch (KapuaException | NullPointerException ex) {
-            context = JAXBContextFactory.createContext(new Class[]{}, null);
+            context = JAXBContextFactory.createContext(new Class[] {}, null);
             s_logger.warn("No JAXBContextProvider provided or error while getting one; using default JAXBContext");
         }
         return context;
