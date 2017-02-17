@@ -472,6 +472,7 @@
 								</env>
 								<ports>
 									<port>1883</port>
+									<port>61614</port>
 								</ports>
 								<volumes>
 									<volume>/maven/data</volume>
