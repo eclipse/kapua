@@ -63,6 +63,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
     private static final Map<DeviceConfigurationAppProperties, ConfigurationMetrics> propertiesDictionary = new HashMap<>();
 
     static {
+        propertiesDictionary.put(DeviceConfigurationAppProperties.APP_NAME, ConfigurationMetrics.APP_ID);
         propertiesDictionary.put(DeviceConfigurationAppProperties.APP_VERSION, ConfigurationMetrics.APP_VERSION);
     }
 
