@@ -70,9 +70,9 @@ import cucumber.api.java.en.When;
  */
 public class AccountServiceTestSteps extends KapuaTest {
 
-    public static String DEFAULT_PATH = "src/main/sql/H2";
-    public static String DEFAULT_COMMONS_PATH = "../../../commons";
-    public static String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
+    public static final String DEFAULT_PATH = "src/main/sql/H2";
+    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    public static final String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
