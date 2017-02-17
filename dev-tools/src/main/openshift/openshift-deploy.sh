@@ -92,4 +92,5 @@ oc set image -f liquibase_job.yml "liquibase=$DOCKER_ACCOUNT/kapua-liquibase:lat
 
 oc expose svc/kapua-console
 oc expose svc/kapua-api
+oc expose svc/kapua-broker --port 61614
 
