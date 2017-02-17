@@ -34,9 +34,6 @@ public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements Devic
     private DeviceQueryImpl() {
         super();
 
-        addFetchAttributes(DevicePredicates.CONNECTION);
-        addFetchAttributes(DevicePredicates.LAST_EVENT);
-
         setSortCriteria(new FieldSortCriteria(DevicePredicates.CLIENT_ID, SortOrder.ASCENDING));
     }
 
