@@ -12,7 +12,19 @@
 *                                                                               
 *******************************************************************************/
 -->
-Roles view! <br>
+<!-- to be replaced with Patternfly table component -->
 
-
-<a ui-sref="kapua.roles.detail({ idRole: 'a68s8d4s68-dasd8asd-gsdas4482asd54' })">Roles Details</a>
+<table>
+    <tr>
+        <th class="col-md-3">id</th>
+        <th class="col-md-3">name</th>
+        <th class="col-md-3">createdBy</th>
+        <th class="col-md-3">createdOn</th>
+    </tr>
+    <tr ng-repeat="role in vm.roles">
+        <td class="col-md-3"><a ui-sref="kapua.roles.detail({ idRole: role.id })">{{:: role.id }}</a></td>
+        <td class="col-md-3">{{:: role.name }}</td>
+        <td class="col-md-3">{{:: role.createdBy }}</td>
+        <td class="col-md-3">{{:: role.createdOn }}</td>
+    </tr>
+</table>

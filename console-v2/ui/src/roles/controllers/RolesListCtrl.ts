@@ -10,21 +10,18 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-interface IRoleResponse {
-    items: {
-        item: IRole[];
-    };
-}
-
-interface IRole {
-}
 
 export default class RolesListCtrl {
-    private roles: IRole[];
-    constructor(private $http: angular.IHttpService,
-        localStorageService: angular.local.storage.ILocalStorageService) {
-        // this.$http.get("/api/users").then((responseData: angular.IHttpPromiseCallbackArg<IRoleResponse>) => {
-        //     this.roles = responseData.data.items.item;
-        // });
+    private roles: Role[];
+    constructor(private rolesService: IRolesService) {
+        this.getRoles();
+
+    }
+
+
+    getRoles(): void {
+        this.rolesService.getRoles().then((responseData: ng.IHttpPromiseCallbackArg<ListResult<Role>>) => {
+            this.roles = responseData.data.items.item;
+        });
     }
 }

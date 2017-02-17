@@ -12,9 +12,18 @@
 *******************************************************************************/
 export default class RoleDetailPermissionsCtrl {
   private roleId: string;
+  private permissions: RolePermission[];
 
   constructor(private $stateParams: angular.ui.IStateParamsService,
-              private $http: angular.IHttpService) {
+    private $http: angular.IHttpService,
+    private rolesService: IRolesService) {
     this.roleId = $stateParams["idRole"];
+    this.getPermissonsByRole(this.roleId);
+  }
+
+  getPermissonsByRole(roleID: string): void {
+    this.rolesService.getPermissionsByRole(roleID).then((permissionsResponse: ng.IHttpPromiseCallbackArg<ListResult<RolePermission>>) => {
+      this.permissions = permissionsResponse.data.items.item;
+    });
   }
 }

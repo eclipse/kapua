@@ -15,3 +15,25 @@
 <div>
   Role permissions list. id: {{ vm.roleId }}
 </div>
+
+<!-- to be replaced with Patternfly table component -->
+<table>
+    <tr>
+        <th class="col-md-2">ID</th>
+        <th class="col-md-2">Domain</th>
+        <th class="col-md-2">Action</th>
+        <th class="col-md-2">Target Scope Id</th>
+        <th class="col-md-2">Target Group</th>
+        <th class="col-md-2">Added By</th>
+        <th class="col-md-2">Added On</th>
+    </tr>
+    <tr ng-repeat="permission in vm.permissions">
+        <td class="col-md-2">{{:: permission.id }}</td>
+        <td class="col-md-2">{{:: permission.permission.domain }}</td>
+        <td class="col-md-2">Action</a></td>
+        <td class="col-md-2">{{:: permission.scopeId }}</td>
+        <td class="col-md-2">Group</a></td>
+        <td class="col-md-2">{{:: permission.createdBy }}</td>
+        <td class="col-md-2">{{:: permission.createdOn }}</td>
+    </tr>
+</table>

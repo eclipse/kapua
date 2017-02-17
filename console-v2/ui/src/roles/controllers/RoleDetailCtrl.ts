@@ -12,9 +12,9 @@
 *******************************************************************************/
 export default class RoleDetailCtrl {
     private role: Role;
-    private roleDescription: RoleDescriptions;
-    private RolePermissions: RolePermissions;
-    private roleSubjects: RoleSubjects;
+    private roleDescription: RoleDescription[];
+    private RolePermissions: RolePermission[];
+    private roleSubjects: RoleSubject[];
     private descriptionStatus = {
         "title": "Description",
         "count": 0,
