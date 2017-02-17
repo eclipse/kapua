@@ -260,6 +260,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             deviceQuery.setPredicate(andPred);
 
+            deviceQuery.addFetchAttributes(DevicePredicates.CONNECTION);
+            deviceQuery.addFetchAttributes(DevicePredicates.LAST_EVENT);
+
             KapuaListResult<Device> devices = deviceRegistryService.query(deviceQuery);
             totalResult = (int) deviceRegistryService.count(deviceQuery);
             for (Device d : devices.getItems()) {
