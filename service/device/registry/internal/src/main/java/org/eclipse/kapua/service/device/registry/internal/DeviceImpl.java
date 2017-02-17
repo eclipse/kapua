@@ -223,8 +223,8 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     @Override
     public void setConnection(DeviceConnection connection) throws KapuaException {
-        this.connection = connectionId != null ? new DeviceConnectionImpl(connection) : null;
-        setConnectionId(connectionId != null ? connection.getId() : null);
+        this.connection = connection != null ? new DeviceConnectionImpl(connection) : null;
+        setConnectionId(connection != null ? connection.getId() : null);
     }
 
     @Override
