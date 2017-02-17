@@ -12,13 +12,13 @@
 package org.eclipse.kapua.commons.configuration.metatype;
 
 /**
- * Password
+ * Contains password used by devices connecting to Kapua.
  *
  * @since 1.0
  */
 public class Password {
 
-    private String password;
+    private final String password;
 
     /**
      * Constructor
@@ -26,7 +26,6 @@ public class Password {
      * @param password
      */
     public Password(String password) {
-        super();
         this.password = password;
     }
 
@@ -43,4 +42,5 @@ public class Password {
     public String toString() {
         return password;
     }
+
 }
