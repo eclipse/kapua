@@ -11,6 +11,10 @@ package org.eclipse.kapua.service.liquibase;
 
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,9 +22,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KapuaLiquibaseClientTest {
 
     @Test
-    public void shouldExecuteScriptFromClasspath() {
-        List<String> updateOutput = new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
-        assertThat(updateOutput).contains("-- Lock Database");
+    public void shouldCreateTable() throws Exception {
+        // When
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
+
+        // Then
+        Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "", "");
+        ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
+        List<String> tables = new LinkedList<>();
+        while(sqlResults.next()) {
+            tables.add(sqlResults.getString(1));
+        }
+        assertThat(tables).contains("act_account");
     }
 
 }

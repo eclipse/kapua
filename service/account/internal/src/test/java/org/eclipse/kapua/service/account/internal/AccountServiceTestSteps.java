@@ -45,6 +45,7 @@ import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Mockito;
@@ -71,7 +72,6 @@ public class AccountServiceTestSteps extends KapuaTest {
 
     public static String DEFAULT_PATH = "src/main/sql/H2";
     public static String DEFAULT_COMMONS_PATH = "../../../commons";
-    public static String CREATE_ACCOUNT_TABLES = "act_*.sql";
     public static String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
@@ -122,7 +122,7 @@ public class AccountServiceTestSteps extends KapuaTest {
 
         // Create the account service tables
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-        scriptSession(AccountEntityManagerFactory.getInstance(), CREATE_ACCOUNT_TABLES);
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
         XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
 
         MockedLocator mockLocator = (MockedLocator) locator;

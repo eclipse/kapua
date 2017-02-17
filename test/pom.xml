@@ -130,8 +130,7 @@
 	                        <detail>true</detail>
 							<srcFiles>
 	                        	<srcFile>../service/account/internal/src/main/sql/H2/act_account_drop.sql</srcFile>
-								<srcFile>../service/account/internal/src/main/sql/H2/act_account_create.sql</srcFile>
-								<srcFile>../service/account/internal/src/main/sql/H2/act_account_seed.sql</srcFile>
+								<srcFile>../service/account/internal/src/main/resources/liquibase.sql</srcFile>
 								<srcFile>../service/security/shiro/src/main/sql/H2/atht_credential_drop.sql</srcFile>
 								<srcFile>../service/security/shiro/src/main/sql/H2/atht_credential_create.sql</srcFile>
 								<srcFile>../service/security/shiro/src/main/sql/H2/atht_credential_seed.sql</srcFile>

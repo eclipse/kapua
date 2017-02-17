@@ -18,10 +18,6 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.apache.commons.lang3.SystemUtils.LINE_SEPARATOR;
 
 public class KapuaLiquibaseClient {
 
@@ -37,13 +33,11 @@ public class KapuaLiquibaseClient {
         this.password = password;
     }
 
-    public List<String> update() {
+    public void update() {
         try {
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
             Liquibase liquibase = new Liquibase("liquibase.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(connection));
-            StringWriter output = new StringWriter();
-            liquibase.update("", output);
-            return Arrays.asList(output.toString().split(LINE_SEPARATOR));
+            liquibase.update(null);
         } catch (LiquibaseException | SQLException e) {
             throw new RuntimeException(e);
         }
