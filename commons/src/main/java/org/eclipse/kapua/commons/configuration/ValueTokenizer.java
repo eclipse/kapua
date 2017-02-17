@@ -39,7 +39,7 @@ public class ValueTokenizer {
     private static final char DELIMITER = ',';
     private static final char ESCAPE = '\\';
 
-    private final List<String> values = new ArrayList<String>();
+    private final List<String> values = new ArrayList<>();
 
     /**
      * Constructs a tokenizer for a string
