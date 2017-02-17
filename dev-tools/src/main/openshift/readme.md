@@ -30,6 +30,31 @@ Don't forget to start OpenShift server, log into it and creating new project bef
     oc login --insecure-skip-tls-verify=true https://localhost:8443 -u admin -p admin
     oc new-project eclipse-kapua
 
+## Ensuring enough entropy
+
+It may happen that firing up docker containers and starting up application which use
+Java's `SecureRandom` (which happens in the next step a few times) run dry the Linux
+Kernel's entropy pool. The result is that some application will block during startup
+(even longer than 30 seconds) which will trigger OpenShift to kill the pods since they
+are considered unresponsive (which they actually are).
+
+You can check the amount of entropy the kernel has available with the following command:
+
+    cat /proc/sys/kernel/random/entropy_avail
+
+If this number drops to zero, then the kernel has run out of entropy and application will
+block.
+
+One solution (there are a few others) is to install `haveged` a user-space daemon
+which provides entropy to the kernel.
+
+On CentOS 7 it can be installed with the following commands (all as `root`):
+
+    yum install haveged
+    systemctl enable --now haveged
+    
+For more information about `haveged` see http://www.issihosts.com/haveged/
+
 ## Starting Kapua on OpenShift
 
 Execute the following command:
