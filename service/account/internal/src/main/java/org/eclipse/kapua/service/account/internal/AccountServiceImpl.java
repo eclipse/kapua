@@ -42,9 +42,8 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 /**
  * Account service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService {
@@ -326,7 +325,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
 
     /**
      * Find an account without authorization.
-     * 
+     *
      * @param accountId
      * @return
      * @throws KapuaException

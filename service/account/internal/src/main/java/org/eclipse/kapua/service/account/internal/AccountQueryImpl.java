@@ -19,28 +19,24 @@ import org.eclipse.kapua.service.account.AccountQuery;
 
 /**
  * User roles factory service implementation.
- * 
+ *
  * @since 1.0
- * 
  */
-public class AccountQueryImpl extends AbstractKapuaQuery<Account> implements AccountQuery
-{
+public class AccountQueryImpl extends AbstractKapuaQuery<Account> implements AccountQuery {
 
     /**
      * Constructor
      */
-    private AccountQueryImpl()
-    {
+    private AccountQueryImpl() {
         super();
     }
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
-    public AccountQueryImpl(KapuaId scopeId)
-    {
+    public AccountQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }
