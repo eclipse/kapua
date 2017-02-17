@@ -12,29 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.constraints.Null;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.MarshalException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.util.ValidationEventCollector;
-import javax.xml.namespace.QName;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.sax.SAXSource;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
@@ -46,6 +23,22 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import javax.xml.bind.*;
+import javax.xml.bind.util.ValidationEventCollector;
+import javax.xml.namespace.QName;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.sax.SAXSource;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
 
 /**
  * Xml utilities
@@ -228,9 +221,10 @@ public class XmlUtil
             for (ValidationEvent valEvent : valEventHndlr.getEvents()) {
                 if (valEvent.getSeverity() != ValidationEvent.WARNING) {
                     // throw a new Unmarshall Exception if there is a parsing error
-                    String msg = MessageFormat.format("Line {0}, Col: {1}.\n\tError message: {2}\n\tLinked exception message:{3}",
+                    String msg = MessageFormat.format("Line {0}, Col: {1}.{2}\tError message: {3}\n\tLinked exception message:{4}",
                                                       valEvent.getLocator().getLineNumber(),
                                                       valEvent.getLocator().getColumnNumber(),
+                                                      LINE_SEPARATOR,
                                                       valEvent.getMessage() != null ? valEvent.getMessage() : "",
                                                       valEvent.getLinkedException() != null ? valEvent.getLinkedException().getMessage() : "");
                     throw new UnmarshalException(msg, valEvent.getLinkedException());
