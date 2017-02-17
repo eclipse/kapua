@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.apache.commons.lang3.SystemUtils.LINE_SEPARATOR;
+
 public class KapuaLiquibaseClient {
 
     private final String jdbcUrl;
@@ -41,7 +43,7 @@ public class KapuaLiquibaseClient {
             Liquibase liquibase = new Liquibase("liquibase.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(connection));
             StringWriter output = new StringWriter();
             liquibase.update("", output);
-            return Arrays.asList(output.toString().split("\n"));
+            return Arrays.asList(output.toString().split(LINE_SEPARATOR));
         } catch (LiquibaseException | SQLException e) {
             throw new RuntimeException(e);
         }
