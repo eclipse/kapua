@@ -47,9 +47,7 @@
                 <exclude>lib/geronimo-jta_1.0.1B_spec*</exclude>
                 <exclude>lib/optional/activeio-core-*</exclude>
                 <exclude>lib/optional/activemq-amqp-*</exclude>
-                <exclude>lib/optional/activemq-http*</exclude>
                 <exclude>lib/optional/activemq-jdbc-store*</exclude>
-                <exclude>lib/optional/activemq-jms-pool*</exclude>
                 <exclude>lib/optional/activemq-leveldb-store*</exclude>
                 <exclude>lib/optional/activemq-log4j-appender*</exclude>
                 <exclude>lib/optional/activemq-shiro*</exclude>
@@ -84,8 +82,16 @@
                 <exclude>lib/optional/xpp3-*</exclude>
                 <exclude>lib/optional/xstream-*</exclude>
                 <exclude>lib/optional/zookeeper-*</exclude>
-                <exclude>lib/web/</exclude>
-
+                <exclude>lib/web/apache*</exclude>
+                <exclude>lib/web/taglibs*</exclude>
+                <exclude>lib/web/spring*</exclude>
+                <exclude>lib/web/org.eclipse*</exclude>
+                <exclude>lib/web/json-simple*</exclude>
+                <exclude>lib/web/jolokia*</exclude>
+                <exclude>lib/web/rome*</exclude>
+                <exclude>lib/web/jdom*</exclude>
+                <exclude>lib/web/geronimo*</exclude>
+                <exclude>lib/web/asm*</exclude>
                 <exclude>bin/</exclude>
 
                 <exclude>examples/</exclude>

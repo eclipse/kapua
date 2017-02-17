@@ -442,6 +442,7 @@
             <transportConnector name="mqtt"  uri="mqtt+nio://0.0.0.0:1883?transport.maximumConnections=1000&amp;transport.socketBufferSize=131072&amp;transport.ioBufferSize=16384&amp;transport.activeMQSubscriptionPrefetch=32766&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
             <transportConnector name="mqtts" uri="mqtt+nio+ssl://0.0.0.0:8883?transport.maximumConnections=1000&amp;transport.socketBufferSize=131072&amp;transport.ioBufferSize=16384&amp;transport.activeMQSubscriptionPrefetch=32766&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
             <transportConnector name="tcp"   uri="tcp://0.0.0.0:61616?transport.maximumConnections=1000&amp;transport.socketBufferSize=131072&amp;ioBufferSize=16384&amp;transport.activeMQSubscriptionPrefetch=32766&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
+            <transportConnector name="ws" uri="ws://0.0.0.0:61614?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;transport.publishDollarTopics=true&amp;transport.subscriptionStrategy=mqtt-virtual-topic-subscriptions"/>
         </transportConnectors>
     </broker>
 </beans>
