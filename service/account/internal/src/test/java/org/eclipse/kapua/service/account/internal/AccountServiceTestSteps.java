@@ -350,7 +350,7 @@ public class AccountServiceTestSteps extends KapuaTest {
     public void deleteRandomAccount() {
         try {
             exceptionCaught = false;
-            accountService.delete(rootScopeId, new KapuaEid(BigInteger.valueOf(new Random().nextLong())));
+            accountService.delete(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())));
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -377,7 +377,7 @@ public class AccountServiceTestSteps extends KapuaTest {
     @When("^I search for a random account Id$")
     public void findRandomAccountId()
             throws KapuaException {
-        account = accountService.find(rootScopeId, new KapuaEid(BigInteger.valueOf(new Random().nextLong())));
+        account = accountService.find(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())));
     }
 
     @When("^I set the following parameters$")
