@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -142,14 +141,6 @@ public interface Device extends KapuaUpdatableEntity {
     public <C extends DeviceConnection> C getConnection();
 
     /**
-     * Set the {@link DeviceConnection}
-     * 
-     * @param connection
-     * @throws KapuaException
-     */
-    public <C extends DeviceConnection> void setConnection(C connection) throws KapuaException;
-
-    /**
      * Get the connection status
      * 
      * @return
@@ -202,14 +193,6 @@ public interface Device extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "lastEvent")
     public <E extends DeviceEvent> E getLastEvent();
-
-    /**
-     * Sets the last {@link DeviceEvent} for this {@link Device}.
-     * 
-     * @param lastEvent
-     *            The last {@link DeviceEvent} for this {@link Device}.
-     */
-    public <E extends DeviceEvent> void setLastEvent(E lastEvent) throws KapuaException;
 
     /**
      * Get the serial number

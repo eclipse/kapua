@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
 
 /**
- * Device DAO
+ * {@link Device} DAO
  * 
  * @since 1.0.0
  *
@@ -135,12 +135,12 @@ public class DeviceDAO extends ServiceDAO {
         if (deviceConnectionFetchAdded || deviceLastEventFetchAdded) {
             for (Device d : results.getItems()) {
                 if (deviceConnectionFetchAdded) {
-                    d.setConnection(null);
+                    ((DeviceImpl) d).setConnection(null);
                     query.getFetchAttributes().remove(DevicePredicates.CONNECTION);
                 }
 
                 if (deviceLastEventFetchAdded) {
-                    d.setLastEvent(null);
+                    ((DeviceImpl) d).setLastEvent(null);
                     query.getFetchAttributes().remove(DevicePredicates.LAST_EVENT);
                 }
             }
