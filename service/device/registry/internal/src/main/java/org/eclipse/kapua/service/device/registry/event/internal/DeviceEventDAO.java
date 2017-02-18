@@ -24,15 +24,14 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 
 /**
  * Device event DAO
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class DeviceEventDAO extends ServiceDAO {
 
     /**
      * Create a new {@link DeviceEvent}
-     * 
+     *
      * @param em
      * @param deviceEventCreator
      * @return
@@ -53,7 +52,7 @@ public class DeviceEventDAO extends ServiceDAO {
 
     /**
      * Find the device event by device event identifier
-     * 
+     *
      * @param em
      * @param deviceEventId
      * @return
@@ -64,7 +63,7 @@ public class DeviceEventDAO extends ServiceDAO {
 
     /**
      * Return the device event list matching the provided query
-     * 
+     *
      * @param em
      * @param query
      * @return
@@ -77,7 +76,7 @@ public class DeviceEventDAO extends ServiceDAO {
 
     /**
      * Return the device event count matching the provided query
-     * 
+     *
      * @param em
      * @param query
      * @return
@@ -90,11 +89,10 @@ public class DeviceEventDAO extends ServiceDAO {
 
     /**
      * Delete the device event by device event identifier
-     * 
+     *
      * @param em
      * @param deviceEventId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link DeviceEvent} is not found.
+     * @throws KapuaEntityNotFoundException If the {@link DeviceEvent} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceEventId)
             throws KapuaEntityNotFoundException {

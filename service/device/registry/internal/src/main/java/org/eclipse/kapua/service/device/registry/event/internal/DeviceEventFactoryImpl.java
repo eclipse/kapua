@@ -21,27 +21,24 @@ import java.util.Date;
 
 /**
  * Device event factory service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
-public class DeviceEventFactoryImpl implements DeviceEventFactory
-{
+public class DeviceEventFactoryImpl implements DeviceEventFactory {
 
     @Override
     public DeviceEventCreator newCreator(KapuaId scopeId, KapuaId deviceId, Date receivedOn, String resource) {
-    	DeviceEventCreatorImpl creator = new DeviceEventCreatorImpl(scopeId);
+        DeviceEventCreatorImpl creator = new DeviceEventCreatorImpl(scopeId);
         creator.setDeviceId(deviceId);
-    	creator.setAction(KapuaMethod.CREATE);
+        creator.setAction(KapuaMethod.CREATE);
         creator.setReceivedOn(new Date(receivedOn.getTime()));
         creator.setResource(resource);
         return creator;
     }
 
     @Override
-    public DeviceEventQuery newQuery(KapuaId scopeId)
-    {
+    public DeviceEventQuery newQuery(KapuaId scopeId) {
         return new DeviceEventQueryImpl(scopeId);
     }
 

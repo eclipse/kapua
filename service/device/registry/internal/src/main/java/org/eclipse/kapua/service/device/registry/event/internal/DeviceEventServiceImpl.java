@@ -32,13 +32,11 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 
 /**
  * Device event service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
-public class DeviceEventServiceImpl extends AbstractKapuaService implements DeviceEventService
-{
+public class DeviceEventServiceImpl extends AbstractKapuaService implements DeviceEventService {
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
@@ -47,7 +45,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
     /**
      * Constructor
-     * 
+     *
      * @param authorizationService
      * @param permissionFactory
      */
