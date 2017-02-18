@@ -52,6 +52,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-liquibase</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -108,8 +112,7 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>src/main/sql/H2/usr_user_drop.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/usr_user_create.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/usr_user_seed.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase.sql</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>

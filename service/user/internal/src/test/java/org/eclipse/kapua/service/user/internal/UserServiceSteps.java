@@ -37,6 +37,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
@@ -66,7 +67,6 @@ public class UserServiceSteps extends KapuaTest {
     private UserService userService = null;
 
     public static String DEFAULT_COMMONS_PATH = "../../../commons/";
-    public static String DEFAULT_FILTER = "usr_*.sql";
     public static String DROP_FILTER = "usr_*_drop.sql";
 
     private static int DEFAULT_SCOPE_ID = 42;
@@ -112,7 +112,7 @@ public class UserServiceSteps extends KapuaTest {
 
         // Create User Service tables
         enableH2Connection();
-        scriptSession((AbstractEntityManagerFactory) UserEntityManagerFactory.getInstance(), DEFAULT_FILTER);
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         // Create system configuration tables
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
