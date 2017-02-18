@@ -83,7 +83,7 @@ public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEve
     @Override
     public Date getSentOn()
     {
-        return sentOn;
+        return new Date(sentOn.getTime());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEve
     @Override
     public Date getReceivedOn()
     {
-        return receivedOn;
+        return new Date(receivedOn.getTime());
     }
 
     @Override
