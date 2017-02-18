@@ -56,14 +56,15 @@ import cucumber.api.java.en.When;
 
 /**
  * Implementation of Gherkin steps used in UserService.feature scenarios.
- * 
+ * <p>
  * MockedLocator is used for Location Service.
  * Mockito is used to mock other services that UserService is dependent on.
- *
  */
 public class UserServiceSteps extends KapuaTest {
 
-    /** User service is mocked in beforeScenario() */
+    /**
+     * User service is mocked in beforeScenario()
+     */
     private UserService userService = null;
 
     public static String DEFAULT_COMMONS_PATH = "../../../commons/";
@@ -71,37 +72,59 @@ public class UserServiceSteps extends KapuaTest {
 
     private static int DEFAULT_SCOPE_ID = 42;
 
-    /** User creator object used for creating new users. */
+    /**
+     * User creator object used for creating new users.
+     */
     private UserCreator userCreator;
 
-    /** Simple user object used for creation of check of returned user object. */
+    /**
+     * Simple user object used for creation of check of returned user object.
+     */
     private User user;
 
-    /** Result of user qurey in last executed step. */
+    /**
+     * Result of user qurey in last executed step.
+     */
     private UserListResult queryResult;
 
-    /** Count of users in last executed step. */
+    /**
+     * Count of users in last executed step.
+     */
     private long userCnt;
 
-    /** Check if exception was fired in step. */
+    /**
+     * Check if exception was fired in step.
+     */
     private boolean isException;
 
-    /** Currently executing scenario. */
+    /**
+     * Currently executing scenario.
+     */
     private Scenario scenario;
 
-    /** XML of metadata. */
+    /**
+     * XML of metadata.
+     */
     private KapuaTocd metadata;
 
-    /** Metadata boolean value. */
+    /**
+     * Metadata boolean value.
+     */
     private Boolean boolVal = null;
 
-    /** Metadata integer value. */
+    /**
+     * Metadata integer value.
+     */
     private Integer intVal = null;
 
-    /** Set of users that are created in step. */
+    /**
+     * Set of users that are created in step.
+     */
     private Set<ComparableUser> iHaveUsers;
 
-    /** Set of users that are found in step. */
+    /**
+     * Set of users that are found in step.
+     */
     private Set<ComparableUser> iFoundUsers;
 
     @Before
@@ -470,14 +493,13 @@ public class UserServiceSteps extends KapuaTest {
     // *******************
     // * Private Helpers *
     // *******************
+
     /**
      * Create User object with user data filed with quasi random data for user name,
      * email, display name. Scope id and user id is set to test wide id.
      *
-     * @param userId
-     *            unique user id
-     * @param scopeId
-     *            user scope id
+     * @param userId  unique user id
+     * @param scopeId user scope id
      * @return User instance
      */
     private User createUserInstance(int userId, int scopeId) {
