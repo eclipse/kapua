@@ -25,15 +25,14 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 
 /**
  * Device connection DAO
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class DeviceConnectionDAO extends ServiceDAO {
 
     /**
      * Create a new device connection
-     * 
+     *
      * @param em
      * @param deviceConnectionCreator
      * @return
@@ -52,12 +51,11 @@ public class DeviceConnectionDAO extends ServiceDAO {
 
     /**
      * Update the provided device connection
-     * 
+     *
      * @param em
      * @param deviceConnection
      * @return
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link DeviceConnection} is not found.
+     * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
      */
     public static DeviceConnection update(EntityManager em, DeviceConnection deviceConnection)
             throws KapuaException {
@@ -67,7 +65,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
 
     /**
      * Find the device connection by device connection identifier
-     * 
+     *
      * @param em
      * @param deviceConnectionId
      * @return
@@ -78,7 +76,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
 
     /**
      * Return the device connection list matching the provided query
-     * 
+     *
      * @param em
      * @param query
      * @return
@@ -91,7 +89,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
 
     /**
      * Return the device connection count matching the provided query
-     * 
+     *
      * @param em
      * @param query
      * @return
@@ -104,11 +102,10 @@ public class DeviceConnectionDAO extends ServiceDAO {
 
     /**
      * Delete the device connection by device connection identifier
-     * 
+     *
      * @param em
      * @param deviceConnectionId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link DeviceConnection} is not found.
+     * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceConnectionId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceConnectionImpl.class, deviceConnectionId);

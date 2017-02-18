@@ -21,95 +21,83 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 
 /**
  * Device connection creator service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<DeviceConnection> implements DeviceConnectionCreator
-{
+public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<DeviceConnection> implements DeviceConnectionCreator {
+
     private static final long serialVersionUID = 2740394157765904615L;
 
     @XmlElement(name = "clientId")
-    private String            clientId;
+    private String clientId;
 
     @XmlElement(name = "userId")
-    private KapuaId           userId;
+    private KapuaId userId;
 
     @XmlElement(name = "protocol")
-    private String            protocol;
+    private String protocol;
 
     @XmlElement(name = "clientIp")
-    private String            clientIp;
+    private String clientIp;
 
     @XmlElement(name = "serverIp")
-    private String            serverIp;
+    private String serverIp;
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
-    public DeviceConnectionCreatorImpl(KapuaId scopeId)
-    {
+    public DeviceConnectionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public KapuaId getUserId()
-    {
+    public KapuaId getUserId() {
         return userId;
     }
 
     @Override
-    public void setUserId(KapuaId userId)
-    {
+    public void setUserId(KapuaId userId) {
         this.userId = userId;
     }
 
     @Override
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return protocol;
     }
 
     @Override
-    public void setProtocol(String protocol)
-    {
+    public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
 
-    public String getClientIp()
-    {
+    public String getClientIp() {
         return clientIp;
     }
 
     @Override
-    public void setClientIp(String clientIp)
-    {
+    public void setClientIp(String clientIp) {
         this.clientIp = clientIp;
     }
 
     @Override
-    public String getServerIp()
-    {
+    public String getServerIp() {
         return serverIp;
     }
 
     @Override
-    public void setServerIp(String serverIp)
-    {
+    public void setServerIp(String serverIp) {
         this.serverIp = serverIp;
     }
 }

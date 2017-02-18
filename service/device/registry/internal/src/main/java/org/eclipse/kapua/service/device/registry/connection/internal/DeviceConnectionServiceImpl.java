@@ -36,13 +36,11 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
  * It includes APIs to find, list, and update devices connections associated with a scope.
- * 
+ *
  * @since 1.0
- * 
  */
 @KapuaProvider
-public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService
-{
+public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService {
 
     private static final Domain deviceConnectonDomain = new DeviceConnectionDomain();
 

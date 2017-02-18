@@ -16,12 +16,11 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSumm
 
 /**
  * Device connection summary.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceConnectionSummaryImpl implements DeviceConnectionSummary
-{
+public class DeviceConnectionSummaryImpl implements DeviceConnectionSummary {
+
     private long connected;
     private long disconnected;
     private long missing;
@@ -29,62 +28,52 @@ public class DeviceConnectionSummaryImpl implements DeviceConnectionSummary
     private long disabled;
 
     @Override
-    public long getConnected()
-    {
+    public long getConnected() {
         return connected;
     }
 
     @Override
-    public void setConnected(long connected)
-    {
+    public void setConnected(long connected) {
         this.connected = connected;
     }
 
     @Override
-    public long getDisconnected()
-    {
+    public long getDisconnected() {
         return disconnected;
     }
 
     @Override
-    public void setDisconnected(long disconnected)
-    {
+    public void setDisconnected(long disconnected) {
         this.disconnected = disconnected;
     }
 
     @Override
-    public long getMissing()
-    {
+    public long getMissing() {
         return missing;
     }
 
     @Override
-    public void setMissing(long missing)
-    {
+    public void setMissing(long missing) {
         this.missing = missing;
     }
 
     @Override
-    public long getEnabled()
-    {
+    public long getEnabled() {
         return enabled;
     }
 
     @Override
-    public void setEnabled(long enabled)
-    {
+    public void setEnabled(long enabled) {
         this.enabled = enabled;
     }
 
     @Override
-    public long getDisabled()
-    {
+    public long getDisabled() {
         return disabled;
     }
 
     @Override
-    public void setDisabled(long disabled)
-    {
+    public void setDisabled(long disabled) {
         this.disabled = disabled;
     }
 }

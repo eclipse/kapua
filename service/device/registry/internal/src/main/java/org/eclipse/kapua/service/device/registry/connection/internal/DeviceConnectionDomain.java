@@ -23,9 +23,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Device connection domain
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class DeviceConnectionDomain extends AbstractKapuaEntity implements Domain {
 
