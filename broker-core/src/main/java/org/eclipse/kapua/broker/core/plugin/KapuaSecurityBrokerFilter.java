@@ -430,7 +430,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
             logAuthDestinationToLog(authDestinations);
 
-            ConnectorDescriptor connectorDescriptor = connectorsDescriptorMap.get((((TransportConnector) context.getConnector()).getName()));
+            final String connectorName = (((TransportConnector) context.getConnector()).getName());
+            final ConnectorDescriptor connectorDescriptor = connectorsDescriptorMap.get(connectorName);
+            if ( connectorDescriptor == null )  {
+                throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
+            }
             KapuaSecurityContext securityCtx = new KapuaSecurityContext(principal,
                     authMap,
                     (deviceConnection != null ? deviceConnection.getId() : null),
