@@ -90,9 +90,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setRoleId(KapuaId roleId) {
-        if (roleId != null) {
-            this.roleId = new KapuaEid(roleId.getId());
-        }
+        this.roleId = roleId != null ? new KapuaEid(roleId) : null;
     }
 
     @Override
@@ -102,15 +100,13 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setPermission(Permission permission) {
-        if (permission != null) {
-            this.permission = new PermissionImpl(permission);
-        }
+        this.permission = permission != null ? new PermissionImpl(permission) : null;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Permission getPermission() {
-        return permission;
+        return permission != null ? permission : new PermissionImpl(null, null, null, null);
     }
 
     @Override

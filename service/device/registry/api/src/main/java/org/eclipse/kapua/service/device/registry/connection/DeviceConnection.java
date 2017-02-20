@@ -106,7 +106,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Sets the {@link Credential} id used to establish the last successful {@link DeviceConnection}.
      * 
-     * @param credentialId
+     * @param lastCredentialId
      *            The {@link Credential} id used to establish the last successful {@link DeviceConnection}.
      * @since 1.0.0
      */

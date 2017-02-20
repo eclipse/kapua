@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -27,10 +28,10 @@ public interface GwtAccessPermissionService extends RemoteService {
 
     public GwtAccessPermission create(GwtXSRFToken gwtXsrfToken, GwtAccessPermissionCreator gwtAccessPermissionCreator)
             throws GwtKapuaException;
-    
-    public PagingLoadResult<GwtAccessPermission> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
+
+    public PagingLoadResult<GwtAccessPermission> findBySubject(PagingLoadConfig loadConfig, String scopeShortId, GwtSubjectType gwtSubjectType, String userShortId)
             throws GwtKapuaException;
 
-    void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId) 
+    void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId)
             throws GwtKapuaException;
 }

@@ -27,7 +27,6 @@ import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
-import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
@@ -143,28 +142,28 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
 
         return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, accessInfoId));
     }
-    
-    @Override
-    public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "accountId");
-        ArgumentValidator.notNull(userId, "userId");
 
-        //
-        // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, scopeId));
-        AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicate<KapuaId>(AccessInfoPredicates.USER_ID, userId));
-        AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
-        if (!result.isEmpty()) {
-            return result.getFirstItem();
-        } else {
-            return null;
-        }
-    }
+    // @Override
+    // public AccessInfo findBySubject(KapuaId scopeId, SubjectType type, KapuaId userId) throws KapuaException {
+    // ArgumentValidator.notNull(scopeId, "accountId");
+    // ArgumentValidator.notNull(userId, "userId");
+    //
+    // //
+    // // Check Access
+    // KapuaLocator locator = KapuaLocator.getInstance();
+    // AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+    // AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+    // PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+    // authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.read, scopeId));
+    // AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+    // query.setPredicate(new AttributePredicate<>(AccessInfoPredicates.SUBJECT, userId));
+    // AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
+    // if (!result.isEmpty()) {
+    // return result.getFirstItem();
+    // } else {
+    // return null;
+    // }
+    // }
 
     @Override
     public AccessInfo findBySubject(Subject subject) throws KapuaException {

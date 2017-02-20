@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -55,15 +56,14 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
         // Kapua message
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraDataMessage.getChannel().getScope());
+        Account account = KapuaSecurityUtils.doPriviledge(() -> accountService.findByName(kuraDataMessage.getChannel().getScope()));
 
         if (account == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, kuraDataMessage.getChannel().getScope());
         }
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.findByClientId(account.getId(),
-                kuraDataMessage.getChannel().getClientId());
+        Device device = KapuaSecurityUtils.doPriviledge(() -> deviceRegistryService.findByClientId(account.getId(), kuraDataMessage.getChannel().getClientId()));
 
         KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
         kapuaDataMessage.setScopeId(account.getId());

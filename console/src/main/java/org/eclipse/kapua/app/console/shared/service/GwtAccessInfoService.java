@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -25,10 +26,10 @@ public interface GwtAccessInfoService extends RemoteService {
 
     public GwtAccessInfo create(GwtXSRFToken gwtXsrfToken, GwtAccessInfoCreator gwtAccessInfoCreator)
             throws GwtKapuaException;
-    
+
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
             throws GwtKapuaException;
-    
-    public GwtAccessInfo findByUserIdOrCreate(String scopeShortId, String userShortId)
+
+    public GwtAccessInfo findBySubjectOrCreate(String scopeShortId, GwtSubjectType subjectType, String subjectTypeShortId)
             throws GwtKapuaException;
 }

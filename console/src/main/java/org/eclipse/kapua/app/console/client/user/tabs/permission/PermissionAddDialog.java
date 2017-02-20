@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.permission;
 
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
@@ -24,9 +26,15 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
-import org.eclipse.kapua.app.console.shared.service.*;
-
-import java.util.List;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtDomainService;
+import org.eclipse.kapua.app.console.shared.service.GwtDomainServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -55,7 +63,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private ComboBox<GwtGroup> groupsCombo;
 
     private final GwtGroup allGroup;
-    
+
     private String accessInfoId;
 
     public PermissionAddDialog(GwtSession currentSession, String userId) {
@@ -65,7 +73,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
 
-        gwtAccessInfoService.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
+        gwtAccessInfoService.findBySubjectOrCreate(currentSession.getSelectedAccount().getId(), GwtSubjectType.USER, userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
             public void onSuccess(GwtAccessInfo result) {
@@ -143,22 +151,22 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setTriggerAction(TriggerAction.ALL);
         gwtDomainService.findAll(new AsyncCallback<List<GwtDomain>>() {
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        m_exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
-                        m_exitStatus = false;
-                        hide();
-                    }
+            @Override
+            public void onFailure(Throwable caught) {
+                m_exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
+                m_exitStatus = false;
+                hide();
+            }
 
-                    @Override
-                    public void onSuccess(List<GwtDomain> result) {
-                        domainsCombo.add(result);
-                        actionsCombo.enable();
-                    }
-                });
-        
+            @Override
+            public void onSuccess(List<GwtDomain> result) {
+                domainsCombo.add(result);
+                actionsCombo.enable();
+            }
+        });
+
         domainsCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtDomain>>() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtDomain>> se) {
                 gwtDomainService.findActionsByDomainName(se.getSelectedItem().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
@@ -176,11 +184,11 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                         actionsCombo.add(result);
                     }
                 });
-                
+
             }
         });
         permissionFormPanel.add(domainsCombo);
-        
+
         //
         // Action
         actionsCombo = new SimpleComboBox<GwtAction>();
@@ -189,7 +197,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.setAllowBlank(false);
         actionsCombo.setFieldLabel(MSGS.dialogAddPermissionAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
-        
+
         actionsCombo.disable();
         permissionFormPanel.add(actionsCombo);
 
@@ -197,7 +205,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         targetScopeIdTxtField.setFieldLabel(MSGS.dialogAddPermissionTargetScopeId());
         targetScopeIdTxtField.setValue(currentSession.getSelectedAccount().getId());
         targetScopeIdTxtField.setEnabled(false);
-        
+
         permissionFormPanel.add(targetScopeIdTxtField);
 
         groupsCombo = new ComboBox<GwtGroup>();
@@ -226,7 +234,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             }
         });
         permissionFormPanel.add(groupsCombo);
-        
+
         //
         // Add form panel to body
         m_bodyPanel.add(permissionFormPanel);

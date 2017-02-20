@@ -41,7 +41,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
     private static final long serialVersionUID = 8928343233144731836L;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "connection_status", nullable = false)
+    @Column(name = "connection_status", nullable = false, updatable = true)
     private DeviceConnectionStatus connectionStatus;
 
     @Basic
@@ -50,13 +50,13 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "credential_id", nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "credential_id", nullable = true, updatable = true))
     })
     private KapuaEid credentialId;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "last_credential_id", nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "last_credential_id", nullable = true, updatable = true))
     })
     private KapuaEid lastCredentialId;
 
@@ -115,7 +115,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Override
     public void setCredentialId(KapuaId credentialId) {
-        this.credentialId = credentialId != null ? new KapuaEid(credentialId) : null;
+        this.credentialId = credentialId != null ? (credentialId instanceof KapuaEid ? (KapuaEid) credentialId : new KapuaEid(credentialId)) : null;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Override
     public void setLastCredentialId(KapuaId lastCredentialId) {
-        this.lastCredentialId = lastCredentialId != null ? new KapuaEid(lastCredentialId) : null;
+        this.lastCredentialId = lastCredentialId != null ? (lastCredentialId instanceof KapuaEid ? (KapuaEid) lastCredentialId : new KapuaEid(lastCredentialId)) : null;
     }
 
     @Override

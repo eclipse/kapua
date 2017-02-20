@@ -26,6 +26,7 @@ import org.eclipse.kapua.commons.configuration.metatype.TadImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TiconImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
 import org.eclipse.kapua.commons.configuration.metatype.ToptionImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -84,7 +85,7 @@ public class TranslatorAppConfigurationKuraKapua extends Translator<KuraResponse
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+        Account account = KapuaSecurityUtils.doPriviledge(() -> accountService.findByName(kuraMessage.getChannel().getScope()));
 
         if (account == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());

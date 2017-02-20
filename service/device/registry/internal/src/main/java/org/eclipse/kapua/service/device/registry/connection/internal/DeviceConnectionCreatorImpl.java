@@ -29,6 +29,7 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<Devi
 
     private String clientId;
     private KapuaId credentialId;
+    private KapuaId lastCredentialId;
     private String protocol;
     private String clientIp;
     private String serverIp;
@@ -60,6 +61,16 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<Devi
     @Override
     public void setCredentialId(KapuaId credentialId) {
         this.credentialId = credentialId;
+    }
+
+    @Override
+    public KapuaId getLastCredentialId() {
+        return lastCredentialId;
+    }
+
+    @Override
+    public void setLastCredentialId(KapuaId lastCredentialId) {
+        this.lastCredentialId = lastCredentialId;
     }
 
     @Override

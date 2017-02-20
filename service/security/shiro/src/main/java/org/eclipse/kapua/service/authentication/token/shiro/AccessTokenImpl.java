@@ -20,6 +20,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,9 +28,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.subject.SubjectImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -81,8 +84,11 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
      * 
      * @param scopeId
      * @param subject
+     * @param credentialId
      * @param tokenId
      * @param expiresOn
+     * 
+     * @since 1.0.0
      */
     public AccessTokenImpl(KapuaId scopeId, Subject subject, KapuaId credentialId, String tokenId, Date expiresOn) {
         super(scopeId);
@@ -99,11 +105,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     @Override
     public void setSubject(Subject subject) {
-        if (subject != null) {
-            this.subject = new SubjectImpl(subject);
-        } else {
-            this.subject = null;
-        }
+        this.subject = subject != null ? (subject instanceof SubjectImpl ? (SubjectImpl) subject : new SubjectImpl(subject)) : null;
     }
 
     @Override
@@ -113,11 +115,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     @Override
     public void setCredentialId(KapuaId credentialId) {
-        if (credentialId != null) {
-            this.credentialId = new KapuaEid(credentialId);
-        } else {
-            this.credentialId = null;
-        }
+        this.credentialId = credentialId != null ? (credentialId instanceof KapuaEid ? (KapuaEid) credentialId : new KapuaEid(credentialId)) : null;
     }
 
     @Override
@@ -140,19 +138,19 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
         this.expiresOn = expiresOn;
     }
 
-    // /**
-    // * The {@link AbstractKapuaUpdatableEntity#prePersistAction} is overridden because the property {@link AbstractKapuaEntity#createdBy}
-    // * must be set to the current userId instead of the user in session, which is not set at the time of the creation of this {@link AccessToken}.
-    // *
-    // * @since 1.0.0
-    // */
-    // @Override
-    // protected void prePersistsAction()
-    // throws KapuaException {
-    // this.id = new KapuaEid(IdGenerator.generate());
-    // this.createdBy = new KapuaEid(BigInteger.ONE);
-    // this.createdOn = new Date();
-    // this.modifiedBy = this.createdBy;
-    // this.modifiedOn = this.createdOn;
-    // }
+    /**
+     * Before update action we need to correctly set the {@link #modifiedOn} and {@link #modifiedBy} fields.
+     *
+     * @throws KapuaException
+     */
+    @PreUpdate
+    protected void preUpdateAction() {
+        Subject currentSubject = KapuaSecurityUtils.getSession().getSubject();
+        if (currentSubject != null && currentSubject.getId() != null) {
+            super.preUpdateAction();
+        } else {
+            setModifiedBy(SubjectImpl.KAPUA_SYS);
+            setModifiedOn(new Date());
+        }
+    }
 }

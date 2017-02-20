@@ -39,20 +39,6 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
             throws KapuaException;
 
     /**
-     * Finds the {@link AccessInfo} by scope identifier and {@link AccessInfo} id.
-     * 
-     * @param scopeId
-     *            The scope id in which to search.
-     * @param userId
-     *            The {@link User} id to search.
-     * @return The {@link AccessInfo} found or {@code null} if no entity was found.
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId)
-            throws KapuaException;
-    
-    /**
      * Finds the {@link AccessInfo} by scope identifier and {@link User} id.
      * 
      * @param scopeId

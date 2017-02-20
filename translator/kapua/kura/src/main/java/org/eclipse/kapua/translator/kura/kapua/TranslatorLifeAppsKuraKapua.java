@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -47,14 +48,14 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraAppsMessage.getChannel().getScope());
+        Account account = KapuaSecurityUtils.doPriviledge(() -> accountService.findByName(kuraAppsMessage.getChannel().getScope()));
 
         if (account == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, kuraAppsMessage.getChannel().getScope());
         }
 
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
+        Device device = KapuaSecurityUtils.doPriviledge(() -> deviceRegistryService.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId()));
         if (device == null) {
             throw new KapuaEntityNotFoundException(Device.class.toString(), kuraAppsMessage.getChannel().getClientId());
         }

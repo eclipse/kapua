@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -44,16 +42,16 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "subject", //
+        "credentialId",
         "tokenId", //
         "expiresOn",//
 })// , //
   // factoryClass = AccessTokenXmlRegistry.class, factoryMethod = "newAccessToken")
 public interface AccessToken extends KapuaUpdatableEntity {
 
-    static public final String TYPE = "accessToken";
+    public static final String TYPE = "accessToken";
 
-    @XmlTransient
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 
@@ -76,9 +74,9 @@ public interface AccessToken extends KapuaUpdatableEntity {
     public void setSubject(Subject subject);
 
     /**
-     * Return the {@link AccessToken} {@link Credential} id.
+     * Return the {@link Credential} id used to generate this {@link AccessToken}.
      * 
-     * @return The {@link AccessToken} {@link Credential} id.
+     * @return The {@link Credential} id used to generate this {@link AccessToken}.
      * @since 1.0.0
      */
     @XmlElement(name = "credentialId")
@@ -98,7 +96,7 @@ public interface AccessToken extends KapuaUpdatableEntity {
      * Return the token identifier
      * 
      * @return the token identifier
-     * @since 1.0
+     * @since 1.0.0
      */
     @XmlElement(name = "tokenId")
     public String getTokenId();
@@ -108,24 +106,25 @@ public interface AccessToken extends KapuaUpdatableEntity {
      * 
      * @param tokenId
      *            The token id.
-     * @since 1.0
+     * @since 1.0.0
      */
     public void setTokenId(String tokenId);
 
     /**
-     * Gets the expire date of this token.
+     * Gets the expire {@link Date} of this {@link AccessToken}.
      * 
-     * @since 1.0
+     * @return The expire {@link Date} of this {@link AccessToken}.
+     * @since 1.0.0
      */
     @XmlElement(name = "expiresOn")
     public Date getExpiresOn();
 
     /**
-     * Sets the expire date of this token.
+     * Sets the expire {@link Date} of this {@link AccessToken}.
      * 
      * @param expiresOn
-     *            The expire date of this token.
-     * @since 1.0
+     *            The expire {@link Date} of this {@link AccessToken}.
+     * @since 1.0.0
      */
     public void setExpiresOn(Date expiresOn);
 

@@ -17,11 +17,15 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectFactory;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -48,7 +52,7 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
             // Create
             KapuaLocator locator = KapuaLocator.getInstance();
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-            AccessInfo accessInfo= accessInfoService.create(accessInfoCreator);
+            AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
 
             // Convert
             gwtAccessInfo = KapuaGwtModelConverter.convert(accessInfo);
@@ -86,22 +90,30 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
     }
 
     @Override
-    public GwtAccessInfo findByUserIdOrCreate(String scopeShortId, String userShortId) throws GwtKapuaException {
+    public GwtAccessInfo findBySubjectOrCreate(String scopeShortId, GwtSubjectType gwtSubjectType, String subjectShortId) throws GwtKapuaException {
         GwtAccessInfo gwtAccessInfo = null;
-        
+
         try {
             // Convert from GWT Entity
             KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
-            KapuaId userId = GwtKapuaModelConverter.convert(userShortId);
+            SubjectType subjectType = GwtKapuaModelConverter.convert(gwtSubjectType);
+            KapuaId subjectId = GwtKapuaModelConverter.convert(subjectShortId);
 
             // Find
             KapuaLocator locator = KapuaLocator.getInstance();
+            SubjectFactory subjectFactory = locator.getFactory(SubjectFactory.class);
+            Subject subject = subjectFactory.newSubject(subjectType, subjectId);
+
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-            AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
+            AccessInfo accessInfo = accessInfoService.findBySubject(subject);
+
+            // Create if not exists
             if (accessInfo == null) {
                 AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
-                AccessInfoCreator accessInfoCreator =  accessInfoFactory.newCreator(scopeId);
-                accessInfoCreator.setUserId(userId);
+                AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scopeId);
+                accessInfoCreator.setSubjectType(subjectType);
+                accessInfoCreator.setSubjectId(subjectId);
+
                 accessInfo = accessInfoService.create(accessInfoCreator);
             }
             gwtAccessInfo = KapuaGwtModelConverter.convert(accessInfo);

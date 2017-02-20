@@ -71,6 +71,24 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     public void setCredentialId(KapuaId credentialId);
 
     /**
+     * Gets the {@link Credential} id used to establish the last successful {@link DeviceConnection}.
+     * 
+     * @return The {@link Credential} id used to establish the last successful {@link DeviceConnection}.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "lastCredentialId")
+    public KapuaId getLastCredentialId();
+
+    /**
+     * Sets the {@link Credential} id used to establish the last successful {@link DeviceConnection}.
+     * 
+     * @param lastCredentialId
+     *            The {@link Credential} id used to establish the last successful {@link DeviceConnection}.
+     * @since 1.0.0
+     */
+    public void setLastCredentialId(KapuaId lastCredentialId);
+
+    /**
      * Get the device protocol
      * 
      * @return

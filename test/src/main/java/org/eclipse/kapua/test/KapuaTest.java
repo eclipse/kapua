@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -41,8 +42,8 @@ public class KapuaTest extends Assert {
     protected static Random random = new Random();
     protected static KapuaLocator locator = KapuaLocator.getInstance();
 
-    protected static KapuaId adminUserId;
     protected static KapuaId adminScopeId;
+    protected static Subject adminUserId;
 
     @Before
     public void setUpTest() {
@@ -63,7 +64,7 @@ public class KapuaTest extends Assert {
                 //
                 // Get current user Id
                 adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
-                adminUserId = KapuaSecurityUtils.getSession().getSubject().getId();
+                adminUserId = KapuaSecurityUtils.getSession().getSubject();
             } catch (KapuaException exc) {
                 exc.printStackTrace();
             }

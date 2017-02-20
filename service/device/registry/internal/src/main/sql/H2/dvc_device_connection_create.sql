@@ -25,7 +25,7 @@ CREATE TABLE dvc_device_connection (
   connection_status		    VARCHAR(20)   NOT NULL,
   client_id					VARCHAR(255)  NOT NULL,
   credential_id  			BIGINT(21)    UNSIGNED, 
-  last_credential_id		BIGINT(21)    UNSIGNED NOT NULL,
+  last_credential_id		BIGINT(21)    UNSIGNED,
   protocol       			VARCHAR(64),
   client_ip      			VARCHAR(255),
   server_ip      			VARCHAR(255), 

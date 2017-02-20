@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 /**
  * Username and password {@link AuthenticationCredentials} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
 public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken implements UsernamePasswordCredentials, AuthenticationToken {
@@ -35,8 +35,11 @@ public class UsernamePasswordCredentialsImpl extends UsernamePasswordToken imple
     /**
      * Constructor.
      * 
+     * @param subjectType
      * @param username
      * @param password
+     * 
+     * @since 1.0.0
      */
     public UsernamePasswordCredentialsImpl(SubjectType subjectType, String username, char[] password) {
         setSubjectType(subjectType);

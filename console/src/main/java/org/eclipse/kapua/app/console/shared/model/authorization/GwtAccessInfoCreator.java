@@ -16,20 +16,29 @@ import org.eclipse.kapua.app.console.shared.model.GwtEntityCreator;
 
 public class GwtAccessInfoCreator extends GwtEntityCreator {
 
-
     private static final long serialVersionUID = 7961041343683015932L;
 
-    private String userId;
+    private GwtSubjectType subjectType;
+    private String subjectId;
 
     public GwtAccessInfoCreator() {
         super();
     }
 
-    public String getUserId() {
-        return userId;
+    public GwtSubjectType getSubjectType() {
+        return subjectType;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setSubjectType(GwtSubjectType subjectType) {
+        this.subjectType = subjectType;
     }
+
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }
+
 }

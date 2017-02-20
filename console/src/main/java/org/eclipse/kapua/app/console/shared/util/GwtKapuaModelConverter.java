@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
+import org.eclipse.kapua.model.subject.SubjectType;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
@@ -110,7 +112,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return roleQuery;
     }
-    
+
     /**
      * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
      * 
@@ -221,7 +223,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return roleCreator;
     }
-    
+
     /**
      * Converts a {@link GwtAccessRoleCreator} into a {@link AccessRoleCreator} object for backend usage
      * 
@@ -242,7 +244,7 @@ public class GwtKapuaModelConverter {
 
         // Convert accessInfoId
         accessRoleCreator.setAccessInfoId(convert(gwtAccessRoleCreator.getAccessInfoId()));
-        
+
         // Convert roleId
         accessRoleCreator.setRoleId(convert(gwtAccessRoleCreator.getRoleId()));
 
@@ -250,7 +252,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return accessRoleCreator;
     }
-    
+
     /**
      * Converts a {@link GwtAccessPermissionCreator} into a {@link AccessPermissionCreator} object for backend usage
      * 
@@ -271,7 +273,7 @@ public class GwtKapuaModelConverter {
 
         // Convert accessInfoId
         accessPermissionCreator.setAccessInfoId(convert(gwtAccessPermissionCreator.getAccessInfoId()));
-        
+
         // Convert Permission
         accessPermissionCreator.setPermission(convert(gwtAccessPermissionCreator.getPermission()));
 
@@ -279,7 +281,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return accessPermissionCreator;
     }
-    
+
     public static AccessInfoCreator convert(GwtAccessInfoCreator gwtAccessInfoCreator) {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -290,11 +292,24 @@ public class GwtKapuaModelConverter {
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(scopeId);
 
         // Convert userId
-        accessInfoCreator.setUserId(convert(gwtAccessInfoCreator.getUserId()));
+        accessInfoCreator.setSubjectType(convert(gwtAccessInfoCreator.getSubjectType()));
+        accessInfoCreator.setSubjectId(convert(gwtAccessInfoCreator.getSubjectId()));
 
         //
         // Return converted
         return accessInfoCreator;
+    }
+
+    public static SubjectType convert(GwtSubjectType gwtSubjectType) {
+        if (gwtSubjectType != null) {
+            switch (gwtSubjectType) {
+            case USER:
+                return SubjectType.USER;
+            case BROKER_CONNECTION:
+                return SubjectType.BROKER_CONNECTION;
+            }
+        }
+        return null;
     }
 
     /**

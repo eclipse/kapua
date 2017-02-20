@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.account;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,8 +37,8 @@ public class AccountServiceMock implements AccountService {
     private Map<KapuaId, AccountMock> accounts;
 
     public AccountServiceMock() {
-        kapuaRootAccount = new AccountMock(new KapuaEid(BigInteger.ONE), "kapua-sys");
-        kapuaRootAccount.setId(new KapuaEid(BigInteger.ONE));
+        kapuaRootAccount = new AccountMock(KapuaEid.ONE, "kapua-sys");
+        kapuaRootAccount.setId(KapuaEid.ONE);
 
         accounts = new HashMap<KapuaId, AccountMock>();
         accounts.put(kapuaRootAccount.getId(), kapuaRootAccount);

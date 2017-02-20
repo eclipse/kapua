@@ -47,8 +47,9 @@ public class AclConstants {
 	public final static String PERMISSION_LOG                   = "{0}/{1}/{2} - {3}";
 
     public static final int    BROKER_CONNECT_IDX               = 0;
-    public static final int    DEVICE_MANAGE_IDX                = 1;
-    public static final int    DATA_VIEW_IDX                    = 2;
-    public static final int    DATA_MANAGE_IDX                  = 3;
+    public static final int    DEVICE_CONNECT_IDX               = 1;
+    public static final int    DEVICE_MANAGE_IDX                = 2;
+    public static final int    DATA_VIEW_IDX                    = 3;
+    public static final int    DATA_MANAGE_IDX                  = 4;
 
 }

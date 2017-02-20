@@ -97,11 +97,7 @@ public class SubjectImpl implements Subject, Serializable {
 
     @Override
     public void setId(KapuaId id) {
-        if (id != null) {
-            this.subjectId = new KapuaEid(id);
-        } else {
-            this.subjectId = null;
-        }
+        this.subjectId = id != null ? (id instanceof KapuaEid ? (KapuaEid) id : new KapuaEid(id)) : null;
     }
 
     @Override
@@ -130,5 +126,10 @@ public class SubjectImpl implements Subject, Serializable {
         if (subjectType != other.subjectType)
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append(subjectType).append(":").append(subjectId).toString();
     }
 }

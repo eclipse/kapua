@@ -678,7 +678,7 @@ public class ServiceDAO {
 
                         for (AccessPermission ap : accessPermissions.getItems()) {
                             Permission p = ap.getPermission();
-                            if (domain.getName().equals(p.getDomain())) {
+                            if (p.getDomain() == null || domain.getName().equals(p.getDomain())) {
                                 if (p.getAction() == null || Actions.read.equals(p.getAction())) {
                                     if (p.getGroupId() == null) {
                                         groupPermissions.clear();
@@ -702,7 +702,7 @@ public class ServiceDAO {
                             for (RolePermission rp : rolePermissions.getItems()) {
 
                                 Permission p = rp.getPermission();
-                                if (domain.getName().equals(p.getDomain())) {
+                                if (p.getDomain() == null || domain.getName().equals(p.getDomain())) {
                                     if (p.getAction() == null || Actions.read.equals(p.getAction())) {
                                         if (p.getGroupId() == null) {
                                             groupPermissions.clear();

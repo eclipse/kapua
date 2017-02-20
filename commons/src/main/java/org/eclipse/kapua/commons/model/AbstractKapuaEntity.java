@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -146,7 +146,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * @param createdBy
      */
     public void setCreatedBy(Subject createdBy) {
-        this.createdBy = createdBy != null ? new SubjectImpl(createdBy) : null;
+        this.createdBy = createdBy != null ? (createdBy instanceof SubjectImpl ? (SubjectImpl) createdBy : new SubjectImpl(createdBy)) : null;
     }
 
     /**

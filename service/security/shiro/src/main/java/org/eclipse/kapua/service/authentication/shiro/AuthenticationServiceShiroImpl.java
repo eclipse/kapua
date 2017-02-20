@@ -268,6 +268,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             }
             currentUser.logout();
         } catch (Exception e) {
+            logger.error(e.getMessage());
+            logger.error(e.getCause().getMessage());
             throw KapuaAuthenticationException.internalError(e);
         } finally {
             KapuaSecurityUtils.clearSession();

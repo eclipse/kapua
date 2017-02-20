@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
@@ -45,7 +46,7 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraUnmatchedMessage.getChannel().getScope());
+        Account account = KapuaSecurityUtils.doPriviledge(() -> accountService.findByName(kuraUnmatchedMessage.getChannel().getScope()));
 
         if (account == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, kuraUnmatchedMessage.getChannel().getScope());

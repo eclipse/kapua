@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -28,9 +29,10 @@ public interface GwtAccessRoleService extends RemoteService {
     public GwtAccessRole create(GwtXSRFToken gwtXsrfToken, GwtAccessRoleCreator gwtAccessRoleCreator)
             throws GwtKapuaException;
 
+    public PagingLoadResult<GwtAccessRole> findBySubject(PagingLoadConfig loadConfig, String scopeShortId, GwtSubjectType gwtSubjectType, String userShortId)
+            throws GwtKapuaException;
+
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessRoleShortId)
             throws GwtKapuaException;
-    
-    public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId)
-            throws GwtKapuaException;
+
 }

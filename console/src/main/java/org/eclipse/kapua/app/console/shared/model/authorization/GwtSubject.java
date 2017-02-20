@@ -12,19 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authorization;
 
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
 
-public class GwtAccessInfo extends GwtEntityModel {
+public class GwtSubject extends KapuaBaseModel {
 
-    private static final long serialVersionUID = 1330881042880793119L;
+    private static final long serialVersionUID = -6427095082548965937L;
 
     @Override
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
-        if ("subjectTypeEnum".equals(property)) {
-            String subjectType = getSubjectType();
-            if (subjectType != null)
-                return (X) (GwtSubjectType.valueOf(subjectType));
+        if ("subejctTypeEnum".equals(property)) {
+            String subjecyType = getSubjectType();
+            if (subjecyType != null)
+                return (X) (GwtSubjectType.valueOf(subjecyType));
             return (X) "";
         } else {
             return super.get(property);
@@ -32,22 +32,22 @@ public class GwtAccessInfo extends GwtEntityModel {
     }
 
     public String getSubjectType() {
-        return get("subjectType");
+        return get("subejctType");
     }
 
     public GwtSubjectType getSubjectTypeEnum() {
-        return get("subjectTypeEnum");
+        return get("subejctTypeEnum");
     }
 
-    public void setSubjectType(GwtSubjectType subjectType) {
-        set("subjectType", subjectType.name());
+    public void setSubjectType(String subejctType) {
+        set("subejctType", subejctType);
     }
 
     public String getSubjectId() {
-        return get("subjectId");
+        return get("subejctId");
     }
 
-    public void setSubjectId(String subjectId) {
-        set("subjectId", subjectId);
+    public void setSubjectId(String subejctId) {
+        set("subejctId", subejctId);
     }
 }

@@ -12,18 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.permission;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAsync;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -52,14 +53,15 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtAccessPermission>> callback) {
-                gwtAccessPermissionService.findByUserId((PagingLoadConfig) loadConfig,
+                gwtAccessPermissionService.findBySubject((PagingLoadConfig) loadConfig,
                         currentSession.getSelectedAccount().getId(),
+                        GwtSubjectType.USER,
                         userId,
                         callback);
             }
         };
     }
-    
+
     @Override
     protected void selectionChangedEvent(GwtAccessPermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
@@ -72,7 +74,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
     @Override
     protected List<ColumnConfig> getColumns() {
-        
+
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridAccessRoleColumnHeaderId(), 100);
@@ -125,5 +127,5 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         }
         return toolbar;
     }
-    
+
 }

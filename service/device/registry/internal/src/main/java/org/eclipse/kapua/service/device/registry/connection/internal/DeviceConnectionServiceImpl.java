@@ -57,7 +57,6 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         ArgumentValidator.notNull(deviceConnectionCreator, "deviceConnectionCreator");
         ArgumentValidator.notNull(deviceConnectionCreator.getScopeId(), "deviceConnectionCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(deviceConnectionCreator.getClientId(), "deviceConnectionCreator.clientId");
-        ArgumentValidator.notNull(deviceConnectionCreator.getCredentialId(), "deviceConnectionCreator.credentialId");
 
         //
         // Check Access

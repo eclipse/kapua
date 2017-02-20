@@ -58,7 +58,7 @@ public class KapuaSecurityUtils {
     }
 
     /**
-     * Executes the {@link Callable} in a privileged context.<br>
+     * Executes the {@link Callable} in a privileged context returning the result of the operation.<br>
      * Trusted mode means that checks for permissions and role will pass.
      * 
      * @param privilegedAction
@@ -69,27 +69,22 @@ public class KapuaSecurityUtils {
      */
     public static <T> T doPriviledge(Callable<T> privilegedAction)
             throws KapuaException {
-        T result = null;
 
-        // get (and keep) the current session
+        // Get (and keep) the current session
         KapuaSession previousSession = getSession();
-        KapuaSession currentSession = null;
+        KapuaSession priveledgeSession = null;
 
         if (previousSession == null) {
-
-            // KapuaLocator locator = KapuaLocator.getInstance();
-            // SubjectFactory subjectFactory = locator.getFactory(SubjectFactory.class);
-            // session = new KapuaSession(null, KapuaEid.ONE, subjectFactory.newSubject(SubjectType.USER, KapuaEid.ONE));
-
-            logger.debug("==> create new session");
-            currentSession = new KapuaSession(null, KapuaEid.ONE, SubjectImpl.KAPUA_SYS);
-            currentSession.setTrustedMode(true);
+            logger.debug("==> Create new session");
+            priveledgeSession = new KapuaSession(null, KapuaEid.ONE, SubjectImpl.KAPUA_SYS);
+            priveledgeSession.setTrustedMode(true);
         } else {
-            logger.debug("==> clone from previous session");
-            currentSession = KapuaSession.createFrom();
+            logger.debug("==> Clone from previous session");
+            priveledgeSession = KapuaSession.createFrom();
         }
-        setSession(currentSession);
+        setSession(priveledgeSession);
 
+        T result = null;
         try {
             result = privilegedAction.call();
         } catch (KapuaException ke) {

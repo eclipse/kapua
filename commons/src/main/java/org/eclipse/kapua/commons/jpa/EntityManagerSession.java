@@ -129,6 +129,8 @@ public class EntityManagerSession {
             transactionManager.commit(manager);
             return result;
         } catch (Exception e) {
+            logger.error(e.getMessage());
+
             if (manager != null) {
                 manager.rollback();
             }
@@ -196,6 +198,9 @@ public class EntityManagerSession {
                         throw KapuaExceptionUtils.convertPersistenceException(e);
                     }
                 } catch (PersistenceException e) {
+                    logger.error(e.getMessage());
+                    logger.error(e.getCause().getMessage());
+
                     if (manager != null) {
                         manager.rollback();
                     }

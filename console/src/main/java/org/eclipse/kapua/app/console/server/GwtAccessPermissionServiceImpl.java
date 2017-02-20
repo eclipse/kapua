@@ -12,20 +12,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectFactory;
+import org.eclipse.kapua.model.subject.SubjectType;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -67,6 +76,41 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
     }
 
     @Override
+    public PagingLoadResult<GwtAccessPermission> findBySubject(PagingLoadConfig loadConfig, String scopeShortId, GwtSubjectType gwtSubjectType, String subjectShortId) throws GwtKapuaException {
+        //
+        // Do get
+        List<GwtAccessPermission> gwtAccessPermissions = new ArrayList<GwtAccessPermission>();
+        if (subjectShortId != null) {
+
+            try {
+                SubjectType subjectType = GwtKapuaModelConverter.convert(gwtSubjectType);
+                KapuaId subjectId = GwtKapuaModelConverter.convert(subjectShortId);
+
+                KapuaLocator locator = KapuaLocator.getInstance();
+                SubjectFactory subjectFacotry = locator.getFactory(SubjectFactory.class);
+                Subject subject = subjectFacotry.newSubject(subjectType, subjectId);
+
+                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+                KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
+                AccessInfo accessInfo = accessInfoService.findBySubject(subject);
+
+                if (accessInfo != null) {
+                    AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+                    AccessPermissionListResult accessPermissionList = accessPermissionService.findByAccessInfoId(scopeId, accessInfo.getId());
+
+                    for (AccessPermission accessPermission : accessPermissionList.getItems()) {
+                        GwtAccessPermission gwtAccessPermission = KapuaGwtModelConverter.convert(accessPermission);
+                        gwtAccessPermissions.add(gwtAccessPermission);
+                    }
+                }
+            } catch (Throwable t) {
+                KapuaExceptionHandler.handle(t);
+            }
+        }
+        return new BasePagingLoadResult<GwtAccessPermission>(gwtAccessPermissions, 0, gwtAccessPermissions.size());
+    }
+
+    @Override
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String accessPermissionShortId) throws GwtKapuaException {
 
         //
@@ -88,36 +132,5 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
             KapuaExceptionHandler.handle(t);
         }
     }
-    
-    @Override
-    public PagingLoadResult<GwtAccessPermission> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
-        //
-        // Do get
-        List<GwtAccessPermission> gwtAccessPermissions = new ArrayList<GwtAccessPermission>();
-        if (userShortId != null) {
 
-            try {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-                AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-
-                KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
-                KapuaId userId = GwtKapuaModelConverter.convert(userShortId);
-
-                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                
-                if (accessInfo != null) {
-                    AccessPermissionListResult accessPermissionList = accessPermissionService.findByAccessInfoId(scopeId, accessInfo.getId());
-
-                    for (AccessPermission accessPermission : accessPermissionList.getItems()) {
-                        GwtAccessPermission gwtAccessPermission = KapuaGwtModelConverter.convert(accessPermission);
-                        gwtAccessPermissions.add(gwtAccessPermission);
-                    }
-                }
-            } catch (Throwable t) {
-                KapuaExceptionHandler.handle(t);
-            }
-        }
-        return new BasePagingLoadResult<GwtAccessPermission>(gwtAccessPermissions, 0, gwtAccessPermissions.size());
-    }
 }

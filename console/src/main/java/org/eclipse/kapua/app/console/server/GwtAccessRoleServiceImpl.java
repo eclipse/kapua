@@ -12,22 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtSubjectType;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessRoleService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.*;
+import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectFactory;
+import org.eclipse.kapua.model.subject.SubjectType;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -92,26 +101,29 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
     }
 
     @Override
-    public PagingLoadResult<GwtAccessRole> findByUserId(PagingLoadConfig loadConfig, String scopeShortId, String userShortId) throws GwtKapuaException {
+    public PagingLoadResult<GwtAccessRole> findBySubject(PagingLoadConfig loadConfig, String scopeShortId, GwtSubjectType gwtSubjectType, String subjectShortId) throws GwtKapuaException {
         //
         // Do get
         List<GwtAccessRole> gwtAccessRoles = new ArrayList<GwtAccessRole>();
-        if (userShortId != null) {
+        if (subjectShortId != null) {
 
             try {
+                SubjectType subjectType = GwtKapuaModelConverter.convert(gwtSubjectType);
+                KapuaId subjectId = GwtKapuaModelConverter.convert(subjectShortId);
+
                 KapuaLocator locator = KapuaLocator.getInstance();
-                RoleService roleService = locator.getService(RoleService.class);
+                SubjectFactory subjectFacotry = locator.getFactory(SubjectFactory.class);
+                Subject subject = subjectFacotry.newSubject(subjectType, subjectId);
+
                 AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
-                AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-
                 KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
-                KapuaId userId = GwtKapuaModelConverter.convert(userShortId);
+                AccessInfo accessInfo = accessInfoService.findBySubject(subject);
 
-                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                
                 if (accessInfo != null) {
+                    AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
                     AccessRoleListResult accessRoleList = accessRoleService.findByAccessInfoId(scopeId, accessInfo.getId());
 
+                    RoleService roleService = locator.getService(RoleService.class);
                     for (AccessRole accessRole : accessRoleList.getItems()) {
                         Role role = roleService.find(scopeId, accessRole.getRoleId());
                         GwtAccessRole gwtAccessRole = KapuaGwtModelConverter.convert(role, accessRole);

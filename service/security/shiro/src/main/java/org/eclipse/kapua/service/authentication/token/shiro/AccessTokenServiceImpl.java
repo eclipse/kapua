@@ -16,6 +16,7 @@ import java.util.Date;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -62,7 +63,6 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         ArgumentValidator.notNull(accessTokenCreator, "accessTokenCreator");
         ArgumentValidator.notNull(accessTokenCreator.getScopeId(), "accessTokenCreator.scopeId");
         ArgumentValidator.notNull(accessTokenCreator.getSubjectType(), "accessTokenCreator.subjectType");
-        // ArgumentValidator.notNull(accessTokenCreator.getSubjectId(), "accessTokenCreator.subjectId");
         ArgumentValidator.notNull(accessTokenCreator.getCredentialId(), "accessTokenCreator.credentialId");
         ArgumentValidator.notNull(accessTokenCreator.getTokenId(), "accessTokenCreator.tokenId");
         ArgumentValidator.notNull(accessTokenCreator.getExpiresOn(), "accessTokenCreator.expiresOn");
@@ -72,7 +72,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.write, accessTokenCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.write, KapuaEid.ONE));
 
         //
         // Do create
@@ -96,7 +96,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.write, accessToken.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.write, KapuaEid.ONE));
 
         //
         // Do update
