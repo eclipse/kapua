@@ -50,10 +50,19 @@ which provides entropy to the kernel.
 
 On CentOS 7 it can be installed with the following commands (all as `root`):
 
+    yum install epel-release # only if you 
     yum install haveged
     systemctl enable --now haveged
-    
+
+As the package comes from the [EPEL repositories](https://fedoraproject.org/wiki/EPEL "Information about EPEL").
+If you haven't yet enabled those repositories, then you need to do this before trying to
+install `haveged`:
+
+    yum install epel-release
+
 For more information about `haveged` see http://www.issihosts.com/haveged/
+
+For more information about the "EPEL repositories" see https://fedoraproject.org/wiki/EPEL
 
 ## Starting Kapua on OpenShift
 
