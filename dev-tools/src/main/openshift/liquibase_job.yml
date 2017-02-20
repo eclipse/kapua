@@ -10,10 +10,7 @@ spec:
       name: liquibase
     spec:
       containers:
-      - env:
-        - name: SQL_SERVICE_HOST
-          value: sql # The name of the SVC instance
-        name: liquibase
+      - name: liquibase
         image: kapua/kapua-liquibase:latest
       restartPolicy: Never
 
