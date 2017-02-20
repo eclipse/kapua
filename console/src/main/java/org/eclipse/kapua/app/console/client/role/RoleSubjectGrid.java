@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role;
 
 import java.util.ArrayList;
@@ -6,12 +18,11 @@ import java.util.List;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
-
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleQuery;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
 

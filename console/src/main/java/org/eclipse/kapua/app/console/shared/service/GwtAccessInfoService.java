@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleQuery;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -36,6 +36,5 @@ public interface GwtAccessInfoService extends RemoteService {
     public GwtAccessInfo findByUserIdOrCreate(String scopeShortId, String userShortId)
             throws GwtKapuaException;
             
-    public PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig,
-            GwtAccessRoleQuery query) throws GwtKapuaException;
+    PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
 }

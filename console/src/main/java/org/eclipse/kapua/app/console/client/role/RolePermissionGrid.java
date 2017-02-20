@@ -46,16 +46,15 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     protected RolePermissionGrid(EntityView<GwtRolePermission> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
-        
+
     }
 
     @Override
     protected EntityCRUDToolbar<GwtRolePermission> getToolbar() {
-        if(rolePermissionToolBar == null){
+        if (rolePermissionToolBar == null) {
             rolePermissionToolBar = new RolePermissionToolbar(currentSession, this);
         }
 
-        
         return rolePermissionToolBar;
     }
 
@@ -87,6 +86,9 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfig = new ColumnConfig("action", MSGS.gridRolePermissionColumnHeaderAction(), 100);
         columnConfigs.add(columnConfig);
 
+        columnConfig = new ColumnConfig("groupId", MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
+        columnConfigs.add(columnConfig);
+
         columnConfig = new ColumnConfig("targetScopeId", MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 100);
         columnConfigs.add(columnConfig);
 
@@ -101,8 +103,18 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     public void setSelectedRole(GwtRole gwtRole) {
         selectedRole = gwtRole;
-        if(rolePermissionToolBar != null){
+        if (rolePermissionToolBar != null) {
             rolePermissionToolBar.setSelectedRole(selectedRole);
+        }
+    }
+
+    @Override
+    protected void selectionChangedEvent(GwtRolePermission selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        if (selectedItem == null) {
+            rolePermissionToolBar.getDeleteEntityButton().disable();
+        } else {
+            rolePermissionToolBar.getDeleteEntityButton().enable();
         }
     }
 

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import java.net.URISyntaxException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.*;
@@ -53,7 +55,6 @@ import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomai
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.*;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
@@ -61,26 +62,7 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 
-import java.net.URISyntaxException;
-
 public class KapuaGwtModelConverter {
-
-    /**
-     * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
-     *
-     * @param role The {@link Role} to convert.
-     * @return The converted {@link GwtRole}.
-     * @since 1.0.0
-     */
-    public static GwtAccessRole convert(AccessRole accessRole) {
-        GwtAccessRole gwtAccessRole = new GwtAccessRole();
-        convertEntity(accessRole, gwtAccessRole);
-        gwtAccessRole.setAccessInfoId(convert(accessRole.getAccessInfoId()));
-        gwtAccessRole.setRoleId(convert(accessRole.getRoleId()));
-
-        return gwtAccessRole;
-
-    }
 
     public static GwtRole convert(Role role) {
         GwtRole gwtRole = new GwtRole();
@@ -219,6 +201,7 @@ public class KapuaGwtModelConverter {
         gwtRolePermission.setRoleId(convert(rolePermission.getRoleId()));
         gwtRolePermission.setDomain(gwtPermission.getDomain());
         gwtRolePermission.setAction(gwtPermission.getAction());
+        gwtRolePermission.setGroupId(gwtPermission.getGroupId());
         gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
 
         //
