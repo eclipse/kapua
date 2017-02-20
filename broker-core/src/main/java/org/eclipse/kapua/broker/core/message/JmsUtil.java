@@ -47,10 +47,14 @@ public class JmsUtil
 {
     public static final Logger logger = LoggerFactory.getLogger(JmsUtil.class);
 
+    @SuppressWarnings("unused")
     private final static Map<String, Translator<JmsMessage, DeviceMessage<?,?>>>   translatorFromJmsMap = new HashMap<String, Translator<JmsMessage, DeviceMessage<?,?>>>();
+    @SuppressWarnings("unused")
     private final static Map<String, Translator<DeviceMessage<?,?>, KapuaMessage<?,?>>> translatorToKapuaMap = new HashMap<String, Translator<DeviceMessage<?,?>, KapuaMessage<?,?>>>();
 
+    @SuppressWarnings("unused")
     private final static Map<String, Translator<KapuaMessage<?,?>, DeviceMessage<?,?>>> translatorFromKapuaMap = new HashMap<String, Translator<KapuaMessage<?,?>, DeviceMessage<?,?>>>();
+    @SuppressWarnings("unused")
     private final static Map<String, Translator<DeviceMessage<?,?>, JmsMessage>>   translatorToJmsMap     = new HashMap<String, Translator<DeviceMessage<?,?>, JmsMessage>>();
 
     /**
