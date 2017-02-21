@@ -17,8 +17,6 @@ import java.util.ServiceLoader;
 
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  * 
  */
-public abstract class KapuaLocator {
+public abstract class KapuaLocator implements KapuaServiceLoader {
 
     private final static Logger logger = LoggerFactory.getLogger(KapuaLocator.class);
 
@@ -108,25 +106,4 @@ public abstract class KapuaLocator {
         logger.debug("No service locator class resolved. Falling back to default.");
         return null;
     }
-
-    /**
-     * Returns an instance of a KapuaService implementing the provided KapuaService class.
-     * 
-     * @param serviceClass
-     *            - class of the service whose instance is required.
-     * @throws KapuaRuntimeException
-     *             with KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE code if service is not available
-     * @return service instance
-     */
-    public abstract <S extends KapuaService> S getService(Class<S> serviceClass);
-
-    /**
-     * Returns an instance of a KapuaEntityFactory implementing the provided KapuaFactory class.
-     * 
-     * @param factoryClass
-     *            - class of the factory whose instance is required.
-     * @return
-     */
-    public abstract <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass);
-
 }
