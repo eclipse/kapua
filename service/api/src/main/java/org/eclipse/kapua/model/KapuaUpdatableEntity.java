@@ -83,7 +83,7 @@ public interface KapuaUpdatableEntity extends KapuaEntity {
      *             If the stored value cannot be parsed into a {@link Properties} object.
      * @since 1.0.0
      */
-    @XmlElement(name = "attributes")
+    @XmlTransient
     public Properties getEntityAttributes()
             throws KapuaException;
 
