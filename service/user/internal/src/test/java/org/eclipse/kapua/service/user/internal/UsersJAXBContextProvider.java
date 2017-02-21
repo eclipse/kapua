@@ -52,7 +52,6 @@ public class UsersJAXBContextProvider implements JAXBContextProvider {
                     KapuaTicon.class,
                     TscalarImpl.class,
                     KapuaToption.class,
-                    KapuaTmetadata.class,
                     KapuaTdesignate.class,
                     KapuaTobject.class,
                     MetatypeXmlRegistry.class
@@ -60,7 +59,7 @@ public class UsersJAXBContextProvider implements JAXBContextProvider {
             try {
                 context = JAXBContextFactory.createContext(classes, null);
             } catch (JAXBException jaxbException) {
-                logger.warn("Error creating JAXBContext, tests will fail!");
+                logger.error("Error creating JAXBContext, tests will fail!", jaxbException);
             }
         }
         return context;
