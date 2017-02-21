@@ -58,7 +58,7 @@ public class AccessInfos extends AbstractKapuaResource {
     private final AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
     private final AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
     private final AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
-    
+
     /**
      * Returns the list of all the access info for the current account.
      *
@@ -81,7 +81,9 @@ public class AccessInfos extends AbstractKapuaResource {
 
     /**
      * Returns the access info for the given id.
-     *@param id The {@link AccessInfo} id.
+     * 
+     * @param id
+     *            The {@link AccessInfo} id.
      *
      * @return The requested access info.
      */
@@ -129,7 +131,7 @@ public class AccessInfos extends AbstractKapuaResource {
      *
      * @param accessInfoId
      *            The id of the AccessInfo to be deleted.
-     *            @return HTTP 200 if operation has completed successfully
+     * @return HTTP 200 if operation has completed successfully
      */
     @ApiOperation(value = "Delete an AccessInfo", notes = "Deletes an access info based on the information provided in accessInfoId parameter.")
     @DELETE
@@ -149,10 +151,11 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Returns the list of all the access permissions for the given access info.
      *
-     *@param accessInfoId The {@link AccessInfo} id.
+     * @param accessInfoId
+     *            The {@link AccessInfo} id.
      * @return The list of requested {@link AccessPermission}s objects.
      */
-    
+
     @ApiOperation(value = "Get the AccessPermissions list for the given AccessInfo", notes = "Returns the list of all the access permissions available for the given access info.", response = AccessPermission.class, responseContainer = "AccessPermissionListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -168,11 +171,12 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return accessPermissionsList;
     }
-    
+
     /**
      * Returns the access permission for the given id.
      *
-     *@param accessPermissionId The {@link AccessPermission} id
+     * @param accessPermissionId
+     *            The {@link AccessPermission} id
      * @return The access permission for the given id.
      */
     @ApiOperation(value = "Get the AccessPermission for the given id", notes = "Returns the access permission for the given id.", response = AccessPermission.class)
@@ -190,13 +194,13 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return accessPermission;
     }
-    
+
     /**
      * Deletes the AccessPermission specified by the "accessPermissionId" path parameter.
      *
      * @param accessPermissionId
      *            The id of the AccessPermission to be deleted.
-     *            @return HTTP 200 if operation has completed successfully.
+     * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an AccessPermission", notes = "Deletes an access permission based on the information provided in accessPermissionId parameter.")
     @DELETE
@@ -212,7 +216,7 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-    
+
     /**
      * Creates a new AccessPermission based on the information provided in AccessPermissionCreator parameter.
      *
@@ -236,11 +240,12 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return returnNotNullEntity(accessPermission);
     }
-    
+
     /**
      * Returns the list of all the access roles for the given access info.
      *
-     * @param accessInfoId The access info id
+     * @param accessInfoId
+     *            The access info id
      * @return The list of requested AccessRoles objects.
      */
     @ApiOperation(value = "Get the AccessRoles list for the given AccessInfo", notes = "Returns the list of all the access roles available for the given access info.", response = AccessRole.class, responseContainer = "AccessRoleListResult")
@@ -258,11 +263,12 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return accessRolesList;
     }
-    
+
     /**
      * Returns the access role for the given id.
      *
-     *@param accessRoleId The access role id
+     * @param accessRoleId
+     *            The access role id
      * @return The access role for the given id.
      */
     @ApiOperation(value = "Get the AccessRole for the given id", notes = "Returns the access role for the given id.", response = AccessRole.class)
@@ -280,13 +286,13 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return accessRole;
     }
-    
+
     /**
      * Deletes the AccessRole specified by the "accessRoleId" path parameter.
      *
      * @param accessRoleId
      *            The id of the AccessRoleto be deleted.
-     *            @return HTTP 200 if operation has completed successfully
+     * @return HTTP 200 if operation has completed successfully
      */
     @ApiOperation(value = "Delete an AccessRole", notes = "Deletes an access role based on the information provided in accessRoleId parameter.")
     @DELETE
@@ -302,7 +308,7 @@ public class AccessInfos extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-    
+
     /**
      * Creates a new AccessRole based on the information provided in AccessRoleCreator parameter.
      *
@@ -317,7 +323,7 @@ public class AccessInfos extends AbstractKapuaResource {
     @Path("{accessInfoId}/role")
     public AccessRole createAccessRole(
             @ApiParam(value = "Provides the information for the new Accessrole to be created", required = true) AccessRoleCreator accessRoleCreator) {
-        AccessRole accessRole= null;
+        AccessRole accessRole = null;
         try {
             accessRoleCreator.setScopeId(KapuaSecurityUtils.getSession().getScopeId());
             accessRole = accessRoleService.create(accessRoleCreator);
