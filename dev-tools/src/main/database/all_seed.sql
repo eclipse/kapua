@@ -10,14 +10,16 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 
-INSERT INTO `act_account` (
+INSERT INTO `act_account` ( 
 	`scope_id`,
 	`id`,
 	`name`,
 	`created_on`,
-	`created_by`,
+	`created_by_type`,
+	`created_by_id`,
 	`modified_on`,
-	`modified_by`,
+	`modified_by_type`,
+	`modified_by_id`,
 	`org_name`,
 	`org_person_name`,
 	`org_email`,
@@ -32,13 +34,15 @@ INSERT INTO `act_account` (
 	`parent_account_path`,
 	`optlock`,
 	`attributes`,
-	`properties`)
+	`properties`) 
 VALUES (NULL,
 		1,
 		'kapua-sys',
 		CURRENT_TIMESTAMP(),
+		'USER',
 		1,
 		CURRENT_TIMESTAMP(),
+		'USER',
 		1,
 		'kapua-org',
 		'Kapua Sysadmin',
@@ -56,41 +60,39 @@ VALUES (NULL,
 		NULL,
 		NULL);
 
-INSERT INTO atht_credential (scope_id, id, created_on, created_by, modified_on, modified_by, subject_type, subject_id, type, key, secret, optlock) 
-		VALUES ('1', '1', CURRENT_TIMESTAMP(), '1', CURRENT_TIMESTAMP(), '1', 'USER',   '1',  'PASSWORD', 'kapua-sys',    '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0'),
-		       ('1', '2', CURRENT_TIMESTAMP(), '1', CURRENT_TIMESTAMP(), '1', 'USER',   '1',  'API_KEY',  '12345678',     '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0'),
-			   ('1', '3', CURRENT_TIMESTAMP(), '1', CURRENT_TIMESTAMP(), '1', 'BROKER_CONNECTION', NULL, 'PASSWORD', 'kapua-broker', '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0');
+		
+INSERT INTO atht_credential (scope_id, id, created_on, created_by_type, created_by_id, modified_on, modified_by_type, modified_by_id, subject_type, subject_id, type, key, secret, optlock) 
+		VALUES ('1', '1', CURRENT_TIMESTAMP(), 'USER', '1', CURRENT_TIMESTAMP(), 'USER', '1', 'USER',   			'1',  'PASSWORD', 'kapua-sys',    '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0'),
+		       ('1', '2', CURRENT_TIMESTAMP(), 'USER', '1', CURRENT_TIMESTAMP(), 'USER', '1', 'USER',   			'1',  'API_KEY',  '12345678',     '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0'),
+			   ('1', '3', CURRENT_TIMESTAMP(), 'USER', '1', CURRENT_TIMESTAMP(), 'USER', '1', 'BROKER_CONNECTION', 	NULL, 'PASSWORD', 'kapua-broker', '$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm', '0');
+
 
 INSERT INTO athz_access_info
 	VALUES
-		(1, 1, NOW(), 1, NOW(), 1, 'USER', 1, 0, '', ''),
-		(1, 2, NOW(), 1, NOW(), 1, 'BROKER_CONNECTION', NULL, 0, '', '');
-
+		(1, 1, NOW(), 'USER', 1, NOW(), 'USER', 1, 'USER', 				1, 		0, '', ''),
+		(1, 2, NOW(), 'USER', 1, NOW(), 'USER', 1, 'BROKER_CONNECTION', NULL, 	0, '', '');
+		
+		
 INSERT INTO athz_access_permission
 	VALUES
-		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1
+		(1, 1, NOW(), 'USER', 1, 2, 'broker', 'connect', 1, null), -- kapua-broker assigned of permission: broker:connect:1:* 
+		(1, 2, NOW(), 'USER', 1, 2, 'device', 'connect', 1, null); -- kapua-broker assigned of permission: device:connect:1:* 
 
+		
 INSERT INTO athz_access_role
 	VALUES
-		(1, 1, NOW(), 1, 1, 1); -- kapua-sys assigned of role admin
+		(1, 1, NOW(), 'USER', 1, 1, 1); -- kapua-sys assigned of role admin  
+		
 
 INSERT INTO athz_role
-	VALUES
-		(1, 1, NOW(), 1, NOW(), 1, 'admin', 0, '','');
+	VALUES 
+		(1, 1, NOW(), 'USER', 1, NOW(), 'USER', 1, 'admin', 0, '','');
 
-INSERT INTO athz_role_permission
+		
+INSERT INTO athz_role_permission 
 	VALUES
-		(1, 1, NOW(), 1, 1, 'account', null, null, null),
-		(1, 2, NOW(), 1, 1, 'user', null, null, null),
-		(1, 3, NOW(), 1, 1, 'device_event', null, null, null),
-		(1, 4, NOW(), 1, 1, 'device_connection', null, null, null),
-		(1, 5, NOW(), 1, 1, 'device', null, null, null),
-		(1, 6, NOW(), 1, 1, 'data', null, null, null),
-		(1, 7, NOW(), 1, 1, 'broker', null, null, null),
-		(1, 8, NOW(), 1, 1, 'credential', null, null, null),
-		(1, 9, NOW(), 1, 1, 'role', null, null, null),
-		(1, 10, NOW(), 1, 1, 'user_permission', null, null, null),
-		(1, 11, NOW(), 1, 1, 'device_lifecycle', null, null, null),
-		(1, 12, NOW(), 1, 1, 'device_management', null, null, null),
-		(1, 13, NOW(), 1, 1, 'account', null, null, null),
-		(1, 14, NOW(), 1, 1, 'account', null, null, null);
+		(1,  1, NOW(), 'USER', 1, 1, 'null', null, null, null); -- kapua-sys assigned of permission: *:*:*:*	
+		
+INSERT INTO `usr_user` (`scope_id`, `id`, `name`, `created_on`, `created_by_type`, `created_by_id`, `modified_on`, `modified_by_type`, `modified_by_id`, `status`, `display_name`, `email`, `phone_number`, `user_type`, `external_id`, `optlock`, `attributes`, `properties`) 
+		VALUES (1, 1, 'kapua-sys', CURRENT_TIMESTAMP(), 'USER', 1, CURRENT_TIMESTAMP(), 'USER', 1, 'ENABLED', 'Kapua Sysadmin', 'kapua-sys@eclipse.org', '+1 555 123 4567', 'INTERNAL', NULL, 0, NULL, NULL);
+
