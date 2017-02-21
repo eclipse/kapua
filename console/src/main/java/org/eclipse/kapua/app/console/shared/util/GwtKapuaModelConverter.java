@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
@@ -35,6 +39,8 @@ import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoDomain;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainDomain;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
+import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -52,9 +58,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -96,6 +99,22 @@ public class GwtKapuaModelConverter {
         return roleQuery;
     }
     
+
+    public static GroupQuery convertGroupQuery(PagingLoadConfig loadConfig,
+            GwtGroupQuery gwtGroupQuery) {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
+        GroupQuery groupQuery = groupFactory.newQuery(convert(gwtGroupQuery.getScopeId()));
+        if (gwtGroupQuery.getName() != null && gwtGroupQuery.getName() != "") {
+            groupQuery
+                    .setPredicate(new AttributePredicate<String>("name", gwtGroupQuery.getName()));
+        }
+        groupQuery.setOffset(loadConfig.getOffset());
+        groupQuery.setLimit(loadConfig.getLimit());
+
+        return groupQuery;
+    }
+
     public static AccessRoleQuery convertAccessRoleQuery(PagingLoadConfig pagingLoadConfig,
             GwtAccessRoleQuery gwtRoleQuery) {
 
