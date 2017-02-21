@@ -216,7 +216,7 @@ public class DeviceRegistryConnectionTestSteps extends KapuaTest {
             exceptionCaught = false;
             for (DeviceConnection connItem : connections) {
                 connectionCreator = new DeviceConnectionCreatorImpl(scopeId);
-                connectionCreator.setUserId(userId);
+                connectionCreator.setLastCredentialId(userId);
                 connectionCreator.setClientId(connItem.getClientId());
                 connectionCreator.setClientIp(connItem.getClientIp());
                 connectionCreator.setServerIp(connItem.getServerIp());
@@ -306,7 +306,7 @@ public class DeviceRegistryConnectionTestSteps extends KapuaTest {
         assertNotNull(connectionCreator);
         assertEquals(connectionCreator.getScopeId(), connection.getScopeId());
         assertEquals(connectionCreator.getClientId(), connection.getClientId());
-        assertEquals(connectionCreator.getUserId(), connection.getUserId());
+        assertEquals(connectionCreator.getLastCredentialId(), connection.getLastCredentialId());
         assertEquals(connectionCreator.getClientIp(), connection.getClientIp());
         assertEquals(connectionCreator.getServerIp(), connection.getServerIp());
         assertEquals(connectionCreator.getProtocol(), connection.getProtocol());
@@ -481,7 +481,7 @@ public class DeviceRegistryConnectionTestSteps extends KapuaTest {
     DeviceConnectionCreator prepareRegularConnectionCreator(KapuaId scopeId, KapuaId userId) {
         DeviceConnectionCreatorImpl tmpCreator = new DeviceConnectionCreatorImpl(scopeId);
 
-        tmpCreator.setUserId(userId);
+        tmpCreator.setLastCredentialId(userId);
         tmpCreator.setClientId(CLIENT_NAME);
         tmpCreator.setClientIp(CLIENT_IP);
         tmpCreator.setServerIp(SERVER_IP);
