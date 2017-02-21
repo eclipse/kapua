@@ -56,7 +56,7 @@ public abstract class KapuaLocator {
     private static KapuaLocator createInstance() {
         logger.info("initializing Servicelocator instance... ");
         String locatorImplementation = locatorClassName();
-        if (locatorImplementation != null && locatorImplementation.trim().length() > 0) { // FIXME: use more appropriate .isEmpty()
+        if (locatorImplementation != null && !locatorImplementation.trim().isEmpty()) {
             try {
                 return (KapuaLocator) Class.forName(locatorImplementation).newInstance();
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
