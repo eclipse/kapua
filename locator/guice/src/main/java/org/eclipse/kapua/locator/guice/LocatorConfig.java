@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
@@ -31,21 +32,22 @@ public class LocatorConfig {
     private final List<String> packageNames;
     private final List<String> providedInterfaceNames;
 
-    private LocatorConfig(URL url) {
+    private LocatorConfig(final URL url, final List<String> packageNames, final List<String> providedInterfaceNames) {
         this.url = url;
-        packageNames = new ArrayList<>();
-        providedInterfaceNames = new ArrayList<>();
+        this.packageNames = packageNames;
+        this.providedInterfaceNames = providedInterfaceNames;
     }
 
-    public static LocatorConfig fromURL(URL url) throws KapuaLocatorException {
+    public static LocatorConfig fromURL(final URL url) throws KapuaLocatorException {
 
         if (url == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("'url' must not be null");
         }
 
-        LocatorConfig config = new LocatorConfig(url);
+        final List<String> packageNames = new ArrayList<>();
+        final List<String> providedInterfaceNames = new ArrayList<>();
 
-        XMLConfiguration xmlConfig;
+        final XMLConfiguration xmlConfig;
         try {
             xmlConfig = new XMLConfiguration(url);
         } catch (ConfigurationException e) {
@@ -53,22 +55,30 @@ public class LocatorConfig {
         }
 
         Object props = xmlConfig.getProperty(SERVICE_RESOURCE_PACKAGES);
-        if (props instanceof Collection) {
-            config.packageNames.addAll((Collection<String>) props);
+        if (props instanceof Collection<?>) {
+            addAllStrings(packageNames, (Collection<?>) props);
         }
         if (props instanceof String) {
-            config.packageNames.add((String) props);
+            packageNames.add((String) props);
         }
 
         props = xmlConfig.getProperty(SERVICE_RESOURCE_INTERFACES);
-        if (props instanceof Collection) {
-            config.providedInterfaceNames.addAll((Collection<String>) props);
+        if (props instanceof Collection<?>) {
+            addAllStrings(providedInterfaceNames, (Collection<?>) props);
         }
         if (props instanceof String) {
-            config.providedInterfaceNames.add((String) props);
+            providedInterfaceNames.add((String) props);
         }
 
-        return config;
+        return new LocatorConfig(url, Collections.unmodifiableList(packageNames), Collections.unmodifiableList(providedInterfaceNames));
+    }
+
+    private static void addAllStrings(final List<String> list, Collection<?> other) {
+        for (Object entry : other) {
+            if (entry instanceof String) {
+                list.add((String) entry);
+            }
+        }
     }
 
     public URL getURL() {
@@ -76,10 +86,10 @@ public class LocatorConfig {
     }
 
     public Collection<String> getPackageNames() {
-        return Collections.unmodifiableCollection(packageNames);
+        return packageNames;
     }
 
     public Collection<String> getProvidedInterfaceNames() {
-        return Collections.unmodifiableCollection(providedInterfaceNames);
+        return providedInterfaceNames;
     }
 }
