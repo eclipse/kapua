@@ -81,6 +81,7 @@ public class AccessInfos extends AbstractKapuaResource {
 
     /**
      * Returns the access info for the given id.
+     *@param id The {@link AccessInfo} id.
      *
      * @return The requested access info.
      */
@@ -128,6 +129,7 @@ public class AccessInfos extends AbstractKapuaResource {
      *
      * @param accessInfoId
      *            The id of the AccessInfo to be deleted.
+     *            @return HTTP 200 if operation has completed successfully
      */
     @ApiOperation(value = "Delete an AccessInfo", notes = "Deletes an access info based on the information provided in accessInfoId parameter.")
     @DELETE
@@ -147,7 +149,8 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Returns the list of all the access permissions for the given access info.
      *
-     * @return The list of requested AccessPermissions objects.
+     *@param accessInfoId The {@link AccessInfo} id.
+     * @return The list of requested {@link AccessPermission}s objects.
      */
     
     @ApiOperation(value = "Get the AccessPermissions list for the given AccessInfo", notes = "Returns the list of all the access permissions available for the given access info.", response = AccessPermission.class, responseContainer = "AccessPermissionListResult")
@@ -169,6 +172,7 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Returns the access permission for the given id.
      *
+     *@param accessPermissionId The {@link AccessPermission} id
      * @return The access permission for the given id.
      */
     @ApiOperation(value = "Get the AccessPermission for the given id", notes = "Returns the access permission for the given id.", response = AccessPermission.class)
@@ -192,6 +196,7 @@ public class AccessInfos extends AbstractKapuaResource {
      *
      * @param accessPermissionId
      *            The id of the AccessPermission to be deleted.
+     *            @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an AccessPermission", notes = "Deletes an access permission based on the information provided in accessPermissionId parameter.")
     @DELETE
@@ -235,9 +240,9 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Returns the list of all the access roles for the given access info.
      *
+     * @param accessInfoId The access info id
      * @return The list of requested AccessRoles objects.
      */
-    
     @ApiOperation(value = "Get the AccessRoles list for the given AccessInfo", notes = "Returns the list of all the access roles available for the given access info.", response = AccessRole.class, responseContainer = "AccessRoleListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -257,6 +262,7 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Returns the access role for the given id.
      *
+     *@param accessRoleId The access role id
      * @return The access role for the given id.
      */
     @ApiOperation(value = "Get the AccessRole for the given id", notes = "Returns the access role for the given id.", response = AccessRole.class)
@@ -280,6 +286,7 @@ public class AccessInfos extends AbstractKapuaResource {
      *
      * @param accessRoleId
      *            The id of the AccessRoleto be deleted.
+     *            @return HTTP 200 if operation has completed successfully
      */
     @ApiOperation(value = "Delete an AccessRole", notes = "Deletes an access role based on the information provided in accessRoleId parameter.")
     @DELETE
