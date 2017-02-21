@@ -519,7 +519,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     if (connectionId != null) {
                         stealingLinkDetected = !connectionId.equals(info.getConnectionId());
                     } else {
-                        logger.error("Cannot find connection id for client id {} on connection map. Currect connection id is {} - IP: {}",
+                        logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
                                 new Object[] { clientId, info.getConnectionId(), info.getClientIp() });
                     }
                     if (stealingLinkDetected) {
