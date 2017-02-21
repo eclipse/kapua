@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.login.CredentialException;
@@ -534,14 +533,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     } else {
                         final DeviceConnection deviceConnection;
                         try {
-                            deviceConnection = KapuaSecurityUtils.doPriviledge(new Callable<DeviceConnection>() {
-
-                                @Override
-                                public DeviceConnection call()
-                                        throws Exception {
-                                    return deviceConnectionService.findByClientId(scopeId, clientId);
-                                }
-                            });
+                            deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                         } catch (Exception e) {
                             throw new ShiroException("Error while looking for device connection on updating the device!", e);
                         }
