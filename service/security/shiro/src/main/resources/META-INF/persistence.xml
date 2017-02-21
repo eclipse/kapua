@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
    
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -9,56 +9,60 @@
    
     Contributors:
         Eurotech - initial API and implementation
+        Red Hat Inc
    
  -->
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
 	<persistence-unit name="kapua-authentication" transaction-type="RESOURCE_LOCAL">
 
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        
-        <!-- Authentication -->
-        <class>org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl</class>
-        <class>org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl</class>
-         
-        <!-- Base classes and External classes -->
-        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
-        <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
-        <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
-        <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
-        
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+		<!-- Authentication -->
+		<class>org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl</class>
+		<class>org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl</class>
+
+		<!-- Base classes and External classes -->
+		<class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+		<class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
+		<class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
+		<class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+
 		<properties>
 			<!-- <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" /> -->
 			<property name="javax.persistence.lock.timeout" value="1000" />
 		</properties>
 	</persistence-unit>
-    
-    <persistence-unit name="kapua-authorization" transaction-type="RESOURCE_LOCAL">
 
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        
-        <!-- Authorization -->
-        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImpl</class>
-        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
-        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl</class>
+	<persistence-unit name="kapua-authorization" transaction-type="RESOURCE_LOCAL">
 
-        <class>org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl</class>
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-        <class>org.eclipse.kapua.service.authorization.group.shiro.GroupImpl</class>
-        <class>org.eclipse.kapua.service.authorization.group.shiro.GroupPermissionImpl</class>
+		<!-- Authorization -->
+		<class>org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImpl</class>
+		<class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
+		<class>org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl</class>
 
-        <class>org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl</class>
+		<class>org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl</class>
 
-        <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
-        <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+		<class>org.eclipse.kapua.service.authorization.group.shiro.GroupImpl</class>
+		<class>org.eclipse.kapua.service.authorization.group.shiro.GroupPermissionImpl</class>
 
-        <!-- Base classes and External classes -->
-        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
-        <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
-        <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
-        <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
-        
-        <properties>
-            <property name="javax.persistence.lock.timeout" value="1000" />
-        </properties>
-    </persistence-unit>
+		<class>org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl</class>
+
+		<class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
+		<class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+
+		<!-- Base classes and External classes -->
+		<class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+		<class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
+		<class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
+		<class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+
+		<properties>
+			<property name="javax.persistence.lock.timeout" value="1000" />
+		</properties>
+	</persistence-unit>
 </persistence>
