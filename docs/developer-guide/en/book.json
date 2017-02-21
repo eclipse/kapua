@@ -1,0 +1,10 @@
+{
+    "title": "Kapua Developer Guide",
+    "description": "Kapua Developer Guide",
+    "github": "eclipse/kapua",
+    "githubHost": "https://github.com/",
+    "gitbook": "3.x.x",
+    "links": {
+        "home": "http://eclipse.org/kapua"
+    }
+}

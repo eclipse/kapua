@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://kapua.everyware-cloud.com/img/kapua_logo_vertical.png" alt="Eclipse Kapua"/>
-</p>
+![Kapua logo](docs/user-manual/en/images/kapua-logo.png)
 
 # Eclipse Kapua&trade;
 
@@ -10,3 +8,8 @@
 
 To install Kapua&trade; on your local machine please refer to:
 [quick start guide](dev-tools/src/main/vagrant/README.MD#demo-machine-quick-start)
+
+For more information, refer to:
+
+* [User Manual](docs/user-manual/en)
+* [Developer Guide](docs/developer-guide/en)
