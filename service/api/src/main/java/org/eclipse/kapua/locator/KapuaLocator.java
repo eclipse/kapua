@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class KapuaLocator {
 
-    private static Logger logger = LoggerFactory.getLogger(KapuaLocator.class);
+    private final static Logger logger = LoggerFactory.getLogger(KapuaLocator.class);
 
     private final static KapuaLocator instance = createInstance();
 
