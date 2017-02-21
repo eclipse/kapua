@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("rawtypes")
 public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
-    public static final Logger logger = LoggerFactory.getLogger(Translator.class);
+    private static final Logger logger = LoggerFactory.getLogger(Translator.class);
 
     private static final ServiceLoader<Translator> translators = ServiceLoader.load(Translator.class);
 
@@ -93,8 +93,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      * @return the translated message
      * @throws KapuaException
      */
-    public abstract TO_M translate(FROM_M message)
-            throws KapuaException;
+    public abstract TO_M translate(FROM_M message) throws KapuaException;
 
     /**
      * Return the FROM_M message type
