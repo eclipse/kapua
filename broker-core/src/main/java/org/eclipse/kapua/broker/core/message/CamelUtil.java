@@ -48,8 +48,8 @@ public class CamelUtil {
                 ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
                 return destinationTopic.getTopicName().substring(AclConstants.VT_TOPIC_PREFIX.length());
             } else {
-                logger.warn("jmsMessage destination is not a Topic or Queue: {}", destination.toString());
-                throw new JMSException("Unable to extract the destination. Wrong destination {}", destination.toString());
+                logger.warn("jmsMessage destination is not a Topic or Queue: {}", destination);
+                throw new JMSException(String.format("Unable to extract the destination. Wrong destination %s", destination));
             }
         }
     }
