@@ -12,4 +12,4 @@
 
 INSERT INTO athz_role_permission 
 	VALUES
-		(1,  1, NOW(), 'USER', 1, 1, 'null', null, null, null); -- kapua-sys assigned of permission: *:*:*:*		
+		(1,  1, NOW(), 'USER', 1, 1, null, null, null, null); -- kapua-sys assigned of permission: *:*:*:*		
