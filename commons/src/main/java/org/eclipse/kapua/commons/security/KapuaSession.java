@@ -36,7 +36,7 @@ public class KapuaSession implements Serializable {
     // TODO to be moved inside configuration service or something like that "fully.qualified.classname.methodname" (<init> for the constructor)
     static {
         trustedClasses.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
-        trustedClasses.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPriviledge");
+        trustedClasses.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
     }
 
     /**
