@@ -23,6 +23,8 @@ public class GwtCredential extends GwtEntityModel {
     public <X> X get(String property) {
         if ("credentialTypeEnum".equals(property)) {
             return (X) GwtCredentialType.valueOf(getCredentialType());
+        } else if ("subjectTypeEnum".equals(property)) {
+            return (X) GwtSubjectType.valueOf(getSubjectType());
         } else {
             return super.get(property);
         }

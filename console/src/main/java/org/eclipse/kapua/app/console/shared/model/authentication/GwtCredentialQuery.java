@@ -16,13 +16,22 @@ import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 
 public class GwtCredentialQuery extends GwtQuery {
 
-    private String key;
+    private String username;
+    private GwtCredentialType type;
 
-    public String getKey() {
-        return key;
+    public String getUsername() {
+        return username;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setUsername(String key) {
+        this.username = key;
+    }
+
+    public GwtCredentialType getType() {
+        return type;
+    }
+
+    public void setType(GwtCredentialType type) {
+        this.type = type;
     }
 }

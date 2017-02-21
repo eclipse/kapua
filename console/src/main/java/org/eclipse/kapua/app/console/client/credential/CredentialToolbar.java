@@ -34,20 +34,25 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return super.getAddDialog();
+        return new CredentialAddDialog(currentSession);
     }
 
     @Override
     protected KapuaDialog getEditDialog() {
-        return super.getEditDialog();
+        GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
+        CredentialEditDialog dialog = null;
+        if (selectedCredential != null) {
+            dialog = new CredentialEditDialog(currentSession, selectedCredential);
+        }
+        return dialog;
     }
 
     @Override
     protected KapuaDialog getDeleteDialog() {
-        GwtCredential selectedUser = gridSelectionModel.getSelectedItem();
+        GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
         CredentialDeleteDialog dialog = null;
-        if (selectedUser != null) {
-            dialog = new CredentialDeleteDialog(selectedUser);
+        if (selectedCredential != null) {
+            dialog = new CredentialDeleteDialog(selectedCredential);
         }
         return dialog;
     }

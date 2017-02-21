@@ -79,7 +79,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("status", "MSGS.gridUserColumnHeaderStatus()", 50);
+        ColumnConfig columnConfig = new ColumnConfig("status", MSGS.gridCredentialColumnHeaderStatus(), 50);
         GridCellRenderer<GwtCredential> setStatusIcon = new GridCellRenderer<GwtCredential>() {
 
             public String render(GwtCredential gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtCredential> deviceList, Grid<GwtCredential> grid) {
@@ -94,17 +94,17 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("id", "ID", 100);
+        columnConfig = new ColumnConfig("id", MSGS.gridCredentialColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("username", "USERNAME_KEY", 400);
+        columnConfig = new ColumnConfig("username", MSGS.gridCredentialColumnHeaderUsername(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("credentialType", "CREDENTIAL_TYPE", 400);
+        columnConfig = new ColumnConfig("credentialType", MSGS.gridCredentialColumnHeaderCredentialType(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("", "EXPIRE_DATE", 200);
+        columnConfig = new ColumnConfig("", MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

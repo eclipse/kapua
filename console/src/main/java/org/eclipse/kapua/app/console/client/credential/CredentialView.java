@@ -33,6 +33,7 @@ public class CredentialView extends EntityView<GwtCredential> {
     @Override
     public List<KapuaTabItem<GwtCredential>> getTabs(EntityView<GwtCredential> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtCredential>> tabs = new ArrayList<KapuaTabItem<GwtCredential>>();
+        tabs.add(new CredentialTabDescription());
         return tabs;
     }
 
@@ -45,7 +46,7 @@ public class CredentialView extends EntityView<GwtCredential> {
     }
 
     @Override
-    public EntityFilterPanel<GwtCredential> getEntityFilterPanel(EntityView<GwtCredential> entityView, GwtSession currentSession2) {
-        return null;
+    public EntityFilterPanel<GwtCredential> getEntityFilterPanel(EntityView<GwtCredential> entityView, GwtSession currentSession) {
+        return new CredentialFilterPanel(this, currentSession);
     }
 }

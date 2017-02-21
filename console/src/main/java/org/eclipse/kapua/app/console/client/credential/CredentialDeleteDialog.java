@@ -36,7 +36,7 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
     @Override
     public String getHeaderMessage() {
         // TODO will be credential name
-        return MSGS.dialogDeleteHeader(selectedCredential.getCredentialType());
+        return MSGS.dialogDeleteHeader(selectedCredential.getId());
     }
 
     @Override

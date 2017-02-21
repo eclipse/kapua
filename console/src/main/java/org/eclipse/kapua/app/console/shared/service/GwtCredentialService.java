@@ -13,10 +13,13 @@
 package org.eclipse.kapua.app.console.shared.service;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
 
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -42,5 +45,14 @@ public interface GwtCredentialService extends RemoteService {
      * @throws GwtKapuaException
      */
     public void delete(GwtXSRFToken xsfrToken, String stringScopeId, String gwtCredentialId)
+            throws GwtKapuaException;
+
+    public GwtCredential create(GwtXSRFToken gwtXsrfToken, GwtCredentialCreator gwtRoleCreator)
+            throws GwtKapuaException;
+
+    public GwtCredential update(GwtXSRFToken gwtXsrfToken, GwtCredential gwtCredential)
+            throws GwtKapuaException;
+
+    public ListLoadResult<GwtGroupedNVPair> getCredentialDescription(String scopeShortId, String roleShortId)
             throws GwtKapuaException;
 }
