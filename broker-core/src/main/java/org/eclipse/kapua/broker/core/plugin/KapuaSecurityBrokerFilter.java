@@ -386,10 +386,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
 
                 // send connect message
-                ConnectionId previousConnectionId = connectionMap.get(fullClientId);
+                ConnectionId previousConnectionId = connectionMap.put(fullClientId, info.getConnectionId());
                 boolean stealingLinkDetected = (previousConnectionId != null);
-                // Update map for stealing link detection on disconnect
-                connectionMap.put(fullClientId, info.getConnectionId());
                 if (deviceConnection == null) {
                     DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(scopeId);
                     deviceConnectionCreator.setClientId(clientId);
