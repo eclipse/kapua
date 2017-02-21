@@ -31,10 +31,9 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  * 
  */
-public abstract class KapuaLocator
-{
+public abstract class KapuaLocator {
 
-    private static Logger             logger   = LoggerFactory.getLogger(KapuaLocator.class);
+    private static Logger logger = LoggerFactory.getLogger(KapuaLocator.class);
 
     private final static KapuaLocator instance = createInstance();
 
@@ -54,15 +53,13 @@ public abstract class KapuaLocator
      * 
      * @return
      */
-    private static KapuaLocator createInstance()
-    {
+    private static KapuaLocator createInstance() {
         logger.info("initializing Servicelocator instance... ");
         String locatorImplementation = locatorClassName();
         if (locatorImplementation != null && locatorImplementation.trim().length() > 0) { // FIXME: use more appropriate .isEmpty()
             try {
                 return (KapuaLocator) Class.forName(locatorImplementation).newInstance();
-            }
-            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
                 logger.info("An error occurred during Servicelocator initialization", e);
             }
         }
@@ -87,8 +84,7 @@ public abstract class KapuaLocator
      * 
      * @return
      */
-    public static KapuaLocator getInstance()
-    {
+    public static KapuaLocator getInstance() {
         return instance;
     }
 
@@ -98,26 +94,28 @@ public abstract class KapuaLocator
      * 
      * @return
      */
-	static String locatorClassName() {
+    static String locatorClassName() {
         String locatorClass = System.getProperty(LOCATOR_CLASS_NAME_SYSTEM_PROPERTY);
-		if(locatorClass != null) {
-			return locatorClass;
-		}
+        if (locatorClass != null) {
+            return locatorClass;
+        }
 
         locatorClass = System.getenv(LOCATOR_CLASS_NAME_ENVIRONMENT_PROPERTY);
         if (locatorClass != null) {
             return locatorClass;
         }
 
-		logger.debug("No service locator class resolved. Falling back to default.");
-		return null;
-	}
+        logger.debug("No service locator class resolved. Falling back to default.");
+        return null;
+    }
 
     /**
      * Returns an instance of a KapuaService implementing the provided KapuaService class.
      * 
-     * @param serviceClass - class of the service whose instance is required.
-     * @throws KapuaRuntimeException with KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE code if service is not available
+     * @param serviceClass
+     *            - class of the service whose instance is required.
+     * @throws KapuaRuntimeException
+     *             with KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE code if service is not available
      * @return service instance
      */
     public abstract <S extends KapuaService> S getService(Class<S> serviceClass);
@@ -125,9 +123,10 @@ public abstract class KapuaLocator
     /**
      * Returns an instance of a KapuaEntityFactory implementing the provided KapuaFactory class.
      * 
-     * @param factoryClass - class of the factory whose instance is required.
+     * @param factoryClass
+     *            - class of the factory whose instance is required.
      * @return
      */
     public abstract <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass);
-    
+
 }
