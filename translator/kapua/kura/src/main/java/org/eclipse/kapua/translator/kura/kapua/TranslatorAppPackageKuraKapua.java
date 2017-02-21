@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
@@ -17,13 +17,10 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
 import org.eclipse.kapua.service.device.call.kura.app.ResponseMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
@@ -46,7 +43,6 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadStatus;
-import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
@@ -56,59 +52,26 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  * @since 1.0
  *
  */
-public class TranslatorAppPackageKuraKapua extends Translator<KuraResponseMessage, PackageResponseMessage> {
+public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel,PackageResponsePayload, PackageResponseMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static Map<PackageMetrics, PackageAppProperties> metricsDictionary;
+    private static final Map<PackageMetrics, PackageAppProperties> metricsDictionary;
 
-    /**
-     * Constructor
-     */
-    public TranslatorAppPackageKuraKapua() {
+    static {
         metricsDictionary = new HashMap<>();
 
         metricsDictionary.put(PackageMetrics.APP_ID, PackageAppProperties.APP_NAME);
         metricsDictionary.put(PackageMetrics.APP_VERSION, PackageAppProperties.APP_VERSION);
-
+    }
+    
+    /**
+     * Constructor
+     */
+    public TranslatorAppPackageKuraKapua() {
+        super(PackageResponseMessage.class);
     }
 
-    @Override
-    public PackageResponseMessage translate(KuraResponseMessage kuraMessage)
-            throws KapuaException {
-        //
-        // Kura channel
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraMessage.getChannel().getScope());
-
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
-        }
-
-        PackageResponseChannel responseChannel = translate(kuraMessage.getChannel());
-
-        //
-        // Kura payload
-        PackageResponsePayload responsePayload = translate(kuraMessage.getPayload());
-
-        //
-        // Kura Message
-        PackageResponseMessage kapuaMessage = new PackageResponseMessage();
-        kapuaMessage.setScopeId(account.getId());
-        kapuaMessage.setChannel(responseChannel);
-        kapuaMessage.setPayload(responsePayload);
-        kapuaMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
-        kapuaMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
-        kapuaMessage.setReceivedOn(kuraMessage.getTimestamp());
-        kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate((Integer) kuraMessage.getPayload().getMetrics().get(ResponseMetrics.RESP_METRIC_EXIT_CODE.getValue())));
-
-        //
-        // Return Kapua Message
-        return kapuaMessage;
-    }
-
-    private PackageResponseChannel translate(KuraResponseChannel kuraChannel)
-            throws KapuaException {
+    protected PackageResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER,
@@ -140,8 +103,7 @@ public class TranslatorAppPackageKuraKapua extends Translator<KuraResponseMessag
         return responseChannel;
     }
 
-    private PackageResponsePayload translate(KuraResponsePayload kuraResponsePayload)
-            throws KapuaException {
+    protected PackageResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws KapuaException {
         PackageResponsePayload responsePayload = new PackageResponsePayload();
 
         Map<String, Object> metrics = kuraResponsePayload.getMetrics();
@@ -230,15 +192,5 @@ public class TranslatorAppPackageKuraKapua extends Translator<KuraResponseMessag
                     e,
                     kuraDeploymentPackages);
         }
-    }
-
-    @Override
-    public Class<KuraResponseMessage> getClassFrom() {
-        return KuraResponseMessage.class;
-    }
-
-    @Override
-    public Class<PackageResponseMessage> getClassTo() {
-        return PackageResponseMessage.class;
     }
 }
