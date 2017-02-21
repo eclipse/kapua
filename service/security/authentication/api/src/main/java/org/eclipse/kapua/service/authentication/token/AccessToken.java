@@ -45,8 +45,7 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
         "credentialId",
         "tokenId", //
         "expiresOn",//
-})// , //
-  // factoryClass = AccessTokenXmlRegistry.class, factoryMethod = "newAccessToken")
+})
 public interface AccessToken extends KapuaUpdatableEntity {
 
     public static final String TYPE = "accessToken";

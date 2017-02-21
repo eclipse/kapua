@@ -15,13 +15,17 @@ package org.eclipse.kapua.model;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectAdapter;
 
 /**
  * {@link KapuaUpdatableEntity} definition.
@@ -32,6 +36,7 @@ import org.eclipse.kapua.model.subject.Subject;
  * @since 1.0.0
  * 
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "modifiedOn", "modifiedBy", "optlock" })
 public interface KapuaUpdatableEntity extends KapuaEntity {
 
@@ -51,6 +56,7 @@ public interface KapuaUpdatableEntity extends KapuaEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "modifiedBy")
+    @XmlJavaTypeAdapter(SubjectAdapter.class)
     public Subject getModifiedBy();
 
     /**

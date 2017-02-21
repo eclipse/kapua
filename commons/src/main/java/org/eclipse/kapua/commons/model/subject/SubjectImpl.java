@@ -130,6 +130,6 @@ public class SubjectImpl implements Subject, Serializable {
 
     @Override
     public String toString() {
-        return new StringBuilder().append(subjectType).append(":").append(subjectId).toString();
+        return new StringBuilder().append(subjectType).append(":").append(subjectId.toCompactId()).toString();
     }
 }

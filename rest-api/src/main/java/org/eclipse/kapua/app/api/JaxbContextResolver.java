@@ -24,6 +24,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
+import org.eclipse.kapua.model.subject.Subject;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -33,12 +34,12 @@ import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
@@ -108,18 +109,26 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
         try {
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
                     ErrorBean.class,
+
+                    //
+                    // Account service
                     Account.class,
                     AccountCreator.class,
                     AccountListResult.class,
                     AccountXmlRegistry.class,
-                    User.class,
-                    UserCreator.class,
-                    UserListResult.class,
-                    UserXmlRegistry.class,
+
+                    //
+                    // Device service
                     Device.class,
                     DeviceCreator.class,
                     DeviceListResult.class,
                     DeviceXmlRegistry.class,
+
+                    DeviceConnectionSummary.class,
+                    DeviceConnectionXmlRegistry.class,
+
+                    //
+                    // Device management service
                     DeviceCommandInput.class,
                     DeviceCommandXmlRegistry.class,
                     DeviceCommandOutput.class,
@@ -143,15 +152,17 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KuraDeviceConfiguration.class,
                     KuraDeploymentPackages.class,
                     KuraDeploymentPackage.class,
+
                     KapuaTocd.class,
                     KapuaTad.class,
                     KapuaTicon.class,
                     KapuaToption.class,
-                    DeviceConnectionSummary.class,
-                    DeviceConnectionXmlRegistry.class,
+
+                    //
+                    // Authentication service
                     AuthenticationCredentials.class,
                     AuthenticationXmlRegistry.class,
-                    AccessTokenImpl.class,
+                    AccessToken.class,
                     ApiKeyCredentials.class,
                     JwtCredentials.class,
                     UsernamePasswordCredentials.class,
@@ -160,28 +171,44 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     CredentialXmlRegistry.class,
                     CredentialCreator.class,
                     CredentialType.class,
+
+                    //
+                    // Authorization service
+                    Permission.class,
+
                     Role.class,
                     RoleListResult.class,
                     RoleCreator.class,
                     RoleXmlRegistry.class,
-                    Permission.class,
-                    RolePermission.class,
-                    RolePermissionListResult.class,
-                    RolePermissionCreator.class,
-                    RolePermissionXmlRegistry.class,
+
                     AccessInfo.class,
                     AccessInfoListResult.class,
                     AccessInfoCreator.class,
                     AccessInfoXmlRegistry.class,
+
+                    RolePermission.class,
+                    RolePermissionListResult.class,
+                    RolePermissionCreator.class,
+                    RolePermissionXmlRegistry.class,
+
                     AccessPermission.class,
                     AccessPermissionListResult.class,
                     AccessPermissionCreator.class,
                     AccessPermissionXmlRegistry.class,
+
                     AccessRole.class,
                     AccessRoleListResult.class,
                     AccessRoleCreator.class,
-                    AccessRoleXmlRegistry.class
+                    AccessRoleXmlRegistry.class,
 
+                    Subject.class,
+
+                    //
+                    // User service
+                    User.class,
+                    UserCreator.class,
+                    UserListResult.class,
+                    UserXmlRegistry.class
             }, null);
         } catch (Exception e) {
             throw new RuntimeException(e);

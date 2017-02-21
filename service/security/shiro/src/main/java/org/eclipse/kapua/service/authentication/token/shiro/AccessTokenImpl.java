@@ -24,9 +24,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
@@ -43,8 +40,6 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
  * @since 1.0
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 @Entity(name = "AccessToken")
 @Table(name = "atht_access_token")
 public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements AccessToken {

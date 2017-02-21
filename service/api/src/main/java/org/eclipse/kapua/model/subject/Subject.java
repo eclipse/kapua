@@ -34,11 +34,10 @@ import org.eclipse.kapua.service.KapuaService;
  */
 @XmlRootElement(name = "subject")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
+@XmlType(propOrder = { //
         "subjectType", //
-        "id"//
-},//
-        factoryClass = SubjectXmlRegistry.class, factoryMethod = "newSubject")
+        "id" //
+})
 public interface Subject extends KapuaSerializable {
 
     /**

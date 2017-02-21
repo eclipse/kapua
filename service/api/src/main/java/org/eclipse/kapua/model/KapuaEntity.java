@@ -23,6 +23,7 @@ import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectAdapter;
 
 /**
  * {@link KapuaEntity} definition.<br>
@@ -83,5 +84,6 @@ public interface KapuaEntity extends KapuaSerializable {
      * @since 1.0.0
      */
     @XmlElement(name = "createdBy")
+    @XmlJavaTypeAdapter(SubjectAdapter.class)
     public Subject getCreatedBy();
 }

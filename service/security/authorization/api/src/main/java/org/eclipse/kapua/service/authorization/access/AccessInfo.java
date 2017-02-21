@@ -17,9 +17,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.subject.Subject;
+import org.eclipse.kapua.model.subject.SubjectAdapter;
 
 /**
  * Access info entity definition.<br>
@@ -49,6 +51,7 @@ public interface AccessInfo extends KapuaUpdatableEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "subject")
+    @XmlJavaTypeAdapter(SubjectAdapter.class)
     public Subject getSubject();
 
     /**
