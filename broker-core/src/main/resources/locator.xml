@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates
    
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -8,18 +9,19 @@
    
     Contributors:
         Eurotech - initial API and implementation
+        Red Hat Inc
  -->
 <locator-config>
 	<provided>
 		<api>org.eclipse.kapua.service.account.AccountFactory</api>
 		<api>org.eclipse.kapua.service.account.AccountService</api>
-		
+
 		<api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
-        <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
+		<api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
 		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
 		<api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
-        <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
-        <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
+		<api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
+		<api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
 
 		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
 		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
@@ -31,22 +33,22 @@
 		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
 		<api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
 		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
-        <api>org.eclipse.kapua.service.authorization.group.GroupFactory</api>
-        <api>org.eclipse.kapua.service.authorization.group.GroupService</api>
+		<api>org.eclipse.kapua.service.authorization.group.GroupFactory</api>
+		<api>org.eclipse.kapua.service.authorization.group.GroupService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
-		
+
 		<api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
 		<api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
 		<api>org.eclipse.kapua.service.datastore.AssetInfoStoreService</api>
 		<api>org.eclipse.kapua.service.datastore.TopicInfoStoreService</api>
 		<api>org.eclipse.kapua.service.datastore.MetricInfoStoreService</api>
-		
+
 		<api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
 		<api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
-		
+
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
 		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
@@ -54,16 +56,16 @@
 		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
 		<api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
-		
+
 		<api>org.eclipse.kapua.service.metric.MetricsService</api>
-        
-        <api>org.eclipse.kapua.service.user.UserFactory</api>
-        <api>org.eclipse.kapua.service.user.UserService</api>
-        
-        <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
-        
-        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>    
-        
+
+		<api>org.eclipse.kapua.service.user.UserFactory</api>
+		<api>org.eclipse.kapua.service.user.UserService</api>
+
+		<api>org.eclipse.kapua.message.KapuaMessageFactory</api>
+
+		<api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+
 		<provide>
 			<interceptor>annotation</interceptor>
 			<with>Impl</with>
