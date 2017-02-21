@@ -21,21 +21,19 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 /**
  * Messages translator utilities.<br>
  * It provides helpful methods for translate position and response code.
- * 
+ *
  * @since 1.0
  *
  */
-public class TranslatorKuraKapuaUtils
-{
+public class TranslatorKuraKapuaUtils {
 
     /**
      * Translate {@link DevicePosition} to {@link KapuaPosition}
-     * 
+     *
      * @param kuraPosition
      * @return
      */
-    public static KapuaPosition translate(DevicePosition kuraPosition)
-    {
+    public static KapuaPosition translate(DevicePosition kuraPosition) {
         KapuaPosition kapuaPosition = null;
 
         if (kuraPosition != null) {
@@ -59,32 +57,30 @@ public class TranslatorKuraKapuaUtils
 
     /**
      * Translate Kura response code to {@link KapuaResponseCode}
-     * 
+     *
      * @param kuraResponseCode
      * @return
      */
-    public static KapuaResponseCode translate(Integer kuraResponseCode)
-    {
+    public static KapuaResponseCode translate(Integer kuraResponseCode) {
         KapuaResponseCode responseCode;
         if (kuraResponseCode == null) {
             responseCode = null;
-        }
-        else {
+        } else {
             switch (kuraResponseCode) {
-                case 200:
-                    responseCode = KapuaResponseCode.ACCEPTED;
-                    break;
-                case 400:
-                    responseCode = KapuaResponseCode.BAD_REQUEST;
-                    break;
-                case 404:
-                    responseCode = KapuaResponseCode.NOT_FOUND;
-                    break;
-                case 500:
-                    responseCode = KapuaResponseCode.INTERNAL_ERROR;
-                    break;
-                default:
-                    responseCode = null;
+            case 200:
+                responseCode = KapuaResponseCode.ACCEPTED;
+                break;
+            case 400:
+                responseCode = KapuaResponseCode.BAD_REQUEST;
+                break;
+            case 404:
+                responseCode = KapuaResponseCode.NOT_FOUND;
+                break;
+            case 500:
+                responseCode = KapuaResponseCode.INTERNAL_ERROR;
+                break;
+            default:
+                responseCode = null;
             }
         }
         return responseCode;

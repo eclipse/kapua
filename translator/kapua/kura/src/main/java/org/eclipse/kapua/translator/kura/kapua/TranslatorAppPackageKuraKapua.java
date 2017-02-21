@@ -52,7 +52,7 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
 
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link PackageResponseMessage}
- * 
+ *
  * @since 1.0
  *
  */

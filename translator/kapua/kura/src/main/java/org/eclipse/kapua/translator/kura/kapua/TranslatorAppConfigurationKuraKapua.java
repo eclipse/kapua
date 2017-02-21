@@ -58,7 +58,7 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
 
 /**
  * Messages translator implementation from {@link KuraResponseMessage} to {@link ConfigurationResponseMessage}
- * 
+ *
  * @since 1.0
  *
  */
