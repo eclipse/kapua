@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
-import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
@@ -63,20 +63,20 @@ public abstract class KapuaLocator {
                 logger.info("An error occurred during Servicelocator initialization", e);
             }
         }
+
         // proceed with the default service locator instantiation if env variable is null or some error occurred during the specific service locator instantiation
+
         logger.info("initialize Servicelocator with the default instance... ");
         ServiceLoader<KapuaLocator> serviceLocatorLoaders = ServiceLoader.load(KapuaLocator.class);
-        KapuaLocator kapuaServiceLocator = null;
-        Iterator<KapuaLocator> serviceLocatorLoaderIterator = serviceLocatorLoaders.iterator();
-        while (serviceLocatorLoaderIterator.hasNext()) {
-            kapuaServiceLocator = serviceLocatorLoaderIterator.next();
-            break;
+        for (KapuaLocator locator : serviceLocatorLoaders) {
+            // simply return the first
+            logger.info("initialize Servicelocator with the default instance... DONE");
+            return locator;
         }
-        if (kapuaServiceLocator == null) {
-            throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_LOCATOR_UNAVAILABLE);
-        }
-        logger.info("initialize Servicelocator with the default instance... DONE");
-        return kapuaServiceLocator;
+
+        // none returned
+
+        throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_LOCATOR_UNAVAILABLE);
     }
 
     /**
@@ -96,12 +96,12 @@ public abstract class KapuaLocator {
      */
     static String locatorClassName() {
         String locatorClass = System.getProperty(LOCATOR_CLASS_NAME_SYSTEM_PROPERTY);
-        if (locatorClass != null) {
+        if (locatorClass != null && !locatorClass.isEmpty()) {
             return locatorClass;
         }
 
         locatorClass = System.getenv(LOCATOR_CLASS_NAME_ENVIRONMENT_PROPERTY);
-        if (locatorClass != null) {
+        if (locatorClass != null && !locatorClass.isEmpty()) {
             return locatorClass;
         }
 
