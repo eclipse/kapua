@@ -96,7 +96,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPriviledge(() -> userService.find(new KapuaEid(new BigInteger("1")), new KapuaEid(new BigInteger("1"))));
+            user = KapuaSecurityUtils.doPrivileged(() -> userService.find(new KapuaEid(new BigInteger("1")), new KapuaEid(new BigInteger("1"))));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
         // Find account
         final Account account;
         try {
-            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(user.getScopeId()));
+            account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {

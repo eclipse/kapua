@@ -260,7 +260,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 if (accessToken != null) {
                     KapuaLocator locator = KapuaLocator.getInstance();
                     AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
-                    KapuaSecurityUtils.doPriviledge(() -> {
+                    KapuaSecurityUtils.doPrivileged(() -> {
                         accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId());
                         return null;
                     });
@@ -352,7 +352,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, userId, jwt, new Date(now.getTime() + ttl));
         AccessToken accessToken;
         try {
-            accessToken = KapuaSecurityUtils.doPriviledge(() -> accessTokenService.create(accessTokenCreator));
+            accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.create(accessTokenCreator));
         } catch (Exception e) {
             throw KapuaAuthenticationException.internalError(e);
         }

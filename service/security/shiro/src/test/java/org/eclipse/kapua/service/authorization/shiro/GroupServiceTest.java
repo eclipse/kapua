@@ -57,7 +57,7 @@ public class GroupServiceTest extends KapuaTest {
     public void testCreate()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create group
@@ -87,7 +87,7 @@ public class GroupServiceTest extends KapuaTest {
     public void testUpdate()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
@@ -124,7 +124,7 @@ public class GroupServiceTest extends KapuaTest {
     public void testFind()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create Group
@@ -159,7 +159,7 @@ public class GroupServiceTest extends KapuaTest {
     public void testQueryAndCount()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create group
@@ -203,7 +203,7 @@ public class GroupServiceTest extends KapuaTest {
     public void testDelete()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create group

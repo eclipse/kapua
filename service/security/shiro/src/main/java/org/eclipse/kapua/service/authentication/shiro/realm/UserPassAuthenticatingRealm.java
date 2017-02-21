@@ -97,7 +97,7 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPriviledge(() -> userService.findByName(tokenUsername));
+            user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(tokenUsername));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -118,7 +118,7 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         // Find account
         final Account account;
         try {
-            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(user.getScopeId()));
+            account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         // FIXME: manage multiple credentials and multiple credentials type
         Credential credential;
         try {
-            credential = KapuaSecurityUtils.doPriviledge(() -> {
+            credential = KapuaSecurityUtils.doPrivileged(() -> {
                 CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
 
                 if (credentialList != null && !credentialList.isEmpty()) {
