@@ -23,6 +23,8 @@ public class GwtCredential extends GwtEntityModel {
     public <X> X get(String property) {
         if ("credentialTypeEnum".equals(property)) {
             return (X) GwtCredentialType.valueOf(getCredentialType());
+        } else if ("subjectTypeEnum".equals(property)) {
+            return (X) GwtSubjectType.valueOf(getSubjectType());
         } else {
             return super.get(property);
         }
@@ -52,12 +54,32 @@ public class GwtCredential extends GwtEntityModel {
         set("credentialType", credentialType);
     }
 
+    public String getSubjectType() {
+        return get("subjectType");
+    }
+
+    public GwtSubjectType getSubjectTypeEnum() {
+        return get("subjectTypeEnum");
+    }
+
+    public void setSubjectType(String subjectType) {
+        set("subjectType", subjectType);
+    }
+
     public String getCredentialKey() {
         return get("credentialKey");
     }
 
     public void setCredentialKey(String credentialKey) {
         set("credentialKey", credentialKey);
+    }
+
+    public String getUsername() {
+        return get("username");
+    }
+
+    public void setUsername(String username) {
+        set("username", username);
     }
 
 }

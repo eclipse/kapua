@@ -17,12 +17,10 @@ import org.eclipse.kapua.service.device.management.KapuaAppProperties;
 /**
  * /**
  * Device application configuration properties definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public enum DeviceConfigurationAppProperties implements KapuaAppProperties
-{
+public enum DeviceConfigurationAppProperties implements KapuaAppProperties {
     /**
      * Application name
      */
@@ -30,19 +28,16 @@ public enum DeviceConfigurationAppProperties implements KapuaAppProperties
     /**
      * Application version
      */
-    APP_VERSION("1.0.0"),
-    ;
+    APP_VERSION("1.0.0"),;
 
     private String value;
 
-    DeviceConfigurationAppProperties(String value)
-    {
+    DeviceConfigurationAppProperties(String value) {
         this.value = value;
     }
 
     @Override
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 

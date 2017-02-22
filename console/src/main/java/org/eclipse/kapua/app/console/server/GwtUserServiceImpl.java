@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
@@ -30,26 +24,15 @@ import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
-import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
-import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.*;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserCreator;
-import org.eclipse.kapua.service.user.UserFactory;
-import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserQuery;
-import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.*;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.*;
+
+import com.extjs.gxt.ui.client.data.*;
 
 /**
  * The server side implementation of the RPC service.
@@ -212,18 +195,23 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public void delete(GwtXSRFToken xsrfToken, String accountId, String gwtUserId)
+    public void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtUserId)
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = KapuaEid.parseCompactId(accountId);
-
+        KapuaId scopeId = GwtKapuaModelConverter.convert(gwtScopeId);
+        KapuaId userId = GwtKapuaModelConverter.convert(gwtUserId);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
+            CredentialService credentialService = locator.getService(CredentialService.class);
             User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUserId));
             if (user != null) {
                 userService.delete(user);
+                CredentialListResult credentialListResult = credentialService.findByUserId(scopeId, userId);
+                for (Credential credential : credentialListResult.getItems()) {
+                    credentialService.delete(scopeId, credential.getId());
+                }
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

@@ -53,9 +53,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Device configuration service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
@@ -184,8 +183,6 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
             byte[] requestBody = sw.toString().getBytes(charEncoding);
 
             configurationRequestPayload.setBody(requestBody);
-
-            new String(configurationRequestPayload.getBody());
         } catch (Exception e) {
             throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceComponentConfiguration);
         }

@@ -20,79 +20,68 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceComponent
 
 /**
  * Device component configuration entity implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceComponentConfigurationImpl implements DeviceComponentConfiguration
-{
-    private String              id;
-    private String              name;
-    private TocdImpl            definition;
+public class DeviceComponentConfigurationImpl implements DeviceComponentConfiguration {
+
+    private String id;
+    private String name;
+    private TocdImpl definition;
     private Map<String, Object> properties;
 
     /**
      * Constructor
      */
-    public DeviceComponentConfigurationImpl()
-    {
+    public DeviceComponentConfigurationImpl() {
     }
 
     /**
      * Constructor
-     * 
+     *
      * @param id
      */
-    public DeviceComponentConfigurationImpl(String id)
-    {
+    public DeviceComponentConfigurationImpl(String id) {
         this.id = id;
     }
 
     @Override
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public void setDefinition(KapuaTocd definition)
-    {
+    public void setDefinition(KapuaTocd definition) {
         this.definition = (TocdImpl) definition;
     }
 
     @Override
-    public KapuaTocd getDefinition()
-    {
+    public KapuaTocd getDefinition() {
         return definition;
     }
 
     @Override
-    public Map<String, Object> getProperties()
-    {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
     @Override
-    public void setProperties(Map<String, Object> properties)
-    {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 }

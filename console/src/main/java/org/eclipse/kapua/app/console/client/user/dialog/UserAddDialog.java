@@ -27,7 +27,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -56,8 +55,6 @@ public class UserAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
-        
-        FormData formData = new FormData("0");
 
         FormPanel userFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         userFormPanel.setFrame(false);
@@ -84,7 +81,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         username.setName("userName");
         username.setFieldLabel("* " + MSGS.dialogAddFieldUsername());
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
-        infoFieldSet.add(username, formData);
+        infoFieldSet.add(username);
 
         password = new TextField<String>();
         password.setAllowBlank(false);
@@ -92,7 +89,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         password.setFieldLabel("* " + MSGS.dialogAddFieldPassword());
         password.setValidator(new PasswordFieldValidator(password));
         password.setPassword(true);
-        infoFieldSet.add(password, formData);
+        infoFieldSet.add(password);
 
         confirmPassword = new TextField<String>();
         confirmPassword.setAllowBlank(false);
@@ -100,36 +97,36 @@ public class UserAddDialog extends EntityAddEditDialog {
         confirmPassword.setFieldLabel("* " + MSGS.dialogAddFieldConfirmPassword());
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
         confirmPassword.setPassword(true);
-        infoFieldSet.add(confirmPassword, formData);
+        infoFieldSet.add(confirmPassword);
 
         LabelField tooltip = new LabelField();
         tooltip.setValue(MSGS.dialogAddTooltipPassword());
         tooltip.setStyleAttribute("margin-top", "-5px");
         tooltip.setStyleAttribute("color", "gray");
         tooltip.setStyleAttribute("font-size", "10px");
-        infoFieldSet.add(tooltip, formData);
+        infoFieldSet.add(tooltip);
 
         displayName = new TextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(MSGS.dialogAddFieldDisplayName());
-        infoFieldSet.add(displayName, formData);
+        infoFieldSet.add(displayName);
 
         email = new TextField<String>();
         email.setName("userEmail");
         email.setFieldLabel(MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
-        infoFieldSet.add(email, formData);
+        infoFieldSet.add(email);
 
         phoneNumber = new TextField<String>();
         phoneNumber.setName("phoneNumber");
         phoneNumber.setFieldLabel(MSGS.dialogAddFieldPhoneNumber());
-        infoFieldSet.add(phoneNumber, formData);
+        infoFieldSet.add(phoneNumber);
 
         optlock = new NumberField();
         optlock.setName("optlock");
         optlock.setEditable(false);
         optlock.setVisible(false);
-        infoFieldSet.add(optlock, formData);
+        infoFieldSet.add(optlock);
 
         userFormPanel.add(infoFieldSet);
         

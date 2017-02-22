@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -42,30 +42,27 @@ import io.swagger.annotations.ApiParam;
 
 @Api("Accounts")
 @Path("/accounts")
-public class Accounts extends AbstractKapuaResource 
-{
-	private final KapuaLocator locator = KapuaLocator.getInstance();
-	private final AccountService accountService = locator.getService(AccountService.class);
-	private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
-	
+public class Accounts extends AbstractKapuaResource {
+
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final AccountService accountService = locator.getService(AccountService.class);
+    private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
+
     /**
      * Returns the list of all the Accounts visible to the currently connected user.
      *
      * @return The list of requested Account objects.
      */
-	@ApiOperation(value = "Get the Accounts list",
-            notes = "Returns the list of all the Accounts visible to the currently connected user.",
-            response = Account.class,
-            responseContainer = "AccountListResult")
+    @ApiOperation(value = "Get the Accounts list", notes = "Returns the list of all the Accounts visible to the currently connected user.", response = Account.class, responseContainer = "AccountListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult getAccounts() {
 
         AccountListResult accountsResult = accountFactory.newAccountListResult();
-        
+
         try {
-        	KapuaSession session = KapuaSecurityUtils.getSession();
-        	accountsResult = (AccountListResult) accountService.findChildsRecursively(session.getScopeId());
+            KapuaSession session = KapuaSecurityUtils.getSession();
+            accountsResult = (AccountListResult) accountService.findChildsRecursively(session.getScopeId());
         } catch (Throwable t) {
             handleException(t);
         }
@@ -75,18 +72,16 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the Account specified by the "accountId" path parameter.
      *
-     * @param accountId The id of the requested Account.
+     * @param accountId
+     *            The id of the requested Account.
      * @return The requested Account object.
      */
-	@ApiOperation(value = "Get an Account",
-            notes = "Returns the Account specified by the \"accountId\" path parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Get an Account", notes = "Returns the Account specified by the \"accountId\" path parameter.", response = Account.class)
     @GET
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Account getAccount(
-            @ApiParam(value = "The id of the requested Account", required = true) 
-            @PathParam("accountId") String accountId) {
+            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") String accountId) {
 
         Account account = null;
         try {
@@ -101,18 +96,16 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the Account specified by the "name" query parameter.
      *
-     * @param accountName The name of the requested Account.
+     * @param accountName
+     *            The name of the requested Account.
      * @return The requested Account object.
      */
-	@ApiOperation(value = "Get an Account by name",
-            notes = "Returns the Account specified by the \"name\" query parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Get an Account by name", notes = "Returns the Account specified by the \"name\" query parameter.", response = Account.class)
     @GET
     @Path("findByName")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Account getAccountByName(
-            @ApiParam(value = "The name of the requested Account", required = true) 
-            @QueryParam("accountName") String accountName) {
+            @ApiParam(value = "The name of the requested Account", required = true) @QueryParam("accountName") String accountName) {
 
         Account account = null;
         try {
@@ -126,190 +119,39 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the list of all direct child accounts for the Account specified by the "scopeId" path parameter.
      *
-     * @param scopeId The id of the requested Account.
+     * @param scopeId
+     *            The id of the requested Account.
      * @return The requested list of child accounts.
      */
-	@ApiOperation(value = "Get Children Accounts",
-            notes = "Returns the list of all direct child accounts for the Account specified by the \"scopeId\" path parameter.",
-            response = AccountListResult.class)
+    @ApiOperation(value = "Get Children Accounts", notes = "Returns the list of all direct child accounts for the Account specified by the \"scopeId\" path parameter.", response = AccountListResult.class)
     @GET
     @Path("{scopeId}/childAccounts")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult getChildAccounts(
-            @ApiParam(value = "The id of the requested Account", required = true) 
-            @PathParam("scopeId") String scopeId) {
+            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("scopeId") String scopeId) {
         AccountListResult accountsResult = accountFactory.newAccountListResult();
         try {
             KapuaId id = KapuaEid.parseCompactId(scopeId);
-        	accountsResult = (AccountListResult) accountService.findChildsRecursively(id);
+            accountsResult = (AccountListResult) accountService.findChildsRecursively(id);
         } catch (Throwable t) {
             handleException(t);
         }
         return accountsResult;
     }
 
-//    /**
-//     * Returns the Service Plan for the Account specified by the "id" path parameter.
-//     *
-//     * @param accountId The id of the Account for which the Service Plan is requested.
-//     * @return The requested AccountServicePlan object.
-//     */
-//    @GET
-//    @Path("{accountId}/servicePlan")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public AccountServicePlan getAccountServicePlan(@PathParam("accountId") long accountId) {
-//
-//        AccountServicePlan servicePlan = null;
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            AccountService as = sl.getAccountService();
-//            servicePlan = as.getAccountServicePlan(accountId);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(servicePlan);
-//    }
-
-//    /**
-//     * Returns the usage for the Account specified by the "id" path parameter.
-//     *
-//     * @param limit Maximum number of entries to be returned.
-//     * @param offset Starting offset for the entries to be returned.
-//     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
-//     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
-//     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param accountId The id of the Account for which the usage is requested.
-//     * @return The requested UsageResult object.
-//     */
-//    @GET
-//    @Path("{accountId}/usageByHour")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public UsageResult getAccountUsageByHour(@PathParam("accountId") long accountId,
-//            @QueryParam("limit")     @DefaultValue("50") int limit,
-//            @QueryParam("offset")    @DefaultValue("0")  int offset,
-//            @QueryParam("startDate") @DefaultValue("0")  EdcTimestamp startDate,
-//            @QueryParam("endDate")   @DefaultValue("0")  EdcTimestamp endDate) {
-//
-//        EdcUsageQuery query = new EdcUsageQuery();
-//        int maxLimit = EdcConfig.getInstance().getDataExportMaxLimit();
-//        int maxCount = EdcConfig.getInstance().getDataExportMaxCount();
-//        if (limit > maxLimit)
-//            limit = maxLimit;
-//        if (offset > maxCount)
-//            offset = maxCount;
-//        query.setLimit(limit);
-//        query.setIndexOffset(offset);
-//        query.setTimetype(1); // HOUR
-//        if (startDate.getTimeInMillis() != 0) {
-//            query.setStartDate(startDate.getTimeInMillis());
-//        }
-//        if (endDate.getTimeInMillis() != 0) {
-//            query.setEndDate(endDate.getTimeInMillis());
-//        }
-//        UsageResult usage = new UsageResult();
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            AccountService as = sl.getAccountService();
-//            String accountName = as.getAccountName(accountId);
-//            AccountUsageService aus = sl.getAccountUsageService();
-//            EdcListResult<EdcUsageInfo> result = aus.findUsageByAccount(accountName, query);
-//            usage.setUsage(result);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(usage);
-//    }
-
-//    /**
-//     * Returns the daily usage for the Account specified by the "id" path parameter.
-//     *
-//     * @param limit Maximum number of entries to be returned.
-//     * @param offset Starting offset for the entries to be returned.
-//     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
-//     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
-//     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param accountId The id of the Account for which the usage is requested.
-//     * @return The requested UsageResult object.
-//     */
-//    @GET
-//    @Path("{accountId}/usageByDay")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public UsageResult getAccountUsageByDay(@PathParam("accountId") long accountId,
-//                                            @QueryParam("limit")     @DefaultValue("50") int limit,
-//                                            @QueryParam("offset")    @DefaultValue("0")  int offset,
-//                                            @QueryParam("startDate") @DefaultValue("0")  EdcTimestamp startDate,
-//                                            @QueryParam("endDate")   @DefaultValue("0")  EdcTimestamp endDate) {
-//
-//        EdcUsageQuery query = new EdcUsageQuery();
-//        int maxLimit = EdcConfig.getInstance().getDataExportMaxLimit();
-//        int maxCount = EdcConfig.getInstance().getDataExportMaxCount();
-//        if (limit > maxLimit)
-//            limit = maxLimit;
-//        if (offset > maxCount)
-//            offset = maxCount;
-//        query.setLimit(limit);
-//        query.setIndexOffset(offset);
-//        query.setTimetype(2); // DAY
-//        if (startDate.getTimeInMillis() != 0) {
-//            query.setStartDate(startDate.getTimeInMillis());
-//        }
-//        if (endDate.getTimeInMillis() != 0) {
-//            query.setEndDate(endDate.getTimeInMillis());
-//        }
-//        UsageResult usage = new UsageResult();
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            AccountService as = sl.getAccountService();
-//            String accountName = as.getAccountName(accountId);
-//            AccountUsageService aus = sl.getAccountUsageService();
-//            EdcListResult<EdcUsageInfo> result = aus.findUsageByAccount(accountName, query);
-//            usage.setUsage(result);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(usage);
-//    }
-
-//    /**
-//     * Returns the number of currently connected devices for the specified account.
-//     *
-//     * @param accountId The id of the Account.
-//     * @return The requested DeviceCountResult object.
-//     */
-//    @GET
-//    @Path("{accountId}/devices/count")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public CountResult getDeviceCount(@PathParam("accountId") long accountId) {
-//
-//        CountResult dcr = new CountResult();
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            DeviceRegistryService ds = sl.getDeviceRegistryService();
-//            long result = ds.getDeviceCount(accountId);
-//            dcr.setCount(result);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(dcr);
-//    }
-
     /**
      * Creates a new Account based on the information provided in AccountCreator parameter.
      *
-     * @param accountCreator Provides the information for the new Account to be created.
+     * @param accountCreator
+     *            Provides the information for the new Account to be created.
      * @return The newly created Account object.
      */
-	@ApiOperation(value = "Create an Account",
-            notes = "Creates a new Account based on the information provided in AccountCreator parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Create an Account", notes = "Creates a new Account based on the information provided in AccountCreator parameter.", response = Account.class)
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Account postAccount(
-            @ApiParam(value = "Provides the information for the new Account to be created", required = true) 
-            AccountCreator accountCreator) {
+            @ApiParam(value = "Provides the information for the new Account to be created", required = true) AccountCreator accountCreator) {
 
         Account account = null;
         try {
@@ -324,40 +166,38 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Updates an account based on the information provided in Account parameter.
      *
-     * @param account Provides the information to update the account.
+     * @param account
+     *            Provides the information to update the account.
      * @return The updated created Account object.
      */
-	@ApiOperation(value = "Update an Account",
-            notes = "Updates an account based on the information provided in Account parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Update an Account", notes = "Updates an account based on the information provided in Account parameter.", response = Account.class)
     @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Account updateAccount(
-            @ApiParam(value = "Provides the information to update the account", required = true) 
-            Account account) {
+            @ApiParam(value = "Provides the information to update the account", required = true) Account account) {
+        Account updatedAccount = null;
         try {
-            ((AccountImpl)account).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            account = accountService.update(account);
+            ((AccountImpl) account).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
+            updatedAccount = accountService.update(account);
         } catch (Throwable t) {
             handleException(t);
         }
-        return returnNotNullEntity(account);
+        return returnNotNullEntity(updatedAccount);
     }
-    
-	/**
+
+    /**
      * Deletes the Account specified by the "accountId" path parameter.
      *
-     * @param accountId The id of the Account to be deleted.
+     * @param accountId
+     *            The id of the Account to be deleted.
      */
-	@ApiOperation(value = "Delete an Account",
-            notes = "Deletes an account based on the information provided in accountId parameter.")
+    @ApiOperation(value = "Delete an Account", notes = "Deletes an account based on the information provided in accountId parameter.")
     @DELETE
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response deleteAccount(
-            @ApiParam(value = "The id of the Account to be delete", required = true)
-            @PathParam("accountId") String accountId) {
+            @ApiParam(value = "The id of the Account to be delete", required = true) @PathParam("accountId") String accountId) {
         try {
             KapuaId accountKapuaId = KapuaEid.parseCompactId(accountId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();

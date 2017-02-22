@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,6 +77,8 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Returns the role for the given id.
      *
+     * @param id
+     *            the {@link Role}
      * @return The requested role.
      */
     @ApiOperation(value = "Get the Role for the given id", notes = "Returns the role for the given id.", response = Role.class)
@@ -123,6 +126,7 @@ public class Roles extends AbstractKapuaResource {
      *
      * @param roleId
      *            The id of the Role to be deleted.
+     * @return HTTP 200 if operation is completed successfully
      */
     @ApiOperation(value = "Delete a Role", notes = "Deletes a role based on the information provided in roleId parameter.")
     @DELETE
@@ -152,18 +156,21 @@ public class Roles extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Role updateRole(
             @ApiParam(value = "Provides the information to update the role", required = true) Role role) {
+        Role updatedRole = null;
         try {
             ((RoleImpl) role).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            role = roleService.update(role);
+            updatedRole = roleService.update(role);
         } catch (Throwable t) {
             handleException(t);
         }
-        return returnNotNullEntity(role);
+        return returnNotNullEntity(updatedRole);
     }
-    
+
     /**
      * Returns the list of all the role permissions for the given role.
      *
+     * @param roleId
+     *            The {@link Role} id
      * @return The list of requested RolePermission objects.
      */
     @ApiOperation(value = "Get the list of the RolePermissions for the given role", notes = "Returns the list of all the role permissions available for the given role.", response = RolePermission.class, responseContainer = "RolePermissionListResult")
@@ -181,10 +188,12 @@ public class Roles extends AbstractKapuaResource {
         }
         return rolePermissionsList;
     }
-    
+
     /**
      * Returns the role permission for the given id.
      *
+     * @param rolePermissionId
+     *            the role permission id
      * @return The role permission for the given id.
      */
     @ApiOperation(value = "Get the RolePermission for the given id", notes = "Returns the role permission for the given id.", response = RolePermission.class)
@@ -202,12 +211,14 @@ public class Roles extends AbstractKapuaResource {
         }
         return rolePermission;
     }
-    
+
     /**
      * Deletes the RolePermission specified by the "rolePermissionId" path parameter.
      *
      * @param rolePermissionId
      *            The id of the RolePermission to be deleted.
+     * 
+     * @return HTTP 200 if the operation completed successfully
      */
     @ApiOperation(value = "Delete a RolePermission", notes = "Deletes a role permission based on the information provided in rolePermissionId parameter.")
     @DELETE
@@ -223,7 +234,7 @@ public class Roles extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-    
+
     /**
      * Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.
      *

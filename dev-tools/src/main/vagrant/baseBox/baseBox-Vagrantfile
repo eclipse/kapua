@@ -51,9 +51,7 @@ Vagrant.configure(2) do |config|
 	 sudo rm -rf lib/geronimo-jta_1.0.1B_spec*
 	 sudo rm -rf lib/optional/activeio-core-*
 	 sudo rm -rf lib/optional/activemq-amqp-*
-	 sudo rm -rf lib/optional/activemq-http*
 	 sudo rm -rf lib/optional/activemq-jdbc-store*
-	 sudo rm -rf lib/optional/activemq-jms-pool*
 	 sudo rm -rf lib/optional/activemq-leveldb-store*
 	 sudo rm -rf lib/optional/activemq-log4j-appender*
 	 sudo rm -rf lib/optional/activemq-shiro*
@@ -88,7 +86,17 @@ Vagrant.configure(2) do |config|
 	 sudo rm -rf lib/optional/xpp3-*
 	 sudo rm -rf lib/optional/xstream-*
 	 sudo rm -rf lib/optional/zookeeper-*
-	 sudo rm -rf lib/web/
+
+     sudo rm -rf lib/web/apache*
+     sudo rm -rf lib/web/taglibs*
+     sudo rm -rf lib/web/spring*
+     sudo rm -rf lib/web/org.eclipse*
+     sudo rm -rf lib/web/json-simple*
+     sudo rm -rf lib/web/jolokia*
+     sudo rm -rf lib/web/rome*
+     sudo rm -rf lib/web/jdom*
+     sudo rm -rf lib/web/geronimo*
+     sudo rm -rf lib/web/asm*
 
 	 sudo rm -rf bin/wrapper.jar
 	 sudo rm -rf bin/macosx/

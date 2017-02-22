@@ -12,12 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import java.net.URISyntaxException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.*;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtSubjectType;
 import org.eclipse.kapua.app.console.shared.model.authorization.*;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.broker.core.BrokerDomain;
@@ -33,6 +37,7 @@ import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
+import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -60,17 +65,8 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 
-import java.net.URISyntaxException;
-
 public class KapuaGwtModelConverter {
 
-    /**
-     * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
-     *
-     * @param role The {@link Role} to convert.
-     * @return The converted {@link GwtRole}.
-     * @since 1.0.0
-     */
     public static GwtRole convert(Role role) {
         GwtRole gwtRole = new GwtRole();
 
@@ -208,6 +204,7 @@ public class KapuaGwtModelConverter {
         gwtRolePermission.setRoleId(convert(rolePermission.getRoleId()));
         gwtRolePermission.setDomain(gwtPermission.getDomain());
         gwtRolePermission.setAction(gwtPermission.getAction());
+        gwtRolePermission.setGroupId(gwtPermission.getGroupId());
         gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
 
         //
@@ -528,6 +525,19 @@ public class KapuaGwtModelConverter {
         gwtDeviceEvent.setEventMessage(escapedMessage);
 
         return gwtDeviceEvent;
+    }
+
+    public static GwtCredential convert(Credential credential, User user) {
+        GwtCredential gwtCredential = new GwtCredential();
+        convertEntity(credential, gwtCredential);
+        gwtCredential.setUserId(credential.getUserId().toCompactId());
+        gwtCredential.setCredentialType(credential.getCredentialType().toString());
+        gwtCredential.setCredentialKey(credential.getCredentialKey());
+        if (user != null) {
+            gwtCredential.setUsername(user.getName());
+        }
+        gwtCredential.setSubjectType(GwtSubjectType.USER.toString());
+        return gwtCredential;
     }
 
     /**

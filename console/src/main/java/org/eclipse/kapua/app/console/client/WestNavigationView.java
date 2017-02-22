@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
-import java.util.Arrays;
-
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
+import org.eclipse.kapua.app.console.client.credential.CredentialView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
+import org.eclipse.kapua.app.console.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
@@ -28,16 +28,14 @@ import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
+import java.util.Arrays;
+
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -216,6 +214,27 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("credential".equals(selectedId)) {
+
+                    panel.setIcon(new KapuaIcon(IconSet.KEY));
+                    panel.setHeading(MSGS.credentials());
+
+                    CredentialView userView = new CredentialView(m_currentSession);
+                    panel.add(userView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
+                } else if("groups".equals(selectedId)){
+                    panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
+                    panel.setHeading(MSGS.groups());
+
+                    GroupView groupView = new GroupView(m_currentSession);
+                    panel.add(groupView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("mysettings".equals(selectedId)) {
 
                     AccountDetailsView settingView = new AccountDetailsView(null, m_currentSession);
@@ -315,8 +334,14 @@ public class WestNavigationView extends LayoutContainer {
             if (m_currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
             }
+            if (m_currentSession.hasCredentialReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("credential", MSGS.credentials(), IconSet.KEY), false);
+            }
             if (m_currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
+            }
+            if (m_currentSession.hasUserReadPermission()){
+                cloudResourcesTreeStore.add(newItem("groups", MSGS.groups(), IconSet.OBJECT_GROUP), false);
             }
 
             //

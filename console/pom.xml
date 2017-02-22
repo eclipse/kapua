@@ -224,7 +224,7 @@
     <build>
         <finalName>console</finalName>
 
-        <!-- 
+        <!--
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>  -->
 
         <plugins>
@@ -256,6 +256,8 @@
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
 
