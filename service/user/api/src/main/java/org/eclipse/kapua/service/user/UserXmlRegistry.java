@@ -49,12 +49,16 @@ public class UserXmlRegistry {
     }
 
     /**
-     * Creates new account list result
+     * Creates new user list result
      * 
      * @return
      */
-    public UserListResult newAccountListResult()
+    public UserListResult newUserListResult()
     {
         return factory.newUserListResult();
+    }
+    
+    public UserQuery newQuery() {
+        return factory.newQuery(null);
     }
 }
