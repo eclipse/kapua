@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
-import java.io.Serializable;
-import java.util.Set;
-
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+
+import java.io.Serializable;
+import java.util.Set;
 
 public class GwtSession extends KapuaBaseModel implements Serializable {
 
@@ -53,6 +53,11 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasUserReadPermission;
     private boolean hasUserUpdatePermission;
     private boolean hasUserDeletePermission;
+
+    private boolean hasCredentialCreatePermission;
+    private boolean hasCredentialReadPermission;
+    private boolean hasCredentialUpdatePermission;
+    private boolean hasCredentialDeletePermission;
 
     public GwtSession() {
     }
@@ -239,5 +244,37 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setDeviceManagePermission(boolean hasDeviceManagePermission) {
         this.hasDeviceManagePermission = hasDeviceManagePermission;
+    }
+
+    public boolean hasCredentialCreatePermission() {
+        return hasCredentialCreatePermission;
+    }
+
+    public void setCredentialCreatePermission(boolean hasCredentialCreatePermission) {
+        this.hasCredentialCreatePermission = hasCredentialCreatePermission;
+    }
+
+    public boolean hasCredentialReadPermission() {
+        return hasCredentialReadPermission;
+    }
+
+    public void setCredentialReadPermission(boolean hasCredentialReadPermission) {
+        this.hasCredentialReadPermission = hasCredentialReadPermission;
+    }
+
+    public boolean hasCredentialUpdatePermission() {
+        return hasCredentialUpdatePermission;
+    }
+
+    public void setCredentialUpdatePermission(boolean hasCredentialUpdatePermission) {
+        this.hasCredentialUpdatePermission = hasCredentialUpdatePermission;
+    }
+
+    public boolean hasCredentialDeletePermission() {
+        return hasCredentialDeletePermission;
+    }
+
+    public void setCredentialDeletePermission(boolean hasCredentialDeletePermission) {
+        this.hasCredentialDeletePermission = hasCredentialDeletePermission;
     }
 }

@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client;
 
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
+import org.eclipse.kapua.app.console.client.credential.CredentialView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
@@ -213,13 +214,24 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("credential".equals(selectedId)) {
+
+                    panel.setIcon(new KapuaIcon(IconSet.KEY));
+                    panel.setHeading(MSGS.credentials());
+
+                    CredentialView userView = new CredentialView(m_currentSession);
+                    panel.add(userView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
                 } else if("groups".equals(selectedId)){
                     panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
                     panel.setHeading(MSGS.groups());
-                    
+
                     GroupView groupView = new GroupView(m_currentSession);
                     panel.add(groupView);
-                    
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
@@ -321,6 +333,9 @@ public class WestNavigationView extends LayoutContainer {
             }
             if (m_currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
+            }
+            if (m_currentSession.hasCredentialReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("credential", MSGS.credentials(), IconSet.KEY), false);
             }
             if (m_currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);

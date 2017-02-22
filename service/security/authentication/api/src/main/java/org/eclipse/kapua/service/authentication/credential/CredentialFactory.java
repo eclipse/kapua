@@ -29,6 +29,17 @@ public interface CredentialFactory extends KapuaObjectFactory
      * @return Credential the new Credential
      */
     public Credential newCredential();
+
+    /**
+     * Create a new {@link Credential}
+     *
+     * @param scopeId
+     * @param userId
+     * @param credentialType
+     * @param credentialKey
+     * @return
+     */
+    public Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey);
     
     /**
      * Create a new {@link CredentialCreator} for the specific credential type

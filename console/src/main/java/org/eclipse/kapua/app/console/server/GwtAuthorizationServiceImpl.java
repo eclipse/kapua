@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
@@ -35,11 +30,11 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -50,6 +45,12 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserDomain;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     private static final Domain deviceDomain = new DeviceDomain();
     private static final Domain datastoreDomain = new DatastoreDomain();
     private static final Domain userDomain = new UserDomain();
+    private static final Domain credentialDomain = new CredentialDomain();
 
     public static final String SESSION_CURRENT = "console.current.session";
     public static final String SESSION_CURRENT_USER = "console.current.user";
@@ -201,6 +203,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.delete, kapuaSession.getScopeId()));
 
+        boolean hasCredentialCreate = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasCredentialRead = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasCredentialUpdate = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasCredentialDelete = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.delete, kapuaSession.getScopeId()));
+
         //
         // Get account info
         AccountService accountService = locator.getService(AccountService.class);
@@ -246,6 +253,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setUserReadPermission(hasUserRead);
         gwtSession.setUserUpdatePermission(hasUserUpdate);
         gwtSession.setUserDeletePermission(hasUserDelete);
+
+        gwtSession.setCredentialCreatePermission(hasCredentialCreate);
+        gwtSession.setCredentialReadPermission(hasCredentialRead);
+        gwtSession.setCredentialUpdatePermission(hasCredentialUpdate);
+        gwtSession.setCredentialDeletePermission(hasCredentialDelete);
 
         //
         // Saving session data in session

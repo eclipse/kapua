@@ -18,6 +18,10 @@ import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialType;
 import org.eclipse.kapua.app.console.shared.model.authorization.*;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
@@ -29,6 +33,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
+import org.eclipse.kapua.service.authentication.credential.*;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
 import org.eclipse.kapua.service.authorization.access.*;
@@ -64,7 +69,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 /**
  * Utility class for convert {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models
- * 
+ *
  * @author alberto.codutti
  *
  */
@@ -72,11 +77,9 @@ public class GwtKapuaModelConverter {
 
     /**
      * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
-     * 
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtRoleQuery
-     *            the {@link GwtRoleQuery} to convert
+     *
+     * @param loadConfig   the load configuration
+     * @param gwtRoleQuery the {@link GwtRoleQuery} to convert
      * @return the converted {@link RoleQuery}
      * @since 1.0.0
      */
@@ -98,7 +101,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return roleQuery;
     }
-    
+
 
     public static GroupQuery convertGroupQuery(PagingLoadConfig loadConfig,
             GwtGroupQuery gwtGroupQuery) {
@@ -132,13 +135,11 @@ public class GwtKapuaModelConverter {
     }
 
     /**
-     * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
-     * 
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtRoleQuery
-     *            the {@link GwtRoleQuery} to convert
-     * @return the converted {@link RoleQuery}
+     * Converts a {@link GwtUserQuery} into a {@link UserQuery} object for backend usage
+     *
+     * @param loadConfig   the load configuration
+     * @param gwtUserQuery the {@link GwtUserQuery} to convert
+     * @return the converted {@link UserQuery}
      * @since 1.0.0
      */
     public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
@@ -161,10 +162,39 @@ public class GwtKapuaModelConverter {
     }
 
     /**
+     * Converts a {@link GwtCredentialQuery} into a {@link CredentialQuery} object for backend usage
+     *
+     * @param loadConfig         the load configuration
+     * @param gwtCredentialQuery the {@link GwtCredentialQuery} to convert
+     * @return the converted {@link CredentialQuery}
+     * @since 1.0.0
+     */
+    public static CredentialQuery convertCredentialQuery(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) {
+
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        // Convert query
+        CredentialQuery credentialQuery = credentialFactory.newQuery(convert(gwtCredentialQuery.getScopeId()));
+        if (gwtCredentialQuery.getUsername() != null && !gwtCredentialQuery.getUsername().trim().isEmpty()) {
+            // TODO set username predicate
+        }
+        if (gwtCredentialQuery.getType() != null && gwtCredentialQuery.getType() != GwtCredentialType.ALL) {
+            credentialQuery.setPredicate(new AttributePredicate<CredentialType>(CredentialPredicates.CREDENTIAL_TYPE, GwtKapuaModelConverter.convert(gwtCredentialQuery.getType()), Operator.EQUAL));
+        }
+        credentialQuery.setOffset(loadConfig.getOffset());
+        credentialQuery.setLimit(loadConfig.getLimit());
+
+        //
+        // Return converted
+        return credentialQuery;
+    }
+
+    /**
      * Converts a {@link GwtRole} into a {@link Role} object for backend usage
-     * 
-     * @param gwtRole
-     *            the {@link GwtRole} to convert
+     *
+     * @param gwtRole the {@link GwtRole} to convert
      * @return the converted {@link Role}
      * @since 1.0.0
      */
@@ -210,9 +240,8 @@ public class GwtKapuaModelConverter {
 
     /**
      * Converts a {@link GwtRoleCreator} into a {@link RoleCreator} object for backend usage
-     * 
-     * @param gwtRoleCreator
-     *            the {@link GwtRoleCreator} to convert
+     *
+     * @param gwtRoleCreator the {@link GwtRoleCreator} to convert
      * @return the converted {@link RoleCreator}
      * @since 1.0.0
      */
@@ -243,12 +272,57 @@ public class GwtKapuaModelConverter {
         // Return converted
         return roleCreator;
     }
-    
+
+    /**
+     * Converts a {@link GwtCredentialCreator} into a {@link CredentialCreator} object for backend usage
+     *
+     * @param gwtCredentialCreator the {@link GwtCredentialCreator} to convert
+     * @return the converted {@link CredentialCreator}
+     * @since 1.0.0
+     */
+    public static CredentialCreator convert(GwtCredentialCreator gwtCredentialCreator) {
+
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        // Convert scopeId
+        KapuaId scopeId = convert(gwtCredentialCreator.getScopeId());
+        CredentialCreator credentialCreator = credentialFactory
+                .newCreator(scopeId, convert(gwtCredentialCreator.getUserId()), convert(gwtCredentialCreator.getCredentialType()), gwtCredentialCreator.getCredentialPlainKey());
+
+        //
+        // Return converted
+        return credentialCreator;
+    }
+
+    /**
+     * Converts a {@link GwtCredential} into a {@link Credential} object for backend usage
+     *
+     * @param gwtCredential the {@link GwtCredential} to convert
+     * @return the converted {@link Credential}
+     * @since 1.0.0
+     */
+    public static Credential convert(GwtCredential gwtCredential) {
+
+        // Get Services
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        // Convert scopeId
+        KapuaId scopeId = convert(gwtCredential.getScopeId());
+        Credential credential = credentialFactory
+                .newCredential(scopeId, convert(gwtCredential.getUserId()), convert(gwtCredential.getCredentialTypeEnum()), gwtCredential.getCredentialKey());
+
+        //
+        // Return converted
+        return credential;
+    }
+
     /**
      * Converts a {@link GwtAccessRoleCreator} into a {@link AccessRoleCreator} object for backend usage
-     * 
-     * @param gwtAccessRoleCreator
-     *            the {@link GwtAccessRoleCreator} to convert
+     *
+     * @param gwtAccessRoleCreator the {@link GwtAccessRoleCreator} to convert
      * @return the converted {@link AccessRoleCreator}
      * @since 1.0.0
      */
@@ -264,7 +338,7 @@ public class GwtKapuaModelConverter {
 
         // Convert accessInfoId
         accessRoleCreator.setAccessInfoId(convert(gwtAccessRoleCreator.getAccessInfoId()));
-        
+
         // Convert roleId
         accessRoleCreator.setRoleId(convert(gwtAccessRoleCreator.getRoleId()));
 
@@ -272,12 +346,11 @@ public class GwtKapuaModelConverter {
         // Return converted
         return accessRoleCreator;
     }
-    
+
     /**
      * Converts a {@link GwtAccessPermissionCreator} into a {@link AccessPermissionCreator} object for backend usage
-     * 
-     * @param gwtAccessPermissionCreator
-     *            the {@link GwtAccessPermissionCreator} to convert
+     *
+     * @param gwtAccessPermissionCreator the {@link GwtAccessPermissionCreator} to convert
      * @return the converted {@link AccessPermissionCreator}
      * @since 1.0.0
      */
@@ -293,7 +366,7 @@ public class GwtKapuaModelConverter {
 
         // Convert accessInfoId
         accessPermissionCreator.setAccessInfoId(convert(gwtAccessPermissionCreator.getAccessInfoId()));
-        
+
         // Convert Permission
         accessPermissionCreator.setPermission(convert(gwtAccessPermissionCreator.getPermission()));
 
@@ -301,7 +374,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return accessPermissionCreator;
     }
-    
+
     public static AccessInfoCreator convert(GwtAccessInfoCreator gwtAccessInfoCreator) {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -321,9 +394,8 @@ public class GwtKapuaModelConverter {
 
     /**
      * Converts a {@link GwtPermission} into a {@link Permission} object for backend usage.
-     * 
-     * @param gwtPermission
-     *            The {@link GwtPermission} to convert.
+     *
+     * @param gwtPermission The {@link GwtPermission} to convert.
      * @return The converted {@link Permission}.
      * @since 1.0.0
      */
@@ -342,9 +414,8 @@ public class GwtKapuaModelConverter {
 
     /**
      * Converts a {@link GwtAction} into the related {@link Action}
-     * 
-     * @param gwtAction
-     *            the {@link GwtAction} to convert
+     *
+     * @param gwtAction the {@link GwtAction} to convert
      * @return the converted {@link Action}
      * 
      * @since 1.0.0
@@ -376,9 +447,8 @@ public class GwtKapuaModelConverter {
 
     /**
      * Converts a {@link GwtDomain} into the related equivalent domain string
-     * 
-     * @param gwtDomain
-     *            the {@link GwtDomain} to convert
+     *
+     * @param gwtDomain the {@link GwtDomain} to convert
      * @return the converted domain {@link String}
      * 
      * @since 1.0.0
@@ -441,11 +511,9 @@ public class GwtKapuaModelConverter {
 
     /**
      * Utility method to convert commons properties of {@link GwtUpdatableEntityModel} object to the matching {@link KapuaUpdatableEntity} object
-     * 
-     * @param gwtEntity
-     *            The {@link GwtUpdatableEntityModel} from which copy values
-     * @param kapuaEntity
-     *            The {@link KapuaUpdatableEntity} into which to copy values
+     *
+     * @param gwtEntity   The {@link GwtUpdatableEntityModel} from which copy values
+     * @param kapuaEntity The {@link KapuaUpdatableEntity} into which to copy values
      * @since 1.0.0
      */
     private static void convertEntity(GwtUpdatableEntityModel gwtEntity, KapuaUpdatableEntity kapuaEntity) {
@@ -460,11 +528,9 @@ public class GwtKapuaModelConverter {
 
     /**
      * Utility method to convert commons properties of {@link GwtEntityModel} object to the matching {@link KapuaEntity} object
-     * 
-     * @param gwtEntity
-     *            The {@link GwtEntityModel} from which copy values
-     * @param kapuaEntity
-     *            The {@link KapuaEntity} into which to copy values
+     *
+     * @param gwtEntity   The {@link GwtEntityModel} from which copy values
+     * @param kapuaEntity The {@link KapuaEntity} into which to copy values
      * @since 1.0.0
      */
     private static void convertEntity(GwtEntityModel gwtEntity, KapuaEntity kapuaEntity) {
@@ -480,9 +546,8 @@ public class GwtKapuaModelConverter {
      * <p>
      * Example: AQ => 1
      * </p>
-     * 
-     * @param shortKapuaId
-     *            the {@link KapuaId} in the short form
+     *
+     * @param shortKapuaId the {@link KapuaId} in the short form
      * @return The converted {@link KapuaId}
      * @since 1.0.0
      */
@@ -491,5 +556,9 @@ public class GwtKapuaModelConverter {
             return null;
         }
         return KapuaEid.parseCompactId(shortKapuaId);
+    }
+
+    public static CredentialType convert(GwtCredentialType gwtCredentialType) {
+        return CredentialType.valueOf(gwtCredentialType.toString());
     }
 }
