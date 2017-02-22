@@ -107,7 +107,7 @@ public class GwtKapuaModelConverter {
         GroupQuery groupQuery = groupFactory.newQuery(convert(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && gwtGroupQuery.getName() != "") {
             groupQuery
-                    .setPredicate(new AttributePredicate<String>("name", gwtGroupQuery.getName()));
+                    .setPredicate(new AttributePredicate<String>("name", gwtGroupQuery.getName(), Operator.LIKE));
         }
         groupQuery.setOffset(loadConfig.getOffset());
         groupQuery.setLimit(loadConfig.getLimit());
