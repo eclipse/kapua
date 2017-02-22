@@ -25,6 +25,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -122,6 +123,7 @@ public class Users extends AbstractKapuaResource {
     }
 
     @POST
+    @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public UserListResult query(@PathParam("scopeId") ScopeId scopeId,
@@ -134,6 +136,22 @@ public class Users extends AbstractKapuaResource {
             handleException(t);
         }
         return returnNotNullEntity(userListResult);
+    }
+    
+    @POST
+    @Path("_count")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public CountResult count(@PathParam("scopeId") ScopeId scopeId,
+            UserQuery query) {
+        CountResult countResult = null;
+        try {
+            query.setScopeId(scopeId);
+            countResult = new CountResult(userService.count(query));
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return returnNotNullEntity(countResult);
     }
     
     /**
