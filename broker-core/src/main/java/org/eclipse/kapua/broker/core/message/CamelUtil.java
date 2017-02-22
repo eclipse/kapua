@@ -24,36 +24,32 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Camel utility methods
- * 
+ *
  * @since 1.0
  */
-public class CamelUtil
-{
+public class CamelUtil {
 
     public static final Logger logger = LoggerFactory.getLogger(CamelUtil.class);
 
     /**
      * Extract the topic from the {@link Message} looking for Kapua header property that handles this value and inspecting Camel header properties)
-     * 
+     *
      * @param message
      * @return
      * @throws JMSException
      */
-    public static String getTopic(org.apache.camel.Message message) throws JMSException
-    {
+    public static String getTopic(org.apache.camel.Message message) throws JMSException {
         String topicOrig = message.getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class);
         if (topicOrig != null) {
             return topicOrig;
-        }
-        else {
+        } else {
             ActiveMQDestination destination = message.getHeader(CamelConstants.JMS_HEADER_DESTINATION, ActiveMQDestination.class);
             if (destination instanceof ActiveMQTopic) {
                 ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
                 return destinationTopic.getTopicName().substring(AclConstants.VT_TOPIC_PREFIX.length());
-            }
-            else {
-                logger.warn("jmsMessage destination is not a Topic or Queue: {}", destination.toString());
-                throw new JMSException("Unable to extract the destination. Wrong destination {}", destination.toString());
+            } else {
+                logger.warn("jmsMessage destination is not a Topic or Queue: {}", destination);
+                throw new JMSException(String.format("Unable to extract the destination. Wrong destination %s", destination));
             }
         }
     }
