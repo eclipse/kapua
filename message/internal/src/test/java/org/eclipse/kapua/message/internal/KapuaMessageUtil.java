@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
@@ -21,18 +21,14 @@ import org.eclipse.kapua.message.KapuaPosition;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
- * Test Utility for repeating parts of code in Message moudule.
- * Mostly for populating sturctures with random / semi random test data.
+ * Test Utility for repeating parts of code in Message module.
+ * Mostly for populating structures with random / semi random test data.
  */
 public class KapuaMessageUtil {
-
-    private static ZoneId defaultZoneId = ZoneId.systemDefault();
 
     /**
      * Prepare payload data that contains two metrics and simple byte payload.
@@ -86,7 +82,7 @@ public class KapuaMessageUtil {
      * @param kapuaMessage  KapuaMessage reference to fill with test data
      * @param referenceDate reference date on which all date fields are based
      */
-    public static void populateKapuaMessage(KapuaMessage kapuaMessage, ZonedDateTime referenceDate) {
+    public static void populateKapuaMessage(KapuaMessage<?,?> kapuaMessage, ZonedDateTime referenceDate) {
         kapuaMessage.setId(UUID.fromString("11111111-2222-3333-4444-555555555555"));
         kapuaMessage.setScopeId(new KapuaEid(BigInteger.ONE));
         kapuaMessage.setDeviceId(new KapuaEid(BigInteger.ONE));

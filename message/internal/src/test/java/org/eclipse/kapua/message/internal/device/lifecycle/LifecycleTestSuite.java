@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
-import org.eclipse.kapua.message.internal.xml.KapuaMetricTest;
-import org.eclipse.kapua.message.internal.xml.KapuaMetricValueTest;
-import org.eclipse.kapua.message.internal.xml.KapuaMetricsMapAdapterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
