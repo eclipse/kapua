@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
@@ -25,6 +23,9 @@ import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -37,6 +38,7 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
 
     private GwtRole selectedRole;
     private static final GwtAccessInfoServiceAsync service = GWT.create(GwtAccessInfoService.class);
+    private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
     private GwtAccessRoleQuery query;
 
     protected RoleSubjectGrid(EntityView<GwtUser> entityView, GwtSession currentSession) {
@@ -65,13 +67,14 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", "ID", 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRoleSubjectColumnHeaderId(), 100);
+        columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("username", "Name", 100);
+        columnConfig = new ColumnConfig("username", MSGS.gridRoleSubjectColumnHeaderName(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("type", "Type", 100);
+        columnConfig = new ColumnConfig("type", MSGS.gridRoleSubjectColumnHeaderType(), 100);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
