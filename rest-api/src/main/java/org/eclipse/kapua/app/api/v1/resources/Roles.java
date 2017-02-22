@@ -77,7 +77,8 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Returns the role for the given id.
      *
-     *@param id the {@link Role}
+     * @param id
+     *            the {@link Role}
      * @return The requested role.
      */
     @ApiOperation(value = "Get the Role for the given id", notes = "Returns the role for the given id.", response = Role.class)
@@ -125,7 +126,7 @@ public class Roles extends AbstractKapuaResource {
      *
      * @param roleId
      *            The id of the Role to be deleted.
-     *            @return HTTP 200 if operation is completed successfully
+     * @return HTTP 200 if operation is completed successfully
      */
     @ApiOperation(value = "Delete a Role", notes = "Deletes a role based on the information provided in roleId parameter.")
     @DELETE
@@ -164,11 +165,12 @@ public class Roles extends AbstractKapuaResource {
         }
         return returnNotNullEntity(updatedRole);
     }
-    
+
     /**
      * Returns the list of all the role permissions for the given role.
      *
-     *@param roleId The {@link Role} id
+     * @param roleId
+     *            The {@link Role} id
      * @return The list of requested RolePermission objects.
      */
     @ApiOperation(value = "Get the list of the RolePermissions for the given role", notes = "Returns the list of all the role permissions available for the given role.", response = RolePermission.class, responseContainer = "RolePermissionListResult")
@@ -186,11 +188,12 @@ public class Roles extends AbstractKapuaResource {
         }
         return rolePermissionsList;
     }
-    
+
     /**
      * Returns the role permission for the given id.
      *
-     *@param rolePermissionId the role permission id
+     * @param rolePermissionId
+     *            the role permission id
      * @return The role permission for the given id.
      */
     @ApiOperation(value = "Get the RolePermission for the given id", notes = "Returns the role permission for the given id.", response = RolePermission.class)
@@ -208,14 +211,14 @@ public class Roles extends AbstractKapuaResource {
         }
         return rolePermission;
     }
-    
+
     /**
      * Deletes the RolePermission specified by the "rolePermissionId" path parameter.
      *
      * @param rolePermissionId
      *            The id of the RolePermission to be deleted.
-     *            
-     *            @return HTTP 200 if the operation completed successfully
+     * 
+     * @return HTTP 200 if the operation completed successfully
      */
     @ApiOperation(value = "Delete a RolePermission", notes = "Deletes a role permission based on the information provided in rolePermissionId parameter.")
     @DELETE
@@ -231,7 +234,7 @@ public class Roles extends AbstractKapuaResource {
         }
         return Response.ok().build();
     }
-    
+
     /**
      * Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.
      *
