@@ -89,6 +89,19 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
             KapuaLocator locator = KapuaLocator.getInstance();
             AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
             accessInfoService.delete(scopeId, accessInfoId);
+
+            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+            AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(scopeId, accessInfoId);
+            for (AccessRole accessRole : accessRoles.getItems()) {
+                accessRoleService.delete(scopeId, accessRole.getId());
+            }
+
+            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+            AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(scopeId, accessInfoId);
+            for (AccessPermission accessPermission : accessPermissions.getItems()) {
+                accessPermissionService.delete(scopeId, accessPermission.getId());
+
+            }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

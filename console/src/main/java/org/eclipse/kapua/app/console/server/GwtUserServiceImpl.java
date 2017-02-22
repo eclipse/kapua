@@ -25,8 +25,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.*;
-import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.*;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.*;
 
@@ -201,16 +200,37 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
         KapuaId scopeId = GwtKapuaModelConverter.convert(gwtScopeId);
         KapuaId userId = GwtKapuaModelConverter.convert(gwtUserId);
+
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
             CredentialService credentialService = locator.getService(CredentialService.class);
-            User user = userService.find(scopeId, KapuaEid.parseCompactId(gwtUserId));
+            User user = userService.find(scopeId, userId);
+
             if (user != null) {
                 userService.delete(user);
                 CredentialListResult credentialListResult = credentialService.findByUserId(scopeId, userId);
                 for (Credential credential : credentialListResult.getItems()) {
                     credentialService.delete(scopeId, credential.getId());
+                }
+
+                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
+                if (accessInfo != null) {
+                    KapuaId accessInfoId = accessInfo.getId();
+                    accessInfoService.delete(scopeId, accessInfoId);
+
+                    AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+                    AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(scopeId, accessInfoId);
+                    for (AccessRole accessRole : accessRoles.getItems()) {
+                        accessRoleService.delete(scopeId, accessRole.getId());
+                    }
+
+                    AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+                    AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(scopeId, accessInfoId);
+                    for (AccessPermission accessPermission : accessPermissions.getItems()) {
+                        accessPermissionService.delete(scopeId, accessPermission.getId());
+                    }
                 }
             }
         } catch (Throwable t) {
