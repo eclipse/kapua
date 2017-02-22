@@ -12,14 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.group;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
 
 public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
 
@@ -27,21 +30,22 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
     private final EntityGrid<GwtGroup> entityGrid;
     private final GwtSession currentSession;
     private final TextField<String> nameField;
+    private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
     public GroupFilterPanel(EntityView<GwtGroup> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
 
-        setHeading("Groups filter");
+        setHeading(MSGS.filterHeader());
 
         VerticalPanel verticalPanel = getFieldsPanel();
-        final Label nameLabel = new Label("Group name");
+        final Label nameLabel = new Label(MSGS.filterFieldGroupNameLabel());
         nameLabel.setWidth(WIDTH);
         nameLabel.setStyleAttribute("margin", "5px");
         verticalPanel.add(nameLabel);
         nameField = new TextField<String>();
-        nameField.setName("Group name");
+        nameField.setName("name");
         nameField.setWidth(WIDTH);
         nameField.setStyleAttribute("margin-top", "0px");
         nameField.setStyleAttribute("margin-left", "5px");

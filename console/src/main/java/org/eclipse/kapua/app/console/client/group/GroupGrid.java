@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.group;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
@@ -21,6 +20,10 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -30,6 +33,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupGrid extends EntityGrid<GwtGroup> {
     private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
     private GwtGroupQuery query;
 
     protected GroupGrid(EntityView<GwtGroup> entityView, GwtSession currentSession) {
@@ -55,20 +59,19 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("groupName", "Group Name", 200);
+        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridGroupColumnHeaderId(), 100);
+        columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", "Created On", 200);
+        columnConfig = new ColumnConfig("groupName", MSGS.gridGroupColumnHeaderGroupName(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", "Created By", 200);
+        columnConfig = new ColumnConfig("createdOn", MSGS.gridGroupColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("modifiedOn", "Modified On", 200);
+        columnConfig = new ColumnConfig("createdBy", MSGS.gridGroupColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("modifiedBy", "Modified By", 200);
-        columnConfigs.add(columnConfig);
         return columnConfigs;
     }
 

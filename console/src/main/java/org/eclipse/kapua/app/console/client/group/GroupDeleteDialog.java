@@ -12,13 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.group;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
+import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -26,7 +27,8 @@ public class GroupDeleteDialog extends EntityDeleteDialog {
 
     private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
     private GwtGroup gwtGroup;
-    private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+    private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+
 
     public GroupDeleteDialog(GwtGroup gwtGroup) {
         this.gwtGroup = gwtGroup;
@@ -48,10 +50,9 @@ public class GroupDeleteDialog extends EntityDeleteDialog {
 
             @Override
             public void onSuccess(Void arg0) {
-
                 m_exitStatus = true;
+                m_exitMessage = MSGS.dialogDeleteConfirmation();
                 hide();
-
             }
         });
 
@@ -59,14 +60,12 @@ public class GroupDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        String msg = "Delete group";
-        return msg;
+        return MSGS.dialogDeleteHeader(gwtGroup.getGroupName());
     }
 
     @Override
     public String getInfoMessage() {
-        String msg = "Are you sure?";
-        return msg;
+        return MSGS.dialogDeleteInfo();
     }
 
 }

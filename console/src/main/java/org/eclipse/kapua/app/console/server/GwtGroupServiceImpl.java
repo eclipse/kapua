@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.group.GwtGroupCreator;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
@@ -24,16 +24,13 @@ import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.group.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.kapua.model.id.KapuaId;
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
+import com.extjs.gxt.ui.client.data.*;
 
 public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements GwtGroupService {
 
@@ -156,14 +153,14 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 // gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtModelConverter.convert(group.getScopeId())));
                 gwtGroupDescription
-                        .add(new GwtGroupedNVPair("group", "Group Name", group.getName()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("group", "Modified On",
+                        .add(new GwtGroupedNVPair("Group", "Group Name", group.getName()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Modified On",
                         group.getModifiedOn().toString()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("group", "Modified By",
+                gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Modified By",
                         group.getModifiedBy().toCompactId()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("group", "Created On",
+                gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Created On",
                         group.getCreatedOn().toString()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("group", "Created By",
+                gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Created By",
                         group.getCreatedBy().toCompactId()));
 
             }

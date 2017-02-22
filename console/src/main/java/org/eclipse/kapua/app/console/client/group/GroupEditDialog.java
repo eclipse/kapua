@@ -12,16 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.group;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupEditDialog extends GroupAddDialog {
 
     private final static GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
     private GwtGroup selectedGroup;
 
     public GroupEditDialog(GwtSession currentSession, GwtGroup selectedGroup) {
@@ -33,7 +36,7 @@ public class GroupEditDialog extends GroupAddDialog {
     public void createBody() {
 
         super.createBody();
-        load();
+        populateEditDialog(selectedGroup);
     }
 
     @Override
@@ -44,51 +47,27 @@ public class GroupEditDialog extends GroupAddDialog {
             @Override
             public void onFailure(Throwable arg0) {
                 m_exitStatus = false;
-
+                m_exitMessage = MSGS.dialogEditError(arg0.getLocalizedMessage());
+                hide();
             }
 
             @Override
             public void onSuccess(GwtGroup arg0) {
                 m_exitStatus = true;
-
+                m_exitMessage = MSGS.dialogEditConfirmation();
                 hide();
-
             }
         });
     }
 
     @Override
     public String getHeaderMessage() {
-        String editMsg = "Edit group";
-        return editMsg;
+        return MSGS.dialogEditHeader(selectedGroup.getGroupName());
     }
 
     @Override
     public String getInfoMessage() {
-        String editMsg = "Edit group";
-        return editMsg;
-    }
-
-    private void load() {
-        maskDialog();
-        gwtGroupService.find(selectedGroup.getScopeId(), selectedGroup.getId(),
-                new AsyncCallback<GwtGroup>() {
-
-                    @Override
-                    public void onSuccess(GwtGroup arg0) {
-                        unmaskDialog();
-                        populateEditDialog(arg0);
-
-                    }
-
-                    @Override
-                    public void onFailure(Throwable arg0) {
-                        m_exitStatus = false;
-                        m_exitMessage = "exit_message";
-                        unmaskDialog();
-                        hide();
-                    }
-                });
+        return MSGS.dialogEditInfo();
     }
 
     private void populateEditDialog(GwtGroup gwtGroup) {
