@@ -42,30 +42,27 @@ import io.swagger.annotations.ApiParam;
 
 @Api("Accounts")
 @Path("/accounts")
-public class Accounts extends AbstractKapuaResource 
-{
-	private final KapuaLocator locator = KapuaLocator.getInstance();
-	private final AccountService accountService = locator.getService(AccountService.class);
-	private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
-	
+public class Accounts extends AbstractKapuaResource {
+
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final AccountService accountService = locator.getService(AccountService.class);
+    private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
+
     /**
      * Returns the list of all the Accounts visible to the currently connected user.
      *
      * @return The list of requested Account objects.
      */
-	@ApiOperation(value = "Get the Accounts list",
-            notes = "Returns the list of all the Accounts visible to the currently connected user.",
-            response = Account.class,
-            responseContainer = "AccountListResult")
+    @ApiOperation(value = "Get the Accounts list", notes = "Returns the list of all the Accounts visible to the currently connected user.", response = Account.class, responseContainer = "AccountListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult getAccounts() {
 
         AccountListResult accountsResult = accountFactory.newAccountListResult();
-        
+
         try {
-        	KapuaSession session = KapuaSecurityUtils.getSession();
-        	accountsResult = (AccountListResult) accountService.findChildsRecursively(session.getScopeId());
+            KapuaSession session = KapuaSecurityUtils.getSession();
+            accountsResult = (AccountListResult) accountService.findChildsRecursively(session.getScopeId());
         } catch (Throwable t) {
             handleException(t);
         }
@@ -75,18 +72,16 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the Account specified by the "accountId" path parameter.
      *
-     * @param accountId The id of the requested Account.
+     * @param accountId
+     *            The id of the requested Account.
      * @return The requested Account object.
      */
-	@ApiOperation(value = "Get an Account",
-            notes = "Returns the Account specified by the \"accountId\" path parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Get an Account", notes = "Returns the Account specified by the \"accountId\" path parameter.", response = Account.class)
     @GET
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Account getAccount(
-            @ApiParam(value = "The id of the requested Account", required = true) 
-            @PathParam("accountId") String accountId) {
+            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") String accountId) {
 
         Account account = null;
         try {
@@ -101,18 +96,16 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the Account specified by the "name" query parameter.
      *
-     * @param accountName The name of the requested Account.
+     * @param accountName
+     *            The name of the requested Account.
      * @return The requested Account object.
      */
-	@ApiOperation(value = "Get an Account by name",
-            notes = "Returns the Account specified by the \"name\" query parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Get an Account by name", notes = "Returns the Account specified by the \"name\" query parameter.", response = Account.class)
     @GET
     @Path("findByName")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Account getAccountByName(
-            @ApiParam(value = "The name of the requested Account", required = true) 
-            @QueryParam("accountName") String accountName) {
+            @ApiParam(value = "The name of the requested Account", required = true) @QueryParam("accountName") String accountName) {
 
         Account account = null;
         try {
@@ -126,22 +119,20 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Returns the list of all direct child accounts for the Account specified by the "scopeId" path parameter.
      *
-     * @param scopeId The id of the requested Account.
+     * @param scopeId
+     *            The id of the requested Account.
      * @return The requested list of child accounts.
      */
-	@ApiOperation(value = "Get Children Accounts",
-            notes = "Returns the list of all direct child accounts for the Account specified by the \"scopeId\" path parameter.",
-            response = AccountListResult.class)
+    @ApiOperation(value = "Get Children Accounts", notes = "Returns the list of all direct child accounts for the Account specified by the \"scopeId\" path parameter.", response = AccountListResult.class)
     @GET
     @Path("{scopeId}/childAccounts")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult getChildAccounts(
-            @ApiParam(value = "The id of the requested Account", required = true) 
-            @PathParam("scopeId") String scopeId) {
+            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("scopeId") String scopeId) {
         AccountListResult accountsResult = accountFactory.newAccountListResult();
         try {
             KapuaId id = KapuaEid.parseCompactId(scopeId);
-        	accountsResult = (AccountListResult) accountService.findChildsRecursively(id);
+            accountsResult = (AccountListResult) accountService.findChildsRecursively(id);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -151,18 +142,16 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Creates a new Account based on the information provided in AccountCreator parameter.
      *
-     * @param accountCreator Provides the information for the new Account to be created.
+     * @param accountCreator
+     *            Provides the information for the new Account to be created.
      * @return The newly created Account object.
      */
-	@ApiOperation(value = "Create an Account",
-            notes = "Creates a new Account based on the information provided in AccountCreator parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Create an Account", notes = "Creates a new Account based on the information provided in AccountCreator parameter.", response = Account.class)
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Account postAccount(
-            @ApiParam(value = "Provides the information for the new Account to be created", required = true) 
-            AccountCreator accountCreator) {
+            @ApiParam(value = "Provides the information for the new Account to be created", required = true) AccountCreator accountCreator) {
 
         Account account = null;
         try {
@@ -177,41 +166,38 @@ public class Accounts extends AbstractKapuaResource
     /**
      * Updates an account based on the information provided in Account parameter.
      *
-     * @param account Provides the information to update the account.
+     * @param account
+     *            Provides the information to update the account.
      * @return The updated created Account object.
      */
-	@ApiOperation(value = "Update an Account",
-            notes = "Updates an account based on the information provided in Account parameter.",
-            response = Account.class)
+    @ApiOperation(value = "Update an Account", notes = "Updates an account based on the information provided in Account parameter.", response = Account.class)
     @PUT
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Account updateAccount(
-            @ApiParam(value = "Provides the information to update the account", required = true) 
-            Account account) {
-	    Account updatedAccount = null;
+            @ApiParam(value = "Provides the information to update the account", required = true) Account account) {
+        Account updatedAccount = null;
         try {
-            ((AccountImpl)account).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
+            ((AccountImpl) account).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
             updatedAccount = accountService.update(account);
         } catch (Throwable t) {
             handleException(t);
         }
         return returnNotNullEntity(updatedAccount);
     }
-    
-	/**
+
+    /**
      * Deletes the Account specified by the "accountId" path parameter.
      *
-     * @param accountId The id of the Account to be deleted.
+     * @param accountId
+     *            The id of the Account to be deleted.
      */
-	@ApiOperation(value = "Delete an Account",
-            notes = "Deletes an account based on the information provided in accountId parameter.")
+    @ApiOperation(value = "Delete an Account", notes = "Deletes an account based on the information provided in accountId parameter.")
     @DELETE
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Response deleteAccount(
-            @ApiParam(value = "The id of the Account to be delete", required = true)
-            @PathParam("accountId") String accountId) {
+            @ApiParam(value = "The id of the Account to be delete", required = true) @PathParam("accountId") String accountId) {
         try {
             KapuaId accountKapuaId = KapuaEid.parseCompactId(accountId);
             KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
