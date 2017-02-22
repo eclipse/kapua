@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
@@ -23,11 +23,10 @@ import org.eclipse.kapua.message.KapuaPosition;
 public class KapuaMessageFactoryImpl implements KapuaMessageFactory
 {
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public KapuaMessage newMessage()
+    public KapuaMessage<?,?> newMessage()
     {
-        return new KapuaMessageImpl();
+        return new KapuaMessageImpl<KapuaChannel,KapuaPayload>();
     }
 
     @Override

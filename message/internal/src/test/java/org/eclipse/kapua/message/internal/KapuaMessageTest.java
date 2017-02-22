@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
@@ -56,7 +56,7 @@ public class KapuaMessageTest extends Assert {
 
         populateChannel(kapuaChannel);
         populatePayload(kapuaMetrics);
-        KapuaMessage kapuaMessage = new KapuaMessageImpl(kapuaChannel, kapuaMetrics);
+        KapuaMessage<?,?> kapuaMessage = new KapuaMessageImpl<>(kapuaChannel, kapuaMetrics);
         populateKapuaMessage(kapuaMessage, referenceDate);
 
         assertEquals(UUID.fromString("11111111-2222-3333-4444-555555555555"), kapuaMessage.getId());
@@ -79,7 +79,7 @@ public class KapuaMessageTest extends Assert {
 
         populateChannel(kapuaChannel);
         populatePayload(kapuaPayload);
-        KapuaMessage kapuaMessage = new KapuaMessageImpl();
+        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessage = new KapuaMessageImpl<>();
         kapuaMessage.setChannel(kapuaChannel);
         kapuaMessage.setPayload(kapuaPayload);
 
@@ -89,13 +89,13 @@ public class KapuaMessageTest extends Assert {
 
     @Test
     public void messageEquals() throws Exception {
-        KapuaMessage kapuaMessageFirst = new KapuaMessageImpl();
+        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessageFirst = new KapuaMessageImpl<>();
         populateKapuaMessage(kapuaMessageFirst, referenceDate);
-        KapuaMessage kapuaMessageSecond = new KapuaMessageImpl();
+        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessageSecond = new KapuaMessageImpl<>();
         populateKapuaMessage(kapuaMessageSecond, referenceDate);
 
-        assertEquals(0, ((KapuaMessageImpl) kapuaMessageFirst).
-                compareTo((KapuaMessageImpl) kapuaMessageSecond));
+        assertEquals(0, ((KapuaMessageImpl<KapuaChannel,KapuaPayload>) kapuaMessageFirst).
+                compareTo((KapuaMessageImpl<KapuaChannel,KapuaPayload>) kapuaMessageSecond));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class KapuaMessageTest extends Assert {
 
         populateChannel(kapuaChannel);
         populatePayload(kapuaMetrics);
-        KapuaMessage kapuaMessage = new KapuaMessageImpl(kapuaChannel, kapuaMetrics);
+        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessage = new KapuaMessageImpl<>(kapuaChannel, kapuaMetrics);
         populateKapuaMessage(kapuaMessage, referenceDate);
 
         StringWriter strWriter = new StringWriter();

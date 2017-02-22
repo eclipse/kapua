@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
@@ -29,7 +29,7 @@ public class KapuaMessageFactoryTest extends Assert {
 
     @Test
     public void newMessage() throws Exception {
-        KapuaMessage message = kapuaMessageFactory.newMessage();
+        KapuaMessage<?,?> message = kapuaMessageFactory.newMessage();
 
         assertNotNull(message);
     }

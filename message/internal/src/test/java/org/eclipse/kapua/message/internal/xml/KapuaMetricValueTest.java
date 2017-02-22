@@ -26,8 +26,6 @@ public class KapuaMetricValueTest extends Assert {
 
     private static final String newline = System.lineSeparator();
 
-    private static final ZoneId defaultZoneId = ZoneId.systemDefault();
-
     private static final Long TIMESTAMP = ZonedDateTime.of(2017, 1, 18, 13, 10, 46, 0, ZoneId.systemDefault()).
             toEpochSecond();
 
