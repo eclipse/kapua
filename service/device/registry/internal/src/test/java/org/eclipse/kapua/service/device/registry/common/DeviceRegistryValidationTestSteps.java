@@ -54,12 +54,10 @@ import cucumber.api.java.en.When;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistryValidation.feature scenarios.
- *
+ * <p>
  * MockedLocator is used for Location Service. Mockito is used to mock other
  * services that the Device Registry services dependent on. Dependent services are: -
  * Authorization Service.
- *
- *
  */
 
 public class DeviceRegistryValidationTestSteps extends KapuaTest {
