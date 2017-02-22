@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
@@ -25,6 +22,9 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermissio
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -40,21 +40,22 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
 
+    RolePermissionToolbar rolePermissionToolBar;
     private GwtRole selectedRole;
+    private GwtQuery filterQuery;
 
     protected RolePermissionGrid(EntityView<GwtRolePermission> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
+
     }
 
     @Override
     protected EntityCRUDToolbar<GwtRolePermission> getToolbar() {
-        EntityCRUDToolbar<GwtRolePermission> toolbar = super.getToolbar();
+        if (rolePermissionToolBar == null) {
+            rolePermissionToolBar = new RolePermissionToolbar(currentSession, this);
+        }
 
-        toolbar.setAddButtonVisible(false);
-        toolbar.setEditButtonVisible(false);
-        toolbar.setDeleteButtonVisible(false);
-
-        return toolbar;
+        return rolePermissionToolBar;
     }
 
     @Override
@@ -77,12 +78,16 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRolePermissionColumnHeaderId(), 100);
+        columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("domain", MSGS.gridRolePermissionColumnHeaderDomain(), 100);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("action", MSGS.gridRolePermissionColumnHeaderAction(), 100);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("groupId", MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("targetScopeId", MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 100);
@@ -99,6 +104,19 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     public void setSelectedRole(GwtRole gwtRole) {
         selectedRole = gwtRole;
+        if (rolePermissionToolBar != null) {
+            rolePermissionToolBar.setSelectedRole(selectedRole);
+        }
+    }
+
+    @Override
+    protected void selectionChangedEvent(GwtRolePermission selectedItem) {
+        super.selectionChangedEvent(selectedItem);
+        if (selectedItem == null) {
+            rolePermissionToolBar.getDeleteEntityButton().disable();
+        } else {
+            rolePermissionToolBar.getDeleteEntityButton().enable();
+        }
     }
 
     public void clear() {
@@ -107,13 +125,12 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
     @Override
     protected GwtQuery getFilterQuery() {
-        // TODO Auto-generated method stub
-        return null;
+        return filterQuery;
     }
 
     @Override
-    protected void setFilterQuery(GwtQuery filterQuery) {
-        // TODO Auto-generated method stub
-        
+    protected void setFilterQuery(GwtQuery query) {
+        this.filterQuery = query;
     }
+
 }

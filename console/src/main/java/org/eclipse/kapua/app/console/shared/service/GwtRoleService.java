@@ -14,10 +14,12 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermissionCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -59,5 +61,11 @@ public interface GwtRoleService extends RemoteService {
             throws GwtKapuaException;
 
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
+            throws GwtKapuaException;
+
+    public GwtRolePermission addRolePermission(GwtXSRFToken gwtXsrfToken, GwtRolePermissionCreator gwtRolePermissionCreator, GwtPermission gwtPermission) 
+            throws GwtKapuaException;
+    
+    public void deleteRolePermission(GwtXSRFToken gwtXsrfToken,String scopeShortId, String roleShortId)
             throws GwtKapuaException;
 }
