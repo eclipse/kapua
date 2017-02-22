@@ -184,8 +184,6 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
             byte[] requestBody = sw.toString().getBytes(charEncoding);
 
             configurationRequestPayload.setBody(requestBody);
-
-            new String(configurationRequestPayload.getBody());
         } catch (Exception e) {
             throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceComponentConfiguration);
         }
