@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
@@ -17,6 +17,21 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractKapuaSettingTest {
+
+    private static class TestSettingKey implements SettingKey {
+
+        private String key;
+
+        @SuppressWarnings("unused")
+        public TestSettingKey(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String key() {
+            return this.key;
+        }
+    }
 
     @Test
     public void shouldReadPathFromEnv() {
@@ -39,7 +54,7 @@ public class AbstractKapuaSettingTest {
         assertThat(path).isEqualTo("qux");
     }
 
-    static class TestSetting extends AbstractKapuaSetting {
+    static class TestSetting extends AbstractKapuaSetting<TestSettingKey> {
 
         String property(String key) {
             return config.getString(key);
