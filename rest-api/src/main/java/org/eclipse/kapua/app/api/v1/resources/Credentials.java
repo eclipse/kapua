@@ -54,6 +54,7 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Returns the list of all the credentials for the given user.
      *
+     *@param id The {@link Credential} id.
      * @return The list of requested Credential objects.
      */
     @ApiOperation(value = "Get the Credential for the given id", 
@@ -77,6 +78,7 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Returns the list of all the credentials for the given user.
      *
+     *@param userId The {@link User} id.
      * @return The list of requested Credential objects.
      */
     @ApiOperation(value = "Get the Credentials for the given user", 
@@ -128,6 +130,7 @@ public class Credentials extends AbstractKapuaResource {
      * Deletes the Credential specified by the "credentialId" path parameter.
      *
      * @param credentialId The id of the Credential to be deleted.
+     * @return Return HTTP 200 if the operation has completed successfully.
      */
     @ApiOperation(value = "Delete a Credential",
             notes = "Deletes a credential based on the information provided in credentialId parameter.")
@@ -161,12 +164,13 @@ public class Credentials extends AbstractKapuaResource {
     public Credential updateCredential(
             @ApiParam(value = "Provides the information to update the credential", required = true) 
             Credential credential) {
+        Credential updatedCredential = null;
         try {
             ((CredentialImpl)credential).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            credential = credentialService.update(credential);
+            updatedCredential = credentialService.update(credential);
         } catch (Throwable t) {
             handleException(t);
         }
-        return returnNotNullEntity(credential);
+        return returnNotNullEntity(updatedCredential);
     }
 }
