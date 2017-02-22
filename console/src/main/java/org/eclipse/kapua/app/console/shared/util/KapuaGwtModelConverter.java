@@ -498,7 +498,6 @@ public class KapuaGwtModelConverter {
         gwtDevice.setOsgiVersion(device.getOsgiFrameworkVersion());
         gwtDevice.setAcceptEncoding(device.getAcceptEncoding());
         gwtDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
-        gwtDevice.setLastEventOn(device.getLastEvent().getReceivedOn());
         gwtDevice.setIotFrameworkVersion(device.getApplicationFrameworkVersion());
         gwtDevice.setIccid(device.getIccid());
         gwtDevice.setImei(device.getImei());
