@@ -12,18 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role.dialog;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 
@@ -44,7 +39,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
     public RoleAddDialog(GwtSession currentSession) {
         super(currentSession);
 
-        DialogUtils.resizeDialog(this, 400, 400);
+        DialogUtils.resizeDialog(this, 400, 150);
     }
 
     @Override
@@ -53,13 +48,6 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
         gwtRoleCreator.setScopeId(currentSession.getSelectedAccount().getId());
         gwtRoleCreator.setName(roleNameField.getValue());
-
-        List<GwtRolePermission> newRolePermissions = rolePermissionsGrid.getModels();
-        List<GwtPermission> newPermissions = new ArrayList<GwtPermission>();
-        for (GwtRolePermission grp : newRolePermissions) {
-            newPermissions.add(new GwtPermission(grp.getDomainEnum(), grp.getActionEnum(), grp.getTargetScopeId(), grp.getGroupId()));
-        }
-        gwtRoleCreator.setPermissions(newPermissions);
 
         gwtRoleService.create(xsrfToken, gwtRoleCreator, new AsyncCallback<GwtRole>() {
 
@@ -101,13 +89,6 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         roleFormPanel.add(roleNameField);
 
-        //
-        // Permissions
-        rolePermissionsGrid = getRolePermissionNewGridField(currentSession);
-        roleFormPanel.add(rolePermissionsGrid);
-
-        //
-        // Add form panel to body
         m_bodyPanel.add(roleFormPanel);
     }
 

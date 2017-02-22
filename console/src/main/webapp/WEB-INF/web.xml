@@ -57,6 +57,7 @@
         <url-pattern>/group/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
+        <url-pattern>/accessInfo/*</url-pattern>
 	</filter-mapping>
 	
     <filter>
@@ -144,6 +145,15 @@
    <servlet-mapping>
       <servlet-name>GwtSettingsServiceImpl</servlet-name>
       <url-pattern>/settings/*</url-pattern>
+   </servlet-mapping>
+   
+   <servlet>
+       <servlet-name>GwtAccessInfoServiceImpl</servlet-name>
+       <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessInfoServiceImpl</servlet-class>
+   </servlet>
+   <servlet-mapping>
+       <servlet-name>GwtAccessInfoServiceImpl</servlet-name>
+       <url-pattern>/accessInfo/*</url-pattern>
    </servlet-mapping>
 
     <servlet>

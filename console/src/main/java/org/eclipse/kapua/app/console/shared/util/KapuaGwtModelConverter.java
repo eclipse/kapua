@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import java.net.URISyntaxException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.*;
@@ -60,17 +62,8 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 
-import java.net.URISyntaxException;
-
 public class KapuaGwtModelConverter {
 
-    /**
-     * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
-     *
-     * @param role The {@link Role} to convert.
-     * @return The converted {@link GwtRole}.
-     * @since 1.0.0
-     */
     public static GwtRole convert(Role role) {
         GwtRole gwtRole = new GwtRole();
 
@@ -208,6 +201,7 @@ public class KapuaGwtModelConverter {
         gwtRolePermission.setRoleId(convert(rolePermission.getRoleId()));
         gwtRolePermission.setDomain(gwtPermission.getDomain());
         gwtRolePermission.setAction(gwtPermission.getAction());
+        gwtRolePermission.setGroupId(gwtPermission.getGroupId());
         gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
 
         //

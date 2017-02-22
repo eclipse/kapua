@@ -18,10 +18,12 @@ import java.util.List;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermissionCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
@@ -33,6 +35,11 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 
@@ -211,14 +218,19 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         List<GwtRolePermission> gwtRolePermissions = new ArrayList<GwtRolePermission>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            RoleService roleService = locator.getService(RoleService.class);
-
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
             // Convert from GWT Entity
             KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
             KapuaId roleId = GwtKapuaModelConverter.convert(roleShortId);
 
-            // Find
-            Role role = roleService.find(scopeId, roleId);
+            // Get permissions assigned to the Role
+            RolePermissionListResult list = rolePermissionService.findByRoleId(scopeId, roleId);
+
+            if (list != null) {
+                for (RolePermission permission : list.getItems()) {
+                    gwtRolePermissions.add(KapuaGwtModelConverter.convert(permission));
+                }
+            }
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -245,6 +257,46 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaLocator locator = KapuaLocator.getInstance();
             RoleService roleService = locator.getService(RoleService.class);
             roleService.delete(scopeId, roleId);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+    }
+
+    @Override
+    public GwtRolePermission addRolePermission(GwtXSRFToken gwtXsrfToken, GwtRolePermissionCreator gwtRolePermissionCreator, GwtPermission gwtPermission) throws GwtKapuaException {
+        checkXSRFToken(gwtXsrfToken);
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
+
+        KapuaId scopeId = GwtKapuaModelConverter.convert(gwtRolePermissionCreator.getScopeId());
+
+        RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(scopeId);
+        rolePermissionCreator.setRoleId(GwtKapuaModelConverter.convert(gwtRolePermissionCreator.getRoleId()));
+        rolePermissionCreator.setScopeId(scopeId);
+        rolePermissionCreator.setPermission(GwtKapuaModelConverter.convert(gwtPermission));
+
+        RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+        GwtRolePermission newGwtRolePermission = null;
+        RolePermission newRolePermission = null;
+        try {
+            newRolePermission = rolePermissionService.create(rolePermissionCreator);
+            newGwtRolePermission = KapuaGwtModelConverter.convert(newRolePermission);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+        return newGwtRolePermission;
+    }
+
+    @Override
+    public void deleteRolePermission(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId) throws GwtKapuaException {
+        checkXSRFToken(gwtXsrfToken);
+        KapuaLocator locator = KapuaLocator.getInstance();
+        RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+        KapuaId scopeId = GwtKapuaModelConverter.convert(scopeShortId);
+        KapuaId roleId = GwtKapuaModelConverter.convert(roleShortId);
+        try {
+            rolePermissionService.delete(scopeId, roleId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

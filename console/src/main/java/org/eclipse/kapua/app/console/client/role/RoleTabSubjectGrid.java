@@ -16,47 +16,42 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class RoleTabPermissionGrid extends KapuaTabItem<GwtRole> {
+public class RoleTabSubjectGrid extends KapuaTabItem<GwtRole> {
 
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
-    RolePermissionGrid rolePermissionGrid;
-    
-    public RoleTabPermissionGrid(EntityView<GwtRolePermission> entityView, GwtSession session) {
-        super(MSGS.roleTabPermissionGridTitle(), new KapuaIcon(IconSet.TASKS));
+    RoleSubjectGrid rolePermissionGrid;
 
-        rolePermissionGrid = new RolePermissionGrid(entityView, session);
+    public RoleTabSubjectGrid(GwtSession gwtSession) {
+        super(MSGS.roleTabSubjectGridTitle(), new KapuaIcon(IconSet.SUPPORT));
+        rolePermissionGrid = new RoleSubjectGrid(null, gwtSession);
 
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-
-        add(rolePermissionGrid);
-    }
-
-    @Override
-    public void setEntity(GwtRole gwtRole) {
-        super.setEntity(gwtRole);
-
-        rolePermissionGrid.setSelectedRole(gwtRole);
     }
 
     @Override
     protected void doRefresh() {
         if (selectedEntity != null) {
             rolePermissionGrid.refresh();
-        } else {
-            rolePermissionGrid.clear();
         }
+
+    }
+
+    @Override
+    public void setEntity(GwtRole t) {
+        super.setEntity(t);
+        rolePermissionGrid.setEntity(t);
+
+    }
+
+    @Override
+    protected void onRender(Element parent, int index) {
+        super.onRender(parent, index);
+        add(rolePermissionGrid);
     }
 
 }

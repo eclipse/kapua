@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,23 +19,29 @@ import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 
 public class RoleView extends EntityView<GwtRole> {
 
     private RoleGrid roleGrid;
-    
+    private RoleTabDescription roleTabDescription;
+    private RoleTabPermissionGrid roleTabPermissionGrid;
+    private RoleTabSubjectGrid roleTabSubjectGrid;
+
     public RoleView(GwtSession gwtSession) {
         super(gwtSession);
+        roleTabDescription = new RoleTabDescription();
+        roleTabPermissionGrid = new RoleTabPermissionGrid(null, gwtSession);
+        roleTabSubjectGrid = new RoleTabSubjectGrid(gwtSession);
     }
 
     @Override
     public List<KapuaTabItem<GwtRole>> getTabs(EntityView<GwtRole> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtRole>> tabs = new ArrayList<KapuaTabItem<GwtRole>>();
-        tabs.add(new RoleTabDescription());
-        tabs.add(new RoleTabPermissionGrid());
+        tabs.add(roleTabDescription);
+        tabs.add(roleTabPermissionGrid);
+        tabs.add(roleTabSubjectGrid);
         return tabs;
     }
 
