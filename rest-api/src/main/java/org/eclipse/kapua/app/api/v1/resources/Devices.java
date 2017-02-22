@@ -182,13 +182,14 @@ public class Devices extends AbstractKapuaResource {
     public Device updateDevice(
             @ApiParam(value = "Provides the information to update the device", required = true) 
             Device device) {
+        Device deviceUpdated = null;
         try {
             ((DeviceImpl) device).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            device = registryService.update(device);
+            deviceUpdated = registryService.update(device);
         } catch (Throwable t) {
             handleException(t);
         }
-        return returnNotNullEntity(device);
+        return returnNotNullEntity(deviceUpdated);
     }
 
     /**
@@ -196,6 +197,7 @@ public class Devices extends AbstractKapuaResource {
      *
      * @param deviceId
      *            Provides the id of the device to delete.
+     *            @return HTTP 200 if operation is completed successfully.
      */
     @DELETE
     @Path("{deviceId}")
@@ -238,7 +240,7 @@ public class Devices extends AbstractKapuaResource {
      * DeviceCommandOutput commandOutput = deviceCommandWebXml.post(DeviceCommandOutput.class, commandInput);
      * </pre>
      * 
-     * @param clientId The client ID of the Device requested.
+     * @param deviceId The {@link Device} ID.
      * @param timeout The timeout of the command execution
      * @param commandInput The input command
      * 
@@ -259,7 +261,7 @@ public class Devices extends AbstractKapuaResource {
             @PathParam("deviceId") String deviceId,
             
             @ApiParam(value = "The timeout of the command execution", required = false) 
-            @QueryParam("timeout") Long timeout) throws NumberFormatException, KapuaException {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         KapuaId deviceKapuaId = KapuaEid.parseCompactId(deviceId);
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
         return commandService.exec(scopeId, deviceKapuaId, commandInput, timeout);
@@ -336,8 +338,9 @@ public class Devices extends AbstractKapuaResource {
     /**
      * Updates the configuration of a device rolling back a given snapshot ID.
      * 
-     * @param clientId The client ID of the Device requested.
-     * @snapshotId the ID of the snapshot to rollback to.
+     * @param deviceId The {@link Device} ID.
+     * @param snapshotId the ID of the snapshot to rollback to.
+     * @return HTTP 200 if operation has completed successfully.
      */
     @POST
     @Path("{deviceId}/rollback/{snapshotId}")
@@ -426,7 +429,7 @@ public class Devices extends AbstractKapuaResource {
 
             KapuaAndPredicate andPredicate = new AndPredicate();
             andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, id));
-            // TODO Date filter not working?
+
             if (startDate != null) {
                 DateTime parsedStartDate = DateTime.parse(startDate);
                 andPredicate = andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.RECEIVED_ON, parsedStartDate.toDate(), KapuaAttributePredicate.Operator.GREATER_THAN));
@@ -693,7 +696,8 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "The device status (Enabled/Disabled) of the devices to be returned", required = false)
             @QueryParam("status") String status,
             
-            // @QueryParam("connectionStatus") String connectionStatus,
+            @ApiParam(value = "The device connection status (Connected/Disconnected/Missing) of the devices to be returned", required = false)
+            @QueryParam("connectionStatus") String connectionStatus,
             
             @ApiParam(value = "The bios version of the devices to be returned", required = false)
             @QueryParam("biosVersion") String biosVersion,
@@ -770,22 +774,22 @@ public class Devices extends AbstractKapuaResource {
         query.setLimit(limit + 1);
         query.setOffset(offset);
         KapuaAndPredicate andPredicate = new AndPredicate();
-        if (clientId != null && clientId.size() > 0) {
+        if (clientId != null && !clientId.isEmpty()) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId.toArray(new String[] {})));
         }
-        if (serialNumber != null && serialNumber.size() > 0) {
+        if (serialNumber != null && !serialNumber.isEmpty()) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.SERIAL_NUMBER, serialNumber.toArray(new String[] {})));
         }
-        if (displayName != null && displayName.size() > 0) {
+        if (displayName != null && !displayName.isEmpty()) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.DISPLAY_NAME, displayName.toArray(new String[] {})));
         }
-        if (imei != null && imei.size() > 0) {
+        if (imei != null && !imei.isEmpty()) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.IMEI, imei.toArray(new String[] {})));
         }
-        if (imsi != null && imsi.size() > 0) {
+        if (imsi != null && !imsi.isEmpty()) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.IMSI, imsi.toArray(new String[] {})));
         }
-        if (iccid != null && iccid.size() > 0) {
+        if (iccid != null && !iccid.isEmpty()) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.ICCID, iccid.toArray(new String[] {})));
         }
         if (modelId != null) {
@@ -800,15 +804,14 @@ public class Devices extends AbstractKapuaResource {
                 throw new KapuaIllegalArgumentException("status", status);
             }
         }
-        // if (connectionStatus != null) {
-        // try {
-        // DeviceConnectionStatus dcs = null;
-        // dcs = DeviceConnectionStatus.valueOf(connectionStatus);
-        // andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CONNECTION_STATUS, connectionStatus));
-        // } catch (IllegalArgumentException iae) {
-        // throw new KapuaIllegalArgumentException("connectionStatus", connectionStatus);
-        // }
-        // }
+         if (connectionStatus != null) {
+         try {
+         DeviceConnectionStatus dcs = DeviceConnectionStatus.valueOf(connectionStatus);
+         andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.CONNECTION_STATUS, dcs));
+         } catch (IllegalArgumentException iae) {
+         throw new KapuaIllegalArgumentException("connectionStatus", connectionStatus);
+         }
+         }
         if (biosVersion != null) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.BIOS_VERSION, biosVersion));
         }
