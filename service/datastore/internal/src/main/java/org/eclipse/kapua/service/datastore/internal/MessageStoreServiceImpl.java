@@ -261,25 +261,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         // Check Access
         this.checkDataAccess(scopeId, Actions.read);
 
-        AccountInfo accountInfo = getAccountServicePlan(scopeId);
-        String scopeName = accountInfo.getAccount().getName();
-
-        try {
-            String everyIndex = EsUtils.getAnyIndexName(scopeName);
-            MessageListResult result = null;
-            result = EsMessageDAO.connection(EsClient.getcurrent())
-                                 .instance(everyIndex, EsSchema.MESSAGE_TYPE_NAME)
-                                 .query(null);
-
-            if (true)
-                throw KapuaException.internalError("Method not implemented.");
-
-            return null;
-        } catch (Exception exc) {
-            // TODO manage exeception
-            // CassandraUtils.handleException(e);
-            throw KapuaException.internalError(exc);
-        }
+        throw KapuaException.internalError("Method not implemented.");
     }
 
     @Override
