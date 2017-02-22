@@ -148,153 +148,6 @@ public class Accounts extends AbstractKapuaResource
         return accountsResult;
     }
 
-//    /**
-//     * Returns the Service Plan for the Account specified by the "id" path parameter.
-//     *
-//     * @param accountId The id of the Account for which the Service Plan is requested.
-//     * @return The requested AccountServicePlan object.
-//     */
-//    @GET
-//    @Path("{accountId}/servicePlan")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public AccountServicePlan getAccountServicePlan(@PathParam("accountId") long accountId) {
-//
-//        AccountServicePlan servicePlan = null;
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            AccountService as = sl.getAccountService();
-//            servicePlan = as.getAccountServicePlan(accountId);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(servicePlan);
-//    }
-
-//    /**
-//     * Returns the usage for the Account specified by the "id" path parameter.
-//     *
-//     * @param limit Maximum number of entries to be returned.
-//     * @param offset Starting offset for the entries to be returned.
-//     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
-//     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
-//     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param accountId The id of the Account for which the usage is requested.
-//     * @return The requested UsageResult object.
-//     */
-//    @GET
-//    @Path("{accountId}/usageByHour")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public UsageResult getAccountUsageByHour(@PathParam("accountId") long accountId,
-//            @QueryParam("limit")     @DefaultValue("50") int limit,
-//            @QueryParam("offset")    @DefaultValue("0")  int offset,
-//            @QueryParam("startDate") @DefaultValue("0")  EdcTimestamp startDate,
-//            @QueryParam("endDate")   @DefaultValue("0")  EdcTimestamp endDate) {
-//
-//        EdcUsageQuery query = new EdcUsageQuery();
-//        int maxLimit = EdcConfig.getInstance().getDataExportMaxLimit();
-//        int maxCount = EdcConfig.getInstance().getDataExportMaxCount();
-//        if (limit > maxLimit)
-//            limit = maxLimit;
-//        if (offset > maxCount)
-//            offset = maxCount;
-//        query.setLimit(limit);
-//        query.setIndexOffset(offset);
-//        query.setTimetype(1); // HOUR
-//        if (startDate.getTimeInMillis() != 0) {
-//            query.setStartDate(startDate.getTimeInMillis());
-//        }
-//        if (endDate.getTimeInMillis() != 0) {
-//            query.setEndDate(endDate.getTimeInMillis());
-//        }
-//        UsageResult usage = new UsageResult();
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            AccountService as = sl.getAccountService();
-//            String accountName = as.getAccountName(accountId);
-//            AccountUsageService aus = sl.getAccountUsageService();
-//            EdcListResult<EdcUsageInfo> result = aus.findUsageByAccount(accountName, query);
-//            usage.setUsage(result);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(usage);
-//    }
-
-//    /**
-//     * Returns the daily usage for the Account specified by the "id" path parameter.
-//     *
-//     * @param limit Maximum number of entries to be returned.
-//     * @param offset Starting offset for the entries to be returned.
-//     * @param startDate Start date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0
-//     *            means no start date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param endDate End date of the date range requested. The parameter is expressed as a long counting the number of milliseconds since January 1, 1970, 00:00:00 GMT. The default value of 0 means
-//     *            no end date. Alternatively, the date can be expressed as a string following the ISO 8601 format.
-//     * @param accountId The id of the Account for which the usage is requested.
-//     * @return The requested UsageResult object.
-//     */
-//    @GET
-//    @Path("{accountId}/usageByDay")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public UsageResult getAccountUsageByDay(@PathParam("accountId") long accountId,
-//                                            @QueryParam("limit")     @DefaultValue("50") int limit,
-//                                            @QueryParam("offset")    @DefaultValue("0")  int offset,
-//                                            @QueryParam("startDate") @DefaultValue("0")  EdcTimestamp startDate,
-//                                            @QueryParam("endDate")   @DefaultValue("0")  EdcTimestamp endDate) {
-//
-//        EdcUsageQuery query = new EdcUsageQuery();
-//        int maxLimit = EdcConfig.getInstance().getDataExportMaxLimit();
-//        int maxCount = EdcConfig.getInstance().getDataExportMaxCount();
-//        if (limit > maxLimit)
-//            limit = maxLimit;
-//        if (offset > maxCount)
-//            offset = maxCount;
-//        query.setLimit(limit);
-//        query.setIndexOffset(offset);
-//        query.setTimetype(2); // DAY
-//        if (startDate.getTimeInMillis() != 0) {
-//            query.setStartDate(startDate.getTimeInMillis());
-//        }
-//        if (endDate.getTimeInMillis() != 0) {
-//            query.setEndDate(endDate.getTimeInMillis());
-//        }
-//        UsageResult usage = new UsageResult();
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            AccountService as = sl.getAccountService();
-//            String accountName = as.getAccountName(accountId);
-//            AccountUsageService aus = sl.getAccountUsageService();
-//            EdcListResult<EdcUsageInfo> result = aus.findUsageByAccount(accountName, query);
-//            usage.setUsage(result);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(usage);
-//    }
-
-//    /**
-//     * Returns the number of currently connected devices for the specified account.
-//     *
-//     * @param accountId The id of the Account.
-//     * @return The requested DeviceCountResult object.
-//     */
-//    @GET
-//    @Path("{accountId}/devices/count")
-//    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//    public CountResult getDeviceCount(@PathParam("accountId") long accountId) {
-//
-//        CountResult dcr = new CountResult();
-//        try {
-//            ServiceLocator sl = ServiceLocator.getInstance();
-//            DeviceRegistryService ds = sl.getDeviceRegistryService();
-//            long result = ds.getDeviceCount(accountId);
-//            dcr.setCount(result);
-//        } catch (Throwable t) {
-//            handleException(t);
-//        }
-//        return returnNotNullEntity(dcr);
-//    }
-
     /**
      * Creates a new Account based on the information provided in AccountCreator parameter.
      *
@@ -336,13 +189,14 @@ public class Accounts extends AbstractKapuaResource
     public Account updateAccount(
             @ApiParam(value = "Provides the information to update the account", required = true) 
             Account account) {
+	    Account updatedAccount = null;
         try {
             ((AccountImpl)account).setScopeId(KapuaSecurityUtils.getSession().getScopeId());
-            account = accountService.update(account);
+            updatedAccount = accountService.update(account);
         } catch (Throwable t) {
             handleException(t);
         }
-        return returnNotNullEntity(account);
+        return returnNotNullEntity(updatedAccount);
     }
     
 	/**
