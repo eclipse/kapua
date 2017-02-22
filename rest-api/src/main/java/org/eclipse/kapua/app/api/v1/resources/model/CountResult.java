@@ -18,16 +18,19 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="countResult")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class CountResult {
 
-    @XmlElement(name="count")
     private long count;
 
+    protected CountResult() {
+    }
+    
     public CountResult(long count) {
         this.count = count;
     }
 
+    @XmlElement(name="count")
     public long getCount() {
         return count;
     }

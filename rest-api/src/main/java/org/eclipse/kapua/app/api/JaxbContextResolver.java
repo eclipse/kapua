@@ -19,6 +19,7 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 
+import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.ErrorBean;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -91,6 +92,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
@@ -108,6 +110,8 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
         try {
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
                     ErrorBean.class,
+                    CountResult.class,
+                    
                     Account.class,
                     AccountCreator.class,
                     AccountListResult.class,
@@ -115,6 +119,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     User.class,
                     UserCreator.class,
                     UserListResult.class,
+                    UserQuery.class,
                     UserXmlRegistry.class,
                     Device.class,
                     DeviceCreator.class,

@@ -40,6 +40,7 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserImpl;
+import org.eclipse.kapua.service.user.internal.UserQueryImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -126,8 +127,7 @@ public class Users extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public UserListResult query(@PathParam("scopeId") ScopeId scopeId,
-            UserQuery query) {
+    public UserListResult query(@PathParam("scopeId") ScopeId scopeId, UserQuery query) {
         UserListResult userListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -138,12 +138,12 @@ public class Users extends AbstractKapuaResource {
         return returnNotNullEntity(userListResult);
     }
     
+
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId,
-            UserQuery query) {
+    public CountResult count(@PathParam("scopeId") ScopeId scopeId, UserQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
