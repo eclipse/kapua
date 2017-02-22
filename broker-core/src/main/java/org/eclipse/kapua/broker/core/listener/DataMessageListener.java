@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,12 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,18 +26,14 @@ import com.codahale.metrics.Counter;
  * @since 1.0
  */
 @UriEndpoint(title = "data message processor", syntax = "bean:dataMessageListener", scheme = "bean")
-public class DataMessageListener extends AbstractListener
-{
+public class DataMessageListener extends AbstractListener {
 
     private static final Logger logger = LoggerFactory.getLogger(DataMessageListener.class);
-
-    // private static DeviceLifeCycleService deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
 
     // metrics
     private Counter metricDataMessage;
 
-    public DataMessageListener()
-    {
+    public DataMessageListener() {
         super("deviceLifeCycle");
         metricDataMessage = registerCounter("messages", "data", "count");
     }
@@ -48,11 +43,9 @@ public class DataMessageListener extends AbstractListener
      * 
      * @param dataMessage
      */
-    public void processDataMessage(CamelKapuaMessage<KapuaDataMessage> dataMessage)
-    {
+    public void processDataMessage(CamelKapuaMessage<KapuaDataMessage> dataMessage) {
         // TODO to be implemented
-        logger.info("Received data message from device channel: client id '{}' - {}",
-                    new Object[] { dataMessage.getMessage().getClientId(), dataMessage.getMessage().getChannel().toString() });
+        logger.info("Received data message from device channel: client id '{}' - {}", dataMessage.getMessage().getClientId(), dataMessage.getMessage().getChannel());
 
         metricDataMessage.inc();
     }
