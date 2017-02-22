@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.query.predicate;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
 
     @Override
     public void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId;
+        this.scopeId = scopeId != null ? (scopeId instanceof KapuaEid ? (KapuaEid) scopeId : new KapuaEid(scopeId)) : null;
     }
 
     @Override
