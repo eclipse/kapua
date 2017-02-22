@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.converter;
 
@@ -28,7 +28,7 @@ import org.eclipse.kapua.broker.core.message.CamelUtil;
 import org.eclipse.kapua.broker.core.message.JmsUtil;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MESSAGE_TYPE;
+import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.metric.MetricsService;
@@ -74,7 +74,7 @@ public abstract class AbstractKapuaConverter {
      * @throws KapuaException
      *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
-    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MESSAGE_TYPE messageType) throws KapuaException {
+    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MessageType messageType) throws KapuaException {
         // assume that the message is a Camel Jms message
         JmsMessage message = exchange.getIn(JmsMessage.class);
         if (message.getJmsMessage() instanceof BytesMessage) {

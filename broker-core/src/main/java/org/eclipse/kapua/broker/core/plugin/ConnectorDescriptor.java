@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
@@ -33,42 +33,42 @@ public class ConnectorDescriptor implements Serializable {
     /**
      * Allowed message types
      */
-    public enum MESSAGE_TYPE {
+    public static enum MessageType {
         /**
          * Application message type
          */
-        app,
+        APP,
         /**
          * Birth message type
          */
-        birth,
+        BIRTH,
         /**
          * Disconnect message type
          */
-        disconnect,
+        DISCONNECT,
         /**
          * Missing message type
          */
-        missing,
+        MISSING,
         /**
          * Notify message type
          */
-        notify,
+        NOTIFY,
         /**
          * Unmatched filtering message type
          */
-        unmatched,
+        UNMATCHED,
         /**
          * Data message type
          */
-        data
+        DATA
     }
 
     private final String connectorName;
     private final String deviceProtocolName;
 
-    private final Map<MESSAGE_TYPE, Class<DeviceMessage<?, ?>>> deviceClass;
-    private final Map<MESSAGE_TYPE, Class<KapuaMessage<?, ?>>> kapuaClass;
+    private final Map<MessageType, Class<DeviceMessage<?, ?>>> deviceClass;
+    private final Map<MessageType, Class<KapuaMessage<?, ?>>> kapuaClass;
 
     /**
      * Constructs a new connector descriptor
@@ -82,7 +82,7 @@ public class ConnectorDescriptor implements Serializable {
      * @param kapuaClass
      *            Kapua level messages implementation classes
      */
-    public ConnectorDescriptor(String connectorName, String deviceProtocolName, Map<MESSAGE_TYPE, Class<DeviceMessage<?, ?>>> deviceClass, Map<MESSAGE_TYPE, Class<KapuaMessage<?, ?>>> kapuaClass) {
+    public ConnectorDescriptor(String connectorName, String deviceProtocolName, Map<MessageType, Class<DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<KapuaMessage<?, ?>>> kapuaClass) {
         this.connectorName = connectorName;
         this.deviceProtocolName = deviceProtocolName;
         this.deviceClass = deviceClass;
@@ -97,11 +97,11 @@ public class ConnectorDescriptor implements Serializable {
         return deviceProtocolName;
     }
 
-    public Class<DeviceMessage<?, ?>> getDeviceClass(MESSAGE_TYPE messageType) throws KapuaException {
+    public Class<DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) throws KapuaException {
         return deviceClass.get(messageType);
     }
 
-    public Class<KapuaMessage<?, ?>> getKapuaClass(MESSAGE_TYPE messageType) throws KapuaException {
+    public Class<KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) throws KapuaException {
         return kapuaClass.get(messageType);
     }
 
