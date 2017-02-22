@@ -14,6 +14,7 @@ package org.eclipse.kapua.broker.core.converter;
 
 import java.util.Date;
 
+import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
@@ -38,27 +39,25 @@ import com.codahale.metrics.Counter;
 
 /**
  * Kapua message converter reference implementation used to convert from Camel incoming messages ({@link JmsMessage}) to a platform specific message type.
- * 
+ *
  * @since 1.0
  */
-public abstract class AbstractKapuaConverter
-{
+public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
     // metrics
-    protected final static String         METRIC_COMPONENT_NAME = "converter";
-    protected final static MetricsService metricsService        = KapuaLocator.getInstance().getService(MetricsService.class);
+    protected final static String METRIC_COMPONENT_NAME = "converter";
+    protected final static MetricsService metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
 
-    private Counter metricConverterJmsMessage;
-    private Counter metricConverterJmsErrorMessage;
-    private Counter metricConverterErrorMessage;
+    private final Counter metricConverterJmsMessage;
+    private final Counter metricConverterJmsErrorMessage;
+    private final Counter metricConverterErrorMessage;
 
     /**
      * Constructor
      */
-    protected AbstractKapuaConverter()
-    {
+    protected AbstractKapuaConverter() {
         metricConverterJmsMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "count");
         metricConverterJmsErrorMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "error", "count");
         metricConverterErrorMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "error", "count");
@@ -66,25 +65,25 @@ public abstract class AbstractKapuaConverter
 
     /**
      * Convert incoming message to a Kapua message (depending on messageType parameter)
-     * 
+     *
      * @param exchange
      * @param value
-     * @param messageType expected incoming message type
+     * @param messageType
+     *            expected incoming message type
      * @return Message container that contains message of asked type
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
-    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MESSAGE_TYPE messageType) throws KapuaException
-    {
+    protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MESSAGE_TYPE messageType) throws KapuaException {
         // assume that the message is a Camel Jms message
-        org.apache.camel.component.jms.JmsMessage message = (org.apache.camel.component.jms.JmsMessage) exchange.getIn();
-        if ((Message) message.getJmsMessage() instanceof javax.jms.BytesMessage) {
+        JmsMessage message = exchange.getIn(JmsMessage.class);
+        if (message.getJmsMessage() instanceof BytesMessage) {
             try {
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                KapuaId connectionId = (KapuaId) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID);
-                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL);
+                KapuaId connectionId = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, KapuaId.class);
+                ConnectorDescriptor connectorDescriptor = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, ConnectorDescriptor.class);
                 return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId);
-            }
-            catch (JMSException e) {
+            } catch (JMSException e) {
                 metricConverterErrorMessage.inc();
                 logger.error("Exception converting message {}", e.getMessage(), e);
                 throw KapuaException.internalError(e, "Cannot convert the message type " + exchange.getIn().getClass());
@@ -96,20 +95,20 @@ public abstract class AbstractKapuaConverter
 
     /**
      * Convert incoming message to a javax.jms.Message
-     * 
+     *
      * @param exchange
      * @param value
      * @return jms Message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage
      */
     @Converter
-    public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException
-    {
+    public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException {
         metricConverterJmsMessage.inc();
         // assume that the message is a Camel Jms message
-        org.apache.camel.component.jms.JmsMessage message = (org.apache.camel.component.jms.JmsMessage) exchange.getIn();
-        if (message.getJmsMessage() instanceof javax.jms.BytesMessage) {
-            return (Message) message.getJmsMessage();
+        JmsMessage message = exchange.getIn(JmsMessage.class);
+        if (message.getJmsMessage() instanceof BytesMessage) {
+            return message.getJmsMessage();
         }
         metricConverterJmsErrorMessage.inc();
         throw KapuaException.internalError("Cannot convert the message - Wrong instance type: " + exchange.getIn().getClass());
