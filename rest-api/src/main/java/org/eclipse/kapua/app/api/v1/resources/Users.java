@@ -120,34 +120,6 @@ public class Users extends AbstractKapuaResource {
         return returnNotNullEntity(user);
     }
 
-//    /**
-//     * Unlock a User based on the userId provided in the path request.
-//     *
-//     * @param userId
-//     *            The userId that refer to the user to unlock.
-//     *
-//     * @return The user unlocked.
-//     */
-//    // FIXME see https://github.com/eurotech/kapua/issues/193
-//     @POST
-//     @Path("{userId}/unlock")
-//     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-//     public User unlockUser(@PathParam("userId") long userId) {
-//     User user = null;
-//    
-//     try {
-//     long targetAccountId = getTargetAccountId();
-//    
-//     ServiceLocator sl = ServiceLocator.getInstance();
-//     UserService us = sl.getUserService();
-//     user = us.unlockUser(targetAccountId, userId);
-//     user = us.findWithAccessInfo(targetAccountId, userId);
-//     } catch (Throwable t) {
-//     handleException(t);
-//     }
-//     return returnNotNullEntity(user);
-//     }
-
     /**
      * Creates a new User based on the information provided in UserCreator
      * parameter.
@@ -206,6 +178,7 @@ public class Users extends AbstractKapuaResource {
      *
      * @param userId
      *            The id of the User to be deleted.
+     *            @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an User",
             notes = "Deletes the User specified by the \"userId\" path parameter.")
