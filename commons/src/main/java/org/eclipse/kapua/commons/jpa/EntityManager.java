@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
@@ -24,18 +25,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Kapua JPA entity manager wrapper
- *
+ * 
  * @since 1.0
  */
 public class EntityManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
+    private static final Logger             LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
     private javax.persistence.EntityManager javaxPersitenceEntityManager;
 
     /**
      * Constructs a new entity manager wrapping the given {@link javax.persistence.EntityManager}
-     *
+     * 
      * @param javaxPersitenceEntityManager
      */
     public EntityManager(javax.persistence.EntityManager javaxPersitenceEntityManager) {
@@ -44,7 +45,7 @@ public class EntityManager {
 
     /**
      * Opens a Jpa Transaction.
-     *
+     * 
      * @throws KapuaException if {@link org.eclipse.kapua.commons.jpa.EntityManager} is {@code null}
      */
     public void beginTransaction()
@@ -57,7 +58,7 @@ public class EntityManager {
 
     /**
      * Commits the current Jpa Transaction.
-     *
+     * 
      * @throws KapuaException
      */
     public void commit()
@@ -82,7 +83,7 @@ public class EntityManager {
     public void rollback() {
         try {
             if (javaxPersitenceEntityManager != null &&
-                    javaxPersitenceEntityManager.getTransaction().isActive()) {
+                javaxPersitenceEntityManager.getTransaction().isActive()) {
                 javaxPersitenceEntityManager.getTransaction().rollback();
             }
         } catch (Exception e) {
@@ -92,7 +93,7 @@ public class EntityManager {
 
     /**
      * Return the transaction status
-     *
+     * 
      * @return
      */
     public boolean isTransactionActive() {
@@ -111,7 +112,7 @@ public class EntityManager {
 
     /**
      * Persist the entity
-     *
+     * 
      * @param entity
      */
     public <E extends KapuaEntity> void persist(E entity) {
@@ -127,18 +128,19 @@ public class EntityManager {
 
     /**
      * Find the entity by the given id and type
-     *
+     * 
      * @param clazz
      * @param id
      * @return
      */
     public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id) {
-        return javaxPersitenceEntityManager.find(clazz, id);
+        KapuaEid eid = id instanceof KapuaEid ? (KapuaEid) id : new KapuaEid(id); 
+        return javaxPersitenceEntityManager.find(clazz, eid);
     }
 
     /**
      * Merge the entity
-     *
+     * 
      * @param entity
      */
     public <E extends KapuaEntity> void merge(E entity) {
@@ -147,7 +149,7 @@ public class EntityManager {
 
     /**
      * Refresh the entity
-     *
+     * 
      * @param entity
      */
     public <E extends KapuaEntity> void refresh(E entity) {
@@ -156,7 +158,7 @@ public class EntityManager {
 
     /**
      * Remove the entity
-     *
+     * 
      * @param entity
      */
     public <E extends KapuaEntity> void remove(E entity) {
@@ -165,7 +167,7 @@ public class EntityManager {
 
     /**
      * Return the {@link javax.persistence.criteria.CriteriaBuilder}
-     *
+     * 
      * @return
      */
     public CriteriaBuilder getCriteriaBuilder() {
@@ -174,7 +176,7 @@ public class EntityManager {
 
     /**
      * Return the typed query based on the criteria
-     *
+     * 
      * @param criteriaSelectQuery
      * @return
      */
@@ -184,7 +186,7 @@ public class EntityManager {
 
     /**
      * Return the typed query based on the query name
-     *
+     * 
      * @param queryName
      * @param clazz
      * @return
@@ -195,7 +197,7 @@ public class EntityManager {
 
     /**
      * Return native query based on provided sql query
-     *
+     * 
      * @param querySelectUuidShort
      * @return
      */
