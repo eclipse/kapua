@@ -53,9 +53,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Device configuration service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
