@@ -39,7 +39,8 @@ public class Authentication extends AbstractKapuaResource {
      * Authenticates an user with username and password and returns
      * the authentication token to be used in subsequent REST API calls.
      *
-     *@param authenticationCredentials The username and password authentication credential of a user.
+     * @param authenticationCredentials
+     *            The username and password authentication credential of a user.
      * @return The authentication token
      */
     @ApiOperation(value = "Authenticate an user", notes = "Authenticates an user with username and password and returns " +
@@ -62,7 +63,8 @@ public class Authentication extends AbstractKapuaResource {
      * Authenticates an user with a api key and returns
      * the authentication token to be used in subsequent REST API calls.
      *
-     *@param authenticationCredentials The API KEY authentication credential of a user.
+     * @param authenticationCredentials
+     *            The API KEY authentication credential of a user.
      * @return The authentication token
      */
     @POST
@@ -83,7 +85,8 @@ public class Authentication extends AbstractKapuaResource {
      * Authenticates an user with JWT and returns
      * the authentication token to be used in subsequent REST API calls.
      *
-     *@param authenticationCredentials The JWT authentication credential of a user.
+     * @param authenticationCredentials
+     *            The JWT authentication credential of a user.
      * @return The authentication token
      */
     @POST
@@ -99,11 +102,12 @@ public class Authentication extends AbstractKapuaResource {
         }
         return accessToken;
     }
-/**
- *  Invalidates the AccessToken related to this session. 
- *  All subsequent calls will end up with a HTTP 401. 
- *  A new login is required after this call to make other requests. 
- */
+
+    /**
+     * Invalidates the AccessToken related to this session.
+     * All subsequent calls will end up with a HTTP 401.
+     * A new login is required after this call to make other requests.
+     */
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
