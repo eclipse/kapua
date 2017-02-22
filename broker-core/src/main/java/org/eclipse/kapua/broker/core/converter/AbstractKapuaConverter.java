@@ -14,6 +14,7 @@ package org.eclipse.kapua.broker.core.converter;
 
 import java.util.Date;
 
+import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
@@ -75,12 +76,12 @@ public abstract class AbstractKapuaConverter {
      */
     protected CamelKapuaMessage<?> convertTo(Exchange exchange, Object value, MESSAGE_TYPE messageType) throws KapuaException {
         // assume that the message is a Camel Jms message
-        org.apache.camel.component.jms.JmsMessage message = (org.apache.camel.component.jms.JmsMessage) exchange.getIn();
-        if (message.getJmsMessage() instanceof javax.jms.BytesMessage) {
+        JmsMessage message = exchange.getIn(JmsMessage.class);
+        if (message.getJmsMessage() instanceof BytesMessage) {
             try {
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                KapuaId connectionId = (KapuaId) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID);
-                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL);
+                KapuaId connectionId = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, KapuaId.class);
+                ConnectorDescriptor connectorDescriptor = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, ConnectorDescriptor.class);
                 return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId);
             } catch (JMSException e) {
                 metricConverterErrorMessage.inc();
@@ -105,8 +106,8 @@ public abstract class AbstractKapuaConverter {
     public Message convertToJmsMessage(Exchange exchange, Object value) throws KapuaException {
         metricConverterJmsMessage.inc();
         // assume that the message is a Camel Jms message
-        org.apache.camel.component.jms.JmsMessage message = (org.apache.camel.component.jms.JmsMessage) exchange.getIn();
-        if (message.getJmsMessage() instanceof javax.jms.BytesMessage) {
+        JmsMessage message = exchange.getIn(JmsMessage.class);
+        if (message.getJmsMessage() instanceof BytesMessage) {
             return message.getJmsMessage();
         }
         metricConverterJmsErrorMessage.inc();
