@@ -187,13 +187,17 @@ public class Users extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Update an User", notes = "Updates a new User based on the information provided in the User parameter.", response = User.class)
     @PUT
+    @Path("{userId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public User update(@PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId,
             @ApiParam(value = "The modified User whose attributed need to be updated", required = true) User user) {
         User userUpdated = null;
         try {
             ((UserImpl) user).setScopeId(scopeId);
+            user.setId(userId);
+            
             userUpdated = userService.update(user);
         } catch (Throwable t) {
             handleException(t);
