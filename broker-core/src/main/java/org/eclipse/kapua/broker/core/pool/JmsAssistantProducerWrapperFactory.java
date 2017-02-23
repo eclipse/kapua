@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<JmsAssistantProducerWrapper>
 {
 
-    private static Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerWrapperFactory.class);
+    private static final Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerWrapperFactory.class);
 
-    private String destination;
+    private final String destination;
 
     public JmsAssistantProducerWrapperFactory(String destination)
     {
