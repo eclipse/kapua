@@ -1,6 +1,6 @@
 {
   "globalDependencies": {
-    "node": "registry:env/node#6.0.0+20161105011511",
+    "node": "registry:env/node#6.0.0+20170213133316",
     "reflect-metadata": "registry:dt/reflect-metadata#0.0.0+20160630155503"
   },
   "dependencies": {
