@@ -26,8 +26,8 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
  * @since 1.0
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "user")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "status",
                        "displayName",
                        "email",

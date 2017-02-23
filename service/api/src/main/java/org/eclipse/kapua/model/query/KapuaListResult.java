@@ -15,6 +15,8 @@ package org.eclipse.kapua.model.query;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,6 +35,7 @@ import org.eclipse.kapua.model.KapuaEntity;
  * 
  */
 @XmlRootElement(name = "result")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "limitExceeded", "size", "items" })
 public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializable {
 
