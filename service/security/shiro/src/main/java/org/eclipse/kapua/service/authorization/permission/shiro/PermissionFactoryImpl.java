@@ -44,7 +44,7 @@ public class PermissionFactoryImpl implements PermissionFactory {
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
-        return new PermissionImpl(domain.getName(), action, targetScopeId, groupId);
+        return new PermissionImpl(domain != null ? domain.getName() : null, action, targetScopeId, groupId);
     }
 
     @Override
