@@ -59,6 +59,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
@@ -116,11 +117,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccountCreator.class,
                     AccountListResult.class,
                     AccountXmlRegistry.class,
+                    
                     User.class,
                     UserCreator.class,
                     UserListResult.class,
                     UserQuery.class,
                     UserXmlRegistry.class,
+                    
                     Device.class,
                     DeviceCreator.class,
                     DeviceListResult.class,
@@ -165,10 +168,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     CredentialXmlRegistry.class,
                     CredentialCreator.class,
                     CredentialType.class,
+                    
                     Role.class,
                     RoleListResult.class,
                     RoleCreator.class,
+                    RoleQuery.class,
                     RoleXmlRegistry.class,
+                    
                     Permission.class,
                     RolePermission.class,
                     RolePermissionListResult.class,
