@@ -48,4 +48,8 @@ public class RoleXmlRegistry {
     public RoleListResult newRoleListResult() {
         return factory.newRoleListResult();
     }
+    
+    public RoleQuery newQuery() {
+        return factory.newQuery(null);
+    }
 }

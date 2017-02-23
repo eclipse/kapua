@@ -22,9 +22,6 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * 
  * @since 1.0.0
  */
-@XmlRootElement(name = "rolePermissions")
-@XmlType(factoryClass = RoleXmlRegistry.class, 
-        factoryMethod = "newRoleListResult")
 public interface RoleListResult extends KapuaListResult<Role> {
 
 }
