@@ -33,7 +33,6 @@ public class JmsConnectionFactory
 
     // the workers used the same string connection without asynch=true
     static {
-        try {
             s_logger.info("Instantiate amq embedded connection factory...");
             String connectionFactoryUri = null;
 
@@ -81,10 +80,6 @@ public class JmsConnectionFactory
             vmConnFactory.setUseAsyncSend(true);
 
             s_logger.info("Instantiate activemq embedded connection factory... done");
-        }
-        catch (Throwable t) {
-            s_logger.error("Initialization vm connection factory exception {} ", t.getMessage(), t);
-        }
     }
 
 }
