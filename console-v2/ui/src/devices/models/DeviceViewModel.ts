@@ -10,15 +10,12 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-export default class RolesService implements IRolesService {
+interface SectionItem {
+  displayName: string;
+  value: any;  
+}
 
-    constructor(private $http: ng.IHttpService) {
-    }
-    getRoles(): ng.IHttpPromise<ListResult<Role>> {
-        return this.$http.get("/api/roles");
-    }
-
-    getPermissionsByRole(roleID: string): ng.IHttpPromise<ListResult<RolePermission>> {
-        return this.$http.get("/api/roles/" + roleID + "/permission" );
-    }
+interface DeviceViewModel {
+  name: string;
+  data: SectionItem[];
 }

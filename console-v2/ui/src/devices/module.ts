@@ -20,6 +20,9 @@ import DeviceDetailBundlesCtrl from "./controllers/DeviceDetailBundlesCtrl";
 import DeviceDetailConfigurationsCtrl from "./controllers/DeviceDetailConfigurationsCtrl";
 import DeviceDetailCommandsCtrl from "./controllers/DeviceDetailCommandsCtrl";
 
+import DevicesService from "./services/DevicesService";
+import DeviceMapperService from "./services/DeviceMapperService";
+
 import "./assets/styles/devices.scss";
 
 angular.module("app.devices", [])
@@ -91,9 +94,15 @@ angular.module("app.devices", [])
                     }
                 });
         }])
+
+    //services
+    .service("devicesService", ["$http", DevicesService])
+    .service("deviceMapperService", [DeviceMapperService])
+
+    //controllers
     .controller("DevicesListCtrl", ["$http", "$modal", DevicesListCtrl])
     .controller("DeleteDevicesModalCtrl", ["$modalInstance", "$http", "id", DeleteDevicesModalCtrl])
-    .controller("DeviceDetailCtrl", ["$stateParams", "$http", DeviceDetailCtrl])
+    .controller("DeviceDetailCtrl", ["$stateParams", "$http", "devicesService", "deviceMapperService", DeviceDetailCtrl])
     .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$http", DeviceDetailPackagesCtrl])
     .controller("DeviceDetailEventsCtrl", ["$stateParams", "$http", DeviceDetailEventsCtrl])
     .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", DeviceDetailBundlesCtrl])
