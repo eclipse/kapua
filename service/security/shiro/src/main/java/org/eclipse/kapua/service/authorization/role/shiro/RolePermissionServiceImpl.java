@@ -108,7 +108,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         //
         // Build query
         RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicate<KapuaId>(RolePermissionPredicates.ROLE_ID, roleId));
+        query.setPredicate(new AttributePredicate<>(RolePermissionPredicates.ROLE_ID, roleId));
 
         return query(query);
     }
