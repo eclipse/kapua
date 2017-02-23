@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -41,6 +42,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -52,11 +54,10 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  *
  */
 @SuppressWarnings("serial")
-public abstract class AbstractKapuaConfigurableService implements KapuaConfigurableService, Serializable
-{
-    private String domain = null;
-    private String pid    = null;
-    private EntityManagerFactory entityManagerFactory;
+public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService, Serializable {
+
+    private Domain domain = null;
+    private String pid = null;
 
     /**
      * Reads metadata for the service pid
@@ -69,8 +70,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @throws FactoryConfigurationError
      */
     private static KapuaTmetadata readMetadata(String pid)
-        throws IOException, Exception, XMLStreamException, FactoryConfigurationError
-    {
+            throws IOException, Exception, XMLStreamException, FactoryConfigurationError {
         KapuaTmetadata metaData = null;
         StringBuilder sbMetatypeXmlName = new StringBuilder();
         sbMetatypeXmlName.append("META-INF/metatypes/").append(pid).append(".xml");
@@ -93,8 +93,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @throws KapuaException
      */
     private static void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (ocd != null) {
 
             // build a map of all the attribute definitions
@@ -157,15 +156,14 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @param values
      * @return
      */
-    private static Properties toProperties(Map<String, Object> values)
-    {
+    private static Properties toProperties(Map<String, Object> values) {
         Properties props = new Properties();
-        for(Entry<String, Object> entry:values.entrySet())
+        for (Entry<String, Object> entry : values.entrySet())
             props.setProperty(entry.getKey(), StringUtil.valueToString(entry.getValue()));
-        
+
         return props;
     }
-    
+
     /**
      * Convert the {@link Properties} to a properties map
      * 
@@ -174,12 +172,10 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @return
      * @throws KapuaException
      */
-    private static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException
-    {
+    private static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException {
         List<KapuaTad> ads = ocd.getAD();
         Map<String, Object> values = new HashMap<String, Object>();
-        for (KapuaTad ad : ads)
-        {
+        for (KapuaTad ad : ads) {
             String valueStr = props == null ? ad.getDefault() : props.getProperty(ad.getId(), ad.getDefault());
             Object value = StringUtil.stringToValue(ad.getType().value(), valueStr);
             values.put(ad.getId(), value);
@@ -197,8 +193,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @throws KapuaException
      */
     private ServiceConfig create(EntityManager em, ServiceConfig serviceConfig)
-        throws KapuaException
-    {
+            throws KapuaException {
         try {
 
             em.beginTransaction();
@@ -207,17 +202,15 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
             newServiceConfig = ServiceConfigDAO.find(em, newServiceConfig.getId());
             em.commit();
             return newServiceConfig;
-        }
-        catch (Exception pe) {
+        } catch (Exception pe) {
             em.rollback();
             throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
+        } finally {
             em.close();
         }
-        
+
     }
-    
+
     /**
      * Update the service configuration entity
      * 
@@ -227,8 +220,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @throws KapuaException
      */
     private ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
-        throws KapuaException
-    {
+            throws KapuaException {
         try {
 
             ServiceConfig theServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
@@ -242,16 +234,14 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
 
             ServiceConfig updServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
             return updServiceConfig;
-        }
-        catch (Exception pe) {
+        } catch (Exception pe) {
             em.rollback();
             throw KapuaExceptionUtils.convertPersistenceException(pe);
-        }
-        finally {
+        } finally {
             em.close();
         }
     }
-    
+
     /**
      * Constructor
      * 
@@ -259,21 +249,19 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
      * @param domain
      * @param entityFactory
      */
-    protected AbstractKapuaConfigurableService(String pid, String domain , EntityManagerFactory entityFactory)
-    {
+    protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
+        super(entityManagerFactory);
         this.pid = pid;
         this.domain = domain;
-        this.entityManagerFactory = entityFactory;
     }
 
     @Override
     public KapuaTocd getConfigMetadata()
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        
+
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
@@ -287,24 +275,22 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
                 }
             }
             return null;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw KapuaConfigurationException.internalError(e);
         }
     }
 
     @Override
     public Map<String, Object> getConfigValues(KapuaId scopeId)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         AndPredicate predicate = new AndPredicate()
-                                                   .and(new AttributePredicate<String>("pid", this.pid, Operator.EQUAL))
-                                                   .and(new AttributePredicate<KapuaId>("scopeId", scopeId, Operator.EQUAL));
+                .and(new AttributePredicate<String>("pid", this.pid, Operator.EQUAL))
+                .and(new AttributePredicate<KapuaId>("scopeId", scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
@@ -321,8 +307,7 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
 
     @Override
     public void setConfigValues(KapuaId scopeId, Map<String, Object> values)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
@@ -330,12 +315,12 @@ public abstract class AbstractKapuaConfigurableService implements KapuaConfigura
 
         KapuaTocd ocd = this.getConfigMetadata();
         validateConfigurations(this.pid, ocd, values);
-        
+
         Properties props = toProperties(values);
-        
+
         AndPredicate predicate = new AndPredicate()
-                                                   .and(new AttributePredicate<String>("pid", this.pid, Operator.EQUAL))
-                                                   .and(new AttributePredicate<KapuaId>("scopeId", scopeId, Operator.EQUAL));
+                .and(new AttributePredicate<String>("pid", this.pid, Operator.EQUAL))
+                .and(new AttributePredicate<KapuaId>("scopeId", scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);

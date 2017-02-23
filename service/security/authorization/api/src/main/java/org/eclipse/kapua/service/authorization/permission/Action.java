@@ -15,15 +15,14 @@ package org.eclipse.kapua.service.authorization.permission;
 /**
  * Action definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface Action
-{
+public interface Action {
+
     /**
-     * Return the action name
+     * Returns the {@link Action} {@link String} representation.
      * 
-     * @return
+     * @return The {@link Action} {@link String} representation.
      */
     public String name();
 }

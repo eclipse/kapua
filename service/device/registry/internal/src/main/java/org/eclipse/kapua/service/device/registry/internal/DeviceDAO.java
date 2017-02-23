@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -20,7 +21,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.DevicePredicates;
 
 /**
  * Device DAO
@@ -40,8 +41,9 @@ public class DeviceDAO extends ServiceDAO {
     public static Device create(EntityManager em, DeviceCreator deviceCreator) {
         Device device = new DeviceImpl(deviceCreator.getScopeId());
 
+        device.setGroupId(deviceCreator.getGroupId());
         device.setClientId(deviceCreator.getClientId());
-        device.setStatus(DeviceStatus.ENABLED);
+        device.setStatus(deviceCreator.getStatus());
         device.setDisplayName(deviceCreator.getDisplayName());
         device.setLastEventOn(null);
         device.setLastEventType(null);
@@ -78,8 +80,10 @@ public class DeviceDAO extends ServiceDAO {
      * @param em
      * @param device
      * @return
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Device} is not found.
      */
-    public static Device update(EntityManager em, Device device) {
+    public static Device update(EntityManager em, Device device) throws KapuaEntityNotFoundException {
         DeviceImpl deviceImpl = (DeviceImpl) device;
         return ServiceDAO.update(em, DeviceImpl.class, deviceImpl);
     }
@@ -102,9 +106,13 @@ public class DeviceDAO extends ServiceDAO {
      * @param query
      * @return
      * @throws KapuaException
+     * @throws Exception
      */
     public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
+
+        handleKapuaQueryGroupPredicate(query, DeviceDomain.INSTANCE, DevicePredicates.GROUP_ID);
+
         return ServiceDAO.query(em, Device.class, DeviceImpl.class, new DeviceListResultImpl(), query);
     }
 
@@ -118,6 +126,8 @@ public class DeviceDAO extends ServiceDAO {
      */
     public static long count(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
+        handleKapuaQueryGroupPredicate(query, DeviceDomain.INSTANCE, DevicePredicates.GROUP_ID);
+
         return ServiceDAO.count(em, Device.class, DeviceImpl.class, query);
     }
 
@@ -126,8 +136,10 @@ public class DeviceDAO extends ServiceDAO {
      * 
      * @param em
      * @param deviceId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Device} is not found.
      */
-    public static void delete(EntityManager em, KapuaId deviceId) {
+    public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceImpl.class, deviceId);
     }
 }

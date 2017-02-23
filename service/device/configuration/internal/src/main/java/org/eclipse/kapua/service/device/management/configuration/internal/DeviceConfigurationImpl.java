@@ -19,22 +19,19 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
 
 /**
  * Device configuration entity implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceConfigurationImpl implements DeviceConfiguration
-{
+public class DeviceConfigurationImpl implements DeviceConfiguration {
+
     private List<DeviceComponentConfigurationImpl> configurations;
 
-    public DeviceConfigurationImpl()
-    {
+    public DeviceConfigurationImpl() {
         configurations = new ArrayList<>();
     }
 
     @Override
-    public List<DeviceComponentConfigurationImpl> getComponentConfigurations()
-    {
+    public List<DeviceComponentConfigurationImpl> getComponentConfigurations() {
         return configurations;
     }
 

@@ -22,7 +22,7 @@ Vagrant.configure(2) do |config|
 	 export ELASTICSEARCH_VERSION="2.3.4"
 	 export H2DB_VERSION="1.4.192"
 	 export ACTIVE_MQ_VERSION="5.14.0"
-	 export TOMCAT_VERSION="8.0.37"
+	 export TOMCAT_VERSION="8.0.38"
 
      # update
      sudo apt-get update -y
@@ -51,9 +51,7 @@ Vagrant.configure(2) do |config|
 	 sudo rm -rf lib/geronimo-jta_1.0.1B_spec*
 	 sudo rm -rf lib/optional/activeio-core-*
 	 sudo rm -rf lib/optional/activemq-amqp-*
-	 sudo rm -rf lib/optional/activemq-http*
 	 sudo rm -rf lib/optional/activemq-jdbc-store*
-	 sudo rm -rf lib/optional/activemq-jms-pool*
 	 sudo rm -rf lib/optional/activemq-leveldb-store*
 	 sudo rm -rf lib/optional/activemq-log4j-appender*
 	 sudo rm -rf lib/optional/activemq-shiro*
@@ -88,7 +86,17 @@ Vagrant.configure(2) do |config|
 	 sudo rm -rf lib/optional/xpp3-*
 	 sudo rm -rf lib/optional/xstream-*
 	 sudo rm -rf lib/optional/zookeeper-*
-	 sudo rm -rf lib/web/
+
+     sudo rm -rf lib/web/apache*
+     sudo rm -rf lib/web/taglibs*
+     sudo rm -rf lib/web/spring*
+     sudo rm -rf lib/web/org.eclipse*
+     sudo rm -rf lib/web/json-simple*
+     sudo rm -rf lib/web/jolokia*
+     sudo rm -rf lib/web/rome*
+     sudo rm -rf lib/web/jdom*
+     sudo rm -rf lib/web/geronimo*
+     sudo rm -rf lib/web/asm*
 
 	 sudo rm -rf bin/wrapper.jar
 	 sudo rm -rf bin/macosx/
@@ -115,7 +123,7 @@ Vagrant.configure(2) do |config|
      ### install tomcat8 ###
      sudo mkdir -p /usr/local/tomcat
      cd /usr/local/tomcat
-     sudo curl -O http://mirror.nohup.it/apache/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
+     sudo curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
      sudo tar zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz
      sudo rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
 

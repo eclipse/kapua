@@ -101,6 +101,17 @@ public class EntityManager
     }
 
     /**
+     * Return the transaction status
+     * 
+     * @return
+     */
+    public boolean isTransactionActive()
+    {
+        return (javaxPersitenceEntityManager != null &&
+                javaxPersitenceEntityManager.getTransaction().isActive());
+    }
+
+    /**
      * Closes the EntityManager
      * 
      */

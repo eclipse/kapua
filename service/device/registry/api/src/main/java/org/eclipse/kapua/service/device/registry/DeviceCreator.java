@@ -35,7 +35,10 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "deviceCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "clientId",
+@XmlType(propOrder = {
+        "groupId",
+        "clientId",
+        "status",
         "connectionId",
         "displayName",
         "serialNumber",
@@ -57,8 +60,26 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "customAttribute4",
         "customAttribute5",
         "credentialsMode",
-        "preferredUserId" }, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
+        "preferredUserId" //
+}, //
+        factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
 public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
+
+    /**
+     * Get the group identifier
+     * 
+     * @return
+     */
+    @XmlElement(name = "groupId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getGroupId();
+
+    /**
+     * Set the group identifier
+     * 
+     * @param groupId
+     */
+    public void setGroupId(KapuaId groupId);
 
     /**
      * Get the client identifier
@@ -74,6 +95,21 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      * @param clientId
      */
     public void setClientId(String clientId);
+
+    /**
+     * Get the device status
+     * 
+     * @return
+     */
+    @XmlElement
+    public DeviceStatus getStatus();
+
+    /**
+     * Sets the device status
+     * 
+     * @param status
+     */
+    public void setStatus(DeviceStatus status);
 
     /**
      * Get the connection identifier

@@ -44,13 +44,19 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     private static final long serialVersionUID = 7688047426522474413L;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "group_id", nullable = true, updatable = true))
+    })
+    private KapuaEid groupId;
+
     @Basic
-    @Column(name = "client_id", updatable = false)
+    @Column(name = "client_id", nullable = false, updatable = false)
     private String clientId;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "connection_id", nullable = true, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "connection_id", nullable = true, updatable = true))
     })
     private KapuaEid connectionId;
 
@@ -168,6 +174,16 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     }
 
     @Override
+    public KapuaId getGroupId() {
+        return groupId;
+    }
+
+    @Override
+    public void setGroupId(KapuaId groupId) {
+        this.groupId = groupId != null ? new KapuaEid(groupId) : null;
+    }
+
+    @Override
     public String getClientId() {
         return clientId;
     }
@@ -184,9 +200,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     @Override
     public void setConnectionId(KapuaId connectionId) {
-        if (connectionId != null) {
-            this.connectionId = new KapuaEid(connectionId.getId());
-        }
+        this.connectionId = connectionId != null ? new KapuaEid(connectionId) : null;
     }
 
     @Override
@@ -416,9 +430,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     @Override
     public void setCredentialsMode(DeviceCredentialsMode deviceCredentialsMode) {
-        if (deviceCredentialsMode != null) {
-            this.deviceCredentialsMode = deviceCredentialsMode.name();
-        }
+        this.deviceCredentialsMode = deviceCredentialsMode != null ? deviceCredentialsMode.name() : null;
     }
 
     @Override
@@ -428,7 +440,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     @Override
     public void setPreferredUserId(KapuaId preferredUserId) {
-        this.preferredUserId = (KapuaEid) preferredUserId;
+        this.preferredUserId = preferredUserId != null ? new KapuaEid(preferredUserId) : null;
     }
 
 }

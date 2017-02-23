@@ -12,8 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Credential definition.<br>
@@ -22,8 +30,15 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface Credential extends KapuaUpdatableEntity {
-
+@XmlRootElement(name = "credential")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "userId", 
+                       "credentialType",
+                       "credentialKey"},
+        factoryClass = CredentialXmlRegistry.class, 
+        factoryMethod = "newCredential")
+public interface Credential extends KapuaUpdatableEntity
+{
     public static final String TYPE = "credential";
 
     public default String getType() {
@@ -35,20 +50,34 @@ public interface Credential extends KapuaUpdatableEntity {
      * 
      * @return
      */
+    @XmlElement(name = "userId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getUserId();
+
+    /**
+     * Sets the user identifier
+     */
+    public void setUserId(KapuaId userId);
 
     /**
      * Return the credential type
      * 
      * @return
      */
+    @XmlElement(name = "credentialType")
     public CredentialType getCredentialType();
+
+    /**
+     * Sets the user credential type
+     */
+    public void setCredentialType(CredentialType credentialType);
 
     /**
      * Return the credential key
      * 
      * @return
      */
+    @XmlElement(name = "credentialKey")
     public String getCredentialKey();
 
     /**

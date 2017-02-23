@@ -131,6 +131,8 @@ Password: kapua-password
 #### Kapua Broker:
 ```
 MQTT url: mqtt://192.168.33.10:1883
+Username: kapua-broker
+Password: kapua-password
 ```
 
 ## Creating the Kapua demo-box

@@ -6,7 +6,7 @@
     Eurotech - initial API and implementation -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <!-- POM file generated with GWT webAppCreator -->
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -55,10 +55,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-idgenerator-sequence</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
         </dependency>
         <dependency>
@@ -99,6 +95,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-kura-mqtt</artifactId>
         </dependency>
         <dependency>
@@ -108,6 +108,10 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-mqtt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-broker-core</artifactId>
         </dependency>
 
         <!-- External dependencies -->
@@ -219,7 +223,8 @@
 
     <build>
         <finalName>console</finalName>
-        <!-- 
+
+        <!--
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>  -->
 
         <plugins>
@@ -245,13 +250,17 @@
 
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
-                    
+
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-                    
+
                     <optimizationLevel>9</optimizationLevel>
                     <runTarget>console.jsp</runTarget>
                     <webappDirectory>${project.build.directory}</webappDirectory>
@@ -280,13 +289,7 @@
                             </artifactItems>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
                     <execution>
                         <id>Create openlayers resources</id>
                         <phase>prepare-package</phase>
@@ -323,10 +326,10 @@
                             <target>
                                 <echo>Openlayers: copy resources to webapp output folder</echo>
                                 <copy
-                                    todir="${project.build.directory}/${project.build.finalName}">
+                                        todir="${project.build.directory}/${project.build.finalName}">
                                     <fileset
-                                        dir="${project.build.directory}/tmp/openlayers-${openlayers.version}/META-INF/resources/webjars/">
-                                        <exclude name="**/OpenLayers.*.js" />
+                                            dir="${project.build.directory}/tmp/openlayers-${openlayers.version}/META-INF/resources/webjars/">
+                                        <exclude name="**/OpenLayers.*.js"/>
                                     </fileset>
                                 </copy>
                             </target>
@@ -342,14 +345,15 @@
                             <target>
                                 <echo>Openlayers: customize openlayers 'ImgPath' variable</echo>
                                 <replaceregexp byline="true"
-                                    file="${project.build.directory}/${project.build.finalName}/openlayers/${openlayers.version}/OpenLayers.js"
-                                    match="ImgPath:&quot;&quot;"
-                                    replace="ImgPath:&quot;openlayers/${openlayers.version}/img/&quot;" />
+                                               file="${project.build.directory}/${project.build.finalName}/openlayers/${openlayers.version}/OpenLayers.js"
+                                               match="ImgPath:&quot;&quot;"
+                                               replace="ImgPath:&quot;openlayers/${openlayers.version}/img/&quot;"/>
                             </target>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
 
         <pluginManagement>
@@ -374,7 +378,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -387,7 +391,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -401,14 +405,59 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+
+                <!-- To help IntelliJ IDEA correctly recognize the source path when using Maven Auto Import -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <webResources>
+                            <resource>
+                                <directory>
+                                    ${project.build.directory}/${project.build.finalName}
+                                </directory>
+                            </resource>
+                        </webResources>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <!-- profile to speed up local development builds  -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>gwt-maven-plugin</artifactId>
+                        <configuration>
+                            <!-- we can always enable draft compile -->
+                            <draftCompile>true</draftCompile>
+                            <!-- use "dev" profile, limiting permutations -->
+                            <module>org.eclipse.kapua.app.console.ConsoleDev</module>
+                            <!-- don't optimize -->
+                            <optimizationLevel>0</optimizationLevel>
+                            <!-- enable details -->
+                            <style>DETAILED</style>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

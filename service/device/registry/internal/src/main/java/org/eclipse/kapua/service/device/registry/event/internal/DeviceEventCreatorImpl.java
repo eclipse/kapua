@@ -26,141 +26,123 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 
 /**
  * Device event creator service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEvent> implements DeviceEventCreator
-{
+public class DeviceEventCreatorImpl extends AbstractKapuaEntityCreator<DeviceEvent> implements DeviceEventCreator {
+
     private static final long serialVersionUID = -3982569213440658172L;
 
     @XmlElement(name = "deviceId")
-    private KapuaId           deviceId;
+    private KapuaId deviceId;
 
     @XmlElement(name = "receivedOn")
-    private Date              receivedOn;
+    private Date receivedOn;
 
     @XmlElement(name = "sentOn")
-    private Date              sentOn;
+    private Date sentOn;
 
     @XmlElement(name = "position")
-    private KapuaPosition     position;
+    private KapuaPosition position;
 
     @XmlElement(name = "resource")
-    private String            resource;
+    private String resource;
 
     @XmlElement(name = "action")
-    private KapuaMethod       action;
+    private KapuaMethod action;
 
     @XmlElement(name = "responseCode")
     private KapuaResponseCode responseCode;
 
     @XmlElement(name = "eventMessage")
-    private String            eventMessage;
+    private String eventMessage;
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
-    protected DeviceEventCreatorImpl(KapuaId scopeId)
-    {
+    protected DeviceEventCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public KapuaId getDeviceId()
-    {
+    public KapuaId getDeviceId() {
         return deviceId;
     }
 
     @Override
-    public void setDeviceId(KapuaId deviceId)
-    {
+    public void setDeviceId(KapuaId deviceId) {
         this.deviceId = deviceId;
     }
 
     @Override
-    public Date getSentOn()
-    {
-        return sentOn;
+    public Date getSentOn() {
+        return new Date(sentOn.getTime());
     }
 
     @Override
-    public void setSentOn(Date sentOn)
-    {
+    public void setSentOn(Date sentOn) {
         this.sentOn = sentOn;
     }
 
     @Override
-    public Date getReceivedOn()
-    {
-        return receivedOn;
+    public Date getReceivedOn() {
+        return new Date(receivedOn.getTime());
     }
 
     @Override
-    public void setReceivedOn(Date receivedOn)
-    {
+    public void setReceivedOn(Date receivedOn) {
         this.receivedOn = receivedOn;
     }
 
     @Override
-    public KapuaPosition getPosition()
-    {
+    public KapuaPosition getPosition() {
         return position;
     }
 
     @Override
-    public void setPosition(KapuaPosition position)
-    {
+    public void setPosition(KapuaPosition position) {
         this.position = position;
     }
 
     @Override
-    public String getResource()
-    {
+    public String getResource() {
         return resource;
     }
 
     @Override
-    public void setResource(String resource)
-    {
+    public void setResource(String resource) {
         this.resource = resource;
     }
 
     @Override
-    public KapuaMethod getAction()
-    {
+    public KapuaMethod getAction() {
         return action;
     }
 
     @Override
-    public void setAction(KapuaMethod action)
-    {
+    public void setAction(KapuaMethod action) {
         this.action = action;
     }
 
     @Override
-    public KapuaResponseCode getResponseCode()
-    {
+    public KapuaResponseCode getResponseCode() {
         return responseCode;
     }
 
     @Override
-    public void setResponseCode(KapuaResponseCode responseCode)
-    {
+    public void setResponseCode(KapuaResponseCode responseCode) {
         this.responseCode = responseCode;
     }
 
     @Override
-    public String getEventMessage()
-    {
+    public String getEventMessage() {
         return eventMessage;
     }
 
     @Override
-    public void setEventMessage(String eventMessage)
-    {
+    public void setEventMessage(String eventMessage) {
         this.eventMessage = eventMessage;
     }
 

@@ -7,33 +7,31 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration.metatype;
 
 /**
- * Password
- * 
+ * Contains password used by devices connecting to Kapua.
+ *
  * @since 1.0
  */
 public class Password {
 
-    private String password;
+    private final String password;
 
     /**
      * Constructor
-     * 
+     *
      * @param password
      */
     public Password(String password) {
-        super();
         this.password = password;
     }
 
     /**
      * Get password
-     * 
+     *
      * @return
      */
     public String getPassword() {
@@ -44,4 +42,5 @@ public class Password {
     public String toString() {
         return password;
     }
+
 }

@@ -43,7 +43,7 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
                 .append("?");
 
         // Optional connection parameters
-        String useTimezone = config.getString(SystemSettingKey.DB_USE_TIMEZIONE);
+        String useTimezone = config.getString(SystemSettingKey.DB_USE_TIMEZONE);
         if (useTimezone != null) {
             dbConnectionString.append("useTimezone=")
                     .append(useTimezone)

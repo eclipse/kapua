@@ -12,53 +12,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlElement;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.user.role.shiro.UserRolesImpl;
 
-@Entity(name = "Role")
-@Table(name = "athz_role")
 /**
- * Role implementation.
+ * {@link Role} implementation.
  * 
  * @since 1.0
- *
  */
-public class RoleImpl extends AbstractKapuaEntity implements Role
-{
-    private static final long       serialVersionUID = -3760818776351242930L;
+@Entity(name = "Role")
+@Table(name = "athz_role")
+public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<UserRolesImpl>      roles;
+    private static final long serialVersionUID = -3760818776351242930L;
 
-    @XmlElement(name = "name")
     @Basic
     @Column(name = "name")
-    private String                  name;
+    private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Set<RolePermissionImpl> permissions;
-
-    protected RoleImpl()
-    {
+    protected RoleImpl() {
         super();
     }
 
@@ -67,15 +46,12 @@ public class RoleImpl extends AbstractKapuaEntity implements Role
      * Creates a soft clone.
      * 
      * @param role
+     * @throws KapuaException
      */
-    public RoleImpl(Role role)
-    {
-        super(role.getScopeId());
-        id = (KapuaEid) role.getId();
-        createdOn = role.getCreatedOn();
-        createdBy = (KapuaEid) role.getCreatedBy();
+    public RoleImpl(Role role) throws KapuaException {
+        super((AbstractKapuaUpdatableEntity) role);
+
         setName(role.getName());
-        setPermissions(role.getPermissions());
     }
 
     /**
@@ -83,49 +59,43 @@ public class RoleImpl extends AbstractKapuaEntity implements Role
      * 
      * @param scopeId
      */
-    public RoleImpl(KapuaId scopeId)
-    {
+    public RoleImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setPermissions(Set<RolePermission> permissions)
-    {
-        this.permissions = new HashSet<>();
-
-        for (RolePermission p : permissions) {
-
-            RolePermissionImpl rp = new RolePermissionImpl(p.getScopeId(),
-                                                           p.getPermission().getDomain(),
-                                                           p.getPermission().getAction(),
-                                                           p.getPermission().getTargetScopeId());
-
-            this.permissions.add(rp);
-        }
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
     }
 
     @Override
-    public Set<RolePermission> getPermissions()
-    {
-        Set<RolePermission> permissionsTmp = new HashSet<>();
-
-        for (RolePermissionImpl p : permissions) {
-            permissionsTmp.add(p);
-        }
-
-        return permissionsTmp;
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RoleImpl other = (RoleImpl) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
     }
 
 }

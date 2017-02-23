@@ -144,12 +144,7 @@ public class KuraPayload implements DevicePayload
                 protoMsg.addMetric(metricB);
             }
             catch (MessageException eihte) {
-                try {
-                    s_logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
-                }
-                catch (NullPointerException npe) {
-                    s_logger.error("During serialization, ignoring metric named: {}. The value is null.", name);
-                }
+                s_logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
                 throw new RuntimeException(eihte);
             }
         }

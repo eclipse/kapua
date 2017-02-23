@@ -37,6 +37,7 @@ public class KapuaEid implements KapuaId, Serializable {
      * Constructor
      */
     public KapuaEid() {
+        super();
     }
 
     /**
@@ -46,7 +47,17 @@ public class KapuaEid implements KapuaId, Serializable {
      */
     public KapuaEid(BigInteger id) {
         this();
-        this.eid = id;
+        setId(id);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param id
+     */
+    public KapuaEid(KapuaId id) {
+        this();
+        setId(id.getId());
     }
 
     /**
@@ -55,7 +66,7 @@ public class KapuaEid implements KapuaId, Serializable {
      * @param shortId
      * @return
      */
-    public static KapuaEid parseShortId(String shortId) {
+    public static KapuaEid parseCompactId(String shortId) {
         byte[] bytes = Base64.getUrlDecoder().decode(shortId);
         return new KapuaEid(new BigInteger(bytes));
     }

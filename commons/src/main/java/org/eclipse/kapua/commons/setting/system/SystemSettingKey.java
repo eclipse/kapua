@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting.system;
 
+import javax.persistence.EntityExistsException;
+
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
@@ -104,10 +106,16 @@ public enum SystemSettingKey implements SettingKey
      * Database schema name
      */
     DB_SCHEMA("commons.db.schema"),
+
+    /**
+     * Database schema name
+     */
+    DB_SCHEMA_ENV("COMMONS_DB_SCHEMA"),
+
     /**
      * Database timezone to use
      */
-    DB_USE_TIMEZIONE("commons.db.useTimezone"),
+    DB_USE_TIMEZONE("commons.db.useTimezone"),
     /**
      * Database use legacy date time flag
      */
@@ -154,7 +162,17 @@ public enum SystemSettingKey implements SettingKey
     /**
      * Tell if is running into ogsi container
      */
-    OSGI_CONTEXT("commons.osgi.context");
+    OSGI_CONTEXT("commons.osgi.context"),
+
+    /**
+     * Set the Kapua key size
+     */
+    KAPUA_KEY_SIZE("commons.entity.key.size"),
+
+    /**
+     * Maximum allowed retry (due to a {@link EntityExistsException}, so already exists key) on insert operation
+     */
+    KAPUA_INSERT_MAX_RETRY("commons.entity.insert.max.retry");
 
     private String key;
 

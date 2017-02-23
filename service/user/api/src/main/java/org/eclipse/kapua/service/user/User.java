@@ -31,7 +31,9 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
 @XmlType(propOrder = { "status",
                        "displayName",
                        "email",
-                       "phoneNumber"
+                       "phoneNumber",
+                       "userType",
+                       "externalId"
                      },
          factoryClass = UserXmlRegistry.class, 
          factoryMethod = "newUser")
@@ -103,4 +105,34 @@ public interface User extends KapuaNamedEntity
      * @param phoneNumber
      */
     public void setPhoneNumber(String phoneNumber);
+    
+    /**
+     * Get the user type
+     * 
+     * @return
+     */
+    @XmlElement(name = "userType")
+    public UserType getUserType();
+
+    /**
+     * Set the user type
+     * 
+     * @param phoneNumber
+     */
+    public void setUserType(UserType userType);
+    
+    /**
+     * Get the external ID
+     * 
+     * @return
+     */
+    @XmlElement(name = "externalId")
+    public String getExternalId();
+
+    /**
+     * Set the external ID
+     * 
+     * @param externalId
+     */
+    public void setExternalId(String externalId);
 }

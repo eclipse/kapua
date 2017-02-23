@@ -36,6 +36,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
@@ -61,6 +62,7 @@ import org.slf4j.MDC;
  * since 1.0
  * 
  */
+@KapuaProvider
 public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static Logger logger = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
@@ -156,7 +158,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
             //
             // Set some logging
-            MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().getShortId());
+            MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());
             logger.info("Login for thread '{}' - '{}' - '{}'", new Object[] { Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject.toString() });
 
         } catch (ShiroException se) {
@@ -219,7 +221,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             //
             // Set some logging
             Subject shiroSubject = SecurityUtils.getSubject();
-            MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().getShortId());
+            MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());
             logger.info("Login for thread '{}' - '{}' - '{}'", new Object[] { Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject.toString() });
         } catch (ShiroException se) {
 
@@ -258,10 +260,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 if (accessToken != null) {
                     KapuaLocator locator = KapuaLocator.getInstance();
                     AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
-                    accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId());
+                    KapuaSecurityUtils.doPriviledge(() -> {
+                        accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId());
+                        return null;
+                    });
                 }
             }
             currentUser.logout();
+        } catch (Exception e) {
+            throw KapuaAuthenticationException.internalError(e);
         } finally {
             KapuaSecurityUtils.clearSession();
         }
@@ -384,8 +391,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         // .setIssuedAt(issuedAtDate)
         // .setExpiration(new Date(expiresOnDate))
         // .setSubject(userId.getShortId()).claims.setClaim("sId", scopeId.getShortId());
-        claims.setSubject(userId.getShortId());
-        claims.setClaim("sId", scopeId.getShortId());
+        claims.setSubject(userId.toCompactId());
+        claims.setClaim("sId", scopeId.toCompactId());
 
         String jwt = null;
         try {

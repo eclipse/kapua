@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -71,8 +72,10 @@ public class AccessTokenDAO extends ServiceDAO {
      * 
      * @param em
      * @param accessTokenId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link AccessToken} is not found.
      */
-    public static void delete(EntityManager em, KapuaId accessTokenId) {
+    public static void delete(EntityManager em, KapuaId accessTokenId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, AccessTokenImpl.class, accessTokenId);
     }
 

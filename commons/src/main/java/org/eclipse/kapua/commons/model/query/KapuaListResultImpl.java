@@ -23,64 +23,67 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 /**
  * Query list result reference implementation.
  * 
- * @param <E> query entity domain
+ * @param <E>
+ *            query entity domain
  * 
  * @since 1.0
  * 
  */
-public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResult<E>
-{
-	private boolean limitExceeded;
-	private ArrayList<E> items;
-    
+public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResult<E> {
+
+    private boolean limitExceeded;
+    private ArrayList<E> items;
+
     /**
      * Constructor
      */
-    public KapuaListResultImpl()
-    {
+    public KapuaListResultImpl() {
         this.limitExceeded = false;
         items = new ArrayList<E>();
     }
 
     @Override
-    public boolean isLimitExceeded()
-    {
+    public boolean isLimitExceeded() {
         return limitExceeded;
     }
 
     @Override
-    public void setLimitExceeded(boolean limitExceeded)
-    {
+    public void setLimitExceeded(boolean limitExceeded) {
         this.limitExceeded = limitExceeded;
     }
 
-	@Override
-	public E getItem(int index) {
-		return this.items.get(index);
-	}
+    @Override
+    public E getItem(int index) {
+        return this.items.get(index);
+    }
 
-	@Override
-	public int getSize() {
-		return this.items.size();
-	}
+    @Override
+    public E getFirstItem() {
+        return this.isEmpty() ? null : getItem(0);
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return this.items.isEmpty();
-	}
-    
-	@Override
-	public List<E> getItems() {
-		return Collections.unmodifiableList(items);
-	}
+    @Override
+    public int getSize() {
+        return this.items.size();
+    }
 
-	@Override
-	public void addItems(Collection<? extends E> items) {
-		this.items.addAll(items);
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.items.isEmpty();
+    }
 
-	@Override
-	public void clearItems() {
-		this.items.clear();
-	}
+    @Override
+    public List<E> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+
+    @Override
+    public void addItems(Collection<? extends E> items) {
+        this.items.addAll(items);
+    }
+
+    @Override
+    public void clearItems() {
+        this.items.clear();
+    }
 }

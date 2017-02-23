@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -67,8 +68,11 @@ public class ServiceConfigDAO extends ServiceDAO {
      * 
      * @param em
      * @param userId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link ServiceConfig} is not found.
      */
-    public static void delete(EntityManager em, KapuaId userId) {
+    public static void delete(EntityManager em, KapuaId userId)
+            throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, ServiceConfigImpl.class, userId);
     }
 

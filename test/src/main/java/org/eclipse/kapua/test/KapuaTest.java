@@ -116,11 +116,7 @@ public class KapuaTest extends Assert {
 
     public static void scriptSession(AbstractEntityManagerFactory entityManagerFactory, String fileFilter) throws KapuaException {
         EntityManagerSession entityManagerSession = new EntityManagerSession(entityManagerFactory);
-        entityManagerSession.onEntityManagerAction(entityManager -> {
-            entityManager.beginTransaction();
-            new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager);
-            entityManager.commit();
-        });
+        entityManagerSession.onTransactedAction(entityManager -> new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager));
     }
 
 

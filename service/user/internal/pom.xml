@@ -16,6 +16,20 @@
     <artifactId>kapua-user-internal</artifactId>
     <name>${project.artifactId}</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <locator.class.impl>org.eclipse.kapua.test.MockedLocator</locator.class.impl>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <!-- Implemented service interfaces -->
         <dependency>
@@ -38,10 +52,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>kapua-idgenerator-sequence</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-liquibase</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -52,6 +66,29 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-core</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -75,8 +112,7 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>src/main/sql/H2/usr_user_drop.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/usr_user_create.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/usr_user_seed.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase.sql</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>

@@ -16,7 +16,7 @@ import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MESSAGE_TYPE;
+import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToApps(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterAppMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.app);
+        return convertTo(exchange, value, MessageType.APP);
     }
 
     /**
@@ -75,7 +75,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToBirth(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterBirthMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.birth);
+        return convertTo(exchange, value, MessageType.BIRTH);
     }
 
     /**
@@ -90,7 +90,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToDisconnect(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterDcMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.disconnect);
+        return convertTo(exchange, value, MessageType.DISCONNECT);
     }
 
     /**
@@ -105,7 +105,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToMissing(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterMissingMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.missing);
+        return convertTo(exchange, value, MessageType.MISSING);
     }
 
     /**
@@ -120,7 +120,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToNotify(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterNotifyMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.notify);
+        return convertTo(exchange, value, MessageType.NOTIFY);
     }
 
     /**
@@ -135,7 +135,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToUnmatched(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterNotifyMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.unmatched);
+        return convertTo(exchange, value, MessageType.UNMATCHED);
     }
 
 }

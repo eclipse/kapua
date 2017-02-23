@@ -12,55 +12,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
-import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authentication.credential.*;
+import org.eclipse.kapua.service.authorization.access.*;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionCreator;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionFactory;
-import org.eclipse.kapua.service.authorization.user.permission.UserPermissionService;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserCreator;
-import org.eclipse.kapua.service.user.UserFactory;
-import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserQuery;
-import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.*;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
+import java.util.*;
+
+import com.extjs.gxt.ui.client.data.*;
 
 /**
  * The server side implementation of the RPC service.
  */
-public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements GwtUserService
-{
+public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements GwtUserService {
+
     private static final long serialVersionUID = 7430961652373364113L;
 
+    @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
         GwtUser gwtUser = null;
@@ -68,9 +50,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaLocator locator = KapuaLocator.getInstance();
             UserFactory userFactory = locator.getFactory(UserFactory.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtUserCreator.getScopeId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
             UserCreator userCreator = userFactory.newCreator(scopeId,
-                                                             gwtUserCreator.getUsername());
+                    gwtUserCreator.getUsername());
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
@@ -88,32 +70,32 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 permissions.addAll(Arrays.asList(gwtUserCreator.getPermissions().split(",")));
             }
 
-            UserPermissionService userPermissionService = locator.getService(UserPermissionService.class);
-            UserPermissionFactory userPermissionFactory = locator.getFactory(UserPermissionFactory.class);
+            AccessInfoService userPermissionService = locator.getService(AccessInfoService.class);
+            AccessInfoFactory userPermissionFactory = locator.getFactory(AccessInfoFactory.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
             for (String p : permissions) {
-                UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(user.getScopeId());
-                userPermissionCreator.setUserId(scopeId);
-
-                String[] tokens = p.split(":");
-                String domain = null;
-                Actions action = null;
-                KapuaId targetScopeId = null;
-                if (tokens.length > 0) {
-                    domain = tokens[0];
-                }
-                if (tokens.length > 1) {
-                    action = Actions.valueOf(tokens[1]);
-                }
-                if (tokens.length > 2) {
-                    targetScopeId = KapuaEid.parseShortId(tokens[2]);
-                }
-
-                Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
-                userPermissionCreator.setPermission(permission);
-
-                userPermissionService.create(userPermissionCreator);
+                // UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(user.getScopeId());
+                // userPermissionCreator.setAccessId(scopeId);
+                //
+                // String[] tokens = p.split(":");
+                // String domain = null;
+                // Actions action = null;
+                // KapuaId targetScopeId = null;
+                // if (tokens.length > 0) {
+                // domain = tokens[0];
+                // }
+                // if (tokens.length > 1) {
+                // action = Actions.valueOf(tokens[1]);
+                // }
+                // if (tokens.length > 2) {
+                // targetScopeId = KapuaEid.parseCompactId(tokens[2]);
+                // }
+                //
+                // Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
+                // userPermissionCreator.setPermission(permission);
+                //
+                // userPermissionService.create(userPermissionCreator);
             }
 
             //
@@ -122,25 +104,24 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
             CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
-                                                                               user.getId(),
-                                                                               CredentialType.PASSWORD,
-                                                                               gwtUserCreator.getPassword());
+                    user.getId(),
+                    CredentialType.PASSWORD,
+                    gwtUserCreator.getPassword());
             credentialService.create(credentialCreator);
 
             // convert to GwtAccount and return
             // reload the user as we want to load all its permissions
-            gwtUser = KapuaGwtConverter.convert(userService.find(user.getScopeId(), user.getId()));
-        }
-        catch (Throwable t) {
+            gwtUser = KapuaGwtModelConverter.convert(userService.find(user.getScopeId(), user.getId()));
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
         return gwtUser;
     }
 
+    @Override
     public GwtUser update(GwtXSRFToken xsrfToken, GwtUser gwtUser)
-        throws GwtKapuaException
-    {
+            throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
         GwtUser gwtUserUpdated = null;
@@ -148,8 +129,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
 
-            KapuaId scopeId = KapuaEid.parseShortId(gwtUser.getScopeId());
-            KapuaId userId = KapuaEid.parseShortId(gwtUser.getId());
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtUser.getScopeId());
+            KapuaId userId = KapuaEid.parseCompactId(gwtUser.getId());
 
             User user = userService.find(scopeId, userId);
 
@@ -165,74 +146,35 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 // status
                 user.setStatus(UserStatus.valueOf(gwtUser.getStatus()));
 
+                // //
+                // // Update credentials
+                // if (gwtUser.getPassword() != null) {
+                // CredentialService credentialService = locator.getService(CredentialService.class);
+                // CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
                 //
-                // Update permissions
-                Set<String> newPermissions = new HashSet<String>();
-                if (gwtUser.getPermissions() != null) {
-                    // build the set of permissions
-                    newPermissions.addAll(Arrays.asList(gwtUser.getPermissions().split(",")));
-                }
-
-                UserPermissionService userPermissionService = locator.getService(UserPermissionService.class);
-                UserPermissionFactory userPermissionFactory = locator.getFactory(UserPermissionFactory.class);
-                PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
-                Set<UserPermissionCreator> newUserPermissions = new HashSet<UserPermissionCreator>();
-                for (String p : newPermissions) {
-                    UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(user.getScopeId());
-                    userPermissionCreator.setUserId(scopeId);
-
-                    String[] tokens = p.split(":");
-                    String domain = null;
-                    Actions action = null;
-                    KapuaId targetScopeId = null;
-                    if (tokens.length > 0) {
-                        domain = tokens[0];
-                    }
-                    if (tokens.length > 1) {
-                        action = Actions.valueOf(tokens[1]);
-                    }
-                    if (tokens.length > 2) {
-                        targetScopeId = KapuaEid.parseShortId(tokens[2]);
-                    }
-
-                    Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
-                    userPermissionCreator.setPermission(permission);
-
-                    userPermissionService.create(userPermissionCreator);
-                }
-
-                userPermissionService.merge(newUserPermissions);
-
+                // CredentialListResult credentials = credentialService.findByUserId(scopeId, userId);
+                // if (!credentials.isEmpty()) {
+                // //
+                // // Delete old PASSWORD credential
+                // Credential oldCredential = null;
+                // for (Credential c : credentials.getItems()) {
+                // if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
+                // oldCredential = c;
+                // break;
+                // }
+                // }
+                // credentialService.delete(oldCredential.getScopeId(), oldCredential.getId());
                 //
-                // Update credentials
-                if (gwtUser.getPassword() != null) {
-                    CredentialService credentialService = locator.getService(CredentialService.class);
-                    CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
-
-                    CredentialListResult credentials = credentialService.findByUserId(scopeId, userId);
-                    if (!credentials.isEmpty()) {
-                        //
-                        // Delete old PASSWORD credential
-                        Credential oldCredential = null;
-                        for (Credential c : credentials.getItems()) {
-                            if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
-                                oldCredential = c;
-                                break;
-                            }
-                        }
-                        credentialService.delete(oldCredential.getScopeId(), oldCredential.getId());
-
-                        //
-                        // Create new PASSWORD credential
-                        CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
-                                                                                           user.getId(),
-                                                                                           CredentialType.PASSWORD,
-                                                                                           gwtUser.getPassword());
-
-                        credentialService.create(credentialCreator);
-                    }
-                }
+                // //
+                // // Create new PASSWORD credential
+                // CredentialCreator credentialCreator = credentialFactory.newCreator(scopeId,
+                // user.getId(),
+                // CredentialType.PASSWORD,
+                // gwtUser.getPassword());
+                //
+                // credentialService.create(credentialCreator);
+                // }
+                // }
 
                 // optlock
                 user.setOptlock(gwtUser.getOptlock());
@@ -243,40 +185,64 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 //
                 // convert to GwtAccount and return
                 // reload the user as we want to load all its permissions
-                gwtUserUpdated = KapuaGwtConverter.convert(userService.find(user.getScopeId(), user.getId()));
+                gwtUserUpdated = KapuaGwtModelConverter.convert(userService.find(user.getScopeId(), user.getId()));
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return gwtUserUpdated;
     }
 
-    public void delete(GwtXSRFToken xsrfToken, String accountId, GwtUser gwtUser)
-        throws GwtKapuaException
-    {
+    @Override
+    public void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtUserId)
+            throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        KapuaId scopeId = KapuaEid.parseShortId(accountId);
+        KapuaId scopeId = GwtKapuaModelConverter.convert(gwtScopeId);
+        KapuaId userId = GwtKapuaModelConverter.convert(gwtUserId);
 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             UserService userService = locator.getService(UserService.class);
-            User user = userService.find(scopeId, KapuaEid.parseShortId(gwtUser.getId()));
+            CredentialService credentialService = locator.getService(CredentialService.class);
+            User user = userService.find(scopeId, userId);
+
             if (user != null) {
                 userService.delete(user);
+                CredentialListResult credentialListResult = credentialService.findByUserId(scopeId, userId);
+                for (Credential credential : credentialListResult.getItems()) {
+                    credentialService.delete(scopeId, credential.getId());
+                }
+
+                AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+                AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
+                if (accessInfo != null) {
+                    KapuaId accessInfoId = accessInfo.getId();
+                    accessInfoService.delete(scopeId, accessInfoId);
+
+                    AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+                    AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(scopeId, accessInfoId);
+                    for (AccessRole accessRole : accessRoles.getItems()) {
+                        accessRoleService.delete(scopeId, accessRole.getId());
+                    }
+
+                    AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
+                    AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(scopeId, accessInfoId);
+                    for (AccessPermission accessPermission : accessPermissions.getItems()) {
+                        accessPermissionService.delete(scopeId, accessPermission.getId());
+                    }
+                }
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
     }
 
+    @Override
     public GwtUser find(String accountId, String userIdString)
-        throws GwtKapuaException
-    {
-        KapuaId scopeId = KapuaEid.parseShortId(accountId);
-        KapuaId userId = KapuaEid.parseShortId(userIdString);
+            throws GwtKapuaException {
+        KapuaId scopeId = KapuaEid.parseCompactId(accountId);
+        KapuaId userId = KapuaEid.parseCompactId(userIdString);
 
         GwtUser gwtUser = null;
         try {
@@ -284,20 +250,19 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             UserService userService = locator.getService(UserService.class);
             User user = userService.find(scopeId, userId);
             if (user != null) {
-                gwtUser = KapuaGwtConverter.convert(user);
+                gwtUser = KapuaGwtModelConverter.convert(user);
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
         return gwtUser;
     }
 
+    @Override
     public ListLoadResult<GwtUser> findAll(String scopeIdString)
-        throws GwtKapuaException
-    {
-        KapuaId scopeId = KapuaEid.parseShortId(scopeIdString);
+            throws GwtKapuaException {
+        KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         List<GwtUser> gwtUserList = new ArrayList<GwtUser>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -307,13 +272,50 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             UserListResult list = userService.query(query);
 
             for (User user : list.getItems()) {
-                gwtUserList.add(KapuaGwtConverter.convert(user));
+                gwtUserList.add(KapuaGwtModelConverter.convert(user));
             }
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
         return new BaseListLoadResult<GwtUser>(gwtUserList);
+    }
+
+    @Override
+    public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) throws GwtKapuaException {
+        //
+        // Do query
+        int totalLength = 0;
+        List<GwtUser> gwtUsers = new ArrayList<GwtUser>();
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            UserService userService = locator.getService(UserService.class);
+
+            // Convert from GWT entity
+            UserQuery userQuery = GwtKapuaModelConverter.convertUserQuery(loadConfig, gwtUserQuery);
+
+            // query
+            UserListResult users = userService.query(userQuery);
+
+            // If there are results
+            if (!users.isEmpty()) {
+                // count
+                if (users.getSize() >= loadConfig.getLimit()) {
+                    totalLength = new Long(userService.count(userQuery)).intValue();
+                } else {
+                    totalLength = users.getSize();
+                }
+
+                // Converto to GWT entity
+                for (User u : users.getItems()) {
+                    gwtUsers.add(KapuaGwtModelConverter.convert(u));
+                }
+            }
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+        return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);
     }
 }

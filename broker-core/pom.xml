@@ -128,6 +128,12 @@
 			<artifactId>camel-jms</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<!-- elasticsearch -->
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<!-- misc -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -12,22 +12,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
@@ -37,8 +42,14 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
  * @since 1.0
  *
  */
-public class RoleServiceImpl implements RoleService
-{
+@KapuaProvider
+public class RoleServiceImpl extends AbstractKapuaService implements RoleService {
+
+    private static final Domain roleDomain = new RoleDomain();
+
+    public RoleServiceImpl() {
+        super(AuthorizationEntityManagerFactory.getInstance());
+    }
 
     @Override
     public Role create(RoleCreator roleCreator)
@@ -46,35 +57,53 @@ public class RoleServiceImpl implements RoleService
     {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
-        ArgumentValidator.notNull(roleCreator.getRoles(), "roleCreator.permissions");
+        ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
 
         //
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.write, roleCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
+        return entityManagerSession.onTransactedInsert(em -> {
+            Role role = RoleDAO.create(em, roleCreator);
+
+            if (!roleCreator.getPermissions().isEmpty()) {
+                RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
+                for (Permission p : roleCreator.getPermissions()) {
+                    RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(roleCreator.getScopeId());
+
+                    rolePermissionCreator.setRoleId(role.getId());
+                    rolePermissionCreator.setPermission(p);
+
+                    RolePermissionDAO.create(em, rolePermissionCreator);
+                }
+            }
+
+            return role;
+        });
+    }
+
+    @Override
+    public Role update(Role role) throws KapuaException {
+        ArgumentValidator.notNull(role, "role");
+        ArgumentValidator.notEmptyOrNull(role.getName(), "role.name");
 
         //
-        // Do create
-        Role role = null;
-        EntityManager em = AuthorizationEntityManagerFactory.getEntityManager();
-        try {
-            em.beginTransaction();
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, role.getScopeId()));
+        return entityManagerSession.onTransactedInsert(em -> {
 
-            role = RoleDAO.create(em, roleCreator);
+            Role currentRole = RoleDAO.find(em, role.getId());
+            if (currentRole == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, role.getId());
+            }
 
-            em.commit();
-        }
-        catch (Exception e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return role;
+            return RoleDAO.update(em, role);
+        });
     }
 
     @Override
@@ -83,27 +112,21 @@ public class RoleServiceImpl implements RoleService
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.delete, scopeId));
 
-        //
-        // Do delete
-        EntityManager em = AuthorizationEntityManagerFactory.getEntityManager();
-        try {
+        entityManagerSession.onTransactedAction(em -> {
             if (RoleDAO.find(em, roleId) == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
             }
 
-            em.beginTransaction();
+            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
+            RolePermissionListResult rolePermissions = rolePermissionService.findByRoleId(scopeId, roleId);
+            for (RolePermission rp : rolePermissions.getItems()) {
+                RolePermissionDAO.delete(em, rp.getId());
+            }
+
             RoleDAO.delete(em, roleId);
-            em.commit();
-        }
-        catch (KapuaException e) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
+        });
     }
 
     @Override
@@ -118,22 +141,9 @@ public class RoleServiceImpl implements RoleService
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.read, scopeId));
 
-        //
-        // Do find
-        Role role = null;
-        EntityManager em = AuthorizationEntityManagerFactory.getEntityManager();
-        try {
-            role = RoleDAO.find(em, roleId);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-        return role;
+        return entityManagerSession.onResult(em -> RoleDAO.find(em, roleId));
     }
 
     @Override
@@ -148,23 +158,9 @@ public class RoleServiceImpl implements RoleService
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.read, query.getScopeId()));
 
-        //
-        // Do query
-        RoleListResult result = null;
-        EntityManager em = AuthorizationEntityManagerFactory.getEntityManager();
-        try {
-            result = RoleDAO.query(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return result;
+        return entityManagerSession.onResult(em -> RoleDAO.query(em, query));
     }
 
     @Override
@@ -179,30 +175,8 @@ public class RoleServiceImpl implements RoleService
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(RoleDomain.ROLE, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.read, query.getScopeId()));
 
-        //
-        // Do count
-        long count = 0;
-        EntityManager em = AuthorizationEntityManagerFactory.getEntityManager();
-        try {
-            count = RoleDAO.count(em, query);
-        }
-        catch (Exception e) {
-            throw KapuaExceptionUtils.convertPersistenceException(e);
-        }
-        finally {
-            em.close();
-        }
-
-        return count;
-    }
-
-    @Override
-    public RoleListResult merge(Set<RoleCreator> newPermissions)
-        throws KapuaException
-    {
-        // TODO Auto-generated method stub
-        return null;
+        return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
     }
 }

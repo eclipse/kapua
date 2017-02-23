@@ -29,35 +29,36 @@ public class EsClient {
 			
 	private static Client client;
 	
-	private static final int DEFAULT_PORT = 9300; 
-	
+	private static final int DEFAULT_PORT = 9300;
+
 	public static Client getcurrent() throws UnknownHostException, EsDatastoreException {
 		// TODO read hostname and port from configurations
-		if (client == null) 
-		{
-	        DatastoreSettings config = DatastoreSettings.getInstance();
-	        Map<String, String> map = config.getMap(String.class, DatastoreSettingKey.ELASTICSEARCH_NODES, "[0-9]+");
-	        String[] esNodes = new String[] {};
-	        if (map != null)
-	            esNodes = map.values().toArray(new String[] {});
-	        
-	        if (esNodes == null || esNodes.length == 0)
-	        	throw new EsDatastoreException("No elasticsearch nodes found");
-	        
-	        String[] nodeParts = getNodeParts(esNodes[0]);
-	        String esHost = null;
-	        int esPort = DEFAULT_PORT;
-	        
-	        if (nodeParts.length > 0)
-	            esHost = nodeParts[0];
-	        if (nodeParts.length > 1) {
-	        	try {
-	        		Integer.parseInt(nodeParts[1]);
-	        	} catch (NumberFormatException e) {
-	        		throw new EsDatastoreException("Could not parse port: " + nodeParts[1]);
-	        	}
-	        }
-	        
+		if (client == null) {
+			DatastoreSettings config = DatastoreSettings.getInstance();
+			String esHost = System.getenv("ELASTICSEARCH_SERVICE_HOST");
+			int esPort = DEFAULT_PORT;
+
+			if(esHost == null) {
+				Map<String, String> map = config.getMap(String.class, DatastoreSettingKey.ELASTICSEARCH_NODES, "[0-9]+");
+				String[] esNodes = new String[]{};
+				if (map != null)
+					esNodes = map.values().toArray(new String[]{});
+
+				if (esNodes == null || esNodes.length == 0)
+					throw new EsDatastoreException("No elasticsearch nodes found");
+
+				String[] nodeParts = getNodeParts(esNodes[0]);
+
+				if (nodeParts.length > 0)
+					esHost = nodeParts[0];
+				if (nodeParts.length > 1) {
+					try {
+						Integer.parseInt(nodeParts[1]);
+					} catch (NumberFormatException e) {
+						throw new EsDatastoreException("Could not parse port: " + nodeParts[1]);
+					}
+				}
+			}
 			client = EsUtils.getEsClient(esHost, esPort, config.getString(DatastoreSettingKey.ELASTICSEARCH_CLUSTER));
 		}
 		return client;

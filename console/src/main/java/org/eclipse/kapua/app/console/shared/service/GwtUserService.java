@@ -13,11 +13,16 @@
 package org.eclipse.kapua.app.console.shared.service;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -50,10 +55,10 @@ public interface GwtUserService extends RemoteService {
     /**
      * Delete the supplied User.
      * 
-     * @param gwtUser
+     * @param gwtUserId
      * @throws GwtKapuaException
      */
-    public void delete(GwtXSRFToken xsfrToken, String accountId, GwtUser gwtUser)
+    public void delete(GwtXSRFToken xsfrToken, String accountId, String gwtUserId)
         throws GwtKapuaException;
 
     /**
@@ -75,7 +80,17 @@ public interface GwtUserService extends RemoteService {
      * @throws GwtKapuaException
      * 
      */
-    public ListLoadResult<GwtUser> findAll(String scopeIdStirng)
+    public ListLoadResult<GwtUser> findAll(String scopeIdString)
         throws GwtKapuaException;
 
+    /**
+     * Returns the list of all User matching the query.
+     * 
+     * @param gwtUserQuery
+     * @return
+     * @throws GwtKapuaException
+     * 
+     */
+    public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery)
+            throws GwtKapuaException;
 }

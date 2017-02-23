@@ -18,11 +18,10 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 
 /**
  * Device event list.
- * 
+ *
  * @since 1.0
- * 
  */
-public class DeviceEventListResultImpl extends KapuaListResultImpl<DeviceEvent> implements DeviceEventListResult
-{
+public class DeviceEventListResultImpl extends KapuaListResultImpl<DeviceEvent> implements DeviceEventListResult {
+
     private static final long serialVersionUID = 6537888946643944463L;
 }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -22,6 +23,7 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class DeviceSnapshotFactoryImpl implements DeviceSnapshotFactory
 {
 

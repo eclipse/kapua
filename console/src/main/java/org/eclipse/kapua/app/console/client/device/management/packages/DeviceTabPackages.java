@@ -17,8 +17,8 @@ import org.eclipse.kapua.app.console.client.device.management.packages.button.Pa
 import org.eclipse.kapua.app.console.client.device.management.packages.button.PackageUninstallButton;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
-import org.eclipse.kapua.app.console.client.widget.dialog.InfoDialog;
-import org.eclipse.kapua.app.console.client.widget.dialog.InfoDialog.InfoDialogType;
+import org.eclipse.kapua.app.console.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;

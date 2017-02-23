@@ -15,11 +15,15 @@ package org.eclipse.kapua.service.device.management.packages.internal;
 import java.util.Date;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
@@ -51,7 +55,6 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.inte
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.eclipse.kapua.service.generator.id.IdGeneratorService;
 
 /**
  * Device package service implementation.
@@ -59,7 +62,10 @@ import org.eclipse.kapua.service.generator.id.IdGeneratorService;
  * @since 1.0
  *
  */
+@KapuaProvider
 public class DevicePackageManagementServiceImpl implements DevicePackageManagementService {
+
+    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
 
     @Override
     public DevicePackages getInstalled(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -74,7 +80,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -157,12 +163,11 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
 
         //
         // Generate requestId
-        IdGeneratorService idGeneratorService = locator.getService(IdGeneratorService.class);
-        KapuaId operationId = idGeneratorService.generate();
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -222,7 +227,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -275,7 +280,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -340,12 +345,11 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
 
         //
         // Generate requestId
-        IdGeneratorService idGeneratorService = locator.getService(IdGeneratorService.class);
-        KapuaId operationId = idGeneratorService.generate();
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -404,7 +408,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -482,12 +486,11 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
 
         //
         // Generate requestId
-        IdGeneratorService idGeneratorService = locator.getService(IdGeneratorService.class);
-        KapuaId operationId = idGeneratorService.generate();
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -545,7 +548,7 @@ public class DevicePackageManagementServiceImpl implements DevicePackageManageme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
 
         //
         // Prepare the request

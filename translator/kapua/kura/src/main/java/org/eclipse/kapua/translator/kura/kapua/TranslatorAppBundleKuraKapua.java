@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -50,16 +51,15 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  * @since 1.0
  *
  */
-public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage, BundleResponseMessage>
-{
-    private static final String                            CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage, BundleResponseMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
     private static Map<BundleMetrics, DeviceBundleAppProperties> metricsDictionary;
 
     /**
      * Constructor
      */
-    public TranslatorAppBundleKuraKapua()
-    {
+    public TranslatorAppBundleKuraKapua() {
         metricsDictionary = new HashMap<>();
 
         metricsDictionary.put(BundleMetrics.APP_ID, DeviceBundleAppProperties.APP_NAME);
@@ -68,13 +68,16 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
 
     @Override
     public BundleResponseMessage translate(KuraResponseMessage kuraMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Kura channel
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
+        }
 
         BundleResponseChannel bundleResponseChannel = translate(kuraMessage.getChannel());
 
@@ -99,13 +102,12 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
     }
 
     private BundleResponseChannel translate(KuraResponseChannel kuraChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
 
         if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraChannel.getMessageClassification())) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER,
-                                          null,
-                                          kuraChannel.getMessageClassification());
+                    null,
+                    kuraChannel.getMessageClassification());
         }
 
         BundleResponseChannel bundleResponseChannel = new BundleResponseChannel();
@@ -114,14 +116,14 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
 
         if (!BundleMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME,
-                                          null,
-                                          appIdTokens[0]);
+                    null,
+                    appIdTokens[0]);
         }
 
         if (!BundleMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION,
-                                          null,
-                                          appIdTokens[1]);
+                    null,
+                    appIdTokens[1]);
         }
 
         bundleResponseChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
@@ -133,8 +135,7 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
     }
 
     private BundleResponsePayload translate(KuraResponsePayload kuraPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         BundleResponsePayload bundleResponsePayload = new BundleResponsePayload();
 
         bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(ResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
@@ -147,21 +148,19 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
             String body = null;
             try {
                 body = new String(kuraPayload.getBody(), charEncoding);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                                              e,
-                                              kuraPayload.getBody());
+                        e,
+                        kuraPayload.getBody());
             }
 
             KuraBundles kuraBundles = null;
             try {
                 kuraBundles = XmlUtil.unmarshal(body, KuraBundles.class);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                                              e,
-                                              body);
+                        e,
+                        body);
             }
 
             translate(bundleResponsePayload, charEncoding, kuraBundles);
@@ -173,8 +172,7 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
     }
 
     private void translate(BundleResponsePayload bundleResponsePayload, String charEncoding, KuraBundles kuraBundles)
-        throws KapuaException
-    {
+            throws KapuaException {
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceBundleFactory deviceBundleFactory = locator.getFactory(DeviceBundleFactory.class);
@@ -198,23 +196,20 @@ public class TranslatorAppBundleKuraKapua extends Translator<KuraResponseMessage
             byte[] requestBody = sw.toString().getBytes(charEncoding);
 
             bundleResponsePayload.setBody(requestBody);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY,
-                                          e,
-                                          kuraBundles);
+                    e,
+                    kuraBundles);
         }
     }
 
     @Override
-    public Class<KuraResponseMessage> getClassFrom()
-    {
+    public Class<KuraResponseMessage> getClassFrom() {
         return KuraResponseMessage.class;
     }
 
     @Override
-    public Class<BundleResponseMessage> getClassTo()
-    {
+    public Class<BundleResponseMessage> getClassTo() {
         return BundleResponseMessage.class;
     }
 }

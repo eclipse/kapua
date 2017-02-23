@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.registry.event.*;
@@ -20,26 +21,24 @@ import java.util.Date;
 
 /**
  * Device event factory service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceEventFactoryImpl implements DeviceEventFactory
-{
+@KapuaProvider
+public class DeviceEventFactoryImpl implements DeviceEventFactory {
 
     @Override
     public DeviceEventCreator newCreator(KapuaId scopeId, KapuaId deviceId, Date receivedOn, String resource) {
-    	DeviceEventCreatorImpl creator = new DeviceEventCreatorImpl(scopeId);
+        DeviceEventCreatorImpl creator = new DeviceEventCreatorImpl(scopeId);
         creator.setDeviceId(deviceId);
-    	creator.setAction(KapuaMethod.CREATE);
+        creator.setAction(KapuaMethod.CREATE);
         creator.setReceivedOn(new Date(receivedOn.getTime()));
         creator.setResource(resource);
         return creator;
     }
 
     @Override
-    public DeviceEventQuery newQuery(KapuaId scopeId)
-    {
+    public DeviceEventQuery newQuery(KapuaId scopeId) {
         return new DeviceEventQueryImpl(scopeId);
     }
 

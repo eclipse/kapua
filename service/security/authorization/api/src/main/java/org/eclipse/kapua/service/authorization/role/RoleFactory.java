@@ -16,26 +16,56 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Role factory service definition.
+ * {@link Role} object factory.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface RoleFactory extends KapuaObjectFactory
-{
+public interface RoleFactory extends KapuaObjectFactory {
+
     /**
-     * Creates a new {@link RoleCreator} for the specified scope identifier
+     * Instantiate a new {@link Role} implementing object with the provided scope id.
      * 
      * @param scopeId
-     * @return
+     *            The scope id to set.
+     * @return A instance of the implementing class of {@link Role}.
+     * @since 1.0.0
+     */
+    public Role newRole(KapuaId scopeId);
+
+    /**
+     * Instantiate a new {@link RoleCreator} implementing object with the provided scope id.
+     * 
+     * @param scopeId
+     *            The scope id to set.
+     * @return A instance of the implementing class of {@link RoleCreator}.
+     * @since 1.0.0
      */
     public RoleCreator newCreator(KapuaId scopeId);
 
     /**
-     * Create a new role query for the specified scope identifier
+     * Instantiate a new {@link RoleQuery} implementing object with the provided scope id.
      * 
      * @param scopeId
-     * @return
+     *            The scope id to set.
+     * @return A instance of the implementing class of {@link RoleQuery}.
+     * @since 1.0.0
      */
     public RoleQuery newQuery(KapuaId scopeId);
+    
+    /**
+     * Instantiate a new {@link RoleListResult} implementing object.
+     * 
+     * @return A instance of the implementing class of {@link RoleListResult}.
+     * @since 1.0.0
+     */
+    public RoleListResult newRoleListResult();
+    
+    /**
+     * Instantiate a new {@link RolePermission} implementing object.
+     * 
+     * @return A instance of the implementing class of {@link RolePermission}.
+     * @since 1.0.0
+     */
+    public RolePermission newRolePermission();
 }

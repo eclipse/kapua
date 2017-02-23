@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api;
 
+import java.security.acl.Permission;
+
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ContextResolver;
@@ -32,6 +34,31 @@ import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoXmlRegistry;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionXmlRegistry;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleXmlRegistry;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
+import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
@@ -127,7 +154,34 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessTokenImpl.class,
                     ApiKeyCredentials.class,
                     JwtCredentials.class,
-                    UsernamePasswordCredentials.class
+                    UsernamePasswordCredentials.class,
+                    Credential.class,
+                    CredentialListResult.class,
+                    CredentialXmlRegistry.class,
+                    CredentialCreator.class,
+                    CredentialType.class,
+                    Role.class,
+                    RoleListResult.class,
+                    RoleCreator.class,
+                    RoleXmlRegistry.class,
+                    Permission.class,
+                    RolePermission.class,
+                    RolePermissionListResult.class,
+                    RolePermissionCreator.class,
+                    RolePermissionXmlRegistry.class,
+                    AccessInfo.class,
+                    AccessInfoListResult.class,
+                    AccessInfoCreator.class,
+                    AccessInfoXmlRegistry.class,
+                    AccessPermission.class,
+                    AccessPermissionListResult.class,
+                    AccessPermissionCreator.class,
+                    AccessPermissionXmlRegistry.class,
+                    AccessRole.class,
+                    AccessRoleListResult.class,
+                    AccessRoleCreator.class,
+                    AccessRoleXmlRegistry.class
+
             }, null);
         } catch (Exception e) {
             throw new RuntimeException(e);

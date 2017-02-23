@@ -62,12 +62,40 @@ public class ArgumentValidator
      * @throws KapuaIllegalNullArgumentException
      */
 	public static void notNull(Object value, String argumentName) 
-		throws KapuaIllegalNullArgumentException {		
+		throws KapuaIllegalNullArgumentException {
 		if (value == null) {
 			throw new KapuaIllegalNullArgumentException(argumentName);
 		}
 	}
-					
+
+	/**
+     * Throws an KapuaIllegalNullArgumentException if the value for the specified argument is not null.
+     * 
+     * @param value
+     * @param argumentName
+     * @throws KapuaIllegalNullArgumentException
+     */
+    public static void isNull(Object value, String argumentName)
+        throws KapuaIllegalArgumentException {
+        if (value != null) {
+            throw new KapuaIllegalArgumentException(argumentName, value.toString());
+        }
+    }
+
+    /**
+     * Throws an KapuaIllegalNullArgumentException if the string value for the specified argument is not empty nor null.
+     * 
+     * @param value
+     * @param argumentName
+     * @throws KapuaIllegalNullArgumentException
+     */
+    public static void isEmptyOrNull(String value, String argumentName)
+        throws KapuaIllegalArgumentException {
+        if (!(value == null || value.trim().length() == 0)) {
+            throw new KapuaIllegalArgumentException(argumentName, value);
+        }
+    }
+
 	/**
      * Throws an KapuaIllegalNullArgumentException if the string value for the specified argument is empty or null.
      * 
@@ -76,12 +104,12 @@ public class ArgumentValidator
      * @throws KapuaIllegalNullArgumentException
      */
 	public static void notEmptyOrNull(String value, String argumentName) 
-		throws KapuaIllegalNullArgumentException {		
+		throws KapuaIllegalNullArgumentException {
 		if (value == null || value.trim().length() == 0) {
 			throw new KapuaIllegalNullArgumentException(argumentName);
 		}
 	}
-	
+
 	/**
 	 * Throws an KapuaIllegalNullArgumentException if the array for the specified argument is empty or null.
 	 * @param value
@@ -94,7 +122,7 @@ public class ArgumentValidator
 			throw new KapuaIllegalNullArgumentException(argumentName);
 		}
 	}
-	
+
 	/**
 	 * Throws an KapuaIllegalNullArgumentException if the collection for the specified argument is empty or null.
 	 * @param value
@@ -102,7 +130,7 @@ public class ArgumentValidator
 	 * @throws KapuaIllegalNullArgumentException
 	 */
 	public static void notEmptyOrNull(Collection<?> value, String argumentName) 
-		throws KapuaIllegalNullArgumentException {		
+		throws KapuaIllegalNullArgumentException {
 		if (value == null || value.isEmpty()) {
 			throw new KapuaIllegalNullArgumentException(argumentName);
 		}

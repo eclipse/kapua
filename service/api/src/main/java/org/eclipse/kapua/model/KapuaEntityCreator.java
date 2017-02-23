@@ -23,28 +23,28 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * Kapua entity base creator service definition.<br>
  * All the Kapua entities base creator service will be an extension of this entity.
  *
- * @param <E> entity type
+ * @param <E>
+ *            entity type
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
-@XmlType(propOrder = {"scopeId" })
-public interface KapuaEntityCreator<E extends KapuaEntity>
-{
+@XmlType(propOrder = { "scopeId" })
+public interface KapuaEntityCreator<E extends KapuaEntity> {
 
     /**
      * Get the Kapua scope identifier
      * 
      * @return
      */
-	@XmlElement(name="scopeId")
-	@XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
-	
+
     /**
      * Set the Kapua scope identifier
      * 
      * @param scopeId
      */
-	public void setScopeId(KapuaId scopeId);
+    public void setScopeId(KapuaId scopeId);
 }

@@ -38,7 +38,7 @@ public interface KapuaId extends Serializable
      * 
      * @return
      */
-    default public String getShortId()
+    default public String toCompactId()
     {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(getId().toByteArray());
     }

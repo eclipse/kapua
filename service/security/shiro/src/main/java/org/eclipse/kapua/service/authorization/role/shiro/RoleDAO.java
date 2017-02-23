@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -27,8 +28,7 @@ import org.eclipse.kapua.service.authorization.role.RoleListResult;
  * @since 1.0
  *
  */
-public class RoleDAO extends ServiceDAO
-{
+public class RoleDAO extends ServiceDAO {
 
     /**
      * Creates and return new role
@@ -39,14 +39,26 @@ public class RoleDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static Role create(EntityManager em, RoleCreator creator)
-        throws KapuaException
-    {
+            throws KapuaException {
         Role role = new RoleImpl(creator.getScopeId());
 
         role.setName(creator.getName());
-        role.setPermissions(creator.getRoles());
 
         return ServiceDAO.create(em, role);
+    }
+
+    /**
+     * Updates and returns the updated {@link Role}
+     * 
+     * @param em
+     * @param role
+     * @return
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Role} is not found.
+     */
+    public static Role update(EntityManager em, Role role) throws KapuaEntityNotFoundException {
+        RoleImpl roleImpl = (RoleImpl) role;
+        return ServiceDAO.update(em, RoleImpl.class, roleImpl);
     }
 
     /**
@@ -56,8 +68,7 @@ public class RoleDAO extends ServiceDAO
      * @param roleId
      * @return
      */
-    public static Role find(EntityManager em, KapuaId roleId)
-    {
+    public static Role find(EntityManager em, KapuaId roleId) {
         return em.find(RoleImpl.class, roleId);
     }
 
@@ -66,9 +77,11 @@ public class RoleDAO extends ServiceDAO
      * 
      * @param em
      * @param roleId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Role} is not found.
      */
     public static void delete(EntityManager em, KapuaId roleId)
-    {
+            throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, RoleImpl.class, roleId);
     }
 
@@ -81,8 +94,7 @@ public class RoleDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static RoleListResult query(EntityManager em, KapuaQuery<Role> roleQuery)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.query(em, Role.class, RoleImpl.class, new RoleListResultImpl(), roleQuery);
     }
 
@@ -95,9 +107,7 @@ public class RoleDAO extends ServiceDAO
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery<Role> roleQuery)
-        throws KapuaException
-    {
+            throws KapuaException {
         return ServiceDAO.count(em, Role.class, RoleImpl.class, roleQuery);
     }
-
 }

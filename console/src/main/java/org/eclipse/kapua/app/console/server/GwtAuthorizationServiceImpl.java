@@ -12,19 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtConverter;
+import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -35,15 +32,25 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
-import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.UserDomain;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,13 +60,19 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
     private static final Logger s_logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
 
+    private static final Domain accountDomain = new AccountDomain();
+    private static final Domain deviceDomain = new DeviceDomain();
+    private static final Domain datastoreDomain = new DatastoreDomain();
+    private static final Domain userDomain = new UserDomain();
+    private static final Domain credentialDomain = new CredentialDomain();
+
     public static final String SESSION_CURRENT = "console.current.session";
     public static final String SESSION_CURRENT_USER = "console.current.user";
 
     /**
      * Login call in response to the login dialog.
      */
-    public GwtSession login(GwtUser tmpUser)
+    public GwtSession login(GwtLoginCredential gwtLoginCredentials)
             throws GwtKapuaException {
         // VIP
         // keep this here to make sure we initialize the logger.
@@ -74,7 +87,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(tmpUser.getUsername(), tmpUser.getPassword().toCharArray());
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword().toCharArray());
 
             // Login
             authenticationService.login(credentials);
@@ -88,6 +101,36 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
+
+    @Override
+    public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials) throws GwtKapuaException {
+     // VIP
+        // keep this here to make sure we initialize the logger.
+        // Without the following, console logger may not log anything when deployed into tomcat.
+        s_logger.info(">>> THIS IS INFO <<<");
+        s_logger.warn(">>> THIS IS WARN <<<");
+        s_logger.debug(">>> THIS IS DEBUG <<<");
+
+        GwtSession gwtSession = null;
+        try {
+            // Get the user
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken());
+
+            // Login
+            authenticationService.login(credentials);
+
+            // Get the session infos
+            gwtSession = establishSession();
+        } catch (Throwable t) {
+            logout();
+            KapuaExceptionHandler.handle(t);
+        }
+        return gwtSession;
+    }
+    
     /**
      * Return the currently authenticated user or null if no session has been established.
      */
@@ -112,7 +155,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 if (gwtSession == null) {
                     gwtSession = establishSession();
                 } else {
-                    gwtSession.setGwtUser(KapuaGwtConverter.convert(user));
+                    gwtSession.setGwtUser(KapuaGwtModelConverter.convert(user));
                 }
             }
         } catch (Throwable t) {
@@ -134,32 +177,36 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         //
         // Get user info
         UserService userService = locator.getService(UserService.class);
-        User user = userService.find(kapuaSession.getScopeId(),
-                kapuaSession.getUserId());
+        User user = userService.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
 
         //
         // Get permission info
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
-        boolean hasAccountCreate = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccountRead = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.read, kapuaSession.getScopeId()));
-        boolean hasAccountUpdate = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.write, kapuaSession.getScopeId()));
-        boolean hasAccountDelete = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, Actions.delete, kapuaSession.getScopeId()));
-        boolean hasAccountAll = authorizationService.isPermitted(permissionFactory.newPermission(AccountDomain.ACCOUNT, null, null));
+        boolean hasAccountCreate = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasAccountRead = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasAccountUpdate = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasAccountDelete = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, Actions.delete, kapuaSession.getScopeId()));
+        boolean hasAccountAll = authorizationService.isPermitted(permissionFactory.newPermission(accountDomain, null, null));
 
-        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.read, kapuaSession.getScopeId()));
-        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.write, kapuaSession.getScopeId()));
-        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(DeviceDomain.DEVICE, Actions.delete, kapuaSession.getScopeId()));
-        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceCreate = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceRead = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasDeviceUpdate = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasDeviceDelete = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.delete, kapuaSession.getScopeId()));
+        boolean hasDeviceManage = authorizationService.isPermitted(permissionFactory.newPermission(deviceDomain, Actions.write, kapuaSession.getScopeId()));
 
-        boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission("data", Actions.read, kapuaSession.getScopeId()));
+        boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission(datastoreDomain, Actions.read, kapuaSession.getScopeId()));
 
-        boolean hasUserCreate = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.write, kapuaSession.getScopeId()));
-        boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.read, kapuaSession.getScopeId()));
-        boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.write, kapuaSession.getScopeId()));
-        boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission("user", Actions.delete, kapuaSession.getScopeId()));
+        boolean hasUserCreate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.delete, kapuaSession.getScopeId()));
+
+        boolean hasCredentialCreate = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasCredentialRead = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasCredentialUpdate = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasCredentialDelete = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.delete, kapuaSession.getScopeId()));
 
         //
         // Get account info
@@ -168,8 +215,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         //
         // Convert entities
-        GwtUser gwtUser = KapuaGwtConverter.convert(user);
-        GwtAccount gwtAccount = KapuaGwtConverter.convert(account);
+        GwtUser gwtUser = KapuaGwtModelConverter.convert(user);
+        GwtAccount gwtAccount = KapuaGwtModelConverter.convert(account);
 
         //
         // Build the session
@@ -206,6 +253,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setUserReadPermission(hasUserRead);
         gwtSession.setUserUpdatePermission(hasUserUpdate);
         gwtSession.setUserDeletePermission(hasUserDelete);
+
+        gwtSession.setCredentialCreatePermission(hasCredentialCreate);
+        gwtSession.setCredentialReadPermission(hasCredentialRead);
+        gwtSession.setCredentialUpdatePermission(hasCredentialUpdate);
+        gwtSession.setCredentialDeletePermission(hasCredentialDelete);
 
         //
         // Saving session data in session

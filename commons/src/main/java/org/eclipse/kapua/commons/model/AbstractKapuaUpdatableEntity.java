@@ -46,36 +46,50 @@ import org.eclipse.kapua.model.id.KapuaId;
 @SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity implements KapuaUpdatableEntity
-{
+public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity implements KapuaUpdatableEntity {
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "modified_on")
-    protected Date     modifiedOn;
+    protected Date modifiedOn;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "modified_by"))
+            @AttributeOverride(name = "eid", column = @Column(name = "modified_by"))
     })
     protected KapuaEid modifiedBy;
 
     @Version
     @Column(name = "optlock")
-    protected int      optlock;
+    protected int optlock;
 
     @Basic
     @Column(name = "attributes")
-    protected String   attributes;
+    protected String attributes;
 
     @Basic
     @Column(name = "properties")
-    protected String   properties;
+    protected String properties;
 
     /**
      * Constructor
      */
-    protected AbstractKapuaUpdatableEntity()
-    {
+    protected AbstractKapuaUpdatableEntity() {
         super();
+    }
+
+    /**
+     * Constructor
+     * 
+     * @throws KapuaException
+     */
+    protected AbstractKapuaUpdatableEntity(KapuaUpdatableEntity entity) throws KapuaException {
+        super((AbstractKapuaEntity) entity);
+
+        setModifiedOn(entity.getModifiedOn());
+        setModifiedBy(entity.getModifiedBy());
+        setOptlock(entity.getOptlock());
+        setEntityAttributes(entity.getEntityAttributes());
+        setEntityProperties(entity.getEntityProperties());
     }
 
     /**
@@ -83,32 +97,47 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
      * 
      * @param scopeId
      */
-    public AbstractKapuaUpdatableEntity(KapuaId scopeId)
-    {
+    public AbstractKapuaUpdatableEntity(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public Date getModifiedOn()
-    {
+    public Date getModifiedOn() {
         return modifiedOn;
     }
 
-    @Override
-    public KapuaId getModifiedBy()
-    {
-        return modifiedBy;
+    /**
+     * Set the modified on date
+     * 
+     * @param modifiedOn
+     */
+    public void setModifiedOn(Date modifiedOn) {
+        this.modifiedOn = modifiedOn;
     }
 
     @Override
-    public int getOptlock()
-    {
+    public KapuaId getModifiedBy() {
+        return modifiedBy;
+    }
+
+    /**
+     * Set the modified by identifier
+     * 
+     * @param modifiedBy
+     */
+    public void setModifiedBy(KapuaId modifiedBy) {
+        if (modifiedBy != null) {
+            this.modifiedBy = new KapuaEid(modifiedBy);
+        }
+    }
+
+    @Override
+    public int getOptlock() {
         return optlock;
     }
 
     @Override
-    public void setOptlock(int optlock)
-    {
+    public void setOptlock(int optlock) {
         this.optlock = optlock;
     }
 
@@ -120,14 +149,12 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
 
     @Override
     public Properties getEntityAttributes()
-        throws KapuaException
-    {
+            throws KapuaException {
         Properties props = new Properties();
         if (attributes != null) {
             try {
                 props.load(new StringReader(attributes));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 KapuaException.internalError(e);
             }
         }
@@ -136,15 +163,13 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
 
     @Override
     public void setEntityAttributes(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (props != null) {
             try {
                 StringWriter writer = new StringWriter();
                 props.store(writer, null);
                 attributes = writer.toString();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 KapuaException.internalError(e);
             }
         }
@@ -158,14 +183,12 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
 
     @Override
     public Properties getEntityProperties()
-        throws KapuaException
-    {
+            throws KapuaException {
         Properties props = new Properties();
         if (properties != null) {
             try {
                 props.load(new StringReader(properties));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 KapuaException.internalError(e);
             }
         }
@@ -174,15 +197,13 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
 
     @Override
     public void setEntityProperties(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (props != null) {
             try {
                 StringWriter writer = new StringWriter();
                 props.store(writer, null);
                 properties = writer.toString();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 KapuaException.internalError(e);
             }
         }
@@ -190,8 +211,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
 
     @Override
     protected void prePersistsAction()
-        throws KapuaException
-    {
+            throws KapuaException {
         super.prePersistsAction();
         this.modifiedBy = this.createdBy;
         this.modifiedOn = this.createdOn;
@@ -204,27 +224,8 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
      */
     @PreUpdate
     protected void preUpdateAction()
-        throws KapuaException
-    {
+            throws KapuaException {
         this.modifiedBy = (KapuaEid) KapuaSecurityUtils.getSession().getUserId();
         this.modifiedOn = new Date();
-    }
-    
-    /**
-     * Set the modified on date
-     * 
-     * @param modifiedOn
-     */
-    public void setModifiedOn(Date modifiedOn) {
-        this.modifiedOn = modifiedOn;
-    }
-    
-    /**
-     * Set the modified by identifier
-     * 
-     * @param modifiedBy
-     */
-    public void setModifiedBy(KapuaId modifiedBy) {
-        this.modifiedBy = (KapuaEid)modifiedBy;
     }
 }

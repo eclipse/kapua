@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -47,6 +48,8 @@ public class UserDAO extends ServiceDAO {
         userImpl.setDisplayName(userCreator.getDisplayName());
         userImpl.setEmail(userCreator.getEmail());
         userImpl.setPhoneNumber(userCreator.getPhoneNumber());
+        userImpl.setUserType(userCreator.getUserType());
+        userImpl.setExternalId(userCreator.getExternalId());
 
         return ServiceDAO.create(em, userImpl);
     }
@@ -73,8 +76,11 @@ public class UserDAO extends ServiceDAO {
      * 
      * @param em
      * @param userId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link User} is not found.
      */
-    public static void delete(EntityManager em, KapuaId userId) {
+    public static void delete(EntityManager em, KapuaId userId)
+            throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, UserImpl.class, userId);
     }
 

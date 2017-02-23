@@ -17,31 +17,76 @@ BASEDIR=$(dirname "$0")
 KAPUA_BOX_TMP_DIR=$BASEDIR/kapua-box-tmp
 KAPUA_BOX_NAME=trusty64/kapua-dev-box-0.1
 
-echo 'Creating base kapua box named ' $KAPUA_BOX_NAME ' ...'
+KAPUA_BOX_EXISTS=$(vagrant box list | grep $KAPUA_BOX_NAME)
 
-vagrant box remove $KAPUA_BOX_NAME
+# Creating a new box may require to remove an existing one with the same name.
+# Ask the user to confirm the operation before to proceed.
 
-mkdir -p $KAPUA_BOX_TMP_DIR
+if [[ ! -z $KAPUA_BOX_EXISTS ]]
 
-cp $BASEDIR/baseBox-Vagrantfile $KAPUA_BOX_TMP_DIR/Vagrantfile
+then
 
-cd $KAPUA_BOX_TMP_DIR
+   echo
+   echo 'The following box was found: '$KAPUA_BOX_EXISTS
+   echo 'If you proceed it will be replaced. This operation requires'
+   echo 'access to the internet. Depending on your internet connection'
+   echo 'this operation may take some time.'
+   echo
+   
+   read -p "Proceed with replacement [y/N] ? " -r
 
-echo '========================'
-pwd
-vagrant up
+   echo
 
-vagrant package --output trusty64-kapua-dev-0.1.box
+   if [[ $REPLY =~ ^[Yy]$ ]]
 
-vagrant box add $KAPUA_BOX_NAME trusty64-kapua-dev-0.1.box
+   then
 
-vagrant destroy --force 
+      echo 'Removing base kapua box named: ' $KAPUA_BOX_NAME ' ...'
 
-# go up one level to allow the removal of the tmp dir
-cd ../..
+      vagrant box remove $KAPUA_BOX_NAME
+      
+   fi
 
-rm -rf $KAPUA_BOX_TMP_DIR
+fi
 
-cd $CURRDIR
+# If the box has been removed or it wasn't there before, then proceed 
+# with the creation. Otherwise the user hasn't confirmed the removal 
+# so skip.
 
-echo '... done.'
+KAPUA_BOX_EXISTS=$(vagrant box list | grep $KAPUA_BOX_NAME)
+
+if [[ -z "$KAPUA_BOX_EXISTS" ]]
+
+then
+
+   echo 'Creating base kapua box named ' $KAPUA_BOX_NAME ' ...'
+   
+   mkdir -p $KAPUA_BOX_TMP_DIR
+
+   cp $BASEDIR/baseBox-Vagrantfile $KAPUA_BOX_TMP_DIR/Vagrantfile
+
+   cd $KAPUA_BOX_TMP_DIR
+
+   echo '========================'
+      
+   pwd
+      
+   vagrant up
+
+   vagrant package --output trusty64-kapua-dev-0.1.box
+
+   vagrant box add $KAPUA_BOX_NAME trusty64-kapua-dev-0.1.box
+
+   vagrant destroy --force 
+
+   # go up one level to allow the removal of the tmp dir
+    
+   cd ../..
+
+   rm -rf $KAPUA_BOX_TMP_DIR
+
+   cd $CURRDIR
+
+   echo '... done.'
+
+fi

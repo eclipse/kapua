@@ -18,13 +18,16 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.TopicInfoStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsMessageField;
@@ -48,6 +51,7 @@ import org.eclipse.kapua.service.datastore.model.query.TopicInfoQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@KapuaProvider
 public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService implements TopicInfoStoreService
 {
     private static final long   serialVersionUID = 7839070776817998600L;
@@ -59,12 +63,13 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
     private static final long   DAY_MILLIS       = DAY_SECS * 1000;
 
     private AccountService      accountService;
-    AuthorizationService        authorizationService;
-    PermissionFactory           permissionFactory;
+    private AuthorizationService authorizationService;
+    private PermissionFactory permissionFactory;
 
-    public TopicInfoStoreServiceImpl()
-    {
-        super(TopicInfoStoreService.class.getName(), DatastoreDomain.DATASTORE, DatastoreEntityManagerFactory.getInstance());
+    private static final Domain datastoreDomain = new DatastoreDomain();
+
+    public TopicInfoStoreServiceImpl() {
+        super(TopicInfoStoreService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
@@ -94,8 +99,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
 
     @Override
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -139,8 +143,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
             EsTopicDAO.connection(EsClient.getcurrent())
                       .instance(everyIndex, EsSchema.TOPIC_TYPE_NAME)
                       .deleteById(id.toString());
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -149,8 +152,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
 
     @Override
     public TopicInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -182,8 +184,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
 
     @Override
     public TopicInfoListResult query(KapuaId scopeId, TopicInfoQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -211,8 +212,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
                                .query(query);
 
             return result;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -221,8 +221,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
 
     @Override
     public long count(KapuaId scopeId, TopicInfoQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -251,8 +250,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
                                .count(query);
 
             return result;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -261,8 +259,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
 
     @Override
     public void delete(KapuaId scopeId, TopicInfoQuery query)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -311,8 +308,7 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
                       .deleteByQuery(query);
 
             return;
-        }
-        catch (Exception exc) {
+        } catch (Exception exc) {
             // TODO manage exeception
             // CassandraUtils.handleException(e);
             throw KapuaException.internalError(exc);
@@ -320,18 +316,16 @@ public class TopicInfoStoreServiceImpl extends AbstractKapuaConfigurableService 
     }
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Check Access
         // TODO add enum for actions
-        Permission permission = permissionFactory.newPermission(DatastoreDomain.DATASTORE, action, scopeId);
+        Permission permission = permissionFactory.newPermission(datastoreDomain, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 
     private AccountInfo getAccountServicePlan(KapuaId scopeId)
-        throws KapuaException
-    {
+            throws KapuaException {
         Account account = accountService.find(scopeId);
         return new AccountInfo(account, new LocalServicePlan(this.getConfigValues(account.getId())));
     }

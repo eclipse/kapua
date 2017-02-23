@@ -12,8 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Credential creator service definition.
@@ -21,6 +29,13 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
+@XmlRootElement(name="credentialCreator")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "userId",
+                      "credentialType",
+                      "credentialPlainKey"},
+         factoryClass = CredentialXmlRegistry.class,
+         factoryMethod = "newCredentialCreator")
 public interface CredentialCreator extends KapuaEntityCreator<Credential>
 {
 
@@ -29,20 +44,44 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      * 
      * @return
      */
+    @XmlElement(name = "userId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getUserId();
 
+    /**
+     * Set the credential user id
+     * 
+     * @param userId
+     */
+    public void setUserId(KapuaId userId);
+    
     /**
      * Return the credential type.<br>
      * The returned object will depend on the authentication algorithm.
      * 
      * @return
      */
+    @XmlElement(name = "credentialType")
     public CredentialType getCredentialType();
 
+    /**
+     * Set the credential type
+     * 
+     * @param credentialType
+     */
+    public void setCredentialType(CredentialType credentialType);
     /**
      * Return the plain credential (unencrypted value).
      * 
      * @return
      */
+    @XmlElement(name = "credentialKey")
     public String getCredentialPlainKey();
+    
+    /**
+     * Set the credential plain key
+     * 
+     * @param plainKey
+     */
+    public void setCredentialPlainKey(String plainKey);
 }

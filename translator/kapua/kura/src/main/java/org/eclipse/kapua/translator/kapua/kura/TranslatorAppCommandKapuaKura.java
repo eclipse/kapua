@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
@@ -16,9 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
@@ -29,9 +27,6 @@ import org.eclipse.kapua.service.device.management.command.internal.CommandAppPr
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestPayload;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link CommandRequestMessage} to {@link KuraRequestMessage}
@@ -39,18 +34,12 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMessage, KuraRequestMessage>
-{
-    private static final String                              CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static Map<CommandAppProperties, CommandMetrics> propertiesDictionary;
+public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage> {
 
-    /**
-     * Constructor
-     */
-    public TranslatorAppCommandKapuaKura()
-    {
-        propertiesDictionary = new HashMap<>();
+    private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
+    private static final Map<CommandAppProperties, CommandMetrics> propertiesDictionary = new HashMap<>();
 
+    static {
         propertiesDictionary.put(CommandAppProperties.APP_NAME, CommandMetrics.APP_ID);
         propertiesDictionary.put(CommandAppProperties.APP_VERSION, CommandMetrics.APP_VERSION);
 
@@ -62,49 +51,17 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
         propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_TOUT, CommandMetrics.APP_METRIC_TOUT);
         propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_ASYNC, CommandMetrics.APP_METRIC_ASYNC);
         propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_PASSWORD, CommandMetrics.APP_METRIC_PASSWORD);
-
     }
 
-    @Override
-    public KuraRequestMessage translate(CommandRequestMessage kapuaMessage)
-        throws KapuaException
-    {
-        //
-        // Kura channel
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.find(kapuaMessage.getScopeId());
-
-        DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceService.find(kapuaMessage.getScopeId(),
-                                           kapuaMessage.getDeviceId());
-
-        KuraRequestChannel kuraRequestChannel = translate(kapuaMessage.getChannel());
-        kuraRequestChannel.setScope(account.getName());
-        kuraRequestChannel.setClientId(device.getClientId());
-
-        //
-        // Kura payload
-        KuraRequestPayload kuraPayload = translate(kapuaMessage.getPayload());
-
-        //
-        // return Kura Message
-        return new KuraRequestMessage(kuraRequestChannel,
-                                      kapuaMessage.getReceivedOn(),
-                                      kuraPayload);
-    }
-
-    private KuraRequestChannel translate(CommandRequestChannel kapuaChannel)
-        throws KapuaException
-    {
+    protected KuraRequestChannel translateChannel(CommandRequestChannel kapuaChannel) throws KapuaException {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
         appIdSb.append(propertiesDictionary.get(CommandAppProperties.APP_NAME).getValue())
-               .append("-")
-               .append(propertiesDictionary.get(CommandAppProperties.APP_VERSION).getValue());
+                .append("-")
+                .append(propertiesDictionary.get(CommandAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
@@ -115,9 +72,7 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
         return kuraRequestChannel;
     }
 
-    private KuraRequestPayload translate(CommandRequestPayload kapuaPayload)
-        throws KapuaException
-    {
+    protected KuraRequestPayload translatePayload(CommandRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         //
@@ -150,14 +105,12 @@ public class TranslatorAppCommandKapuaKura extends Translator<CommandRequestMess
     }
 
     @Override
-    public Class<CommandRequestMessage> getClassFrom()
-    {
+    public Class<CommandRequestMessage> getClassFrom() {
         return CommandRequestMessage.class;
     }
 
     @Override
-    public Class<KuraRequestMessage> getClassTo()
-    {
+    public Class<KuraRequestMessage> getClassTo() {
         return KuraRequestMessage.class;
     }
 

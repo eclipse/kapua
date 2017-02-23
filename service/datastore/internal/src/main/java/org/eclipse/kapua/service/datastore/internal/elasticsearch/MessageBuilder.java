@@ -7,8 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
@@ -26,14 +25,12 @@ import org.eclipse.kapua.service.datastore.model.query.MessageFetchStyle;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 
-public class MessageBuilder
-{
+public class MessageBuilder {
 
     private Message message;
 
     public MessageBuilder build(SearchHit searchHit, MessageFetchStyle fetchStyle)
-        throws KapuaInvalidTopicException, ParseException
-    {
+            throws KapuaInvalidTopicException, ParseException {
 
         String account = searchHit.getFields().get(EsSchema.MESSAGE_ACCOUNT).getValue();
         String asset = searchHit.getFields().get(EsSchema.MESSAGE_AS_NAME).getValue();
@@ -105,9 +102,9 @@ public class MessageBuilder
         if (source.get(EsSchema.MESSAGE_MTR) != null) {
 
             Map<String, Object> metrics = (Map<String, Object>) source.get(EsSchema.MESSAGE_MTR);
-            
+
             Map<String, Object> payloadMetrics = new HashMap<String, Object>();
-            
+
             String[] metricNames = metrics.keySet().toArray(new String[] {});
             for (String metricsName : metricNames) {
                 Map<String, Object> metricValue = (Map<String, Object>) metrics.get(metricsName);
@@ -118,7 +115,7 @@ public class MessageBuilder
                         payloadMetrics.put(EsUtils.restoreMetricName(metricsName), value);
                 }
             }
-            
+
             payload.setMetrics(payloadMetrics);
         }
 
@@ -131,15 +128,13 @@ public class MessageBuilder
             payload.setBody(body);
         }
 
-        if (payload != null)
-            tmpMessage.setPayload(payload);
+        tmpMessage.setPayload(payload);
 
         this.message = tmpMessage;
         return this;
     }
 
-    public Message getMessage()
-    {
+    public Message getMessage() {
         return message;
     }
 }

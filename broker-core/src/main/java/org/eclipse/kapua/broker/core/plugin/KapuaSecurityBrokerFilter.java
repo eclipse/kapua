@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.login.CredentialException;
@@ -45,6 +44,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
+import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -62,6 +62,7 @@ import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCo
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
@@ -71,7 +72,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCrea
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
-import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
 import org.eclipse.kapua.service.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +100,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private Map<String, ConnectorDescriptor> connectorsDescriptorMap;
 
-    private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<String, ConnectionId>();
+    private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<>();
+
+    private static final Domain brokerDomain = new BrokerDomain();
+    private static final Domain datastoreDomain = new DatastoreDomain();
+    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
 
     // login
     private Counter metricLoginSuccess;
@@ -299,7 +303,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             // Build KapuaUsername
             // User username = User.parse(username);//KapuaUserName
 
-            logger.info("User name {} - client id {}", new Object[] { username, clientId });
+            logger.info("User name {} - client id: {}, connection id: {}", username, clientId, connectionId);
 
             Context loginPreCheckTimeContext = metricLoginPreCheckTime.time();
             // 1) validate client id
@@ -361,13 +365,13 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 Context loginCheckAccessTimeContext = metricLoginCheckAccessTime.time();
                 boolean[] hasPermissions = new boolean[] {
                         // TODO check the permissions... move them to a constants class?
-                        authorizationService.isPermitted(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE, Actions.connect, scopeId)),
-                        authorizationService.isPermitted(permissionFactory.newPermission(DeviceManagementDomain.DEVICE_MANAGEMENT, Actions.write, scopeId)),
-                        authorizationService.isPermitted(permissionFactory.newPermission(DatastoreDomain.DATA_STORE, Actions.read, scopeId)),
-                        authorizationService.isPermitted(permissionFactory.newPermission(DatastoreDomain.DATA_STORE, Actions.write, scopeId))
+                        authorizationService.isPermitted(permissionFactory.newPermission(brokerDomain, Actions.connect, scopeId)),
+                        authorizationService.isPermitted(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId)),
+                        authorizationService.isPermitted(permissionFactory.newPermission(datastoreDomain, Actions.read, scopeId)),
+                        authorizationService.isPermitted(permissionFactory.newPermission(datastoreDomain, Actions.write, scopeId))
                 };
                 if (!hasPermissions[AclConstants.BROKER_CONNECT_IDX]) {
-                    throw new KapuaIllegalAccessException(permissionFactory.newPermission(DeviceLifecycleDomain.DEVICE_LIFECYCLE, Actions.connect, scopeId).toString());
+                    throw new KapuaIllegalAccessException(permissionFactory.newPermission(brokerDomain, Actions.connect, scopeId).toString());
                 }
                 loginCheckAccessTimeContext.stop();
 
@@ -376,16 +380,14 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
                 // 4) find device
                 Context loginFindClientIdTimeContext = metricLoginFindClientIdTime.time();
-                deviceConnection = deviceConnectionService.findByClientId(scopeId, clientId);
+                deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                 loginFindClientIdTimeContext.stop();
 
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
 
                 // send connect message
-                ConnectionId previousConnectionId = connectionMap.get(fullClientId);
+                ConnectionId previousConnectionId = connectionMap.put(fullClientId, info.getConnectionId());
                 boolean stealingLinkDetected = (previousConnectionId != null);
-                // Update map for stealing link detection on disconnect
-                connectionMap.put(fullClientId, info.getConnectionId());
                 if (deviceConnection == null) {
                     DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(scopeId);
                     deviceConnectionCreator.setClientId(clientId);
@@ -393,14 +395,15 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     deviceConnectionCreator.setProtocol("MQTT");
                     deviceConnectionCreator.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnectionCreator.setUserId(userId);
-                    deviceConnection = deviceConnectionService.create(deviceConnectionCreator);
+                    deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.create(deviceConnectionCreator));
                 } else {
                     deviceConnection.setClientIp(clientIp);
                     deviceConnection.setProtocol("MQTT");
                     deviceConnection.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnection.setUserId(userId);
                     deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
-                    deviceConnectionService.update(deviceConnection);
+                    final DeviceConnection deviceConnectionToUpdate = deviceConnection;
+                    KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.update(deviceConnectionToUpdate));
                     // TODO implement the banned status
                     // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
                     // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
@@ -424,7 +427,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
             logAuthDestinationToLog(authDestinations);
 
-            ConnectorDescriptor connectorDescriptor = connectorsDescriptorMap.get((((TransportConnector) context.getConnector()).getName()));
+            final String connectorName = (((TransportConnector) context.getConnector()).getName());
+            final ConnectorDescriptor connectorDescriptor = connectorsDescriptorMap.get(connectorName);
+            if (connectorDescriptor == null) {
+                throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
+            }
             KapuaSecurityContext securityCtx = new KapuaSecurityContext(principal,
                     authMap,
                     (deviceConnection != null ? deviceConnection.getId() : null),
@@ -513,7 +520,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     if (connectionId != null) {
                         stealingLinkDetected = !connectionId.equals(info.getConnectionId());
                     } else {
-                        logger.error("Cannot find connection id for client id {} on connection map. Currect connection id is {} - IP: {}",
+                        logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
                                 new Object[] { clientId, info.getConnectionId(), info.getClientIp() });
                     }
                     if (stealingLinkDetected) {
@@ -522,34 +529,28 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                         logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
                                 new Object[] { clientId, accountId, connectionId, info.getConnectionId(), info.getClientIp() });
                     } else {
-                        DeviceConnection deviceConnection = null;
+                        final DeviceConnection deviceConnection;
                         try {
-                            deviceConnection = KapuaSecurityUtils.doPriviledge(new Callable<DeviceConnection>() {
-
-                                @Override
-                                public DeviceConnection call()
-                                        throws Exception {
-                                    return deviceConnectionService.findByClientId(scopeId, clientId);
-                                }
-                            });
+                            deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                         } catch (Exception e) {
                             throw new ShiroException("Error while looking for device connection on updating the device!", e);
                         }
-                        // the device connection must be not null
-                        // update device connection
-                        final DeviceConnection deviceConnectionToUpdate = deviceConnection;
-                        if (error == null) {
-                            deviceConnectionToUpdate.setStatus(DeviceConnectionStatus.DISCONNECTED);
-                        } else {
-                            deviceConnectionToUpdate.setStatus(DeviceConnectionStatus.MISSING);
-                        }
-                        try {
-                            KapuaSecurityUtils.doPriviledge(() -> {
-                                deviceConnectionService.update(deviceConnectionToUpdate);
-                                return null;
-                            });
-                        } catch (Exception e) {
-                            throw new ShiroException("Error while updating the device connection status!", e);
+                        if (deviceConnection != null) {
+                            // the device connection must be not null
+                            // update device connection
+                            if (error == null) {
+                                deviceConnection.setStatus(DeviceConnectionStatus.DISCONNECTED);
+                            } else {
+                                deviceConnection.setStatus(DeviceConnectionStatus.MISSING);
+                            }
+                            try {
+                                KapuaSecurityUtils.doPriviledge(() -> {
+                                    deviceConnectionService.update(deviceConnection);
+                                    return null;
+                                });
+                            } catch (Exception e) {
+                                throw new ShiroException("Error while updating the device connection status!", e);
+                            }
                         }
                     }
                     metricClientDisconnectionClient.inc();

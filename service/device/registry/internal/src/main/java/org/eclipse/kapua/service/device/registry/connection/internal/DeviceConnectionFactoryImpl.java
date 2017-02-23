@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -20,28 +21,24 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSumm
 
 /**
  * Device connection service factory implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory
-{
+@KapuaProvider
+public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
 
     @Override
-    public DeviceConnectionCreator newCreator(KapuaId scopeId)
-    {
+    public DeviceConnectionCreator newCreator(KapuaId scopeId) {
         return new DeviceConnectionCreatorImpl(scopeId);
     }
 
     @Override
-    public DeviceConnectionQuery newQuery(KapuaId scopeId)
-    {
+    public DeviceConnectionQuery newQuery(KapuaId scopeId) {
         return new DeviceConnectionQueryImpl(scopeId);
     }
 
     @Override
-    public DeviceConnectionSummary newConnectionSummary()
-    {
+    public DeviceConnectionSummary newConnectionSummary() {
         return new DeviceConnectionSummaryImpl();
     }
 }

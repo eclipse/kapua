@@ -43,9 +43,6 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin
 {
     private static Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
 
-    public KapuaBrokerSecurityPlugin()
-    {}
-
     public Broker installPlugin(Broker broker) throws Exception
     {
         logger.info(">> installPlugin {}", KapuaBrokerSecurityPlugin.class.getName());
@@ -66,7 +63,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin
         }
         catch (Throwable t) {
             logger.error("Error in plugin installation.", t);
-            throw (SecurityException) new SecurityException(t);
+            throw new SecurityException(t);
         }
     }
 

@@ -9,3 +9,6 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
+INSERT INTO athz_role
+	VALUES 
+		(1, 1, NOW(), 1, NOW(), 1, 'admin', 0, '','');

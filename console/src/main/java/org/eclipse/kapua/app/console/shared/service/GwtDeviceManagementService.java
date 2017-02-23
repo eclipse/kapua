@@ -20,9 +20,9 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCommandInput;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceCommandOutput;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtSnapshot;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.device.management.bundles.GwtBundle;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageInstallRequest;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageOperation;
 import org.eclipse.kapua.app.console.shared.model.device.management.packages.GwtPackageUninstallRequest;
@@ -148,13 +148,13 @@ public interface GwtDeviceManagementService extends RemoteService {
     //
     // Bundles
     //
-    public ListLoadResult<GwtGroupedNVPair> findBundles(GwtDevice device)
+    public ListLoadResult<GwtBundle> findBundles(GwtDevice device)
             throws GwtKapuaException;
 
-    public void startBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtGroupedNVPair pair)
+    public void startBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
             throws GwtKapuaException;
 
-    public void stopBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtGroupedNVPair pair)
+    public void stopBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
             throws GwtKapuaException;
 
     //

@@ -34,7 +34,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "device")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "clientId",
+@XmlType(propOrder = {
+        "groupId",
+        "clientId",
         "connectionId",
         "status",
         "displayName",
@@ -78,9 +80,25 @@ public interface Device extends KapuaUpdatableEntity {
 
     public static final String TYPE = "dvce";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
+
+    /**
+     * Get the group identifier
+     * 
+     * @return
+     */
+    @XmlElement(name = "groupId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getGroupId();
+
+    /**
+     * Set the group identifier
+     * 
+     * @param groupId
+     */
+    public void setGroupId(KapuaId groupId);
 
     /**
      * Get the client identifier

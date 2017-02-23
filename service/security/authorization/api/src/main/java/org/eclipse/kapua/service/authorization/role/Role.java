@@ -12,50 +12,50 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import java.util.Set;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 
 /**
- * Role entity definition.
+ * Role entity definition.<br>
+ * Role is a collection of {@link RolePermission}s that can be assigned to one or more {@link User}s (using {@link AccessInfo}).<br>
+ * {@link Role#getName()} must be unique within the scope.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface Role extends KapuaEntity
-{
+@XmlRootElement(name = "role")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "name" }, //
+        factoryClass = RoleXmlRegistry.class, factoryMethod = "newRole")
+public interface Role extends KapuaUpdatableEntity {
+
     public static final String TYPE = "role";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
     /**
-     * Set the role name
+     * Sets the {@link Role} name.<br>
+     * It must be unique within the scope.
      * 
      * @param name
+     *            The name of the {@link Role}
+     * @since 1.0.0
      */
     public void setName(String name);
 
     /**
-     * Get the role name
+     * Gets the {@link Role} name.
      * 
-     * @return
+     * @return The {@link Role} name.
+     * @since 1.0.0
      */
+    @XmlElement(name = "name")
     public String getName();
-
-    /**
-     * Set the permissions set
-     * 
-     * @param permissions
-     */
-    public void setPermissions(Set<RolePermission> permissions);
-
-    /**
-     * Get the permissions set
-     * 
-     * @return
-     */
-    public Set<RolePermission> getPermissions();
 }

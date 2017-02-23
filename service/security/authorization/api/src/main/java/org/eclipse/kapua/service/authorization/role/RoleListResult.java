@@ -12,15 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
- * Role result list definition.
+ * {@link Role} list result definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface RoleListResult extends KapuaListResult<Role>
-{
+@XmlRootElement(name = "rolePermissions")
+@XmlType(factoryClass = RoleXmlRegistry.class, 
+        factoryMethod = "newRoleListResult")
+public interface RoleListResult extends KapuaListResult<Role> {
 
 }

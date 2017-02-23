@@ -36,6 +36,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED("authentication.credential.jwt.audience.allowed"), //
     AUTHENTICATION_CREDENTIAL_JWT_CACHE_ENABLE("authentication.credential.jwt.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_JWT_CACHE_CACHE_TTL("authentication.credential.jwt.cache.ttl"), //
+    AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED("authentication.credential.jwt.issuer.allowed"),
 
     AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH("authentication.credential.apiKey.pre.length"),//
     AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR("authentication.credential.apiKey.pre.separator"),//

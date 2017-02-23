@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.credential;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
@@ -48,4 +49,10 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @since 1.0
      */
     public Credential findByApiKey(String tokenApiKey) throws KapuaException;
+
+    /**
+     * Queries for all users
+     */
+    public CredentialListResult query(KapuaQuery<Credential> query)
+            throws KapuaException;
 }

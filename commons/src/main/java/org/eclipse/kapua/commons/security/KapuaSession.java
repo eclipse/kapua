@@ -7,8 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
@@ -22,7 +21,7 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
  * Kapua session
- * 
+ *
  * @since 1.0
  */
 public class KapuaSession implements Serializable {
@@ -37,6 +36,7 @@ public class KapuaSession implements Serializable {
     // TODO to be moved inside configuration service or something like that "fully.qualified.classname.methodname" (<init> for the constructor)
     static {
         trustedClasses.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
+        trustedClasses.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPriviledge");
     }
 
     /**
@@ -69,7 +69,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Creates a {@link KapuaSession} copy with trusted mode flag set to true (to be used only from trusted classes)
-     * 
+     *
      * @return
      */
     public static KapuaSession createFrom() {
@@ -88,7 +88,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Check if the caller is included in the caller list allowed to change the trusted mode flag.
-     * 
+     *
      * @return
      */
     private final static boolean isCallerClassTrusted() {
@@ -107,7 +107,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Constructs a {@link KapuaSession} with given parameters
-     * 
+     *
      * @param accessToken
      * @param runAsScopeId
      * @param scopeId
@@ -124,7 +124,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Get the access token
-     * 
+     *
      * @return
      */
     public AccessToken getAccessToken() {
@@ -133,7 +133,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Get the scope identifier
-     * 
+     *
      * @return
      */
     public KapuaId getScopeId() {
@@ -142,7 +142,7 @@ public class KapuaSession implements Serializable {
 
     /**
      * Get the user identifier
-     * 
+     *
      * @return
      */
     public KapuaId getUserId() {
@@ -152,7 +152,7 @@ public class KapuaSession implements Serializable {
     /**
      * Set the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
-     * 
+     *
      * @return
      */
     final void setTrustedMode(boolean trustedMode) {
@@ -162,7 +162,7 @@ public class KapuaSession implements Serializable {
     /**
      * Return the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
-     * 
+     *
      * @return
      */
     public final boolean isTrustedMode() {

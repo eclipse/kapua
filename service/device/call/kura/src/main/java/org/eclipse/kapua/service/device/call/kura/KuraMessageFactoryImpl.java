@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.call.DeviceMessageFactory;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
@@ -29,6 +30,7 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
  * @since 1.0
  *
  */
+@KapuaProvider
 @SuppressWarnings("rawtypes")
 public class KuraMessageFactoryImpl implements DeviceMessageFactory
 {

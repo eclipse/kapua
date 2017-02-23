@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.*;
 
 /**
  * Credential factory service implementation.
@@ -22,12 +22,32 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
  * @since 1.0
  * 
  */
+@KapuaProvider
 public class CredentialFactoryImpl implements CredentialFactory
 {
-
     @Override
     public CredentialCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey)
     {
         return new CredentialCreatorImpl(scopeId, userId, credentialType, credentialKey);
+    }
+
+    @Override
+    public CredentialListResult newCredentialListResult() {
+        return new CredentialListResultImpl();
+    }
+
+    @Override
+    public Credential newCredential() {
+        return new CredentialImpl();
+    }
+
+    @Override
+    public Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
+        return new CredentialImpl(scopeId, userId, credentialType, credentialKey);
+    }
+
+    @Override
+    public CredentialQuery newQuery(KapuaId scopeId) {
+        return new CredentialQueryImpl(scopeId);
     }
 }

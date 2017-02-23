@@ -19,11 +19,11 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.Resources;
 import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
+import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.client.widget.DateRangeSelector;
-import org.eclipse.kapua.app.console.client.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -221,12 +221,12 @@ public class DeviceTabHistory extends LayoutContainer {
             }
         };
 
-        column = new ColumnConfig("actionType", MSGS.deviceEventType(), 50);
+        column = new ColumnConfig("actionType", MSGS.deviceEventActionType(), 50);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.CENTER);
         columns.add(column);
 
-        column = new ColumnConfig("responseCode", MSGS.deviceEventType(), 50);
+        column = new ColumnConfig("responseCode", MSGS.deviceEventResponseCode(), 50);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.CENTER);
         columns.add(column);

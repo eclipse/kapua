@@ -15,23 +15,27 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
- * Jdbc connection url resolver service reference implementation
+ * Configurable JDBC connection URL resolver implementation. Can be configured using Kubernetes service discovery or
+ * properties.
  * 
  * @since 1.0
  *
  */
 public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
 
+    private final SystemSetting config = SystemSetting.getInstance();
+
     @Override
     public String connectionUrl() {
-        SystemSetting config = SystemSetting.getInstance();
-
         // Mandatory connection parameters
         String dbName = config.getString(SystemSettingKey.DB_NAME);
         String dbConnectionScheme = config.getString(SystemSettingKey.DB_CONNECTION_SCHEME);
-        String dbConnectionHost = config.getString(SystemSettingKey.DB_CONNECTION_HOST);
-        String dbConnectionPort = config.getString(SystemSettingKey.DB_CONNECTION_PORT);
+        String dbConnectionHost = firstNonNull(System.getenv("SQL_SERVICE_HOST"), config.getString(SystemSettingKey.DB_CONNECTION_HOST));
+        String dbConnectionPort = firstNonNull(config.getString(SystemSettingKey.DB_CONNECTION_PORT), "3306");
 
         StringBuilder dbConnectionString = new StringBuilder().append(dbConnectionScheme)
                 .append("://")
@@ -43,8 +47,8 @@ public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnect
                 .append(";");
 
         // Optional connection parameters
-        String schema = config.getString(SystemSettingKey.DB_SCHEMA);
-        if (schema != null) {
+        String schema = firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        if (isNotBlank(schema)) {
         	dbConnectionString.append("schema=")
         		.append(schema)
         		.append(";");
@@ -54,7 +58,6 @@ public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnect
 
         }
         return dbConnectionString.toString();
-
     }
     
 }

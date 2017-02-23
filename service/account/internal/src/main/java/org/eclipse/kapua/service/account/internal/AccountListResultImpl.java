@@ -18,11 +18,10 @@ import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
  * Account list result implementation.
- * 
+ *
  * @since 1.0
- * 
  */
-public class AccountListResultImpl extends KapuaListResultImpl<Account> implements AccountListResult 
-{
-	private static final long serialVersionUID = -5118004898345748297L;
+public class AccountListResultImpl extends KapuaListResultImpl<Account> implements AccountListResult {
+
+    private static final long serialVersionUID = -5118004898345748297L;
 }

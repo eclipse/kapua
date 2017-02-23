@@ -39,15 +39,6 @@
             <artifactId>kapua-device-commons</artifactId>
         </dependency>
         
-         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-idgenerator-api</artifactId>
-        </dependency>
-         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-idgenerator-sequence</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

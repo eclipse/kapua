@@ -19,11 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.DataConfiguration;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.SystemConfiguration;
+import org.apache.commons.configuration.*;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +45,9 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      */
     protected AbstractKapuaSetting(String configResourceName)
     {
-        // env+properties configuration
-        CompositeConfiguration compositeConfig = new CompositeConfiguration();
+        CompositeConfiguration compositeConfig = new EnvFriendlyConfiguration();
         compositeConfig.addConfiguration(new SystemConfiguration());
+        compositeConfig.addConfiguration(new EnvironmentConfiguration());
         try {
             URL configLocalUrl = ResourceUtils.getResource(configResourceName);
             compositeConfig.addConfiguration(new PropertiesConfiguration(configLocalUrl));

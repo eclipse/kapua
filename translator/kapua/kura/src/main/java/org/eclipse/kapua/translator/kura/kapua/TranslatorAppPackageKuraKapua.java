@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -79,6 +80,10 @@ public class TranslatorAppPackageKuraKapua extends Translator<KuraResponseMessag
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
+        }
 
         PackageResponseChannel responseChannel = translate(kuraMessage.getChannel());
 

@@ -22,9 +22,9 @@ import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.device.management.bundles.GwtBundle;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceManagementServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenService;
@@ -81,9 +81,9 @@ public class DeviceTabBundles extends LayoutContainer {
     private Button m_startButton;
     private Button m_stopButton;
 
-    private Grid<GwtGroupedNVPair> m_grid;
-    private ListStore<GwtGroupedNVPair> m_store;
-    private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
+    private Grid<GwtBundle> m_grid;
+    private ListStore<GwtBundle> m_store;
+    private BaseListLoader<ListLoadResult<GwtBundle>> m_loader;
 
     protected boolean refreshProcess;
 
@@ -224,8 +224,8 @@ public class DeviceTabBundles extends LayoutContainer {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (m_selectedDevice.isOnline()) {
-                    final GwtGroupedNVPair pair = m_grid.getSelectionModel().getSelectedItem();
-                    String bundleName = pair.getName();
+                    final GwtBundle gwtBundle = m_grid.getSelectionModel().getSelectedItem();
+                    String bundleName = gwtBundle.getName();
                     MessageBox.confirm(MSGS.confirm(),
                             MSGS.deviceStopBundle(bundleName),
                             new Listener<MessageBoxEvent>() {
@@ -249,7 +249,7 @@ public class DeviceTabBundles extends LayoutContainer {
                                             public void onSuccess(GwtXSRFToken token) {
                                                 gwtDeviceManagementService.stopBundle(token,
                                                         m_selectedDevice,
-                                                        pair,
+                                                        gwtBundle,
                                                         callback);
                                             }
                                         });
@@ -276,10 +276,10 @@ public class DeviceTabBundles extends LayoutContainer {
     }
 
     private void initGrid() {
-        RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
+        RpcProxy<ListLoadResult<GwtBundle>> proxy = new RpcProxy<ListLoadResult<GwtBundle>>() {
 
             @Override
-            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
+            protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtBundle>> callback) {
                 if (m_selectedDevice != null) {
                     if (m_selectedDevice.isOnline()) {
                         gwtDeviceManagementService.findBundles(m_selectedDevice, callback);
@@ -290,10 +290,10 @@ public class DeviceTabBundles extends LayoutContainer {
                 }
             }
         };
-        m_loader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
+        m_loader = new BaseListLoader<ListLoadResult<GwtBundle>>(proxy);
         m_loader.addLoadListener(new DataLoadListener());
 
-        m_store = new ListStore<GwtGroupedNVPair>(m_loader);
+        m_store = new ListStore<GwtBundle>(m_loader);
 
         ColumnConfig id = new ColumnConfig("id", MSGS.deviceBndId(), 10);
         ColumnConfig name = new ColumnConfig("name", MSGS.deviceBndName(), 50);
@@ -312,21 +312,21 @@ public class DeviceTabBundles extends LayoutContainer {
         view.setForceFit(true);
         view.setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
 
-        m_grid = new Grid<GwtGroupedNVPair>(m_store, cm);
+        GridSelectionModel<GwtBundle> selectionModel = new GridSelectionModel<GwtBundle>();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+
+        m_grid = new Grid<GwtBundle>(m_store, cm);
         m_grid.setView(view);
         m_grid.setBorders(false);
         m_grid.setLoadMask(true);
         m_grid.setStripeRows(true);
-
-        GridSelectionModel<GwtGroupedNVPair> selectionModel = new GridSelectionModel<GwtGroupedNVPair>();
-        selectionModel.setSelectionMode(SelectionMode.SINGLE);
         m_grid.setSelectionModel(selectionModel);
-        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtGroupedNVPair>() {
+        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtBundle>() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent<GwtGroupedNVPair> se) {
+            public void selectionChanged(SelectionChangedEvent<GwtBundle> se) {
                 if (m_grid.getSelectionModel().getSelectedItem() != null) {
-                    GwtGroupedNVPair selectedBundle = m_grid.getSelectionModel().getSelectedItem();
+                    GwtBundle selectedBundle = m_grid.getSelectionModel().getSelectedItem();
                     if ("bndActive".equals(selectedBundle.getStatus())) {
                         m_startButton.disable();
                         m_stopButton.enable();

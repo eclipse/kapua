@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import java.util.HashMap;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
@@ -37,13 +38,11 @@ import org.eclipse.kapua.translator.Translator;
  * @since 1.0
  *
  */
-public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDataMessage>
-{
+public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDataMessage> {
 
     @Override
     public KapuaDataMessage translate(KuraDataMessage kuraDataMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Kapua Channel
         KapuaDataChannel kapuaDataChannel = translate(kuraDataMessage.getChannel());
@@ -58,9 +57,13 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
         AccountService accountService = locator.getService(AccountService.class);
         Account account = accountService.findByName(kuraDataMessage.getChannel().getScope());
 
+        if (account == null) {
+            throw new KapuaEntityNotFoundException(Account.TYPE, kuraDataMessage.getChannel().getScope());
+        }
+
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
         Device device = deviceRegistryService.findByClientId(account.getId(),
-                                                             kuraDataMessage.getChannel().getClientId());
+                kuraDataMessage.getChannel().getClientId());
 
         KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
         kapuaDataMessage.setScopeId(account.getId());
@@ -78,8 +81,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     }
 
     private KapuaDataChannel translate(KuraChannel kuraChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaDataChannel kapuaChannel = new KapuaDataChannelImpl();
         kapuaChannel.setSemanticParts(kuraChannel.getSemanticChannelParts());
 
@@ -89,8 +91,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     }
 
     private KapuaDataPayload translate(KuraDataPayload kuraPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KapuaDataPayload kapuaPayload = new KapuaDataPayloadImpl();
 
         if (kuraPayload.getMetrics() != null) {
@@ -107,14 +108,12 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     }
 
     @Override
-    public Class<KuraDataMessage> getClassFrom()
-    {
+    public Class<KuraDataMessage> getClassFrom() {
         return KuraDataMessage.class;
     }
 
     @Override
-    public Class<KapuaDataMessage> getClassTo()
-    {
+    public Class<KapuaDataMessage> getClassTo() {
         return KapuaDataMessage.class;
     }
 

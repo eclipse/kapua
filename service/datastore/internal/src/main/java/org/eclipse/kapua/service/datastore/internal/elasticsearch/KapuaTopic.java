@@ -1,20 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
- *
+ * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * <p>
  * Contributors:
- *     Eurotech - initial API and implementation
- *
+ * Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Models a topic for messages posted to the Kapua platform.<br>
@@ -22,157 +20,155 @@ import org.slf4j.LoggerFactory;
  * system topic starts with the $EDC account.
  */
 public class KapuaTopic {
-	
-	@SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(KapuaTopic.class);
-	
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory.getLogger(KapuaTopic.class);
+
     public static final String MULTI_LEVEL_WCARD = "#";
     public static final String SINGLE_LEVEL_WCARD = "+";
     public static final String TOPIC_SEPARATOR = "/";
 
     public static final String SYS_ACCOUNT = "$SYS";
-	public static final String EDC_ACCOUNT = "$EDC";
-	public static final String ALERT_TOPIC = "ALERT";
+    public static final String EDC_ACCOUNT = "$EDC";
+    public static final String ALERT_TOPIC = "ALERT";
 
-	private String m_account;
-	private String m_asset;
-	private String m_semanticTopic;
-	private String m_fullTopic;
-	private String[] m_topicParts;
+    private String m_account;
+    private String m_asset;
+    private String m_semanticTopic;
+    private String m_fullTopic;
+    private String[] m_topicParts;
 
-    public KapuaTopic(String accountName, String asset, String semTopic) throws KapuaInvalidTopicException
-    {
+    public KapuaTopic(String accountName, String asset, String semTopic) throws KapuaInvalidTopicException {
         this(new StringBuilder().append(accountName)
-                                .append(TOPIC_SEPARATOR)
-                                .append(asset)
-                                .append(TOPIC_SEPARATOR)
-                                .append(semTopic)
-                                .toString());
+                .append(TOPIC_SEPARATOR)
+                .append(asset)
+                .append(TOPIC_SEPARATOR)
+                .append(semTopic)
+                .toString());
     }
 
-	public KapuaTopic(String fullTopic) throws KapuaInvalidTopicException {
-	    
-		m_fullTopic = fullTopic;
-		
+    public KapuaTopic(String fullTopic) throws KapuaInvalidTopicException {
+
+        m_fullTopic = fullTopic;
+
         if (fullTopic == null ||
-            fullTopic.compareTo(MULTI_LEVEL_WCARD) == 0) {
+                fullTopic.compareTo(MULTI_LEVEL_WCARD) == 0) {
             return;
         }
-		
-		m_topicParts = fullTopic.split(TOPIC_SEPARATOR);
-		
-		if (m_topicParts.length == 0) {
-			return;
-		}
-		
-		int accountIndex = 0;
-		if (m_topicParts[0].startsWith("$")) {
-			if (EDC_ACCOUNT.equals(m_topicParts[0])) {
-				accountIndex = 1;
-			} else {
-				return;
-			}
-		}
-		
-		// Either a data topic or a control ($EDC) topic
-		if ((m_topicParts.length - accountIndex) < 2) {
-			// Special case: The topic is too small
-			String account = null;
-			if (m_topicParts.length > accountIndex) {
-				account = m_topicParts[accountIndex]; 
-			}
-			throw new KapuaInvalidTopicException(account, fullTopic);
-		}
-		
-		// Account and asset parts exist
-		m_account = m_topicParts[accountIndex];
-		m_asset   = m_topicParts[accountIndex + 1];
-		
-		if ((m_topicParts.length - accountIndex) == 2) {
-			// Special case: The topic does not have a semantic part
-			throw new KapuaInvalidTopicException(m_account, fullTopic);
-		}
-		
-		// Semantic topic exists at offset
-		int offset = accountIndex * (EDC_ACCOUNT.length() + 1);
-		
-		m_semanticTopic = fullTopic.substring(offset+m_account.length()+m_asset.length()+2);		
-	}
 
-	public boolean isSystemTopic() {
-		return SYS_ACCOUNT.equals(m_topicParts[0]);
-	}
-	
-	public boolean isKapuaTopic() {
-		return EDC_ACCOUNT.equals(m_topicParts[0]);
-	}
-	
-	public boolean isAlertTopic() {
-		return ALERT_TOPIC.equals(m_topicParts[2]);
-	}
-    
+        m_topicParts = fullTopic.split(TOPIC_SEPARATOR);
+
+        if (m_topicParts.length == 0) {
+            return;
+        }
+
+        int accountIndex = 0;
+        if (m_topicParts[0].startsWith("$")) {
+            if (EDC_ACCOUNT.equals(m_topicParts[0])) {
+                accountIndex = 1;
+            } else {
+                return;
+            }
+        }
+
+        // Either a data topic or a control ($EDC) topic
+        if ((m_topicParts.length - accountIndex) < 2) {
+            // Special case: The topic is too small
+            String account = null;
+            if (m_topicParts.length > accountIndex) {
+                account = m_topicParts[accountIndex];
+            }
+            throw new KapuaInvalidTopicException(account, fullTopic);
+        }
+
+        // Account and asset parts exist
+        m_account = m_topicParts[accountIndex];
+        m_asset = m_topicParts[accountIndex + 1];
+
+        if ((m_topicParts.length - accountIndex) == 2) {
+            // Special case: The topic does not have a semantic part
+            throw new KapuaInvalidTopicException(m_account, fullTopic);
+        }
+
+        // Semantic topic exists at offset
+        int offset = accountIndex * (EDC_ACCOUNT.length() + 1);
+
+        m_semanticTopic = fullTopic.substring(offset + m_account.length() + m_asset.length() + 2);
+    }
+
+    public boolean isSystemTopic() {
+        return SYS_ACCOUNT.equals(m_topicParts[0]);
+    }
+
+    public boolean isKapuaTopic() {
+        return EDC_ACCOUNT.equals(m_topicParts[0]);
+    }
+
+    public boolean isAlertTopic() {
+        return ALERT_TOPIC.equals(m_topicParts[2]);
+    }
+
     public boolean isAnyAccount() {
         return SINGLE_LEVEL_WCARD.equals(this.getAccount());
     }
-    
+
     public boolean isAnyAsset() {
         return SINGLE_LEVEL_WCARD.equals(this.getAsset());
     }
-    
+
     public boolean isAnySubtopic() {
         final String multilevelAnySubtopic = String.format("%s%s", TOPIC_SEPARATOR, MULTI_LEVEL_WCARD);
         boolean isAnySubtopic = this.getSemanticTopic().endsWith(multilevelAnySubtopic) ||
-                                MULTI_LEVEL_WCARD.equals(this.getSemanticTopic());
-        
+                MULTI_LEVEL_WCARD.equals(this.getSemanticTopic());
+
         return isAnySubtopic;
-    }	
-	
-	public String getAccount() { 
-		return m_account;
-	}
+    }
 
-	public String getAsset() {
-		return m_asset;
-	}
+    public String getAccount() {
+        return m_account;
+    }
 
-	public String getSemanticTopic() {
-		return m_semanticTopic;
-	}
+    public String getAsset() {
+        return m_asset;
+    }
 
-	public String getLeafName() {
-		int iLastSlash = m_semanticTopic.lastIndexOf(TOPIC_SEPARATOR);
-		return iLastSlash != -1 ? m_semanticTopic.substring(iLastSlash+1) : m_semanticTopic;
-	}
+    public String getSemanticTopic() {
+        return m_semanticTopic;
+    }
 
-	public String getParentTopic() {
-		int iLastSlash = m_semanticTopic.lastIndexOf(TOPIC_SEPARATOR); 
-		return iLastSlash != -1 ? m_semanticTopic.substring(0, iLastSlash) : null;
-	}
+    public String getLeafName() {
+        int iLastSlash = m_semanticTopic.lastIndexOf(TOPIC_SEPARATOR);
+        return iLastSlash != -1 ? m_semanticTopic.substring(iLastSlash + 1) : m_semanticTopic;
+    }
 
-	public String getGrandParentTopic() {
-		String parentTopic = getParentTopic();
-		if (parentTopic != null) {
-			int iLastSlash = parentTopic.lastIndexOf(TOPIC_SEPARATOR); 
-			return iLastSlash != -1 ? parentTopic.substring(0, iLastSlash) : null;
-		}
-		else {
-			return null;
-		}
-	}
+    public String getParentTopic() {
+        int iLastSlash = m_semanticTopic.lastIndexOf(TOPIC_SEPARATOR);
+        return iLastSlash != -1 ? m_semanticTopic.substring(0, iLastSlash) : null;
+    }
 
-	public String getFullTopic() {
-		return m_fullTopic;
-	}
-	
-	public String[] getTopicParts() {
-		return m_topicParts;
-	}
+    public String getGrandParentTopic() {
+        String parentTopic = getParentTopic();
+        if (parentTopic != null) {
+            int iLastSlash = parentTopic.lastIndexOf(TOPIC_SEPARATOR);
+            return iLastSlash != -1 ? parentTopic.substring(0, iLastSlash) : null;
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public String toString() {
-		return m_fullTopic;
-	}
-	
+    public String getFullTopic() {
+        return m_fullTopic;
+    }
+
+    public String[] getTopicParts() {
+        return m_topicParts;
+    }
+
+    @Override
+    public String toString() {
+        return m_fullTopic;
+    }
+
 /*	
 	@Override
 	public int hashCode() {
@@ -352,5 +348,5 @@ public class KapuaTopic {
 			return false;
 		}
 	}
-*/	
+*/
 }

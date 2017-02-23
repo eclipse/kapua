@@ -16,12 +16,10 @@ import org.eclipse.kapua.KapuaErrorCode;
 
 /**
  * Device management error codes.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public enum DeviceManagementErrorCodes implements KapuaErrorCode
-{
+public enum DeviceManagementErrorCodes implements KapuaErrorCode {
     /**
      * Request exception
      */

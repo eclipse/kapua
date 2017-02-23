@@ -17,8 +17,8 @@ import static org.junit.Assert.*;
 
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
-import org.eclipse.kapua.locator.guice.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.service.KapuaService;
 import org.junit.Assert;
