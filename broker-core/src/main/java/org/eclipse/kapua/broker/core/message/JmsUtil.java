@@ -25,7 +25,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.broker.core.plugin.AclConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MESSAGE_TYPE;
+import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
@@ -86,7 +86,7 @@ public class JmsUtil
      * @throws JMSException
      * @throws KapuaException
      */
-    public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, MESSAGE_TYPE messageType, BytesMessage jmsMessage, KapuaId connectionId)
+    public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, BytesMessage jmsMessage, KapuaId connectionId)
         throws JMSException, KapuaException
     {
         String jmsTopic = jmsMessage.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
@@ -151,7 +151,7 @@ public class JmsUtil
      * @return
      * @throws KapuaException
      */
-    public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ConnectorDescriptor connectorDescriptor, MESSAGE_TYPE messageType, byte[] messageBody, String jmsTopic, Date queuedOn, KapuaId connectionId)
+    public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, byte[] messageBody, String jmsTopic, Date queuedOn, KapuaId connectionId)
         throws KapuaException
     {
         KapuaMessage<?,?> kapuaMessage = convertToKapuaMessage(connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), messageBody, jmsTopic, queuedOn, connectionId);
@@ -201,7 +201,7 @@ public class JmsUtil
      * @throws KapuaException
      * @throws ClassNotFoundException
      */
-    public static JmsMessage convertToJmsMessage(ConnectorDescriptor connectorDescriptor, MESSAGE_TYPE messageType, KapuaMessage<?,?> kapuaMessage) throws KapuaException, ClassNotFoundException
+    public static JmsMessage convertToJmsMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, KapuaMessage<?,?> kapuaMessage) throws KapuaException, ClassNotFoundException
     {
         // first step... from Kapua to device level
         Translator<KapuaMessage<?, ?>, DeviceMessage<?, ?>> translatorFromKapua = null; // translatorFromKapuaMap.get(protocol);

@@ -16,7 +16,7 @@ import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MESSAGE_TYPE;
+import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class KapuaDataConverter extends AbstractKapuaConverter
     public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException
     {
         metricConverterDataMessage.inc();
-        return convertTo(exchange, value, MESSAGE_TYPE.data);
+        return convertTo(exchange, value, MessageType.DATA);
     }
 
 }
