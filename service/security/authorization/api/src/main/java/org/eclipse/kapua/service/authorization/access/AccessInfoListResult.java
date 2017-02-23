@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
@@ -19,6 +22,8 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "accessInfos")
+@XmlType(factoryClass = AccessInfoXmlRegistry.class, factoryMethod = "newAccessInfoListResult")
 public interface AccessInfoListResult extends KapuaListResult<AccessInfo> {
 
 }

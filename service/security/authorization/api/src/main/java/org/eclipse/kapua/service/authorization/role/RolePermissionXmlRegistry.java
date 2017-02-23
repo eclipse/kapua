@@ -41,7 +41,7 @@ public class RolePermissionXmlRegistry {
     }
 
     /**
-     * Creates a new {@link RolePermission} instance
+     * Creates a new {@link RolePermissionListResult} instance
      * 
      * @return
      */

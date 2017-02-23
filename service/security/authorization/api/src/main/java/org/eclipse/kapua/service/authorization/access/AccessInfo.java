@@ -33,7 +33,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * @since 1.0.0
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "userId" },
          factoryClass = AccessInfoXmlRegistry.class, 
          factoryMethod = "newAccessInfo")
