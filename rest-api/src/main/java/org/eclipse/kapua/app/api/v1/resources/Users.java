@@ -49,23 +49,30 @@ import io.swagger.annotations.ApiParam;
 @Api("Users")
 @Path("{scopeId}/users")
 public class Users extends AbstractKapuaResource {
-
     
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserService userService = locator.getService(UserService.class);
     private final UserFactory userFactory = locator.getFactory(UserFactory.class);
 
     /**
-     * Returns the list of all the users associated to the account of the currently connected user.
+     * Gets the {@link User} list in the scope.
      *
-     * @return The list of requested User objects.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param offset The result set offset.
+     * @param limit The result set limit.
+     * @return The {@link UserListResult} of all the users associated to the current selected scope.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Get the Users list", notes = "Returns the list of all the users associated to the account of the currently connected user.", response = User.class, responseContainer = "UserListResult")
+    @ApiOperation(value = "Gets the User list in the scope", //
+            notes = "Returns the list of all the users associated to the current selected scope.", //
+            response = User.class, //
+            responseContainer = "UserListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public UserListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,
-                                        @QueryParam("offset") @DefaultValue("0") int offset,
-                                        @QueryParam("limit") @DefaultValue("50") int limit) {
+    public UserListResult simpleQuery(  @PathParam("scopeId") ScopeId scopeId,//
+                                        @QueryParam("offset") @DefaultValue("0") int offset,//
+                                        @QueryParam("limit") @DefaultValue("50") int limit) //
+    {
         UserListResult userListResult = userFactory.newUserListResult();
         try {
             UserQuery query = userFactory.newQuery(scopeId);
@@ -80,49 +87,13 @@ public class Users extends AbstractKapuaResource {
     }
 
     /**
-     * Returns the User specified by the "userId" path parameter.
-     *
-     * @param userId
-     *            The id of the requested User.
-     * @return The requested User object.
+     * Queries the results with the given {@link UserQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link UserQuery} to used to filter results.
+     * @return The {@link UserListResult} of all the result matching the given {@link UserQuery} parameter.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Get an User", notes = "Returns the User specified by the \"userId\" path parameter.", response = User.class)
-    @GET
-    @Path("{userId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public User find(@PathParam("scopeId") ScopeId scopeId, 
-            @ApiParam(value = "The id of the requested User", required = true) @PathParam("userId") EntityId userId) {
-        User user = null;
-        try {
-            user = userService.find(scopeId, userId);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(user);
-    }
-
-    /**
-     * Returns the User specified by the "username" query parameter.
-     *
-     * @param username
-     *            The username of the requested User.
-     * @return The requested User object.
-     */
-    @ApiOperation(value = "Get an User by name", notes = "Returns the User specified by the \"username\" query parameter.", response = User.class)
-    @GET
-    @Path("_findByName")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public User getUserByName(
-            @ApiParam(value = "The username of the requested User", required = true) @QueryParam("username") String username) {
-        User user = null;
-        try {
-            user = userService.findByName(username);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(user);
-    }
-
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -178,6 +149,28 @@ public class Users extends AbstractKapuaResource {
         return returnNotNullEntity(user);
     }
 
+    /**
+     * Returns the User specified by the "userId" path parameter.
+     *
+     * @param userId
+     *            The id of the requested User.
+     * @return The requested User object.
+     */
+    @ApiOperation(value = "Get an User", notes = "Returns the User specified by the \"userId\" path parameter.", response = User.class)
+    @GET
+    @Path("{userId}")
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public User find(@PathParam("scopeId") ScopeId scopeId, 
+            @ApiParam(value = "The id of the requested User", required = true) @PathParam("userId") EntityId userId) {
+        User user = null;
+        try {
+            user = userService.find(scopeId, userId);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return returnNotNullEntity(user);
+    }
+    
     /**
      * Updates the User based on the information provided in the User parameter.
      *
