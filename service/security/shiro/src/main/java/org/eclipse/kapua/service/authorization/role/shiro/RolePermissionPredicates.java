@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
- * Query predicate attribute name for {@link RolePermission} entity.
+ * Query predicate attribute names for {@link RolePermission} entity.
  * 
  * @since 1.0.0
  * 
  */
-public class RolePermissionPredicates {
+public interface RolePermissionPredicates extends KapuaEntityPredicates {
 
     /**
      * Role id
