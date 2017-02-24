@@ -14,6 +14,8 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import org.apache.commons.io.IOUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +24,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Enumeration;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class KapuaLiquibaseClient {
 
@@ -41,13 +44,16 @@ public class KapuaLiquibaseClient {
     public void update() {
         try {
             Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
-            Enumeration<URL> changeLogs = getClass().getClassLoader().getResources("liquibase.sql");
-            while (changeLogs.hasMoreElements()) {
-                File changelogFile = File.createTempFile("kapua", ".sql");
-                IOUtils.write(IOUtils.toString(changeLogs.nextElement()), new FileOutputStream(changelogFile));
-                Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(connection));
-                liquibase.update(null);
-            }
+
+            Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
+            Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.sql"));
+                for(String script : changeLogs) {
+                    URL scriptUrl = getClass().getResource("/" + script);
+                    File changelogFile = File.createTempFile("kapua", ".sql");
+                    IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
+                    Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(connection));
+                    liquibase.update(null);
+                }
         } catch (LiquibaseException | SQLException | IOException e) {
             throw new RuntimeException(e);
         }

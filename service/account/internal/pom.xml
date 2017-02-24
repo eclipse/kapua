@@ -112,7 +112,7 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>src/main/sql/H2/act_account_drop.sql</srcFile>
-                                        <srcFile>src/main/resources/liquibase.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase/account.sql</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>

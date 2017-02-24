@@ -112,7 +112,7 @@
                                     <autocommit>true</autocommit>
                                     <srcFiles>
                                         <srcFile>src/main/sql/H2/usr_user_drop.sql</srcFile>
-                                        <srcFile>src/main/resources/liquibase.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase/user.sql</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>
