@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
@@ -20,7 +25,9 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * @since 1.0
  *
  */
-public interface DeviceEventQuery extends KapuaQuery<DeviceEvent>
-{
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DeviceEventXmlRegistry.class, factoryMethod = "newQuery")
+public interface DeviceEventQuery extends KapuaQuery<DeviceEvent> {
 
 }
