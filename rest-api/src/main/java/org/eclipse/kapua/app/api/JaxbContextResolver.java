@@ -88,6 +88,9 @@ import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceXmlRegistry;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionXmlRegistry;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -135,6 +138,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceQuery.class,
                     DeviceXmlRegistry.class,
 
+                    // Device Connection
+                    DeviceConnection.class,
+                    DeviceConnectionListResult.class,
+                    DeviceConnectionQuery.class,
+                    DeviceConnectionXmlRegistry.class,
+                    
                     // Device Event
                     DeviceEvent.class,
                     DeviceEventListResult.class,
