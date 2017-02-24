@@ -92,6 +92,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSumm
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionXmlRegistry;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -134,6 +135,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceQuery.class,
                     DeviceXmlRegistry.class,
 
+                    // Device Event
+                    DeviceEvent.class,
+                    DeviceEventListResult.class,
+                    DeviceEventQuery.class,
+                    DeviceEventXmlRegistry.class,
+
                     DeviceCommandInput.class,
                     DeviceCommandXmlRegistry.class,
                     DeviceCommandOutput.class,
@@ -143,9 +150,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceSnapshot.class,
                     DeviceSnapshots.class,
                     DeviceSnapshotXmlRegistry.class,
-                    DeviceEvent.class,
-                    DeviceEventListResult.class,
-                    DeviceEventXmlRegistry.class,
                     DevicePackage.class,
                     DevicePackages.class,
                     DevicePackageBundleInfo.class,
