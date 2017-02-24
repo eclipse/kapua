@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -22,20 +20,27 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
-import org.eclipse.kapua.service.device.registry.DeviceEventType;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
 
 /**
- * Device object implementation.
+ * {@link Device} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 @Entity(name = "Device")
@@ -60,6 +65,10 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     })
     private KapuaEid connectionId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "connection_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private DeviceConnectionImpl connection;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private DeviceStatus status;
@@ -68,13 +77,15 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     @Column(name = "display_name")
     private String displayName;
 
-    @Basic
-    @Column(name = "last_event_on")
-    private Date lastEventOn;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "last_event_id", nullable = true, updatable = true))
+    })
+    private KapuaEid lastEventId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "last_event_type")
-    private DeviceEventType lastEventType;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_event_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private DeviceEventImpl lastEvent;
 
     @Basic
     @Column(name = "serial_number")
@@ -149,7 +160,8 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     private String customAttribute5;
 
     @Column(name = "credentials_mode")
-    private String deviceCredentialsMode;
+    @Enumerated(EnumType.STRING)
+    private DeviceCredentialsMode deviceCredentialsMode;
 
     @Embedded
     @AttributeOverrides({
@@ -204,6 +216,16 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public DeviceConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(DeviceConnection connection) throws KapuaException {
+        this.connection = connection != null ? new DeviceConnectionImpl(connection) : null;
+    }
+
+    @Override
     public DeviceStatus getStatus() {
         return status;
     }
@@ -224,23 +246,23 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     }
 
     @Override
-    public Date getLastEventOn() {
-        return lastEventOn;
+    public KapuaId getLastEventId() {
+        return lastEventId;
     }
 
     @Override
-    public void setLastEventOn(Date lastEventOn) {
-        this.lastEventOn = lastEventOn;
+    public void setLastEventId(KapuaId lastEventId) {
+        this.lastEventId = lastEventId != null ? new KapuaEid(lastEventId) : null;
     }
 
     @Override
-    public DeviceEventType getLastEventType() {
-        return lastEventType;
+    @SuppressWarnings("unchecked")
+    public DeviceEvent getLastEvent() {
+        return lastEvent;
     }
 
-    @Override
-    public void setLastEventType(DeviceEventType lastEventType) {
-        this.lastEventType = lastEventType;
+    public void setLastEvent(DeviceEvent lastEvent) throws KapuaException {
+        this.lastEvent = lastEvent != null ? new DeviceEventImpl(lastEvent) : null;
     }
 
     @Override
@@ -425,12 +447,12 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     @Override
     public DeviceCredentialsMode getCredentialsMode() {
-        return deviceCredentialsMode != null ? DeviceCredentialsMode.valueOf(deviceCredentialsMode) : null;
+        return deviceCredentialsMode;
     }
 
     @Override
     public void setCredentialsMode(DeviceCredentialsMode deviceCredentialsMode) {
-        this.deviceCredentialsMode = deviceCredentialsMode != null ? deviceCredentialsMode.name() : null;
+        this.deviceCredentialsMode = deviceCredentialsMode;
     }
 
     @Override

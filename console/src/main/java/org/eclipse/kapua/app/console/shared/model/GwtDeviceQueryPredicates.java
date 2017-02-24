@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,30 +22,35 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
 
     public enum GwtDeviceStatus implements IsSerializable {
         ENABLED, DISABLED, ANY;
+
         GwtDeviceStatus() {
         };
     }
 
     public enum GwtDeviceCertificateStatus implements IsSerializable {
         ANY, NOT_INSTALLED, INSTALLED_OUT_OF_DATE, INSTALLED_UP_TO_DATE;
+
         GwtDeviceCertificateStatus() {
         };
     }
 
     public enum GwtDeviceConnectionStatus implements IsSerializable {
         CONNECTED, DISCONNECTED, MISSING, ANY;
+
         GwtDeviceConnectionStatus() {
         };
     }
 
     public enum GwtSortOrder implements IsSerializable {
         ASCENDING, DESCENDING;
+
         GwtSortOrder() {
         }
     }
 
     public enum GwtSortAttribute implements IsSerializable {
         CLIENT_ID, DISPLAY_NAME, LAST_EVENT_ON;
+
         GwtSortAttribute() {
         }
     }
@@ -141,16 +146,16 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         set("deviceConnectionStatus", deviceConnectionStatus);
     }
 
-    public String getEsfVersion() {
-        return (String) get("esfVersion");
+    public String getIotFrameworkVersion() {
+        return (String) get("iotFrameworkVersion");
     }
 
-    public String getUnescapedEsfVersion() {
-        return (String) getUnescaped("esfVersion");
+    public String getUnescapedIotFrameworkVersion() {
+        return (String) getUnescaped("iotFrameworkVersion");
     }
 
-    public void setEsfVersion(String esfVersion) {
-        set("esfVersion", esfVersion);
+    public void setIotFrameworkVersion(String iotFrameworkVersion) {
+        set("iotFrameworkVersion", iotFrameworkVersion);
     }
 
     public String getApplicationIdentifiers() {

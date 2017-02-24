@@ -16,24 +16,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0">
-	<persistence-unit name="kapua-device" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="kapua-device" transaction-type="RESOURCE_LOCAL">
 
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-		<!-- Device -->
-		<class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>
-		<class>org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl</class>
-		<class>org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl</class>
+        <!-- Device -->
+        <class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>
+        <class>org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl</class>
+        <class>org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl</class>
+         
+        <!-- Base classes and External classes -->
+        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+        <class>org.eclipse.kapua.message.internal.KapuaPositionImpl</class>
 
-		<!-- Base classes and External classes -->
-		<class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
-		<class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
-		<class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
-		<class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
-		<class>org.eclipse.kapua.message.internal.KapuaPositionImpl</class>
-
-		<properties>
-			<property name="javax.persistence.lock.timeout" value="1000" />
-		</properties>
-	</persistence-unit>
+        <properties>
+            <property name="javax.persistence.lock.timeout" value="1000" />
+            <!-- <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/> -->
+        </properties>
+    </persistence-unit>
 </persistence>

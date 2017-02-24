@@ -12,14 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+
 /**
- * Device event types
+ * {@link DeviceEvent} types.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public enum DeviceEventType
-{
+public enum DeviceEventType {
     /**
      * Connected (network layer)
      */

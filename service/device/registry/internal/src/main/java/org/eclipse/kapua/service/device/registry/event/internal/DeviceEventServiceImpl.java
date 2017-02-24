@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,8 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -31,29 +33,19 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
 /**
- * Device event service implementation.
+ * {@link DeviceEventService} implementation.
+ * 
+ * @since 1.0.0
  *
- * @since 1.0
  */
 @KapuaProvider
 public class DeviceEventServiceImpl extends AbstractKapuaService implements DeviceEventService {
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
+    private final DeviceRegistryService deviceRegistryService;
 
     private static final Domain deviceEventDomain = new DeviceEventDomain();
-
-    /**
-     * Constructor
-     *
-     * @param authorizationService
-     * @param permissionFactory
-     */
-    public DeviceEventServiceImpl(AuthorizationService authorizationService, PermissionFactory permissionFactory) {
-        super(DeviceEntityManagerFactory.instance());
-        this.authorizationService = authorizationService;
-        this.permissionFactory = permissionFactory;
-    }
 
     /**
      * Constructor
@@ -63,12 +55,18 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         KapuaLocator locator = KapuaLocator.getInstance();
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
+        deviceRegistryService = locator.getService(DeviceRegistryService.class);
     }
 
     // Operations
 
     @Override
     public DeviceEvent create(DeviceEventCreator deviceEventCreator) throws KapuaException {
+        return create(deviceEventCreator, true);
+    }
+
+    @Override
+    public DeviceEvent create(DeviceEventCreator deviceEventCreator, boolean updateDeviceLastEventId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(deviceEventCreator, "deviceEventCreator");
@@ -81,7 +79,18 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         authorizationService.checkPermission(permissionFactory.newPermission(deviceEventDomain, Actions.write, deviceEventCreator.getScopeId()));
 
         // Create the event
-        return entityManagerSession.onTransactedInsert(entityManager -> DeviceEventDAO.create(entityManager, deviceEventCreator));
+        DeviceEvent deviceEvent = entityManagerSession.onTransactedInsert(entityManager -> DeviceEventDAO.create(entityManager, deviceEventCreator));
+
+        // Update last event id if necessary
+        if (updateDeviceLastEventId) {
+            Device device = deviceRegistryService.find(deviceEvent.getScopeId(), deviceEvent.getDeviceId());
+            if (device != null) {
+                device.setLastEventId(deviceEvent.getId());
+                deviceRegistryService.update(device);
+            }
+        }
+
+        return deviceEvent;
     }
 
     @Override

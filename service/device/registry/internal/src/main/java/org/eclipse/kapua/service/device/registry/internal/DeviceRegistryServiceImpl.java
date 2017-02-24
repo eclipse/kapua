@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,10 +27,9 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 
 /**
- * Device registry service implementation.
+ * {@link DeviceRegistryService} implementation.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceRegistryServiceImpl extends AbstractKapuaService implements DeviceRegistryService {
@@ -71,8 +70,6 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaService implements D
 
             currentDevice.setStatus(device.getStatus());
             currentDevice.setDisplayName(device.getDisplayName());
-            currentDevice.setLastEventOn(device.getLastEventOn());
-            currentDevice.setLastEventType(device.getLastEventType());
             currentDevice.setSerialNumber(device.getSerialNumber());
             currentDevice.setModelId(device.getModelId());
             currentDevice.setImei(device.getImei());
@@ -93,6 +90,9 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaService implements D
             currentDevice.setCustomAttribute5(device.getCustomAttribute5());
             currentDevice.setCredentialsMode(device.getCredentialsMode());
             currentDevice.setPreferredUserId(device.getPreferredUserId());
+
+            currentDevice.setConnectionId(device.getConnectionId());
+            currentDevice.setLastEventId(device.getLastEventId());
 
             // Update
             return DeviceDAO.update(entityManager, currentDevice);

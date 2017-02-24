@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,9 +32,9 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
- * Role permission implementation.
+ * {@link RolePermission} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @Entity(name = "RolePermission")
 @Table(name = "athz_role_permission")
@@ -90,9 +90,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setRoleId(KapuaId roleId) {
-        if (roleId != null) {
-            this.roleId = new KapuaEid(roleId.getId());
-        }
+        this.roleId = roleId != null ? new KapuaEid(roleId.getId()) : null;
     }
 
     @Override
@@ -102,9 +100,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setPermission(Permission permission) {
-        if (permission != null) {
-            this.permission = new PermissionImpl(permission);
-        }
+        this.permission = permission != null ? new PermissionImpl(permission) : null;
     }
 
     @Override

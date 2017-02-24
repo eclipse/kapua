@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -34,14 +34,16 @@ import javax.persistence.Version;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Kapua updatable entity default abstract implementation.
+ * {@link KapuaUpdatableEntity} reference abstract implementation.
  *
- * @since 1.0
- * 
+ * @see KapuaUpdatableEntity
+ *
+ * @since 1.0.0
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
@@ -71,34 +73,41 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     protected String properties;
 
     /**
-     * Constructor
+     * Protected default constructor.<br>
+     * Required by JPA.
+     * 
+     * @since 1.0.0
      */
     protected AbstractKapuaUpdatableEntity() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
+     * 
+     * @param scopeId
+     *            The scope {@link KapuaId} to set for this {@link KapuaUpdatableEntity}
+     * @since 1.0.0
+     */
+    public AbstractKapuaUpdatableEntity(KapuaId scopeId) {
+        super(scopeId);
+    }
+
+    /**
+     * Constructor.
      * 
      * @throws KapuaException
+     *             if {@link KapuaUpdatableEntity#getEntityAttributes()} and/or {@link KapuaUpdatableEntity#getEntityProperties()} cannot be parsed.
+     * @since 1.0.0
      */
     protected AbstractKapuaUpdatableEntity(KapuaUpdatableEntity entity) throws KapuaException {
-        super((AbstractKapuaEntity) entity);
+        super((KapuaEntity) entity);
 
         setModifiedOn(entity.getModifiedOn());
         setModifiedBy(entity.getModifiedBy());
         setOptlock(entity.getOptlock());
         setEntityAttributes(entity.getEntityAttributes());
         setEntityProperties(entity.getEntityProperties());
-    }
-
-    /**
-     * Constructor
-     * 
-     * @param scopeId
-     */
-    public AbstractKapuaUpdatableEntity(KapuaId scopeId) {
-        super(scopeId);
     }
 
     @Override
@@ -126,9 +135,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
      * @param modifiedBy
      */
     public void setModifiedBy(KapuaId modifiedBy) {
-        if (modifiedBy != null) {
-            this.modifiedBy = new KapuaEid(modifiedBy);
-        }
+        this.modifiedBy = modifiedBy != null ? (modifiedBy instanceof KapuaEid ? (KapuaEid) modifiedBy : new KapuaEid(modifiedBy)) : null;
     }
 
     @Override
@@ -209,23 +216,28 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
         }
     }
 
+    /**
+     * Before create action call super(){@link AbstractKapuaEntity#prePersistsAction()} and
+     * the {@link KapuaUpdatableEntity} {@link #modifiedBy} and {@link #modifiedOn}.
+     * 
+     * @since 1.0.0
+     */
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
+    protected void prePersistsAction() {
         super.prePersistsAction();
-        this.modifiedBy = this.createdBy;
-        this.modifiedOn = this.createdOn;
+
+        setModifiedBy(getCreatedBy());
+        setModifiedOn(getCreatedOn());
     }
 
     /**
-     * Before update action to correctly set the modified on and modified by fields
+     * Before update action sets the {@link KapuaUpdatableEntity} {@link #modifiedBy} and {@link #modifiedOn}.
      * 
-     * @throws KapuaException
+     * @since 1.0.0
      */
     @PreUpdate
-    protected void preUpdateAction()
-            throws KapuaException {
-        this.modifiedBy = (KapuaEid) KapuaSecurityUtils.getSession().getUserId();
-        this.modifiedOn = new Date();
+    protected void preUpdateAction() {
+        setModifiedBy(KapuaSecurityUtils.getSession().getUserId());
+        setModifiedOn(new Date());
     }
 }
