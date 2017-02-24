@@ -84,8 +84,8 @@
 									<autocommit>true</autocommit>
 									<srcFiles>
 										<srcFile>src/main/sql/H2/sys_configuration_drop.sql</srcFile>
-										<srcFile>src/main/sql/H2/sys_configuration_create.sql</srcFile>
-									</srcFiles>
+                                        <srcFile>src/main/resources/liquibase.sql</srcFile>
+                                    </srcFiles>
 								</configuration>
 							</execution>
 						</executions>
