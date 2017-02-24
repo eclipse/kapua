@@ -57,5 +57,5 @@ public interface DeviceEventFactory extends KapuaObjectFactory
      * 
      * @return
      */
-    DeviceEventListResult newDeviceListResult();
+    DeviceEventListResult newDeviceEventListResult();
 }
