@@ -12,13 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+
 /**
  * Device event predicates.
  * 
  * @since 1.0
  *
  */
-public class DeviceEventPredicates {
+public interface DeviceEventPredicates extends KapuaUpdatableEntityPredicates {
 
     /**
      * Device identifier
