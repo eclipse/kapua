@@ -39,42 +39,37 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
  * 
  * @since 1.0.0
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+
 @Entity(name = "DeviceConnection")
 @Table(name = "dvc_device_connection")
 public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implements DeviceConnection {
 
     private static final long      serialVersionUID = 8928343233144731836L;
 
-    @XmlElement(name = "status")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private DeviceConnectionStatus status;
 
-    @XmlElement(name = "clientId")
     @Basic
     @Column(name = "client_id", nullable = false, updatable = false)
     private String                 clientId;
 
-    @XmlElement(name = "userId")
     @Embedded
     @AttributeOverrides({
                           @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
     })
     private KapuaEid               userId;
 
-    @XmlElement(name = "protocol")
     @Basic
     @Column(name = "protocol", nullable = false)
     private String                 protocol;
 
-    @XmlElement(name = "clientIp")
+    
     @Basic
     @Column(name = "client_ip")
     private String                 clientIp;
 
-    @XmlElement(name = "serverIp")
+    
     @Basic
     @Column(name = "server_ip")
     private String                 serverIp;

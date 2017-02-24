@@ -12,13 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * Device connection query definition.
- *
+ * 
  * @since 1.0
  */
-public interface DeviceConnectionQuery extends KapuaQuery<DeviceConnection> {
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newQuery")
+public interface DeviceConnectionQuery extends KapuaQuery<DeviceConnection>
+{
 
 }

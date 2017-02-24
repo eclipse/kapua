@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.registry.connection;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
 
 /**
  * Device connection service factory definition.
@@ -31,6 +33,13 @@ public interface DeviceConnectionFactory extends KapuaObjectFactory {
     public DeviceConnectionCreator newCreator(KapuaId scopeId);
 
     /**
+     * Creates a new {@link DeviceConnection}
+     * 
+     * @return
+     */
+    public DeviceConnection newDeviceConnection();
+    
+    /**
      * Creates a new device connection query for the specified scope identifier
      *
      * @param scopeId
@@ -38,6 +47,13 @@ public interface DeviceConnectionFactory extends KapuaObjectFactory {
      */
     public DeviceConnectionQuery newQuery(KapuaId scopeId);
 
+    /**
+     * Creates a new device connection list result
+     * 
+     * @return
+     */
+    public DeviceConnectionListResult newDeviceConnectionListResult();
+    
     /**
      * Creates a new device connection summary
      *
