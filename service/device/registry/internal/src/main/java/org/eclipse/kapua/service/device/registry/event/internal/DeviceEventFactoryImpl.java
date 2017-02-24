@@ -47,7 +47,7 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
         return new DeviceEventImpl();
     }
 
-    @Override public DeviceEventListResult newDeviceListResult() {
+    @Override public DeviceEventListResult newDeviceEventListResult() {
         return new DeviceEventListResultImpl();
     }
 }
