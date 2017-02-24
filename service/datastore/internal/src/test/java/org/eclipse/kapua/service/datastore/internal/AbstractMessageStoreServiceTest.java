@@ -27,13 +27,6 @@ public abstract class AbstractMessageStoreServiceTest extends KapuaTest
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageStoreServiceTest.class);
 
     public static String DEFAULT_COMMONS_PATH = "../commons";
-
-    @BeforeClass
-    public static void tearUp()
-        throws KapuaException
-    {
-    	KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-    }
     
     @AfterClass
     public static void tearDown()

@@ -121,7 +121,6 @@ public class AccountServiceTestSteps extends KapuaTest {
         enableH2Connection();
 
         // Create the account service tables
-        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
         XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
 
