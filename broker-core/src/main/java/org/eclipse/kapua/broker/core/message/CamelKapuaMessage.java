@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.message;
 
@@ -16,7 +16,6 @@ import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 
-@SuppressWarnings("rawtypes")
 /**
  * Platform message container.<BR>
  * Contains the message and additional information such as the connection id and the connector descriptor (useful for the message translation process)
@@ -25,7 +24,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * 
  * @since 1.0
  */
-public class CamelKapuaMessage<M extends KapuaMessage>
+public class CamelKapuaMessage<M extends KapuaMessage<?,?>>
 {
 
     private M                   message;

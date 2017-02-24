@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
@@ -98,8 +98,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
-    private Map<String, ConnectorDescriptor> connectorsDescriptorMap;
-
     private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<>();
 
     private static final Domain brokerDomain = new BrokerDomain();
@@ -152,8 +150,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     public KapuaSecurityBrokerFilter(Broker next) throws KapuaException {
         super(next);
-
-        connectorsDescriptorMap = ConnectorDescriptorLoader.loadConnectorDescriptors();
 
         // login
         metricLoginSuccess = metricsService.getCounter("security", "login", "success", "count");
@@ -428,7 +424,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             logAuthDestinationToLog(authDestinations);
 
             final String connectorName = (((TransportConnector) context.getConnector()).getName());
-            final ConnectorDescriptor connectorDescriptor = connectorsDescriptorMap.get(connectorName);
+            final ConnectorDescriptor connectorDescriptor = ConnectorDescriptorProviders.getDescriptor(connectorName);
             if (connectorDescriptor == null) {
                 throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
             }
