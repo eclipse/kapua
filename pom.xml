@@ -31,6 +31,7 @@
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
         <commons-configuration.version>1.9</commons-configuration.version>
+        <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>3.3.2</commons-lang.version>
         <commons-pool.version>2.3</commons-pool.version>
         <eclipselink.version>2.6.3</eclipselink.version>
@@ -39,6 +40,7 @@
         <h2.version>1.4.192</h2.version>
         <joda.version>2.9.4</joda.version>
         <junit.version>4.11</junit.version>
+        <liquibase.version>3.0.5</liquibase.version>
         <mariadb.version>1.4.6</mariadb.version>
         <mockito.version>1.10.19</mockito.version>
         <paho.version>1.1.0</paho.version>
@@ -47,13 +49,12 @@
         <shiro.version>1.2.3</shiro.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <cucumber.version>1.2.4</cucumber.version>
-		<elasticsearch.version>2.3.4</elasticsearch.version>
+        <elasticsearch.version>2.3.4</elasticsearch.version>
 
         <!-- Plugins versions -->
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
         <docker-maven-plugin.version>0.17.2</docker-maven-plugin.version>
-        <liquibase-plugin.version>3.0.5</liquibase-plugin.version>
 
         <jacoco.version>0.7.4.201502262128</jacoco.version>
         <surefire.version>2.12.4</surefire.version>
@@ -207,7 +208,7 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>${liquibase-plugin.version}</version>
+                    <version>${liquibase.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.h2database</groupId>
@@ -466,6 +467,26 @@
 
             <!-- External dependencies -->
             <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-core</artifactId>
                 <version>${camel.version}</version>
@@ -491,29 +512,19 @@
                 <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice</artifactId>
-                <version>${guice.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${protobuf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>${liquibase.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>${commons-configuration.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>

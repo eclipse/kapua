@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,9 +22,11 @@ import org.eclipse.kapua.service.device.registry.Device;
 
 public abstract class DeviceExporter {
 
+    protected static final String BLANK = "";
+
     protected static String[] s_deviceProperties = {
+            "Id",
             "Account",
-            // "Id",
             "Client ID",
             "Status",
             "Connection Status",
@@ -55,7 +57,7 @@ public abstract class DeviceExporter {
             "Custom Attribute 3",
             "Custom Attribute 4",
             "Custom Attribute 5",
-            "Certificate Id"
+            // "Certificate Id"
             // "Optlock"
     };
 

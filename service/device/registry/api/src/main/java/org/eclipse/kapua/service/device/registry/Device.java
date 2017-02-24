@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,13 +22,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 /**
- * Device is an object representing a device or gateway connected to the Kapua platform.<br>
- * The Device object contains several attributes regarding the Device itself and its software configuration.
+ * {@link Device} is an object representing a device or gateway connected to the Kapua platform.<br>
+ * The {@link Device} object contains several attributes regarding the Device itself and its software configuration.<br>
+ * {@link Device} contains also references to {@link DeviceConnection} and the last {@link DeviceEvent}.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 @XmlRootElement(name = "device")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -38,10 +38,11 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "groupId",
         "clientId",
         "connectionId",
+        "connection",
         "status",
         "displayName",
-        "lastEventOn",
-        "lastEventType",
+        "lastEventId",
+        "lastEvent",
         "serialNumber",
         "modelId",
         "imei",
@@ -132,6 +133,14 @@ public interface Device extends KapuaUpdatableEntity {
     public void setConnectionId(KapuaId connectionId);
 
     /**
+     * Gets the {@link DeviceConnection}
+     * 
+     * @return
+     */
+    @XmlElement(name = "connection")
+    public <C extends DeviceConnection> C getConnection();
+
+    /**
      * Get the connection status
      * 
      * @return
@@ -162,34 +171,28 @@ public interface Device extends KapuaUpdatableEntity {
     public void setDisplayName(String diplayName);
 
     /**
-     * Get the last event on
+     * Gets the last {@link DeviceEvent} {@link KapuaId}.
      * 
      * @return
      */
-    @XmlElement(name = "lastEventOn")
-    public Date getLastEventOn();
+    @XmlElement(name = "lastEventId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getLastEventId();
 
     /**
-     * Set the last event on
+     * Set the last {@link DeviceEvent} {@link KapuaId}.
      * 
-     * @param lastEventOn
+     * @param lastEventId
      */
-    public void setLastEventOn(Date lastEventOn);
+    public void setLastEventId(KapuaId lastEventId);
 
     /**
-     * Get the last event type
+     * Get the last {@link DeviceEvent} for this {@link Device}.
      * 
-     * @return
+     * @return The last {@link DeviceEvent} for this {@link Device}.
      */
-    @XmlElement(name = "lastEventType")
-    public DeviceEventType getLastEventType();
-
-    /**
-     * Set the last event type
-     * 
-     * @param lastEventType
-     */
-    public void setLastEventType(DeviceEventType lastEventType);
+    @XmlElement(name = "lastEvent")
+    public <E extends DeviceEvent> E getLastEvent();
 
     /**
      * Get the serial number
@@ -467,7 +470,7 @@ public interface Device extends KapuaUpdatableEntity {
      * 
      * @return
      */
-    @XmlElement(name = "devoceCredentialsMode")
+    @XmlElement(name = "deviceCredentialsMode")
     public DeviceCredentialsMode getCredentialsMode();
 
     /**

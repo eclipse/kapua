@@ -30,7 +30,6 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.EntityFetchStyle;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
@@ -38,7 +37,6 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaFetchStyle;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
@@ -822,16 +820,6 @@ public class Devices extends AbstractKapuaResource {
         }
         if (preferredUserId != null) {
             andPredicate = andPredicate.and(new AttributePredicate<>(DevicePredicates.PREFERRED_USER_ID, preferredUserId));
-        }
-
-        // Fetch
-        if (fetch != null) {
-            try {
-                KapuaFetchStyle fetchStyle = EntityFetchStyle.valueOf(fetch);
-                query.setFetchStyle(fetchStyle);
-            } catch (IllegalArgumentException iae) {
-                throw new KapuaIllegalArgumentException("fetch", fetch);
-            }
         }
 
         // Sort

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,12 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,160 +78,117 @@ public class DeviceExporterExcel extends DeviceExporter {
     @Override
     public void append(KapuaListResult<Device> devices)
             throws ServletException, IOException {
-        Row row = null;
-        Cell cell = null;
+
+        AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
+        Account account = null;
+        try {
+            account = accountService.find(KapuaEid.parseCompactId(m_account));
+        } catch (KapuaException e) {
+            KapuaException.internalError(e);
+        }
+
+        Row row;
+        Cell cell;
         for (Device device : devices.getItems()) {
 
             int iColCount = 0;
             row = m_sheet.createRow(m_rowCount++);
 
+            // Account id
             row.createCell(iColCount++).setCellValue(truncate(m_account));
 
-            if (device.getClientId() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getClientId()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Account name
+            row.createCell(iColCount++).setCellValue(truncate(account.getName()));
 
-            if (device.getStatus() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getStatus().name()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Client Id
+            row.createCell(iColCount++).setCellValue(device.getClientId() != null ? truncate(device.getClientId()) : BLANK);
 
-            row.createCell(iColCount++).setCellValue("");
+            // Device status
+            row.createCell(iColCount++).setCellValue(device.getStatus() != null ? truncate(device.getStatus().name()) : BLANK);
 
+            // Device connection status
+            row.createCell(iColCount++).setCellValue(device.getConnection() != null ? device.getConnection().getStatus().name() : BLANK);
+
+            // Created on
             if (device.getCreatedOn() != null) {
                 cell = row.createCell(iColCount++);
                 cell.setCellStyle(m_dateStyle);
                 cell.setCellValue(device.getCreatedOn());
             } else {
-                row.createCell(iColCount++).setCellValue("");
+                row.createCell(iColCount++).setCellValue(BLANK);
             }
 
-            if (device.getLastEventOn() != null) {
+            // Last event on
+            if (device.getLastEvent() != null) {
                 cell = row.createCell(iColCount++);
                 cell.setCellStyle(m_dateStyle);
-                cell.setCellValue(device.getLastEventOn());
+                cell.setCellValue(device.getLastEvent().getReceivedOn());
             } else {
-                row.createCell(iColCount++).setCellValue("");
+                row.createCell(iColCount++).setCellValue(BLANK);
             }
 
-            if (device.getLastEventType() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getLastEventType().name()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Last event type
+            row.createCell(iColCount++).setCellValue(device.getLastEvent() != null ? truncate(device.getLastEvent().getResource()) : BLANK);
 
-            row.createCell(iColCount++).setCellValue("");
+            // Client ip
+            row.createCell(iColCount++).setCellValue(device.getConnection() != null ? device.getConnection().getClientIp() : BLANK);
 
-            if (device.getDisplayName() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getDisplayName()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Display name
+            row.createCell(iColCount++).setCellValue(device.getDisplayName() != null ? truncate(device.getDisplayName()) : BLANK);
 
-            if (device.getSerialNumber() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getSerialNumber()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Serial number
+            row.createCell(iColCount++).setCellValue(device.getSerialNumber() != null ? truncate(device.getSerialNumber()) : BLANK);
 
-            if (device.getImei() != null) {
-                row.createCell(iColCount++).setCellValue(device.getImei());
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Imei
+            row.createCell(iColCount++).setCellValue(device.getImei() != null ? device.getImei() : BLANK);
 
-            if (device.getImsi() != null) {
-                row.createCell(iColCount++).setCellValue(device.getImsi());
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Imsi
+            row.createCell(iColCount++).setCellValue(device.getImsi() != null ? device.getImsi() : BLANK);
 
-            if (device.getIccid() != null) {
-                row.createCell(iColCount++).setCellValue(device.getIccid());
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Iccid
+            row.createCell(iColCount++).setCellValue(device.getIccid() != null ? device.getIccid() : BLANK);
 
-            if (device.getModelId() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getModelId()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Model id
+            row.createCell(iColCount++).setCellValue(device.getModelId() != null ? truncate(device.getModelId()) : BLANK);
 
-            if (device.getBiosVersion() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getBiosVersion()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Bios version
+            row.createCell(iColCount++).setCellValue(device.getBiosVersion() != null ? truncate(device.getBiosVersion()) : BLANK);
 
-            if (device.getFirmwareVersion() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getFirmwareVersion()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Firmware version
+            row.createCell(iColCount++).setCellValue(device.getFirmwareVersion() != null ? truncate(device.getFirmwareVersion()) : BLANK);
 
-            if (device.getOsVersion() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getOsVersion()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Os version
+            row.createCell(iColCount++).setCellValue(device.getOsVersion() != null ? truncate(device.getOsVersion()) : BLANK);
 
-            if (device.getJvmVersion() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getJvmVersion()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // JVM version
+            row.createCell(iColCount++).setCellValue(device.getJvmVersion() != null ? truncate(device.getJvmVersion()) : BLANK);
 
-            row.createCell(iColCount++).setCellValue("");
+            // OSGi version
+            row.createCell(iColCount++).setCellValue(device.getOsgiFrameworkVersion() != null ? truncate(device.getOsgiFrameworkVersion()) : BLANK);
 
-            row.createCell(iColCount++).setCellValue("");
+            // Application framework version
+            row.createCell(iColCount++).setCellValue(device.getApplicationFrameworkVersion() != null ? truncate(device.getApplicationFrameworkVersion()) : BLANK);
 
-            if (device.getApplicationIdentifiers() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getApplicationIdentifiers()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Application identifiers
+            row.createCell(iColCount++).setCellValue(device.getApplicationIdentifiers() != null ? truncate(device.getApplicationIdentifiers()) : BLANK);
 
-            if (device.getAcceptEncoding() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getAcceptEncoding()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Accept encoding
+            row.createCell(iColCount++).setCellValue(device.getAcceptEncoding() != null ? truncate(device.getAcceptEncoding()) : BLANK);
 
-            if (device.getCustomAttribute1() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getCustomAttribute1()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Custom attribute 1
+            row.createCell(iColCount++).setCellValue(device.getCustomAttribute1() != null ? truncate(device.getCustomAttribute1()) : BLANK);
 
-            if (device.getCustomAttribute2() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getCustomAttribute2()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Custom attribute 2
+            row.createCell(iColCount++).setCellValue(device.getCustomAttribute2() != null ? truncate(device.getCustomAttribute2()) : BLANK);
 
-            if (device.getCustomAttribute3() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getCustomAttribute3()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Custom attribute 3
+            row.createCell(iColCount++).setCellValue(device.getCustomAttribute3() != null ? truncate(device.getCustomAttribute3()) : BLANK);
 
-            if (device.getCustomAttribute4() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getCustomAttribute4()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
+            // Custom attribute 4
+            row.createCell(iColCount++).setCellValue(device.getCustomAttribute4() != null ? truncate(device.getCustomAttribute4()) : BLANK);
 
-            if (device.getCustomAttribute5() != null) {
-                row.createCell(iColCount++).setCellValue(truncate(device.getCustomAttribute5()));
-            } else {
-                row.createCell(iColCount++).setCellValue("");
-            }
-
-            row.createCell(iColCount++).setCellValue("");
+            // Custom attribute 5
+            row.createCell(iColCount).setCellValue(device.getCustomAttribute5() != null ? truncate(device.getCustomAttribute5()) : BLANK);
 
             if (m_rowCount >= MAX_ROWS) {
                 s_logger.warn("Truncated file at {} rows. Max rows limit reached.", MAX_ROWS - 1);
@@ -247,9 +209,6 @@ public class DeviceExporterExcel extends DeviceExporter {
     }
 
     private String truncate(String cellValue) {
-        if (cellValue.length() > MAX_CHAR)
-            return cellValue.substring(0, MAX_CHAR);
-        else
-            return cellValue;
+        return cellValue.length() > MAX_CHAR ? cellValue.substring(0, MAX_CHAR) : cellValue;
     }
 }

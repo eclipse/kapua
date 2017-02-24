@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@
  *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
+
+import java.util.List;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -24,9 +26,9 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
 
 /**
- * Device DAO
+ * {@link Device} DAO
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 public class DeviceDAO extends ServiceDAO {
@@ -45,8 +47,6 @@ public class DeviceDAO extends ServiceDAO {
         device.setClientId(deviceCreator.getClientId());
         device.setStatus(deviceCreator.getStatus());
         device.setDisplayName(deviceCreator.getDisplayName());
-        device.setLastEventOn(null);
-        device.setLastEventType(null);
         device.setSerialNumber(deviceCreator.getSerialNumber());
         device.setModelId(deviceCreator.getModelId());
         device.setImei(deviceCreator.getImei());
@@ -68,8 +68,8 @@ public class DeviceDAO extends ServiceDAO {
         device.setCredentialsMode(deviceCreator.getCredentialsMode());
         device.setPreferredUserId(deviceCreator.getPreferredUserId());
 
-        // issue #57
         device.setConnectionId(deviceCreator.getConnectionId());
+        device.setLastEventId(deviceCreator.getLastEventId());
 
         return ServiceDAO.create(em, device);
     }
@@ -113,7 +113,40 @@ public class DeviceDAO extends ServiceDAO {
 
         handleKapuaQueryGroupPredicate(query, DeviceDomain.INSTANCE, DevicePredicates.GROUP_ID);
 
-        return ServiceDAO.query(em, Device.class, DeviceImpl.class, new DeviceListResultImpl(), query);
+        // This is fix up for a the Eclipse Link limitation on OneToOne that ignores Lazy Fetch on Java SE environment.
+        // Link: https://www.eclipse.org/eclipselink/documentation/2.6/concepts/mappingintro002.htm#CEGCJEHD
+        // Strategy to fix this is to force the fetching and then remove what was not requested.
+        List<String> fetchAttributes = query.getFetchAttributes();
+
+        boolean deviceConnectionFetchAdded = false;
+        if (fetchAttributes == null || !fetchAttributes.contains(DevicePredicates.CONNECTION)) {
+            deviceConnectionFetchAdded = true;
+            query.addFetchAttributes(DevicePredicates.CONNECTION);
+        }
+
+        boolean deviceLastEventFetchAdded = false;
+        if (fetchAttributes == null || !fetchAttributes.contains(DevicePredicates.LAST_EVENT)) {
+            deviceLastEventFetchAdded = true;
+            query.addFetchAttributes(DevicePredicates.LAST_EVENT);
+        }
+
+        DeviceListResult results = ServiceDAO.query(em, Device.class, DeviceImpl.class, new DeviceListResultImpl(), query);
+
+        if (deviceConnectionFetchAdded || deviceLastEventFetchAdded) {
+            for (Device d : results.getItems()) {
+                if (deviceConnectionFetchAdded) {
+                    ((DeviceImpl) d).setConnection(null);
+                    query.getFetchAttributes().remove(DevicePredicates.CONNECTION);
+                }
+
+                if (deviceLastEventFetchAdded) {
+                    ((DeviceImpl) d).setLastEvent(null);
+                    query.getFetchAttributes().remove(DevicePredicates.LAST_EVENT);
+                }
+            }
+        }
+
+        return results;
     }
 
     /**

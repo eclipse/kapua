@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,15 +18,14 @@ import org.eclipse.kapua.model.id.KapuaId;
 /**
  * Device connection entity definition.
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface DeviceConnection extends KapuaUpdatableEntity
-{
+public interface DeviceConnection extends KapuaUpdatableEntity {
+
     public static final String TYPE = "deviceConnection";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -40,9 +39,9 @@ public interface DeviceConnection extends KapuaUpdatableEntity
     /**
      * Set the device connection status
      * 
-     * @param connectionStatus
+     * @param status
      */
-    public void setStatus(DeviceConnectionStatus connectionStatus);
+    public void setStatus(DeviceConnectionStatus status);
 
     /**
      * Get the client identifier

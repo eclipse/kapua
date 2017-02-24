@@ -17,9 +17,13 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-liquibase</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-authentication-api</artifactId>
         </dependency>
-        
+
         <!-- External dependencies -->
         <dependency> 
             <groupId>joda-time</groupId>
@@ -84,8 +88,8 @@
 									<autocommit>true</autocommit>
 									<srcFiles>
 										<srcFile>src/main/sql/H2/sys_configuration_drop.sql</srcFile>
-										<srcFile>src/main/sql/H2/sys_configuration_create.sql</srcFile>
-									</srcFiles>
+                                        <srcFile>src/main/resources/liquibase/configuration.sql</srcFile>
+                                    </srcFiles>
 								</configuration>
 							</execution>
 						</executions>

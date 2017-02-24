@@ -151,10 +151,8 @@
             <version>1.2.2</version>
         </dependency>
         <dependency>
-            <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
         </dependency>
 
         <dependency>

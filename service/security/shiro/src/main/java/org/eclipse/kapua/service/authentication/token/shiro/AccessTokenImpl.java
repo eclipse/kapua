@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
@@ -37,9 +36,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
- * Access token entity implementation.
+ * {@link AccessToken} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  * 
  */
 @XmlRootElement
@@ -68,14 +67,16 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     private Date expiresOn;
 
     /**
-     * Constructor
+     * Constructor.
+     * 
+     * @since 1.0.0
      */
     public AccessTokenImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param userId
      *            user identifier
@@ -84,7 +85,8 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
      * @param tokenId
      *            token identifier
      * @param expiresOn
-     *            token expiration date
+     *            token expiration {@link Date}
+     * @since 1.0.0
      */
     public AccessTokenImpl(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn) {
         super(scopeId);
@@ -100,9 +102,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     @Override
     public void setUserId(KapuaId userId) {
-        if (userId != null) {
-            this.userId = new KapuaEid(userId);
-        }
+        this.userId = userId != null ? new KapuaEid(userId) : null;
     }
 
     @Override
@@ -132,12 +132,11 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
      * @since 1.0.0
      */
     @Override
-    protected void prePersistsAction()
-            throws KapuaException {
-        this.id = new KapuaEid(IdGenerator.generate());
-        this.createdBy = userId;
-        this.createdOn = new Date();
-        this.modifiedBy = this.createdBy;
-        this.modifiedOn = this.createdOn;
+    protected void prePersistsAction() {
+        setId(new KapuaEid(IdGenerator.generate()));
+        setCreatedBy(userId);
+        setCreatedOn(new Date());
+        setModifiedBy(getCreatedBy());
+        setModifiedOn(getCreatedOn());
     }
 }
