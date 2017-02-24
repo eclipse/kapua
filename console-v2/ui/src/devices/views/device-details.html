@@ -12,22 +12,32 @@
 *                                                                               
 *******************************************************************************/
 -->
-<div>
-  <h3>
-    Device detail
-  </h3>
-  <div>
-    ID: {{:: vm.$stateParams["id"] }}
+<div class="detailsContent">
+  <div class="card-pf card-pf-accented card-pf-utilization">
+    <div class="row example-container">
+      <div class="list-view-container">
+        <div pf-list-view class="example-list-view" id="exampleListView" config="vm.listConfig" items="vm.items">
+          <div class="list-view-pf-description">
+            <div class="list-group-item-heading">
+              {{item.name}}
+            </div>
+          </div>
+          <list-expanded-content>
+            <div class="row">
+              <div class="col-md-12" ng-repeat="param in $parent.item.data">
+                <div class="col-md-3" style="font-weight: bold;">{{param.displayName}}:</div>
+                <div class="col-md-9">{{param.value}}</div>
+              </div>
+            </div>
+          </list-expanded-content>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    Display name: {{ vm.device.displayName }}
-  </div>
-  <div>
-    Client ID: {{ vm.device.clientId }}
-  </div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Installed Packages" show-top-border="true" status="vm.packagesStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Events" show-top-border="true" status="vm.eventsStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Bundles" show-top-border="true" status="vm.bundlesStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Configurations" show-top-border="true" status="vm.configurationsStatus"></div>
-  <div class="col-md-4" pf-aggregate-status-card head-title="Commands" show-top-border="true" status="vm.commandsStatus"></div>
 </div>
+
+<div class="col-md-4" pf-aggregate-status-card head-title="Installed Packages" show-top-border="true" status="vm.packagesStatus"></div>
+<div class="col-md-4" pf-aggregate-status-card head-title="Events" show-top-border="true" status="vm.eventsStatus"></div>
+<div class="col-md-4" pf-aggregate-status-card head-title="Bundles" show-top-border="true" status="vm.bundlesStatus"></div>
+<div class="col-md-4" pf-aggregate-status-card head-title="Configurations" show-top-border="true" status="vm.configurationsStatus"></div>
+<div class="col-md-4" pf-aggregate-status-card head-title="Commands" show-top-border="true" status="vm.commandsStatus"></div>

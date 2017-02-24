@@ -11,6 +11,6 @@
 *                                                                               
 *******************************************************************************/
 interface IRolesService {
-    getRoles(): ng.IPromise<ListResult<Role>>;
-    getPermissionsByRole(roleID: string): ng.IPromise<ListResult<RolePermission>>;
+    getRoles(): ng.IHttpPromise<ListResult<Role>>;
+    getPermissionsByRole(roleID: string): ng.IHttpPromise<ListResult<RolePermission>>;
 }
