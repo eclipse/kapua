@@ -34,12 +34,12 @@ import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
+import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
@@ -86,6 +86,7 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceXmlRegistry;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionXmlRegistry;
@@ -114,22 +115,25 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
                     ErrorBean.class,
                     CountResult.class,
-                    
+
                     Account.class,
                     AccountCreator.class,
                     AccountListResult.class,
                     AccountXmlRegistry.class,
-                    
+
                     User.class,
                     UserCreator.class,
                     UserListResult.class,
                     UserQuery.class,
                     UserXmlRegistry.class,
-                    
+
+                    // Device
                     Device.class,
                     DeviceCreator.class,
                     DeviceListResult.class,
+                    DeviceQuery.class,
                     DeviceXmlRegistry.class,
+
                     DeviceCommandInput.class,
                     DeviceCommandXmlRegistry.class,
                     DeviceCommandOutput.class,
@@ -170,7 +174,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     CredentialXmlRegistry.class,
                     CredentialCreator.class,
                     CredentialType.class,
-                    
+
                     // Permission
                     Permission.class,
 
@@ -180,21 +184,21 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     RoleCreator.class,
                     RoleQuery.class,
                     RoleXmlRegistry.class,
-                    
+
                     // Role Permissions
                     RolePermission.class,
                     RolePermissionListResult.class,
                     RolePermissionCreator.class,
                     RolePermissionQuery.class,
                     RolePermissionXmlRegistry.class,
-                    
+
                     // Access Info
                     AccessInfo.class,
                     AccessInfoListResult.class,
                     AccessInfoCreator.class,
                     AccessInfoQuery.class,
                     AccessInfoXmlRegistry.class,
-                    
+
                     AccessPermission.class,
                     AccessPermissionListResult.class,
                     AccessPermissionCreator.class,
