@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model;
 
@@ -39,5 +39,5 @@ public interface DevicePackages extends KapuaSerializable {
      * @return
      */
     @XmlElement(name = "devicePackage")
-    public <D extends DevicePackage> List<D> getPackages();
+    public List<DevicePackage> getPackages();
 }
