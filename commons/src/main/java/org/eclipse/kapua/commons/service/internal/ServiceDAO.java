@@ -575,7 +575,6 @@ public class ServiceDAO {
             throws KapuaException {
         Expression<Boolean> expr;
         String attrName = attrPred.getAttributeName();
-        SingularAttribute attribute = entityType.getSingularAttribute(attrName);
 
         // Parse attributes
         Object attrValue = attrPred.getAttributeValue();
