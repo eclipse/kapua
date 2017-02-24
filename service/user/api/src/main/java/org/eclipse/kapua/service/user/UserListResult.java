@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
@@ -20,6 +23,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * @since 1.0
  *
  */
-public interface UserListResult extends KapuaListResult<User>
-{
+@XmlRootElement(name = "users")
+@XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newUserListResult")
+public interface UserListResult extends KapuaListResult<User> {
 }
