@@ -31,7 +31,7 @@ public class DevicePackageXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DevicePackageFactory factory = locator.getFactory(DevicePackageFactory.class);
-    
+
     /**
      * Creates a new device package instance
      * 
@@ -40,7 +40,7 @@ public class DevicePackageXmlRegistry {
     public DevicePackage newDevicePackage() {
         return factory.newDeviceDeploymentPackage();
     }
-    
+
     /**
      * Creates a new device packages instance
      * 
@@ -49,7 +49,7 @@ public class DevicePackageXmlRegistry {
     public DevicePackages newDevicePackages() {
         return factory.newDeviceDeploymentPackages();
     }
-    
+
     /**
      * Creates a new device package bundle information instance
      * 
@@ -58,7 +58,7 @@ public class DevicePackageXmlRegistry {
     public DevicePackageBundleInfo newDevicePackageBundleInfo() {
         return factory.newDevicePackageBundleInfo();
     }
-    
+
     /**
      * Creates a new device package bundle informations instance
      * 
@@ -73,8 +73,7 @@ public class DevicePackageXmlRegistry {
      * 
      * @return
      */
-    public DevicePackageDownloadRequest newDevicePackageDownloadRequest()
-    {
+    public DevicePackageDownloadRequest newDevicePackageDownloadRequest() {
         return factory.newPackageDownloadRequest();
     }
 
@@ -83,8 +82,7 @@ public class DevicePackageXmlRegistry {
      * 
      * @return
      */
-    public DevicePackageUninstallRequest newDevicePackageUninstallRequest()
-    {
+    public DevicePackageUninstallRequest newDevicePackageUninstallRequest() {
         return factory.newPackageUninstallRequest();
     }
 }
