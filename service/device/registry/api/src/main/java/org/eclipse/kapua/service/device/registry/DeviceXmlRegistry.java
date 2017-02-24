@@ -27,14 +27,13 @@ public class DeviceXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceFactory factory = locator.getFactory(DeviceFactory.class);
-    
+
     /**
      * Creates a new {@link Device}
      * 
      * @return
      */
-    public Device newDevice()
-    {
+    public Device newDevice() {
         return factory.newDevice();
     }
 
@@ -43,8 +42,7 @@ public class DeviceXmlRegistry {
      * 
      * @return
      */
-    public DeviceCreator newDeviceCreator()
-    {
+    public DeviceCreator newDeviceCreator() {
         return factory.newCreator(null, null);
     }
 
@@ -53,8 +51,11 @@ public class DeviceXmlRegistry {
      * 
      * @return
      */
-    public DeviceListResult newDeviceListResult()
-    {
+    public DeviceListResult newDeviceListResult() {
         return factory.newDeviceListResult();
+    }
+
+    public DeviceQuery newQuery() {
+        return factory.newQuery(null);
     }
 }
