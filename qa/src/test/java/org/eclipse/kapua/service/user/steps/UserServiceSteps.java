@@ -44,6 +44,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserService;
@@ -54,6 +55,8 @@ import org.eclipse.kapua.test.KapuaTest;
 import java.math.BigInteger;
 import java.util.*;
 
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
+
 /**
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
@@ -63,11 +66,6 @@ public class UserServiceSteps extends KapuaTest {
      * Path to root of full DB schema scripts.
      */
     public static final String FULL_SCHEMA_PATH = "../dev-tools/src/main/database/";
-
-    /**
-     * Default filter for droping, creating and seeding DB schema.
-     */
-    public static final String DEFAULT_FILTER = "all_*.sql";
 
     /**
      * Filter for droping full DB schema.
@@ -131,7 +129,7 @@ public class UserServiceSteps extends KapuaTest {
 
         // Create User Service tables
         enableH2Connection();
-        KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DEFAULT_FILTER);
+        new KapuaLiquibaseClient(resolveJdbcUrl(), "kapua", "kapua").update();
 
         // Services by default Locator
         KapuaLocator locator = KapuaLocator.getInstance();
