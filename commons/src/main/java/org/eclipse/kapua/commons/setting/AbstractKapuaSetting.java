@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
@@ -27,14 +27,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Setting reference abstract implementation.
  * 
- * @param <K> setting key type
+ * @param <K>
+ *            setting key type
  * 
  * @since 1.0
  * 
  */
-public abstract class AbstractKapuaSetting<K extends SettingKey>
-{
-    private static final Logger s_logger = LoggerFactory.getLogger(AbstractKapuaSetting.class);
+public abstract class AbstractKapuaSetting<K extends SettingKey> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaSetting.class);
 
     protected DataConfiguration config;
 
@@ -43,17 +44,19 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * 
      * @param configResourceName
      */
-    protected AbstractKapuaSetting(String configResourceName)
-    {
+    protected AbstractKapuaSetting(String configResourceName) {
         CompositeConfiguration compositeConfig = new EnvFriendlyConfiguration();
         compositeConfig.addConfiguration(new SystemConfiguration());
         compositeConfig.addConfiguration(new EnvironmentConfiguration());
         try {
             URL configLocalUrl = ResourceUtils.getResource(configResourceName);
+            if (configLocalUrl == null) {
+                logger.warn("Unable to locate resource '{}'", configResourceName);
+                throw new IllegalArgumentException(String.format("Unable to locate resource: '%s'", configResourceName));
+            }
             compositeConfig.addConfiguration(new PropertiesConfiguration(configLocalUrl));
-        }
-        catch (Exception e) {
-            s_logger.error("Error loading PropertiesConfiguration", e);
+        } catch (Exception e) {
+            logger.error("Error loading PropertiesConfiguration", e);
             throw new ExceptionInInitializerError(e);
         }
 
@@ -67,8 +70,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public <T> T get(Class<T> cls, K key)
-    {
+    public <T> T get(Class<T> cls, K key) {
         return config.get(cls, key.key());
     }
 
@@ -80,8 +82,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public <T> T get(Class<T> cls, K key, T defaultValue)
-    {
+    public <T> T get(Class<T> cls, K key, T defaultValue) {
         return config.get(cls, key.key(), defaultValue);
     }
 
@@ -92,8 +93,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public <T> List<T> getList(Class<T> cls, K key)
-    {
+    public <T> List<T> getList(Class<T> cls, K key) {
         return config.getList(cls, key.key());
     }
 
@@ -105,8 +105,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param regex
      * @return
      */
-    public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey, String regex)
-    {
+    public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey, String regex) {
         Map<String, V> map = new HashMap<String, V>();
         Configuration subsetConfig = config.subset(prefixKey.key());
         DataConfiguration subsetDataConfig = new DataConfiguration(subsetConfig);
@@ -126,8 +125,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param prefixKey
      * @return
      */
-    public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey)
-    {
+    public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey) {
         Map<String, V> map = new HashMap<String, V>();
         Configuration subsetConfig = config.subset(prefixKey.key());
         DataConfiguration subsetDataConfig = new DataConfiguration(subsetConfig);
@@ -144,8 +142,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public int getInt(K key)
-    {
+    public int getInt(K key) {
         return config.getInt(key.key());
     }
 
@@ -156,8 +153,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public int getInt(K key, int defaultValue)
-    {
+    public int getInt(K key, int defaultValue) {
         return config.getInt(key.key(), defaultValue);
     }
 
@@ -168,8 +164,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public int getInt(K key, Integer defaultValue)
-    {
+    public int getInt(K key, Integer defaultValue) {
         return config.getInt(key.key(), defaultValue);
     }
 
@@ -179,8 +174,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public boolean getBoolean(K key)
-    {
+    public boolean getBoolean(K key) {
         return config.getBoolean(key.key());
     }
 
@@ -191,8 +185,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public boolean getBoolean(K key, boolean defaultValue)
-    {
+    public boolean getBoolean(K key, boolean defaultValue) {
         return config.getBoolean(key.key(), defaultValue);
     }
 
@@ -203,8 +196,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public boolean getBoolean(K key, Boolean defaultValue)
-    {
+    public boolean getBoolean(K key, Boolean defaultValue) {
         return config.getBoolean(key.key(), defaultValue);
     }
 
@@ -214,8 +206,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public String getString(K key)
-    {
+    public String getString(K key) {
         return config.getString(key.key());
     }
 
@@ -226,8 +217,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public String getString(K key, String defaultValue)
-    {
+    public String getString(K key, String defaultValue) {
         return config.getString(key.key(), defaultValue);
     }
 
@@ -237,8 +227,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public long getLong(K key)
-    {
+    public long getLong(K key) {
         return config.getLong(key.key());
     }
 
@@ -249,8 +238,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public long getLong(K key, long defaultValue)
-    {
+    public long getLong(K key, long defaultValue) {
         return config.getLong(key.key(), defaultValue);
     }
 
@@ -261,8 +249,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public long getLong(K key, Long defaultValue)
-    {
+    public long getLong(K key, Long defaultValue) {
         return config.getLong(key.key(), defaultValue);
     }
 
@@ -272,8 +259,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public float getFloat(K key)
-    {
+    public float getFloat(K key) {
         return config.getFloat(key.key());
     }
 
@@ -284,8 +270,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public float getFloat(K key, float defaultValue)
-    {
+    public float getFloat(K key, float defaultValue) {
         return config.getFloat(key.key(), defaultValue);
     }
 
@@ -296,8 +281,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public float getFloat(K key, Float defaultValue)
-    {
+    public float getFloat(K key, Float defaultValue) {
         return config.getFloat(key.key(), defaultValue);
     }
 
@@ -307,8 +291,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param key
      * @return
      */
-    public double getDouble(K key)
-    {
+    public double getDouble(K key) {
         return config.getDouble(key.key());
     }
 
@@ -319,8 +302,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public double getDouble(K key, double defaultValue)
-    {
+    public double getDouble(K key, double defaultValue) {
         return config.getDouble(key.key(), defaultValue);
     }
 
@@ -331,8 +313,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey>
      * @param defaultValue
      * @return
      */
-    public double getDouble(K key, Double defaultValue)
-    {
+    public double getDouble(K key, Double defaultValue) {
         return config.getDouble(key.key(), defaultValue);
     }
 }
