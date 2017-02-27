@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
@@ -17,8 +18,8 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
 public class AccountTabConfiguration extends LayoutContainer {
 
@@ -34,12 +35,12 @@ public class AccountTabConfiguration extends LayoutContainer {
         m_configComponents = new AccountConfigComponents(currentSession, this);
     }
 
-    public void setAccount(GwtDevice selectedDevice) {
-        m_configComponents.setDevice(selectedDevice);
+    public void setAccount(GwtAccount selectedAccount) {
+        m_configComponents.setAccount(selectedAccount);
     }
 
     public void refresh() {
-
+        m_configComponents.refresh();
     }
 
     protected void onRender(Element parent, int index) {

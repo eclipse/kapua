@@ -69,6 +69,8 @@ public class AccountDetailsView extends LayoutContainer {
     private boolean m_initialized;
 
     private FormPanel m_formPanel;
+    private TabItem settingsTabItem;
+    private AccountTabConfiguration settingsTab;
     private TabPanel m_tabPanel;
     private Grid<GwtGroupedNVPair> m_grid;
     private GroupingStore<GwtGroupedNVPair> m_store;
@@ -127,7 +129,19 @@ public class AccountDetailsView extends LayoutContainer {
         southData.setMargins(new Margins(5, 0, 0, 0));
         m_tabPanel = new TabPanel();
         m_tabPanel.setPlain(true);
-        m_tabPanel.add(new TabItem("Settings", new KapuaIcon(IconSet.COG)));    // TODO externalize string
+        settingsTab = new AccountTabConfiguration(m_currentSession);
+        settingsTabItem = new TabItem("Settings", new KapuaIcon(IconSet.COG));      // TODO externalize string
+        settingsTabItem.setBorders(true);
+        settingsTabItem.setLayout(new FitLayout());
+        settingsTabItem.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            public void handleEvent(ComponentEvent be) {
+                settingsTab.refresh();
+            }
+        });
+        settingsTab.setAccount(selectedAccount);
+        settingsTabItem.add(settingsTab);
+        m_tabPanel.add(settingsTabItem);
         m_bodyLayoutContainer.add(m_tabPanel, southData);
 
         add(m_bodyLayoutContainer);
