@@ -19,19 +19,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.commons.configuration.*;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.DataConfiguration;
+import org.apache.commons.configuration.EnvironmentConfiguration;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.SystemConfiguration;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Setting reference abstract implementation.
- * 
+ *
  * @param <K>
  *            setting key type
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
@@ -41,7 +46,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Constructor
-     * 
+     *
      * @param configResourceName
      */
     protected AbstractKapuaSetting(String configResourceName) {
@@ -65,7 +70,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get the property for the key
-     * 
+     *
      * @param cls
      * @param key
      * @return
@@ -76,7 +81,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get the property for the key 'key'. Returns a default value if no property for that key is found.
-     * 
+     *
      * @param cls
      * @param key
      * @param defaultValue
@@ -88,7 +93,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get the property list values for the key 'key'
-     * 
+     *
      * @param cls
      * @param key
      * @return
@@ -99,14 +104,14 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get properties map with key matching the provided prefix and regex
-     * 
+     *
      * @param valueType
      * @param prefixKey
      * @param regex
      * @return
      */
     public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey, String regex) {
-        Map<String, V> map = new HashMap<String, V>();
+        Map<String, V> map = new HashMap<>();
         Configuration subsetConfig = config.subset(prefixKey.key());
         DataConfiguration subsetDataConfig = new DataConfiguration(subsetConfig);
         for (Iterator<String> it = subsetConfig.getKeys(); it.hasNext();) {
@@ -120,13 +125,13 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get properties map with key matching the provided prefix
-     * 
+     *
      * @param valueType
      * @param prefixKey
      * @return
      */
     public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey) {
-        Map<String, V> map = new HashMap<String, V>();
+        Map<String, V> map = new HashMap<>();
         Configuration subsetConfig = config.subset(prefixKey.key());
         DataConfiguration subsetDataConfig = new DataConfiguration(subsetConfig);
         for (Iterator<String> it = subsetConfig.getKeys(); it.hasNext();) {
@@ -138,7 +143,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get an integer property
-     * 
+     *
      * @param key
      * @return
      */
@@ -148,7 +153,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get an integer property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -159,7 +164,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get an integer property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -170,7 +175,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a boolean property
-     * 
+     *
      * @param key
      * @return
      */
@@ -180,7 +185,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a boolean property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -191,7 +196,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a boolean property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -202,7 +207,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a String property
-     * 
+     *
      * @param key
      * @return
      */
@@ -212,7 +217,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a String property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -223,7 +228,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a long property
-     * 
+     *
      * @param key
      * @return
      */
@@ -233,7 +238,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a long property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -244,7 +249,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a long property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -255,7 +260,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a float property
-     * 
+     *
      * @param key
      * @return
      */
@@ -265,7 +270,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a float property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -276,7 +281,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a float property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -287,7 +292,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a double property
-     * 
+     *
      * @param key
      * @return
      */
@@ -297,7 +302,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a double property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -308,7 +313,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> {
 
     /**
      * Get a double property with a default value (if property is not found)
-     * 
+     *
      * @param key
      * @param defaultValue
      * @return
