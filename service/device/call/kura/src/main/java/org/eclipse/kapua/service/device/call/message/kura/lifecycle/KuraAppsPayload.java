@@ -41,8 +41,8 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
     private final static String JVM_PROFILE = "jvm_profile";
     private final static String ESF_VERSION = "esf_version";
     private final static String KURA_VERSION = "kura_version";
-    private final static String ESF_PREFIX = "ESF_";
-    private final static String ESFKURA_VERSION = "esf_version";
+    private final static String APPLICATION_FRAMEWORK = "application_framework";
+    private final static String APPLICATION_FRAMEWORK_VERSION = "application_framework_version";
     private final static String OSGI_FRAMEWORK = "osgi_framework";
     private final static String OSGI_FRAMEWORK_VERSION = "osgi_framework_version";
     private final static String CONNECTION_INTERFACE = "connection_interface";
@@ -52,6 +52,8 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
     private final static String MODEM_IMEI = "modem_imei";
     private final static String MODEM_IMSI = "modem_imsi";
     private final static String MODEM_ICCID = "modem_iccid";
+
+    private final static String DEFAULT_APPLICATION_FRAMEWORK = "Kura";
 
     /**
      * Constructor
@@ -103,7 +105,8 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
             String jvmName,
             String jvmVersion,
             String jvmProfile,
-            String esfkuraVersion,
+            String applicationFramework,
+            String applicationFrameworkVersion,
             String connectionInterface,
             String connectionIp,
             String acceptEncoding,
@@ -157,8 +160,11 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
         if (jvmProfile != null) {
             getMetrics().put(JVM_PROFILE, jvmProfile);
         }
-        if (esfkuraVersion != null) {
-            getMetrics().put(ESFKURA_VERSION, esfkuraVersion);
+        if (applicationFramework != null) {
+            getMetrics().put(APPLICATION_FRAMEWORK, applicationFramework);
+        }
+        if (applicationFrameworkVersion != null) {
+            getMetrics().put(APPLICATION_FRAMEWORK_VERSION, applicationFrameworkVersion);
         }
         if (connectionInterface != null) {
             getMetrics().put(CONNECTION_INTERFACE, connectionInterface);
@@ -357,7 +363,11 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
      * @return
      */
     public String getApplicationFramework() {
-        return (String) getMetrics().get(ESFKURA_VERSION);
+        String value = (String) getMetrics().get(APPLICATION_FRAMEWORK);
+        if (value != null) {
+            return value;
+        }
+        return (String) getMetrics().get(DEFAULT_APPLICATION_FRAMEWORK);
     }
 
     /**
@@ -366,7 +376,15 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
      * @return
      */
     public String getApplicationFrameworkVersion() {
-        return (String) getMetrics().get(ESFKURA_VERSION);
+        String value = (String) getMetrics().get(APPLICATION_FRAMEWORK_VERSION);
+        if (value != null) {
+            return value;
+        }
+        value = (String) getMetrics().get(KURA_VERSION);
+        if (value != null) {
+            return value;
+        }
+        return (String) getMetrics().get(ESF_VERSION);
     }
 
     /**
@@ -480,7 +498,8 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload {
                 .append(", getJvmProfile()=").append(getJvmProfile())
                 .append(", getOsgiFramework()=").append(getContainerFramework())
                 .append(", getOsgiFrameworkVersion()=").append(getContainerFrameworkVersion())
-                .append(", getEsfKuraVersion()=").append(getApplicationFrameworkVersion())
+                .append(", getApplicationFramework()=").append(getApplicationFramework())
+                .append(", getApplicationFrameworkVersion()=").append(getApplicationFrameworkVersion())
                 .append(", getConnectionInterface()=").append(getConnectionInterface())
                 .append(", getConnectionIp()=").append(getConnectionIp())
                 .append(", getAcceptEncoding()=").append(getAcceptEncoding())
