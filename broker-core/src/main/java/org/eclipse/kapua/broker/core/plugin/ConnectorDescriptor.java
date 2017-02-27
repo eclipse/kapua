@@ -72,12 +72,13 @@ public class ConnectorDescriptor implements Serializable {
 
     /**
      * Constructs a new connector descriptor
+     * 
      * @param deviceClass
      *            device level messages implementation classes
      * @param kapuaClass
      *            Kapua level messages implementation classes
      */
-    public ConnectorDescriptor( Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
+    public ConnectorDescriptor(Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
         requireNonNull(deviceClass);
         requireNonNull(kapuaClass);
 
