@@ -36,4 +36,20 @@ public class KapuaLiquibaseClientTest {
         assertThat(tables).contains("act_account");
     }
 
+    @Test
+    public void shouldCreateTableOnlyOnce() throws Exception {
+        // When
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
+
+        // Then
+        Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "", "");
+        ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
+        List<String> tables = new LinkedList<>();
+        while(sqlResults.next()) {
+            tables.add(sqlResults.getString(1));
+        }
+        assertThat(tables).contains("act_account");
+    }
+
 }
