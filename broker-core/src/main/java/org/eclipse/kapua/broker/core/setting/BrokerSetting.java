@@ -17,11 +17,11 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Broker setting implementation.<br>
  * This class handles settings for the {@link BrokerSettingKey}.
  */
-public class BrokerSetting extends AbstractKapuaSetting<BrokerSettingKey> {
+public final class BrokerSetting extends AbstractKapuaSetting<BrokerSettingKey> {
 
     private static final String CONFIG_RESOURCE_NAME = "kapua-broker-setting.properties";
 
-    private static final BrokerSetting instance = new BrokerSetting();
+    private static BrokerSetting instance;
 
     private BrokerSetting() {
         super(CONFIG_RESOURCE_NAME);
@@ -31,6 +31,28 @@ public class BrokerSetting extends AbstractKapuaSetting<BrokerSettingKey> {
      * Return the broker setting instance (singleton)
      */
     public static BrokerSetting getInstance() {
-        return instance;
+        synchronized (BrokerSetting.class) {
+            if (instance == null) {
+                instance = new BrokerSetting();
+            }
+            return instance;
+        }
+    }
+
+    /**
+     * Allow re-setting the global instance
+     * <p>
+     * This method clears out the internal global instance in order to let the next call
+     * to {@link #getInstance()} return a fresh instance.
+     * </p>
+     * <p>
+     * This may be helpful for unit tests which need to change system properties for testing
+     * different behaviors.
+     * </p>
+     */
+    public static void resetInstance() {
+        synchronized (BrokerSetting.class) {
+            instance = null;
+        }
     }
 }
