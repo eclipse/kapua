@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 20176 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle;
 
@@ -34,5 +34,5 @@ public interface DeviceBundles
      * @return
      */
     @XmlElement(name = "bundle", namespace = "http://eurotech.com/esf/2.0")
-    public <B extends DeviceBundle> List<B> getBundles();
+    public List<DeviceBundle> getBundles();
 }

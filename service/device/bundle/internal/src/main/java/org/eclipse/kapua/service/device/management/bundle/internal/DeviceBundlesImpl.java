@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,14 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 
 /**
@@ -25,10 +26,10 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
  */
 public class DeviceBundlesImpl implements DeviceBundles
 {
-    private List<DeviceBundleImpl> bundles;
+    private List<DeviceBundle> bundles;
 
     @Override
-    public List<DeviceBundleImpl> getBundles()
+    public List<DeviceBundle> getBundles()
     {
         if (bundles == null) {
             bundles = new ArrayList<>();
