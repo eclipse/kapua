@@ -36,23 +36,7 @@ import org.junit.Test;
 
 public class DomainServiceTest extends KapuaTest {
 
-    public static String DEFAULT_FILTER = "athz_*.sql";
-    public static String DROP_FILTER = "athz_*_drop.sql";
-
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
-
-    // Database fixtures
-
-    @BeforeClass
-    public static void beforeClass() throws KapuaException {
-        enableH2Connection();
-        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DEFAULT_FILTER);
-    }
-
-    @AfterClass
-    public static void afterClass() throws KapuaException {
-        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
-    }
 
     // Tests
 
