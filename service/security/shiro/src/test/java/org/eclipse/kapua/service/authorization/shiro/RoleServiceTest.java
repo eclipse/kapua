@@ -60,7 +60,7 @@ public class RoleServiceTest extends KapuaTest {
 
     @AfterClass
     public static void afterClass() throws KapuaException {
-//        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
+        //        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
     }
 
     // Tests

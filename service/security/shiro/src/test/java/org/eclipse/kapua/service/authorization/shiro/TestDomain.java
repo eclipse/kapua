@@ -23,9 +23,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Test domain.<br>
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TestDomain extends AbstractKapuaEntity implements Domain {
 
