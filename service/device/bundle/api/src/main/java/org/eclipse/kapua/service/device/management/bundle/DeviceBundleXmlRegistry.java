@@ -16,7 +16,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 /**
  * Device bundle xml factory class
- * 
+ *
  * @since 1.0
  *
  */
@@ -28,21 +28,19 @@ public class DeviceBundleXmlRegistry {
 
     /**
      * Creates a new device bundles list
-     * 
+     *
      * @return
      */
-    public DeviceBundles newBundleListResult()
-    {
+    public DeviceBundles newBundleListResult() {
         return factory.newBundleListResult();
     }
 
     /**
      * Creates a new device bundle
-     * 
+     *
      * @return
      */
-    public DeviceBundle newDeviceBundle()
-    {
+    public DeviceBundle newDeviceBundle() {
         return factory.newDeviceBundle();
     }
 }

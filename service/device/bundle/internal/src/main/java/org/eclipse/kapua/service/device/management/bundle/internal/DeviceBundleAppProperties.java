@@ -16,16 +16,15 @@ import org.eclipse.kapua.service.device.management.KapuaAppProperties;
 
 /**
  * Device bundle properties definition.
- * 
+ *
  * @since 1.0
  *
  */
-public enum DeviceBundleAppProperties implements KapuaAppProperties
-{
+public enum DeviceBundleAppProperties implements KapuaAppProperties {
     /**
      * Application name
      */
-	APP_NAME("BUNDLE"),
+    APP_NAME("BUNDLE"),
     /**
      * Version
      */
@@ -34,15 +33,13 @@ public enum DeviceBundleAppProperties implements KapuaAppProperties
 
     private String value;
 
-    DeviceBundleAppProperties(String value)
-    {
+    DeviceBundleAppProperties(String value) {
         this.value = value;
     }
 
     @Override
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
-	
+
 }

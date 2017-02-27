@@ -18,21 +18,20 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
  * Device bundle entity service factory definition.
  *
  * @since 1.0
- * 
+ *
  */
-public interface DeviceBundleFactory extends KapuaObjectFactory
-{
+public interface DeviceBundleFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new device bundle list
-     * 
+     *
      * @return
      */
     public DeviceBundles newBundleListResult();
 
     /**
      * Create a new {@link DeviceBundle}
-     * 
+     *
      * @return
      */
     public DeviceBundle newDeviceBundle();
