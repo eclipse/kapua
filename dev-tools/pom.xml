@@ -22,49 +22,4 @@
     <artifactId>kapua-dev-tools</artifactId>
     <name>${project.artifactId}</name>
 
-    <properties>
-        <docker.account>kapua</docker.account>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>liquibase</id>
-
-            <properties>
-                <liquibase.host>${SQL_SERVICE_HOST}</liquibase.host>
-                <liquibase.port>3306</liquibase.port>
-                <liquibase.url.options></liquibase.url.options>
-                <liquibase.username>kapua</liquibase.username>
-                <liquibase.password>kapua</liquibase.password>
-                <liquibase.url>jdbc:h2:tcp://${liquibase.host}:${liquibase.port}/kapuadb;${liquibase.url.options}</liquibase.url>
-                <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
-            </properties>
-
-            <build>
-                <defaultGoal>clean install</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.liquibase</groupId>
-                        <artifactId>liquibase-maven-plugin</artifactId>
-                        <configuration>
-                            <changeLogFile>src/main/database/liquibase.sql</changeLogFile>
-                            <driver>org.h2.Driver</driver>
-                            <url>${liquibase.url}</url>
-                            <username></username>
-                            <password></password>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>update</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>
