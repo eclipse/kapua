@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
@@ -32,18 +32,16 @@ public class ResourceUtils
     public static final Logger s_logger = LoggerFactory.getLogger(ResourceUtils.class);
 
     /**
-     * Get the URL rescource
+     * Get the URL of a resource
      * 
-     * @param resource
-     * @return
+     * @param resource to locate
+     * @return The URL to the resource, or {@code null} if it cannot be found
      */
     public static URL getResource(String resource) {
-        URL url ;
-
         //Try with the Thread Context Loader.
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if(classLoader != null) {
-            url = classLoader.getResource(resource);
+            URL url = classLoader.getResource(resource);
             if(url != null) {
                 return url;
             }
@@ -52,7 +50,7 @@ public class ResourceUtils
         //Let's now try with the classloader that loaded this class.
         classLoader = ResourceUtils.class.getClassLoader();
         if(classLoader != null) {
-            url = classLoader.getResource(resource);
+            URL url = classLoader.getResource(resource);
             if(url != null) {
                 return url;
             }
