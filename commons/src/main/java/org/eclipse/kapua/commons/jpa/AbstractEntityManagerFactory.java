@@ -12,18 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
 
 /**
  * Utility class for JPA operations.
@@ -38,11 +39,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
     private EntityManagerFactory entityManagerFactory;
 
     /**
-     * Jdbc url connection resolver service
-     */
-    private final JdbcConnectionUrlResolver jdbcConnectionUrlResolver;
-
-    /**
      * Protected constructor
      * 
      * @param persistenceUnitName
@@ -51,16 +47,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      */
     protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName, Map<String, String> uniqueConstraints) {
         SystemSetting config = SystemSetting.getInstance();
-
-        String connectionUrlResolverType = config.getString(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, "DEFAULT");
-        LOG.debug("The following JDBC connection URL resolver type will be used: {}", connectionUrlResolverType);
-        if (connectionUrlResolverType.equals("DEFAULT")) {
-            jdbcConnectionUrlResolver = new DefaultConfigurableJdbcConnectionUrlResolver();
-        } else if (connectionUrlResolverType.equals("H2")) {
-            jdbcConnectionUrlResolver = new H2JdbcConnectionUrlResolver();
-        } else {
-            throw new IllegalArgumentException("Unknown JDBC connection URL resolver type: " + connectionUrlResolverType);
-        }
 
         //
         // Initialize the EntityManagerFactory
@@ -71,7 +57,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
             configOverrides.put("eclipselink.cache.shared.default", "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
 
-            configOverrides.put("eclipselink.connection-pool.default.url", jdbcConnectionUrlResolver.connectionUrl());
+            configOverrides.put("eclipselink.connection-pool.default.url", resolveJdbcUrl());
             configOverrides.put("eclipselink.connection-pool.default.user", config.getString(SystemSettingKey.DB_USERNAME));
             configOverrides.put("eclipselink.connection-pool.default.password", config.getString(SystemSettingKey.DB_PASSWORD));
 
