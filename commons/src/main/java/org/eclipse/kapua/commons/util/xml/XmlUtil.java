@@ -35,8 +35,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
 
@@ -47,11 +45,7 @@ import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
  */
 public class XmlUtil {
 
-    @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(XmlUtil.class);
-
-    @SuppressWarnings("rawtypes")
-    private static Map<Class, JAXBContext> contexts = new HashMap<>();
 
     private static JAXBContextProvider jaxbContextProvider;
 
