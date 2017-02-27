@@ -20,8 +20,8 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
  * @since 1.0
  *
  */
-public class DeviceBundleImpl implements DeviceBundle
-{
+public class DeviceBundleImpl implements DeviceBundle {
+
     public long id;
     public String name;
     public String version;
@@ -30,54 +30,46 @@ public class DeviceBundleImpl implements DeviceBundle
     /**
      * Constructor
      */
-    public DeviceBundleImpl()
-    {}
+    public DeviceBundleImpl() {
+    }
 
     @Override
-    public long getId()
-    {
+    public long getId() {
         return id;
     }
 
     @Override
-    public void setId(long id)
-    {
+    public void setId(long id) {
         this.id = id;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     @Override
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
     @Override
-    public String getState()
-    {
+    public String getState() {
         return state;
     }
 
     @Override
-    public void setState(String state)
-    {
+    public void setState(String state) {
         this.state = state;
     }
 }

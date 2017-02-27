@@ -20,17 +20,16 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 
 /**
  * Device bundles list entity implementation.
- * 
+ *
  * @since 1.0
  *
  */
-public class DeviceBundlesImpl implements DeviceBundles
-{
+public class DeviceBundlesImpl implements DeviceBundles {
+
     private List<DeviceBundle> bundles;
 
     @Override
-    public List<DeviceBundle> getBundles()
-    {
+    public List<DeviceBundle> getBundles() {
         if (bundles == null) {
             bundles = new ArrayList<>();
         }

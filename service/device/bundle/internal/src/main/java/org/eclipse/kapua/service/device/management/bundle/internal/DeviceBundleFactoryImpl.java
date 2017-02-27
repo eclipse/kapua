@@ -19,23 +19,20 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 
 /**
  * Device bundle entity service factory implementation.
- * 
+ *
  * @since 1.0
  *
  */
 @KapuaProvider
-public class DeviceBundleFactoryImpl implements DeviceBundleFactory
-{
+public class DeviceBundleFactoryImpl implements DeviceBundleFactory {
 
     @Override
-    public DeviceBundles newBundleListResult()
-    {
+    public DeviceBundles newBundleListResult() {
         return new DeviceBundlesImpl();
     }
 
     @Override
-    public DeviceBundle newDeviceBundle()
-    {
+    public DeviceBundle newDeviceBundle() {
         return new DeviceBundleImpl();
     }
 

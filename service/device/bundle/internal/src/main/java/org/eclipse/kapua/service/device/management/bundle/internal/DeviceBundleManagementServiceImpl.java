@@ -44,7 +44,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 /**
  * Device bundle service implementation.
- * 
+ *
  * @since 1.0
  *
  */
