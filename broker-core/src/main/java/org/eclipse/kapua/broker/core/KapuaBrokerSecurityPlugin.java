@@ -26,25 +26,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Install {@link KapuaSecurityBrokerFilter} into activeMQ filter chain plugin.<BR>
- * 
+ * <p>
  * Is called by activeMQ broker by configuring plugin tag inside broker tag into activemq.xml.<BR>
  * <BR>
  * <BR>
- * 
+ * <p>
  * <pre>
  * &lt;plugins&gt;
  *     &lt;bean xmlns="http://www.springframework.org/schema/beans" id="kapuaFilter" class="org.eclipse.kapua.broker.core.KapuaSecurityBrokerFilter"/&gt;
  * &lt;/plugins&gt;
  * </pre>
- * 
+ *
  * @since 1.0
  */
-public class KapuaBrokerSecurityPlugin implements BrokerPlugin
-{
+public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
+
     private static Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
 
-    public Broker installPlugin(Broker broker) throws Exception
-    {
+    public Broker installPlugin(Broker broker) throws Exception {
         logger.info(">> installPlugin {}", KapuaBrokerSecurityPlugin.class.getName());
         try {
             // initialize shiro context for broker plugin from shiro ini file
@@ -60,8 +59,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin
             // install the filters
             broker = new KapuaSecurityBrokerFilter(broker);
             return broker;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             logger.error("Error in plugin installation.", t);
             throw new SecurityException(t);
         }
