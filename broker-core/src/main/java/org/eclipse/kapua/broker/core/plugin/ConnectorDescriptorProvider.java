@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
+/**
+ * A provider for {@link ConnectorDescriptor} instances
+ */
 public interface ConnectorDescriptorProvider {
 
     /**

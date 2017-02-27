@@ -16,6 +16,9 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Helper class for working with {@link ConnectorDescriptorProvider} instances
+ */
 public final class ConnectorDescriptorProviders {
 
     private static final Logger logger = LoggerFactory.getLogger(ConnectorDescriptorProviders.class);
