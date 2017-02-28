@@ -156,13 +156,6 @@
         </dependency>
 
         <dependency>
-            <!-- Base64 classes -->
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
-        </dependency>
-
-        <dependency>
             <!-- Imaging utils used to handle device component configuration 
                 icons -->
             <!-- former commons-imaging changed because the 1.0-FINAL was 
