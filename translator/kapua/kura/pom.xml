@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
    
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
    
     Contributors:
         Eurotech - initial API and implementation
-   
+        Red Hat Inc
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -68,7 +68,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-internal</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-command-internal</artifactId>
@@ -85,11 +85,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-packages-internal</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>org.eclipse.persistence.moxy</artifactId>
-			<version>2.6.3</version>
-		</dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
