@@ -637,6 +637,7 @@
                         </executions>
                         <configuration>
                             <suppressionFile>src/main/dependency-checker/suppress.xml</suppressionFile>
+                            <format>ALL</format>
                         </configuration>
                     </plugin>
                 </plugins>
