@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanel;
 import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.device.button.ConfigDiscardButton;
 import org.eclipse.kapua.app.console.client.device.button.ConfigSaveButton;
@@ -300,59 +299,6 @@ public class AccountConfigComponents extends LayoutContainer {
         });
     }
 
-    // --------------------------------------------------------------------------------------
-    //
-    // Device Configuration Management
-    //
-    // --------------------------------------------------------------------------------------
-
-    public void refreshWhenOnline() {
-        final int PERIOD_MILLIS = 1000;
-
-        Timer timer = new Timer() {
-
-            private int TIMEOUT_MILLIS = 30000;
-            private int countdownMillis = TIMEOUT_MILLIS;
-
-            public void run() {
-                if (m_selectedAccount != null) {
-                    countdownMillis -= PERIOD_MILLIS;
-
-                    //
-                    // Poll the current status of the device until is online again or timeout.
-                    /*gwtDeviceService.findDevice(m_selectedAccount.getScopeId(),
-                            m_selectedAccount.getUnescapedClientId(),
-                            new AsyncCallback<GwtDevice>() {
-
-                                @Override
-                                public void onFailure(Throwable t) {
-                                    done();
-                                }
-
-                                @Override
-                                public void onSuccess(GwtDevice gwtDevice) {
-                                    if (countdownMillis <= 0 ||
-                                    // Allow the device to disconnect before checking if it's online again.
-                                            ((TIMEOUT_MILLIS - countdownMillis) > 5000 && gwtDevice.isOnline())) {
-                                        done();
-                                    }
-                                }
-
-                                private void done() {
-                                    cancel();
-                                    refresh();
-                                    if (m_devConfPanel != null) {
-                                        m_devConfPanel.unmask();
-                                    }
-                                }
-                            });*/
-                }
-            }
-        };
-        m_devConfPanel.mask(MSGS.waiting());
-        timer.scheduleRepeating(PERIOD_MILLIS);
-    }
-
     public void refresh() {
         if (m_dirty && m_initialized) {
 
@@ -410,10 +356,6 @@ public class AccountConfigComponents extends LayoutContainer {
         // ask for confirmation
         String componentName = m_devConfPanel.getConfiguration().getComponentName();
         String message = MSGS.deviceConfigConfirmation(componentName);
-        final boolean isCloudUpdate = "CloudService".equals(componentName);
-        if (isCloudUpdate) {
-            message = MSGS.deviceCloudConfigConfirmation(componentName);
-        }
 
         MessageBox.confirm(MSGS.confirm(),
                 message,
@@ -446,9 +388,9 @@ public class AccountConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    /*final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
+                                    final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
                                     gwtDomainService.updateComponentConfiguration(token,
-                                            m_selectedAccount,
+                                            m_currentSession.getSelectedAccount().getId(),
                                             configComponent,
                                             new AsyncCallback<Void>() {
 
@@ -459,13 +401,9 @@ public class AccountConfigComponents extends LayoutContainer {
 
                                                 public void onSuccess(Void arg0) {
                                                     m_dirty = true;
-                                                    if (isCloudUpdate) {
-                                                        refreshWhenOnline();
-                                                    } else {
-                                                        refresh();
-                                                    }
+                                                    refresh();
                                                 }
-                                            });*/
+                                            });
                                 }
                             });
 

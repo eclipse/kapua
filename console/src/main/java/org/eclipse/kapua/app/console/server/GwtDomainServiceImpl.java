@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.KapuaException;
@@ -23,9 +24,13 @@ import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
+import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.service.GwtDomainService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -54,7 +59,6 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
      */
     private static final long serialVersionUID = -699492835893299489L;
     private static Logger logger = LoggerFactory.getLogger(GwtDeviceManagementServiceImpl.class);
-
 
     @Override
     public List<GwtDomain> findAll() throws GwtKapuaException {
@@ -112,12 +116,12 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
             List<GwtDomain> gwtDomains = findAll();
             for (GwtDomain gwtDomain : gwtDomains) {
                 String serviceName = getServiceName(null, gwtDomain.toString());
-                if (serviceName != null && serviceName.startsWith("org.")) {
+                if (serviceName != null && serviceName.startsWith("org.")) {        // TODO verify exact condition, expand database model
                     KapuaLocator locator = KapuaLocator.getInstance();
                     Class serviceClass = Class.forName(serviceName);
                     KapuaService service = locator.getService(serviceClass);
                     if (service instanceof KapuaConfigurableService) {
-                        KapuaConfigurableService configurableService = (KapuaConfigurableService)service;
+                        KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
                         KapuaTocd tocd = configurableService.getConfigMetadata();
                         if (tocd != null) {
                             GwtConfigComponent gwtConfig = new GwtConfigComponent();
@@ -189,7 +193,30 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         return gwtConfigs;
     }
 
-    private String getServiceName(KapuaId scopeId, String domainName) throws GwtKapuaException{
+    @Override public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, GwtConfigComponent configComponent) throws GwtKapuaException {
+        //
+        // Checking validity of the given XSRF Token
+        checkXSRFToken(xsrfToken);
+        KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            Class configurableServiceClass = Class.forName(configComponent.get("componentId"));
+            KapuaConfigurableService configurableService = (KapuaConfigurableService)locator.getService(configurableServiceClass);
+
+            // execute the update
+            Map<String, Object> parameters = new HashMap<>();
+            for (GwtConfigParameter gwtConfigParameter : configComponent.getParameters()) {
+                parameters.put(gwtConfigParameter.getName(), gwtConfigParameter.getValue());
+            }
+            configurableService.setConfigValues(kapuaScopeId, parameters);
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+    }
+
+    private String getServiceName(KapuaId scopeId, String domainName) throws GwtKapuaException {
         String serviceName = null;
         KapuaLocator locator = KapuaLocator.getInstance();
         DomainService domainService = locator.getService(DomainService.class);

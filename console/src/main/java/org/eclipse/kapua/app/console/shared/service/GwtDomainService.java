@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
+import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 
 import java.util.List;
 
@@ -52,5 +53,14 @@ public interface GwtDomainService extends RemoteService {
      * @return
      */
     public List<GwtConfigComponent> findServiceConfigurations(String scopeId)
+            throws GwtKapuaException;
+
+    /**
+     * Updates the configuration of the provided component.
+     *
+     * @param scopeId
+     * @param configComponent
+     */
+    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, GwtConfigComponent configComponent)
             throws GwtKapuaException;
 }
