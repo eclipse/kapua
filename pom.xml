@@ -34,6 +34,7 @@
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>3.3.2</commons-lang.version>
         <commons-pool.version>2.3</commons-pool.version>
+        <dropwizard.version>3.1.2</dropwizard.version>
         <eclipselink.version>2.6.3</eclipselink.version>
         <findbugs.version>2.0.1</findbugs.version>
         <guava.version>19.0</guava.version>
@@ -588,6 +589,11 @@
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${findbugs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-core</artifactId>
+                <version>${dropwizard.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
