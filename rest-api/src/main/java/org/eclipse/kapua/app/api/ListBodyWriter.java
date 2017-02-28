@@ -30,7 +30,7 @@ import java.util.List;
 
 @Provider
 @Produces(MediaType.APPLICATION_XML)
-public class ListBodyWriter implements MessageBodyWriter<List> {
+public class ListBodyWriter implements MessageBodyWriter<List<?>> {
 
 	@Context
 	Providers providers;
@@ -43,13 +43,13 @@ public class ListBodyWriter implements MessageBodyWriter<List> {
 	}
 
 	@Override
-	public long getSize(List t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
+	public long getSize(List<?> t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
 	{
 		return 0;
 	}
 
 	@Override
-	public void writeTo(List t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public void writeTo(List<?> t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException 
 	{

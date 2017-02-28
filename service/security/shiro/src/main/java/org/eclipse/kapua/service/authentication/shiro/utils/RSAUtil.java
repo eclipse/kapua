@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.shiro.utils;
 
 import java.security.Key;
 import java.util.Base64;
-import java.util.Base64.Encoder;
 
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;

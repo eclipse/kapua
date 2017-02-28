@@ -8,9 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
+
+import static java.util.Base64.getEncoder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
@@ -795,7 +796,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                 // Tmp file name creation
                 String systemTmpDir = System.getProperty("java.io.tmpdir");
                 String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
-                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
+                String tmpFileName = getEncoder().encodeToString(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
 
                 // Conversions needed got security reasons!
                 // On the file servlet we use the regex [0-9A-Za-z]{1,} to validate the given file id.

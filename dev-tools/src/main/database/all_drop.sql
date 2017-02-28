@@ -10,6 +10,8 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 
+DROP TABLE IF EXISTS DATABASECHANGELOG;
+
 DROP TABLE IF EXISTS act_account;
 
 DROP TABLE IF EXISTS atht_credential;
@@ -43,3 +45,9 @@ DROP TABLE IF EXISTS athz_access_info;
 DROP TABLE IF EXISTS athz_access_permission;
 
 DROP TABLE IF EXISTS athz_access_role;
+
+DROP TABLE IF EXISTS ATHZ_DOMAIN_ACTIONS;
+
+DROP TABLE IF EXISTS ATHZ_DOMAIN;
+
+DROP TABLE IF EXISTS ATHZ_GROUP;

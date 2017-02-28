@@ -92,6 +92,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-liquibase</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-registry-api</artifactId>
 		</dependency>
 		<dependency>
@@ -209,7 +213,35 @@
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-core</artifactId>
-			<version>3.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -447,6 +479,62 @@
 									<overWrite>true</overWrite>
 									<outputDirectory>target/broker_dependency</outputDirectory>
 								</artifactItem>
+								<artifactItem>
+									<groupId>org.reflections</groupId>
+									<artifactId>reflections</artifactId>
+									<version>${reflections.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.javassist</groupId>
+									<artifactId>javassist</artifactId>
+									<version>${javassist.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.google.code.findbugs</groupId>
+									<artifactId>annotations</artifactId>
+									<version>${findbugs.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>commons-io</groupId>
+									<artifactId>commons-io</artifactId>
+									<version>${commons-io.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.apache.commons</groupId>
+									<artifactId>commons-lang3</artifactId>
+									<version>${commons-lang.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.liquibase</groupId>
+									<artifactId>liquibase-core</artifactId>
+									<version>${liquibase.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.yaml</groupId>
+									<artifactId>snakeyaml</artifactId>
+									<version>${snakeyaml.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>target/broker_dependency</outputDirectory>
+								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -529,12 +617,6 @@
 							<name>${docker.account}/kapua-sql</name>
 							<build>
 								<dockerFileDir>sql</dockerFileDir>
-							</build>
-						</image>
-						<image>
-							<name>${docker.account}/kapua-liquibase</name>
-							<build>
-								<dockerFileDir>${project.parent.basedir}/dev-tools/src/main/database</dockerFileDir>
 							</build>
 						</image>
 					</images>

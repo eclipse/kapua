@@ -27,6 +27,8 @@ import java.sql.SQLException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.SystemUtils.getJavaIoTmpDir;
+
 public class KapuaLiquibaseClient {
 
     private final String jdbcUrl;
@@ -49,7 +51,9 @@ public class KapuaLiquibaseClient {
             Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.sql"));
                 for(String script : changeLogs) {
                     URL scriptUrl = getClass().getResource("/" + script);
-                    File changelogFile = File.createTempFile("kapua", ".sql");
+                    File changelogFile = new File(getJavaIoTmpDir(), "kapua-liquibase");
+                    changelogFile.mkdir();
+                    changelogFile = new File(changelogFile, script.replaceFirst("liquibase/", ""));
                     IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
                     Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(connection));
                     liquibase.update(null);

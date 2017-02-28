@@ -42,6 +42,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceTestSteps;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Mockito;
@@ -130,7 +131,7 @@ public class DeviceRegistryConnectionTestSteps extends KapuaTest {
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-        scriptSession(DeviceEntityManagerFactory.instance(), CREATE_DEVICE_TABLES);
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         MockedLocator mockLocator = (MockedLocator) locator;
 

@@ -22,6 +22,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +45,7 @@ public class KapuaTest extends Assert {
 
     @Before
     public void setUp() {
-
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         LOG.debug("Setting up test...");
         if (!isInitialized) {

@@ -81,11 +81,6 @@ oc set probe dc/kapua-api --readiness --liveness --initial-delay-seconds=30 --ti
 
 echo 'Rest API created'
 
-## Applying DB schema
-
-# Create batch job for liquibase
-oc set image -f liquibase_job.yml "liquibase=$DOCKER_ACCOUNT/kapua-liquibase:latest" --local --source=docker -o yaml | oc create -f -
-
 ## Start router
 
 #oc adm policy add-scc-to-user hostnetwork -z router

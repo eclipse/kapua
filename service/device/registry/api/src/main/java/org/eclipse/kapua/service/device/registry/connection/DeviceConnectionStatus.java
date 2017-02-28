@@ -14,12 +14,10 @@ package org.eclipse.kapua.service.device.registry.connection;
 
 /**
  * Device connection status.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public enum DeviceConnectionStatus
-{
+public enum DeviceConnectionStatus {
     /**
      * Connected
      */

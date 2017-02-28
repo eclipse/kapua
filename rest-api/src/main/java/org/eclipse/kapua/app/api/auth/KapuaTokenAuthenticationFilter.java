@@ -21,8 +21,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.app.api.settings.KapuaApiSetting;
-import org.eclipse.kapua.app.api.settings.KapuaApiSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;

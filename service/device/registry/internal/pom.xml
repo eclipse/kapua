@@ -131,9 +131,9 @@
                                         <srcFile>src/main/sql/H2/dvc_device_event_drop.sql</srcFile>
                                         <srcFile>src/main/sql/H2/dvc_device_connection_drop.sql</srcFile>
 
-                                        <srcFile>src/main/sql/H2/dvc_device_create.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/dvc_device_event_create.sql</srcFile>
-                                        <srcFile>src/main/sql/H2/dvc_device_connection_create.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase/dvc_device.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase/dvc_device_event.sql</srcFile>
+                                        <srcFile>src/main/resources/liquibase/dvc_device_connection.sql</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>
