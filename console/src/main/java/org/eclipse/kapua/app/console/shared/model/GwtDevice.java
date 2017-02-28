@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
@@ -270,11 +270,11 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getIotFrameworkVersion() {
-        return (String) get("esfKuraVersion");
+        return (String) get("iotFrameworkVersion");
     }
 
-    public void setIotFrameworkVersion(String esfKuraVersion) {
-        set("esfKuraVersion", esfKuraVersion);
+    public void setIotFrameworkVersion(String iotFrameworkVersion) {
+        set("iotFrameworkVersion", iotFrameworkVersion);
     }
 
     public String getOsgiFramework() {
