@@ -413,6 +413,8 @@ public class KapuaGwtModelConverter {
         gwtAccount.setGwtOrganization(convert(account.getOrganization()));
         gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().toCompactId() : null);
         gwtAccount.setOptlock(account.getOptlock());
+        gwtAccount.set("orgName", account.getOrganization().getName());
+        gwtAccount.set("orgEmail", account.getOrganization().getEmail());
 
         try {
             gwtAccount.setBrokerURL(SystemUtils.getBrokerURI().toString());
