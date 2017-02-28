@@ -531,12 +531,6 @@
 								<dockerFileDir>sql</dockerFileDir>
 							</build>
 						</image>
-						<image>
-							<name>${docker.account}/kapua-liquibase</name>
-							<build>
-								<dockerFileDir>${project.parent.basedir}/dev-tools/src/main/database</dockerFileDir>
-							</build>
-						</image>
 					</images>
 				</configuration>
 			</plugin>
