@@ -18,23 +18,21 @@ import javax.xml.bind.annotation.*;
 
 /**
  * Device connection summary definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "connectionSummary")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "connected",
-                       "disconnected",
-                       "missing",
-                       "enabled",
-                       "disabled" }, factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newConnectionSummary")
-public interface DeviceConnectionSummary extends KapuaSerializable
-{
+        "disconnected",
+        "missing",
+        "enabled",
+        "disabled" }, factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newConnectionSummary")
+public interface DeviceConnectionSummary extends KapuaSerializable {
 
     /**
      * Get the connected count
-     * 
+     *
      * @return
      */
     @XmlElement(name = "connected")
@@ -42,14 +40,14 @@ public interface DeviceConnectionSummary extends KapuaSerializable
 
     /**
      * Set the connected count
-     * 
+     *
      * @param connected
      */
     public void setConnected(long connected);
 
     /**
      * Get the disconnected count
-     * 
+     *
      * @return
      */
     @XmlElement(name = "disconnected")
@@ -57,14 +55,14 @@ public interface DeviceConnectionSummary extends KapuaSerializable
 
     /**
      * Set the disconnected count
-     * 
+     *
      * @param disconnected
      */
     public void setDisconnected(long disconnected);
 
     /**
      * Get the missing count
-     * 
+     *
      * @return
      */
     @XmlElement(name = "missing")
@@ -72,14 +70,14 @@ public interface DeviceConnectionSummary extends KapuaSerializable
 
     /**
      * Set the missing count
-     * 
+     *
      * @param missing
      */
     public void setMissing(long missing);
 
     /**
      * Get the enabled count
-     * 
+     *
      * @return
      */
     @XmlElement(name = "enabled")
@@ -87,14 +85,14 @@ public interface DeviceConnectionSummary extends KapuaSerializable
 
     /**
      * Set the enabled count
-     * 
+     *
      * @param enabled
      */
     public void setEnabled(long enabled);
 
     /**
      * Get the disabled count
-     * 
+     *
      * @return
      */
     @XmlElement(name = "disabled")
@@ -102,7 +100,7 @@ public interface DeviceConnectionSummary extends KapuaSerializable
 
     /**
      * Set the disabled count
-     * 
+     *
      * @param disabled
      */
     public void setDisabled(long disabled);

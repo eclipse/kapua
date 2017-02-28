@@ -17,16 +17,14 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Device connection service factory definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface DeviceConnectionFactory extends KapuaObjectFactory
-{
+public interface DeviceConnectionFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new device connection creator
-     * 
+     *
      * @param scopeId
      * @return
      */
@@ -34,7 +32,7 @@ public interface DeviceConnectionFactory extends KapuaObjectFactory
 
     /**
      * Creates a new device connection query for the specified scope identifier
-     * 
+     *
      * @param scopeId
      * @return
      */
@@ -42,7 +40,7 @@ public interface DeviceConnectionFactory extends KapuaObjectFactory
 
     /**
      * Creates a new device connection summary
-     * 
+     *
      * @return
      */
     public DeviceConnectionSummary newConnectionSummary();

@@ -14,16 +14,15 @@ package org.eclipse.kapua.service.device.registry.connection;
 
 /**
  * Device connection query predicates.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceConnectionPredicates
-{
+public class DeviceConnectionPredicates {
+
     /**
      * Client identifier
      */
-    public final static String CLIENT_ID         = "clientId";
+    public final static String CLIENT_ID = "clientId";
     /**
      * Connection status
      */

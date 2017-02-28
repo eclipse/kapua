@@ -18,9 +18,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * Device connection list definition.
  *
  * @since 1.0
- *
  */
-public interface DeviceConnectionListResult extends KapuaListResult<DeviceConnection>
-{
+public interface DeviceConnectionListResult extends KapuaListResult<DeviceConnection> {
 
 }

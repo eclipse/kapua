@@ -17,9 +17,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Device connection entity definition.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public interface DeviceConnection extends KapuaUpdatableEntity {
 
@@ -31,84 +30,84 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
 
     /**
      * Get the device connection status
-     * 
+     *
      * @return
      */
     public DeviceConnectionStatus getStatus();
 
     /**
      * Set the device connection status
-     * 
+     *
      * @param status
      */
     public void setStatus(DeviceConnectionStatus status);
 
     /**
      * Get the client identifier
-     * 
+     *
      * @return
      */
     public String getClientId();
 
     /**
      * Set the client identifier
-     * 
+     *
      * @param clientId
      */
     public void setClientId(String clientId);
 
     /**
      * Get the user identifier
-     * 
+     *
      * @return
      */
     public KapuaId getUserId();
 
     /**
      * Set the user identifier
-     * 
+     *
      * @param userId
      */
     public void setUserId(KapuaId userId);
 
     /**
      * Get the device protocol
-     * 
+     *
      * @return
      */
     public String getProtocol();
 
     /**
      * Set the device protocol
-     * 
+     *
      * @param protocol
      */
     public void setProtocol(String protocol);
 
     /**
      * Get the client ip
-     * 
+     *
      * @return
      */
     public String getClientIp();
 
     /**
      * Set the client ip
-     * 
+     *
      * @param clientIp
      */
     public void setClientIp(String clientIp);
 
     /**
      * Get the server ip
-     * 
+     *
      * @return
      */
     public String getServerIp();
 
     /**
      * Set the server ip
-     * 
+     *
      * @param serverIp
      */
     public void setServerIp(String serverIp);
