@@ -63,14 +63,14 @@
         <!-- -->
         <!-- Database configuration for local installs and tests -->
         <!-- Database host address is the one exported by the dev-tools/src/vagrant/Vagrantfile  -->        
-		<db.host>192.168.33.10</db.host>
-		<db.name>kapuadb</db.name>        
-		<db.schema>kapuadb</db.schema>        
-		<db.conn.properties>schema=${db.schema}</db.conn.properties>
-		<db.conn.url>jdbc:h2:tcp://${db.host}:3306/${db.name};${db.conn.properties}</db.conn.url>
+        <db.host>192.168.33.10</db.host>
+        <db.name>kapuadb</db.name>        
+        <db.schema>kapuadb</db.schema>        
+        <db.conn.properties>schema=${db.schema}</db.conn.properties>
+        <db.conn.url>jdbc:h2:tcp://${db.host}:3306/${db.name};${db.conn.properties}</db.conn.url>
         <db.username>kapua</db.username>
         <db.password>kapua</db.password>
-        
+
     </properties>
 
     <build>
@@ -92,24 +92,24 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${maven-dependency-plugin.version}</version>
                 </plugin>
-			    <plugin>
-        			<groupId>org.codehaus.mojo</groupId>
-        			<artifactId>sql-maven-plugin</artifactId>
-        			<version>1.5</version>
-        			<dependencies>
-				        <dependency>
-						    <groupId>com.h2database</groupId>
-						    <artifactId>h2</artifactId>
-						    <version>${h2.version}</version>
-						</dependency>
-				    </dependencies>
-				    <configuration>
-                    	<driver>org.h2.Driver</driver>
-						<url>${db.conn.url}</url>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sql-maven-plugin</artifactId>
+                    <version>1.5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${h2.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <driver>org.h2.Driver</driver>
+                        <url>${db.conn.url}</url>
                         <username>${db.username}</username>
                         <password>${db.password}</password>
-                    </configuration>                    
-				</plugin>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
@@ -184,23 +184,17 @@
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                	<pluginExecutionFilter>
-                                		<groupId>
-                                			org.codehaus.mojo
-                                		</groupId>
-                                		<artifactId>
-                                			sql-maven-plugin
-                                		</artifactId>
-                                		<versionRange>
-                                			[1.5,)
-                                		</versionRange>
-                                		<goals>
-                                			<goal>execute</goal>
-                                		</goals>
-                                	</pluginExecutionFilter>
-                                	<action>
-                                		<ignore />
-                                	</action>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>sql-maven-plugin</artifactId>
+                                        <versionRange>[1.5,)</versionRange>
+                                        <goals>
+                                                <goal>execute</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
@@ -572,11 +566,11 @@
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
-			<dependency>
-				<groupId>org.elasticsearch</groupId>
-				<artifactId>elasticsearch</artifactId>
-				<version>${elasticsearch.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -594,24 +588,24 @@
         <!-- Applications -->
         <module>console</module>
         <module>rest-api</module>
-        
+
         <!-- Assembly -->
         <module>assembly</module>
 
         <module>dev-tools</module>
     </modules>
 
-	<profiles>
-		<profile>
-			<id>dev-tools</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<modules>
-				<module>dev-tools</module>
-			</modules>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>dev-tools</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>dev-tools</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <licenses>
         <license>
