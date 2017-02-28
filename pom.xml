@@ -35,9 +35,11 @@
         <commons-lang.version>3.3.2</commons-lang.version>
         <commons-pool.version>2.3</commons-pool.version>
         <eclipselink.version>2.6.3</eclipselink.version>
+        <findbugs.version>2.0.1</findbugs.version>
         <guava.version>19.0</guava.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.192</h2.version>
+        <javassist.version>3.19.0-GA</javassist.version>
         <joda.version>2.9.4</joda.version>
         <junit.version>4.11</junit.version>
         <liquibase.version>3.0.5</liquibase.version>
@@ -46,8 +48,9 @@
         <paho.version>1.1.0</paho.version>
         <protobuf.version>2.6.1</protobuf.version>
         <reflections.version>0.9.10</reflections.version>
-        <slf4j.version>1.7.2</slf4j.version>
         <shiro.version>1.2.3</shiro.version>
+        <slf4j.version>1.7.2</slf4j.version>
+        <snakeyaml.version>1.15</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <cucumber.version>1.2.4</cucumber.version>
         <elasticsearch.version>2.3.4</elasticsearch.version>
@@ -64,8 +67,8 @@
         <!-- Database configuration for local installs and tests -->
         <!-- Database host address is the one exported by the dev-tools/src/vagrant/Vagrantfile  -->        
         <db.host>192.168.33.10</db.host>
-        <db.name>kapuadb</db.name>        
-        <db.schema>kapuadb</db.schema>        
+        <db.name>kapuadb</db.name>
+        <db.schema>kapuadb</db.schema>
         <db.conn.properties>schema=${db.schema}</db.conn.properties>
         <db.conn.url>jdbc:h2:tcp://${db.host}:3306/${db.name};${db.conn.properties}</db.conn.url>
         <db.username>kapua</db.username>
@@ -567,10 +570,15 @@
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
             </dependency>
+			<dependency>
+				<groupId>org.elasticsearch</groupId>
+				<artifactId>elasticsearch</artifactId>
+				<version>${elasticsearch.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 

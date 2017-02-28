@@ -145,9 +145,17 @@
 				<include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
 				<include>org.apache.commons:commons-pool2</include>
 				<include>org.bitbucket.b_c:jose4j</include>
+                <include>org.reflections:reflections</include>
+                <include>org.javassist:javassist</include>
+                <include>com.google.code.findbugs:annotations</include>
+                <include>commons-io:commons-io</include>
+                <include>org.apache.commons:commons-lang3</include>
+                <include>org.liquibase:liquibase-core</include>
+                <include>org.yaml:snakeyaml</include>
 
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-service-api</include>
+                <include>${pom.groupId}:kapua-liquibase</include>
                 <include>${pom.groupId}:kapua-guice</include>
                 <include>${pom.groupId}:kapua-broker-core</include>
                 <include>${pom.groupId}:kapua-message-api</include>
