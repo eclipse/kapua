@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Mockito;
@@ -128,6 +129,7 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
 
         // Create User Service tables
         enableH2Connection();
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         // Drop the Device Registry Service tables
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
@@ -135,7 +137,6 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
 
         // Create the Device Registry Service tables
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-        scriptSession(DeviceEntityManagerFactory.instance(), CREATE_DEVICE_TABLES);
         // XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
 
         MockedLocator mockLocator = (MockedLocator) locator;

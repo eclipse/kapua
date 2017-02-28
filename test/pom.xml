@@ -144,11 +144,11 @@
 								<srcFile>../service/security/shiro/src/main/sql/H2/athz_user_role_roles_drop.sql</srcFile>
 								<srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_role_roles_create.sql</srcFile>
 								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_connection_drop.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_connection_create.sql</srcFile>
+								<srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device_connection.sql</srcFile>
 								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_drop.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_create.sql</srcFile>
+								<srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device.sql</srcFile>
 								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_event_drop.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_event_create.sql</srcFile>
+								<srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device_event.sql</srcFile>
 								<srcFile>../service/user/internal/src/main/sql/H2/usr_user_drop.sql</srcFile>
 								<srcFile>../service/user/internal/src/main/resources/liquibase/user.sql</srcFile>
 				            </srcFiles>
