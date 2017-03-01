@@ -46,8 +46,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
-import org.eclipse.kapua.app.console.shared.service.GwtDomainService;
-import org.eclipse.kapua.app.console.shared.service.GwtDomainServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenServiceAsync;
 
@@ -59,7 +59,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final GwtDomainServiceAsync gwtDomainService = GWT.create(GwtDomainService.class);
+    private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
     @SuppressWarnings("unused")
@@ -221,7 +221,7 @@ public class AccountConfigComponents extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
                 m_tree.mask(MSGS.loading());
-                gwtDomainService.findServiceConfigurations(m_selectedAccount.getId(), callback);
+                gwtAccountService.findServiceConfigurations(m_selectedAccount.getId(), callback);
                 m_dirty = false;
             }
         };
@@ -389,7 +389,7 @@ public class AccountConfigComponents extends LayoutContainer {
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
                                     final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
-                                    gwtDomainService.updateComponentConfiguration(token,
+                                    gwtAccountService.updateComponentConfiguration(token,
                                             m_currentSession.getSelectedAccount().getId(),
                                             configComponent,
                                             new AsyncCallback<Void>() {

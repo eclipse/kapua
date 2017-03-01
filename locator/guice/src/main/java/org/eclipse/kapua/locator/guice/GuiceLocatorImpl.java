@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import com.google.inject.ConfigurationException;
+import com.google.inject.*;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
@@ -22,8 +22,9 @@ import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Kapua locator implementation bases on Guice framework
@@ -65,4 +66,17 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
         return kapuaEntityFactory;
     }
+
+    @Override
+    public List<KapuaService> getServices() {
+        List<KapuaService> servicesList = new ArrayList<>();
+        Map<Key<?>, Binding<?>> bindings = injector.getBindings();
+        for (Binding binding : bindings.values()) {
+            if (KapuaService.class.isAssignableFrom(binding.getKey().getTypeLiteral().getRawType())) {
+                servicesList.add(injector.getInstance((Class<KapuaService>)binding.getKey().getTypeLiteral().getRawType()));
+            }
+        }
+        return servicesList;
+    }
+
 }
