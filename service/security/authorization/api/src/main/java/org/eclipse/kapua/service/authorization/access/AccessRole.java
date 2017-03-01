@@ -40,9 +40,10 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
  * @since 1.0.0
  */
 @XmlRootElement(name = "accessRole")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "accessInfoId",
-        "roleId" }, factoryClass = AccessRoleXmlRegistry.class, factoryMethod = "newAccessRole")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "accessInfoId", "roleId" }, //
+factoryClass = AccessRoleXmlRegistry.class, //
+factoryMethod = "newAccessRole")
 public interface AccessRole extends KapuaEntity {
 
     public static final String TYPE = "accessRole";

@@ -48,4 +48,8 @@ public class AccessRoleXmlRegistry {
     public AccessRoleListResult newAccessRoleListResult() {
         return factory.newAccessRoleListResult();
     }
+    
+    public AccessRoleQuery newQuery() {
+        return factory.newQuery(null);
+    }
 }
