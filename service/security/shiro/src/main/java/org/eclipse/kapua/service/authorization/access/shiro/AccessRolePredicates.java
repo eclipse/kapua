@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 
 /**
@@ -20,7 +21,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
  * @since 1.0.0
  * 
  */
-public class AccessRolePredicates {
+public interface AccessRolePredicates extends KapuaEntityPredicates{
 
     /**
      * {@link AccessPermission#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} id
