@@ -17,5 +17,5 @@ public class UserPredicates {
     /**
      * User name
      */
-    public static final String USER_NAME = "name";
+    public static final String NAME = "name";
 }
