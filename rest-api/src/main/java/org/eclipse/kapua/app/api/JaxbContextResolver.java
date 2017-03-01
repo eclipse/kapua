@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
+import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
@@ -188,11 +189,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ApiKeyCredentials.class,
                     JwtCredentials.class,
                     UsernamePasswordCredentials.class,
+                    
+                    // Credential
                     Credential.class,
                     CredentialListResult.class,
-                    CredentialXmlRegistry.class,
                     CredentialCreator.class,
                     CredentialType.class,
+                    CredentialQuery.class,
+                    CredentialXmlRegistry.class,
 
                     // Permission
                     Permission.class,
