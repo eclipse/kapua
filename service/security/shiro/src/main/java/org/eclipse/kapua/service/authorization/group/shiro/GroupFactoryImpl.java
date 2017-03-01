@@ -14,9 +14,15 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleListResultImpl;
 
 /**
  * {@link GroupFactory} implementation.
@@ -31,6 +37,16 @@ public class GroupFactoryImpl implements GroupFactory {
         return new GroupCreatorImpl(scopeId, name);
     }
 
+    @Override
+    public Group newGroup(KapuaId scopeId) {
+        return new GroupImpl(scopeId);
+    }
+    
+    @Override
+    public GroupListResult newGroupListResult() {
+        return new GroupListResultImpl();
+    }
+    
     @Override
     public GroupQuery newQuery(KapuaId scopeId) {
         return new GroupQueryImpl(scopeId);
