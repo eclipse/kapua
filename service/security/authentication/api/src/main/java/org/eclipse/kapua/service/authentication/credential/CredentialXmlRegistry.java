@@ -50,4 +50,8 @@ public class CredentialXmlRegistry {
     {
         return factory.newCreator(null, null, null, null);
     }
+    
+    public CredentialQuery newQuery() {
+        return factory.newQuery(null);
+    }
 }
