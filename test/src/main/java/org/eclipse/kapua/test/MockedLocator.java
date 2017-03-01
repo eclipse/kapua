@@ -12,14 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Locator service implementation used for mocking Kapua services and Kapua object
@@ -77,6 +79,10 @@ public class MockedLocator extends KapuaLocator {
         logger.info("Geting mocked factory {} from MockedLocator", factoryClass.getName());
 
         return (F) getMockedFactory(factoryClass);
+    }
+
+    @Override public List<KapuaService> getServices() {
+        return new ArrayList<>(serviceMap.values());
     }
 
 }
