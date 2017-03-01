@@ -28,5 +28,5 @@ public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicat
     /**
      * Connection status
      */
-    public final static String CONNECTION_STATUS = "connectionStatus";
+    public final static String STATUS = "status";
 }
