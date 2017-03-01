@@ -104,7 +104,6 @@ public class DeviceConnections extends AbstractKapuaResource {
             if (status != null) {
                 andPredicate.and(new AttributePredicate<>(DeviceConnectionPredicates.STATUS, status));
             }
-            
             query.setPredicate(andPredicate);
             
             query.setOffset(offset);

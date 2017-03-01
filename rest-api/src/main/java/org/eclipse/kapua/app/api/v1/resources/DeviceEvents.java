@@ -31,6 +31,7 @@ import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -70,13 +71,21 @@ public class DeviceEvents extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceEventListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
             @PathParam("deviceId") EntityId deviceId,//
+            @QueryParam("resource") String resource, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
             @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         DeviceEventListResult deviceEventListResult = deviceEventFactory.newDeviceEventListResult();
         try {
             DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
-            query.setPredicate(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            
+            AndPredicate andPredicate = new AndPredicate();
+            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            if (resource != null) {
+                andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.RESOURCE, resource));
+            }
+            query.setPredicate(andPredicate);
+            
             query.setOffset(offset);
             query.setLimit(limit);
 
@@ -107,7 +116,12 @@ public class DeviceEvents extends AbstractKapuaResource {
         DeviceEventListResult deviceEventListResult = null;
         try {
             query.setScopeId(scopeId);
-            query.setPredicate(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            
+            AndPredicate andPredicate = new AndPredicate();
+            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            andPredicate.and(query.getPredicate());
+            query.setPredicate(andPredicate);
+            
             deviceEventListResult = deviceEventService.query(query);
         } catch (Throwable t) {
             handleException(t);
