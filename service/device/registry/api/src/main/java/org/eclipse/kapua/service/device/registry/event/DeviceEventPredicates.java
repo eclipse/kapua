@@ -37,5 +37,5 @@ public interface DeviceEventPredicates extends KapuaUpdatableEntityPredicates {
     /**
      * Event type
      */
-    public static final String EVENT_TYPE = "resource";
+    public static final String RESOURCE = "resource";
 }
