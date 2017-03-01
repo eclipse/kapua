@@ -28,7 +28,10 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -45,8 +48,10 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
@@ -83,12 +88,25 @@ public class DeviceConnections extends AbstractKapuaResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceConnectionListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
+            @QueryParam("clientId") String clientId,
+            @QueryParam("status") DeviceConnectionStatus status,
             @QueryParam("offset") @DefaultValue("0") int offset,//
             @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         DeviceConnectionListResult deviceConnectionListResult = deviceConnectionFactory.newDeviceConnectionListResult();
         try {
             DeviceConnectionQuery query = deviceConnectionFactory.newQuery(scopeId);
+            
+            AndPredicate andPredicate = new AndPredicate();
+            if (clientId != null) {
+                andPredicate.and(new AttributePredicate<>(DeviceConnectionPredicates.CLIENT_ID, clientId));
+            }
+            if (status != null) {
+                andPredicate.and(new AttributePredicate<>(DeviceConnectionPredicates.STATUS, status));
+            }
+            
+            query.setPredicate(andPredicate);
+            
             query.setOffset(offset);
             query.setLimit(limit);
 
