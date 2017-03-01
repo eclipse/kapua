@@ -14,8 +14,12 @@ package org.eclipse.kapua.service.authorization.group;
 
 import java.math.BigInteger;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -23,6 +27,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 
 /**
  * Group entity definition.<br>
@@ -33,6 +38,10 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "group")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "name" }, //
+        factoryClass = GroupXmlRegistry.class, factoryMethod = "newGroup")
 public interface Group extends KapuaUpdatableEntity {
 
     @XmlTransient

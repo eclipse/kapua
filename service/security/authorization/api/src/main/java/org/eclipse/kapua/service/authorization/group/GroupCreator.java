@@ -12,9 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.KapuaEntityCreator;
+import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 
 /**
  * {@link Group} creator definition.<br>
@@ -22,6 +27,12 @@ import org.eclipse.kapua.model.KapuaEntityCreator;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name="groupCreator")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "name",
+                     }, 
+         factoryClass = GroupXmlRegistry.class,
+         factoryMethod = "newGroupCreator")
 public interface GroupCreator extends KapuaEntityCreator<Group> {
 
     /**
