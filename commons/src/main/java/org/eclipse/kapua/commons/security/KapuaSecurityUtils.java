@@ -26,7 +26,7 @@ public class KapuaSecurityUtils {
 
     private static Logger logger = LoggerFactory.getLogger(KapuaSecurityUtils.class);
 
-    public static String MDC_USER_ID = "userId";
+    public static final String MDC_USER_ID = "userId";
 
     private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<>();
 
