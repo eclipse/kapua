@@ -28,14 +28,20 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountPredicates;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountImpl;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+
+import com.google.common.base.Strings;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,12 +74,20 @@ public class Accounts extends AbstractKapuaResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccountListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
+            @QueryParam("name") String name, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
             @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         AccountListResult accountListResult = accountFactory.newAccountListResult();
         try {
             AccountQuery query = accountFactory.newQuery(scopeId);
+            
+            AndPredicate andPredicate = new AndPredicate();
+            if (name != null) {
+                andPredicate.and(new AttributePredicate<>(AccountPredicates.NAME, name));
+            }
+            query.setPredicate(andPredicate);
+            
             query.setOffset(offset);
             query.setLimit(limit);
 
