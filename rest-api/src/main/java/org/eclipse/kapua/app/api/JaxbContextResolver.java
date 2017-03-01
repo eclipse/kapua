@@ -48,6 +48,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoXmlRegistry;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
@@ -212,10 +213,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessInfoQuery.class,
                     AccessInfoXmlRegistry.class,
 
+                    // Access Permissions
                     AccessPermission.class,
                     AccessPermissionListResult.class,
                     AccessPermissionCreator.class,
+                    AccessPermissionQuery.class,
                     AccessPermissionXmlRegistry.class,
+                    
                     AccessRole.class,
                     AccessRoleListResult.class,
                     AccessRoleCreator.class,
