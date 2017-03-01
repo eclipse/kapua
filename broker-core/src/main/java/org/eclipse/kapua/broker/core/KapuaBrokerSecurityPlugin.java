@@ -53,10 +53,6 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
         logger.info(">> installPlugin {}", KapuaBrokerSecurityPlugin.class.getName());
 
         SystemSetting config = SystemSetting.getInstance();
-        logger.info(">> BrokerPlugin username: " + config.getString(DB_USERNAME));
-        logger.info(">> BrokerPlugin password: " + config.getString(DB_PASSWORD));
-        logger.info(">> BrokerPlugin jdbc url: " + resolveJdbcUrl());
-
         String dbUsername = config.getString(DB_USERNAME);
         String dbPassword = config.getString(DB_PASSWORD);
         new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword).update();

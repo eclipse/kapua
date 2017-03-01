@@ -100,7 +100,7 @@ public class AccountDetailsView extends LayoutContainer {
         m_bodyLayoutContainer.setLayout(new BorderLayout());
         m_bodyLayoutContainer.setScrollMode(Scroll.AUTO);
         // TODO Fix background
-        m_bodyLayoutContainer.setStyleAttribute("background-color", "#E8E8E8");
+        m_bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
         m_bodyLayoutContainer.setStyleAttribute("padding", "0px");
 
         //
@@ -122,16 +122,19 @@ public class AccountDetailsView extends LayoutContainer {
         //
         // South View
 
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH);
+        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 430.0F);
         southData.setCollapsible(true);
         southData.setHideCollapseTool(true);
         southData.setSplit(true);
         southData.setMargins(new Margins(5, 0, 0, 0));
         m_tabPanel = new TabPanel();
         m_tabPanel.setPlain(true);
+        m_tabPanel.setBorders(false);
+        m_tabPanel.setBodyBorder(false);
         settingsTab = new AccountTabConfiguration(m_currentSession);
+        settingsTab.setBorders(false);
         settingsTabItem = new TabItem("Settings", new KapuaIcon(IconSet.COG));      // TODO externalize string
-        settingsTabItem.setBorders(true);
+        settingsTabItem.setBorders(false);
         settingsTabItem.setLayout(new FitLayout());
         settingsTabItem.addListener(Events.Select, new Listener<ComponentEvent>() {
 
@@ -147,41 +150,6 @@ public class AccountDetailsView extends LayoutContainer {
         add(m_bodyLayoutContainer);
         m_initialized = true;
 
-        /*
-        //
-        // Center Main panel:
-        LayoutContainer resultContainer = new LayoutContainer(new BorderLayout());
-        resultContainer.setBorders(false);
-
-        KapuaBorderLayoutData centerMainPanel = new KapuaBorderLayoutData(LayoutRegion.CENTER);
-        add(resultContainer, centerMainPanel);
-
-        //
-        // North sub panel: Entity grid
-        entityGrid = getEntityGrid(this, currentSession);
-
-        if (filterPanel != null) {
-            filterPanel.setEntityGrid(entityGrid);
-        }
-
-        BorderLayoutData northData = new KapuaBorderLayoutData(LayoutRegion.NORTH, .45F);
-        resultContainer.add(entityGrid, northData);
-
-        //
-        // Center sub panel: Entity sub tabs
-        tabsPanel = new KapuaTabPanel<M>();
-
-        List<KapuaTabItem<M>> tabItems = getTabs(this, currentSession);
-
-        for (KapuaTabItem<M> kti : tabItems) {
-            tabsPanel.add(kti);
-        }
-
-        KapuaBorderLayoutData centerData = new KapuaBorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMarginTop(5);
-
-        resultContainer.add(tabsPanel, centerData);
-        */
     }
 
     private void createGrid(Element parent) {
