@@ -28,14 +28,18 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
+import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -68,12 +72,20 @@ public class Credentials extends AbstractKapuaResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public CredentialListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
+            @QueryParam("userId") EntityId userId, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
             @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         CredentialListResult credentialListResult = credentialFactory.newCredentialListResult();
         try {
             CredentialQuery query = credentialFactory.newQuery(scopeId);
+            
+            AndPredicate andPredicate = new AndPredicate();
+            if (userId != null) {
+                andPredicate.and(new AttributePredicate<>(CredentialPredicates.USER_ID, userId));
+            }
+            query.setPredicate(andPredicate);
+            
             query.setOffset(offset);
             query.setLimit(limit);
 
