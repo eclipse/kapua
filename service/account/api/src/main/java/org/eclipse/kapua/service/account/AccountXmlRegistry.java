@@ -67,4 +67,7 @@ public class AccountXmlRegistry {
 	{
 		return factory.newAccountListResult();
 	}
+	public AccountQuery newQuery() {
+        return factory.newQuery(null);
+    }
 }
