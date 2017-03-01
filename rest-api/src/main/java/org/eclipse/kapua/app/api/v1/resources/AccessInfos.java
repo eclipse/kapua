@@ -29,6 +29,8 @@ import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -36,6 +38,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -82,12 +85,20 @@ public class AccessInfos extends AbstractKapuaResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public AccessInfoListResult simpleQuery(  @PathParam("scopeId") ScopeId scopeId,//
+                                        @QueryParam("userId") EntityId userId, //
                                         @QueryParam("offset") @DefaultValue("0") int offset,//
                                         @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         AccessInfoListResult accessInfoListResult = accessInfoFactory.newAccessInfoListResult();
         try {
             AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+            
+            AndPredicate andPredicate = new AndPredicate();
+            if (userId != null) {
+                andPredicate.and(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+            }
+            query.setPredicate(andPredicate);
+            
             query.setOffset(offset);
             query.setLimit(limit);
             
