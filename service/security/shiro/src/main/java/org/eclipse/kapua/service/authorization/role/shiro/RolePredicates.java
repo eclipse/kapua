@@ -12,16 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
+
 /**
  * Query predicate attribute name for role entity.
  * 
  * @since 1.0
  * 
  */
-public class RolePredicates
+public interface RolePredicates extends KapuaUpdatableEntityPredicates
 {
     /**
      * Role name
      */
-    public static final String ROLE_NAME = "name";
+    public static final String NAME = "name";
 }

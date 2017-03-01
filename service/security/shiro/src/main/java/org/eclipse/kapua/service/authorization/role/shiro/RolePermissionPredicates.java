@@ -27,4 +27,15 @@ public interface RolePermissionPredicates extends KapuaEntityPredicates {
      * Role id
      */
     public static final String ROLE_ID = "roleId";
+    
+    /**
+     * The role permission domain
+     */
+    public static final String DOMAIN = "permission.domain";
+    
+    /**
+     * The role permission action
+     */
+    public static final String ACTION= "permission.action";
+    
 }

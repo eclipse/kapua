@@ -242,7 +242,7 @@ public class RoleServiceTest extends KapuaTest {
             //
             // Query
             RoleQuery query = new RoleQueryImpl(scope);
-            query.setPredicate(new AttributePredicate<String>(RolePredicates.ROLE_NAME, role.getName()));
+            query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, role.getName()));
             RoleListResult rolesFound = roleService.query(query);
             long rolesCount = roleService.count(query);
 
