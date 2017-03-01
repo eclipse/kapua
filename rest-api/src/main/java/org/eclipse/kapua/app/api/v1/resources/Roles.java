@@ -84,7 +84,7 @@ public class Roles extends AbstractKapuaResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RoleListResult simpleQuery(  @PathParam("scopeId") ScopeId scopeId,//
-            @PathParam("name") String name,//
+            @QueryParam("name") String name,//
                                         @QueryParam("offset") @DefaultValue("0") int offset,//
                                         @QueryParam("limit") @DefaultValue("50") int limit) //
     {
