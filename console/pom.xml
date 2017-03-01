@@ -177,7 +177,7 @@
             <!-- Apache shiro security framework web support -->
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
-            <version>1.2.3</version>
+            <version>${shiro.version}</version>
         </dependency>
 
         <dependency>
