@@ -28,7 +28,7 @@
         <commons.pool.version>2.3</commons.pool.version>
 
 		<docker.account>kapua</docker.account>
-		<java.base.image>java:8u111</java.base.image>
+		<java.base.image>openjdk:8u111-jre-alpine</java.base.image>
     </properties>
 
 	<dependencies>
@@ -546,14 +546,26 @@
 				<configuration>
 					<images>
 						<image>
-							<name>${docker.account}/kapua-broker</name>
+							<name>${docker.account}/java-base</name>
 							<build>
 								<from>${java.base.image}</from>
+								<runCmds>
+									<runCmd>adduser -D -g "Eclipse Kapua" kapua</runCmd>
+								</runCmds>
+							</build>
+						</image>
+						<image>
+							<name>${docker.account}/kapua-broker</name>
+							<build>
+								<from>${docker.account}/java-base</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
 								</assembly>
 								<entryPoint>
-									<shell>/maven/bin/activemq console</shell>
+									<exec>
+										<arg>/maven/bin/activemq</arg>
+										<arg>console</arg>
+									</exec>
 								</entryPoint>
 								<env>
 									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</ACTIVEMQ_OPTS>
@@ -562,6 +574,7 @@
 									<port>1883</port>
 									<port>61614</port>
 								</ports>
+								<user>kapua</user>
 								<volumes>
 									<volume>/maven/data</volume>
 								</volumes>
@@ -570,12 +583,15 @@
 						<image>
 							<name>${docker.account}/kapua-console</name>
 							<build>
-								<from>${java.base.image}</from>
+								<from>${docker.account}/java-base</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console.xml</descriptor>
 								</assembly>
 								<entryPoint>
-									<shell>/maven/bin/catalina.sh run</shell>
+									<exec>
+										<arg>/maven/bin/catalina.sh</arg>
+										<arg>run</arg>
+									</exec>
 								</entryPoint>
 								<env>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
@@ -583,22 +599,28 @@
 								<ports>
 									<port>8080</port>
 								</ports>
+								<user>kapua</user>
 								<runCmds>
-									<run>chgrp -R 0 /maven</run>
-									<run>chmod -R g+rw /maven</run>
-									<run>find /maven -type d -exec chmod g+x {} +</run>
+									<run><![CDATA[
+									chown -R kapua:kapua /maven && \
+									chmod -R a+rw /maven && \
+									find /maven -type d -exec chmod a+x {} +
+									]]></run>
 								</runCmds>
 							</build>
 						</image>
 						<image>
 							<name>${docker.account}/kapua-api</name>
 							<build>
-								<from>${java.base.image}</from>
+								<from>${docker.account}/java-base</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-api.xml</descriptor>
 								</assembly>
 								<entryPoint>
-									<shell>/maven/bin/catalina.sh run</shell>
+									<exec>
+										<arg>/maven/bin/catalina.sh</arg>
+										<arg>run</arg>
+									</exec>
 								</entryPoint>
 								<env>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
@@ -606,10 +628,13 @@
 								<ports>
 									<port>8080</port>
 								</ports>
+								<user>kapua</user>
 								<runCmds>
-									<run>chgrp -R 0 /maven</run>
-									<run>chmod -R g+rw /maven</run>
-									<run>find /maven -type d -exec chmod g+x {} +</run>
+									<run><![CDATA[
+									chown -R kapua:kapua /maven && \
+									chmod -R a+rw /maven && \
+									find /maven -type d -exec chmod a+x {} +
+									]]></run>
 								</runCmds>
 							</build>
 						</image>
