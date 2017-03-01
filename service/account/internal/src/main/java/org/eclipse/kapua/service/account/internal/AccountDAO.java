@@ -21,6 +21,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
  * Account DAO
@@ -116,9 +117,9 @@ public class AccountDAO {
      * @return
      * @throws KapuaException
      */
-    public static KapuaListResultImpl<Account> query(EntityManager em, KapuaQuery<Account> accountQuery)
+    public static AccountListResult query(EntityManager em, KapuaQuery<Account> accountQuery)
             throws KapuaException {
-        return ServiceDAO.query(em, Account.class, AccountImpl.class, new KapuaListResultImpl<Account>(), accountQuery);
+        return ServiceDAO.query(em, Account.class, AccountImpl.class, new AccountListResultImpl(), accountQuery);
     }
 
     /**

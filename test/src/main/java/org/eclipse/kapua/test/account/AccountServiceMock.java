@@ -64,7 +64,7 @@ public class AccountServiceMock implements AccountService
     }
 
     @Override
-    public KapuaListResult<Account> query(KapuaQuery<Account> query)
+    public AccountListResult query(KapuaQuery<Account> query)
         throws KapuaException
     {
         throw KapuaException.internalError("Not implemented");
