@@ -19,34 +19,32 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 /**
  * Kura device application message implementation.<br>
  * The application message is sent by the device to update the platform knowledge about its available features.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
-public class KuraAppsMessage extends KuraMessage<KuraAppsChannel, KuraAppsPayload>
-{
+public class KuraAppsMessage extends KuraMessage<KuraAppsChannel, KuraAppsPayload> {
 
     /**
      * Constructor
      */
-    public KuraAppsMessage()
-    {
+    public KuraAppsMessage() {
         super();
     }
 
     /**
      * Constructor
-     * 
+     *
      * @param channel
      * @param timestamp
      * @param payload
      */
-    public KuraAppsMessage(KuraAppsChannel channel, 
-    		Date timestamp,
+    public KuraAppsMessage(KuraAppsChannel channel,
+            Date timestamp,
             KuraAppsPayload payload) {
-    	this.channel = channel;
-    	this.timestamp = timestamp;
-    	this.payload = payload;
+        this.channel = channel;
+        this.timestamp = timestamp;
+        this.payload = payload;
     }
-    
+
 }

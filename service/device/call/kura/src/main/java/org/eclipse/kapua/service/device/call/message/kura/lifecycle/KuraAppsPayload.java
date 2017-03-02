@@ -17,53 +17,52 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 
 /**
  * Kura device application message payload implementation.
- * 
+ *
  * @since 1.0
  *
  */
-public class KuraAppsPayload extends KuraPayload implements DevicePayload
-{
-    private final static String UPTIME                 = "uptime";
-    private final static String DISPLAY_NAME           = "display_name";
-    private final static String MODEL_NAME             = "model_name";
-    private final static String MODEL_ID               = "model_id";
-    private final static String PART_NUMBER            = "part_number";
-    private final static String SERIAL_NUMBER          = "serial_number";
-    private final static String AVAILABLE_PROCESSORS   = "available_processors";
-    private final static String TOTAL_MEMORY           = "total_memory";
-    private final static String FIRMWARE_VERSION       = "firmware_version";
-    private final static String BIOS_VERSION           = "bios_version";
-    private final static String OS                     = "os";
-    private final static String OS_VERSION             = "os_version";
-    private final static String OS_ARCH                = "os_arch";
-    private final static String JVM_NAME               = "jvm_name";
-    private final static String JVM_VERSION            = "jvm_version";
-    private final static String JVM_PROFILE            = "jvm_profile";
-    private final static String ESF_VERSION            = "esf_version";
-    private final static String KURA_VERSION           = "kura_version";
-    private final static String ESF_PREFIX             = "ESF_";
-    private final static String ESFKURA_VERSION        = "esf_version";
-    private final static String OSGI_FRAMEWORK         = "osgi_framework";
+public class KuraAppsPayload extends KuraPayload implements DevicePayload {
+
+    private final static String UPTIME = "uptime";
+    private final static String DISPLAY_NAME = "display_name";
+    private final static String MODEL_NAME = "model_name";
+    private final static String MODEL_ID = "model_id";
+    private final static String PART_NUMBER = "part_number";
+    private final static String SERIAL_NUMBER = "serial_number";
+    private final static String AVAILABLE_PROCESSORS = "available_processors";
+    private final static String TOTAL_MEMORY = "total_memory";
+    private final static String FIRMWARE_VERSION = "firmware_version";
+    private final static String BIOS_VERSION = "bios_version";
+    private final static String OS = "os";
+    private final static String OS_VERSION = "os_version";
+    private final static String OS_ARCH = "os_arch";
+    private final static String JVM_NAME = "jvm_name";
+    private final static String JVM_VERSION = "jvm_version";
+    private final static String JVM_PROFILE = "jvm_profile";
+    private final static String ESF_VERSION = "esf_version";
+    private final static String KURA_VERSION = "kura_version";
+    private final static String ESF_PREFIX = "ESF_";
+    private final static String ESFKURA_VERSION = "esf_version";
+    private final static String OSGI_FRAMEWORK = "osgi_framework";
     private final static String OSGI_FRAMEWORK_VERSION = "osgi_framework_version";
-    private final static String CONNECTION_INTERFACE   = "connection_interface";
-    private final static String CONNECTION_IP          = "connection_ip";
-    private final static String ACCEPT_ENCODING        = "accept_encoding";
-    private final static String APPLICATION_IDS        = "application_ids";
-    private final static String MODEM_IMEI             = "modem_imei";
-    private final static String MODEM_IMSI             = "modem_imsi";
-    private final static String MODEM_ICCID            = "modem_iccid";
+    private final static String CONNECTION_INTERFACE = "connection_interface";
+    private final static String CONNECTION_IP = "connection_ip";
+    private final static String ACCEPT_ENCODING = "accept_encoding";
+    private final static String APPLICATION_IDS = "application_ids";
+    private final static String MODEM_IMEI = "modem_imei";
+    private final static String MODEM_IMSI = "modem_imsi";
+    private final static String MODEM_ICCID = "modem_iccid";
 
     /**
      * Constructor
      */
-    public KuraAppsPayload()
-    {
-    	super();
+    public KuraAppsPayload() {
+        super();
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param uptime
      * @param displayName
      * @param modelName
@@ -92,32 +91,31 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload
      * @param modemIccid
      */
     public KuraAppsPayload(String uptime,
-                            String displayName,
-                            String modelName,
-                            String modelId,
-                            String partNumber,
-                            String serialNumber,
-                            String firmwareVersion,
-                            String biosVersion,
-                            String os,
-                            String osVersion,
-                            String jvmName,
-                            String jvmVersion,
-                            String jvmProfile,
-                            String esfkuraVersion,
-                            String connectionInterface,
-                            String connectionIp,
-                            String acceptEncoding,
-                            String applicationIdentifiers,
-                            String availableProcessors,
-                            String totalMemory,
-                            String osArch,
-                            String osgiFramework,
-                            String osgiFrameworkVersion,
-                            String modemImei,
-                            String modemImsi,
-                            String modemIccid)
-    {
+            String displayName,
+            String modelName,
+            String modelId,
+            String partNumber,
+            String serialNumber,
+            String firmwareVersion,
+            String biosVersion,
+            String os,
+            String osVersion,
+            String jvmName,
+            String jvmVersion,
+            String jvmProfile,
+            String esfkuraVersion,
+            String connectionInterface,
+            String connectionIp,
+            String acceptEncoding,
+            String applicationIdentifiers,
+            String availableProcessors,
+            String totalMemory,
+            String osArch,
+            String osgiFramework,
+            String osgiFrameworkVersion,
+            String modemImei,
+            String modemImsi,
+            String modemIccid) {
         super();
 
         if (uptime != null) {
@@ -202,328 +200,298 @@ public class KuraAppsPayload extends KuraPayload implements DevicePayload
 
     /**
      * Get the device uptime
-     * 
+     *
      * @return
      */
-    public String getUptime()
-    {
+    public String getUptime() {
         return (String) getMetrics().get(UPTIME);
     }
 
     /**
      * Get the device display name
-     * 
+     *
      * @return
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return (String) getMetrics().get(DISPLAY_NAME);
     }
 
     /**
      * Get the model name
-     * 
+     *
      * @return
      */
-    public String getModelName()
-    {
+    public String getModelName() {
         return (String) getMetrics().get(MODEL_NAME);
     }
 
     /**
      * Get the model identifier
-     * 
+     *
      * @return
      */
-    public String getModelId()
-    {
+    public String getModelId() {
         return (String) getMetrics().get(MODEL_ID);
     }
 
     /**
      * Get the part number
-     * 
+     *
      * @return
      */
-    public String getPartNumber()
-    {
+    public String getPartNumber() {
         return (String) getMetrics().get(PART_NUMBER);
     }
 
     /**
      * Get the serial number
-     * 
+     *
      * @return
      */
-    public String getSerialNumber()
-    {
+    public String getSerialNumber() {
         return (String) getMetrics().get(SERIAL_NUMBER);
     }
 
     /**
      * Get the firmware
-     * 
+     *
      * @return
      */
-    public String getFirmware()
-    {
+    public String getFirmware() {
         return (String) getMetrics().get(FIRMWARE_VERSION);
     }
 
     /**
      * Get the firmware version
-     * 
+     *
      * @return
      */
-    public String getFirmwareVersion()
-    {
+    public String getFirmwareVersion() {
         return (String) getMetrics().get(FIRMWARE_VERSION);
     }
 
     /**
      * Get the bios
-     * 
+     *
      * @return
      */
-    public String getBios()
-    {
+    public String getBios() {
         return (String) getMetrics().get(BIOS_VERSION);
     }
 
     /**
      * Get the biuos version
-     * 
+     *
      * @return
      */
-    public String getBiosVersion()
-    {
+    public String getBiosVersion() {
         return (String) getMetrics().get(BIOS_VERSION);
     }
 
     /**
      * Get the operating system
-     * 
+     *
      * @return
      */
-    public String getOs()
-    {
+    public String getOs() {
         return (String) getMetrics().get(OS);
     }
 
     /**
      * Get the operating system version
-     * 
+     *
      * @return
      */
-    public String getOsVersion()
-    {
+    public String getOsVersion() {
         return (String) getMetrics().get(OS_VERSION);
     }
 
     /**
      * Get the java virtual machine
-     * 
+     *
      * @return
      */
-    public String getJvm()
-    {
+    public String getJvm() {
         return (String) getMetrics().get(JVM_NAME);
     }
 
     /**
      * Get the java virtual machine version
-     * 
+     *
      * @return
      */
-    public String getJvmVersion()
-    {
+    public String getJvmVersion() {
         return (String) getMetrics().get(JVM_VERSION);
     }
 
     /**
      * Get the java virtual machine profile
-     * 
+     *
      * @return
      */
-    public String getJvmProfile()
-    {
+    public String getJvmProfile() {
         return (String) getMetrics().get(JVM_PROFILE);
     }
 
     /**
      * Get the container framework
-     * 
+     *
      * @return
      */
-    public String getContainerFramework()
-    {
+    public String getContainerFramework() {
         return (String) getMetrics().get(OSGI_FRAMEWORK);
     }
 
     /**
      * Get the container framework version
-     * 
+     *
      * @return
      */
-    public String getContainerFrameworkVersion()
-    {
+    public String getContainerFrameworkVersion() {
         return (String) getMetrics().get(OSGI_FRAMEWORK_VERSION);
     }
 
     /**
      * Get the application framework
-     * 
+     *
      * @return
      */
-    public String getApplicationFramework()
-    {
+    public String getApplicationFramework() {
         return (String) getMetrics().get(ESFKURA_VERSION);
     }
 
     /**
      * Get the application framework version
-     * 
+     *
      * @return
      */
-    public String getApplicationFrameworkVersion()
-    {
+    public String getApplicationFrameworkVersion() {
         return (String) getMetrics().get(ESFKURA_VERSION);
     }
 
     /**
      * Get connection interface
-     * 
+     *
      * @return
      */
-    public String getConnectionInterface()
-    {
+    public String getConnectionInterface() {
         return (String) getMetrics().get(CONNECTION_INTERFACE);
     }
 
     /**
      * Get the connection interface ip
-     * 
+     *
      * @return
      */
-    public String getConnectionIp()
-    {
+    public String getConnectionIp() {
         return (String) getMetrics().get(CONNECTION_IP);
     }
 
     /**
      * Get accept encoding
-     * 
+     *
      * @return
      */
-    public String getAcceptEncoding()
-    {
+    public String getAcceptEncoding() {
         return (String) getMetrics().get(ACCEPT_ENCODING);
     }
 
     /**
      * Get application identifiers
-     * 
+     *
      * @return
      */
-    public String getApplicationIdentifiers()
-    {
+    public String getApplicationIdentifiers() {
         return (String) getMetrics().get(APPLICATION_IDS);
     }
 
     /**
      * Get available processor
-     * 
+     *
      * @return
      */
-    public String getAvailableProcessors()
-    {
+    public String getAvailableProcessors() {
         return (String) getMetrics().get(AVAILABLE_PROCESSORS);
     }
 
     /**
      * Get total memory
-     * 
+     *
      * @return
      */
-    public String getTotalMemory()
-    {
+    public String getTotalMemory() {
         return (String) getMetrics().get(TOTAL_MEMORY);
     }
 
     /**
      * Get operating system architecture
-     * 
+     *
      * @return
      */
-    public String getOsArch()
-    {
+    public String getOsArch() {
         return (String) getMetrics().get(OS_ARCH);
     }
 
     /**
      * Get modem imei
-     * 
+     *
      * @return
      */
-    public String getModemImei()
-    {
+    public String getModemImei() {
         return (String) getMetrics().get(MODEM_IMEI);
     }
 
     /**
      * Get modem imsi
-     * 
+     *
      * @return
      */
-    public String getModemImsi()
-    {
+    public String getModemImsi() {
         return (String) getMetrics().get(MODEM_IMSI);
     }
 
     /**
      * Get modem iccid
-     * 
+     *
      * @return
      */
-    public String getModemIccid()
-    {
+    public String getModemIccid() {
         return (String) getMetrics().get(MODEM_ICCID);
     }
 
     /**
      * Returns a displayable representation string
-     * 
+     *
      * @return
      */
-    public String toDisplayString()
-    {
+    public String toDisplayString() {
         return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                                  .append(", getDisplayName()=").append(getDisplayName())
-                                  .append(", getModelName()=").append(getModelName())
-                                  .append(", getModelId()=").append(getModelId())
-                                  .append(", getPartNumber()=").append(getPartNumber())
-                                  .append(", getSerialNumber()=").append(getSerialNumber())
-                                  .append(", getFirmwareVersion()=").append(getFirmwareVersion())
-                                  .append(", getBiosVersion()=").append(getBiosVersion())
-                                  .append(", getOs()=").append(getOs())
-                                  .append(", getOsVersion()=").append(getOsVersion())
-                                  .append(", getJvmName()=").append(getJvm())
-                                  .append(", getJvmVersion()=").append(getJvmVersion())
-                                  .append(", getJvmProfile()=").append(getJvmProfile())
-                                  .append(", getOsgiFramework()=").append(getContainerFramework())
-                                  .append(", getOsgiFrameworkVersion()=").append(getContainerFrameworkVersion())
-                                  .append(", getEsfKuraVersion()=").append(getApplicationFrameworkVersion())
-                                  .append(", getConnectionInterface()=").append(getConnectionInterface())
-                                  .append(", getConnectionIp()=").append(getConnectionIp())
-                                  .append(", getAcceptEncoding()=").append(getAcceptEncoding())
-                                  .append(", getApplicationIdentifiers()=").append(getApplicationIdentifiers())
-                                  .append(", getAvailableProcessors()=").append(getAvailableProcessors())
-                                  .append(", getTotalMemory()=").append(getTotalMemory())
-                                  .append(", getOsArch()=").append(getOsArch())
-                                  .append(", getModemImei()=").append(getModemImei())
-                                  .append(", getModemImsi()=").append(getModemImsi())
-                                  .append(", getModemIccid()=").append(getModemIccid())
-                                  .append("]")
-                                  .toString();
+                .append(", getDisplayName()=").append(getDisplayName())
+                .append(", getModelName()=").append(getModelName())
+                .append(", getModelId()=").append(getModelId())
+                .append(", getPartNumber()=").append(getPartNumber())
+                .append(", getSerialNumber()=").append(getSerialNumber())
+                .append(", getFirmwareVersion()=").append(getFirmwareVersion())
+                .append(", getBiosVersion()=").append(getBiosVersion())
+                .append(", getOs()=").append(getOs())
+                .append(", getOsVersion()=").append(getOsVersion())
+                .append(", getJvmName()=").append(getJvm())
+                .append(", getJvmVersion()=").append(getJvmVersion())
+                .append(", getJvmProfile()=").append(getJvmProfile())
+                .append(", getOsgiFramework()=").append(getContainerFramework())
+                .append(", getOsgiFrameworkVersion()=").append(getContainerFrameworkVersion())
+                .append(", getEsfKuraVersion()=").append(getApplicationFrameworkVersion())
+                .append(", getConnectionInterface()=").append(getConnectionInterface())
+                .append(", getConnectionIp()=").append(getConnectionIp())
+                .append(", getAcceptEncoding()=").append(getAcceptEncoding())
+                .append(", getApplicationIdentifiers()=").append(getApplicationIdentifiers())
+                .append(", getAvailableProcessors()=").append(getAvailableProcessors())
+                .append(", getTotalMemory()=").append(getTotalMemory())
+                .append(", getOsArch()=").append(getOsArch())
+                .append(", getModemImei()=").append(getModemImei())
+                .append(", getModemImsi()=").append(getModemImsi())
+                .append(", getModemIccid()=").append(getModemIccid())
+                .append("]")
+                .toString();
     }
 }

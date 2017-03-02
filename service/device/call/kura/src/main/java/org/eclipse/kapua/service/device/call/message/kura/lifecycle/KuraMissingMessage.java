@@ -19,34 +19,32 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 /**
  * Kura device missing message implementation.<br>
  * The missing message is sent by the platform to notify that a device is no more available (likely due to network error).
- * 
+ *
  * @since 1.0
- * 
+ *
  */
-public class KuraMissingMessage extends KuraMessage<KuraMissingChannel, KuraMissingPayload>
-{
+public class KuraMissingMessage extends KuraMessage<KuraMissingChannel, KuraMissingPayload> {
 
     /**
      * Constructor
      */
-    public KuraMissingMessage()
-    {
+    public KuraMissingMessage() {
         super();
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param channel
      * @param timestamp
      * @param payload
      */
-    public KuraMissingMessage(KuraMissingChannel channel, 
-    		Date timestamp,
+    public KuraMissingMessage(KuraMissingChannel channel,
+            Date timestamp,
             KuraMissingPayload payload) {
-    	this.channel = channel;
-    	this.timestamp = timestamp;
-    	this.payload = payload;
+        this.channel = channel;
+        this.timestamp = timestamp;
+        this.payload = payload;
     }
 
 }
