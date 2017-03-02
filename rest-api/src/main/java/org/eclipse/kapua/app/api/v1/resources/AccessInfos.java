@@ -57,6 +57,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+/**
+ * Access info REST API resource.
+ * 
+ * @since 1.0.0
+ */
 @Api("Access Info")
 @Path("{scopeId}/accessinfos")
 public class AccessInfos extends AbstractKapuaResource {
@@ -73,9 +78,10 @@ public class AccessInfos extends AbstractKapuaResource {
      * Gets the {@link AccessInfo} list in the scope.
      *
      * @param scopeId The {@link ScopeId} in which to search results.
+     * @param userId The optional {@link User} id to filter results. 
      * @param offset The result set offset.
      * @param limit The result set limit.
-     * @return The {@link AccessInfoListResult} of all the accessInfos associated to the current selected scope.
+     * @return The {@link AccessInfoListResult} of all the {@link AccessInfo}s associated to the current selected scope.
      * @since 1.0.0
      */
     @ApiOperation(value = "Gets the AccessInfo list in the scope", //
@@ -133,6 +139,14 @@ public class AccessInfos extends AbstractKapuaResource {
     }
     
 
+    /**
+     * Counts the results with the given {@link AccessInfoQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link AccessInfoQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link AccessInfoQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -149,12 +163,14 @@ public class AccessInfos extends AbstractKapuaResource {
     }
     
     /**
-     * Creates a new AccessInfo based on the information provided in AccessInfoCreator
+     * Creates a new {@link AccessInfo} based on the information provided in {@link AccessInfoCreator}
      * parameter.
      *
+     *@param scopeId The {@link ScopeId} in which to create the {@link AccessInfo}.
      * @param accessInfoCreator
-     *            Provides the information for the new AccessInfo to be created.
-     * @return The newly created AccessInfo object.
+     *            Provides the information for the new {@link AccessInfo} to be created.
+     * @return The newly created {@link AccessInfo} object.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Create an AccessInfo", notes = "Creates a new AccessInfo based on the information provided in AccessInfoCreator parameter.", response = AccessInfo.class)
     @POST
@@ -173,11 +189,13 @@ public class AccessInfos extends AbstractKapuaResource {
     }
 
     /**
-     * Returns the AccessInfo specified by the "accessInfoId" path parameter.
+     * Returns the {@link AccessInfo} specified by the "accessInfoId" path parameter.
      *
+     *@param scopeId The {@link ScopeId} of the requested {@link AccessInfo}.
      * @param accessInfoId
-     *            The id of the requested AccessInfo.
-     * @return The requested AccessInfo object.
+     *            The id of the requested {@link AccessInfo}.
+     * @return The requested {@link AccessInfo} object.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Get an AccessInfo", notes = "Returns the AccessInfo specified by the \"accessInfoId\" path parameter.", response = AccessInfo.class)
     @GET
@@ -195,11 +213,13 @@ public class AccessInfos extends AbstractKapuaResource {
     }
     
     /**
-     * Deletes the AccessInfo specified by the "accessInfoId" path parameter.
+     * Deletes the {@link AccessInfo} specified by the "accessInfoId" path parameter.
      *
+     **@param scopeId The {@link ScopeId} of the {@link AccessInfo} to be deleted.
      * @param accessInfoId
-     *            The id of the AccessInfo to be deleted.
+     *            The id of the {@link AccessInfo} to be deleted.
      * @return HTTP 200 if operation has completed successfully.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Delete an AccessInfo", notes = "Deletes the AccessInfo specified by the \"accessInfoId\" path parameter.")
     @DELETE
