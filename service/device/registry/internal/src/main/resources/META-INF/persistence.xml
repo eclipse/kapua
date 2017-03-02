@@ -37,7 +37,7 @@
             <!-- <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/> -->
             
-            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.Slf4jSessionLogger" />
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />
         </properties>
     </persistence-unit>
 </persistence>
