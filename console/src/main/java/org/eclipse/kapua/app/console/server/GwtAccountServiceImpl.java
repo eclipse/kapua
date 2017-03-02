@@ -51,14 +51,16 @@ import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.util.*;
 
+import static java.util.Base64.getEncoder;
+
 /**
  * The server side implementation of the RPC service.
  */
 public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
 
     @SuppressWarnings("unused")
-    private static final Logger s_logger         = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
-    private static final long   serialVersionUID = 3314502846487119577L;
+    private static final Logger s_logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
+    private static final long serialVersionUID = 3314502846487119577L;
 
     public GwtAccount create(GwtXSRFToken xsrfToken, GwtAccountCreator gwtAccountCreator)
             throws GwtKapuaException {
@@ -73,7 +75,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
 
             AccountCreator accountCreator = accountFactory.newAccountCreator(parentAccountId,
-                                                                             gwtAccountCreator.getAccountName());
+                    gwtAccountCreator.getAccountName());
             accountCreator.setAccountPassword(gwtAccountCreator.getAccountPassword());
 
             accountCreator.setOrganizationName(gwtAccountCreator.getOrganizationName());
@@ -449,7 +451,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 // Tmp file name creation
                 String systemTmpDir = System.getProperty("java.io.tmpdir");
                 String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
-                String tmpFileName = org.apache.commons.codec.binary.Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
+                String tmpFileName = getEncoder().encodeToString(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
 
                 // Conversions needed got security reasons!
                 // On the file servlet we use the regex [0-9A-Za-z]{1,} to validate the given file id.
