@@ -16,5 +16,9 @@
 	<persistence-unit name="kapua-commons-unit-test" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>org.eclipse.kapua.commons.model.misc.CollisionEntity</class>
+        
+        <properties>
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />
+        </properties>
 	</persistence-unit>
 </persistence>
