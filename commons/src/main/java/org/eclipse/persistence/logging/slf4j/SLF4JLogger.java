@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016  Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2009, 2017  Oracle and/or its affiliates and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
  * which accompanies this distribution.
@@ -10,6 +10,7 @@
  * Contributors:
  *      Jaro Kuruc  - Initial API and implementation.
  *      Tomas Kraus - EclipseLink 2.7 integration.
+ *      Jens Reimann - Improve exception message
  ******************************************************************************/
 package org.eclipse.persistence.logging.slf4j;
 
@@ -254,7 +255,7 @@ public class SLF4JLogger extends AbstractSessionLog {
         }
         final LogCategory category = LogCategory.toValue(logEntry.getNameSpace());
         if (category == null) {
-            throw new IllegalArgumentException("Unknown logging category name.");
+            throw new IllegalArgumentException("Unknown logging category name: " + logEntry.getNameSpace());
         }
         final byte levelId = (byte)logEntry.getLevel();
         if (logLevels[category.getId()].shouldLog(levelId)) {

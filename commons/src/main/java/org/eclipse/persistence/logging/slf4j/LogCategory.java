@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016  Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, 2017  Oracle and/or its affiliates and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 and Eclipse Distribution License v. 1.0
  * which accompanies this distribution.
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *      Tomas Kraus - Initial implementation
+ *      Jens Reimann - fix missing categories
  ******************************************************************************/
 package org.eclipse.persistence.logging.slf4j;
 
@@ -65,8 +66,10 @@ public enum LogCategory {
     SERVER(     (byte)0x11, SessionLog.SERVER),
     SQL(        (byte)0x12, SessionLog.SQL),
     TRANSACTION((byte)0x13, SessionLog.TRANSACTION),
-    WEAVER(     (byte)0x14, SessionLog.WEAVER);
-
+    WEAVER(     (byte)0x14, SessionLog.WEAVER),
+    DBWS(       (byte)0x15, SessionLog.DBWS),
+    MOXY(       (byte)0x16, SessionLog.MOXY);
+    
     /** Logging categories enumeration length. */
     public static final int length = LogCategory.values().length;
 
