@@ -57,6 +57,10 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleXmlRegistry;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.domain.DomainListResult;
+import org.eclipse.kapua.service.authorization.domain.DomainQuery;
+import org.eclipse.kapua.service.authorization.domain.DomainXmlRegistry;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -220,6 +224,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     RolePermissionQuery.class,
                     RolePermissionXmlRegistry.class,
                     
+                    // Domains
+                    Domain.class,
+                    DomainListResult.class,
+                    DomainQuery.class,
+                    DomainXmlRegistry.class,
+
                     // Groups
                     Group.class,
                     GroupListResult.class,
