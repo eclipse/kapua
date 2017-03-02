@@ -97,6 +97,7 @@ public class DomainDAO extends ServiceDAO {
      */
     public static DomainListResult query(EntityManager em, KapuaQuery<Domain> domainQuery)
             throws KapuaException {
+        domainQuery.setScopeId(null);
         return ServiceDAO.query(em, Domain.class, DomainImpl.class, new DomainListResultImpl(), domainQuery);
     }
 
@@ -113,6 +114,7 @@ public class DomainDAO extends ServiceDAO {
      */
     public static long count(EntityManager em, KapuaQuery<Domain> domainQuery)
             throws KapuaException {
+        domainQuery.setScopeId(null);
         return ServiceDAO.count(em, Domain.class, DomainImpl.class, domainQuery);
     }
 }

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.domain.shiro;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
+import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 
 /**
@@ -31,8 +32,14 @@ public class DomainFactoryImpl implements DomainFactory {
     }
 
     @Override
+    public DomainListResult newDomainListResult() {
+        return new DomainListResultImpl();
+    }
+
+    @Override
     public DomainQuery newQuery() {
         return new DomainQueryImpl();
     }
+
 
 }
