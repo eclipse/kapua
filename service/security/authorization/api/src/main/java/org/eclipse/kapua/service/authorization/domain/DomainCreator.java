@@ -14,8 +14,11 @@ package org.eclipse.kapua.service.authorization.domain;
 
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntityCreator;
@@ -28,6 +31,8 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name="domainCreator")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public interface DomainCreator extends KapuaEntityCreator<Domain> {
 
     /**

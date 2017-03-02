@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlRegistry;
 
-import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.authorization.group.GroupXmlRegistry;
+import org.eclipse.kapua.locator.KapuaLocator;
 
-/**
- * {@link Domain} list result definition.
- * 
- * @since 1.0.0
- */
-@XmlRootElement(name = "domains")
-public interface DomainListResult extends KapuaListResult<Domain> {
+@XmlRegistry
+public class DomainXmlRegistry {
 
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final DomainFactory factory = locator.getFactory(DomainFactory.class);
+
+    public DomainQuery newQuery() {
+        return factory.newQuery();
+    }
 }

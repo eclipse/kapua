@@ -14,12 +14,17 @@ package org.eclipse.kapua.service.authorization.domain;
 
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.authorization.group.GroupXmlRegistry;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
 /**
@@ -30,9 +35,14 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "domain")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "name", 
+        "serviceName",
+        "actions"})
 public interface Domain extends KapuaEntity {
 
-    public static final String TYPE = "role";
+    public static final String TYPE = "domain";
 
     default public String getType() {
         return TYPE;
