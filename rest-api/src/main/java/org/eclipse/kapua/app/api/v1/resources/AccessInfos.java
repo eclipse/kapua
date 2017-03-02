@@ -84,16 +84,16 @@ public class AccessInfos extends AbstractKapuaResource {
      * @return The {@link AccessInfoListResult} of all the {@link AccessInfo}s associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the AccessInfo list in the scope", //
-            notes = "Returns the list of all the accessInfos associated to the current selected scope.", //
-            response = AccessInfo.class, //
-            responseContainer = "AccessInfoListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccessInfoListResult simpleQuery(  @PathParam("scopeId") ScopeId scopeId,//
-                                        @QueryParam("userId") EntityId userId, //
-                                        @QueryParam("offset") @DefaultValue("0") int offset,//
-                                        @QueryParam("limit") @DefaultValue("50") int limit) //
+    @ApiOperation(value = "Gets the AccessInfo list in the scope.", //
+            notes = "Gets the AccessInfo list in the scope. The query parameter userId is optional and can be used to filter results", //
+            response = AccessInfo.class, //
+            responseContainer = "AccessInfoListResult")
+    public AccessInfoListResult simpleQuery(@ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFALUT_SCOPE_ID)  @PathParam("scopeId") ScopeId scopeId,//
+                                        @ApiParam(value = "The optional User id to filter results") @QueryParam("userId") EntityId userId, //
+                                        @ApiParam(value = "The result set offset", required = true, defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
+                                        @ApiParam(value = "The result set limit", required = true, defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         AccessInfoListResult accessInfoListResult = accessInfoFactory.newAccessInfoListResult();
         try {
@@ -116,7 +116,7 @@ public class AccessInfos extends AbstractKapuaResource {
     }
 
     /**
-     * Queries the results with the given {@link AccessInfoQuery} parameter.
+     * Queries the {@link AccessInfo}s with the given {@link AccessInfoQuery} parameter.
      * 
      * @param scopeId The {@link ScopeId} in which to search results. 
      * @param query The {@link AccessInfoQuery} to used to filter results.
@@ -127,7 +127,12 @@ public class AccessInfos extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public AccessInfoListResult query(@PathParam("scopeId") ScopeId scopeId, AccessInfoQuery query) {
+    @ApiOperation(value = "Queries the AccessInfos", //
+    notes = "Queries the AccessInfos with the given AccessInfoQuery parameter returning all matching AccessInfos", //
+    response = AccessInfo.class, //
+    responseContainer = "AccessInfoListResult")
+    public AccessInfoListResult query(@ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFALUT_SCOPE_ID)  @PathParam("scopeId") ScopeId scopeId,//
+                                     @ApiParam(value = "The AccessInfoQuery to used to filter results", required = true) AccessInfoQuery query) {
         AccessInfoListResult accessInfoListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -140,10 +145,10 @@ public class AccessInfos extends AbstractKapuaResource {
     
 
     /**
-     * Counts the results with the given {@link AccessInfoQuery} parameter.
+     * Counts the {@link AccessInfo}s with the given {@link AccessInfoQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link AccessInfoQuery} to used to filter results.
+     * @param scopeId The {@link ScopeId} in which to count results. 
+     * @param query The {@link AccessInfoQuery} to used to filter count results.
      * @return The count of all the result matching the given {@link AccessInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -151,7 +156,11 @@ public class AccessInfos extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, AccessInfoQuery query) {
+    @ApiOperation(value = "Counts the AccessInfos", //
+    notes = "Counts the AccessInfos with the given AccessInfoQuery parameter returning the number of matching AccessInfos", //
+    response = CountResult.class)
+    public CountResult count(@ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFALUT_SCOPE_ID)  @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The AccessInfoQuery to used to filter count results", required = true) AccessInfoQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -172,11 +181,13 @@ public class AccessInfos extends AbstractKapuaResource {
      * @return The newly created {@link AccessInfo} object.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Create an AccessInfo", notes = "Creates a new AccessInfo based on the information provided in AccessInfoCreator parameter.", response = AccessInfo.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public AccessInfo create(@PathParam("scopeId") ScopeId scopeId,
+    @ApiOperation(value = "Creates a new AccessInfo", //
+    notes = "Creates a new AccessInfo based on the information provided in AccessInfoCreator parameter", //
+    response = AccessInfo.class)
+    public AccessInfo create(@ApiParam(value = "The ScopeId in which to create the AccessInfo", required = true, defaultValue = DEFALUT_SCOPE_ID)  @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "Provides the information for the new AccessInfo to be created", required = true) AccessInfoCreator accessInfoCreator) {
         AccessInfo accessInfo = null;
         try {
@@ -189,7 +200,7 @@ public class AccessInfos extends AbstractKapuaResource {
     }
 
     /**
-     * Returns the {@link AccessInfo} specified by the "accessInfoId" path parameter.
+     * Gets the {@link AccessInfo} specified by the "accessInfoId" path parameter.
      *
      *@param scopeId The {@link ScopeId} of the requested {@link AccessInfo}.
      * @param accessInfoId
@@ -197,11 +208,13 @@ public class AccessInfos extends AbstractKapuaResource {
      * @return The requested {@link AccessInfo} object.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an AccessInfo", notes = "Returns the AccessInfo specified by the \"accessInfoId\" path parameter.", response = AccessInfo.class)
     @GET
     @Path("{accessInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccessInfo find(@PathParam("scopeId") ScopeId scopeId, 
+    @ApiOperation(value = "Gets an AccessInfo",
+    notes = "Gets the AccessInfo specified by the accessInfoId path parameter",
+    response = AccessInfo.class)
+    public AccessInfo find(@ApiParam(value = "The ScopeId in which to create the AccessInfo", required = true, defaultValue = DEFALUT_SCOPE_ID)  @PathParam("scopeId") ScopeId scopeId,// 
             @ApiParam(value = "The id of the requested AccessInfo", required = true) @PathParam("accessInfoId") EntityId accessInfoId) {
         AccessInfo accessInfo = null;
         try {
@@ -221,11 +234,12 @@ public class AccessInfos extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an AccessInfo", notes = "Deletes the AccessInfo specified by the \"accessInfoId\" path parameter.")
+    @ApiOperation(value = "Deletes an AccessInfo", //
+            notes = "Deletes the AccessInfo specified by the accessInfoId path parameter")
     @DELETE
     @Path("{accessInfoId}")
-    public Response deleteAccessInfo(@PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the AccessInfo to be deleted", required = true) @PathParam("accessInfoId") EntityId accessInfoId) {
+    public Response deleteAccessInfo(@ApiParam(value = "The ScopeId in which to create the AccessInfo", required = true, defaultValue = DEFALUT_SCOPE_ID)  @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The id of the AccessInfo to delete", required = true) @PathParam("accessInfoId") EntityId accessInfoId) {
         try {
             accessInfoService.delete(scopeId, accessInfoId);
         } catch (Throwable t) {
