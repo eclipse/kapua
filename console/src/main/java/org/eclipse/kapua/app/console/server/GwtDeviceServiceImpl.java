@@ -165,7 +165,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
                 AndPredicate andPredicate = new AndPredicate();
                 andPredicate.and(new AttributePredicate<KapuaId>(DeviceEventPredicates.DEVICE_ID, device.getId()));
-                andPredicate.and(new AttributePredicate<String>(DeviceEventPredicates.EVENT_TYPE, "BIRTH"));
+                andPredicate.and(new AttributePredicate<String>(DeviceEventPredicates.RESOURCE, "BIRTH"));
 
                 eventQuery.setPredicate(andPredicate);
 

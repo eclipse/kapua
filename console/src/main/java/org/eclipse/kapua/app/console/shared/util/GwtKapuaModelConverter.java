@@ -95,7 +95,7 @@ public class GwtKapuaModelConverter {
         // Convert query
         RoleQuery roleQuery = roleFactory.newQuery(convert(gwtRoleQuery.getScopeId()));
         if (gwtRoleQuery.getName() != null && !gwtRoleQuery.getName().trim().isEmpty()) {
-            roleQuery.setPredicate(new AttributePredicate<String>(RolePredicates.ROLE_NAME, gwtRoleQuery.getName(), Operator.LIKE));
+            roleQuery.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, gwtRoleQuery.getName(), Operator.LIKE));
         }
         roleQuery.setOffset(loadConfig.getOffset());
         roleQuery.setLimit(loadConfig.getLimit());
@@ -154,7 +154,7 @@ public class GwtKapuaModelConverter {
         // Convert query
         UserQuery userQuery = userFactory.newQuery(convert(gwtUserQuery.getScopeId()));
         if (gwtUserQuery.getName() != null && gwtUserQuery.getName() != "") {
-            userQuery.setPredicate(new AttributePredicate<String>(UserPredicates.USER_NAME, gwtUserQuery.getName(), Operator.LIKE));
+            userQuery.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }
         userQuery.setOffset(loadConfig.getOffset());
         userQuery.setLimit(loadConfig.getLimit());
