@@ -36,5 +36,12 @@
                 <include>${pom.groupId}:kapua-console:war</include>
             </includes>
         </dependencySet>
+        <dependencySet>
+            <outputDirectory>.</outputDirectory>
+            <outputFileNameMapping>jolokia-jvm-agent.jar</outputFileNameMapping>
+            <includes>
+                <include>org.jolokia:jolokia-jvm</include>
+            </includes>
+        </dependencySet>
     </dependencySets>
 </assembly>

@@ -243,6 +243,12 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.jolokia</groupId>
+			<artifactId>jolokia-jvm</artifactId>
+			<version>1.3.4</version>
+			<classifier>agent</classifier>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -568,10 +574,12 @@
 									</exec>
 								</entryPoint>
 								<env>
+									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</ACTIVEMQ_OPTS>
 								</env>
 								<ports>
 									<port>1883</port>
+									<port>8778</port><!-- Jolokia -->
 									<port>61614</port>
 								</ports>
 								<user>kapua</user>
@@ -601,10 +609,12 @@
 									</exec>
 								</entryPoint>
 								<env>
+									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
 								</env>
 								<ports>
 									<port>8080</port>
+									<port>8778</port><!-- Jolokia -->
 								</ports>
 								<user>kapua</user>
 								<runCmds>
@@ -630,10 +640,12 @@
 									</exec>
 								</entryPoint>
 								<env>
+									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
 								</env>
 								<ports>
 									<port>8080</port>
+									<port>8778</port><!-- Jolokia -->
 								</ports>
 								<user>kapua</user>
 								<runCmds>
