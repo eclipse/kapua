@@ -12,35 +12,46 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import org.apache.sanselan.ImageFormat;
+import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.eclipse.kapua.model.config.metatype.KapuaTicon;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountCreator;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.account.*;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.*;
+
+import static java.util.Base64.getEncoder;
 
 /**
  * The server side implementation of the RPC service.
@@ -48,8 +59,8 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
 
     @SuppressWarnings("unused")
-    private static final Logger s_logger         = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
-    private static final long   serialVersionUID = 3314502846487119577L;
+    private static final Logger s_logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
+    private static final long serialVersionUID = 3314502846487119577L;
 
     public GwtAccount create(GwtXSRFToken xsrfToken, GwtAccountCreator gwtAccountCreator)
             throws GwtKapuaException {
@@ -64,7 +75,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
 
             AccountCreator accountCreator = accountFactory.newAccountCreator(parentAccountId,
-                                                                             gwtAccountCreator.getAccountName());
+                    gwtAccountCreator.getAccountName());
             accountCreator.setAccountPassword(gwtAccountCreator.getAccountPassword());
 
             accountCreator.setOrganizationName(gwtAccountCreator.getOrganizationName());
@@ -314,6 +325,261 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         }
 
         return gwtAccount;
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public List<GwtConfigComponent> findServiceConfigurations(String scopeId) throws GwtKapuaException {
+        List<GwtConfigComponent> gwtConfigs = new ArrayList<>();
+        KapuaLocator locator = KapuaLocator.getInstance();
+        try {
+            KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
+            for (KapuaService service : locator.getServices()) {
+                if (service instanceof KapuaConfigurableService) {
+                    KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
+                    KapuaTocd tocd = configurableService.getConfigMetadata();
+                    if (tocd != null) {
+                        GwtConfigComponent gwtConfig = new GwtConfigComponent();
+                        gwtConfig.setId(tocd.getId());
+                        gwtConfig.setName(tocd.getName());
+                        gwtConfig.setDescription(tocd.getDescription());
+                        if (tocd.getIcon() != null && tocd.getIcon().size() > 0) {
+                            KapuaTicon icon = tocd.getIcon().get(0);
+
+                            checkIconResource(icon);
+
+                            gwtConfig.setComponentIcon(icon.getResource());
+                        }
+
+                        List<GwtConfigParameter> gwtParams = new ArrayList<>();
+                        gwtConfig.setParameters(gwtParams);
+                        for (KapuaTad ad : tocd.getAD()) {
+                            if (ad != null) {
+                                Map<String, Object> values = configurableService.getConfigValues(kapuaScopeId);
+                                GwtConfigParameter gwtParam = new GwtConfigParameter();
+                                gwtParam.setId(ad.getId());
+                                gwtParam.setName(ad.getName());
+                                gwtParam.setDescription(ad.getDescription());
+                                gwtParam.setType(GwtConfigParameter.GwtConfigParameterType.fromString(ad.getType().value()));
+                                gwtParam.setRequired(ad.isRequired());
+                                gwtParam.setCardinality(ad.getCardinality());
+                                if (ad.getOption() != null && ad.getOption().size() > 0) {
+                                    Map<String, String> options = new HashMap<>();
+                                    for (KapuaToption option : ad.getOption()) {
+                                        options.put(option.getLabel(), option.getValue());
+                                    }
+                                    gwtParam.setOptions(options);
+                                }
+                                gwtParam.setMin(ad.getMin());
+                                gwtParam.setMax(ad.getMax());
+
+                                if (!values.isEmpty()) {
+                                    int cardinality = ad.getCardinality();
+                                    Object value = values.get(ad.getId());
+                                    if (value != null) {
+                                        if (cardinality == 0 || cardinality == 1 || cardinality == -1) {
+                                            gwtParam.setValue(value.toString());
+                                        } else {
+                                            // this could be an array value
+                                            if (value instanceof Object[]) {
+                                                Object[] objValues = (Object[]) value;
+                                                List<String> strValues = new ArrayList<>();
+                                                for (Object v : objValues) {
+                                                    if (v != null) {
+                                                        strValues.add(v.toString());
+                                                    }
+                                                }
+                                                gwtParam.setValues(strValues.toArray(new String[] {}));
+                                            }
+                                        }
+                                    }
+                                    gwtParams.add(gwtParam);
+                                }
+                            }
+                        }
+                        gwtConfigs.add(gwtConfig);
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+        return gwtConfigs;
+    }
+
+    @Override
+    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, GwtConfigComponent configComponent) throws GwtKapuaException {
+        //
+        // Checking validity of the given XSRF Token
+        checkXSRFToken(xsrfToken);
+        KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            Class configurableServiceClass = Class.forName(configComponent.get("componentId"));
+            KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
+
+            // execute the update
+            Map<String, Object> parameters = new HashMap<>();
+            for (GwtConfigParameter gwtConfigParameter : configComponent.getParameters()) {
+                parameters.put(gwtConfigParameter.getId(), gwtConfigParameter.getValue());
+            }
+            configurableService.setConfigValues(kapuaScopeId, parameters);
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+    }
+
+    @SuppressWarnings("Duplicates")
+    private void checkIconResource(KapuaTicon icon) {
+        ConsoleSetting config = ConsoleSetting.getInstance();
+
+        String iconResource = icon.getResource();
+
+        //
+        // Check if the resource is an HTTP URL or not
+        if (iconResource != null &&
+                (iconResource.toLowerCase().startsWith("http://") ||
+                        iconResource.toLowerCase().startsWith("https://"))) {
+            File tmpFile = null;
+
+            try {
+                s_logger.info("Got configuration component icon from URL: {}", iconResource);
+
+                //
+                // Tmp file name creation
+                String systemTmpDir = System.getProperty("java.io.tmpdir");
+                String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
+                String tmpFileName = getEncoder().encodeToString(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
+
+                // Conversions needed got security reasons!
+                // On the file servlet we use the regex [0-9A-Za-z]{1,} to validate the given file id.
+                // This validation prevents the caller of the file servlet to try to move out of the directory where the icons are stored.
+                tmpFileName = tmpFileName.replaceAll("/", "a");
+                tmpFileName = tmpFileName.replaceAll("\\+", "m");
+                tmpFileName = tmpFileName.replaceAll("=", "z");
+
+                //
+                // Tmp dir check and creation
+                StringBuilder tmpDirPathSb = new StringBuilder().append(systemTmpDir);
+                if (!systemTmpDir.endsWith("/")) {
+                    tmpDirPathSb.append("/");
+                }
+                tmpDirPathSb.append(iconResourcesTmpDir);
+
+                File tmpDir = new File(tmpDirPathSb.toString());
+                if (!tmpDir.exists()) {
+                    s_logger.info("Creating tmp dir on path: {}", tmpDir.toString());
+                    tmpDir.mkdir();
+                }
+
+                //
+                // Tmp file check and creation
+                tmpDirPathSb.append("/")
+                        .append(tmpFileName);
+                tmpFile = new File(tmpDirPathSb.toString());
+
+                // Check date of modification to avoid caching forever
+                if (tmpFile.exists()) {
+                    long lastModifiedDate = tmpFile.lastModified();
+
+                    long maxCacheTime = config.getLong(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_CACHE_TIME);
+
+                    if (System.currentTimeMillis() - lastModifiedDate > maxCacheTime) {
+                        s_logger.info("Deleting old cached file: {}", tmpFile.toString());
+                        tmpFile.delete();
+                    }
+                }
+
+                // If file is not cached, download it.
+                if (!tmpFile.exists()) {
+                    // Url connection
+                    URL iconUrl = new URL(iconResource);
+                    URLConnection urlConnection = iconUrl.openConnection();
+                    urlConnection.setConnectTimeout(2000);
+                    urlConnection.setReadTimeout(2000);
+
+                    // Length check
+                    String contentLengthString = urlConnection.getHeaderField("Content-Length");
+
+                    long maxLength = config.getLong(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_SIZE_MAX);
+
+                    try {
+                        Long contentLength = Long.parseLong(contentLengthString);
+                        if (contentLength > maxLength) {
+                            s_logger.warn("Content lenght exceeded ({}/{}) for URL: {}",
+                                    contentLength, maxLength, iconResource);
+                            throw new IOException("Content-Length reported a length of " + contentLength + " which exceeds the maximum allowed size of " + maxLength);
+                        }
+                    } catch (NumberFormatException nfe) {
+                        s_logger.warn("Cannot get Content-Length header!");
+                    }
+
+                    s_logger.info("Creating file: {}", tmpFile.toString());
+                    tmpFile.createNewFile();
+
+                    // Icon download
+                    InputStream is = urlConnection.getInputStream();
+                    byte[] buffer = new byte[4096];
+                    try (OutputStream os = new FileOutputStream(tmpFile)) {
+                        int len;
+                        while ((len = is.read(buffer)) > 0) {
+                            os.write(buffer, 0, len);
+
+                            maxLength -= len;
+
+                            if (maxLength < 0) {
+                                s_logger.warn("Maximum content lenght exceeded ({}) for URL: {}",
+                                        new Object[] { maxLength, iconResource });
+                                throw new IOException("Maximum content lenght exceeded (" + maxLength + ") for URL: " + iconResource);
+                            }
+                        }
+                    }
+
+                    s_logger.info("Downloaded file: {}", tmpFile.toString());
+
+                    // Image metadata content checks
+                    ImageFormat imgFormat = Sanselan.guessFormat(tmpFile);
+
+                    if (imgFormat.equals(ImageFormat.IMAGE_FORMAT_BMP) ||
+                            imgFormat.equals(ImageFormat.IMAGE_FORMAT_GIF) ||
+                            imgFormat.equals(ImageFormat.IMAGE_FORMAT_JPEG) ||
+                            imgFormat.equals(ImageFormat.IMAGE_FORMAT_PNG)) {
+                        s_logger.info("Detected image format: {}", imgFormat.name);
+                    } else if (imgFormat.equals(ImageFormat.IMAGE_FORMAT_UNKNOWN)) {
+                        s_logger.error("Unknown file format for URL: {}", iconResource);
+                        throw new IOException("Unknown file format for URL: " + iconResource);
+                    } else {
+                        s_logger.error("Usupported file format ({}) for URL: {}", imgFormat, iconResource);
+                        throw new IOException("Unknown file format for URL: {}" + iconResource);
+                    }
+
+                    s_logger.info("Image validation passed for URL: {}", iconResource);
+                } else {
+                    s_logger.info("Using cached file: {}", tmpFile.toString());
+                }
+
+                //
+                // Injecting new URL for the icon resource
+                String newResourceURL = "img://console/file/icons?id=" +
+                        tmpFileName;
+
+                s_logger.info("Injecting configuration component icon: {}", newResourceURL);
+                icon.setResource(newResourceURL);
+            } catch (Exception e) {
+                if (tmpFile != null &&
+                        tmpFile.exists()) {
+                    tmpFile.delete();
+                }
+
+                icon.setResource("Default");
+
+                s_logger.error("Error while checking component configuration icon. Using the default plugin icon.", e);
+            }
+        }
+        //
+        // If not, all is fine.
     }
 
 }

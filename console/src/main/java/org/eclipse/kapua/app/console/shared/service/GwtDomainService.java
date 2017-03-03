@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.service;
 
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("domain")
 public interface GwtDomainService extends RemoteService {
@@ -44,4 +43,5 @@ public interface GwtDomainService extends RemoteService {
      */
     public List<GwtAction> findActionsByDomainName(String domainName)
         throws GwtKapuaException;
+
 }
