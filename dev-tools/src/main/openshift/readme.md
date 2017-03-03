@@ -19,15 +19,21 @@ Before you install OpenShift, make sure you have Docker server properly installe
 
 Now download OpenShift Origin binary distribution and install it into your file system:
 
-    wget -nc https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz
-    tar xpf openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz
-    mv openshift-origin-server-v1.4.1+3f9807a-linux-64bit openshift
-    ln -s ~/openshift/oc /usr/local/bin/oc
+    wget -nc https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-client-tools-v1.4.1-3f9807a-linux-64bit.tar.gz
+    tar xzf openshift-origin-client-tools-v1.4.1-3f9807a-linux-64bit.tar.gz
+    ln -s openshift-origin-client-tools-v1.4.1+3f9807a-linux-64bit openshift
+    ln -s openshift/oc /usr/local/bin/oc
 
-Don't forget to start OpenShift server, log into it and creating new project before you proceed:
+In order to start a local OpenShift installation simply run:
 
-    nohup openshift/openshift start &
-    oc login --insecure-skip-tls-verify=true https://localhost:8443 -u admin -p admin
+    oc cluster up
+    
+Or the following command if you want to enable metrics support:
+
+    oc cluster up --metrics
+
+An create a new project using:
+
     oc new-project eclipse-kapua
 
 ## Ensuring enough entropy
@@ -68,10 +74,12 @@ For more information about the "EPEL repositories" see https://fedoraproject.org
 
 Execute the following command:
 
-    DOCKER_ACCOUNT=hekonsek bash <(curl -sL https://raw.githubusercontent.com/eclipse/kapua/develop/dev-tools/src/main/openshift/openshift-deploy.sh)
+    oc new-app -f https://raw.githubusercontent.com/eclipse/kapua/develop/dev-tools/src/main/openshift/kapua-template.yml -p DOCKER_ACCOUNT=hekonsek
 
 Now open the following URL in your web browser - `http://localhost:8080/console`. And log-in into Kapua UI using default
 credentials:
 
-    username: kapua-sys
-    password: kapua-password
+<dl>
+	<dt>username</dt><dd>kapua-sys</dd>
+	<dt>password</dt><dd>kapua-password</dd>
+</dl>
