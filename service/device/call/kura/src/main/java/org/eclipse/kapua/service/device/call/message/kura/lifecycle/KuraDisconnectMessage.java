@@ -19,34 +19,32 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 /**
  * Kura device disconnect message implementation.<br>
  * The disconnect message is sent by the device to notify to the platform that it is no more available.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
-public class KuraDisconnectMessage extends KuraMessage<KuraDisconnectChannel, KuraDisconnectPayload>
-{
+public class KuraDisconnectMessage extends KuraMessage<KuraDisconnectChannel, KuraDisconnectPayload> {
 
     /**
      * Constructor
      */
-    public KuraDisconnectMessage()
-    {
+    public KuraDisconnectMessage() {
         super();
     }
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param channel
      * @param timestamp
      * @param payload
      */
-    public KuraDisconnectMessage(KuraDisconnectChannel channel, 
-    		Date timestamp,
+    public KuraDisconnectMessage(KuraDisconnectChannel channel,
+            Date timestamp,
             KuraDisconnectPayload payload) {
-    	this.channel = channel;
-    	this.timestamp = timestamp;
-    	this.payload = payload;
+        this.channel = channel;
+        this.timestamp = timestamp;
+        this.payload = payload;
     }
 
 }

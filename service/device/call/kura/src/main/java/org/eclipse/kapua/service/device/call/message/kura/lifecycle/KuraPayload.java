@@ -32,84 +32,75 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * Kura device payload implementation.
- * 
+ *
  * @since 1.0
  *
  */
-public class KuraPayload implements DevicePayload
-{
-    private static final Logger   s_logger = LoggerFactory.getLogger(KuraPayload.class);
+public class KuraPayload implements DevicePayload {
 
-    protected Date                timestamp;
-    protected DevicePosition      position;
+    private static final Logger s_logger = LoggerFactory.getLogger(KuraPayload.class);
+
+    protected Date timestamp;
+    protected DevicePosition position;
     protected Map<String, Object> metrics;
-    protected byte[]              body;
+    protected byte[] body;
 
     /**
      * Constructor
      */
-    public KuraPayload()
-    {
+    public KuraPayload() {
         metrics = new HashMap<>();
     }
 
     @Override
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return timestamp;
     }
 
     /**
      * Set the message timestamp
-     * 
+     *
      * @param timestamp
      */
-    public void setTimestamp(Date timestamp)
-    {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
     @Override
-    public DevicePosition getPosition()
-    {
+    public DevicePosition getPosition() {
         return position;
     }
 
     /**
      * Set the device position
-     * 
+     *
      * @param position
      */
-    public void setPosition(DevicePosition position)
-    {
+    public void setPosition(DevicePosition position) {
         this.position = position;
     }
 
     @Override
-    public Map<String, Object> getMetrics()
-    {
+    public Map<String, Object> getMetrics() {
         return metrics;
     }
 
     @Override
-    public byte[] getBody()
-    {
+    public byte[] getBody() {
         return body;
     }
 
     /**
      * Set the message body
-     * 
+     *
      * @param body
      */
-    public void setBody(byte[] body)
-    {
+    public void setBody(byte[] body) {
         this.body = body;
     }
 
     @Override
-    public byte[] toByteArray()
-    {
+    public byte[] toByteArray() {
         // Build the message
         KuraPayloadProto.KuraPayload.Builder protoMsg = KuraPayloadProto.KuraPayload.newBuilder();
 
@@ -142,12 +133,10 @@ public class KuraPayload implements DevicePayload
 
                 // add it to the message
                 protoMsg.addMetric(metricB);
-            }
-            catch (MessageException eihte) {
+            } catch (MessageException eihte) {
                 try {
                     s_logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
-                }
-                catch (NullPointerException npe) {
+                } catch (NullPointerException npe) {
                     s_logger.error("During serialization, ignoring metric named: {}. The value is null.", name);
                 }
                 throw new RuntimeException(eihte);
@@ -164,13 +153,11 @@ public class KuraPayload implements DevicePayload
 
     @Override
     public void readFromByteArray(byte[] bytes)
-        throws KapuaException
-    {
+            throws KapuaException {
         if (GZIPUtils.isCompressed(bytes)) {
             try {
                 bytes = GZIPUtils.decompress(bytes);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 // throw new KapuaDeviceCallException(KapuaDeviceCallErrorCodes.)
                 // FIXME: manage!
                 throw KapuaException.internalError(e);
@@ -180,21 +167,20 @@ public class KuraPayload implements DevicePayload
         KuraPayloadProto.KuraPayload protoMsg = null;
         try {
             protoMsg = KuraPayloadProto.KuraPayload.parseFrom(bytes);
-        }
-        catch (InvalidProtocolBufferException ipbe) {
+        } catch (InvalidProtocolBufferException ipbe) {
             throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ipbe, (Object[]) null);
         }
 
         //
         // Add timestamp
         if (protoMsg.hasTimestamp()) {
-            timestamp = (new Date(protoMsg.getTimestamp()));
+            timestamp = new Date(protoMsg.getTimestamp());
         }
 
         //
         // Add position
         if (protoMsg.hasPosition()) {
-            position = (buildFromProtoBuf(protoMsg.getPosition()));
+            position = buildFromProtoBuf(protoMsg.getPosition());
         }
 
         //
@@ -204,8 +190,7 @@ public class KuraPayload implements DevicePayload
             try {
                 Object value = getProtoKuraMetricValue(protoMsg.getMetric(i), protoMsg.getMetric(i).getType());
                 metrics.put(name, value);
-            }
-            catch (MessageException ihte) {
+            } catch (MessageException ihte) {
 
                 s_logger.warn("During deserialization, ignoring metric named: " + name + ". Unrecognized value type: " + protoMsg.getMetric(i).getType(), ihte);
             }
@@ -213,7 +198,7 @@ public class KuraPayload implements DevicePayload
 
         // set the body
         if (protoMsg.hasBody()) {
-            body = (protoMsg.getBody().toByteArray());
+            body = protoMsg.getBody().toByteArray();
         }
     }
 
@@ -221,80 +206,69 @@ public class KuraPayload implements DevicePayload
     // Private methods
     //
     private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric,
-                                           KuraPayloadProto.KuraPayload.KuraMetric.ValueType type)
-        throws MessageException
-    {
+            KuraPayloadProto.KuraPayload.KuraMetric.ValueType type)
+            throws MessageException {
         switch (type) {
 
-            case DOUBLE:
-                return metric.getDoubleValue();
+        case DOUBLE:
+            return metric.getDoubleValue();
 
-            case FLOAT:
-                return metric.getFloatValue();
+        case FLOAT:
+            return metric.getFloatValue();
 
-            case INT64:
-                return metric.getLongValue();
+        case INT64:
+            return metric.getLongValue();
 
-            case INT32:
-                return metric.getIntValue();
+        case INT32:
+            return metric.getIntValue();
 
-            case BOOL:
-                return metric.getBoolValue();
+        case BOOL:
+            return metric.getBoolValue();
 
-            case STRING:
-                return metric.getStringValue();
+        case STRING:
+            return metric.getStringValue();
 
-            case BYTES:
-                ByteString bs = metric.getBytesValue();
-                return bs.toByteArray();
+        case BYTES:
+            ByteString bs = metric.getBytesValue();
+            return bs.toByteArray();
 
-            default:
-                throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
+        default:
+            throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
         }
     }
 
     private static void setProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric.Builder metric, Object o)
-        throws MessageException
-    {
+            throws MessageException {
 
         if (o instanceof String) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.STRING);
             metric.setStringValue((String) o);
-        }
-        else if (o instanceof Double) {
+        } else if (o instanceof Double) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.DOUBLE);
             metric.setDoubleValue((Double) o);
-        }
-        else if (o instanceof Integer) {
+        } else if (o instanceof Integer) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.INT32);
             metric.setIntValue((Integer) o);
-        }
-        else if (o instanceof Float) {
+        } else if (o instanceof Float) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.FLOAT);
             metric.setFloatValue((Float) o);
-        }
-        else if (o instanceof Long) {
+        } else if (o instanceof Long) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.INT64);
             metric.setLongValue((Long) o);
-        }
-        else if (o instanceof Boolean) {
+        } else if (o instanceof Boolean) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.BOOL);
             metric.setBoolValue((Boolean) o);
-        }
-        else if (o instanceof byte[]) {
+        } else if (o instanceof byte[]) {
             metric.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.BYTES);
             metric.setBytesValue(ByteString.copyFrom((byte[]) o));
-        }
-        else if (o == null) {
+        } else if (o == null) {
             throw new MessageException(MessageErrorCodes.INVALID_METRIC_VALUE, null, "null");
-        }
-        else {
+        } else {
             throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, o.getClass().getName());
         }
     }
 
-    private KuraPayloadProto.KuraPayload.KuraPosition buildPositionProtoBuf(DevicePosition position)
-    {
+    private KuraPayloadProto.KuraPayload.KuraPosition buildPositionProtoBuf(DevicePosition position) {
         KuraPayloadProto.KuraPayload.KuraPosition.Builder protoPos = null;
         protoPos = KuraPayloadProto.KuraPayload.KuraPosition.newBuilder();
 
@@ -328,8 +302,7 @@ public class KuraPayload implements DevicePayload
         return protoPos.build();
     }
 
-    private DevicePosition buildFromProtoBuf(KuraPayloadProto.KuraPayload.KuraPosition protoPosition)
-    {
+    private DevicePosition buildFromProtoBuf(KuraPayloadProto.KuraPayload.KuraPosition protoPosition) {
         DevicePosition position = getPosition();
 
         if (protoPosition.hasLatitude()) {

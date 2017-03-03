@@ -12,34 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.ui.button.Button;
-import org.eclipse.kapua.app.console.client.ui.button.EditButton;
-import org.eclipse.kapua.app.console.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
-import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -53,6 +36,22 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.client.ui.button.Button;
+import org.eclipse.kapua.app.console.client.ui.button.EditButton;
+import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
+import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountDetailsView extends LayoutContainer {
 
@@ -70,6 +69,9 @@ public class AccountDetailsView extends LayoutContainer {
     private boolean m_initialized;
 
     private FormPanel m_formPanel;
+    private TabItem settingsTabItem;
+    private AccountTabConfiguration settingsTab;
+    private TabPanel m_tabPanel;
     private Grid<GwtGroupedNVPair> m_grid;
     private GroupingStore<GwtGroupedNVPair> m_store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
@@ -97,8 +99,9 @@ public class AccountDetailsView extends LayoutContainer {
         m_bodyLayoutContainer.setBorders(true);
         m_bodyLayoutContainer.setLayout(new BorderLayout());
         m_bodyLayoutContainer.setScrollMode(Scroll.AUTO);
+        // TODO Fix background
+        m_bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
         m_bodyLayoutContainer.setStyleAttribute("padding", "0px");
-        m_bodyLayoutContainer.setStyleAttribute("background-color", "white");
 
         //
         // Toolbar
@@ -116,8 +119,37 @@ public class AccountDetailsView extends LayoutContainer {
         createGrid(parent);
         m_bodyLayoutContainer.add(m_grid, centerData);
 
+        //
+        // South View
+
+        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 430.0F);
+        southData.setCollapsible(true);
+        southData.setHideCollapseTool(true);
+        southData.setSplit(true);
+        southData.setMargins(new Margins(5, 0, 0, 0));
+        m_tabPanel = new TabPanel();
+        m_tabPanel.setPlain(true);
+        m_tabPanel.setBorders(false);
+        m_tabPanel.setBodyBorder(false);
+        settingsTab = new AccountTabConfiguration(m_currentSession);
+        settingsTab.setBorders(false);
+        settingsTabItem = new TabItem("Settings", new KapuaIcon(IconSet.COG));      // TODO externalize string
+        settingsTabItem.setBorders(false);
+        settingsTabItem.setLayout(new FitLayout());
+        settingsTabItem.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            public void handleEvent(ComponentEvent be) {
+                settingsTab.refresh();
+            }
+        });
+        settingsTab.setAccount(selectedAccount);
+        settingsTabItem.add(settingsTab);
+        m_tabPanel.add(settingsTabItem);
+        m_bodyLayoutContainer.add(m_tabPanel, southData);
+
         add(m_bodyLayoutContainer);
         m_initialized = true;
+
     }
 
     private void createGrid(Element parent) {
@@ -153,6 +185,7 @@ public class AccountDetailsView extends LayoutContainer {
         m_grid.setBorders(false);
         m_grid.setLoadMask(true);
         m_grid.setStripeRows(true);
+        m_grid.setTrackMouseOver(false);
         m_grid.disableTextSelection(false);
 
         add(m_grid);

@@ -22,9 +22,8 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
  * @since 1.0
  * 
  */
-public class CredentialListResultImpl extends KapuaListResultImpl<Credential> implements CredentialListResult
-{
+public class CredentialListResultImpl extends KapuaListResultImpl<Credential> implements CredentialListResult {
 
-    private static final long serialVersionUID = -7949012585401032274L;
+    static final long serialVersionUID = -7949012585401032274L;
 
 }

@@ -17,6 +17,8 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 
+import java.util.List;
+
 /**
  * Kapua service loader definition.<br>
  * Each service loader must provide the proper implementation for these methods.
@@ -45,5 +47,12 @@ public interface KapuaServiceLoader {
      * @return
      */
     public <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass);
+
+    /**
+     * Returns a list of all the classes implementing KapuaServices
+     *
+     * @return a list of all the classes implementing KapuaServices
+     */
+    public List<KapuaService> getServices();
 
 }

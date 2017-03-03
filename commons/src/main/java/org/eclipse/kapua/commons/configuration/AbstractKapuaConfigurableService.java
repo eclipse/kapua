@@ -12,18 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -47,11 +35,21 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+
 /**
  * Configurable service definition abstract reference implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @SuppressWarnings("serial")
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService, Serializable {
@@ -61,7 +59,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     /**
      * Reads metadata for the service pid
-     * 
+     *
      * @param pid
      * @return
      * @throws IOException
@@ -77,16 +75,17 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         String metatypeXmlName = sbMetatypeXmlName.toString();
         URL metatypeXmlURL = ResourceUtils.getResource(metatypeXmlName);
-        String metatypeXml = ResourceUtils.readResource(metatypeXmlURL);
-        if (metatypeXml != null) {
+        if (metatypeXmlURL != null) {
+            String metatypeXml = ResourceUtils.readResource(metatypeXmlURL);
             metaData = XmlUtil.unmarshal(metatypeXml, KapuaTmetadata.class);
         }
+
         return metaData;
     }
 
     /**
      * Validate configuration
-     * 
+     *
      * @param pid
      * @param ocd
      * @param updatedProps
@@ -152,7 +151,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     /**
      * Convert the properties map to {@link Properties}
-     * 
+     *
      * @param values
      * @return
      */
@@ -166,7 +165,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     /**
      * Convert the {@link Properties} to a properties map
-     * 
+     *
      * @param ocd
      * @param props
      * @return
@@ -186,7 +185,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     /**
      * Create the service configuration entity
-     * 
+     *
      * @param em
      * @param serviceConfig
      * @return
@@ -213,7 +212,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     /**
      * Update the service configuration entity
-     * 
+     *
      * @param em
      * @param serviceConfig
      * @return
@@ -244,10 +243,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     /**
      * Constructor
-     * 
+     *
      * @param pid
      * @param domain
-     * @param entityFactory
+     * @param entityManagerFactory
      */
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
         super(entityManagerFactory);
@@ -267,7 +266,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         try {
             KapuaTmetadata metadata = readMetadata(this.pid);
-            if (metadata.getOCD() != null && metadata.getOCD().size() > 0) {
+            if (metadata != null && metadata.getOCD() != null && metadata.getOCD().size() > 0) {
                 for (KapuaTocd ocd : metadata.getOCD()) {
                     if (ocd.getId() != null && ocd.getId().equals(pid)) {
                         return ocd;

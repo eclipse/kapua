@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
@@ -23,6 +24,8 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListIt
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+import java.util.List;
 
 /**
  * The client side stub for the RPC service.
@@ -136,5 +139,23 @@ public interface GwtAccountService extends RemoteService {
      */
     ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String scopeId, boolean recoursive)
         throws GwtKapuaException;
+
+    /**
+     * Returns the configuration of an Account as the list of all the configurable components.
+     *
+     * @param scopeId
+     * @return
+     */
+    public List<GwtConfigComponent> findServiceConfigurations(String scopeId)
+            throws GwtKapuaException;
+
+    /**
+     * Updates the configuration of the provided component.
+     *
+     * @param scopeId
+     * @param configComponent
+     */
+    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, GwtConfigComponent configComponent)
+            throws GwtKapuaException;
 
 }

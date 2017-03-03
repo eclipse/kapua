@@ -24,5 +24,5 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
  */
 public class AccessInfoListResultImpl extends KapuaListResultImpl<AccessInfo> implements AccessInfoListResult {
 
-    private static final long serialVersionUID = 2231053707705207563L;
+    static final long serialVersionUID = 2231053707705207563L;
 }

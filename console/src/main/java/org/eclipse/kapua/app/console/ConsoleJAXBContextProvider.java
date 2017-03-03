@@ -13,16 +13,10 @@
 
 package org.eclipse.kapua.app.console;
 
-import javax.xml.bind.JAXBContext;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.model.config.metatype.KapuaTad;
-import org.eclipse.kapua.model.config.metatype.KapuaTicon;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.model.config.metatype.KapuaToption;
-import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
+import org.eclipse.kapua.model.config.metatype.*;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundle;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
@@ -38,6 +32,8 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+
+import javax.xml.bind.JAXBContext;
 
 public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
@@ -66,6 +62,7 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         KapuaTad.class,
                         KapuaTicon.class,
                         KapuaToption.class,
+                        KapuaTmetadata.class,
                         TscalarImpl.class,
                         MetatypeXmlRegistry.class
                 }, null);
