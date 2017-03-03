@@ -17,39 +17,36 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  * A container for XmlConfigPropertyAdapted organized into an array.
- * 
+ *
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlConfigPropertiesAdapted
-{
+public class XmlConfigPropertiesAdapted {
+
     @XmlElement(name = "property")
     private XmlConfigPropertyAdapted[] properties;
 
     /**
      * Constructor
      */
-    public XmlConfigPropertiesAdapted()
-    {
+    public XmlConfigPropertiesAdapted() {
     }
 
     /**
      * Get the adapted properties as array
-     * 
+     *
      * @return
      */
-    public XmlConfigPropertyAdapted[] getProperties()
-    {
+    public XmlConfigPropertyAdapted[] getProperties() {
         return properties;
     }
 
     /**
      * Set the adapted properties from the array
-     * 
+     *
      * @param properties
      */
-    public void setProperties(XmlConfigPropertyAdapted[] properties)
-    {
+    public void setProperties(XmlConfigPropertyAdapted[] properties) {
         this.properties = properties;
     }
 }

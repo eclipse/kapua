@@ -18,7 +18,6 @@ import org.eclipse.kapua.model.config.metatype.*;
  * Kapua metatype objects factory service implementation.
  *
  * @since 1.0
- *
  */
 @KapuaProvider
 public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory {
