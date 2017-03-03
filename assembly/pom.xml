@@ -575,6 +575,13 @@
 									<port>61614</port>
 								</ports>
 								<user>kapua</user>
+								<runCmds>
+									<run><![CDATA[
+									chown -R kapua:kapua /maven && \
+									chmod -R a+rw /maven && \
+									find /maven -type d -exec chmod a+x {} +
+									]]></run>
+								</runCmds>
 								<volumes>
 									<volume>/maven/data</volume>
 								</volumes>
