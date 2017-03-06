@@ -51,8 +51,7 @@ import java.util.Properties;
  *
  * @since 1.0
  */
-@SuppressWarnings("serial")
-public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService, Serializable {
+public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
     private Domain domain = null;
     private String pid = null;
