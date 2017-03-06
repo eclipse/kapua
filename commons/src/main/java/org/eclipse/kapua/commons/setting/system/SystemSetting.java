@@ -22,23 +22,28 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  */
 public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
 
+    /**
+     * Constant representing name of the resource properties file used by this settings.
+     */
     private static final String CONFIG_RESOURCE_NAME = "kapua-environment-setting.properties";
 
     private static final SystemSetting instance = new SystemSetting();
 
-    /**
-     * Constructor
-     */
+    // Constructors
+
     private SystemSetting() {
         super(CONFIG_RESOURCE_NAME);
     }
 
+    // Accessors
+
     /**
-     * Return the system setting instance (singleton)
+     * Return the singleton system setting instance.
      *
-     * @return
+     * @return singleton system setting instance
      */
     public static SystemSetting getInstance() {
         return instance;
     }
+
 }
