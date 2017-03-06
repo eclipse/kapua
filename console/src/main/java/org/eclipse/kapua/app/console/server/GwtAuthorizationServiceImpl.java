@@ -145,7 +145,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 gwtSession = (GwtSession) session.getAttribute(SESSION_CURRENT);
 
                 // Store the user information in the sessions
-                String username = (String) currentUser.getPrincipal();
+                String username = ((User) currentUser.getPrincipal()).getName();
 
                 KapuaLocator locator = KapuaLocator.getInstance();
                 UserService userService = locator.getService(UserService.class);

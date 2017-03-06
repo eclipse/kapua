@@ -4,6 +4,20 @@
 
     mvn -Pdocker
 
+### Pushing
+
+Pushing with default settings:
+
+    mvn -Pdocker-push
+
+Pushing to a specific docker registry:
+
+    mvn -Pdocker-push -Ddocker.push.registry=registry.hub.docker.com
+    
+Pushing to a specific docker registry under a specific account:
+
+    mvn -Pdocker-push -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
+
 ### Run
 
     docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
@@ -15,3 +29,4 @@
 
 Navigate your browser to http://localhost:8080/console and log in using the following credentials:
 `kapua-sys` : `kapua-password`
+
