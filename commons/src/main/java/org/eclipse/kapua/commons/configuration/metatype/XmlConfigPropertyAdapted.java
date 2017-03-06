@@ -22,67 +22,66 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * Represents a typed property.
  * Various flags help in the interpretation and semantics of the property value.
  * For example, a property value might be an array or the property value might have been encrypted.
- * 
+ *
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlConfigPropertyAdapted
-{
+public class XmlConfigPropertyAdapted {
+
     @XmlEnum
     public enum ConfigPropertyType {
-        @XmlEnumValue("String")    stringType,
-        @XmlEnumValue("Long")      longType,
-        @XmlEnumValue("Double")    doubleType,
-        @XmlEnumValue("Float")     floatType,
-        @XmlEnumValue("Integer")   integerType,
-        @XmlEnumValue("Byte")      byteType,
-        @XmlEnumValue("Char")      charType,
-        @XmlEnumValue("Boolean")   booleanType,
-        @XmlEnumValue("Short")     shortType,
-        @XmlEnumValue("Password")  passwordType
+        @XmlEnumValue("String")stringType,
+        @XmlEnumValue("Long")longType,
+        @XmlEnumValue("Double")doubleType,
+        @XmlEnumValue("Float")floatType,
+        @XmlEnumValue("Integer")integerType,
+        @XmlEnumValue("Byte")byteType,
+        @XmlEnumValue("Char")charType,
+        @XmlEnumValue("Boolean")booleanType,
+        @XmlEnumValue("Short")shortType,
+        @XmlEnumValue("Password")passwordType
     }
 
     /**
      * The name of the property.
      */
-    @XmlAttribute(name="name")
-    private String             name;
+    @XmlAttribute(name = "name")
+    private String name;
 
     /**
      * Whether the property value is an array.
      */
-    @XmlAttribute(name="array")
-    private boolean            array;
+    @XmlAttribute(name = "array")
+    private boolean array;
 
     /**
      * Whether the property value is encrypted.
      */
-    @XmlAttribute(name="encrypted")
-    private boolean            encrypted;
+    @XmlAttribute(name = "encrypted")
+    private boolean encrypted;
 
     /**
      * The property type.
      */
-    @XmlAttribute(name="type")
+    @XmlAttribute(name = "type")
     private ConfigPropertyType type;
 
     /**
      * The property value(s).
      */
-    @XmlElement(name="value")
-    private String[]           values;
-
+    @XmlElement(name = "value")
+    private String[] values;
 
     public XmlConfigPropertyAdapted() {
     }
 
     public XmlConfigPropertyAdapted(String name,
-                                    ConfigPropertyType type,
-                                    String[] values) {
+            ConfigPropertyType type,
+            String[] values) {
         super();
 
-        this.type      = type;
-        this.values    = values;
+        this.type = type;
+        this.values = values;
         this.encrypted = false;
     }
 

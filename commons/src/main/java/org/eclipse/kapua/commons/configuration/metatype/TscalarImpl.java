@@ -17,7 +17,6 @@
 // Generated on: 2012.11.25 at 06:05:15 PM CET
 //
 
-
 package org.eclipse.kapua.commons.configuration.metatype;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,15 +28,14 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
 
-
 /**
  * <p>
  * Java class for Tscalar.
- *
+ * <p>
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
  * <p>
- * 
+ * <p>
  * <pre>
  * &lt;simpleType name="Tscalar"&gt;
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
@@ -54,7 +52,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
- * 
+ *
  * @since 1.0
  */
 @XmlEnum
@@ -86,7 +84,7 @@ public enum TscalarImpl implements KapuaTscalar {
 
     /**
      * Constructor
-     * 
+     *
      * @param v
      */
     TscalarImpl(String v) {
@@ -100,12 +98,12 @@ public enum TscalarImpl implements KapuaTscalar {
 
     /**
      * Convert a String value to a {@link TscalarImpl}
-     * 
+     *
      * @param v
      * @return
      */
     public static TscalarImpl fromValue(String v) {
-        for (TscalarImpl c: TscalarImpl.values()) {
+        for (TscalarImpl c : TscalarImpl.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

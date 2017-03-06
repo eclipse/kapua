@@ -28,7 +28,7 @@ import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJd
 
 /**
  * Utility class for JPA operations.
- * 
+ *
  * @since 1.0.0
  */
 public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.commons.jpa.EntityManagerFactory {
@@ -40,7 +40,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
     /**
      * Protected constructor
-     * 
+     *
      * @param persistenceUnitName
      * @param datasourceName
      * @param uniqueConstraints
@@ -86,11 +86,9 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
     /**
      * Returns an EntityManager instance.
-     * 
+     *
      * @return An entity manager for the persistence unit.
-     * @throws KapuaException
-     *             If {@link EntityManagerFactory#createEntityManager()} cannot create the {@link EntityManager}
-     * 
+     * @throws KapuaException If {@link EntityManagerFactory#createEntityManager()} cannot create the {@link EntityManager}
      * @since 1.0.0
      */
     public EntityManager createEntityManager()

@@ -33,10 +33,10 @@ import org.w3c.dom.Element;
 /**
  * <p>
  * Java class for Tocd complex type.
- *
+ * <p>
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="Tocd"&gt;
  *   &lt;complexContent&gt;
@@ -69,26 +69,24 @@ public class TocdImpl implements KapuaTocd {
 
     /**
      * Gets the value of the ad property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the ad property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
-     *
+     * <p>
      * <pre>
      * getAD().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TadImpl }
-     *
-     *
      */
     public List<KapuaTad> getAD() {
         if (ad == null) {
@@ -122,26 +120,24 @@ public class TocdImpl implements KapuaTocd {
 
     /**
      * Gets the value of the icon property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the icon property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
-     *
+     * <p>
      * <pre>
      * getIcon().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TiconImpl }
-     *
-     *
      */
     public List<KapuaTicon> getIcon() {
         if (icon == null) {
@@ -174,27 +170,25 @@ public class TocdImpl implements KapuaTocd {
 
     /**
      * Gets the value of the any property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the any property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
-     *
+     * <p>
      * <pre>
      * getAny().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Element }
      * {@link Object }
-     *
-     *
      */
     public List<Object> getAny() {
         if (any == null) {
@@ -220,10 +214,8 @@ public class TocdImpl implements KapuaTocd {
     /**
      * Gets the value of the name property.
      *
-     * @return
-     *         possible object is
-     *         {@link String }
-     *
+     * @return possible object is
+     * {@link String }
      */
     public String getName() {
         return name;
@@ -232,10 +224,8 @@ public class TocdImpl implements KapuaTocd {
     /**
      * Sets the value of the name property.
      *
-     * @param value
-     *            allowed object is
-     *            {@link String }
-     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -244,10 +234,8 @@ public class TocdImpl implements KapuaTocd {
     /**
      * Gets the value of the description property.
      *
-     * @return
-     *         possible object is
-     *         {@link String }
-     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDescription() {
         return description;
@@ -256,10 +244,8 @@ public class TocdImpl implements KapuaTocd {
     /**
      * Sets the value of the description property.
      *
-     * @param value
-     *            allowed object is
-     *            {@link String }
-     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDescription(String value) {
         this.description = value;
@@ -268,10 +254,8 @@ public class TocdImpl implements KapuaTocd {
     /**
      * Gets the value of the id property.
      *
-     * @return
-     *         possible object is
-     *         {@link String }
-     *
+     * @return possible object is
+     * {@link String }
      */
     public String getId() {
         return id;
@@ -280,10 +264,8 @@ public class TocdImpl implements KapuaTocd {
     /**
      * Sets the value of the id property.
      *
-     * @param value
-     *            allowed object is
-     *            {@link String }
-     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setId(String value) {
         this.id = value;
@@ -291,17 +273,15 @@ public class TocdImpl implements KapuaTocd {
 
     /**
      * Gets a map that contains attributes that aren't bound to any typed property on this class.
-     *
+     * <p>
      * <p>
      * the map is keyed by the name of the attribute and
      * the value is the string value of the attribute.
-     *
+     * <p>
      * the map returned by this method is live, and you can add new attribute
      * by updating the map directly. Because of this design, there's no setter.
      *
-     *
-     * @return
-     *         always non-null
+     * @return always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

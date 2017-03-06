@@ -14,15 +14,14 @@ package org.eclipse.kapua.commons.jpa;
 
 /**
  * Jdbc url connection resolver service definition
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface JdbcConnectionUrlResolver {
 
     /**
      * Return the jdbc connection url
-     * 
+     *
      * @return
      */
     String connectionUrl();

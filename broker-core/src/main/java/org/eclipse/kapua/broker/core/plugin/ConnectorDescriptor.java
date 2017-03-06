@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
@@ -64,45 +67,31 @@ public class ConnectorDescriptor implements Serializable {
         DATA
     }
 
-    private final String connectorName;
-    private final String deviceProtocolName;
-
-    private final Map<MessageType, Class<DeviceMessage<?, ?>>> deviceClass;
-    private final Map<MessageType, Class<KapuaMessage<?, ?>>> kapuaClass;
+    private final Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass;
+    private final Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass;
 
     /**
      * Constructs a new connector descriptor
-     *
-     * @param connectorName
-     *            connector name (as defined in the activemq.xml)
-     * @param deviceProtocolName
-     *            device level protocol name (ie Kura)
+     * 
      * @param deviceClass
      *            device level messages implementation classes
      * @param kapuaClass
      *            Kapua level messages implementation classes
      */
-    public ConnectorDescriptor(String connectorName, String deviceProtocolName, Map<MessageType, Class<DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<KapuaMessage<?, ?>>> kapuaClass) {
-        this.connectorName = connectorName;
-        this.deviceProtocolName = deviceProtocolName;
-        this.deviceClass = deviceClass;
-        this.kapuaClass = kapuaClass;
+    public ConnectorDescriptor(Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
+        requireNonNull(deviceClass);
+        requireNonNull(kapuaClass);
+
+        this.deviceClass = new HashMap<>(deviceClass);
+        this.kapuaClass = new HashMap<>(kapuaClass);
     }
 
-    public String getConnectorName() {
-        return connectorName;
+    public Class<? extends DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) throws KapuaException {
+        return this.deviceClass.get(messageType);
     }
 
-    public String getDeviceProtocolName() {
-        return deviceProtocolName;
-    }
-
-    public Class<DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) throws KapuaException {
-        return deviceClass.get(messageType);
-    }
-
-    public Class<KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) throws KapuaException {
-        return kapuaClass.get(messageType);
+    public Class<? extends KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) throws KapuaException {
+        return this.kapuaClass.get(messageType);
     }
 
 }

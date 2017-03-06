@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.model.misc.CollisionIdGenerator;
 import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,16 @@ import org.junit.Test;
  */
 public class KapuaIdGeneratorTest extends AbstractCommonServiceTest
 {
+
+    public static String DEFAULT_TEST_FILTER  = "test_*.sql";
+
+    @BeforeClass
+    public static void tearUp()
+            throws KapuaException
+    {
+        scriptSession(DEFAULT_TEST_PATH, DEFAULT_TEST_FILTER);
+    }
+
 
     @Test
     /**

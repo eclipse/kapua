@@ -21,9 +21,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Entity manager session reference implementation.
- * 
+ *
  * @since 1.0
- * 
  */
 public class EntityManagerSession {
 
@@ -37,7 +36,7 @@ public class EntityManagerSession {
 
     /**
      * Constructor
-     * 
+     *
      * @param entityManagerFactory
      */
     public EntityManagerSession(EntityManagerFactory entityManagerFactory) {
@@ -51,7 +50,7 @@ public class EntityManagerSession {
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to the entityManagerActionCallback.<br>
      * This method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * 
+     *
      * @param entityManagerActionCallback
      * @throws KapuaException
      */
@@ -64,7 +63,7 @@ public class EntityManagerSession {
      * <br>
      * WARNING!<br>
      * The transactionality is managed by this method so the called entityManagerActionCallback must leave the transaction open<br>
-     * 
+     *
      * @param entityManagerActionCallback
      * @throws KapuaException
      */
@@ -97,7 +96,7 @@ public class EntityManagerSession {
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to the entityManagerResultCallback.<br>
      * This method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * 
+     *
      * @param entityManagerResultCallback
      * @return
      * @throws KapuaException
@@ -111,7 +110,7 @@ public class EntityManagerSession {
      * <br>
      * WARNING!<br>
      * The transactionality is managed by this method so the called entityManagerResultCallback must leave the transaction open<br>
-     * 
+     *
      * @param entityManagerResultCallback
      * @return
      * @throws KapuaException
@@ -148,7 +147,7 @@ public class EntityManagerSession {
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to the entityManagerInsertCallback.<br>
      * This method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * 
+     *
      * @param entityManagerInsertCallback
      * @return
      * @throws KapuaException
@@ -164,7 +163,7 @@ public class EntityManagerSession {
      * <br>
      * WARNING!<br>
      * The transactionality is managed by this method so the called entityManagerInsertCallback must leave the transaction open<br>
-     * 
+     *
      * @param entityManagerInsertCallback
      * @return
      * @throws KapuaException

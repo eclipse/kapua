@@ -24,35 +24,31 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Kapua JPA entity manager wrapper
- * 
+ *
  * @since 1.0
- * 
  */
-public class EntityManager
-{
-    private static final Logger             LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
+public class EntityManager {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
     private javax.persistence.EntityManager javaxPersitenceEntityManager;
 
     /**
      * Constructs a new entity manager wrapping the given {@link javax.persistence.EntityManager}
-     * 
+     *
      * @param javaxPersitenceEntityManager
      */
-    public EntityManager(javax.persistence.EntityManager javaxPersitenceEntityManager)
-    {
+    public EntityManager(javax.persistence.EntityManager javaxPersitenceEntityManager) {
         this.javaxPersitenceEntityManager = javaxPersitenceEntityManager;
     }
 
     /**
      * Opens a Jpa Transaction.
-     * 
+     *
      * @throws KapuaException if {@link org.eclipse.kapua.commons.jpa.EntityManager} is {@code null}
-     * 
      */
     public void beginTransaction()
-        throws KapuaException
-    {
+            throws KapuaException {
         if (javaxPersitenceEntityManager == null) {
             throw KapuaException.internalError(new NullPointerException(), "null EntityManager");
         }
@@ -61,13 +57,11 @@ public class EntityManager
 
     /**
      * Commits the current Jpa Transaction.
-     * 
+     *
      * @throws KapuaException
-     * 
      */
     public void commit()
-        throws KapuaException
-    {
+            throws KapuaException {
         if (javaxPersitenceEntityManager == null) {
             throw KapuaException.internalError("null EntityManager");
         }
@@ -77,46 +71,39 @@ public class EntityManager
 
         try {
             javaxPersitenceEntityManager.getTransaction().commit();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw KapuaException.internalError(e, "Commit Error");
         }
     }
 
     /**
      * Rollbacks the current Jpa Transaction. No exception will be thrown when rolling back so that the original exception that caused the rollback can be thrown.
-     * 
      */
-    public void rollback()
-    {
+    public void rollback() {
         try {
             if (javaxPersitenceEntityManager != null &&
-                javaxPersitenceEntityManager.getTransaction().isActive()) {
+                    javaxPersitenceEntityManager.getTransaction().isActive()) {
                 javaxPersitenceEntityManager.getTransaction().rollback();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOG.warn("Rollback Error", e);
         }
     }
 
     /**
      * Return the transaction status
-     * 
+     *
      * @return
      */
-    public boolean isTransactionActive()
-    {
+    public boolean isTransactionActive() {
         return (javaxPersitenceEntityManager != null &&
                 javaxPersitenceEntityManager.getTransaction().isActive());
     }
 
     /**
      * Closes the EntityManager
-     * 
      */
-    public void close()
-    {
+    public void close() {
         if (javaxPersitenceEntityManager != null) {
             javaxPersitenceEntityManager.close();
         }
@@ -124,105 +111,95 @@ public class EntityManager
 
     /**
      * Persist the entity
-     * 
+     *
      * @param entity
      */
-    public <E extends KapuaEntity> void persist(E entity)
-    {
+    public <E extends KapuaEntity> void persist(E entity) {
         javaxPersitenceEntityManager.persist(entity);
     }
 
     /**
      * Flush the entity manager
      */
-    public void flush()
-    {
+    public void flush() {
         javaxPersitenceEntityManager.flush();
     }
 
     /**
      * Find the entity by the given id and type
-     * 
+     *
      * @param clazz
      * @param id
      * @return
      */
-    public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id)
-    {
+    public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id) {
         return javaxPersitenceEntityManager.find(clazz, id);
     }
 
     /**
      * Merge the entity
-     * 
+     *
      * @param entity
      */
-    public <E extends KapuaEntity> void merge(E entity)
-    {
+    public <E extends KapuaEntity> void merge(E entity) {
         javaxPersitenceEntityManager.merge(entity);
     }
 
     /**
      * Refresh the entity
-     * 
+     *
      * @param entity
      */
-    public <E extends KapuaEntity> void refresh(E entity)
-    {
+    public <E extends KapuaEntity> void refresh(E entity) {
         javaxPersitenceEntityManager.refresh(entity);
     }
 
     /**
      * Remove the entity
-     * 
+     *
      * @param entity
      */
-    public <E extends KapuaEntity> void remove(E entity)
-    {
+    public <E extends KapuaEntity> void remove(E entity) {
         javaxPersitenceEntityManager.remove(entity);
     }
 
     /**
      * Return the {@link javax.persistence.criteria.CriteriaBuilder}
-     * 
+     *
      * @return
      */
-    public CriteriaBuilder getCriteriaBuilder()
-    {
+    public CriteriaBuilder getCriteriaBuilder() {
         return javaxPersitenceEntityManager.getCriteriaBuilder();
     }
 
     /**
      * Return the typed query based on the criteria
-     * 
+     *
      * @param criteriaSelectQuery
      * @return
      */
-    public <E> TypedQuery<E> createQuery(CriteriaQuery<E> criteriaSelectQuery)
-    {
+    public <E> TypedQuery<E> createQuery(CriteriaQuery<E> criteriaSelectQuery) {
         return javaxPersitenceEntityManager.createQuery(criteriaSelectQuery);
     }
 
     /**
      * Return the typed query based on the query name
-     * 
+     *
      * @param queryName
      * @param clazz
      * @return
      */
-    public <E> TypedQuery<E> createNamedQuery(String queryName, Class<E> clazz)
-    {
+    public <E> TypedQuery<E> createNamedQuery(String queryName, Class<E> clazz) {
         return javaxPersitenceEntityManager.createNamedQuery(queryName, clazz);
     }
 
     /**
      * Return native query based on provided sql query
-     * 
+     *
      * @param querySelectUuidShort
      * @return
      */
-    public <E> Query createNativeQuery(String querySelectUuidShort)
-    {
+    public <E> Query createNativeQuery(String querySelectUuidShort) {
         return javaxPersitenceEntityManager.createNativeQuery(querySelectUuidShort);
     }
 }

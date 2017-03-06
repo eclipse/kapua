@@ -13,22 +13,18 @@ import org.eclipse.kapua.KapuaException;
 
 /**
  * Not transactional {@link TransactionManager} implementation.
- * 
+ *
  * @since 1.0
- * 
  */
-public class TransactionManagerTransacted implements TransactionManager
-{
+public class TransactionManagerTransacted implements TransactionManager {
 
     @Override
-    public void beginTransaction(EntityManager manager) throws KapuaException
-    {
+    public void beginTransaction(EntityManager manager) throws KapuaException {
         manager.beginTransaction();
     }
 
     @Override
-    public void commit(EntityManager manager) throws KapuaException
-    {
+    public void commit(EntityManager manager) throws KapuaException {
         manager.commit();
     }
 

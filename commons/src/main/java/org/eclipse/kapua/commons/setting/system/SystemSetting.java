@@ -17,31 +17,33 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * System setting implementation.<br>
  * This class handles settings for the {@link SystemSettingKey}.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey>
-{
-    private static final String        CONFIG_RESOURCE_NAME = "kapua-environment-setting.properties";
-
-    private static final SystemSetting instance             = new SystemSetting();
+public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
 
     /**
-     * Constructor
+     * Constant representing name of the resource properties file used by this settings.
      */
-    private SystemSetting()
-    {
+    private static final String CONFIG_RESOURCE_NAME = "kapua-environment-setting.properties";
+
+    private static final SystemSetting instance = new SystemSetting();
+
+    // Constructors
+
+    private SystemSetting() {
         super(CONFIG_RESOURCE_NAME);
     }
 
+    // Accessors
+
     /**
-     * Return the system setting instance (singleton)
-     * 
-     * @return
+     * Return the singleton system setting instance.
+     *
+     * @return singleton system setting instance
      */
-    public static SystemSetting getInstance()
-    {
+    public static SystemSetting getInstance() {
         return instance;
     }
+
 }

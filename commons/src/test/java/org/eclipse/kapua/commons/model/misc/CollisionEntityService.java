@@ -16,8 +16,7 @@ import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 public interface CollisionEntityService extends KapuaEntityService<CollisionEntity, CollisionEntityCreator>,
-                                        KapuaNamedEntityService<CollisionEntity>,
-                                        KapuaConfigurableService
-{
+        KapuaNamedEntityService<CollisionEntity>,
+        KapuaConfigurableService {
 
 }

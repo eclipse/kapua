@@ -32,10 +32,10 @@ import org.w3c.dom.Element;
 /**
  * <p>
  * Java class for Ticon complex type.
- *
+ * <p>
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="Ticon"&gt;
  *   &lt;complexContent&gt;
@@ -62,27 +62,25 @@ public class TiconImpl implements KapuaTicon {
 
     /**
      * Gets the value of the any property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the any property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
-     *
+     * <p>
      * <pre>
      * getAny().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Element }
      * {@link Object }
-     *
-     *
      */
     public List<Object> getAny() {
         if (any == null) {
@@ -94,10 +92,8 @@ public class TiconImpl implements KapuaTicon {
     /**
      * Gets the value of the resource property.
      *
-     * @return
-     *         possible object is
-     *         {@link String }
-     *
+     * @return possible object is
+     * {@link String }
      */
     public String getResource() {
         return resource;
@@ -106,10 +102,8 @@ public class TiconImpl implements KapuaTicon {
     /**
      * Sets the value of the resource property.
      *
-     * @param value
-     *            allowed object is
-     *            {@link String }
-     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setResource(String value) {
         this.resource = value;
@@ -118,10 +112,8 @@ public class TiconImpl implements KapuaTicon {
     /**
      * Gets the value of the size property.
      *
-     * @return
-     *         possible object is
-     *         {@link BigInteger }
-     *
+     * @return possible object is
+     * {@link BigInteger }
      */
     public BigInteger getSize() {
         return size;
@@ -130,10 +122,8 @@ public class TiconImpl implements KapuaTicon {
     /**
      * Sets the value of the size property.
      *
-     * @param value
-     *            allowed object is
-     *            {@link BigInteger }
-     *
+     * @param value allowed object is
+     *              {@link BigInteger }
      */
     public void setSize(BigInteger value) {
         this.size = value;
@@ -141,17 +131,15 @@ public class TiconImpl implements KapuaTicon {
 
     /**
      * Gets a map that contains attributes that aren't bound to any typed property on this class.
-     *
+     * <p>
      * <p>
      * the map is keyed by the name of the attribute and
      * the value is the string value of the attribute.
-     *
+     * <p>
      * the map returned by this method is live, and you can add new attribute
      * by updating the map directly. Because of this design, there's no setter.
      *
-     *
-     * @return
-     *         always non-null
+     * @return always non-null
      */
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;

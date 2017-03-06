@@ -61,8 +61,8 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      * @throws KapuaException
      */
     @SuppressWarnings("unchecked")
-    public static synchronized <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(Class<FROM_M> fromMessageClass,
-            Class<TO_M> toMessageClass)
+    public static synchronized <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(Class<? extends FROM_M> fromMessageClass,
+            Class<? extends TO_M> toMessageClass)
             throws KapuaException {
 
         Objects.requireNonNull(fromMessageClass);

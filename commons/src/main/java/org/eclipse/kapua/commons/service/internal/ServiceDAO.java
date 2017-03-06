@@ -716,13 +716,13 @@ public class ServiceDAO {
 
                     AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(kapuaSession.getScopeId());
                     accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
-                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPriviledge(() -> accessInfoService.query(accessInfoQuery));
+                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> accessInfoService.query(accessInfoQuery));
 
                     List<Permission> groupPermissions = new ArrayList<>();
                     if (!accessInfos.isEmpty()) {
 
                         AccessInfo accessInfo = accessInfos.getFirstItem();
-                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPriviledge(() -> accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                         for (AccessPermission ap : accessPermissions.getItems()) {
                             Permission p = ap.getPermission();
@@ -738,14 +738,14 @@ public class ServiceDAO {
                             }
                         }
 
-                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPriviledge(() -> accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPrivileged(() -> accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                         for (AccessRole ar : accessRoles.getItems()) {
                             KapuaId roleId = ar.getRoleId();
 
-                            Role role = KapuaSecurityUtils.doPriviledge(() -> roleService.find(ar.getScopeId(), roleId));
+                            Role role = KapuaSecurityUtils.doPrivileged(() -> roleService.find(ar.getScopeId(), roleId));
 
-                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPriviledge(() -> rolePermissionService.findByRoleId(role.getScopeId(), role.getId()));
+                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> rolePermissionService.findByRoleId(role.getScopeId(), role.getId()));
 
                             for (RolePermission rp : rolePermissions.getItems()) {
 

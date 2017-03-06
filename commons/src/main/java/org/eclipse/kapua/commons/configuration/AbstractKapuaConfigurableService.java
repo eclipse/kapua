@@ -38,7 +38,6 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +50,7 @@ import java.util.Properties;
  *
  * @since 1.0
  */
-@SuppressWarnings("serial")
-public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService, Serializable {
+public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
     private Domain domain = null;
     private String pid = null;
@@ -68,7 +66,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @throws FactoryConfigurationError
      */
     private static KapuaTmetadata readMetadata(String pid)
-            throws IOException, Exception, XMLStreamException, FactoryConfigurationError {
+            throws Exception, FactoryConfigurationError {
         KapuaTmetadata metaData = null;
         StringBuilder sbMetatypeXmlName = new StringBuilder();
         sbMetatypeXmlName.append("META-INF/metatypes/").append(pid).append(".xml");
@@ -86,12 +84,11 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Validate configuration
      *
-     * @param pid
      * @param ocd
      * @param updatedProps
      * @throws KapuaException
      */
-    private static void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps)
+    private static void validateConfigurations(KapuaTocd ocd, Map<String, Object> updatedProps)
             throws KapuaException {
         if (ocd != null) {
 
@@ -134,15 +131,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             }
 
             // make sure all required properties are set
-            if (ocd != null) {
-                for (KapuaTad attrDef : ocd.getAD()) {
-                    // to the required attributes make sure a value is defined.
-                    if (attrDef.isRequired()) {
-                        if (updatedProps.get(attrDef.getId()) == null) {
-                            // if the default one is not defined, throw
-                            // exception.
-                            throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.REQUIRED_ATTRIBUTE_MISSING, attrDef.getId());
-                        }
+            for (KapuaTad attrDef : ocd.getAD()) {
+                // to the required attributes make sure a value is defined.
+                if (attrDef.isRequired()) {
+                    if (updatedProps.get(attrDef.getId()) == null) {
+                        // if the default one is not defined, throw
+                        // exception.
+                        throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.REQUIRED_ATTRIBUTE_MISSING, attrDef.getId());
                     }
                 }
             }
@@ -313,7 +308,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         KapuaTocd ocd = this.getConfigMetadata();
-        validateConfigurations(this.pid, ocd, values);
+        validateConfigurations(ocd, values);
 
         Properties props = toProperties(values);
 

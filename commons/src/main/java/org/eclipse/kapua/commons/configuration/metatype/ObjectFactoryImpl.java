@@ -37,14 +37,12 @@ public class ObjectFactoryImpl {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes.
-     *
      */
     public ObjectFactoryImpl() {
     }
 
     /**
      * Create an instance of {@link TiconImpl }
-     *
      */
     public TiconImpl createTicon() {
         return new TiconImpl();
@@ -52,7 +50,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link TattributeImpl }
-     *
      */
     public TattributeImpl createTattribute() {
         return new TattributeImpl();
@@ -60,7 +57,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link TmetadataImpl }
-     *
      */
     public TmetadataImpl createTmetadata() {
         return new TmetadataImpl();
@@ -68,7 +64,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link TdesignateImpl }
-     *
      */
     public TdesignateImpl createTdesignate() {
         return new TdesignateImpl();
@@ -76,7 +71,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link TadImpl }
-     *
      */
     public TadImpl createTad() {
         return new TadImpl();
@@ -84,7 +78,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link TobjectImpl }
-     *
      */
     public TobjectImpl createTobject() {
         return new TobjectImpl();
@@ -92,7 +85,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link TocdImpl }
-     *
      */
     public TocdImpl createTocd() {
         return new TocdImpl();
@@ -100,7 +92,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link ToptionImpl }
-     *
      */
     public ToptionImpl createToption() {
         return new ToptionImpl();
@@ -108,7 +99,6 @@ public class ObjectFactoryImpl {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TmetadataImpl }{@code >}}
-     *
      */
     @XmlElementDecl(namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0", name = "MetaData")
     public JAXBElement<TmetadataImpl> createMetaData(TmetadataImpl value) {

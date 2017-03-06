@@ -20,10 +20,8 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * Setting system key implementation.
  *
  * @since 1.0
- *
  */
-public enum SystemSettingKey implements SettingKey
-{
+public enum SystemSettingKey implements SettingKey {
     /**
      * Provisioning account name
      */
@@ -178,17 +176,15 @@ public enum SystemSettingKey implements SettingKey
 
     /**
      * Constructor
-     * 
+     *
      * @param key
      */
-    private SystemSettingKey(String key)
-    {
+    private SystemSettingKey(String key) {
         this.key = key;
     }
 
     @Override
-    public String key()
-    {
+    public String key() {
         return key;
     }
 }

@@ -58,7 +58,7 @@ public class AccessInfoServiceTest extends KapuaTest {
     public void testSimpleCreate()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create mock user
@@ -85,7 +85,7 @@ public class AccessInfoServiceTest extends KapuaTest {
     public void testPermissionCreate()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create mock user
@@ -127,7 +127,7 @@ public class AccessInfoServiceTest extends KapuaTest {
     public void testRoleCreate()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create mock user
@@ -181,7 +181,7 @@ public class AccessInfoServiceTest extends KapuaTest {
     public void testFind()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create mock user
@@ -250,7 +250,7 @@ public class AccessInfoServiceTest extends KapuaTest {
     public void testDelete()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
 
             // Create mock user

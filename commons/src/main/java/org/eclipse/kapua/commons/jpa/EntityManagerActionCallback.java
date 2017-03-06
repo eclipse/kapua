@@ -16,9 +16,8 @@ import org.eclipse.kapua.KapuaException;
 
 /**
  * Entity manager callback action service definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface EntityManagerActionCallback {
 
@@ -28,7 +27,7 @@ public interface EntityManagerActionCallback {
      * The transactionality (if needed by the code) must be managed internally to this method.<br>
      * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
      * (@see {@link EntityManagerSession#onEntityManagerAction}<br>
-     * 
+     *
      * @param entityManager
      * @throws KapuaException
      */

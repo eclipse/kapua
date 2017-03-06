@@ -96,7 +96,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         // FIXME: manage multiple credentials and multiple credentials type
         final Credential credential;
         try {
-            credential = KapuaSecurityUtils.doPriviledge(() -> credentialService.findByApiKey(tokenApiKey));
+            credential = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByApiKey(tokenApiKey));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPriviledge(() -> userService.find(credential.getScopeId(), credential.getUserId()));
+            user = KapuaSecurityUtils.doPrivileged(() -> userService.find(credential.getScopeId(), credential.getUserId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -133,7 +133,7 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         // Find account
         final Account account;
         try {
-            account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(user.getScopeId()));
+            account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {

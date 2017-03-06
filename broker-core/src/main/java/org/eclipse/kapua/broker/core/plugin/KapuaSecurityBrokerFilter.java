@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
@@ -98,8 +98,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
-    private Map<String, ConnectorDescriptor> connectorsDescriptorMap;
-
     private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<>();
 
     private static final Domain brokerDomain = new BrokerDomain();
@@ -152,8 +150,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     public KapuaSecurityBrokerFilter(Broker next) throws KapuaException {
         super(next);
-
-        connectorsDescriptorMap = ConnectorDescriptorLoader.loadConnectorDescriptors();
 
         // login
         metricLoginSuccess = metricsService.getCounter("security", "login", "success", "count");
@@ -322,7 +318,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
             final Account account;
             try {
-                account = KapuaSecurityUtils.doPriviledge(() -> accountService.find(scopeId));
+                account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(scopeId));
             } catch (Exception e) {
                 // to preserve the original exception message (if possible)
                 if (e instanceof AuthenticationException) {
@@ -380,7 +376,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
                 // 4) find device
                 Context loginFindClientIdTimeContext = metricLoginFindClientIdTime.time();
-                deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.findByClientId(scopeId, clientId));
+                deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                 loginFindClientIdTimeContext.stop();
 
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
@@ -395,7 +391,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     deviceConnectionCreator.setProtocol("MQTT");
                     deviceConnectionCreator.setServerIp(null);// TODO to be filled with the proper value
                     deviceConnectionCreator.setUserId(userId);
-                    deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.create(deviceConnectionCreator));
+                    deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
                 } else {
                     deviceConnection.setClientIp(clientIp);
                     deviceConnection.setProtocol("MQTT");
@@ -403,7 +399,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     deviceConnection.setUserId(userId);
                     deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
                     final DeviceConnection deviceConnectionToUpdate = deviceConnection;
-                    KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.update(deviceConnectionToUpdate));
+                    KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
                     // TODO implement the banned status
                     // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
                     // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
@@ -428,7 +424,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             logAuthDestinationToLog(authDestinations);
 
             final String connectorName = (((TransportConnector) context.getConnector()).getName());
-            final ConnectorDescriptor connectorDescriptor = connectorsDescriptorMap.get(connectorName);
+            final ConnectorDescriptor connectorDescriptor = ConnectorDescriptorProviders.getDescriptor(connectorName);
             if (connectorDescriptor == null) {
                 throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
             }
@@ -531,7 +527,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     } else {
                         final DeviceConnection deviceConnection;
                         try {
-                            deviceConnection = KapuaSecurityUtils.doPriviledge(() -> deviceConnectionService.findByClientId(scopeId, clientId));
+                            deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(scopeId, clientId));
                         } catch (Exception e) {
                             throw new ShiroException("Error while looking for device connection on updating the device!", e);
                         }
@@ -544,7 +540,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                                 deviceConnection.setStatus(DeviceConnectionStatus.MISSING);
                             }
                             try {
-                                KapuaSecurityUtils.doPriviledge(() -> {
+                                KapuaSecurityUtils.doPrivileged(() -> {
                                     deviceConnectionService.update(deviceConnection);
                                     return null;
                                 });

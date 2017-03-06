@@ -23,6 +23,9 @@ public class KapuaLiquibaseClientTest {
 
     @Test
     public void shouldCreateTable() throws Exception {
+        // Given
+        System.setProperty("LIQUIBASE_ENABLED", "true");
+
         // When
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
 
@@ -38,6 +41,9 @@ public class KapuaLiquibaseClientTest {
 
     @Test
     public void shouldCreateTableOnlyOnce() throws Exception {
+        // Given
+        System.setProperty("LIQUIBASE_ENABLED", "true");
+
         // When
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
@@ -50,6 +56,21 @@ public class KapuaLiquibaseClientTest {
             tables.add(sqlResults.getString(1));
         }
         assertThat(tables).contains("act_account");
+    }
+
+    @Test
+    public void shouldSkipDatabaseUpdate() throws Exception {
+        // Given
+        Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "", "");
+        connection.prepareStatement("DROP TABLE IF EXISTS DATABASECHANGELOG").execute();
+        System.setProperty("LIQUIBASE_ENABLED", "false");
+
+        // When
+        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "").update();
+
+        // Then
+        ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
+        assertThat(sqlResults.next()).isFalse();
     }
 
 }

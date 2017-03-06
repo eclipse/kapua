@@ -245,7 +245,7 @@ public class UserServiceSteps extends KapuaTest {
      */
     private HashSet<ComparableUser> createUsersInList(List<TestUser> userList, Account account) throws Exception {
         HashSet<ComparableUser> users = new HashSet<>();
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 for (TestUser userItem : userList) {
                     String name = userItem.getName();
@@ -279,7 +279,7 @@ public class UserServiceSteps extends KapuaTest {
      */
     private Account createAccount(TestAccount testAccount) throws Exception {
         List<Account> accountList = new ArrayList<>();
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 Account account = accountService.create(accountCreatorCreator(testAccount.getName(),
                         testAccount.getScopeId()));
@@ -304,7 +304,7 @@ public class UserServiceSteps extends KapuaTest {
     private Credential createCredentials(TestCredentials testCredentials) throws Exception {
         List<Credential> credentialList = new ArrayList<>();
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 User user = userService.findByName(testCredentials.getName());
 
@@ -333,7 +333,7 @@ public class UserServiceSteps extends KapuaTest {
     private void createPermissions(List<TestPermission> permissionList, ComparableUser user, Account account)
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 accessInfoService.create(accessInfoCreatorCreator(permissionList, user, account));
             } catch (KapuaException ke) {

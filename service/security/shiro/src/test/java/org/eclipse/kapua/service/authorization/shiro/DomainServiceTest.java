@@ -44,7 +44,7 @@ public class DomainServiceTest extends KapuaTest {
     public void testCreate()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
 
@@ -80,7 +80,7 @@ public class DomainServiceTest extends KapuaTest {
     public void testFind()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
 
@@ -121,7 +121,7 @@ public class DomainServiceTest extends KapuaTest {
     public void testQueryAndCount()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainService domainService = locator.getService(DomainService.class);
@@ -192,7 +192,7 @@ public class DomainServiceTest extends KapuaTest {
     public void testDelete()
             throws Exception {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
 
