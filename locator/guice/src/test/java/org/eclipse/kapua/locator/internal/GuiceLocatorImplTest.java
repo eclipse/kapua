@@ -16,21 +16,25 @@ package org.eclipse.kapua.locator.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
 import org.eclipse.kapua.locator.guice.TestService;
+import org.eclipse.kapua.locator.internal.guice.ServiceA;
+import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.service.KapuaService;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class GuiceLocatorImplTest {
 
     KapuaLocator locator = GuiceLocatorImpl.getInstance();
 
+    @Ignore
     @Test
     public void shouldThrowKapuaExceptionWhenServiceIsNotAvailable() {
         try {
@@ -42,10 +46,32 @@ public class GuiceLocatorImplTest {
         fail();
     }
 
+    @Ignore
     @Test
     public void shouldLoadTestService() {
         MyTestableService service = locator.getService(MyTestableService.class);
         Assert.assertTrue(service instanceof TestMyTestableService);
+    }
+
+    @Test
+    public void shouldProvideServiceA() {
+        Assert.assertNotNull(locator.getService(ServiceA.class));
+    }
+
+    @Test(expected = KapuaRuntimeException.class)
+    public void shouldProvideServiceB() {
+        Assert.assertNotNull(locator.getService(ServiceB.class));
+    }
+
+    @Test
+    public void shouldProvideAll() {
+        List<KapuaService> result = locator.getServices();
+        Assert.assertEquals(1, result.size());
+
+        {
+            KapuaService service = result.get(0);
+            Assert.assertTrue(service instanceof ServiceA);
+        }
     }
 
     static interface MyService extends KapuaService {
