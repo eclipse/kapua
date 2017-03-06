@@ -21,9 +21,8 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 /**
  * Configurable JDBC connection URL resolver implementation. Can be configured using Kubernetes service discovery or
  * properties.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
 
@@ -49,15 +48,15 @@ public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnect
         // Optional connection parameters
         String schema = firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
         if (isNotBlank(schema)) {
-        	dbConnectionString.append("schema=")
-        		.append(schema)
-        		.append(";");
+            dbConnectionString.append("schema=")
+                    .append(schema)
+                    .append(";");
 
-        // This deletes the trailing '?' or '&'
-        dbConnectionString.deleteCharAt(dbConnectionString.length() - 1);
+            // This deletes the trailing '?' or '&'
+            dbConnectionString.deleteCharAt(dbConnectionString.length() - 1);
 
         }
         return dbConnectionString.toString();
     }
-    
+
 }

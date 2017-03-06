@@ -17,9 +17,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 /**
  * MariaDB Jdbc url connection resolver implementation
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
 

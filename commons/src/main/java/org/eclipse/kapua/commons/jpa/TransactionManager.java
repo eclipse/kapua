@@ -13,16 +13,14 @@ import org.eclipse.kapua.KapuaException;
 
 /**
  * Defines the transaction manager behavior used by the {@link EntityManagerSession}
- * 
+ *
  * @since 1.0
- * 
  */
-public interface TransactionManager
-{
+public interface TransactionManager {
 
     /**
      * Perform the commit call
-     * 
+     *
      * @param manager
      * @throws KapuaException
      */
@@ -30,7 +28,7 @@ public interface TransactionManager
 
     /**
      * Create the transaction
-     * 
+     *
      * @param manager
      * @throws KapuaException
      */
