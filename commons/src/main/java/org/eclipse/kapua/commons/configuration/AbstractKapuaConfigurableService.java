@@ -133,7 +133,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             }
 
             // make sure all required properties are set
-            if (ocd != null) {
                 for (KapuaTad attrDef : ocd.getAD()) {
                     // to the required attributes make sure a value is defined.
                     if (attrDef.isRequired()) {
@@ -144,7 +143,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                         }
                     }
                 }
-            }
         }
     }
 
