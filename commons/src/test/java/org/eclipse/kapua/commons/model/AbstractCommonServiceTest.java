@@ -28,11 +28,8 @@ public abstract class AbstractCommonServiceTest
 {
     private static final Logger logger = LoggerFactory.getLogger(AbstractCommonServiceTest.class);
     
-    public static String DEFAULT_PATH = "./src/main/sql/H2/";
     public static String DEFAULT_TEST_PATH = "./src/test/sql/H2/";
-
     public static String DEFAULT_COMMONS_PATH = "../commons";
-    public static String DEFAULT_TEST_FILTER  = "test_*.sql";
     public static String DROP_TEST_FILTER     = "test_*_drop.sql";
 
     public static void scriptSession(String path, String fileFilter)
@@ -70,7 +67,6 @@ public abstract class AbstractCommonServiceTest
         throws KapuaException
     {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
-        scriptSession(DEFAULT_TEST_PATH, DEFAULT_TEST_FILTER);
     }
     
     @AfterClass
