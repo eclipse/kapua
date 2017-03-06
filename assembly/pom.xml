@@ -549,14 +549,59 @@
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
+					
 					<images>
 						<image>
 							<name>${docker.account}/java-base</name>
 							<build>
 								<from>${java.base.image}</from>
 								<runCmds>
-									<runCmd>adduser -D -g "Eclipse Kapua" kapua</runCmd>
+									<runCmd><![CDATA[
+									apk update && apk add curl && \
+									adduser -D -g "Eclipse Kapua" kapua && \
+									curl -s https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.3.4/jolokia-jvm-1.3.4-agent.jar -o /jolokia-jvm-agent.jar
+									]]></runCmd>
 								</runCmds>
+							</build>
+						</image>
+						<image>
+							<name>${docker.account}/kapua-sql</name>
+							<build>
+								<from>${docker.account}/java-base</from>
+								<runCmds>
+									<runCmd><![CDATA[
+									mkdir -p /var/h2/data && \
+									chown kapua:kapua /var/h2/data && \
+									chmod a+rw /var/h2/data && \
+									cd /home/kapua && \
+									curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
+									]]></runCmd>
+								</runCmds>
+								<volumes>
+									<volume>/var/h2/data</volume>
+								</volumes>
+								<ports>
+									<port>3306</port>
+									<port>8181</port>
+									<port>8778</port>
+								</ports>
+								<user>kapua</user>
+								<entryPoint>
+									<exec>
+										<arg>/usr/bin/java</arg>
+										<arg>-javaagent:/jolokia-jvm-agent.jar</arg>
+										<arg>-cp</arg><arg>/home/kapua/h2.jar</arg>
+										<arg>org.h2.tools.Server</arg>
+										<arg>-web</arg>
+										<arg>-webAllowOthers</arg>
+										<arg>-webPort</arg><arg>8181</arg>
+										<arg>-tcp</arg>
+										<arg>-tcpAllowOthers</arg>
+										<arg>-tcpPort</arg><arg>3306</arg>
+										<arg>-baseDir</arg>
+										<arg>/var/h2/data</arg>
+									</exec>
+								</entryPoint>
 							</build>
 						</image>
 						<image>
@@ -626,6 +671,37 @@
 							</build>
 						</image>
 						<image>
+							<name>${docker.account}/kapua-console-jetty</name>
+							<build>
+								<from>${docker.account}/java-base</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
+								</assembly>
+								<entryPoint>
+									<exec>
+										<arg>/maven/bin/catalina.sh</arg>
+										<arg>run</arg>
+									</exec>
+								</entryPoint>
+								<env>
+									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+								</env>
+								<ports>
+									<port>8080</port>
+									<port>8778</port><!-- Jolokia -->
+								</ports>
+								<user>kapua</user>
+								<runCmds>
+									<run><![CDATA[
+									chown -R kapua:kapua /maven && \
+									chmod -R a+rw /maven && \
+									find /maven -type d -exec chmod a+x {} +
+									]]></run>
+								</runCmds>
+							</build>
+						</image>
+						<image>
 							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>${docker.account}/java-base</from>
@@ -654,12 +730,6 @@
 									find /maven -type d -exec chmod a+x {} +
 									]]></run>
 								</runCmds>
-							</build>
-						</image>
-						<image>
-							<name>${docker.account}/kapua-sql</name>
-							<build>
-								<dockerFileDir>sql</dockerFileDir>
 							</build>
 						</image>
 					</images>
