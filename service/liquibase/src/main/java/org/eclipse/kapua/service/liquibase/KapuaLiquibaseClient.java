@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import static java.lang.Boolean.parseBoolean;
 import static org.apache.commons.lang3.SystemUtils.getJavaIoTmpDir;
 
 public class KapuaLiquibaseClient {
@@ -45,11 +46,12 @@ public class KapuaLiquibaseClient {
 
     public void update() {
         try {
-            Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            if(parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
+                Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
 
-            Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
-            Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.sql"));
-                for(String script : changeLogs) {
+                Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
+                Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.sql"));
+                for (String script : changeLogs) {
                     URL scriptUrl = getClass().getResource("/" + script);
                     File changelogFile = new File(getJavaIoTmpDir(), "kapua-liquibase");
                     changelogFile.mkdir();
@@ -58,6 +60,7 @@ public class KapuaLiquibaseClient {
                     Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(connection));
                     liquibase.update(null);
                 }
+            }
         } catch (LiquibaseException | SQLException | IOException e) {
             throw new RuntimeException(e);
         }
