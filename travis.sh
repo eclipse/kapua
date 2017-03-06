@@ -9,7 +9,7 @@ touch $OUTPUT
 
 tail_log() {
    echo 'The last 1000 lines of build output:'
-   tail -100 $OUTPUT
+   tail -1000 $OUTPUT
 }
 
 ### Build error handler
