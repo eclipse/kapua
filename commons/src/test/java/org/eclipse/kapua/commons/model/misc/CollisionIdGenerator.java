@@ -13,17 +13,15 @@ package org.eclipse.kapua.commons.model.misc;
 
 import java.math.BigInteger;
 
-public class CollisionIdGenerator
-{
+public class CollisionIdGenerator {
 
     private String fixedValue;
     private BigInteger startIncrementalValue;
-    private int    fixedValueGenerationCount;
+    private int fixedValueGenerationCount;
 
     private int extractedValues = 0;
 
-    public CollisionIdGenerator(String fixedValue, BigInteger startIncrementalValue, int fixedValueGenerationCount)
-    {
+    public CollisionIdGenerator(String fixedValue, BigInteger startIncrementalValue, int fixedValueGenerationCount) {
         this.fixedValue = fixedValue;
         this.startIncrementalValue = startIncrementalValue;
         this.fixedValueGenerationCount = fixedValueGenerationCount;
@@ -31,22 +29,19 @@ public class CollisionIdGenerator
 
     /**
      * Generate a {@link BigInteger} fixed value until fixedValueGenerationCount is reached. After that the value will be incremental from the startIncrementalValue<br>
-     * 
+     *
      * @return
      */
-    public BigInteger generate()
-    {
+    public BigInteger generate() {
         if (++extractedValues < fixedValueGenerationCount) {
             return new BigInteger(fixedValue);
-        }
-        else {
+        } else {
             startIncrementalValue = startIncrementalValue.add(new BigInteger("1"));
             return startIncrementalValue;
         }
     }
 
-    public int getGeneretedValuesCount()
-    {
+    public int getGeneretedValuesCount() {
         return extractedValues;
     }
 

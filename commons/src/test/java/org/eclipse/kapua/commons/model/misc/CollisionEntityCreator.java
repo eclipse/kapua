@@ -16,26 +16,22 @@ import java.math.BigInteger;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 
-public class CollisionEntityCreator extends AbstractKapuaNamedEntityCreator<CollisionEntity>
-{
+public class CollisionEntityCreator extends AbstractKapuaNamedEntityCreator<CollisionEntity> {
 
     private static final long serialVersionUID = -6079623075798561334L;
 
     private String testField;
 
-    public CollisionEntityCreator(String testField)
-    {
+    public CollisionEntityCreator(String testField) {
         super(new KapuaEid(new BigInteger("1")), "collisionEntityCreator");
         this.testField = testField;
     }
 
-    public String getTestField()
-    {
+    public String getTestField() {
         return testField;
     }
 
-    public void setTestField(String testField)
-    {
+    public void setTestField(String testField) {
         this.testField = testField;
     }
 
