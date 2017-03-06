@@ -67,7 +67,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @throws FactoryConfigurationError
      */
     private static KapuaTmetadata readMetadata(String pid)
-            throws IOException, Exception, XMLStreamException, FactoryConfigurationError {
+            throws Exception, FactoryConfigurationError {
         KapuaTmetadata metaData = null;
         StringBuilder sbMetatypeXmlName = new StringBuilder();
         sbMetatypeXmlName.append("META-INF/metatypes/").append(pid).append(".xml");
