@@ -14,6 +14,7 @@
 <locator-config>
 	<provided>
 		<api>org.eclipse.kapua.locator.internal.guice.ServiceA</api>
+		<api>org.eclipse.kapua.locator.internal.guice.FactoryA</api>
 		<provide>
 			<interceptor>annotation</interceptor>
 			<with>Impl</with>

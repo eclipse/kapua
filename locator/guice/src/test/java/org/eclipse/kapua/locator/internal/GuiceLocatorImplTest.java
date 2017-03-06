@@ -23,6 +23,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
 import org.eclipse.kapua.locator.guice.TestService;
+import org.eclipse.kapua.locator.internal.guice.FactoryA;
 import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.service.KapuaService;
@@ -61,6 +62,11 @@ public class GuiceLocatorImplTest {
     @Test(expected = KapuaRuntimeException.class)
     public void shouldProvideServiceB() {
         Assert.assertNotNull(locator.getService(ServiceB.class));
+    }
+
+    @Test
+    public void shouldProvideFactoryA() {
+        Assert.assertNotNull(locator.getFactory(FactoryA.class));
     }
 
     @Test
