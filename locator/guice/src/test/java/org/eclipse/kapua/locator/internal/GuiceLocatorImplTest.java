@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -28,38 +29,39 @@ import org.junit.Test;
 @Ignore
 public class GuiceLocatorImplTest {
 
-	KapuaLocator locator = GuiceLocatorImpl.getInstance();
+    KapuaLocator locator = GuiceLocatorImpl.getInstance();
 
-	@Test
-	public void shouldThrowKapuaExceptionWhenServiceIsNotAvailable() {
-		try {
-			locator.getService(MyService.class);
-		} catch (KapuaRuntimeException e) {
-			assertEquals(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE.name(), e.getCode().name());
-			return;
-		}
-		fail();
-	}
+    @Test
+    public void shouldThrowKapuaExceptionWhenServiceIsNotAvailable() {
+        try {
+            locator.getService(MyService.class);
+        } catch (KapuaRuntimeException e) {
+            assertEquals(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE.name(), e.getCode().name());
+            return;
+        }
+        fail();
+    }
 
-	@Test
-	public void shouldLoadTestService() {
-		MyTestableService service = locator.getService(MyTestableService.class);
-		Assert.assertTrue(service instanceof TestMyTestableService);
-	}
+    @Test
+    public void shouldLoadTestService() {
+        MyTestableService service = locator.getService(MyTestableService.class);
+        Assert.assertTrue(service instanceof TestMyTestableService);
+    }
 
-	static interface MyService extends KapuaService {}
+    static interface MyService extends KapuaService {
+    }
 
-	interface MyTestableService extends KapuaService {
+    interface MyTestableService extends KapuaService {
 
-	}
+    }
 
-	public static class MyTestableServiceImpl implements MyTestableService {
+    public static class MyTestableServiceImpl implements MyTestableService {
 
-	}
+    }
 
-	@TestService
-	public static class TestMyTestableService implements MyTestableService {
+    @TestService
+    public static class TestMyTestableService implements MyTestableService {
 
-	}
+    }
 
 }
