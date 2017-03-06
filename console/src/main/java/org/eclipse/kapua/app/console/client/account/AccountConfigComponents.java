@@ -397,6 +397,7 @@ public class AccountConfigComponents extends LayoutContainer {
                                                 public void onFailure(Throwable caught) {
                                                     FailureHandler.handle(caught);
                                                     m_dirty = true;
+                                                    refresh();
                                                 }
 
                                                 public void onSuccess(Void arg0) {

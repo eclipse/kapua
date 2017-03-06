@@ -88,7 +88,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param updatedProps
      * @throws KapuaException
      */
-    private static void validateConfigurations(KapuaTocd ocd, Map<String, Object> updatedProps)
+    private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId)
             throws KapuaException {
         if (ocd != null) {
 
@@ -127,7 +127,11 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                         throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ATTRIBUTE_INVALID, attrDef.getId() + ": " + result);
                     }
                 }
+            }
 
+            String logicValidationResult = validateConfigValuesCoherence(ocd, updatedProps, scopeId);
+            if (logicValidationResult != null && !logicValidationResult.isEmpty()) {
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.OPERATION_NOT_ALLOWED, logicValidationResult);
             }
 
             // make sure all required properties are set
@@ -142,6 +146,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
         }
+    }
+
+    protected String validateConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
+        return "";
     }
 
     /**
@@ -308,7 +316,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         KapuaTocd ocd = this.getConfigMetadata();
-        validateConfigurations(ocd, values);
+        validateConfigurations(this.pid, ocd, values, scopeId);
 
         Properties props = toProperties(values);
 

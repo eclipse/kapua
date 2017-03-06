@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.Objects;
-
-import javax.persistence.TypedQuery;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
@@ -26,6 +22,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
@@ -37,6 +34,11 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
+import javax.persistence.TypedQuery;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Account service implementation.
@@ -74,12 +76,24 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.write, accountCreator.getScopeId()));
 
         // Check if the parent account exists
         if (findById(accountCreator.getScopeId()) == null) {
             throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist");
+        }
+
+        // Check child account policy
+        Map<String, Object> configValues = getConfigValues(accountCreator.getScopeId());
+        boolean allowInfiniteChildAccounts = (boolean) configValues.get("infiniteChildAccounts");
+        if (!allowInfiniteChildAccounts) {
+            int maxChildAccounts = (int) configValues.get("maxNumberChildAccounts");
+            long currentChildAccounts = count(accountFactory.newAccountQuery(accountCreator.getScopeId()));
+            if (currentChildAccounts >= maxChildAccounts) {
+                throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
+            }
         }
 
         return entityManagerSession.onInsert(em -> {
@@ -347,5 +361,22 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             AccountQuery query = new AccountQueryImpl(accountId);
             return AccountDAO.query(em, query);
         });
+    }
+
+    @Override
+    protected String validateConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
+        String result = "";
+        boolean infiniteChildAccounts = Boolean.parseBoolean((String) updatedProps.get("infiniteChildAccounts"));
+        int maxChildAccounts = Integer.parseInt((String) updatedProps.get("maxNumberChildAccounts"));
+        if (!infiniteChildAccounts) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
+            long currentChildAccounts = count(accountFactory.newAccountQuery(scopeId));
+            if (currentChildAccounts > maxChildAccounts) {
+                return "you can't set limited child accounts if current limit is lower than actual users count";
+            }
+        }
+        Account self = findById(scopeId);
+        return result;
     }
 }
