@@ -51,6 +51,7 @@
         <reflections.version>0.9.10</reflections.version>
         <shiro.version>1.2.3</shiro.version>
         <slf4j.version>1.7.21</slf4j.version>
+        <logback.version>1.1.8</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <cucumber.version>1.2.4</cucumber.version>
@@ -588,8 +589,13 @@
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.8</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch</groupId>
