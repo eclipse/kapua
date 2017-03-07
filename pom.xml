@@ -74,7 +74,7 @@
         <db.conn.url>jdbc:h2:tcp://${db.host}:3306/${db.name};${db.conn.properties}</db.conn.url>
         <db.username>kapua</db.username>
         <db.password>kapua</db.password>
-
+        <db.driver>org.h2.Driver</db.driver>
     </properties>
 
     <build>
@@ -108,7 +108,7 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <driver>org.h2.Driver</driver>
+                        <driver>${db.driver}</driver>
                         <url>${db.conn.url}</url>
                         <username>${db.username}</username>
                         <password>${db.password}</password>
@@ -203,6 +203,24 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>${liquibase.version}</version>
+                    <configuration>
+                        <driver>${db.driver}</driver>
+                        <url>${db.conn.url}</url>
+                        <username>${db.username}</username>
+                        <password>${db.password}</password>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${h2.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
