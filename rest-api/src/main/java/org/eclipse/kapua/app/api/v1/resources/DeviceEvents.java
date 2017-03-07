@@ -31,6 +31,9 @@ import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
+import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
@@ -129,6 +132,14 @@ public class DeviceEvents extends AbstractKapuaResource {
         return returnNotNullEntity(deviceEventListResult);
     }
 
+    /**
+     * Counts the results with the given {@link DeviceEventQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link DeviceEventQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link DeviceEventQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -150,6 +161,8 @@ public class DeviceEvents extends AbstractKapuaResource {
     /**
      * Returns the DeviceEvent specified by the "deviceEventId" path parameter.
      *
+     *@param scopeId The {@link ScopeId} of the requested {@link DeviceEvent}.
+     *@param deviceId The {@link Device} id of the request {@link DeviceEvent}.
      * @param deviceEventId
      *            The id of the requested DeviceEvent.
      * @return The requested DeviceEvent object.
