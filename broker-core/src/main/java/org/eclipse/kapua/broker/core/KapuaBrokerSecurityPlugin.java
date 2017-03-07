@@ -25,10 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.util.Optional;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.*;
 
 /**
  * Install {@link KapuaSecurityBrokerFilter} into activeMQ filter chain plugin.<BR>
@@ -55,7 +56,8 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(DB_USERNAME);
         String dbPassword = config.getString(DB_PASSWORD);
-        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword).update();
+        String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
+        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
 
         try {
             // initialize shiro context for broker plugin from shiro ini file

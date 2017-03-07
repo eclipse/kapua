@@ -16,6 +16,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,6 +72,21 @@ public class KapuaLiquibaseClientTest {
         // Then
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
         assertThat(sqlResults.next()).isFalse();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldCreateAttempToUseCustomSchema() throws Exception {
+        // Given
+        System.setProperty("LIQUIBASE_ENABLED", "true");
+
+        // When
+        try {
+            new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "", Optional.of("foo")).update();
+        } catch (RuntimeException e) {
+            // Then
+            assertThat(e).hasMessageContaining("Schema \"FOO\" not found");
+            throw e;
+        }
     }
 
 }

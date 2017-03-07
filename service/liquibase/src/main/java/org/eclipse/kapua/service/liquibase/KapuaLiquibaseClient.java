@@ -10,6 +10,8 @@
 package org.eclipse.kapua.service.liquibase;
 
 import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
@@ -24,6 +26,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -38,10 +41,17 @@ public class KapuaLiquibaseClient {
 
     private final String password;
 
-    public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
+    private final Optional<String> schema;
+
+    public KapuaLiquibaseClient(String jdbcUrl, String username, String password, Optional<String> schema) {
         this.jdbcUrl = jdbcUrl;
         this.username = username;
         this.password = password;
+        this.schema = schema;
+    }
+
+    public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
+        this(jdbcUrl, username, password, Optional.empty());
     }
 
     public void update() {
@@ -57,7 +67,11 @@ public class KapuaLiquibaseClient {
                     changelogFile.mkdir();
                     changelogFile = new File(changelogFile, script.replaceFirst("liquibase/", ""));
                     IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
-                    Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), new JdbcConnection(connection));
+                    Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+                    if(schema.isPresent()) {
+                        database.setDefaultSchemaName(schema.get());
+                    }
+                    Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), database);
                     liquibase.update(null);
                 }
             }
