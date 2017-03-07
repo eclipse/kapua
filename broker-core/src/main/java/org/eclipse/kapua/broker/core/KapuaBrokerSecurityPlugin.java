@@ -17,6 +17,7 @@ import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.ResourceUtils;
@@ -48,11 +49,12 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.*;
  */
 public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
 
-    private static Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
 
     public Broker installPlugin(Broker broker) throws Exception {
-        logger.info(">> installPlugin {}", KapuaBrokerSecurityPlugin.class.getName());
+        logger.info("Installing Kapua broker plugin.");
 
+        logger.debug("Starting Liquibase embedded client.");
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(DB_USERNAME);
         String dbPassword = config.getString(DB_PASSWORD);
@@ -66,13 +68,11 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
             Ini shiroIni = new Ini();
             shiroIni.load(shiroIniStr);
 
-            IniSecurityManagerFactory factory = new IniSecurityManagerFactory(shiroIni);
-            org.apache.shiro.mgt.SecurityManager securityManager = factory.getInstance();
+            SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
             SecurityUtils.setSecurityManager(securityManager);
 
             // install the filters
-            broker = new KapuaSecurityBrokerFilter(broker);
-            return broker;
+            return new KapuaSecurityBrokerFilter(broker);
         } catch (Throwable t) {
             logger.error("Error in plugin installation.", t);
             throw new SecurityException(t);
