@@ -66,7 +66,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider
         Account account = null;
         if (scopeId != null) {
             try {
-                account = KapuaSecurityUtils.doPriviledge(new Callable<Account>() {
+                account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
 
                     @Override
                     public Account call() throws Exception
