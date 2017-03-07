@@ -31,6 +31,8 @@ import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -146,6 +148,14 @@ public class Devices extends AbstractKapuaResource {
         return returnNotNullEntity(deviceListResult);
     }
 
+    /**
+     * Counts the results with the given {@link DeviceQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link DeviceQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link DeviceQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -165,6 +175,7 @@ public class Devices extends AbstractKapuaResource {
      * Creates a new Device based on the information provided in DeviceCreator
      * parameter.
      *
+     *@param scopeId The {@link ScopeId} in which to create the {@link Device}
      * @param deviceCreator
      *            Provides the information for the new Device to be created.
      * @return The newly created Device object.
