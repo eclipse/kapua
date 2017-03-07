@@ -34,6 +34,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.user.User;
@@ -121,7 +123,14 @@ public class Users extends AbstractKapuaResource {
         return returnNotNullEntity(userListResult);
     }
     
-
+    /**
+     * Counts the results with the given {@link UserQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link UserQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link UserQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -141,6 +150,7 @@ public class Users extends AbstractKapuaResource {
      * Creates a new User based on the information provided in UserCreator
      * parameter.
      *
+     *@param scopeId The {@link ScopeId} in which to create the {@link User}
      * @param userCreator
      *            Provides the information for the new User to be created.
      * @return The newly created User object.
