@@ -34,6 +34,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
@@ -124,7 +126,14 @@ public class Groups extends AbstractKapuaResource {
         return returnNotNullEntity(groupListResult);
     }
     
-
+    /**
+     * Counts the results with the given {@link GroupQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link GroupQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link GroupQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -144,6 +153,7 @@ public class Groups extends AbstractKapuaResource {
      * Creates a new Group based on the information provided in GroupCreator
      * parameter.
      *
+     *@param scopeId The {@link ScopeId} in which to create the {@link Group}
      * @param groupCreator
      *            Provides the information for the new Group to be created.
      * @return The newly created Group object.
