@@ -44,7 +44,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 /**
- * Access info REST API resource.
+ * {@link AccessInfo} REST API resource.
  * 
  * @since 1.0.0
  */
@@ -220,7 +220,7 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Deletes the {@link AccessInfo} specified by the "accessInfoId" path parameter.
      *
-     ** @param scopeId
+     * @param scopeId
      *            The {@link ScopeId} of the {@link AccessInfo} to be deleted.
      * @param accessInfoId
      *            The id of the {@link AccessInfo} to be deleted.
