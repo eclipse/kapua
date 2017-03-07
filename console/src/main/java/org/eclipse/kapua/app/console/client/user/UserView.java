@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.user.tabs.credentials.UserTabItemCredentials;
 import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPermission;
 import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -29,6 +30,7 @@ public class UserView extends EntityView<GwtUser> {
 
     private UserTabItemAccessRole accessRoleTab;
     private UserTabItemPermission permissionTab;
+    private UserTabItemCredentials credentialsTab;
     
     public UserView(GwtSession gwtSession) {
         super(gwtSession);
@@ -45,7 +47,10 @@ public class UserView extends EntityView<GwtUser> {
             permissionTab = new UserTabItemPermission(currentSession);
             tabs.add(permissionTab);
         }
-        // tabs.add(new UserTabCredentialGrid());
+        if (credentialsTab == null){
+            credentialsTab = new UserTabItemCredentials(currentSession);
+            tabs.add(credentialsTab);
+        }
         return tabs;
     }
 

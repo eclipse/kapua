@@ -26,6 +26,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.*;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -177,12 +178,17 @@ public class GwtKapuaModelConverter {
 
         // Convert query
         CredentialQuery credentialQuery = credentialFactory.newQuery(convert(gwtCredentialQuery.getScopeId()));
+        AndPredicate andPredicate = new AndPredicate();
+        if (gwtCredentialQuery.getUserId() != null && !gwtCredentialQuery.getUserId().trim().isEmpty()){
+            andPredicate.and(new AttributePredicate<KapuaId>(CredentialPredicates.USER_ID, convert(gwtCredentialQuery.getUserId())));
+        }
         if (gwtCredentialQuery.getUsername() != null && !gwtCredentialQuery.getUsername().trim().isEmpty()) {
             // TODO set username predicate
         }
         if (gwtCredentialQuery.getType() != null && gwtCredentialQuery.getType() != GwtCredentialType.ALL) {
-            credentialQuery.setPredicate(new AttributePredicate<CredentialType>(CredentialPredicates.CREDENTIAL_TYPE, GwtKapuaModelConverter.convert(gwtCredentialQuery.getType()), Operator.EQUAL));
+            andPredicate.and(new AttributePredicate<CredentialType>(CredentialPredicates.CREDENTIAL_TYPE, GwtKapuaModelConverter.convert(gwtCredentialQuery.getType()), Operator.EQUAL));
         }
+        credentialQuery.setPredicate(andPredicate);
         credentialQuery.setOffset(loadConfig.getOffset());
         credentialQuery.setLimit(loadConfig.getLimit());
 
@@ -313,7 +319,9 @@ public class GwtKapuaModelConverter {
         KapuaId scopeId = convert(gwtCredential.getScopeId());
         Credential credential = credentialFactory
                 .newCredential(scopeId, convert(gwtCredential.getUserId()), convert(gwtCredential.getCredentialTypeEnum()), gwtCredential.getCredentialKey());
-
+        if(gwtCredential.getId() != null && !gwtCredential.getId().trim().isEmpty()){
+            credential.setId(convert(gwtCredential.getId()));
+        }
         //
         // Return converted
         return credential;

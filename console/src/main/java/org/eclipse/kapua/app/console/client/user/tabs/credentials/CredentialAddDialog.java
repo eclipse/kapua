@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.credential;
+package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
@@ -45,9 +45,9 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
     protected final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
+    protected GwtUser selectedUser;
     protected SimpleComboBox<GwtCredentialType> credentialType;
-    protected SimpleComboBox<GwtSubjectType> subjectType;
-    protected ComboBox<GwtUser> subject;
+    protected TextField<String> subject;
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
     protected DateField expirationDate;
@@ -56,10 +56,10 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
     protected static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
     protected static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
-
-    public CredentialAddDialog(GwtSession currentSession) {
+ 
+    public CredentialAddDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
-
+        this.selectedUser = selectedUser;
         DialogUtils.resizeDialog(this, 400, 400);
     }
 
@@ -87,50 +87,12 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             }
         });
         credentialFormPanel.add(credentialType);
-
-        subjectType = new SimpleComboBox<GwtSubjectType>();
-        subjectType.setEditable(false);
-        subjectType.setTypeAhead(false);
-        subjectType.setAllowBlank(false);
-        subjectType.setFieldLabel(MSGS.dialogAddFieldSubjectType());
-        subjectType.setTriggerAction(ComboBox.TriggerAction.ALL);
-        subjectType.add(GwtSubjectType.USER);
-        subjectType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtSubjectType>>() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtSubjectType>> selectionChangedEvent) {
-                switch (selectionChangedEvent.getSelectedItem().getValue()) {
-                case USER:
-                    gwtUserService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
-
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            m_exitMessage = MSGS.dialogAddErrorSubjects(caught.getLocalizedMessage());
-                            m_exitStatus = false;
-                            hide();
-                        }
-
-                        @Override
-                        public void onSuccess(ListLoadResult<GwtUser> result) {
-                            subject.clear();
-                            subject.getStore().add(result.getData());
-                        }
-                    });
-                    break;
-                }
-            }
-        });
-        credentialFormPanel.add(subjectType);
-
-        subject = new ComboBox<GwtUser>();
-        subject.setEditable(false);
-        subject.setTypeAhead(false);
+        
+        subject = new TextField<String>();
+        subject.setValue(selectedUser.getUnescapedUsername());
+        subject.disable();
         subject.setAllowBlank(false);
         subject.setFieldLabel(MSGS.dialogAddFieldSubject());
-        subject.setTriggerAction(ComboBox.TriggerAction.ALL);
-        subject.setStore(new ListStore<GwtUser>());
-        subject.setDisplayField("username");
-        subject.setValueField("id");
         credentialFormPanel.add(subject);
 
         password = new TextField<String>();
@@ -177,7 +139,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
         gwtCredentialCreator.setCredentialType(credentialType.getValue().getValue());
         gwtCredentialCreator.setCredentialPlainKey(password.getValue());
-        gwtCredentialCreator.setUserId(subject.getValue().getId());
+        gwtCredentialCreator.setUserId(selectedUser.getId());
 
         gwtCredentialService.create(xsrfToken, gwtCredentialCreator, new AsyncCallback<GwtCredential>() {
 
