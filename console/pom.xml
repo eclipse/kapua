@@ -206,10 +206,19 @@
             <artifactId>jetty-util</artifactId>
             <version>6.1.26</version>
         </dependency>
+        
+        <!-- use log4j only for testing -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- re-declare as provided as our web container will provide this -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -346,7 +355,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
 
         <pluginManagement>
