@@ -32,6 +32,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -141,6 +143,14 @@ public class DeviceConnections extends AbstractKapuaResource {
         return returnNotNullEntity(deviceConnectionListResult);
     }
 
+    /**
+     * Counts the results with the given {@link DeviceConnectionQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link DeviceConnectionQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link DeviceConnectionQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -183,6 +193,7 @@ public class DeviceConnections extends AbstractKapuaResource {
     /**
      * Returns the DeviceConnection specified by the "deviceConnectionId" path parameter.
      *
+     *@param scopeId The {@link ScopeId} of the requested {@link DeviceConnection}.
      * @param deviceConnectionId
      *            The id of the requested DeviceConnection.
      * @return The requested DeviceConnection object.
