@@ -34,6 +34,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
@@ -124,6 +125,14 @@ public class Domains extends AbstractKapuaResource {
     }
     
 
+    /**
+     * Counts the results with the given {@link DomainQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link DomainQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link DomainQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
