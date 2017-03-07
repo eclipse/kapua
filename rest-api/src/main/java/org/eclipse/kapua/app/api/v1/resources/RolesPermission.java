@@ -36,6 +36,8 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
@@ -147,7 +149,14 @@ public class RolesPermission extends AbstractKapuaResource {
         return returnNotNullEntity(rolePermissionListResult);
     }
     
-
+    /**
+     * Counts the results with the given {@link RolePermissionQuery} parameter.
+     * 
+     * @param scopeId The {@link ScopeId} in which to search results. 
+     * @param query The {@link RolePermissionQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link RolePermissionQuery} parameter.
+     * @since 1.0.0
+     */
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -173,6 +182,7 @@ public class RolesPermission extends AbstractKapuaResource {
      * Creates a new RolePermission based on the information provided in RolePermissionCreator
      * parameter.
      *
+     *@param scopeId The {@link ScopeId} in which to create the {@link RolePermission}
      * @param rolePermissionCreator
      *            Provides the information for the new RolePermission to be created.
      * @return The newly created RolePermission object.
