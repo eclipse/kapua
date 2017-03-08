@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
-public class UserPredicates {
+public interface UserPredicates extends KapuaUpdatableEntityPredicates {
+
     /**
      * User name
      */
