@@ -31,13 +31,13 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "credential")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId", 
-                       "credentialType",
-                       "credentialKey"}, //
-        factoryClass = CredentialXmlRegistry.class, // 
+@XmlType(propOrder = { "userId",
+        "credentialType",
+        "credentialKey" }, //
+        factoryClass = CredentialXmlRegistry.class, //
         factoryMethod = "newCredential") //
-public interface Credential extends KapuaUpdatableEntity
-{
+public interface Credential extends KapuaUpdatableEntity {
+
     public static final String TYPE = "credential";
 
     public default String getType() {

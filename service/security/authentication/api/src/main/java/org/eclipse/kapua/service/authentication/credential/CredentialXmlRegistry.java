@@ -17,39 +17,37 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 @XmlRegistry
 public class CredentialXmlRegistry {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final CredentialFactory factory = locator.getFactory(CredentialFactory.class);
-    
+
     /**
      * Creates a new credential instance
      * 
      * @return
      */
-    public Credential newCredential()
-    {
+    public Credential newCredential() {
         return factory.newCredential();
     }
-    
+
     /**
      * Creates a new credential list result instance
      * 
      * @return
      */
-    public CredentialListResult newCredentialListResult()
-    {
+    public CredentialListResult newCredentialListResult() {
         return factory.newCredentialListResult();
     }
-    
+
     /**
      * Creates a new credential creator instance
      * 
      * @return
      */
-    public CredentialCreator newCredentialCreator()
-    {
+    public CredentialCreator newCredentialCreator() {
         return factory.newCreator(null, null, null, null);
     }
-    
+
     public CredentialQuery newQuery() {
         return factory.newQuery(null);
     }
