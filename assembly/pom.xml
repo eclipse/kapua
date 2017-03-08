@@ -627,12 +627,17 @@
 							<name>${docker.account}/kapua-sql</name>
 							<build>
 								<from>${docker.account}/java-base</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
+									<basedir>/</basedir>
+								</assembly>
 								<runCmds>
 									<runCmd><![CDATA[
 									mkdir -p /var/h2/data && \
 									chown kapua:kapua /var/h2/data && \
 									chmod a+rw /var/h2/data && \
 									cd /home/kapua && \
+									mkdir tmp && chmod a+rwx tmp && \
 									curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
 									]]></runCmd>
 								</runCmds>
@@ -647,18 +652,7 @@
 								<user>kapua</user>
 								<entryPoint>
 									<exec>
-										<arg>/usr/bin/java</arg>
-										<arg>-javaagent:/jolokia-jvm-agent.jar</arg>
-										<arg>-cp</arg><arg>/home/kapua/h2.jar</arg>
-										<arg>org.h2.tools.Server</arg>
-										<arg>-web</arg>
-										<arg>-webAllowOthers</arg>
-										<arg>-webPort</arg><arg>8181</arg>
-										<arg>-tcp</arg>
-										<arg>-tcpAllowOthers</arg>
-										<arg>-tcpPort</arg><arg>3306</arg>
-										<arg>-baseDir</arg>
-										<arg>/var/h2/data</arg>
+										<arg>/home/kapua/run-h2</arg>
 									</exec>
 								</entryPoint>
 							</build>
