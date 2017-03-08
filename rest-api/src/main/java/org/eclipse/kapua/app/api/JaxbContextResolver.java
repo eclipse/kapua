@@ -159,7 +159,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceConnectionListResult.class,
                     DeviceConnectionQuery.class,
                     DeviceConnectionXmlRegistry.class,
-                    
+
                     // Device Event
                     DeviceEvent.class,
                     DeviceEventListResult.class,
@@ -198,7 +198,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ApiKeyCredentials.class,
                     JwtCredentials.class,
                     UsernamePasswordCredentials.class,
-                    
+
                     // Credential
                     Credential.class,
                     CredentialListResult.class,
@@ -223,7 +223,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     RolePermissionCreator.class,
                     RolePermissionQuery.class,
                     RolePermissionXmlRegistry.class,
-                    
+
                     // Domains
                     Domain.class,
                     DomainListResult.class,
@@ -250,7 +250,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessPermissionCreator.class,
                     AccessPermissionQuery.class,
                     AccessPermissionXmlRegistry.class,
-                    
+
                     // Access Roles
                     AccessRole.class,
                     AccessRoleListResult.class,
