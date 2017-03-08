@@ -671,37 +671,6 @@
 							</build>
 						</image>
 						<image>
-							<name>${docker.account}/kapua-console-jetty</name>
-							<build>
-								<from>${docker.account}/java-base</from>
-								<assembly>
-									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
-								</assembly>
-								<entryPoint>
-									<exec>
-										<arg>/maven/bin/catalina.sh</arg>
-										<arg>run</arg>
-									</exec>
-								</entryPoint>
-								<env>
-									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
-									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
-								</env>
-								<ports>
-									<port>8080</port>
-									<port>8778</port><!-- Jolokia -->
-								</ports>
-								<user>kapua</user>
-								<runCmds>
-									<run><![CDATA[
-									chown -R kapua:kapua /maven && \
-									chmod -R a+rw /maven && \
-									find /maven -type d -exec chmod a+x {} +
-									]]></run>
-								</runCmds>
-							</build>
-						</image>
-						<image>
 							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>${docker.account}/java-base</from>
