@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
+import java.util.Date;
+
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
-
-import java.util.Date;
 
 /**
  * Device event factory service definition.
@@ -22,8 +22,7 @@ import java.util.Date;
  * @since 1.0
  *
  */
-public interface DeviceEventFactory extends KapuaObjectFactory
-{
+public interface DeviceEventFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new device event creator
