@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +58,7 @@ public class RoleServiceTest extends KapuaTest {
 
     @AfterClass
     public static void afterClass() throws KapuaException {
-        //        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
+        // scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
     }
 
     // Tests
