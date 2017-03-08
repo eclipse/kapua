@@ -45,7 +45,7 @@ import io.swagger.annotations.ApiParam;
 
 @Api("Roles")
 @Path("{scopeId}/roles/{roleId}/permissions")
-public class RolesPermission extends AbstractKapuaResource {
+public class RolesPermissions extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
