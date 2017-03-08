@@ -19,8 +19,8 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
  * @since 1.0
  * 
  */
-public interface RolePredicates extends KapuaUpdatableEntityPredicates
-{
+public interface RolePredicates extends KapuaUpdatableEntityPredicates {
+
     /**
      * Role name
      */
