@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,7 +33,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * Kura device payload implementation.
- * 
+ *
  * @since 1.0
  *
  */
@@ -62,7 +62,7 @@ public class KuraDataPayload implements DevicePayload
 
     /**
      * Set the message timestamp
-     * 
+     *
      * @param timestamp
      */
     public void setTimestamp(Date timestamp)
@@ -78,7 +78,7 @@ public class KuraDataPayload implements DevicePayload
 
     /**
      * Set the device position
-     * 
+     *
      * @param position
      */
     public void setPosition(DevicePosition position)
@@ -100,7 +100,7 @@ public class KuraDataPayload implements DevicePayload
 
     /**
      * St the message body
-     * 
+     *
      * @param body
      */
     public void setBody(byte[] body)
@@ -182,8 +182,8 @@ public class KuraDataPayload implements DevicePayload
         try {
             protoMsg = KuraPayloadProto.KuraPayload.parseFrom(bytes);
         }
-        catch (InvalidProtocolBufferException ipbe) {
-            throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ipbe, (Object[]) null);
+        catch (InvalidProtocolBufferException | ExceptionInInitializerError ipbe) {
+            throw new MessageException(MessageErrorCodes.INVALID_MESSAGE, ipbe, new Object[] { ipbe.getMessage() });
         }
 
         //
