@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsEqualTo;
-import static org.eclipse.kapua.commons.model.query.predicate.AttributePredicate.attributeIsNotEqualTo;
 
 import java.math.BigInteger;
 import java.security.acl.Permission;
@@ -35,7 +34,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
@@ -128,7 +126,7 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
         // Drop the Device Registry Service tables
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
-        
+
         // Create the Device Registry Service tables
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
@@ -190,28 +188,25 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
         userId = new KapuaEid(BigInteger.valueOf(user));
 
         assertNotNull(userId);
-    }    
-    
+    }
+
     @Given("^Null scope ID$")
-    public void setNullScopeId()
-    {
+    public void setNullScopeId() {
         scopeId = null;
     }
-    
+
     @Given("^Null user ID$")
-    public void setNullUserId()
-    {
+    public void setNullUserId() {
         userId = null;
     }
-    
+
     @Given("^An event creator with null action$")
-    public void prepareCreatorWithNullAction()
-    {
+    public void prepareCreatorWithNullAction() {
         eventCreator = prepareRegularDeviceEventCreator(scopeId, createRandomId());
         assertNotNull(eventCreator);
         eventCreator.setAction(null);
     }
-    
+
     @Given("^A \"(.+)\" event from device (\\d+)$")
     public void createRegularEvent(String eventType, int device)
             throws KapuaException {
@@ -239,9 +234,9 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
         KapuaId tmpDevId = new KapuaEid(BigInteger.valueOf(devId));
         KapuaMethod tmpMeth = getMethodFromString(eventType);
         DeviceEventCreator tmpCreator = null;
-        DeviceEvent tmpEvent = null; 
-        
-        for(int i = 0; i < num; i++) {
+        DeviceEvent tmpEvent = null;
+
+        for (int i = 0; i < num; i++) {
             tmpCreator = prepareRegularDeviceEventCreator(scopeId, tmpDevId);
             assertNotNull(tmpCreator);
             tmpCreator.setAction(tmpMeth);
@@ -249,10 +244,9 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
             assertNotNull(tmpEvent);
         }
     }
-    
+
     @When("^I create an event from the existing creator$")
-    public void createEventFromCreator()
-    {
+    public void createEventFromCreator() {
         try {
             exceptionCaught = false;
             event = eventService.create(eventCreator);
@@ -261,66 +255,60 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
             exceptionCaught = true;
         }
     }
-    
+
     @When("^I search for an event with the remembered ID$")
     public void findEventById()
-            throws KapuaException
-    {
+            throws KapuaException {
         event = null;
         event = eventService.find(scopeId, eventId);
     }
 
     @When("^I search for an event with a random ID$")
     public void findEventByRandomId()
-            throws KapuaException
-    {
-        KapuaId  tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+            throws KapuaException {
+        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
         event = eventService.find(scopeId, tmpId);
     }
-    
+
     @When("^I delete the event with the remembered ID$")
     public void deleteEvent()
-            throws KapuaException
-    {
-        eventService.delete(scopeId,  eventId);
+            throws KapuaException {
+        eventService.delete(scopeId, eventId);
     }
 
     @When("^I delete an event with a random ID$")
-    public void deleteEventWithRandomId()
-    {
+    public void deleteEventWithRandomId() {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
         try {
             exceptionCaught = false;
-            eventService.delete(scopeId,  tmpId);
-        } catch (KapuaException ex){
+            eventService.delete(scopeId, tmpId);
+        } catch (KapuaException ex) {
             exceptionCaught = true;
         }
     }
-    
+
     @When("^I count events for scope (\\d+)$")
     public void countEventsInScope(int scpId)
-            throws KapuaException
-    {
+            throws KapuaException {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scpId));
         DeviceEventQuery tmpQuery = eventFactory.newQuery(tmpId);
         count = 0;
-        
+
         count = eventService.count(tmpQuery);
     }
-    
+
     @When("^I query for \"(.+)\" events$")
     public void queryForSpecificEvents(String eventType)
-            throws KapuaException
-    {
+            throws KapuaException {
         KapuaMethod tmpMeth = getMethodFromString(eventType);
         DeviceEventQuery tmpQuery = eventFactory.newQuery(scopeId);
         assertNotNull(tmpQuery);
         assertNotNull(tmpMeth);
-        
+
         tmpQuery.setPredicate(attributeIsEqualTo("action", tmpMeth));
         eventList = (DeviceEventListResult) eventService.query(tmpQuery);
     }
-    
+
     @Then("^The event matches the creator parameters$")
     public void checkCreatedEventAgainstCreatorParameters()
             throws KapuaException {
@@ -333,7 +321,7 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
         assertEquals(eventCreator.getResponseCode(), event.getResponseCode());
         assertEquals(eventCreator.getEventMessage(), event.getEventMessage());
         assertEquals(eventCreator.getAction(), event.getAction());
-        assertEquals(eventCreator.getPosition().toDisplayString(), 
+        assertEquals(eventCreator.getPosition().toDisplayString(),
                 event.getPosition().toDisplayString());
     }
 
@@ -389,7 +377,7 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
         assertTrue(tmpDomain.getActions().contains(Actions.connect));
         assertTrue(tmpDomain.getActions().contains(Actions.execute));
     }
-    
+
     // *******************
     // * Private Helpers *
     // *******************
@@ -423,9 +411,8 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
 
         return tmpCreator;
     }
-    
-    private KapuaMethod getMethodFromString(String name)
-    {
+
+    private KapuaMethod getMethodFromString(String name) {
         KapuaMethod tmpMeth = null;
 
         switch (name.trim().toUpperCase()) {
@@ -449,12 +436,11 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
             break;
         }
         assertNotNull(tmpMeth);
-        
+
         return tmpMeth;
     }
-    
-    private KapuaId createRandomId()
-    {
+
+    private KapuaId createRandomId() {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(random.nextLong()));
         return tmpId;
     }
