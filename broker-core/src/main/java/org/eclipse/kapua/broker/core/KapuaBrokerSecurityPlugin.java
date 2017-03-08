@@ -17,6 +17,7 @@ import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
 import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.ResourceUtils;
@@ -25,10 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+import java.util.Optional;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.*;
 
 /**
  * Install {@link KapuaSecurityBrokerFilter} into activeMQ filter chain plugin.<BR>
@@ -47,15 +49,17 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERN
  */
 public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
 
-    private static Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
 
     public Broker installPlugin(Broker broker) throws Exception {
-        logger.info(">> installPlugin {}", KapuaBrokerSecurityPlugin.class.getName());
+        logger.info("Installing Kapua broker plugin.");
 
+        logger.debug("Starting Liquibase embedded client.");
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(DB_USERNAME);
         String dbPassword = config.getString(DB_PASSWORD);
-        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword).update();
+        String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
+        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
 
         try {
             // initialize shiro context for broker plugin from shiro ini file
@@ -64,13 +68,11 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
             Ini shiroIni = new Ini();
             shiroIni.load(shiroIniStr);
 
-            IniSecurityManagerFactory factory = new IniSecurityManagerFactory(shiroIni);
-            org.apache.shiro.mgt.SecurityManager securityManager = factory.getInstance();
+            SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
             SecurityUtils.setSecurityManager(securityManager);
 
             // install the filters
-            broker = new KapuaSecurityBrokerFilter(broker);
-            return broker;
+            return new KapuaSecurityBrokerFilter(broker);
         } catch (Throwable t) {
             logger.error("Error in plugin installation.", t);
             throw new SecurityException(t);

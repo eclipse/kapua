@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ public class MessageConstants
     public static final String METRIC_NODE_ID = "nodeId";
 
     public static final String HEADER_KAPUA_CONNECTION_ID             = "KAPUA_CONNECTION_ID";
+    public static final String HEADER_KAPUA_CLIENT_ID                 = "KAPUA_CLIENT_ID";
     public static final String HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL = "KAPUA_DEVICE_PROTOCOL";
     public static final String HEADER_KAPUA_SESSION                   = "KAPUA_SESSION";
 

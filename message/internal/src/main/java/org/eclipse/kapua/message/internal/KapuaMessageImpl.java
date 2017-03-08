@@ -48,6 +48,7 @@ public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> im
 
     private KapuaId       scopeId;
     private KapuaId       deviceId;
+    private String  clientId;
 
     private Date          receivedOn;
     private Date          sentOn;
@@ -114,6 +115,18 @@ public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> im
     public void setDeviceId(KapuaId deviceId)
     {
         this.deviceId = deviceId;
+    }
+
+    @Override
+    public String getClientId()
+    {
+        return clientId;
+    }
+
+    @Override
+    public void setClientId(String clientId)
+    {
+        this.clientId = clientId;
     }
 
     @Override

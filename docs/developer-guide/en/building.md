@@ -4,6 +4,18 @@ We use Apache Maven as the build tool of choice.
 
 We use `gitbook` to build the documentation.
 
+## Kapua
+
+Kapua is being compiled with Maven. In order to perform a full build
+of Kapua simply issue the following command in the root of the Git repository:
+
+    mvn clean install
+
+If you only want to run Kapua locally for testing you can speed up the build
+by using:
+
+    mvn clean install -Pdev -DskipTests=true
+
 ## Documentation
 
 Before you can build documentation, you need to install `gitbook`
