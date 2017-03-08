@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.TypedQuery;
@@ -22,7 +21,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -47,8 +45,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService {
-
-    private static final long serialVersionUID = -312489270279852500L;
 
     private static final Domain accountDomain = new AccountDomain();
 
