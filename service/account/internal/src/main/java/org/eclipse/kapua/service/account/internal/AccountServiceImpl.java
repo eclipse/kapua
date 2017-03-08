@@ -366,6 +366,9 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
     @Override
     protected String validateConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
         String result = "";
+        /*
+         * To be rewritten from a child account point of view
+         *
         boolean infiniteChildAccounts = Boolean.parseBoolean((String) updatedProps.get("infiniteChildAccounts"));
         int maxChildAccounts = Integer.parseInt((String) updatedProps.get("maxNumberChildAccounts"));
         if (!infiniteChildAccounts) {
@@ -377,6 +380,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             }
         }
         Account self = findById(scopeId);
+        */
         return result;
     }
 }

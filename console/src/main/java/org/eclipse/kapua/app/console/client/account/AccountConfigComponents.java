@@ -330,7 +330,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
         if (configComponent != null) {
 
-            m_devConfPanel = new AccountConfigPanel(configComponent);
+            m_devConfPanel = new AccountConfigPanel(configComponent, m_currentSession);
             m_devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override

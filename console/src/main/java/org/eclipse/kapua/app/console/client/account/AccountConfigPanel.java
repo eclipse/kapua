@@ -36,6 +36,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.*;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,8 +55,13 @@ public class AccountConfigPanel extends LayoutContainer {
     private ComponentPlugin m_infoPlugin;
     private ComponentPlugin m_dirtyPlugin;
 
-    public AccountConfigPanel(GwtConfigComponent configComponent) {
+    private final GwtSession currentSession;
+
+    private String scopeId;
+
+    public AccountConfigPanel(GwtConfigComponent configComponent, GwtSession currentSession) {
         super(new FitLayout());
+        this.currentSession = currentSession;
         setScrollMode(Scroll.AUTO);
         setBorders(false);
 
@@ -290,6 +296,12 @@ public class AccountConfigPanel extends LayoutContainer {
                 field = paintConfigParameter(param);
             } else {
                 field = paintMultiFieldConfigParameter(param);
+            }
+            String allowSelfEditValue = param.getOptions() != null ? param.getOptions().get("allowSelfEdit") : null;
+            boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
+            boolean isEditingSelf = scopeId == null || scopeId.equals(currentSession.getSelectedAccount().getId());
+            if (isEditingSelf && !allowSelfEdit) {
+                field.disable();
             }
             m_actionFieldSet.add(field, formData);
         }
