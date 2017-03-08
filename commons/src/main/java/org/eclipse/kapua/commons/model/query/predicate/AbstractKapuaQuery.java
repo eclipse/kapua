@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.query.predicate;
 
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.model.KapuaEntity;
