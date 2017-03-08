@@ -11,12 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import java.util.Date;
+
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.registry.event.*;
-
-import java.util.Date;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 
 /**
  * Device event factory service implementation.
@@ -46,7 +50,8 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
         return new DeviceEventImpl();
     }
 
-    @Override public DeviceEventListResult newDeviceEventListResult() {
+    @Override
+    public DeviceEventListResult newDeviceEventListResult() {
         return new DeviceEventListResultImpl();
     }
 }
