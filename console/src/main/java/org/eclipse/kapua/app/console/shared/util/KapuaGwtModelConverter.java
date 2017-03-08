@@ -323,7 +323,7 @@ public class KapuaGwtModelConverter {
         } else if (new CredentialDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.credential;
         } else if (new DatastoreDomain().getName().equals(domain)) {
-            gwtDomain = GwtDomain.data;
+            gwtDomain = GwtDomain.datastore;
         } else if (new DeviceDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device;
         } else if (new DeviceConnectionDomain().getName().equals(domain)) {

@@ -39,12 +39,12 @@
 		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
-		
-        <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
-        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
-        <api>org.eclipse.kapua.service.datastore.AssetInfoStoreService</api>
-        <api>org.eclipse.kapua.service.datastore.TopicInfoStoreService</api>
-        <api>org.eclipse.kapua.service.datastore.MetricInfoStoreService</api>
+
+		<api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
+		<api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
+		<api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
+		<api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
+		<api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
         
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
