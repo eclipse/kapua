@@ -34,9 +34,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "userId",
         "protocol",
         "clientIp",
-        "serverIp" }, 
-factoryClass = DeviceConnectionXmlRegistry.class, 
-factoryMethod = "newDeviceConnection")
+        "serverIp" }, //
+        factoryClass = DeviceConnectionXmlRegistry.class, //
+        factoryMethod = "newDeviceConnection")
 public interface DeviceConnection extends KapuaUpdatableEntity {
 
     public static final String TYPE = "deviceConnection";

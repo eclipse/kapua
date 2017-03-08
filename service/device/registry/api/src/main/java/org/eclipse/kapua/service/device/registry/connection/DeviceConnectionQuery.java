@@ -26,7 +26,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newQuery")
-public interface DeviceConnectionQuery extends KapuaQuery<DeviceConnection>
-{
+public interface DeviceConnectionQuery extends KapuaQuery<DeviceConnection> {
 
 }

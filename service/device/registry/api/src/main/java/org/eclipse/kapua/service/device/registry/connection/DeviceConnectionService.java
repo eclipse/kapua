@@ -16,9 +16,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
@@ -38,7 +35,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @throws KapuaException
      */
     public DeviceConnection findByClientId(KapuaId scopeId, String clientId)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Returns the {@link DeviceConnectionListResult} with elements matching the provided query.
@@ -61,7 +58,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @throws KapuaException
      */
     public void connect(DeviceConnectionCreator creator)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Register a device message when a client disconnects from the broker
@@ -71,5 +68,5 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @throws KapuaException
      */
     public void disconnect(KapuaId scopeId, String clientId)
-        throws KapuaException;
+            throws KapuaException;
 }

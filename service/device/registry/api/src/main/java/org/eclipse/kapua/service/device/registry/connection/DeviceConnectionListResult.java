@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.device.registry.DeviceXmlRegistry;
 
 /**
  * Device connection list definition.
@@ -24,6 +23,5 @@ import org.eclipse.kapua.service.device.registry.DeviceXmlRegistry;
  */
 @XmlRootElement(name = "deviceConnections")
 @XmlType(factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newDeviceConnectionListResult")
-public interface DeviceConnectionListResult extends KapuaListResult<DeviceConnection>
-{
+public interface DeviceConnectionListResult extends KapuaListResult<DeviceConnection> {
 }

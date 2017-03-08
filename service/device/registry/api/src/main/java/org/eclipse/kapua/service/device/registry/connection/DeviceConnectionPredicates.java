@@ -18,14 +18,14 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
  * 
  * @since 1.0
  */
-public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicates
-{
+public interface DeviceConnectionPredicates extends KapuaUpdatableEntityPredicates {
+
     /**
      * Client identifier
      */
-    public final static String CLIENT_ID         = "clientId";
+    public static final String CLIENT_ID = "clientId";
     /**
      * Connection status
      */
-    public final static String STATUS = "status";
+    public static final String STATUS = "status";
 }
