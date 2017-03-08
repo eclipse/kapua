@@ -24,7 +24,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * @since 1.0.0
  *
  */
-@XmlRootElement(name =  "query")
+@XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = RolePermissionXmlRegistry.class, factoryMethod = "newQuery")
 public interface RolePermissionQuery extends KapuaQuery<RolePermission> {

@@ -47,7 +47,7 @@ public class RolePermissionXmlRegistry {
     public RolePermissionListResult newRolePermissionListResult() {
         return factory.newRolePermissionListResult();
     }
-    
+
     public RolePermissionQuery newQuery() {
         return factory.newQuery(null);
     }

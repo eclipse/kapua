@@ -39,8 +39,8 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "roleId",
         "permission" }, //
-factoryClass = RolePermissionXmlRegistry.class, //
-factoryMethod = "newRolePermission")
+        factoryClass = RolePermissionXmlRegistry.class, //
+        factoryMethod = "newRolePermission")
 public interface RolePermission extends KapuaEntity {
 
     public static final String TYPE = "rolePermission";

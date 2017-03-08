@@ -18,15 +18,14 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
 
-
 /**
  * {@link Role} query definition.
  * 
  * @since 1.0.0
  *
  */
-@XmlRootElement(name =  "query")
- @XmlAccessorType(XmlAccessType.PROPERTY)
- @XmlType(factoryClass = RoleXmlRegistry.class, factoryMethod = "newQuery")
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = RoleXmlRegistry.class, factoryMethod = "newQuery")
 public interface RoleQuery extends KapuaQuery<Role> {
 }
