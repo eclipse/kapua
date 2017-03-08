@@ -177,9 +177,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceEventQuery.class,
                     DeviceEventXmlRegistry.class,
 
+                    // Device Management Command
                     DeviceCommandInput.class,
-                    DeviceCommandXmlRegistry.class,
                     DeviceCommandOutput.class,
+                    DeviceCommandXmlRegistry.class,
                     
                     // Device Management Configuration
                     KuraDeviceConfiguration.class,
