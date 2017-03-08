@@ -11,17 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorOrder;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -103,7 +98,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     @XmlTransient
-//    @XmlElement(name = "predicate")
+    // @XmlElement(name = "predicate")
     public KapuaPredicate getPredicate();
 
     /**
@@ -122,7 +117,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     @XmlTransient
-//    @XmlElement(name = "sortCriteria")
+    // @XmlElement(name = "sortCriteria")
     public KapuaSortCriteria getSortCriteria();
 
     /**
