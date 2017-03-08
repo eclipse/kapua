@@ -96,6 +96,7 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageXmlRegistry;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotXmlRegistry;
@@ -200,15 +201,17 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceBundles.class,
                     DeviceBundleXmlRegistry.class,
                     
+                    // Device Management Packages
+                    KuraDeploymentPackages.class,
+                    KuraDeploymentPackage.class,
                     DevicePackage.class,
                     DevicePackages.class,
                     DevicePackageBundleInfo.class,
                     DevicePackageBundleInfos.class,
-                    DevicePackageXmlRegistry.class,
                     DevicePackageDownloadRequest.class,
+                    DevicePackageInstallRequest.class,
                     DevicePackageUninstallRequest.class,
-                    KuraDeploymentPackages.class,
-                    KuraDeploymentPackage.class,
+                    DevicePackageXmlRegistry.class,
 
                     
                     AuthenticationCredentials.class,
