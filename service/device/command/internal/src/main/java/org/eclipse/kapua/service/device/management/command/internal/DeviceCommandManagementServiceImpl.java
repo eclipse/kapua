@@ -57,6 +57,7 @@ public class DeviceCommandManagementServiceImpl implements DeviceCommandManageme
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
         ArgumentValidator.notNull(commandInput, "commandInput");
+        ArgumentValidator.notNull(commandInput.getTimeout(), "commandInput.timeout");
 
         //
         // Check Access
