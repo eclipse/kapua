@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
@@ -63,9 +65,6 @@ import org.eclipse.kapua.service.user.internal.UserPredicates;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 /**
  * Utility class for convert {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models
@@ -473,7 +472,7 @@ public class GwtKapuaModelConverter {
             case credential:
                 domain = new CredentialDomain();
                 break;
-            case data:
+            case datastore:
                 domain = new DatastoreDomain();
                 break;
             case device:
