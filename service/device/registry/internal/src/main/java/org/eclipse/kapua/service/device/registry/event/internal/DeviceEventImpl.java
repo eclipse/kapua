@@ -135,7 +135,7 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     @Override
     public void setDeviceId(KapuaId deviceId) {
-        this.deviceId = (KapuaEid) deviceId;
+        this.deviceId = deviceId != null ? (deviceId instanceof KapuaEid ?  (KapuaEid) deviceId : new KapuaEid(deviceId)) : null;
     }
 
     @Override
