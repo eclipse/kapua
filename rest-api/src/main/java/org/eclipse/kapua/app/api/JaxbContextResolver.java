@@ -76,10 +76,14 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
+import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundleXmlRegistry;
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegistry;
@@ -179,17 +183,21 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     
                     // Device Management Configuration
                     KuraDeviceConfiguration.class,
-
                     DeviceConfiguration.class,
                     DeviceComponentConfiguration.class,
                     DeviceConfigurationXmlRegistry.class,
                     
                     // Device Management Snapshots
                     KuraSnapshotIds.class,
-
                     DeviceSnapshot.class,
                     DeviceSnapshots.class,
                     DeviceSnapshotXmlRegistry.class,
+                    
+                    // Device Management Bundles
+                    KuraBundles.class,
+                    DeviceBundle.class,
+                    DeviceBundles.class,
+                    DeviceBundleXmlRegistry.class,
                     
                     DevicePackage.class,
                     DevicePackages.class,
