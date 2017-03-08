@@ -26,7 +26,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 
 /**
  * Group entity definition.<br>

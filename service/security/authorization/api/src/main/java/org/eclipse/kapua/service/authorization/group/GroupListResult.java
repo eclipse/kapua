@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 
 /**
  * {@link Group} list result definition.

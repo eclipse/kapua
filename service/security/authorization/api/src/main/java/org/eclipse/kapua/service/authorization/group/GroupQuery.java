@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 
 /**
  * {@link Group} query definition.
@@ -25,7 +24,7 @@ import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
  * @since 1.0.0
  *
  */
-@XmlRootElement(name =  "query")
+@XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = GroupXmlRegistry.class, factoryMethod = "newQuery")
 public interface GroupQuery extends KapuaQuery<Group> {

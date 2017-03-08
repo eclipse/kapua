@@ -47,7 +47,7 @@ public class GroupXmlRegistry {
     public GroupListResult newGroupListResult() {
         return factory.newGroupListResult();
     }
-    
+
     public GroupQuery newQuery() {
         return factory.newQuery(null);
     }
