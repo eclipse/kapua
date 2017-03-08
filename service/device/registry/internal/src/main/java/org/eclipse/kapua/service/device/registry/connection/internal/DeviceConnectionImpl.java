@@ -20,10 +20,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
@@ -43,7 +39,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 @Table(name = "dvc_device_connection")
 public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implements DeviceConnection {
 
-    private static final long      serialVersionUID = 8928343233144731836L;
+    private static final long serialVersionUID = 8928343233144731836L;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -51,27 +47,25 @@ public class DeviceConnectionImpl extends AbstractKapuaUpdatableEntity implement
 
     @Basic
     @Column(name = "client_id", nullable = false, updatable = false)
-    private String                 clientId;
+    private String clientId;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "user_id", nullable = false))
     })
-    private KapuaEid               userId;
+    private KapuaEid userId;
 
     @Basic
     @Column(name = "protocol", nullable = false)
-    private String                 protocol;
+    private String protocol;
 
-    
     @Basic
     @Column(name = "client_ip")
-    private String                 clientIp;
+    private String clientIp;
 
-    
     @Basic
     @Column(name = "server_ip")
-    private String                 serverIp;
+    private String serverIp;
 
     /**
      * Constructor

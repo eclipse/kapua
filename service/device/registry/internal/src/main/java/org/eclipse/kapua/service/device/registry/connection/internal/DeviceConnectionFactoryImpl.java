@@ -42,7 +42,7 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     public DeviceConnectionListResult newDeviceConnectionListResult() {
         return new DeviceConnectionListResultImpl();
     }
-    
+
     @Override
     public DeviceConnectionQuery newQuery(KapuaId scopeId) {
         return new DeviceConnectionQueryImpl(scopeId);
@@ -52,6 +52,5 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     public DeviceConnectionSummary newConnectionSummary() {
         return new DeviceConnectionSummaryImpl();
     }
-
 
 }
