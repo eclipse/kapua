@@ -20,7 +20,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
  * @since 1.0.0
  * 
  */
-public interface AccessRolePredicates extends KapuaEntityPredicates{
+public interface AccessRolePredicates extends KapuaEntityPredicates {
 
     /**
      * {@link AccessPermission#setAccessInfoId(org.eclipse.kapua.model.id.KapuaId)} id
