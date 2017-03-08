@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -115,7 +115,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Store few messages with few metrics, position and body (partially randomly generated) and check if the stored message (retrieved by id) has all the fields correctly set
-     * 
+     *
      * @throws Exception
      */
     public void testMessageStore()
@@ -191,7 +191,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Test the correctness of the query filtering order (3 fields: date descending, date ascending, string descending)
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -287,7 +287,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Test the correctness of the storage process with a basic message (no metrics, payload and position) indexing message date by device timestamp (as default)
-     * 
+     *
      * @throws Exception
      */
     public void testMessageStoreWithDeviceTimestampIndexingAndNullPayload()
@@ -327,7 +327,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Test the correctness of the storage process with a basic message (no metrics, payload and position) indexing message date by server timestamp
-     * 
+     *
      * @throws Exception
      */
     public void testMessageStoreWithServerTimestampIndexingAndNullPayload()
@@ -373,7 +373,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the client ids info stored in the channel info data by retrieving the channel info by account.
-     * 
+     *
      * @throws Exception
      */
     public void testChannelInfoFindClientIdByAccount()
@@ -421,9 +421,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the channel info last publish date stored by retrieving the channel info by client id.
-     * 
+     *
      * This test is failing because Elastichsearch caching code should be improved.
-     * 
+     *
      * @throws Exception
      */
     public void testChannelInfoFindClientIdByPublishDateByAccount()
@@ -478,7 +478,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the topic info stored in the channel info data by retrieving the channel info by account.
-     * 
+     *
      * @throws Exception
      */
     public void testChannelInfoFindTopicByAccount()
@@ -526,7 +526,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the topic info stored in the channel info data by retrieving the channel info by client id.
-     * 
+     *
      * @throws Exception
      */
     public void testChannelInfoFindTopicByClientId()
@@ -574,7 +574,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the metric info data stored by retrieving the metrics information by account.
-     * 
+     *
      * @throws Exception
      */
     public void testMetricsInfoFindClientByAccount()
@@ -617,9 +617,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the metric info last publish date stored by retrieving the metric info by account.
-     * 
+     *
      * This test is failing because Elastichsearch caching code should be improved.
-     * 
+     *
      * @throws Exception
      */
     public void testMetricsInfoFindClientByPublishDateByAccount()
@@ -700,7 +700,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the metric info data stored by retrieving the metrics information by client id.
-     * 
+     *
      * @throws Exception
      */
     public void testMetricsInfoByClientId()
@@ -748,7 +748,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Test the correctness of the query filtering order (3 fields: date descending, date ascending, string descending) for the metrics
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -860,7 +860,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the client info data stored by retrieving the client information by account.
-     * 
+     *
      * @throws Exception
      */
     public void testClientInfoFindClientIdByAccount()
@@ -906,7 +906,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the client info data stored by retrieving the client information by account.
-     * 
+     *
      * @throws Exception
      */
     public void testClientInfoFindClientIdByPublishDateByAccount()
@@ -963,7 +963,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Check the correctness of the client info data stored by retrieving the client information by account.
-     * 
+     *
      * @throws Exception
      */
     public void testClientInfoByClientId()
@@ -1082,7 +1082,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * This method should create a new account for the test (temp implementation that return always the default kapua-sys account)
-     * 
+     *
      * @param accountName
      * @param password
      * @return
@@ -1095,7 +1095,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Creates a new KapuaMessage setting the provided parameters
-     * 
+     *
      * @param clientId
      * @param scopeId
      * @param deviceId
@@ -1120,7 +1120,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Update the KapuaMessage channel with the provided semantic part
-     * 
+     *
      * @param message
      * @param semanticPart
      */
@@ -1132,7 +1132,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Update the KapuaMessage payload with the provided payload
-     * 
+     *
      * @param message
      * @param messagePayload
      */
@@ -1150,7 +1150,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Return a new KapuaPosition instance and set all the provided position informations
-     * 
+     *
      * @param altitude
      * @param heading
      * @param latitude
@@ -1183,7 +1183,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Message schema
-     * 
+     *
      * @return
      */
     private MessageQuery getBaseMessageQuery()
@@ -1204,7 +1204,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Channel Info schema
-     * 
+     *
      * @return
      */
     private ChannelInfoQuery getBaseChannelInfoQuery()
@@ -1233,7 +1233,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Metric Info schema
-     * 
+     *
      * @return
      */
     private MetricInfoQuery getBaseMetricInfoQuery()
@@ -1254,7 +1254,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Metric Info schema
-     * 
+     *
      * @return
      */
     private ClientInfoQuery getBaseClientInfoQuery()
@@ -1275,7 +1275,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Get the ordered query (adding the sort fields list provided and the result limit count)
-     * 
+     *
      * @param limit
      * @param order
      * @return
@@ -1293,7 +1293,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account and message timestamp filter
-     * 
+     *
      * @param messageQuery
      * @param accountName
      * @param dateRange
@@ -1305,7 +1305,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account, message timestamp and client id filter
-     * 
+     *
      * @param messageQuery
      * @param accountName
      * @param clientId
@@ -1331,7 +1331,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account and message timestamp filter
-     * 
+     *
      * @param channelInfoQuery
      * @param accountName
      * @param dateRange
@@ -1343,7 +1343,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account, message timestamp and client id filter
-     * 
+     *
      * @param channelInfoQuery
      * @param accountName
      * @param clientId
@@ -1368,7 +1368,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     }
 
     /**
-     * 
+     *
      * @param channelInfoQuery
      * @param channelPredicate
      * @param dateLowerBound
@@ -1398,7 +1398,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Get the ordered query (adding the sort fields list provided and the result limit count)
-     * 
+     *
      * @param limit
      * @param order
      * @return
@@ -1416,7 +1416,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account and message timestamp id filter
-     * 
+     *
      * @param metricInfoQuery
      * @param accountName
      * @param dateRange
@@ -1428,7 +1428,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account, message timestamp and client id filter
-     * 
+     *
      * @param metricInfoQuery
      * @param accountName
      * @param clientId
@@ -1454,7 +1454,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account and message timestamp filter
-     * 
+     *
      * @param clientInfoQuery
      * @param accountName
      * @param dateRange
@@ -1466,7 +1466,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Set the query account, message timestamp and client id filter
-     * 
+     *
      * @param clientInfoQuery
      * @param accountName
      * @param clientId
@@ -1495,7 +1495,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     //
     /**
      * Check if in the result set has the expected messages count and return the first (if any)
-     * 
+     *
      * @param result
      * @return
      */
@@ -1518,7 +1518,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct message id
-     * 
+     *
      * @param message
      * @param storableId
      */
@@ -1532,7 +1532,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct semantic part (the same topic part and the same length)
-     * 
+     *
      * @param message
      * @param topicSemanticPart
      */
@@ -1552,7 +1552,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct dates (indexOn, sentOn, receivedOn, capturedOn). The dates can be checked also for a range.
-     * 
+     *
      * @param message
      * @param index
      * @param sentOn
@@ -1572,7 +1572,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct metrics size
-     * 
+     *
      * @param message
      * @param metricsSize
      */
@@ -1589,7 +1589,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct body (length and also content should be the same)
-     * 
+     *
      * @param message
      * @param body
      */
@@ -1607,7 +1607,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct metrics (metrics count and same keys/values)
-     * 
+     *
      * @param message
      * @param metrics
      */
@@ -1624,7 +1624,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the queried message has the correct position
-     * 
+     *
      * @param message
      * @param position
      */
@@ -1650,7 +1650,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if in the result set has the expected channel info count and return the first (if any)
-     * 
+     *
      * @param result
      * @return
      */
@@ -1673,7 +1673,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if in the result set has the expected channel info client ids
-     * 
+     *
      * @param result
      * @return
      */
@@ -1702,7 +1702,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if in the result set has the expected metric info count and return the first (if any)
-     * 
+     *
      * @param result
      * @return
      */
@@ -1725,7 +1725,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if in the result set has the expected metric info client ids
-     * 
+     *
      * @param result
      * @return
      */
@@ -1754,7 +1754,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if in the result set has the expected metric info count and return the first (if any)
-     * 
+     *
      * @param result
      * @return
      */
@@ -1777,7 +1777,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if in the result set has the expected client ids
-     * 
+     *
      * @param result
      * @param clientInfoCount
      * @param clientIds
@@ -1809,7 +1809,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the message result list is correctly ordered by the provided criteria (list of fields and ordering)
-     * 
+     *
      * @param result
      * @param sortFieldList
      * @param cleanComposedFieldName takes only the field part after the last dot (useful for clean up the composed field name)
@@ -1839,7 +1839,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Check if the next value (it must be not equals, so the equals condition must be checked before calling this method) is coherent with its ordering criteria
-     * 
+     *
      * @param field
      * @param currentValue
      * @param previousValue
@@ -1857,7 +1857,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Return the value of the field name provided (assuming that this value is a Comparable)
-     * 
+     *
      * @param message
      * @param field
      * @param cleanComposedFieldName
@@ -1909,7 +1909,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     /**
      * Return the suffix field name to compose (in a different method) the getter name.
      * It removes the _ and append the remaining part capitalizing the first letter (if capitalizeFirstLetter = true)
-     * 
+     *
      * @param field
      * @param cleanComposedFieldName
      * @return
@@ -1945,7 +1945,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Return the method combining the prefix and the field name provided
-     * 
+     *
      * @param objetcClass
      * @param field
      * @param prefix
@@ -1965,7 +1965,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     /**
      * Return the field combining the prefix and the field name provided
-     * 
+     *
      * @param objetcClass
      * @param field
      * @param prefix
@@ -1989,7 +1989,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     //
     /**
      * Update the store service configuration with the provided values
-     * 
+     *
      * @param messageStoreService
      * @param scopeId
      * @param dataIndexBy
@@ -2084,7 +2084,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @Test
     /**
      * Base test, may be removed since we should already have tests that covers also this one (to be check!)
-     * 
+     *
      * @throws Exception
      */
     public void testStore()
@@ -2217,7 +2217,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     /**
      * Return a new account created just for the test.<br>
      * <b>WARNING!!!!!!! Current implementation is not compliance with that since it is a temporary implementation that returns the default kapua-sys account</b>
-     * 
+     *
      * @param scopeId
      * @return
      * @throws KapuaException

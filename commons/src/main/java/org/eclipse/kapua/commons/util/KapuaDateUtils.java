@@ -1,11 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
- *  
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -21,14 +21,14 @@ import java.util.TimeZone;
 
 /**
  * Date utilities
- * 
+ *
  * @since 1.0
  *
  */
 public class KapuaDateUtils {
 
     public static final String DEFAULT_DATE_PATTERN = "MM/dd/yyyy h:mm a"; // example 24/01/2017 11:22 AM
-	
+
     public static final long    SEC_MILLIS       = 1000;
     public static final long    MIN_SECS         = 60;
     public static final long    HOUR_MINS        = 60;
@@ -38,7 +38,7 @@ public class KapuaDateUtils {
 
     /**
      * Get the Kapua {@link Locale}
-     * 
+     *
      * @return
      */
 	public static Locale getKapuaLocale() {
@@ -47,36 +47,36 @@ public class KapuaDateUtils {
 
     /**
      * Get the Kapua {@link TimeZone}
-     * 
+     *
      * @return
      */
 	public static TimeZone getKapuaTimeZone() {
 		return TimeZone.getTimeZone("UTC");
 	}
-	
+
     /**
      * Get the Kapua {@link Calendar}. It's a {@link Calendar} instance instantiated with Kapua Locale and Kapua TimeZone
-     * 
+     *
      * @return
      */
 	public static Calendar getKapuaCalendar() {
 		Calendar cal = Calendar.getInstance(getKapuaTimeZone(), getKapuaLocale());
 		return cal;
 	}
-	
+
 	/**
      * Get current date
-     * 
+     *
      * @return current date GMT
      */
 	public static Date getKapuaSysDate() {
 		Calendar cal = KapuaDateUtils.getKapuaCalendar();
 		return cal.getTime();
 	}
-	
+
 	/**
      * Get a date from the millis value (unix millis)
-     * 
+     *
      * @param millis
      * @return date GMT
      */
@@ -85,10 +85,10 @@ public class KapuaDateUtils {
 		cal.setTimeInMillis(millis);
 		return cal.getTime();
 	}
-	
+
     /**
      * Get the week of year for the provided date
-     * 
+     *
      * @param date
      * @return
      */
@@ -96,11 +96,11 @@ public class KapuaDateUtils {
 		Calendar cal = KapuaDateUtils.getKapuaCalendar();
 		cal.setTime(date);
 		return cal.get(Calendar.WEEK_OF_YEAR);
-	}	
-	
+	}
+
     /**
      * Get the first week day date from the provided date
-     * 
+     *
      * @param date
      * @return
      */
@@ -116,10 +116,10 @@ public class KapuaDateUtils {
 		cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
 		return cal.getTime();
 	}
-	
+
     /**
      * Get the start week year date for the provided year
-     * 
+     *
      * @param year
      * @param weekOfYear
      * @return
@@ -138,7 +138,7 @@ public class KapuaDateUtils {
 
     /**
      * Parse the provided String using the default pattern {@value #DEFAULT_DATE_PATTERN} and the default locale {@link #getKapuaLocale() getKapuaLocale}
-     * 
+     *
      * @param date
      * @return
      * @throws ParseException

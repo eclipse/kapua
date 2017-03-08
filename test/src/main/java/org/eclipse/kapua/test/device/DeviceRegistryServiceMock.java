@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,9 +26,9 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
 @KapuaProvider
 public class DeviceRegistryServiceMock implements DeviceRegistryService {
-	
+
     private Map<KapuaId, DeviceMock> deviceRegistry;
-    
+
     public DeviceRegistryServiceMock()
     {
     	deviceRegistry = new HashMap<KapuaId, DeviceMock>();
@@ -45,7 +45,7 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
 	public Device find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         if (!deviceRegistry.containsKey(entityId))
             throw KapuaException.internalError("Device not found");
-        
+
         return deviceRegistry.get(entityId);
 	}
 

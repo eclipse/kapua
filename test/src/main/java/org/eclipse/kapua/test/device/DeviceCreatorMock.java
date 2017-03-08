@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,12 +20,12 @@ public class DeviceCreatorMock implements DeviceCreator {
 
 	private KapuaId scopeId;
 	private String clientId;
-	
+
 	public DeviceCreatorMock(KapuaId scopeId, String clientId) {
 		this.scopeId = scopeId;
 		this.clientId = clientId;
 	}
-	
+
 	@Override
 	public KapuaId getScopeId() {
 		return this.scopeId;
@@ -308,7 +308,7 @@ public class DeviceCreatorMock implements DeviceCreator {
 	@Override
 	public void setStatus(DeviceStatus status) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -320,7 +320,7 @@ public class DeviceCreatorMock implements DeviceCreator {
 	@Override
 	public void setConnectionId(KapuaId connectionId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
     @Override

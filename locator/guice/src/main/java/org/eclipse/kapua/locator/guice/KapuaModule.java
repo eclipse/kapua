@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,36 +33,36 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 public class KapuaModule extends AbstractModule {
-	
+
     private static final Logger logger = LoggerFactory.getLogger(KapuaModule.class);
-	
+
     /**
      * Service resource file from which the managed services are read
      */
 	private static final String SERVICE_RESOURCE = "locator.xml";
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	protected void configure() 
+	protected void configure()
 	{
 		try {
 			// Find locator configuration file
 			List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(SERVICE_RESOURCE));
 			if (locatorConfigurations == null || locatorConfigurations.size() == 0)
 				return;
-			
+
 			// Read configurations from resource files
 			URL locatorConfigURL = locatorConfigurations.get(0);
 			LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
 
 			// Packages are supposed to contain service implementations
 			Collection<String> packageNames = locatorConfig.getPackageNames();
-			
+
 			ClassLoader classLoader = this.getClass().getClassLoader();
 			ClassPath classPath = ClassPath.from(classLoader);
 			boolean initialize = true;
-			
-			// Among all the classes in the configured packages, retain only the ones 
+
+			// Among all the classes in the configured packages, retain only the ones
 			// annotated with @KapuaProvider annotation
 			HashSet<Class> extendedClassInfo = new HashSet<Class>();
 			for(String packageName:packageNames) {
@@ -76,20 +76,20 @@ public class KapuaModule extends AbstractModule {
 						extendedClassInfo.add(theClass);
 					}
 				}
-			}			
-			
+			}
+
 			// Provided names are the objects provided by the module (services or factories
 			Collection<String> providedInterfaceNames = locatorConfig.getProvidedInterfaceNames();
-			
+
 			String trimmedServiceLine = null;
 			for (String providedName:providedInterfaceNames) {
-				
+
 				boolean isClassBound = false;
 
 				trimmedServiceLine = providedName.trim();
 				Class<?> kapuaObject = Class.forName(trimmedServiceLine, !initialize, classLoader);
-				
-				// When the provided object is a service ... 
+
+				// When the provided object is a service ...
 				// ... add binding with a matching implementation
 				if (KapuaService.class.isAssignableFrom(kapuaObject)) {
 					for(Class<?> clazz:extendedClassInfo) {
@@ -101,12 +101,12 @@ public class KapuaModule extends AbstractModule {
 							break;
 						}
 					}
-					
+
 					if (isClassBound)
 						continue;
 				}
-				
-				// When the provided object is a factory ... 
+
+				// When the provided object is a factory ...
 				// ... add binding with a matching implementation
 				if (KapuaObjectFactory.class.isAssignableFrom(kapuaObject)) {
 					for(Class clazz:extendedClassInfo) {
@@ -118,20 +118,20 @@ public class KapuaModule extends AbstractModule {
 							break;
 						}
 					}
-					
+
 					if (isClassBound)
 						continue;
 				}
-				
+
 				logger.warn("No provider found for {}", kapuaObject);
 			}
-			
+
 			logger.trace("Binding completed.");
-			
+
 		} catch (Exception e) {
             logger.error("Exeption configuring module: {}", e.getMessage(), e);
-			throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, 
-											"Cannot load "+SERVICE_RESOURCE, 
+			throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR,
+											"Cannot load "+SERVICE_RESOURCE,
 											e);
 		}
 	}

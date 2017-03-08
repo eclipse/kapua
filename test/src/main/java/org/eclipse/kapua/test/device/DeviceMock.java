@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,7 +30,7 @@ public class DeviceMock implements Device {
     private KapuaEid id;
     private KapuaId scopeId;
     private String clientId;
-    	
+
 	public DeviceMock(KapuaId scopeId, String clientId) {
         this.id = new KapuaEid(BigInteger.valueOf(longId++));
         this.scopeId = scopeId;
@@ -394,7 +394,7 @@ public class DeviceMock implements Device {
 	@Override
 	public void setConnectionId(KapuaId connectionId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
     @Override

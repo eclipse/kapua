@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 
      All rights reserved. This program and the accompanying materials
      are made available under the terms of the Eclipse Public License v1.0
@@ -14,63 +14,63 @@
 -->
 <MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
     <OCD id="org.eclipse.kapua.service.datastore.MessageStoreService"
-         name="MessageStoreService" 
+         name="MessageStoreService"
          description="This is the configuration for the kapua MessageStoreService ">
-        
+
         <Icon resource="OSGI-INF/message-store-service.png" size="32"/>
 
-		<AD id="enabled"  
+		<AD id="enabled"
             name="messageStore.expirationDate"
             type="String"
-            cardinality="0" 
+            cardinality="0"
             required="true"
             description="Data storage expiration date (may differ from account expiration date).">
         </AD>
-        
-        <AD id="enabled"  
+
+        <AD id="enabled"
             name="messageStore.enabled"
             type="Boolean"
-            cardinality="0" 
+            cardinality="0"
             required="true"
-            default="true" 
+            default="true"
             description="Message store enable.">
         </AD>
-        
-        <AD id="dataTTL"  
+
+        <AD id="dataTTL"
             name="dataTTL"
             type="Integer"
-            cardinality="0" 
+            cardinality="0"
             required="true"
-            default="30" 
+            default="30"
             min="0"
             description="Message retention period in days."/>
-        
-        <AD id="rxByteLimit"  
+
+        <AD id="rxByteLimit"
             name="rxByteLimit"
             type="Long"
-            cardinality="0" 
+            cardinality="0"
             required="true"
-            default="0" 
+            default="0"
             description="Total data usage per month."/>
-            
-        <AD id="dataIndexBy"  
+
+        <AD id="dataIndexBy"
             name="dataIndexBy"
             type="String"
-            cardinality="0" 
+            cardinality="0"
             required="true"
-            default="DEVICE_TIMESTAMP" 
+            default="DEVICE_TIMESTAMP"
             description="Data index by (server timestamp or device timestamp)"/>
-            
-        <AD id="metricsIndexBy"  
+
+        <AD id="metricsIndexBy"
             name="metricsIndexBy"
             type="String"
-            cardinality="0" 
+            cardinality="0"
             required="true"
-            default="TIMESTAMP" 
+            default="TIMESTAMP"
             description="Metric index by (timestamp, value or none)"/>
 
     </OCD>
-    
+
     <Designate pid="org.eclipse.kapua.service.datastore.MessageStoreService">
         <Object ocdref="org.eclipse.kapua.service.datastore.MessageStoreService"/>
     </Designate>
