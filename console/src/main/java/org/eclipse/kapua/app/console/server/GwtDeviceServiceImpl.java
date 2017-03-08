@@ -55,8 +55,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
@@ -71,8 +69,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
  * 
  */
 public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceService {
-
-    private static Logger logger = LoggerFactory.getLogger(GwtDeviceServiceImpl.class);
 
     private static final long serialVersionUID = -1391026997499175151L;
 

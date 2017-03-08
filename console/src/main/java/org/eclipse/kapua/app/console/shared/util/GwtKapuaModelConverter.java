@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
@@ -24,7 +27,14 @@ import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialType;
-import org.eclipse.kapua.app.console.shared.model.authorization.*;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -38,10 +48,21 @@ import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
-import org.eclipse.kapua.service.authentication.credential.*;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
+import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
-import org.eclipse.kapua.service.authorization.access.*;
+import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoDomain;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainDomain;
@@ -52,7 +73,11 @@ import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.role.*;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
@@ -66,9 +91,6 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Utility class for convert {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models
  *
@@ -80,8 +102,10 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtRoleQuery} into a {@link Role} object for backend usage
      *
-     * @param loadConfig   the load configuration
-     * @param gwtRoleQuery the {@link GwtRoleQuery} to convert
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtRoleQuery
+     *            the {@link GwtRoleQuery} to convert
      * @return the converted {@link RoleQuery}
      * @since 1.0.0
      */
@@ -103,7 +127,6 @@ public class GwtKapuaModelConverter {
         // Return converted
         return roleQuery;
     }
-
 
     public static GroupQuery convertGroupQuery(PagingLoadConfig loadConfig,
             GwtGroupQuery gwtGroupQuery) {
@@ -139,8 +162,10 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtUserQuery} into a {@link UserQuery} object for backend usage
      *
-     * @param loadConfig   the load configuration
-     * @param gwtUserQuery the {@link GwtUserQuery} to convert
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtUserQuery
+     *            the {@link GwtUserQuery} to convert
      * @return the converted {@link UserQuery}
      * @since 1.0.0
      */
@@ -162,7 +187,7 @@ public class GwtKapuaModelConverter {
         // Return converted
         return userQuery;
     }
-    
+
     public static AccountQuery convertAccountQuery(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery){
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountFactory factory = locator.getFactory(AccountFactory.class);
@@ -189,8 +214,10 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtCredentialQuery} into a {@link CredentialQuery} object for backend usage
      *
-     * @param loadConfig         the load configuration
-     * @param gwtCredentialQuery the {@link GwtCredentialQuery} to convert
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtCredentialQuery
+     *            the {@link GwtCredentialQuery} to convert
      * @return the converted {@link CredentialQuery}
      * @since 1.0.0
      */
@@ -224,7 +251,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtRole} into a {@link Role} object for backend usage
      *
-     * @param gwtRole the {@link GwtRole} to convert
+     * @param gwtRole
+     *            the {@link GwtRole} to convert
      * @return the converted {@link Role}
      * @since 1.0.0
      */
@@ -271,7 +299,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtRoleCreator} into a {@link RoleCreator} object for backend usage
      *
-     * @param gwtRoleCreator the {@link GwtRoleCreator} to convert
+     * @param gwtRoleCreator
+     *            the {@link GwtRoleCreator} to convert
      * @return the converted {@link RoleCreator}
      * @since 1.0.0
      */
@@ -306,7 +335,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtCredentialCreator} into a {@link CredentialCreator} object for backend usage
      *
-     * @param gwtCredentialCreator the {@link GwtCredentialCreator} to convert
+     * @param gwtCredentialCreator
+     *            the {@link GwtCredentialCreator} to convert
      * @return the converted {@link CredentialCreator}
      * @since 1.0.0
      */
@@ -329,7 +359,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtCredential} into a {@link Credential} object for backend usage
      *
-     * @param gwtCredential the {@link GwtCredential} to convert
+     * @param gwtCredential
+     *            the {@link GwtCredential} to convert
      * @return the converted {@link Credential}
      * @since 1.0.0
      */
@@ -354,7 +385,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtAccessRoleCreator} into a {@link AccessRoleCreator} object for backend usage
      *
-     * @param gwtAccessRoleCreator the {@link GwtAccessRoleCreator} to convert
+     * @param gwtAccessRoleCreator
+     *            the {@link GwtAccessRoleCreator} to convert
      * @return the converted {@link AccessRoleCreator}
      * @since 1.0.0
      */
@@ -382,7 +414,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtAccessPermissionCreator} into a {@link AccessPermissionCreator} object for backend usage
      *
-     * @param gwtAccessPermissionCreator the {@link GwtAccessPermissionCreator} to convert
+     * @param gwtAccessPermissionCreator
+     *            the {@link GwtAccessPermissionCreator} to convert
      * @return the converted {@link AccessPermissionCreator}
      * @since 1.0.0
      */
@@ -427,7 +460,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtPermission} into a {@link Permission} object for backend usage.
      *
-     * @param gwtPermission The {@link GwtPermission} to convert.
+     * @param gwtPermission
+     *            The {@link GwtPermission} to convert.
      * @return The converted {@link Permission}.
      * @since 1.0.0
      */
@@ -447,7 +481,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtAction} into the related {@link Action}
      *
-     * @param gwtAction the {@link GwtAction} to convert
+     * @param gwtAction
+     *            the {@link GwtAction} to convert
      * @return the converted {@link Action}
      * 
      * @since 1.0.0
@@ -480,7 +515,8 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link GwtDomain} into the related equivalent domain string
      *
-     * @param gwtDomain the {@link GwtDomain} to convert
+     * @param gwtDomain
+     *            the {@link GwtDomain} to convert
      * @return the converted domain {@link String}
      * 
      * @since 1.0.0
@@ -544,8 +580,10 @@ public class GwtKapuaModelConverter {
     /**
      * Utility method to convert commons properties of {@link GwtUpdatableEntityModel} object to the matching {@link KapuaUpdatableEntity} object
      *
-     * @param gwtEntity   The {@link GwtUpdatableEntityModel} from which copy values
-     * @param kapuaEntity The {@link KapuaUpdatableEntity} into which to copy values
+     * @param gwtEntity
+     *            The {@link GwtUpdatableEntityModel} from which copy values
+     * @param kapuaEntity
+     *            The {@link KapuaUpdatableEntity} into which to copy values
      * @since 1.0.0
      */
     private static void convertEntity(GwtUpdatableEntityModel gwtEntity, KapuaUpdatableEntity kapuaEntity) {
@@ -561,8 +599,10 @@ public class GwtKapuaModelConverter {
     /**
      * Utility method to convert commons properties of {@link GwtEntityModel} object to the matching {@link KapuaEntity} object
      *
-     * @param gwtEntity   The {@link GwtEntityModel} from which copy values
-     * @param kapuaEntity The {@link KapuaEntity} into which to copy values
+     * @param gwtEntity
+     *            The {@link GwtEntityModel} from which copy values
+     * @param kapuaEntity
+     *            The {@link KapuaEntity} into which to copy values
      * @since 1.0.0
      */
     private static void convertEntity(GwtEntityModel gwtEntity, KapuaEntity kapuaEntity) {
@@ -579,7 +619,8 @@ public class GwtKapuaModelConverter {
      * Example: AQ => 1
      * </p>
      *
-     * @param shortKapuaId the {@link KapuaId} in the short form
+     * @param shortKapuaId
+     *            the {@link KapuaId} in the short form
      * @return The converted {@link KapuaId}
      * @since 1.0.0
      */
