@@ -86,6 +86,9 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         }
 
         // Check child account policy
+        /*
+         * To be rewritten from a child account point of view
+         *
         Map<String, Object> configValues = getConfigValues(accountCreator.getScopeId());
         boolean allowInfiniteChildAccounts = (boolean) configValues.get("infiniteChildAccounts");
         if (!allowInfiniteChildAccounts) {
@@ -94,7 +97,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             if (currentChildAccounts >= maxChildAccounts) {
                 throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
             }
-        }
+        }*/
 
         return entityManagerSession.onInsert(em -> {
             try {
