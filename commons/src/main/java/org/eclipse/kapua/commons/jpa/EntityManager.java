@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EntityManager {
 
-    private static final Logger             LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
     private javax.persistence.EntityManager javaxPersitenceEntityManager;
 
@@ -46,7 +46,8 @@ public class EntityManager {
     /**
      * Opens a Jpa Transaction.
      * 
-     * @throws KapuaException if {@link org.eclipse.kapua.commons.jpa.EntityManager} is {@code null}
+     * @throws KapuaException
+     *             if {@link org.eclipse.kapua.commons.jpa.EntityManager} is {@code null}
      */
     public void beginTransaction()
             throws KapuaException {
@@ -83,7 +84,7 @@ public class EntityManager {
     public void rollback() {
         try {
             if (javaxPersitenceEntityManager != null &&
-                javaxPersitenceEntityManager.getTransaction().isActive()) {
+                    javaxPersitenceEntityManager.getTransaction().isActive()) {
                 javaxPersitenceEntityManager.getTransaction().rollback();
             }
         } catch (Exception e) {
@@ -134,7 +135,7 @@ public class EntityManager {
      * @return
      */
     public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id) {
-        KapuaEid eid = id instanceof KapuaEid ? (KapuaEid) id : new KapuaEid(id); 
+        KapuaEid eid = id instanceof KapuaEid ? (KapuaEid) id : new KapuaEid(id);
         return javaxPersitenceEntityManager.find(clazz, eid);
     }
 
