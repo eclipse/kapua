@@ -14,35 +14,31 @@ package org.eclipse.kapua.service.authorization.access;
 import javax.xml.bind.annotation.XmlRegistry;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 
 @XmlRegistry
 public class AccessInfoXmlRegistry {
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccessInfoFactory factory = locator.getFactory(AccessInfoFactory.class);
-    
+
     /**
      * Creates a new access info instance
      * 
      * @return
      */
-    public AccessInfo newAccessInfo()
-    {
+    public AccessInfo newAccessInfo() {
         return factory.newAccessInfo();
     }
-    
+
     /**
      * Creates a new access info creator instance
      * 
      * @return
      */
-    public AccessInfoCreator newAccessInfoCreator()
-    {
+    public AccessInfoCreator newAccessInfoCreator() {
         return factory.newCreator(null);
     }
-    
+
     /**
      * Creates a new {@link AccessInfoListResult} instance
      * 
@@ -51,7 +47,7 @@ public class AccessInfoXmlRegistry {
     public AccessInfoListResult newAccessInfoListResult() {
         return factory.newAccessInfoListResult();
     }
-    
+
     public AccessInfoQuery newQuery() {
         return factory.newQuery(null);
     }

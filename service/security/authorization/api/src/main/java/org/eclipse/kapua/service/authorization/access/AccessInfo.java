@@ -33,9 +33,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId" },
-         factoryClass = AccessInfoXmlRegistry.class, 
-         factoryMethod = "newAccessInfo")
+@XmlType(propOrder = { "userId" }, //
+        factoryClass = AccessInfoXmlRegistry.class, //
+        factoryMethod = "newAccessInfo")
 public interface AccessInfo extends KapuaUpdatableEntity {
 
     public static final String TYPE = "accessInfo";

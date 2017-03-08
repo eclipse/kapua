@@ -47,7 +47,7 @@ public class AccessPermissionXmlRegistry {
     public AccessPermissionListResult newAccessPermissionListResult() {
         return factory.newAccessPermissionListResult();
     }
-    
+
     public AccessPermissionQuery newQuery() {
         return factory.newQuery(null);
     }

@@ -37,8 +37,8 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 @XmlRootElement(name = "accessPermission")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "accessInfoId", "permission" }, //
-factoryClass = AccessPermissionXmlRegistry.class, //
-factoryMethod = "newAccessPermission")
+        factoryClass = AccessPermissionXmlRegistry.class, //
+        factoryMethod = "newAccessPermission")
 public interface AccessPermission extends KapuaEntity {
 
     public static final String TYPE = "accessPermission";

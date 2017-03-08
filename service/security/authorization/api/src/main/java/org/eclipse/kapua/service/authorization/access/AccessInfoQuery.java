@@ -23,7 +23,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * 
  * @since 1.0.0
  */
-@XmlRootElement(name =  "query")
+@XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = AccessInfoXmlRegistry.class, factoryMethod = "newQuery")
 public interface AccessInfoQuery extends KapuaQuery<AccessInfo> {
