@@ -184,9 +184,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceComponentConfiguration.class,
                     DeviceConfigurationXmlRegistry.class,
                     
+                    // Device Management Snapshots
+                    KuraSnapshotIds.class,
+
                     DeviceSnapshot.class,
                     DeviceSnapshots.class,
                     DeviceSnapshotXmlRegistry.class,
+                    
                     DevicePackage.class,
                     DevicePackages.class,
                     DevicePackageBundleInfo.class,
@@ -194,7 +198,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DevicePackageXmlRegistry.class,
                     DevicePackageDownloadRequest.class,
                     DevicePackageUninstallRequest.class,
-                    KuraSnapshotIds.class,
                     KuraDeploymentPackages.class,
                     KuraDeploymentPackage.class,
 
