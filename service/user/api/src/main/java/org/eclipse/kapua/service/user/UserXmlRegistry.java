@@ -26,14 +26,13 @@ public class UserXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserFactory factory = locator.getFactory(UserFactory.class);
-    
+
     /**
      * Creates a new user instance
      * 
      * @return
      */
-    public User newUser()
-    {
+    public User newUser() {
         return factory.newUser();
     }
 
@@ -42,8 +41,7 @@ public class UserXmlRegistry {
      * 
      * @return
      */
-    public UserCreator newUserCreator()
-    {
+    public UserCreator newUserCreator() {
         return factory.newCreator(null, null);
     }
 
@@ -52,11 +50,10 @@ public class UserXmlRegistry {
      * 
      * @return
      */
-    public UserListResult newUserListResult()
-    {
+    public UserListResult newUserListResult() {
         return factory.newUserListResult();
     }
-    
+
     public UserQuery newQuery() {
         return factory.newQuery(null);
     }

@@ -28,20 +28,19 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "status",
-                       "displayName",
-                       "email",
-                       "phoneNumber",
-                       "userType",
-                       "externalId"
-                     },
-         factoryClass = UserXmlRegistry.class, 
-         factoryMethod = "newUser")
-public interface User extends KapuaNamedEntity
-{
+        "displayName",
+        "email",
+        "phoneNumber",
+        "userType",
+        "externalId"
+}, //
+        factoryClass = UserXmlRegistry.class, //
+        factoryMethod = "newUser")
+public interface User extends KapuaNamedEntity {
+
     public static final String TYPE = "user";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -104,7 +103,7 @@ public interface User extends KapuaNamedEntity
      * @param phoneNumber
      */
     public void setPhoneNumber(String phoneNumber);
-    
+
     /**
      * Get the user type
      * 
@@ -119,7 +118,7 @@ public interface User extends KapuaNamedEntity
      * @param phoneNumber
      */
     public void setUserType(UserType userType);
-    
+
     /**
      * Get the external ID
      * 
