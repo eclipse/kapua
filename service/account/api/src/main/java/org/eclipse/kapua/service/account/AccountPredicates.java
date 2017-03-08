@@ -13,9 +13,8 @@ package org.eclipse.kapua.service.account;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
-
 public interface AccountPredicates extends KapuaUpdatableEntityPredicates {
-    
+
     /**
      * The {@link Account} name.
      */

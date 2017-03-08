@@ -25,8 +25,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * 
  */
 @XmlRootElement(name = "query")
- @XmlAccessorType(XmlAccessType.PROPERTY)
- @XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newQuery")
-public interface AccountQuery extends KapuaQuery<Account>
-{
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newQuery")
+public interface AccountQuery extends KapuaQuery<Account> {
 }

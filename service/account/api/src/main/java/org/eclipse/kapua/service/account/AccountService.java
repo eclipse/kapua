@@ -28,10 +28,10 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * 
  */
 public interface AccountService extends KapuaEntityService<Account, AccountCreator>,
-                                KapuaUpdatableEntityService<Account>,
-                                KapuaNamedEntityService<Account>,
-                                KapuaConfigurableService
-{
+        KapuaUpdatableEntityService<Account>,
+        KapuaNamedEntityService<Account>,
+        KapuaConfigurableService {
+
     /**
      * Finds the account by account identifiers
      * 
@@ -40,8 +40,8 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
      * @throws KapuaException
      */
     public Account find(KapuaId id)
-        throws KapuaException;
-    
+            throws KapuaException;
+
     /**
      * Returns the {@link AccountListResult} with elements matching the provided query.
      * 
@@ -57,10 +57,11 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
     /**
      * Returns a List of direct child account of the provided account identifier
      * 
-     * @param accountId the Id of the parent Account
+     * @param accountId
+     *            the Id of the parent Account
      * @return List of direct child account of an account
      * @throws KapuaException
      */
     public AccountListResult findChildsRecursively(KapuaId accountId)
-        throws KapuaException;
+            throws KapuaException;
 }
