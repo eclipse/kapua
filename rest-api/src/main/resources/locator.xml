@@ -40,25 +40,30 @@
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 		
-		<!-- Uncomment as needed --> 
 		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
 		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
 		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
 		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
-		<!-- <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain</api> -->
+        
 		<api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
-		<!-- <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api> -->
-		<!-- <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api> -->
+		
+		<api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
+        
 		<api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
 		<api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
-		<api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
+		
+        <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
 		<api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
-		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
+		
+        <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
 		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
-		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
+
 		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
+		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
+
 		<!-- <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api> -->
 		<!-- <api>org.eclipse.kapua.service.datastore.MessageStoreService</api> -->
 		<!-- <api>org.eclipse.kapua.service.datastore.AssetInfoStoreService</api> -->
