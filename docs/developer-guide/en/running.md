@@ -14,7 +14,7 @@ Running Kapua on local docker containers is as easy as:
 
 1. Install docker
 1. Run `mvn -f assembly -Pdocker` once
-1. Run the docker images you want to start, see [assembly/readme.md](https://github.com/eclipse/kapua/blob/develop/assembly/readme.md) 
+1. Run the docker images you want to start, see [assembly/README.md](https://github.com/eclipse/kapua/blob/develop/assembly/README.md) 
 
 ## OpenShift
 
