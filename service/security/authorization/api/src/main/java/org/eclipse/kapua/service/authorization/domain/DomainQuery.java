@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.group.GroupXmlRegistry;
 
 /**
  * {@link Domain} query definition.
@@ -25,7 +24,7 @@ import org.eclipse.kapua.service.authorization.group.GroupXmlRegistry;
  * @since 1.0.0
  *
  */
-@XmlRootElement(name =  "query")
+@XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DomainXmlRegistry.class, factoryMethod = "newQuery")
 public interface DomainQuery extends KapuaQuery<Domain> {

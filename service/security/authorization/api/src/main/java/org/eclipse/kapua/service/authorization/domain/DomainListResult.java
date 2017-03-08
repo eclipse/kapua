@@ -12,10 +12,8 @@
 package org.eclipse.kapua.service.authorization.domain;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.service.authorization.group.GroupXmlRegistry;
 
 /**
  * {@link Domain} list result definition.

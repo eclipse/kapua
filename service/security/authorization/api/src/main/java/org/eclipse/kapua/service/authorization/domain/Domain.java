@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authorization.group.GroupXmlRegistry;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
 /**
@@ -36,9 +35,9 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
  */
 @XmlRootElement(name = "domain")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name", 
+@XmlType(propOrder = { "name",
         "serviceName",
-        "actions"})
+        "actions" })
 public interface Domain extends KapuaEntity {
 
     public static final String TYPE = "domain";
