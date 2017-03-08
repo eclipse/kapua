@@ -50,7 +50,7 @@ objects:
     - name: latest
       from:
         kind: DockerImage
-        name: ${DOCKER_ACCOUNT}/kapua-console:${IMAGE_VERSION}
+        name: ${DOCKER_ACCOUNT}/kapua-console-jetty:${IMAGE_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -62,7 +62,7 @@ objects:
     - name: latest
       from:
         kind: DockerImage
-        name: ${DOCKER_ACCOUNT}/kapua-api:${IMAGE_VERSION}
+        name: ${DOCKER_ACCOUNT}/kapua-api-jetty:${IMAGE_VERSION}
 
 # Deployment configs
 
@@ -137,7 +137,7 @@ objects:
         containers:
         - env:
           - name: ACTIVEMQ_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dcommons.db.schema=
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
           image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-broker
@@ -184,7 +184,7 @@ objects:
         containers:
         - env:
           - name: CATALINA_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dcommons.db.schema= -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
           image: ${DOCKER_ACCOUNT}/kapua-console:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
@@ -223,7 +223,7 @@ objects:
         containers:
         - env:
           - name: CATALINA_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dcommons.db.schema= -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
           image: ${DOCKER_ACCOUNT}/kapua-api:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
