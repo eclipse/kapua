@@ -10,14 +10,12 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.credential;
+package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 
-import com.extjs.gxt.ui.client.store.StoreEvent;
-import com.extjs.gxt.ui.client.store.StoreListener;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -25,8 +23,8 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     private final GwtCredential selectedCredential;
 
-    public CredentialEditDialog(GwtSession currentSession, GwtCredential selectedCredential) {
-        super(currentSession);
+    public CredentialEditDialog(GwtSession currentSession, GwtCredential selectedCredential, GwtUser selectedUser) {
+        super(currentSession, selectedUser);
         this.selectedCredential = selectedCredential;
     }
 
@@ -52,7 +50,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
             @Override
             public void onSuccess(GwtCredential result) {
                 m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                m_exitMessage = MSGS.dialogEditConfirmation();
                 hide();
             }
         });
@@ -61,7 +59,6 @@ public class CredentialEditDialog extends CredentialAddDialog {
     @Override
     public void createBody() {
         super.createBody();
-        subject.getStore().addStoreListener(new SubjectStoreListener());
         loadCredential();
     }
 
@@ -69,8 +66,6 @@ public class CredentialEditDialog extends CredentialAddDialog {
         credentialType.setSimpleValue(selectedCredential.getCredentialTypeEnum());
         password.setValue(selectedCredential.getCredentialKey());
         confirmPassword.setValue(selectedCredential.getCredentialKey());
-        subjectType.setSimpleValue(selectedCredential.getSubjectTypeEnum());
-        subject.setValue(subject.getStore().findModel(selectedCredential.getUserId()));
     }
 
     @Override
@@ -79,8 +74,6 @@ public class CredentialEditDialog extends CredentialAddDialog {
         credentialType.disable();
         password.disable();
         confirmPassword.disable();
-        subjectType.disable();
-        subject.disable();
     }
 
     @Override
@@ -91,13 +84,5 @@ public class CredentialEditDialog extends CredentialAddDialog {
     @Override
     public String getInfoMessage() {
         return MSGS.dialogEditInfo();
-    }
-
-    private class SubjectStoreListener extends StoreListener<GwtUser> {
-
-        @Override
-        public void storeAdd(StoreEvent<GwtUser> se) {
-            subject.setValue(se.getStore().findModel("id", selectedCredential.getUserId()));
-        }
     }
 }

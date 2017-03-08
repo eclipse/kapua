@@ -10,16 +10,19 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.credential;
+package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 
 import com.google.gwt.user.client.Element;
 
 public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
+
+    private GwtUser selectedUser;
 
     public CredentialToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -28,13 +31,14 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
+        updateAddButtonEnabled();
         getEditEntityButton().disable();
         getDeleteEntityButton().disable();
     }
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return new CredentialAddDialog(currentSession);
+        return new CredentialAddDialog(currentSession, selectedUser);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
         CredentialEditDialog dialog = null;
         if (selectedCredential != null) {
-            dialog = new CredentialEditDialog(currentSession, selectedCredential);
+            dialog = new CredentialEditDialog(currentSession, selectedCredential, selectedUser);
         }
         return dialog;
     }
@@ -55,5 +59,20 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
             dialog = new CredentialDeleteDialog(selectedCredential);
         }
         return dialog;
+    }
+
+    public void setSelectedUser(GwtUser selectedUser) {
+        this.selectedUser = selectedUser;
+        if (this.isRendered()) {
+            updateAddButtonEnabled();
+        }
+    }
+
+    private void updateAddButtonEnabled() {
+        if (selectedUser == null) {
+            getAddEntityButton().disable();
+        } else {
+            getAddEntityButton().enable();
+        }
     }
 }

@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authentication;
 
-import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
+import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 
-public class GwtCredential extends GwtEntityModel {
+public class GwtCredential extends GwtUpdatableEntityModel {
 
     private static final long serialVersionUID = -469650746033310482L;
 
