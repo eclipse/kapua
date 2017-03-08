@@ -42,7 +42,7 @@ public interface DevicePackageDownloadRequest
      * 
      * @return
      */
-    @XmlElement(name = "uri")
+    @XmlElement(name = "URI")
     public URI getURI();
 
     /**
