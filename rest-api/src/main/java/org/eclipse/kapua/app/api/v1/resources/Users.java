@@ -27,16 +27,9 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
-import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -45,7 +38,6 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserImpl;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
-import org.eclipse.kapua.service.user.internal.UserQueryImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,7 +46,7 @@ import io.swagger.annotations.ApiParam;
 @Api("Users")
 @Path("{scopeId}/users")
 public class Users extends AbstractKapuaResource {
-    
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserService userService = locator.getService(UserService.class);
     private final UserFactory userFactory = locator.getFactory(UserFactory.class);
@@ -62,9 +54,12 @@ public class Users extends AbstractKapuaResource {
     /**
      * Gets the {@link User} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param offset The result set offset.
-     * @param limit The result set limit.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param offset
+     *            The result set offset.
+     * @param limit
+     *            The result set limit.
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
      * @since 1.0.0
      */
@@ -74,24 +69,24 @@ public class Users extends AbstractKapuaResource {
             responseContainer = "UserListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public UserListResult simpleQuery(  @PathParam("scopeId") ScopeId scopeId,//
+    public UserListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
             @QueryParam("name") String name, //
-                                        @QueryParam("offset") @DefaultValue("0") int offset,//
-                                        @QueryParam("limit") @DefaultValue("50") int limit) //
+            @QueryParam("offset") @DefaultValue("0") int offset,//
+            @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         UserListResult userListResult = userFactory.newUserListResult();
         try {
             UserQuery query = userFactory.newQuery(scopeId);
-            
+
             AndPredicate andPredicate = new AndPredicate();
             if (name != null) {
                 andPredicate.and(new AttributePredicate<>(UserPredicates.NAME, name));
             }
             query.setPredicate(andPredicate);
-            
+
             query.setOffset(offset);
             query.setLimit(limit);
-            
+
             userListResult = query(scopeId, query);
         } catch (Throwable t) {
             handleException(t);
@@ -102,8 +97,10 @@ public class Users extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link UserQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link UserQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link UserQuery} to used to filter results.
      * @return The {@link UserListResult} of all the result matching the given {@link UserQuery} parameter.
      * @since 1.0.0
      */
@@ -121,12 +118,14 @@ public class Users extends AbstractKapuaResource {
         }
         return returnNotNullEntity(userListResult);
     }
-    
+
     /**
      * Counts the results with the given {@link UserQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link UserQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link UserQuery} to used to filter results.
      * @return The count of all the result matching the given {@link UserQuery} parameter.
      * @since 1.0.0
      */
@@ -144,12 +143,13 @@ public class Users extends AbstractKapuaResource {
         }
         return returnNotNullEntity(countResult);
     }
-    
+
     /**
      * Creates a new User based on the information provided in UserCreator
      * parameter.
      *
-     *@param scopeId The {@link ScopeId} in which to create the {@link User}
+     * @param scopeId
+     *            The {@link ScopeId} in which to create the {@link User}
      * @param userCreator
      *            Provides the information for the new User to be created.
      * @return The newly created User object.
@@ -181,7 +181,7 @@ public class Users extends AbstractKapuaResource {
     @GET
     @Path("{userId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public User find(@PathParam("scopeId") ScopeId scopeId, 
+    public User find(@PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested User", required = true) @PathParam("userId") EntityId userId) {
         User user = null;
         try {
@@ -191,7 +191,7 @@ public class Users extends AbstractKapuaResource {
         }
         return returnNotNullEntity(user);
     }
-    
+
     /**
      * Updates the User based on the information provided in the User parameter.
      *
@@ -211,7 +211,7 @@ public class Users extends AbstractKapuaResource {
         try {
             ((UserImpl) user).setScopeId(scopeId);
             user.setId(userId);
-            
+
             userUpdated = userService.update(user);
         } catch (Throwable t) {
             handleException(t);

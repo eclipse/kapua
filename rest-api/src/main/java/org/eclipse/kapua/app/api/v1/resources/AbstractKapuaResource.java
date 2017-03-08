@@ -16,8 +16,6 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.app.api.settings.KapuaApiSetting;
-import org.eclipse.kapua.app.api.settings.KapuaApiSettingKeys;
 import org.eclipse.kapua.app.api.v1.resources.model.ErrorBean;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.slf4j.Logger;
@@ -27,8 +25,8 @@ public abstract class AbstractKapuaResource {
 
     private static final Logger s_logger = LoggerFactory.getLogger(AbstractKapuaResource.class);
 
-    protected static final String DEFALUT_SCOPE_ID = "_"; //KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
-    
+    protected static final String DEFALUT_SCOPE_ID = "_"; // KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
+
     protected <T> T returnNotNullEntity(T entity) {
         if (entity == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);

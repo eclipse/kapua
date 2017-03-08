@@ -38,12 +38,6 @@ import org.eclipse.kapua.service.account.AccountPredicates;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountImpl;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
-
-import com.google.common.base.Strings;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -83,13 +77,13 @@ public class Accounts extends AbstractKapuaResource {
         AccountListResult accountListResult = accountFactory.newAccountListResult();
         try {
             AccountQuery query = accountFactory.newQuery(scopeId);
-            
+
             AndPredicate andPredicate = new AndPredicate();
             if (name != null) {
                 andPredicate.and(new AttributePredicate<>(AccountPredicates.NAME, name));
             }
             query.setPredicate(andPredicate);
-            
+
             query.setOffset(offset);
             query.setLimit(limit);
 
@@ -128,8 +122,10 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link AccountQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link AccountQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link AccountQuery} to used to filter results.
      * @return The count of all the result matching the given {@link AccountQuery} parameter.
      * @since 1.0.0
      */
@@ -151,7 +147,9 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Creates a new Account based on the information provided in AccountCreator
      * parameter.
-     *@param scopeId The {@link ScopeId} in which to create the {@link Account}
+     * 
+     * @param scopeId
+     *            The {@link ScopeId} in which to create the {@link Account}
      * @param accountCreator
      *            Provides the information for the new Account to be created.
      * @return The newly created Account object.
@@ -175,7 +173,8 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Returns the Account specified by the "accountId" path parameter.
      *
-     *@param scopeId The {@link ScopeId} of the requested {@link Account}.
+     * @param scopeId
+     *            The {@link ScopeId} of the requested {@link Account}.
      * @param accountId
      *            The id of the requested Account.
      * @return The requested Account object.
@@ -242,5 +241,4 @@ public class Accounts extends AbstractKapuaResource {
         return Response.ok().build();
     }
 
-    
 }

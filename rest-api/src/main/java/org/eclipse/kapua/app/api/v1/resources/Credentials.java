@@ -38,10 +38,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
-import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -81,13 +77,13 @@ public class Credentials extends AbstractKapuaResource {
         CredentialListResult credentialListResult = credentialFactory.newCredentialListResult();
         try {
             CredentialQuery query = credentialFactory.newQuery(scopeId);
-            
+
             AndPredicate andPredicate = new AndPredicate();
             if (userId != null) {
                 andPredicate.and(new AttributePredicate<>(CredentialPredicates.USER_ID, userId));
             }
             query.setPredicate(andPredicate);
-            
+
             query.setOffset(offset);
             query.setLimit(limit);
 
@@ -126,8 +122,10 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link CredentialQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link CredentialQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link CredentialQuery} to used to filter results.
      * @return The count of all the result matching the given {@link CredentialQuery} parameter.
      * @since 1.0.0
      */
@@ -150,7 +148,8 @@ public class Credentials extends AbstractKapuaResource {
      * Creates a new Credential based on the information provided in CredentialCreator
      * parameter.
      *
-     *@param scopeId The {@link ScopeId} in which to create the {@link Credential}
+     * @param scopeId
+     *            The {@link ScopeId} in which to create the {@link Credential}
      * @param credentialCreator
      *            Provides the information for the new Credential to be created.
      * @return The newly created Credential object.
@@ -174,7 +173,8 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Returns the Credential specified by the "credentialId" path parameter.
      *
-     *@param scopeId The {@link ScopeId} of the requested {@link Credential}.
+     * @param scopeId
+     *            The {@link ScopeId} of the requested {@link Credential}.
      * @param credentialId
      *            The id of the requested Credential.
      * @return The requested Credential object.
@@ -241,5 +241,4 @@ public class Credentials extends AbstractKapuaResource {
         return Response.ok().build();
     }
 
-    
 }
