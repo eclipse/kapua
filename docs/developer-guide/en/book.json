@@ -6,5 +6,6 @@
     "gitbook": "3.x.x",
     "links": {
         "home": "http://eclipse.org/kapua"
-    }
+    },
+    "plugins": ["hints"]
 }
