@@ -134,6 +134,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ErrorBean.class,
                     CountResult.class,
 
+                    // Tocds
+                    KapuaTocd.class,
+                    KapuaTad.class,
+                    KapuaTicon.class,
+                    KapuaToption.class,
+
+                    
                     // Account
                     Account.class,
                     AccountCreator.class,
@@ -169,9 +176,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceCommandInput.class,
                     DeviceCommandXmlRegistry.class,
                     DeviceCommandOutput.class,
+                    
+                    // Device Management Configuration
+                    KuraDeviceConfiguration.class,
+
                     DeviceConfiguration.class,
                     DeviceComponentConfiguration.class,
                     DeviceConfigurationXmlRegistry.class,
+                    
                     DeviceSnapshot.class,
                     DeviceSnapshots.class,
                     DeviceSnapshotXmlRegistry.class,
@@ -183,15 +195,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DevicePackageDownloadRequest.class,
                     DevicePackageUninstallRequest.class,
                     KuraSnapshotIds.class,
-                    KuraDeviceConfiguration.class,
                     KuraDeploymentPackages.class,
                     KuraDeploymentPackage.class,
-                    KapuaTocd.class,
-                    KapuaTad.class,
-                    KapuaTicon.class,
-                    KapuaToption.class,
-                    DeviceConnectionSummary.class,
-                    DeviceConnectionXmlRegistry.class,
+
+                    
                     AuthenticationCredentials.class,
                     AuthenticationXmlRegistry.class,
                     AccessTokenImpl.class,
