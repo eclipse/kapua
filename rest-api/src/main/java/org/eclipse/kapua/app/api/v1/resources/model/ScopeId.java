@@ -25,48 +25,47 @@ import org.eclipse.kapua.model.id.KapuaId;
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} scopeId.
  * 
- * If the {@link PathParam} is equals to "_" the scopeId used will be set to {@link KapuaSecurityUtils#getSession()#getId()}, 
+ * If the {@link PathParam} is equals to "_" the scopeId used will be set to {@link KapuaSecurityUtils#getSession()#getId()},
  * which means that the scope of the current request will be the same of the current session scope.
  * 
  * @since 1.0.0
  */
 public class ScopeId implements KapuaId {
 
-
     private static final long serialVersionUID = 6893262093856905182L;
-    
+
     private static final String SCOPE_ID_WILDCARD = KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
-    
-    private BigInteger id; 
-    
+
+    private BigInteger id;
+
     /**
      * Builds the {@link KapuaId} from the given {@link String} compact scopeId.
      * If the given parameter equals to "_" the current session scope will be used.
      * 
-     * @param compactScopeId The compact scopeId to parse.
+     * @param compactScopeId
+     *            The compact scopeId to parse.
      * @since 1.0.0
      */
-    public ScopeId (String compactScopeId) {
-        
+    public ScopeId(String compactScopeId) {
+
         if (SCOPE_ID_WILDCARD.equals(compactScopeId)) {
             KapuaSession session = KapuaSecurityUtils.getSession();
             setId(session.getScopeId().getId());
-        }
-        else {
+        } else {
             byte[] bytes = Base64.getUrlDecoder().decode(compactScopeId);
-            setId(new BigInteger(bytes));            
+            setId(new BigInteger(bytes));
         }
     }
-    
+
     @Override
     public BigInteger getId() {
         return id;
     }
-    
+
     protected void setId(BigInteger id) {
         this.id = id;
     }
-    
+
     @Override
     public String toString() {
         return getId().toString();

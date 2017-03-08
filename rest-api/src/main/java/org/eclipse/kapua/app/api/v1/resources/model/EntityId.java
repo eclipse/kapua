@@ -16,8 +16,6 @@ import java.util.Base64;
 
 import javax.ws.rs.PathParam;
 
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -27,31 +25,31 @@ import org.eclipse.kapua.model.id.KapuaId;
  */
 public class EntityId implements KapuaId {
 
-
     private static final long serialVersionUID = 6893262093856905182L;
-    
-    private BigInteger id; 
-    
+
+    private BigInteger id;
+
     /**
      * Builds the {@link KapuaId} from the given {@link String} compact entity id.
      * 
-     * @param compactEntityId The compact entityId to parse.
+     * @param compactEntityId
+     *            The compact entityId to parse.
      * @since 1.0.0
      */
-    public EntityId (String compactEntityId) {
-            byte[] bytes = Base64.getUrlDecoder().decode(compactEntityId);
-            setId(new BigInteger(bytes));            
+    public EntityId(String compactEntityId) {
+        byte[] bytes = Base64.getUrlDecoder().decode(compactEntityId);
+        setId(new BigInteger(bytes));
     }
-    
+
     @Override
     public BigInteger getId() {
         return id;
     }
-    
+
     protected void setId(BigInteger id) {
         this.id = id;
     }
-    
+
     @Override
     public String toString() {
         return getId().toString();

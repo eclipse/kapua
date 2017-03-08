@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="countResult")
+@XmlRootElement(name = "countResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class CountResult {
 
@@ -24,12 +24,12 @@ public class CountResult {
 
     protected CountResult() {
     }
-    
+
     public CountResult(long count) {
         this.count = count;
     }
 
-    @XmlElement(name="count")
+    @XmlElement(name = "count")
     public long getCount() {
         return count;
     }
