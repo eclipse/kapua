@@ -53,3 +53,14 @@ After you installed brew you can install npm by:
 ## Building the docs
 
 To build documentation, run `gitbook build` from either `docs/developer-guide/en` or `docs/user-manual/en`
+
+## Continuous integration
+ 
+Kapua is running CI builds against two public environments:
+
+- Travis CI  [![Build](https://api.travis-ci.org/eclipse/kapua.svg)](https://travis-ci.org/eclipse/kapua/) 
+- Eclipse Hudson [![Hudson](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/kapua/job/Develop.svg)](https://hudson.eclipse.org/kapua/)
+
+We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to 
+[Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
+of images if needed.
