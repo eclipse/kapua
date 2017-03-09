@@ -61,6 +61,8 @@ Kapua is running CI builds against two public environments:
 - Travis CI  [![Build](https://api.travis-ci.org/eclipse/kapua.svg)](https://travis-ci.org/eclipse/kapua/) 
 - Eclipse Hudson [![Hudson](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/kapua/job/Develop.svg)](https://hudson.eclipse.org/kapua/)
 
+Please be sure that both environments are "green" (i.e. all tests pass) after you commit any changes into `develop` branch.
+
 We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to 
 [Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
 of images if needed.
