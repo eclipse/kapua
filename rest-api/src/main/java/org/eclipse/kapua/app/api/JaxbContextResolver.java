@@ -109,7 +109,6 @@ import org.eclipse.kapua.service.device.registry.DeviceXmlRegistry;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionXmlRegistry;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -125,6 +124,8 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 /**
  * Provide a customized JAXBContext that makes the concrete implementations
  * known and available for marshalling
+ * 
+ * @since 1.0.0
  */
 @Provider
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -145,7 +146,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaTicon.class,
                     KapuaToption.class,
 
-                    
                     // Account
                     Account.class,
                     AccountCreator.class,
@@ -182,25 +182,25 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceCommandInput.class,
                     DeviceCommandOutput.class,
                     DeviceCommandXmlRegistry.class,
-                    
+
                     // Device Management Configuration
                     KuraDeviceConfiguration.class,
                     DeviceConfiguration.class,
                     DeviceComponentConfiguration.class,
                     DeviceConfigurationXmlRegistry.class,
-                    
+
                     // Device Management Snapshots
                     KuraSnapshotIds.class,
                     DeviceSnapshot.class,
                     DeviceSnapshots.class,
                     DeviceSnapshotXmlRegistry.class,
-                    
+
                     // Device Management Bundles
                     KuraBundles.class,
                     DeviceBundle.class,
                     DeviceBundles.class,
                     DeviceBundleXmlRegistry.class,
-                    
+
                     // Device Management Packages
                     KuraDeploymentPackages.class,
                     KuraDeploymentPackage.class,
@@ -213,7 +213,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DevicePackageUninstallRequest.class,
                     DevicePackageXmlRegistry.class,
 
-                    
                     AuthenticationCredentials.class,
                     AuthenticationXmlRegistry.class,
                     AccessTokenImpl.class,
