@@ -22,10 +22,23 @@
         <format>tar.gz</format>
     </formats>
 
+    <files>
+        <file>
+            <outputDirectory>lib/</outputDirectory>
+            <source>src/main/resources/conf/console-tomcat/logback.xml</source>
+            <fileMode>0666</fileMode>
+        </file>
+    </files>
+
     <fileSets>
         <fileSet>
             <outputDirectory>.</outputDirectory>
             <directory>${project.build.directory}/dependencies/tomcat/apache-tomcat-${tomcat.version}</directory>
+            <excludes>
+                <exclude>**/conf/logging.properties</exclude>
+                <!-- don't use tomcat's juli, see below -->
+                <exclude>**/bin/tomcat-juli.jar</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
 
@@ -35,16 +48,37 @@
             <outputFileNameMapping>console.war</outputFileNameMapping>
             <unpack>false</unpack>
             <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <includes>
                 <include>${pom.groupId}:kapua-console:war</include>
             </includes>
         </dependencySet>
+        
+        <!-- replace tomcat juli with full version -->
         <dependencySet>
-            <outputDirectory>.</outputDirectory>
-            <outputFileNameMapping>jolokia-jvm-agent.jar</outputFileNameMapping>
+            <outputDirectory>bin/</outputDirectory>
+            <outputFileNameMapping>tomcat-juli.jar</outputFileNameMapping>
+            <useProjectArtifact>false</useProjectArtifact>
             <includes>
-                <include>org.jolokia:jolokia-jvm</include>
+                <include>org.apache.tomcat.extras:tomcat-extras-juli</include>
+            </includes>
+        </dependencySet>
+        
+        <!--
+          - The full juli logs to JCL
+          - and JCL is actually from SLF4J
+          - which is provided by logback.  
+          -->
+        <dependencySet>
+            <outputDirectory>lib/</outputDirectory>
+            <useProjectArtifact>false</useProjectArtifact>
+            <includes>
+                <include>org.slf4j:slf4j-api</include>
+                <include>org.slf4j:log4j-over-slf4j</include>
+                <include>org.apache.tomcat.extras:tomcat-extras-juli-adapters</include>
+                <include>ch.qos.logback:logback-core</include>
+                <include>ch.qos.logback:logback-classic</include>
             </includes>
         </dependencySet>
     </dependencySets>

@@ -8,7 +8,7 @@
 #
 # Contributors:
 #     Eurotech - initial API and implementation
-#
+#     Red Hat Inc
 #*******************************************************************************
 
 Vagrant.configure(2) do |config|
@@ -126,6 +126,12 @@ Vagrant.configure(2) do |config|
      sudo curl -O https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
      sudo tar zxvf apache-tomcat-${TOMCAT_VERSION}.tar.gz
      sudo rm apache-tomcat-${TOMCAT_VERSION}.tar.gz
+
+     ### fix tomcat8 to provide slf4j and logback
+     cd /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}/lib
+     sudo curl -O https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar
+     sudo curl -O https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.8/logback-core-1.1.8.jar
+     sudo curl -O https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.8/logback-classic-1.1.8.jar
 
 	cat /dev/null > ~/.bash_history && history -c
 

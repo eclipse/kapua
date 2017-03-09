@@ -1,0 +1,34 @@
+#!/bin/sh
+
+################################################################################
+#    Copyright (c) 2017 Red Hat Inc
+#   
+#    All rights reserved. This program and the accompanying materials
+#    are made available under the terms of the Eclipse Public License v1.0
+#    which accompanies this distribution, and is available at
+#    http://www.eclipse.org/legal/epl-v10.html
+#   
+#    Contributors:
+#        Red Hat Inc - initial API and implementation
+################################################################################
+
+set -e
+
+JAVA_ARGS="-javaagent:/jolokia-jvm-agent.jar"
+
+if [ -n "$JAVA_OPTS" ]; then
+   JAVA_ARGS="$JAVA_ARGS $JAVA_OPTS"
+fi
+
+# create schema right before startup
+echo "CREATE SCHEMA KAPUADB;" > /home/kapua/tmp/backup.sql
+java -cp /home/kapua/h2.jar org.h2.tools.RunScript -url jdbc:h2:/var/h2/data/kapuadb  -user kapua -password kapua -script /home/kapua/tmp/backup.sql
+rm /home/kapua/tmp/backup.sql
+
+# expand
+echo "JAVA_ARGS = $JAVA_ARGS"
+eval JAVA_ARGS="$JAVA_ARGS"
+echo "JAVA_ARGS = $JAVA_ARGS"
+
+# exec server
+exec /usr/bin/java $JAVA_ARGS -cp /home/kapua/h2.jar org.h2.tools.Server -web -webAllowOthers -webPort 8181 -tcp -tcpAllowOthers -tcpPort 3306 -baseDir /var/h2/data
