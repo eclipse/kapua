@@ -64,3 +64,27 @@ Kapua is running CI builds against two public environments:
 We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to 
 [Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
 of images if needed.
+
+## Building Kapua Docker images
+
+Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/). The latest snapshots of images are updated every 15 minutes.
+
+In order to build Kapua Docker images, execute Maven build with
+`docker` profile enabled:
+
+    cd kapua
+    mvn
+    cd assembly
+    mvn -Pdocker
+
+In order to build and push images into DockerHub registry, execute build with Maven with `docker-push` profile enabled:
+
+    cd kapua
+    mvn
+    cd assembly
+    mvn -Pdocker-push
+
+If you would like to change account name (for example to push to your own account, instead of `kapua`) use `docker.account` property:
+
+    mvn -Ddocker.account=henry -Pdocker-push
+    
