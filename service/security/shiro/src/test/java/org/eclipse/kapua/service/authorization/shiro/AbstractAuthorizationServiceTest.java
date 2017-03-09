@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAuthorizationServiceTest extends Assert {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuthorizationServiceTest.class);
 
     public static String DEFAULT_PATH = "src/main/sql/H2";
