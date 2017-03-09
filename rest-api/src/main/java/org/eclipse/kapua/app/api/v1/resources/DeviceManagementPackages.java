@@ -11,16 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -31,9 +24,15 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.registry.Device;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Api("Devices")
 @Path("{scopeId}/devices/{deviceId}/packages")
@@ -45,17 +44,21 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     /**
      * Returns the list of all the packages installed on the device.
      *
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
      * @param deviceId
      *            The id of the device
+     * @param timeout
+     *            The timeout of the operation
      * @return The list of packages installed.
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @ApiOperation(value = "Gets a list of packages", notes = "Returns the list of all the packages installed on the device.", response = DeviceSnapshots.class)
     public DevicePackages get(
-            @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
-            @QueryParam("timeout") @DefaultValue("") Long timeout) {
+            @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
+            @ApiParam(value = "The timeout of the operation", required = false) @QueryParam("timeout") Long timeout) {
         DevicePackages deviceSnapshots = null;
         try {
             deviceSnapshots = packageService.getInstalled(scopeId, deviceId, timeout);
@@ -68,8 +71,14 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     /**
      * Download and optionally installs a package into the device.
      *
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
      * @param deviceId
      *            The {@link Device} ID.
+     * @param timeout
+     *            The timeout of the operation
+     * @param packageDownloadRequest
+     *            Mandatory object with all the informations needed to download and install a package
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST
@@ -77,9 +86,9 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Installs a package", notes = "Installs a package into the device.")
     public Response download(
-            @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
-            @QueryParam("timeout") @DefaultValue("") Long timeout,
+            @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
+            @ApiParam(value = "The timeout of the operation") @QueryParam("timeout") Long timeout,
             @ApiParam(value = "Mandatory object with all the informations needed to download and install a package", required = true) DevicePackageDownloadRequest packageDownloadRequest) {
         try {
             packageService.downloadExec(scopeId, deviceId, packageDownloadRequest, timeout);
@@ -92,8 +101,14 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     /**
      * Uninstalls a package into the device.
      *
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
      * @param deviceId
      *            The {@link Device} ID.
+     * @param timeout
+     *            The timeout of the operation
+     * @param packageUninstallRequest
+     *            Mandatory object with all the informations needed to uninstall a package
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST
@@ -101,9 +116,9 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Uninstalls a package", notes = "Uninstalls a package into the device.")
     public Response uninstall(
-            @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
-            @QueryParam("timeout") @DefaultValue("") Long timeout,
+            @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
+            @ApiParam(value = "The timeout of the operation") @QueryParam("timeout") Long timeout,
             @ApiParam(value = "Mandatory object with all the informations needed to uninstall a package", required = true) DevicePackageUninstallRequest packageUninstallRequest) {
         try {
             packageService.uninstallExec(scopeId, deviceId, packageUninstallRequest, timeout);

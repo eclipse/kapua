@@ -11,19 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -39,9 +29,18 @@ import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Api("Credentials")
 @Path("{scopeId}/credentials")
@@ -63,16 +62,17 @@ public class Credentials extends AbstractKapuaResource {
      * @return The {@link CredentialListResult} of all the credentials associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Credential list in the scope", //
-            notes = "Returns the list of all the credentials associated to the current selected scope.", //
-            response = Credential.class, //
+    @ApiOperation(value = "Gets the Credential list in the scope",
+            notes = "Returns the list of all the credentials associated to the current selected scope.",
+            response = Credential.class,
             responseContainer = "CredentialListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public CredentialListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
-            @QueryParam("userId") EntityId userId, //
-            @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) //
+    public CredentialListResult simpleQuery(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The optional id to filter results.") @QueryParam("userId") EntityId userId,
+            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
+            @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit)
     {
         CredentialListResult credentialListResult = credentialFactory.newCredentialListResult();
         try {
@@ -100,15 +100,21 @@ public class Credentials extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link CredentialQuery} to used to filter results.
+     *            The {@link CredentialQuery} to use to filter results.
      * @return The {@link CredentialListResult} of all the result matching the given {@link CredentialQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Queries the Credentials",
+            notes = "Queries the Credentials with the given CredentialQuery parameter returning all matching Credentials",
+            response = Credential.class,
+            responseContainer = "CredentialListResult")
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CredentialListResult query(@PathParam("scopeId") ScopeId scopeId, CredentialQuery query) {
+    public CredentialListResult query(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The CredentialQuery to use to filter results.", required = true) CredentialQuery query) {
         CredentialListResult credentialListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -125,15 +131,20 @@ public class Credentials extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link CredentialQuery} to used to filter results.
+     *            The {@link CredentialQuery} to use to filter results.
      * @return The count of all the result matching the given {@link CredentialQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Counts the Credentials",
+            notes = "Counts the Credentials with the given CredentialQuery parameter returning the number of matching Credentials",
+            response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, CredentialQuery query) {
+    public CountResult count(
+            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The CredentialQuery to use to filter count results", required = true) CredentialQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -154,11 +165,12 @@ public class Credentials extends AbstractKapuaResource {
      *            Provides the information for the new Credential to be created.
      * @return The newly created Credential object.
      */
-    @ApiOperation(value = "Create an Credential", notes = "Creates a new Credential based on the information provided in CredentialCreator parameter.", response = Credential.class)
+    @ApiOperation(value = "Create a Credential", notes = "Creates a new Credential based on the information provided in CredentialCreator parameter.", response = Credential.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Credential create(@PathParam("scopeId") ScopeId scopeId,
+    public Credential create(
+            @ApiParam(value = "The ScopeId in which to create the Credential", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Provides the information for the new Credential to be created", required = true) CredentialCreator credentialCreator) {
         Credential credential = null;
         try {
@@ -179,11 +191,12 @@ public class Credentials extends AbstractKapuaResource {
      *            The id of the requested Credential.
      * @return The requested Credential object.
      */
-    @ApiOperation(value = "Get an Credential", notes = "Returns the Credential specified by the \"credentialId\" path parameter.", response = Credential.class)
+    @ApiOperation(value = "Get a Credential", notes = "Returns the Credential specified by the \"credentialId\" path parameter.", response = Credential.class)
     @GET
     @Path("{credentialId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Credential find(@PathParam("scopeId") ScopeId scopeId,
+    public Credential find(
+            @ApiParam(value = "The ScopeId of the requested Credential.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Credential", required = true) @PathParam("credentialId") EntityId credentialId) {
         Credential credential = null;
         try {
@@ -206,8 +219,9 @@ public class Credentials extends AbstractKapuaResource {
     @Path("{credentialId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Credential update(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("credentialId") EntityId credentialId,
+    public Credential update(
+            @ApiParam(value = "The ScopeId of the requested Credential.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the requested Credential", required = true) @PathParam("credentialId") EntityId credentialId,
             @ApiParam(value = "The modified Credential whose attributed need to be updated", required = true) Credential credential) {
         Credential credentialUpdated = null;
         try {
@@ -228,10 +242,11 @@ public class Credentials extends AbstractKapuaResource {
      *            The id of the Credential to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
-    @ApiOperation(value = "Delete an Credential", notes = "Deletes the Credential specified by the \"credentialId\" path parameter.")
+    @ApiOperation(value = "Delete a Credential", notes = "Deletes the Credential specified by the \"credentialId\" path parameter.")
     @DELETE
     @Path("{credentialId}")
-    public Response deleteCredential(@PathParam("scopeId") ScopeId scopeId,
+    public Response deleteCredential(
+            @ApiParam(value = "The ScopeId of the Credential to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Credential to be deleted", required = true) @PathParam("credentialId") EntityId credentialId) {
         try {
             credentialService.delete(scopeId, credentialId);

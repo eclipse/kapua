@@ -11,15 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -28,9 +22,13 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandManageme
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.registry.Device;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 @Api("Devices")
 @Path("{scopeId}/devices/{deviceId}/commands")
@@ -61,6 +59,8 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
      * DeviceCommandOutput commandOutput = deviceCommandWebXml.post(DeviceCommandOutput.class, commandInput);
      * </pre>
      *
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
      * @param deviceId
      *            The {@link Device} ID.
      * @param timeout
@@ -76,10 +76,9 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Executes a command", notes = "Executes a remote command on a device and return the command output.", response = DeviceCommandOutput.class)
     public DeviceCommandOutput sendCommand(
-            @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
-            @ApiParam(value = "The timeout of the command execution", required = false) @QueryParam("timeout") @DefaultValue("") Long timeout,
-
+            @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
+            @ApiParam(value = "The timeout of the command execution") @QueryParam("timeout") Long timeout,
             @ApiParam(value = "The input command", required = true) DeviceCommandInput commandInput) {
         DeviceCommandOutput commandOutput = null;
 

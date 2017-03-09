@@ -11,19 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.google.common.base.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -39,9 +30,18 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Api("Roles")
 @Path("{scopeId}/roles")
@@ -56,6 +56,8 @@ public class Roles extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param name
+     *            The {@link Role} name in which to search results.
      * @param offset
      *            The result set offset.
      * @param limit
@@ -63,23 +65,24 @@ public class Roles extends AbstractKapuaResource {
      * @return The {@link RoleListResult} of all the roles associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Role list in the scope", //
-            notes = "Returns the list of all the roles associated to the current selected scope.", //
-            response = Role.class, //
+    @ApiOperation(value = "Gets the Role list in the scope",
+            notes = "Returns the list of all the roles associated to the current selected scope.",
+            response = Role.class,
             responseContainer = "RoleListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public RoleListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
-            @QueryParam("name") String name,//
-            @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) //
+    public RoleListResult simpleQuery(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The role name to filter results.") @QueryParam("name") String name,
+            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
         RoleListResult roleListResult = roleFactory.newRoleListResult();
         try {
             RoleQuery query = roleFactory.newQuery(scopeId);
 
             AndPredicate andPredicate = new AndPredicate();
-            if (name != null) {
+            if (!Strings.isNullOrEmpty(name)) {
                 andPredicate.and(new AttributePredicate<>(RolePredicates.NAME, name));
             }
             query.setPredicate(andPredicate);
@@ -100,15 +103,21 @@ public class Roles extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link RoleQuery} to used to filter results.
+     *            The {@link RoleQuery} to use to filter results.
      * @return The {@link RoleListResult} of all the result matching the given {@link RoleQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Queries the Roles",
+            notes = "Queries the Roles with the given RoleQuery parameter returning all matching Roles",
+            response = Role.class,
+            responseContainer = "RoleListResult")
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public RoleListResult query(@PathParam("scopeId") ScopeId scopeId, RoleQuery query) {
+    public RoleListResult query(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The RoleQuery to use to filter results.", required = true) RoleQuery query) {
         RoleListResult roleListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -125,15 +134,20 @@ public class Roles extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link RoleQuery} to used to filter results.
+     *            The {@link RoleQuery} to use to filter results.
      * @return The count of all the result matching the given {@link RoleQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Counts the Roles",
+            notes = "Counts the Roles with the given RoleQuery parameter returning the number of matching Roles",
+            response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, RoleQuery query) {
+    public CountResult count(
+            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The RoleQuery to use to filter count results", required = true) RoleQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -151,14 +165,15 @@ public class Roles extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to create the {@link Role}
      * @param roleCreator
-     *            Provides the information for the new Role to be created.
-     * @return The newly created Role object.
+     *            Provides the information for the new {@link Role} to be created.
+     * @return The newly created {@link Role} object.
      */
-    @ApiOperation(value = "Create an Role", notes = "Creates a new Role based on the information provided in RoleCreator parameter.", response = Role.class)
+    @ApiOperation(value = "Create a Role", notes = "Creates a new Role based on the information provided in RoleCreator parameter.", response = Role.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Role create(@PathParam("scopeId") ScopeId scopeId,
+    public Role create(
+            @ApiParam(value = "The ScopeId in which to create the Account", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Provides the information for the new Role to be created", required = true) RoleCreator roleCreator) {
         Role role = null;
         try {
@@ -173,15 +188,18 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Returns the Role specified by the "roleId" path parameter.
      *
+     * @param scopeId
+     *            The {@link ScopeId} of the requested {@link Role}.
      * @param roleId
-     *            The id of the requested Role.
-     * @return The requested Role object.
+     *            The id of the requested {@link Role}.
+     * @return The requested {@link Role} object.
      */
-    @ApiOperation(value = "Get an Role", notes = "Returns the Role specified by the \"roleId\" path parameter.", response = Role.class)
+    @ApiOperation(value = "Get a Role", notes = "Returns the Role specified by the \"roleId\" path parameter.", response = Role.class)
     @GET
     @Path("{roleId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public Role find(@PathParam("scopeId") ScopeId scopeId,
+    public Role find(
+            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Role", required = true) @PathParam("roleId") EntityId roleId) {
         Role role = null;
         try {
@@ -195,17 +213,22 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Updates the Role based on the information provided in the Role parameter.
      *
+     * @param scopeId
+     *            The ScopeId of the requested {@link Role}.
+     * @param roleId
+     *            The id of the requested {@link Role}
      * @param role
      *            The modified Role whose attributed need to be updated.
-     * @return The updated role.
+     * @return The updated {@link Role}.
      */
     @ApiOperation(value = "Update an Role", notes = "Updates a new Role based on the information provided in the Role parameter.", response = Role.class)
     @PUT
     @Path("{roleId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Role update(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("roleId") EntityId roleId,
+    public Role update(
+            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the requested Role", required = true) @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The modified Role whose attributed need to be updated", required = true) Role role) {
         Role roleUpdated = null;
         try {
@@ -222,14 +245,17 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Deletes the Role specified by the "roleId" path parameter.
      *
+     * @param scopeId
+     *            The ScopeId of the requested {@link Role}.
      * @param roleId
      *            The id of the Role to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
-    @ApiOperation(value = "Delete an Role", notes = "Deletes the Role specified by the \"roleId\" path parameter.")
+    @ApiOperation(value = "Delete a Role", notes = "Deletes the Role specified by the \"roleId\" path parameter.")
     @DELETE
     @Path("{roleId}")
-    public Response deleteRole(@PathParam("scopeId") ScopeId scopeId,
+    public Response deleteRole(
+            @ApiParam(value = "The ScopeId of the Account to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Role to be deleted", required = true) @PathParam("roleId") EntityId roleId) {
         try {
             roleService.delete(scopeId, roleId);
