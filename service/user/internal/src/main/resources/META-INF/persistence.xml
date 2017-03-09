@@ -29,5 +29,9 @@
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
 
+		<properties>
+			<property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />
+		</properties>
+
 	</persistence-unit>
 </persistence>

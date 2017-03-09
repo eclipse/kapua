@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,17 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
 import java.math.BigInteger;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
@@ -33,6 +36,10 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "group")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "name" }, //
+        factoryClass = GroupXmlRegistry.class, factoryMethod = "newGroup")
 public interface Group extends KapuaUpdatableEntity {
 
     @XmlTransient

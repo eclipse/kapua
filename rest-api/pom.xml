@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <!-- 
+	Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 
-	Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others All rights reserved. 
-
-	This program and the accompanying materials are made available under the 
-	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
-	and is available at http://www.eclipse.org/legal/epl-v10.html 
+	All rights reserved. This program and the accompanying materials
+	are made available under the terms of the Eclipse Public License v1.0
+	which accompanies this distribution, and is available at
+	http://www.eclipse.org/legal/epl-v10.html
 
 	Contributors: 
-		Eurotech - initial API and implementation 
-
+		Eurotech - initial API and implementation
+		Red Hat Inc
  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.kapua</groupId>
@@ -32,8 +32,8 @@
 
     <repositories>
         <repository>
-			<!-- This repository is needed for GXT.
-			We will remove it as soon as we migrate from GXT to some other UI framework. -->
+            <!-- This repository is needed for GXT. We will remove it as 
+                soon as we migrate from GXT to some other UI framework. -->
             <id>kapua_addons</id>
             <name>Kapua Addons Maven Repository</name>
             <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
@@ -84,7 +84,8 @@
 		</dependency>
 
 		<!-- -->
-		<!-- Same version of the Servlet APIs supported in Apache Tomcat 8.0.x -->
+        <!-- Same version of the Servlet APIs supported in Apache Tomcat 
+            8.0.x -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -144,6 +145,10 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-transport-test</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-bundle-internal</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-command-internal</artifactId>
@@ -160,10 +165,21 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>
+		
+		<!-- use log4j only for testing -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
 		</dependency>
+
+		<!-- re-declare as provided as our web container will provide this -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>api</finalName>
@@ -224,13 +240,18 @@
 						<configuration>
 							<target>
 								<echo>Swagger-ui: create doc dir</echo>
-								<copy todir="${project.build.directory}/${project.build.finalName}/doc">
-									<fileset dir="${project.build.directory}/tmp/swagger-ui/" />
+                                <copy
+                                    todir="${project.build.directory}/${project.build.finalName}/doc">
+                                    <fileset
+                                        dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
 								
-                                <echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
-                                <copy todir="${project.build.directory}/${project.build.finalName}/doc/lib">
-                                    <fileset dir="${project.build.directory}/tmp/swagger-ui-lib/" />
+                                <echo>Swagger-ui-lib: create lib dir for
+                                    swagger-ui</echo>
+                                <copy
+                                    todir="${project.build.directory}/${project.build.finalName}/doc/lib">
+                                    <fileset
+                                        dir="${project.build.directory}/tmp/swagger-ui-lib/" />
                                 </copy>
 							</target>
 						</configuration>
@@ -243,12 +264,13 @@
 						</goals>
 						<configuration>
 							<target>
-								<echo>Swagger-ui: replace url in index.html</echo>
-								<replaceregexp byline="true" 
+                                <echo>Swagger-ui: replace url in
+                                    index.html</echo>
+								<replaceregexp
+									byline="true" 
                                                file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
                                                match="/api/docs/swagger.json" 
                                                replace="/api/v1/swagger.json" />
-                                
 							</target>
 						</configuration>
 					</execution>

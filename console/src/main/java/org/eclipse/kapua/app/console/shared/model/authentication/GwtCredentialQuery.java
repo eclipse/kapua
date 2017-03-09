@@ -18,6 +18,7 @@ public class GwtCredentialQuery extends GwtQuery {
 
     private String username;
     private GwtCredentialType type;
+    private String userId;
 
     public String getUsername() {
         return username;
@@ -33,5 +34,13 @@ public class GwtCredentialQuery extends GwtQuery {
 
     public void setType(GwtCredentialType type) {
         this.type = type;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

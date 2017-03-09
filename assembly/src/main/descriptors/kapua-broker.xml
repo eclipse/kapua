@@ -134,6 +134,7 @@
             <outputDirectory>lib/extra</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <fileMode>0644</fileMode>
             <includes>
@@ -198,14 +199,6 @@
                 <include>${pom.groupId}:kapua-transport-api</include>
                 <include>${pom.groupId}:kapua-transport-jms</include>
                 <include>${pom.groupId}:kapua-transport-mqtt</include>
-            </includes>
-        </dependencySet>
-        
-        <dependencySet>
-            <outputDirectory>.</outputDirectory>
-            <outputFileNameMapping>jolokia-jvm-agent.jar</outputFileNameMapping>
-            <includes>
-                <include>org.jolokia:jolokia-jvm</include>
             </includes>
         </dependencySet>
 

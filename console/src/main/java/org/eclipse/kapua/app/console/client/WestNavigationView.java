@@ -335,7 +335,7 @@ public class WestNavigationView extends LayoutContainer {
                 cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
             }
             if (m_currentSession.hasCredentialReadPermission()) {
-                cloudResourcesTreeStore.add(newItem("credential", MSGS.credentials(), IconSet.KEY), false);
+                //cloudResourcesTreeStore.add(newItem("credential", MSGS.credentials(), IconSet.KEY), false);
             }
             if (m_currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);

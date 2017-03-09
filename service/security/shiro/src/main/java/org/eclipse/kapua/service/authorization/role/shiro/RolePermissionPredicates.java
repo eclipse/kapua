@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,22 +8,33 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
- * Query predicate attribute name for {@link RolePermission} entity.
+ * Query predicate attribute names for {@link RolePermission} entity.
  * 
  * @since 1.0.0
  * 
  */
-public class RolePermissionPredicates {
+public interface RolePermissionPredicates extends KapuaEntityPredicates {
 
     /**
      * Role id
      */
     public static final String ROLE_ID = "roleId";
+
+    /**
+     * The role permission domain
+     */
+    public static final String DOMAIN = "permission.domain";
+
+    /**
+     * The role permission action
+     */
+    public static final String ACTION = "permission.action";
+
 }

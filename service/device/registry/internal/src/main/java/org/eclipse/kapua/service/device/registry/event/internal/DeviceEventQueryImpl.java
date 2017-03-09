@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 
 /**
@@ -29,6 +31,8 @@ public class DeviceEventQueryImpl extends AbstractKapuaQuery<DeviceEvent> implem
      */
     private DeviceEventQueryImpl() {
         super();
+
+        setSortCriteria(new FieldSortCriteria(DeviceEventPredicates.RECEIVED_ON, SortOrder.DESCENDING));
     }
 
     /**

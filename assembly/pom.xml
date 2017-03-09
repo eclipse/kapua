@@ -20,7 +20,7 @@
 	</parent>
 
 	<artifactId>kapua-assembly</artifactId>
-	<name>${project.artifactId}</name>
+	<packaging>pom</packaging>
 
 	<properties>
 		<tomcat.version>8.0.38</tomcat.version>
@@ -38,7 +38,19 @@
 			<version>${tomcat.version}</version>
 			<type>tar.gz</type>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.apache.tomcat.extras</groupId>
+			<artifactId>tomcat-extras-juli</artifactId>
+			<version>${tomcat.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.tomcat.extras</groupId>
+			<artifactId>tomcat-extras-juli-adapters</artifactId>
+			<version>${tomcat.version}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-rest-api</artifactId>
@@ -247,6 +259,18 @@
 			<artifactId>jolokia-jvm</artifactId>
 			<version>1.3.4</version>
 			<classifier>agent</classifier>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -557,7 +581,7 @@
 								<from>${java.base.image}</from>
 								<runCmds>
 									<runCmd><![CDATA[
-									apk update && apk add curl && \
+									apk update && apk add curl tar && \
 									adduser -D -g "Eclipse Kapua" kapua && \
 									curl -s https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.3.4/jolokia-jvm-1.3.4-agent.jar -o /jolokia-jvm-agent.jar
 									]]></runCmd>
@@ -565,15 +589,55 @@
 							</build>
 						</image>
 						<image>
+							<name>${docker.account}/jetty-base</name>
+							<build>
+								<from>${docker.account}/java-base</from>
+								<runCmds>
+									<runCmd><![CDATA[
+									apk update && apk add bash && \
+									cd /home/kapua && \
+									curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
+									mkdir -p jetty && cd jetty && \
+									tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
+									rm ../jetty-distribution.tar.gz && \
+									chown -R kapua:kapua /home/kapua && \
+									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
+									chown kapua:kapua /var/lib/jetty && \
+									cd /var/lib/jetty && \
+									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback
+									]]></runCmd>
+								</runCmds>
+								<assembly>
+									<descriptor>/src/main/descriptors/jetty-base.xml</descriptor>
+									<basedir>/</basedir>
+								</assembly>
+								<workdir>/var/lib/jetty</workdir>
+								<entryPoint>
+									<exec>
+										<arg>/home/kapua/run-jetty</arg>
+									</exec>
+								</entryPoint>
+								<ports>
+									<port>8080</port>
+									<port>8778</port>
+								</ports>
+							</build>
+						</image>
+						<image>
 							<name>${docker.account}/kapua-sql</name>
 							<build>
 								<from>${docker.account}/java-base</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
+									<basedir>/</basedir>
+								</assembly>
 								<runCmds>
 									<runCmd><![CDATA[
 									mkdir -p /var/h2/data && \
 									chown kapua:kapua /var/h2/data && \
 									chmod a+rw /var/h2/data && \
 									cd /home/kapua && \
+									mkdir tmp && chmod a+rwx tmp && \
 									curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
 									]]></runCmd>
 								</runCmds>
@@ -588,18 +652,7 @@
 								<user>kapua</user>
 								<entryPoint>
 									<exec>
-										<arg>/usr/bin/java</arg>
-										<arg>-javaagent:/jolokia-jvm-agent.jar</arg>
-										<arg>-cp</arg><arg>/home/kapua/h2.jar</arg>
-										<arg>org.h2.tools.Server</arg>
-										<arg>-web</arg>
-										<arg>-webAllowOthers</arg>
-										<arg>-webPort</arg><arg>8181</arg>
-										<arg>-tcp</arg>
-										<arg>-tcpAllowOthers</arg>
-										<arg>-tcpPort</arg><arg>3306</arg>
-										<arg>-baseDir</arg>
-										<arg>/var/h2/data</arg>
+										<arg>/home/kapua/run-h2</arg>
 									</exec>
 								</entryPoint>
 							</build>
@@ -618,8 +671,8 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
-									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</ACTIVEMQ_OPTS>
+									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
+									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</ACTIVEMQ_OPTS>
 								</env>
 								<ports>
 									<port>1883</port>
@@ -653,8 +706,8 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
-									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</CATALINA_OPTS>
 								</env>
 								<ports>
 									<port>8080</port>
@@ -671,6 +724,20 @@
 							</build>
 						</image>
 						<image>
+							<name>${docker.account}/kapua-console-jetty</name>
+							<build>
+								<from>${docker.account}/jetty-base</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
+									<basedir>/var/lib/jetty</basedir>
+								</assembly>
+								<env>
+									<JAVA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</JAVA_OPTS>
+								</env>
+								<user>kapua</user>
+							</build>
+						</image>
+						<image>
 							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>${docker.account}/java-base</from>
@@ -684,8 +751,8 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/maven/jolokia-jvm-agent.jar</JAVA_OPTS>
-									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dcommons.db.schema=</CATALINA_OPTS>
+									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
+									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</CATALINA_OPTS>
 								</env>
 								<ports>
 									<port>8080</port>
@@ -699,6 +766,20 @@
 									find /maven -type d -exec chmod a+x {} +
 									]]></run>
 								</runCmds>
+							</build>
+						</image>
+						<image>
+							<name>${docker.account}/kapua-api-jetty</name>
+							<build>
+								<from>${docker.account}/jetty-base</from>
+								<assembly>
+									<descriptor>/src/main/descriptors/kapua-api-jetty.xml</descriptor>
+									<basedir>/var/lib/jetty</basedir>
+								</assembly>
+								<env>
+									<JAVA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</JAVA_OPTS>
+								</env>
+								<user>kapua</user>
 							</build>
 						</image>
 					</images>
@@ -715,7 +796,7 @@
 			</activation>
 			<build>
 				<plugins>
-	   				<plugin>
+					<plugin>
 		                <groupId>org.codehaus.mojo</groupId>
 		                <artifactId>exec-maven-plugin</artifactId>
 		                <version>1.1</version>

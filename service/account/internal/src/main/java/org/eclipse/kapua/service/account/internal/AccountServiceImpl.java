@@ -9,11 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.TypedQuery;
@@ -23,7 +21,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -34,6 +31,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -47,8 +45,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService {
-
-    private static final long serialVersionUID = -312489270279852500L;
 
     private static final Domain accountDomain = new AccountDomain();
 
@@ -168,7 +164,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
 
         //
         // Check if it has children
-        if (this.findChildAccountsTrusted(accountId).size() > 0) {
+        if (!findChildAccountsTrusted(accountId).isEmpty()) {
             throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "This account cannot be deleted. Delete its child first.");
         }
 
@@ -292,7 +288,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
     }
 
     @Override
-    public KapuaListResultImpl<Account> query(KapuaQuery<Account> query)
+    public AccountListResult query(KapuaQuery<Account> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -340,7 +336,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         return entityManagerSession.onResult(em -> AccountDAO.find(em, accountId));
     }
 
-    private List<Account> findChildAccountsTrusted(KapuaId accountId)
+    private AccountListResult findChildAccountsTrusted(KapuaId accountId)
             throws KapuaException {
         //
         // Argument Validation
@@ -348,9 +344,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         ArgumentValidator.notNull(accountId.getId(), "accountId.id");
 
         return entityManagerSession.onResult(em -> {
-            TypedQuery<Account> q = em.createNamedQuery("Account.findChildAccounts", Account.class);
-            q.setParameter("scopeId", accountId);
-            return q.getResultList();
+            AccountQuery query = new AccountQueryImpl(accountId);
+            return AccountDAO.query(em, query);
         });
     }
 }

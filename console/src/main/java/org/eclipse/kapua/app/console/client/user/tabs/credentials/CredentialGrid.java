@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.credential;
+package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
 
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -46,6 +48,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
     private static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
     private GwtCredentialQuery query;
+    private GwtUser selectedUser;
 
     private CredentialToolbar toolbar;
 
@@ -61,9 +64,13 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtCredential>> callback) {
-                gwtCredentialService.query((PagingLoadConfig) loadConfig,
-                        query,
-                        callback);
+                if (query.getUserId() == null) {
+                    callback.onSuccess(new BasePagingLoadResult<GwtCredential>(new ArrayList<GwtCredential>()));
+                } else {
+                    gwtCredentialService.query((PagingLoadConfig) loadConfig,
+                            query,
+                            callback);
+                }
             }
         };
     }
@@ -71,8 +78,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     @Override
     protected void selectionChangedEvent(GwtCredential selectedItem) {
         super.selectionChangedEvent(selectedItem);
-        getToolbar().getEditEntityButton().setEnabled(selectedItem != null && currentSession.hasCredentialUpdatePermission());
-        getToolbar().getDeleteEntityButton().setEnabled(selectedItem != null && currentSession.hasCredentialDeletePermission());
+        updateToolbarButtons();
     }
 
     @Override
@@ -106,6 +112,20 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
         columnConfig = new ColumnConfig("", MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
         columnConfigs.add(columnConfig);
+        
+        columnConfig = new ColumnConfig("createdOn", MSGS.gridCredentialColumnHeaderCreatedOn(), 200);
+        columnConfigs.add(columnConfig);
+        
+        columnConfig = new ColumnConfig("createdBy", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
+        columnConfigs.add(columnConfig);
+        
+        columnConfig = new ColumnConfig("modifiedOn", MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
+        columnConfig.setHidden(true);
+        columnConfigs.add(columnConfig);
+        
+        columnConfig = new ColumnConfig("modifiedBy", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
+        columnConfig.setHidden(true);
+        columnConfigs.add(columnConfig);
 
         return columnConfigs;
     }
@@ -126,5 +146,29 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
             toolbar = new CredentialToolbar(currentSession);
         }
         return toolbar;
+    }
+
+    public void setSelectedUser(GwtUser selectedUser) {
+        this.selectedUser = selectedUser;
+        query.setUserId(selectedUser.getId());
+        ((CredentialToolbar) getToolbar()).setSelectedUser(selectedUser);
+    }
+    
+    @Override
+    public void refresh() {
+        super.refresh();
+        updateToolbarButtons();
+    }
+    
+    @Override
+    public void refresh(GwtQuery query) {
+        setFilterQuery(query);
+        refresh();
+    }
+    
+    private void updateToolbarButtons(){
+        getToolbar().getAddEntityButton().setEnabled(selectedUser != null);
+        getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
+        getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
     }
 }

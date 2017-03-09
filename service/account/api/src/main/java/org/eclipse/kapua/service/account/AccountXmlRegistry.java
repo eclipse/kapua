@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
@@ -25,46 +24,46 @@ import org.eclipse.kapua.locator.KapuaLocator;
 @XmlRegistry
 public class AccountXmlRegistry {
 
-	private final KapuaLocator locator = KapuaLocator.getInstance();
-	private final AccountFactory factory = locator.getFactory(AccountFactory.class);
-	
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final AccountFactory factory = locator.getFactory(AccountFactory.class);
+
     /**
      * Creates a new account instance
      * 
      * @return
      */
-	public Account newAccount()
-	{
-		return factory.newAccount();
-	}
+    public Account newAccount() {
+        return factory.newAccount();
+    }
 
     /**
      * Creates a new organization instance
      * 
      * @return
      */
-	public Organization newOrganization()
-	{
-		return factory.newOrganization();
-	}
+    public Organization newOrganization() {
+        return factory.newOrganization();
+    }
 
     /**
      * Creates a new account creator instance
      * 
      * @return
      */
-	public AccountCreator newAccountCreator()
-	{
-		return factory.newAccountCreator(null, null);
-	}
+    public AccountCreator newAccountCreator() {
+        return factory.newAccountCreator(null, null);
+    }
 
     /**
      * Creates a new account list result instance
      * 
      * @return
      */
-	public AccountListResult newAccountListResult()
-	{
-		return factory.newAccountListResult();
-	}
+    public AccountListResult newAccountListResult() {
+        return factory.newAccountListResult();
+    }
+
+    public AccountQuery newQuery() {
+        return factory.newQuery(null);
+    }
 }

@@ -8,11 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -38,6 +38,18 @@ public interface DeviceEventService extends KapuaEntityService<DeviceEvent, Devi
      * @since 1.0.0
      */
     public DeviceEvent create(DeviceEventCreator creator, boolean updateDeviceLastEventId)
+            throws KapuaException;
+
+    /**
+     * Returns the {@link DeviceEventListResult} with elements matching the provided query.
+     * 
+     * @param query
+     *            The {@link DeviceEventQuery} used to filter results.
+     * @return The {@link DeviceEventListResult} with elements matching the query parameter.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    public DeviceEventListResult query(KapuaQuery<DeviceEvent> query)
             throws KapuaException;
 
 }

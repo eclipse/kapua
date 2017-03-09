@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import com.google.inject.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
@@ -21,15 +24,17 @@ import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.inject.Binding;
+import com.google.inject.ConfigurationException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 
 /**
  * Kapua locator implementation bases on Guice framework
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 public class GuiceLocatorImpl extends KapuaLocator {
 

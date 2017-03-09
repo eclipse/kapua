@@ -35,17 +35,12 @@
             <outputFileNameMapping>api.war</outputFileNameMapping>
             <unpack>false</unpack>
             <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <includes>
                 <include>${pom.groupId}:kapua-rest-api:war</include>
             </includes>
         </dependencySet>
-        <dependencySet>
-            <outputDirectory>.</outputDirectory>
-            <outputFileNameMapping>jolokia-jvm-agent.jar</outputFileNameMapping>
-            <includes>
-                <include>org.jolokia:jolokia-jvm</include>
-            </includes>
-        </dependencySet>
+
     </dependencySets>
 </assembly>

@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.credential;
+package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityDeleteDialog;

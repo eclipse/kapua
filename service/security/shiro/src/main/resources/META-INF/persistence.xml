@@ -33,6 +33,7 @@
 		<properties>
 			<!-- <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" /> -->
 			<property name="javax.persistence.lock.timeout" value="1000" />
+			<property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />
 		</properties>
 	</persistence-unit>
 
@@ -63,6 +64,7 @@
 
 		<properties>
 			<property name="javax.persistence.lock.timeout" value="1000" />
+			<property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />
 		</properties>
 	</persistence-unit>
 </persistence>

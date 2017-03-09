@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractKapuaResource {
 
     private static final Logger s_logger = LoggerFactory.getLogger(AbstractKapuaResource.class);
+
+    protected static final String DEFALUT_SCOPE_ID = "_"; // KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
     protected <T> T returnNotNullEntity(T entity) {
         if (entity == null) {

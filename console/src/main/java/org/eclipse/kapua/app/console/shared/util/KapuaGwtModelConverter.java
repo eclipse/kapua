@@ -323,7 +323,7 @@ public class KapuaGwtModelConverter {
         } else if (new CredentialDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.credential;
         } else if (new DatastoreDomain().getName().equals(domain)) {
-            gwtDomain = GwtDomain.data;
+            gwtDomain = GwtDomain.datastore;
         } else if (new DeviceDomain().getName().equals(domain)) {
             gwtDomain = GwtDomain.device;
         } else if (new DeviceConnectionDomain().getName().equals(domain)) {
@@ -413,6 +413,8 @@ public class KapuaGwtModelConverter {
         gwtAccount.setGwtOrganization(convert(account.getOrganization()));
         gwtAccount.setParentAccountId(account.getScopeId() != null ? account.getScopeId().toCompactId() : null);
         gwtAccount.setOptlock(account.getOptlock());
+        gwtAccount.set("orgName", account.getOrganization().getName());
+        gwtAccount.set("orgEmail", account.getOrganization().getEmail());
 
         try {
             gwtAccount.setBrokerURL(SystemUtils.getBrokerURI().toString());

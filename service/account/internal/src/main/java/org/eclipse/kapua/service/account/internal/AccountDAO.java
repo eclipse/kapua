@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,18 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
  * Account DAO
@@ -116,9 +115,9 @@ public class AccountDAO {
      * @return
      * @throws KapuaException
      */
-    public static KapuaListResultImpl<Account> query(EntityManager em, KapuaQuery<Account> accountQuery)
+    public static AccountListResult query(EntityManager em, KapuaQuery<Account> accountQuery)
             throws KapuaException {
-        return ServiceDAO.query(em, Account.class, AccountImpl.class, new KapuaListResultImpl<Account>(), accountQuery);
+        return ServiceDAO.query(em, Account.class, AccountImpl.class, new AccountListResultImpl(), accountQuery);
     }
 
     /**

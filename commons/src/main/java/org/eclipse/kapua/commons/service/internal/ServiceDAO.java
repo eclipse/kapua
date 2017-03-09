@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
@@ -575,7 +574,12 @@ public class ServiceDAO {
             throws KapuaException {
         Expression<Boolean> expr;
         String attrName = attrPred.getAttributeName();
+
+        // Parse attributes
         Object attrValue = attrPred.getAttributeValue();
+        if (attrValue instanceof KapuaId && !(attrValue instanceof KapuaEid)) {
+            attrValue = new KapuaEid((KapuaId) attrValue);
+        }
 
         // Fields to query properties of sub attributes of the root entity
         SingularAttribute attribute;

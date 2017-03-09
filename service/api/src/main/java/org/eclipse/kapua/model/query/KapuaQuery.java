@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.model.query;
 
@@ -16,9 +15,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.query.predicate.KapuaAndPredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
@@ -75,6 +77,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
 
     /**
@@ -94,7 +97,8 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @return The {@link KapuaQuery} {@link KapuaPredicate}s.
      * @since 1.0.0
      */
-    @XmlElement(name = "predicate")
+    @XmlTransient
+    // @XmlElement(name = "predicate")
     public KapuaPredicate getPredicate();
 
     /**
@@ -112,7 +116,8 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @return The {@link KapuaQuery} {@link KapuaSortCriteria}
      * @since 1.0.0
      */
-    @XmlElement(name = "sortCriteria")
+    @XmlTransient
+    // @XmlElement(name = "sortCriteria")
     public KapuaSortCriteria getSortCriteria();
 
     /**

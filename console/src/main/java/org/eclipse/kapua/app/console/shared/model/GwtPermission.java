@@ -27,7 +27,7 @@ public class GwtPermission extends KapuaBaseModel {
         account, //
         broker, //
         credential, //
-        data, //
+        datastore, //
         device, //
         device_connection, //
         device_event, //

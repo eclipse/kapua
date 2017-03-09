@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,50 +10,52 @@
  *     Eurotech - initial API and implementation
  *
  *******************************************************************************/
-package org.eclipse.kapua.app.console.client.credential;
+package org.eclipse.kapua.app.console.client.account.toolbar;
 
 import org.eclipse.kapua.app.console.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
 import com.google.gwt.user.client.Element;
 
-public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
-    public CredentialToolbar(GwtSession currentSession) {
+public class AccountGridToolbar extends EntityCRUDToolbar<GwtAccount> {
+
+    public AccountGridToolbar(GwtSession currentSession) {
         super(currentSession);
     }
-
+    
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
-        getEditEntityButton().disable();
-        getDeleteEntityButton().disable();
+        super.getEditEntityButton().disable();
+        super.getDeleteEntityButton().disable();
     }
-
+    
     @Override
     protected KapuaDialog getAddDialog() {
-        return new CredentialAddDialog(currentSession);
+        return new AccountAddDialog(currentSession);
     }
-
+    
     @Override
     protected KapuaDialog getEditDialog() {
-        GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
-        CredentialEditDialog dialog = null;
-        if (selectedCredential != null) {
-            dialog = new CredentialEditDialog(currentSession, selectedCredential);
+        GwtAccount selectedAccount = gridSelectionModel.getSelectedItem();
+        AccountEditDialog dialog = null;
+        if(selectedAccount != null){
+            dialog = new AccountEditDialog(currentSession, selectedAccount);
+        }
+        return dialog;
+    }
+    
+    @Override
+    protected KapuaDialog getDeleteDialog() {
+        GwtAccount selectedAccount = gridSelectionModel.getSelectedItem();
+        AccountDeleteDialog dialog = null;
+        if(selectedAccount != null){
+            dialog = new AccountDeleteDialog(selectedAccount);
         }
         return dialog;
     }
 
-    @Override
-    protected KapuaDialog getDeleteDialog() {
-        GwtCredential selectedCredential = gridSelectionModel.getSelectedItem();
-        CredentialDeleteDialog dialog = null;
-        if (selectedCredential != null) {
-            dialog = new CredentialDeleteDialog(selectedCredential);
-        }
-        return dialog;
-    }
 }

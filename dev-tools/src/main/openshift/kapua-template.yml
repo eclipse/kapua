@@ -1,0 +1,308 @@
+apiVersion: v1
+id: kapua-broker
+kind: Template
+name: kapua-broker
+metadata:
+  name: kapua-broker
+parameters:
+- name:           IMAGE_VERSION 
+  description:      The version of the image to use
+  value:            latest
+- name:           DOCKER_ACCOUNT
+  description:      The docker hub account name to pull from
+  value:            eclipse
+objects:
+
+# Deployment configs
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: sql
+    name: sql
+  spec:
+    replicas: 1
+    selector:
+      app: sql
+      deploymentconfig: sql
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: sql
+          deploymentconfig: sql
+      spec:
+        containers:
+        - image: ${DOCKER_ACCOUNT}/kapua-sql:${IMAGE_VERSION}
+          imagePullPolicy: Always
+          name: sql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          - containerPort: 8181
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3306
+            timeoutSeconds: 1
+          volumeMounts:
+          - mountPath: /opt/h2-data
+            name: sql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: sql-data
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: kapua-broker
+    name: kapua-broker
+  spec:
+    replicas: 1
+    selector:
+      app: kapua-broker
+      deploymentconfig: kapua-broker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.kapua-broker.image.entrypoint: '["/maven/bin/activemq","console"]'
+        labels:
+          app: kapua-broker
+          deploymentconfig: kapua-broker
+      spec:
+        containers:
+        - env:
+          - name: ACTIVEMQ_OPTS
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+          image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
+          imagePullPolicy: Always
+          name: kapua-broker
+          ports:
+          - containerPort: 1883
+            protocol: TCP
+          - containerPort: 61614
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 1883
+            timeoutSeconds: 1
+          volumeMounts:
+          - mountPath: /maven/data
+            name: kapua-broker-volume-1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: kapua-broker-volume-1
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: kapua-console
+    name: kapua-console
+  spec:
+    replicas: 1
+    selector:
+      app: kapua-console
+      deploymentconfig: kapua-console
+    template:
+      metadata:
+        labels:
+          app: kapua-console
+          deploymentconfig: kapua-console
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+          image: ${DOCKER_ACCOUNT}/kapua-console-jetty:${IMAGE_VERSION}
+          imagePullPolicy: Always
+          name: kapua-console
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: kapua-api
+    name: kapua-api
+  spec:
+    replicas: 1
+    selector:
+      app: kapua-api
+      deploymentconfig: kapua-api
+    template:
+      metadata:
+        labels:
+          app: kapua-api
+          deploymentconfig: kapua-api
+      spec:
+        containers:
+        - env:
+          - name: JAVA_OPTS
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+          image: ${DOCKER_ACCOUNT}/kapua-api-jetty:${IMAGE_VERSION}
+          imagePullPolicy: Always
+          name: kapua-console
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        
+# Services
+        
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: sql
+    labels:
+      app: sql
+  spec:
+    ports:
+    - name: h2-sql
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+    - name: h2-web
+      protocol: TCP
+      port: 8181
+      targetPort: 8181
+    selector:
+      app: sql
+      deploymentconfig: sql
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: kapua-broker
+    labels:
+      app: kapua-broker
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+  spec:
+    ports:
+    - name: mqtt-tcp
+      protocol: TCP
+      port: 1883
+      targetPort: 1883
+    - name: mqtt-websocket-tcp
+      protocol: TCP
+      port: 61614
+      targetPort: 61614
+    selector:
+      app: kapua-broker
+      deploymentconfig: kapua-broker
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: kapua-console
+    labels:
+      app: kapua-console
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+  spec:
+    ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: kapua-console
+      deploymentconfig: kapua-console
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: kapua-api
+    labels:
+      app: kapua-api
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+  spec:
+    ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: kapua-api
+      deploymentconfig: kapua-api
+
+# Routes
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: broker
+    labels:
+      app: kapua-broker
+  spec:
+    to:
+      kind: Service
+      name: kapua-broker
+    port:
+      targetPort: mqtt-websocket-tcp
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: console
+    labels:
+      app: kapua-console
+  spec:
+    to:
+      kind: Service
+      name: kapua-console
+    port:
+      targetPort: http
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: api
+    labels:
+      app: kapua-api
+  spec:
+    to:
+      kind: Service
+      name: kapua-api
+    port:
+      targetPort: http

@@ -46,7 +46,7 @@ INSERT INTO athz_role_permission
 
 		(1,  7, NOW(), 1, 1, 'device_management',	null, null, null),
 
-		(1,  8, NOW(), 1, 1, 'data', 				null, null, null),
+		(1,  8, NOW(), 1, 1, 'datastore', 				null, null, null),
 
 		(1,  9, NOW(), 1, 1, 'credential',			null, null, null),
 		(1,	10, NOW(), 1, 1, 'access_token',		null, null, null),

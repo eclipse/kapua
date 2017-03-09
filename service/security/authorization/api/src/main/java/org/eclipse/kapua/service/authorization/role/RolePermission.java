@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
@@ -37,9 +36,11 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
  * @since 1.0.0
  */
 @XmlRootElement(name = "rolePermission")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "roleId",
-        "permission" }, factoryClass = RolePermissionXmlRegistry.class, factoryMethod = "newRolePermission")
+        "permission" }, //
+        factoryClass = RolePermissionXmlRegistry.class, //
+        factoryMethod = "newRolePermission")
 public interface RolePermission extends KapuaEntity {
 
     public static final String TYPE = "rolePermission";

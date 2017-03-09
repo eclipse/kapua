@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
+import org.eclipse.kapua.app.console.client.user.tabs.credentials.CredentialGrid;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 
@@ -40,7 +41,7 @@ public class CredentialView extends EntityView<GwtCredential> {
     @Override
     public EntityGrid<GwtCredential> getEntityGrid(EntityView<GwtCredential> entityView, GwtSession currentSession) {
         if (credentialGrid == null) {
-            credentialGrid = new CredentialGrid(entityView, currentSession);
+            //credentialGrid = new CredentialGrid(entityView, currentSession);
         }
         return credentialGrid;
     }
