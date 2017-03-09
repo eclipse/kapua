@@ -8,11 +8,11 @@
 	http://www.eclipse.org/legal/epl-v10.html
 
 	Contributors: 
-		Eurotech - initial API and implementation 
+		Eurotech - initial API and implementation
 		Red Hat Inc
  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.kapua</groupId>
@@ -32,8 +32,8 @@
 
     <repositories>
         <repository>
-			<!-- This repository is needed for GXT.
-			We will remove it as soon as we migrate from GXT to some other UI framework. -->
+            <!-- This repository is needed for GXT. We will remove it as 
+                soon as we migrate from GXT to some other UI framework. -->
             <id>kapua_addons</id>
             <name>Kapua Addons Maven Repository</name>
             <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
@@ -84,7 +84,8 @@
 		</dependency>
 
 		<!-- -->
-		<!-- Same version of the Servlet APIs supported in Apache Tomcat 8.0.x -->
+        <!-- Same version of the Servlet APIs supported in Apache Tomcat 
+            8.0.x -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -239,13 +240,18 @@
 						<configuration>
 							<target>
 								<echo>Swagger-ui: create doc dir</echo>
-								<copy todir="${project.build.directory}/${project.build.finalName}/doc">
-									<fileset dir="${project.build.directory}/tmp/swagger-ui/" />
+                                <copy
+                                    todir="${project.build.directory}/${project.build.finalName}/doc">
+                                    <fileset
+                                        dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
 								
-                                <echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
-                                <copy todir="${project.build.directory}/${project.build.finalName}/doc/lib">
-                                    <fileset dir="${project.build.directory}/tmp/swagger-ui-lib/" />
+                                <echo>Swagger-ui-lib: create lib dir for
+                                    swagger-ui</echo>
+                                <copy
+                                    todir="${project.build.directory}/${project.build.finalName}/doc/lib">
+                                    <fileset
+                                        dir="${project.build.directory}/tmp/swagger-ui-lib/" />
                                 </copy>
 							</target>
 						</configuration>
@@ -258,7 +264,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<echo>Swagger-ui: replace url in index.html</echo>
+                                <echo>Swagger-ui: replace url in
+                                    index.html</echo>
 								<replaceregexp
 									byline="true" 
                                                file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
