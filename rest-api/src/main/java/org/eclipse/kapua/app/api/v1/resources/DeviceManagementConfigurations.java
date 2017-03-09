@@ -17,6 +17,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,6 +31,7 @@ import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -73,13 +75,30 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
              @QueryParam("timeout") @DefaultValue("") Long timeout) {
      DeviceConfiguration deviceConfiguration = null;
      try {
-         deviceConfiguration = get(scopeId, deviceId, null, timeout);
+         deviceConfiguration = getComponent(scopeId, deviceId, null, timeout);
      } catch (Throwable t) {
      handleException(t);
      }
      return returnNotNullEntity(deviceConfiguration);
      }
     
+     @PUT
+     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+     @ApiOperation(value = "Updates a device component configuration", //
+     notes = "Updates a device component configuration", response = DeviceConfiguration.class)
+     public Response update(
+             @PathParam("scopeId") ScopeId scopeId,
+             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
+             @QueryParam("timeout") @DefaultValue("") Long timeout,
+             @ApiParam(value = "The configuration to send to the device", required = true)DeviceConfiguration deviceConfiguration) {
+     try {
+         configurationService.put(scopeId, deviceId, deviceConfiguration, timeout);
+     } catch (Throwable t) {
+     handleException(t);
+     }
+    return  Response.ok().build();
+     }
+     
     /**
      * Returns the configuration of a device or the configuration of the OSGi component
      * identified with specified PID (service's persistent identity).
@@ -103,7 +122,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      "In the OSGi framework, the service's persistent identity is defined as the name attribute of the " +
      "Component Descriptor XML file; at runtime, the same value is also available " +
      "in the component.name and in the service.pid attributes of the Component Configuration.", response = DeviceConfiguration.class)
-     public DeviceConfiguration get(
+     public DeviceConfiguration getComponent(
              @PathParam("scopeId") ScopeId scopeId,
              @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
              @ApiParam(value = "An optional id of the component to get the configuration for", required = false) @PathParam("componentId") String componentId,
@@ -115,5 +134,25 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      handleException(t);
      }
      return returnNotNullEntity(deviceConfiguration);
+     }
+     
+     @PUT
+     @Path("{componentId}")
+     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+     @ApiOperation(value = "Updates a device component configuration", //
+     notes = "Updates a device component configuration", response = DeviceConfiguration.class)
+     public Response updateComponent(
+             @PathParam("scopeId") ScopeId scopeId,
+             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId, //
+             @ApiParam(value = "The component id to update", required = true) @PathParam("componentId") String componentId,
+             @QueryParam("timeout") @DefaultValue("") Long timeout,
+             @ApiParam(value = "The component configuration to send to the device", required = true)DeviceComponentConfiguration deviceComponentConfiguration) {
+     try {
+         deviceComponentConfiguration.setId(componentId);
+         configurationService.put(scopeId, deviceId, deviceComponentConfiguration, timeout);
+     } catch (Throwable t) {
+     handleException(t);
+     }
+    return  Response.ok().build();
      }
 }
