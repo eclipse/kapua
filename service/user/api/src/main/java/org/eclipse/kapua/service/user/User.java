@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
@@ -26,23 +25,22 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
  * @since 1.0
  * 
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "user")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "status",
-                       "displayName",
-                       "email",
-                       "phoneNumber",
-                       "userType",
-                       "externalId"
-                     },
-         factoryClass = UserXmlRegistry.class, 
-         factoryMethod = "newUser")
-public interface User extends KapuaNamedEntity
-{
+        "displayName",
+        "email",
+        "phoneNumber",
+        "userType",
+        "externalId"
+}, //
+        factoryClass = UserXmlRegistry.class, //
+        factoryMethod = "newUser")
+public interface User extends KapuaNamedEntity {
+
     public static final String TYPE = "user";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -105,7 +103,7 @@ public interface User extends KapuaNamedEntity
      * @param phoneNumber
      */
     public void setPhoneNumber(String phoneNumber);
-    
+
     /**
      * Get the user type
      * 
@@ -120,7 +118,7 @@ public interface User extends KapuaNamedEntity
      * @param phoneNumber
      */
     public void setUserType(UserType userType);
-    
+
     /**
      * Get the external ID
      * 

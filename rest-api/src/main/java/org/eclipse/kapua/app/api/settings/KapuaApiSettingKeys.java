@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.app.api.settings;
 
@@ -22,7 +21,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum KapuaApiSettingKeys implements SettingKey {
     API_KEY("api.key"), //
-    API_AUTHENTICATION_HEADER_ACCESS_TOKEN_NAME("api.authentication.header.accessToken.name")//
+    API_PATH_PARAM_SCOPEID_WILDCARD("api.path.param.scopeId.wildcard"),
     ;
 
     private String key;

@@ -8,14 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.model.KapuaUpdatableEntityPredicates;
 
-public class UserPredicates {
+public interface UserPredicates extends KapuaUpdatableEntityPredicates {
+
     /**
      * User name
      */
-    public static final String USER_NAME = "name";
+    public static final String NAME = "name";
 }

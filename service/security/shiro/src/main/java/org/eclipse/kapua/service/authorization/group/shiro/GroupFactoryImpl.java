@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 
 /**
@@ -29,6 +30,16 @@ public class GroupFactoryImpl implements GroupFactory {
     @Override
     public GroupCreator newCreator(KapuaId scopeId, String name) {
         return new GroupCreatorImpl(scopeId, name);
+    }
+
+    @Override
+    public Group newGroup(KapuaId scopeId) {
+        return new GroupImpl(scopeId);
+    }
+
+    @Override
+    public GroupListResult newGroupListResult() {
+        return new GroupListResultImpl();
     }
 
     @Override

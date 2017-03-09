@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 
@@ -33,6 +34,16 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     }
 
     @Override
+    public DeviceConnection newDeviceConnection() {
+        return new DeviceConnectionImpl();
+    }
+
+    @Override
+    public DeviceConnectionListResult newDeviceConnectionListResult() {
+        return new DeviceConnectionListResultImpl();
+    }
+
+    @Override
     public DeviceConnectionQuery newQuery(KapuaId scopeId) {
         return new DeviceConnectionQueryImpl(scopeId);
     }
@@ -41,4 +52,5 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     public DeviceConnectionSummary newConnectionSummary() {
         return new DeviceConnectionSummaryImpl();
     }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,14 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.model.query;
 
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,6 +34,7 @@ import org.eclipse.kapua.model.KapuaEntity;
  * 
  */
 @XmlRootElement(name = "result")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "limitExceeded", "size", "items" })
 public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializable {
 

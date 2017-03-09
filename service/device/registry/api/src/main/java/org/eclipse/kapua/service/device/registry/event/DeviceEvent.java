@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,24 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
-
-import javax.xml.bind.annotation.*;
 
 /**
  * Device event entity definition.
@@ -28,7 +33,7 @@ import javax.xml.bind.annotation.*;
  * @since 1.0
  *
  */
-@XmlRootElement(name = "event")
+@XmlRootElement(name = "deviceEvent")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "deviceId",
         "sentOn",
@@ -37,15 +42,12 @@ import javax.xml.bind.annotation.*;
         "resource",
         "action",
         "responseCode",
-        "eventMessage" },
-        factoryClass = DeviceEventXmlRegistry.class,
-        factoryMethod = "newDeviceEvent")
-public interface DeviceEvent extends KapuaEntity
-{
+        "eventMessage" }, factoryClass = DeviceEventXmlRegistry.class, factoryMethod = "newDeviceEvent")
+public interface DeviceEvent extends KapuaEntity {
+
     public static final String TYPE = "dvce-event";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 
@@ -55,6 +57,7 @@ public interface DeviceEvent extends KapuaEntity
      * @return
      */
     @XmlElement(name = "deviceId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getDeviceId();
 
     /**

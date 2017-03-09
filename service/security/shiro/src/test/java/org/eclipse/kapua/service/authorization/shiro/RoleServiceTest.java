@@ -8,12 +8,10 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +58,7 @@ public class RoleServiceTest extends KapuaTest {
 
     @AfterClass
     public static void afterClass() throws KapuaException {
-        //        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
+        // scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
     }
 
     // Tests
@@ -242,7 +240,7 @@ public class RoleServiceTest extends KapuaTest {
             //
             // Query
             RoleQuery query = new RoleQueryImpl(scope);
-            query.setPredicate(new AttributePredicate<String>(RolePredicates.ROLE_NAME, role.getName()));
+            query.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, role.getName()));
             RoleListResult rolesFound = roleService.query(query);
             long rolesCount = roleService.count(query);
 
