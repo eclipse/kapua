@@ -37,11 +37,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.Button;
 import org.eclipse.kapua.app.console.client.ui.button.EditButton;
-import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
@@ -63,15 +60,11 @@ public class AccountDetailsView extends LayoutContainer {
 
     private GwtAccount selectedAccount;
     private Button m_editButton;
-    private LayoutContainer m_bodyLayoutContainer;
 
     private boolean m_dirty;
     private boolean m_initialized;
 
     private FormPanel m_formPanel;
-    private TabItem settingsTabItem;
-    private AccountTabConfiguration settingsTab;
-    private TabPanel m_tabPanel;
     private Grid<GwtGroupedNVPair> m_grid;
     private GroupingStore<GwtGroupedNVPair> m_store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
@@ -95,11 +88,10 @@ public class AccountDetailsView extends LayoutContainer {
         // Borderlayout that expands to the whole screen
         setLayout(new FitLayout());
 
-        m_bodyLayoutContainer = new LayoutContainer();
+        LayoutContainer m_bodyLayoutContainer = new LayoutContainer();
         m_bodyLayoutContainer.setBorders(true);
         m_bodyLayoutContainer.setLayout(new BorderLayout());
         m_bodyLayoutContainer.setScrollMode(Scroll.AUTO);
-        // TODO Fix background
         m_bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
         m_bodyLayoutContainer.setStyleAttribute("padding", "0px");
 
@@ -127,23 +119,12 @@ public class AccountDetailsView extends LayoutContainer {
         southData.setHideCollapseTool(true);
         southData.setSplit(true);
         southData.setMargins(new Margins(5, 0, 0, 0));
-        m_tabPanel = new TabPanel();
+        TabPanel m_tabPanel = new TabPanel();
         m_tabPanel.setPlain(true);
         m_tabPanel.setBorders(false);
         m_tabPanel.setBodyBorder(false);
-        settingsTab = new AccountTabConfiguration(m_currentSession);
-        settingsTab.setBorders(false);
-        settingsTabItem = new TabItem("Settings", new KapuaIcon(IconSet.COG));      // TODO externalize string
-        settingsTabItem.setBorders(false);
-        settingsTabItem.setLayout(new FitLayout());
-        settingsTabItem.addListener(Events.Select, new Listener<ComponentEvent>() {
-
-            public void handleEvent(ComponentEvent be) {
-                settingsTab.refresh();
-            }
-        });
-        settingsTab.setAccount(selectedAccount);
-        settingsTabItem.add(settingsTab);
+        AccountTabConfiguration settingsTabItem = new AccountTabConfiguration(m_currentSession);
+        settingsTabItem.setEntity(selectedAccount);
         m_tabPanel.add(settingsTabItem);
         m_bodyLayoutContainer.add(m_tabPanel, southData);
 
@@ -192,11 +173,9 @@ public class AccountDetailsView extends LayoutContainer {
     }
 
     private ToolBar getAccountsToolBar() {
-        ToolBar accountsToolBar = null;
+        ToolBar accountsToolBar = new ToolBar();
+        accountsToolBar.setHeight("27px");
         if (m_currentSession.hasAccountUpdatePermission()) {
-            accountsToolBar = new ToolBar();
-            accountsToolBar.setHeight("27px");
-
             //
             // Edit Account Button
             m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {

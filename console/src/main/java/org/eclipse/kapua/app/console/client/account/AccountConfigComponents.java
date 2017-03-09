@@ -87,11 +87,11 @@ public class AccountConfigComponents extends LayoutContainer {
     private TreeStore<ModelData> m_treeStore;
     private TreePanel<ModelData> m_tree;
 
-    protected boolean resetProcess;
+    private boolean resetProcess;
 
-    protected boolean applyProcess;
+    private boolean applyProcess;
 
-    public AccountConfigComponents(GwtSession currentSession,
+    AccountConfigComponents(GwtSession currentSession,
             AccountTabConfiguration tabConfig) {
         m_currentSession = currentSession;
         m_tabConfig = tabConfig;
@@ -220,9 +220,11 @@ public class AccountConfigComponents extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
-                m_tree.mask(MSGS.loading());
-                gwtAccountService.findServiceConfigurations(m_selectedAccount.getId(), callback);
-                m_dirty = false;
+                if (m_selectedAccount != null) {
+                    m_tree.mask(MSGS.loading());
+                    gwtAccountService.findServiceConfigurations(m_selectedAccount.getId(), callback);
+                    m_dirty = false;
+                }
             }
         };
 
@@ -250,19 +252,18 @@ public class AccountConfigComponents extends LayoutContainer {
             @Override
             public void handleEvent(BaseEvent be) {
 
-                final BaseEvent theEvent = be;
                 SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (m_devConfPanel != null && m_devConfPanel.isDirty()) {
 
                     // cancel the event first
-                    theEvent.setCancelled(true);
+                    be.setCancelled(true);
 
                     // need to reselect the current entry
                     // as the BeforeSelect event cleared it
                     // we need to do this without raising events
-                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) m_tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = m_tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, m_devConfPanel.getConfiguration());
                     selectionModel.setFiresEvents(true);
@@ -288,7 +289,7 @@ public class AccountConfigComponents extends LayoutContainer {
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
                     // to avoid an infinite loop as BeforeSelect would be invoked again.
-                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) m_tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = m_tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, componentToSwitchTo);
 
@@ -321,7 +322,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
     }
 
-    public void refreshConfigPanel(GwtConfigComponent configComponent) {
+    private void refreshConfigPanel(GwtConfigComponent configComponent) {
         m_apply.setEnabled(false);
         m_reset.setEnabled(false);
 
@@ -330,7 +331,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
         if (configComponent != null) {
 
-            m_devConfPanel = new AccountConfigPanel(configComponent, m_currentSession);
+            m_devConfPanel = new AccountConfigPanel(configComponent, m_currentSession, m_tabConfig.getSelectedEntity());
             m_devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
@@ -344,7 +345,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
     }
 
-    public void apply() {
+    private void apply() {
         if (!m_devConfPanel.isValid()) {
             MessageBox mb = new MessageBox();
             mb.setIcon(MessageBox.ERROR);
@@ -369,7 +370,7 @@ public class AccountConfigComponents extends LayoutContainer {
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
                             // mark the whole config panel dirty and for reload
-                            m_tabConfig.setAccount(m_selectedAccount);
+                            m_tabConfig.setEntity(m_selectedAccount);
 
                             m_devConfPanel.mask(MSGS.applying());
                             m_tree.mask();
@@ -492,7 +493,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private class DataLoadListener extends KapuaLoadListener {
 
-        public DataLoadListener() {
+        DataLoadListener() {
         }
 
         public void loaderLoad(LoadEvent le) {
