@@ -112,17 +112,17 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
         columnConfig = new ColumnConfig("", MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
         columnConfigs.add(columnConfig);
-        
+
         columnConfig = new ColumnConfig("createdOn", MSGS.gridCredentialColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
-        
+
         columnConfig = new ColumnConfig("createdBy", MSGS.gridCredentialColumnHeaderCreatedBy(), 200);
         columnConfigs.add(columnConfig);
-        
+
         columnConfig = new ColumnConfig("modifiedOn", MSGS.gridCredentialColumnHeaderModifiedOn(), 200);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
-        
+
         columnConfig = new ColumnConfig("modifiedBy", MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
@@ -150,23 +150,25 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     public void setSelectedUser(GwtUser selectedUser) {
         this.selectedUser = selectedUser;
-        query.setUserId(selectedUser.getId());
+        if (selectedUser != null) {
+            query.setUserId(selectedUser.getId());
+        }
         ((CredentialToolbar) getToolbar()).setSelectedUser(selectedUser);
     }
-    
+
     @Override
     public void refresh() {
         super.refresh();
         updateToolbarButtons();
     }
-    
+
     @Override
     public void refresh(GwtQuery query) {
         setFilterQuery(query);
         refresh();
     }
-    
-    private void updateToolbarButtons(){
+
+    private void updateToolbarButtons() {
         getToolbar().getAddEntityButton().setEnabled(selectedUser != null);
         getToolbar().getEditEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialUpdatePermission());
         getToolbar().getDeleteEntityButton().setEnabled(getSelectionModel().getSelectedItem() != null && currentSession.hasCredentialDeletePermission());
