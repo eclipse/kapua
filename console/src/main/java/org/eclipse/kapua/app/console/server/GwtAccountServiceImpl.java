@@ -8,15 +8,28 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
+import static java.util.Base64.getEncoder;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
@@ -29,8 +42,6 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListItem;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
@@ -44,32 +55,27 @@ import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.account.*;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountQuery;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.util.*;
-
-import static java.util.Base64.getEncoder;
 
 /**
  * The server side implementation of the RPC service.
  */
 public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
 
-    @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
     private static final long serialVersionUID = 3314502846487119577L;
 
@@ -426,7 +432,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            Class configurableServiceClass = Class.forName(configComponent.get("componentId"));
+            Class configurableServiceClass = Class.forName(configComponent.<String>get("componentId"));
             KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
 
             // execute the update
