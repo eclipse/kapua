@@ -246,8 +246,7 @@
                 </executions>
 
                 <configuration>
-                    <!-- This optimize code but slows GWT compile if set to 'false' -->
-                    <draftCompile>true</draftCompile>
+                    <module>org.eclipse.kapua.app.console.console</module>
 
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
