@@ -25,6 +25,7 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
 
     private static final Domain collisionEntityDomain = new CollisionEntityDomain();
 
+    @SuppressWarnings("unused")
     private static final long serialVersionUID = -5296593780771944081L;
 
     public CollisionServiceImpl() {
