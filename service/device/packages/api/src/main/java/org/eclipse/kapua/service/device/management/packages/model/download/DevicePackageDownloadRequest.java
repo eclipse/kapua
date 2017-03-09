@@ -11,10 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.download;
 
-import org.eclipse.kapua.service.device.management.packages.model.DevicePackageXmlRegistry;
-
-import javax.xml.bind.annotation.*;
 import java.net.URI;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackageXmlRegistry;
 
 /**
  * Device package download request definition.
@@ -30,11 +35,11 @@ import java.net.URI;
         "version",
         "install",
         "reboot",
-        "rebootDelay"},
-        factoryClass = DevicePackageXmlRegistry.class,
+        "rebootDelay"
+}, //
+        factoryClass = DevicePackageXmlRegistry.class, //
         factoryMethod = "newDevicePackageDownloadRequest")
-public interface DevicePackageDownloadRequest
-{
+public interface DevicePackageDownloadRequest {
 
     /**
      * Get the download URI
