@@ -51,39 +51,39 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "eid", column = @Column(name = "device_id", nullable = false, updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "device_id", nullable = false, updatable = false))
     })
-    private KapuaEid          deviceId;
+    private KapuaEid deviceId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "received_on", updatable = false, nullable = false)
-    private Date              receivedOn;
+    private Date receivedOn;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent_on", updatable = false)
-    private Date              sentOn;
+    private Date sentOn;
 
     @Embedded
     @AttributeOverrides({
-                          @AttributeOverride(name = "longitude", column = @Column(name = "pos_longitude", updatable = false)),
-                          @AttributeOverride(name = "latitude", column = @Column(name = "pos_latitude", updatable = false)),
-                          @AttributeOverride(name = "altitude", column = @Column(name = "pos_altitude", updatable = false)),
-                          @AttributeOverride(name = "precision", column = @Column(name = "pos_precision", updatable = false)),
-                          @AttributeOverride(name = "heading", column = @Column(name = "pos_heading", updatable = false)),
-                          @AttributeOverride(name = "speed", column = @Column(name = "pos_speed", updatable = false)),
-                          @AttributeOverride(name = "timestamp", column = @Column(name = "pos_timestamp", updatable = false)),
-                          @AttributeOverride(name = "satellites", column = @Column(name = "pos_satellites", updatable = false)),
-                          @AttributeOverride(name = "status", column = @Column(name = "pos_status", updatable = false))
+            @AttributeOverride(name = "longitude", column = @Column(name = "pos_longitude", updatable = false)),
+            @AttributeOverride(name = "latitude", column = @Column(name = "pos_latitude", updatable = false)),
+            @AttributeOverride(name = "altitude", column = @Column(name = "pos_altitude", updatable = false)),
+            @AttributeOverride(name = "precision", column = @Column(name = "pos_precision", updatable = false)),
+            @AttributeOverride(name = "heading", column = @Column(name = "pos_heading", updatable = false)),
+            @AttributeOverride(name = "speed", column = @Column(name = "pos_speed", updatable = false)),
+            @AttributeOverride(name = "timestamp", column = @Column(name = "pos_timestamp", updatable = false)),
+            @AttributeOverride(name = "satellites", column = @Column(name = "pos_satellites", updatable = false)),
+            @AttributeOverride(name = "status", column = @Column(name = "pos_status", updatable = false))
     })
     private KapuaPositionImpl position;
 
     @Basic
     @Column(name = "resource", updatable = false, nullable = false)
-    private String            resource;
+    private String resource;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "action", updatable = false, nullable = false)
-    private KapuaMethod       action;
+    private KapuaMethod action;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "response_code", updatable = false, nullable = false)
@@ -91,7 +91,7 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     @Lob
     @Column(name = "event_message", updatable = false, nullable = false)
-    private String            eventMessage;
+    private String eventMessage;
 
     /**
      * Constructor
@@ -134,7 +134,7 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     @Override
     public void setDeviceId(KapuaId deviceId) {
-        this.deviceId = deviceId != null ? (deviceId instanceof KapuaEid ?  (KapuaEid) deviceId : new KapuaEid(deviceId)) : null;
+        this.deviceId = deviceId != null ? (deviceId instanceof KapuaEid ? (KapuaEid) deviceId : new KapuaEid(deviceId)) : null;
     }
 
     @Override
