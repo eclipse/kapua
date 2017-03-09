@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
-<!--
+<!-- 
 	Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
-   
+
 	All rights reserved. This program and the accompanying materials
 	are made available under the terms of the Eclipse Public License v1.0
 	which accompanies this distribution, and is available at
 	http://www.eclipse.org/legal/epl-v10.html
-   
-	Contributors:
-		Eurotech - initial API and implementation
+
+	Contributors: 
+		Eurotech - initial API and implementation 
 		Red Hat Inc
  -->
 
@@ -30,19 +30,19 @@
 		<swagger-ui.version>2.1.4</swagger-ui.version>
 	</properties>
 
-	<repositories>
-		<repository>
+    <repositories>
+        <repository>
 			<!-- This repository is needed for GXT.
 			We will remove it as soon as we migrate from GXT to some other UI framework. -->
-			<id>kapua_addons</id>
-			<name>Kapua Addons Maven Repository</name>
-			<url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
+            <id>kapua_addons</id>
+            <name>Kapua Addons Maven Repository</name>
+            <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 	<dependencies>
 		<!-- -->
@@ -205,24 +205,24 @@
 							</artifactItems>
 						</configuration>
 					</execution>
-					<execution>
-						<id>Create swagger ui libs</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>io.swagger</groupId>
-									<artifactId>swagger-ui-lib</artifactId>
-									<version>${swagger-ui.version}</version>
-									<!-- <overWrite>true</overWrite> -->
-									<outputDirectory>${project.build.directory}/tmp/</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
+                    <execution>
+                        <id>Create swagger ui libs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>io.swagger</groupId>
+                                    <artifactId>swagger-ui-lib</artifactId>
+                                    <version>${swagger-ui.version}</version>
+                                    <!-- <overWrite>true</overWrite> -->
+                                    <outputDirectory>${project.build.directory}/tmp/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -243,10 +243,10 @@
 									<fileset dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
 								
-								<echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
-								<copy todir="${project.build.directory}/${project.build.finalName}/doc/lib">
-									<fileset dir="${project.build.directory}/tmp/swagger-ui-lib/" />
-								</copy>
+                                <echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
+                                <copy todir="${project.build.directory}/${project.build.finalName}/doc/lib">
+                                    <fileset dir="${project.build.directory}/tmp/swagger-ui-lib/" />
+                                </copy>
 							</target>
 						</configuration>
 					</execution>
@@ -261,9 +261,9 @@
 								<echo>Swagger-ui: replace url in index.html</echo>
 								<replaceregexp
 									byline="true" 
-									file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
-									match="/api/docs/swagger.json" 
-									replace="/api/v1/swagger.json" />
+                                               file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
+                                               match="/api/docs/swagger.json" 
+                                               replace="/api/v1/swagger.json" />
 							</target>
 						</configuration>
 					</execution>
