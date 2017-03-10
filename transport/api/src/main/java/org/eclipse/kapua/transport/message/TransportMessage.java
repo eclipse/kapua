@@ -16,14 +16,10 @@ import org.eclipse.kapua.message.Message;
 
 /**
  * Marker interface for all messages at the transport layer.
- * 
- * @author alberto.codutti
  *
- * @param <C>
- *            The {@link TransportChannel} for this {@link TransportMessage}
- * @param <P>
- *            The {@link TransportPayload} for this {@link TransportMessage}
- * 
+ * @param <C> The {@link TransportChannel} for this {@link TransportMessage}
+ * @param <P> The {@link TransportPayload} for this {@link TransportMessage}
+ * @author alberto.codutti
  * @since 1.0.0
  */
 @SuppressWarnings("rawtypes")

@@ -16,10 +16,10 @@ import org.eclipse.kapua.message.Channel;
 
 /**
  * Marker interface for all channel at the transport layer.
- * 
- * @author alberto.codutti
  *
+ * @author alberto.codutti
  * @since 1.0.0
  */
 public interface TransportChannel extends Channel {
+
 }
