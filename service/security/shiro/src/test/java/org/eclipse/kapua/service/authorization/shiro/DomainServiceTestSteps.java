@@ -117,7 +117,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             if (tmpDom.getActionSet() != null) {
                 domainCreator.setActions(tmpDom.getActionSet());
             }
-            KapuaSecurityUtils.doPriviledge(() -> {
+            KapuaSecurityUtils.doPrivileged(() -> {
                 try {
                     domain = domainService.create(domainCreator);
                 } catch (KapuaException ex) {
@@ -138,7 +138,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I search for the last created domain$")
     public void findDomainByRememberedId()
             throws KapuaException {
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             domain = domainService.find(null, domainId);
             return null;
         });
@@ -147,7 +147,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I delete the last created domain$")
     public void deleteLastCreatedDomain()
             throws KapuaException {
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             domainService.delete(null, domainId);
             return null;
         });
@@ -156,7 +156,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I try to delete domain with a random ID$")
     public void deleteRandomDomainId()
             throws KapuaException {
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             try {
                 exceptionCaught = false;
                 domainService.delete(null, generateId());
@@ -170,7 +170,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I count the domain entries in the database$")
     public void countDomainEntries()
             throws KapuaException {
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             count = domainService.count(domainFactory.newQuery());
             return null;
         });
@@ -181,7 +181,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery();
         query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, name));
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             domainList = domainService.query(query);
             return null;
         });
@@ -194,7 +194,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery();
         query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, service_name));
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             domainList = domainService.query(query);
             return null;
         });
@@ -205,7 +205,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I search for the domains for the service \"(.+)\"$")
     public void findDomainsByServiceName(String serviceName)
             throws KapuaException {
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             domain = domainService.findByServiceName(serviceName);
             return null;
         });
@@ -239,7 +239,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void checkDomainComparison()
             throws KapuaException {
 
-        KapuaSecurityUtils.doPriviledge(() -> {
+        KapuaSecurityUtils.doPrivileged(() -> {
             DomainCreator tmpCreator = domainFactory.newCreator("name_1", "svc_1");
             HashSet<Actions> tmpAct = new HashSet<>();
             tmpAct.add(Actions.read);
