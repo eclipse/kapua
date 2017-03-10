@@ -25,11 +25,6 @@ For running Kapua on an OpenShift cluster you will need to:
 1. Create a new project: `oc new-project eclipse-kapua`
 1. Run: `dev-tools/src/main/openshift/openshift-deploy.sh`
 
-{% hint style='working' %}
-For the moment you will need to provide a specific Docker Hub repository
-for downloading Kapua images: `DOCKER_ACCOUNT=hekonsek dev-tools/src/main/openshift/openshift-deploy.sh`
-{% endhint %}
-
 If you need a local instance of OpenShift you can create one on a local 64bit Linux by:
 
     oc cluster up
