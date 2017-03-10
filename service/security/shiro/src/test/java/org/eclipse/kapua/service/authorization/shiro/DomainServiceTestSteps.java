@@ -97,7 +97,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         groupService = new GroupServiceImpl();
         groupFactory = new GroupFactoryImpl();
 
-        // Clean up the database. A clean slate is needed for truly independent 
+        // Clean up the database. A clean slate is needed for truly independent
         // test case executions!
         dropDatabase();
         setupDatabase();
