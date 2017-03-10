@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;

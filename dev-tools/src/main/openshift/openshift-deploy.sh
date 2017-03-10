@@ -12,8 +12,10 @@
 
 set -e
 
+. openshift-common.sh
+
  : OPENSHIFT_PROJECT_NAME=${OPENSHIFT_PROJECT_NAME:=eclipse-kapua}
- : DOCKER_ACCOUNT=${DOCKER_ACCOUNT:=eclipse}
+ : DOCKER_ACCOUNT=${DOCKER_ACCOUNT:=kapua}
 
 # print error and exit when necessary
 
@@ -21,15 +23,15 @@ die() { printf "$@" "\n" 1>&2 ; exit 1; }
 
 # test if the project is already created ... fail otherwise 
 
-oc describe "project/$OPENSHIFT_PROJECT_NAME" &>/dev/null || die "Project '$OPENSHIFT_PROJECT_NAME' not created or OpenShift is unreachable. Try with:\n\n\toc new-project eclipse-kapua\n\n"
+$OC describe "project/$OPENSHIFT_PROJECT_NAME" &>/dev/null || die "Project '$OPENSHIFT_PROJECT_NAME' not created or OpenShift is unreachable. Try with:\n\n\toc new-project eclipse-kapua\n\n"
 
 ### Create Kapua from template
 
 echo Creating Kapua from template ...
-oc new-app -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT"
+$OC new-app -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT"
 echo Creating Kapua from template ... done!
 
-### ElasticSearc
+### ElasticSearch
 
 echo Creating ElasticSearch server...
 
@@ -37,7 +39,7 @@ if [ -z "${ELASTIC_SEARCH_MEMORY}" ]; then
   ELASTIC_SEARCH_MEMORY=512M
 fi
 
-oc new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch:2.4 -n "$OPENSHIFT_PROJECT_NAME"
+$OC new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch:2.4 -n "$OPENSHIFT_PROJECT_NAME"
 
 echo ElasticSearch server created
 

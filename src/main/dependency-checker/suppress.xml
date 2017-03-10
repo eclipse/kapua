@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions
+    xmlns="https://www.owasp.org/index.php/OWASP_Dependency_Check_Suppression"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.owasp.org/index.php/OWASP_Dependency_Check_Suppression https://raw.githubusercontent.com/jeremylong/DependencyCheck/master/dependency-check-core/src/main/resources/schema/suppression.xsd"
+    >
+    <suppress>
+        <notes>Ignore 'com.allen-sauer.gwt.log:gwt-log:3.1.8'</notes>
+        <sha1>bf4765735ce58de89e8247eb22fee4e48a8da8ce</sha1>
+        <cpe>cpe:/a:google:web_toolkit:3.1.8</cpe>
+    </suppress>
+</suppressions>

@@ -53,3 +53,40 @@ After you installed brew you can install npm by:
 ## Building the docs
 
 To build documentation, run `gitbook build` from either `docs/developer-guide/en` or `docs/user-manual/en`
+
+## Continuous integration
+ 
+Kapua is running CI builds against two public environments:
+
+- Travis CI  [![Build](https://api.travis-ci.org/eclipse/kapua.svg)](https://travis-ci.org/eclipse/kapua/) 
+- Eclipse Hudson [![Hudson](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/kapua/job/Develop.svg)](https://hudson.eclipse.org/kapua/)
+
+Please be sure that both environments are "green" (i.e. all tests pass) after you commit any changes into `develop` branch.
+
+We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to 
+[Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
+of images if needed.
+
+## Building Kapua Docker images
+
+Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/). The latest snapshots of images are updated every 15 minutes.
+
+In order to build Kapua Docker images, execute Maven build with
+`docker` profile enabled:
+
+    cd kapua
+    mvn
+    cd assembly
+    mvn -Pdocker
+
+In order to build and push images into DockerHub registry, execute build with Maven with `docker-push` profile enabled:
+
+    cd kapua
+    mvn
+    cd assembly
+    mvn -Pdocker-push
+
+If you would like to change account name (for example to push to your own account, instead of `kapua`) use `docker.account` property:
+
+    mvn -Ddocker.account=henry -Pdocker-push
+    
