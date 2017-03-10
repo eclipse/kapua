@@ -68,7 +68,7 @@ Once the development machine has been created (or started manually as described 
 $ vagrant ssh
 ```
 
-***Note:*** to allow the database creation and seeding, before start both the broker and the Tomcat please run a full Kapua project build with sql profile (see the command below)
+***Note:*** to allow the database creation and seeding, before start both the broker and the Tomcat please run a full Kapua project build with sql profile from the project root directory outside of the vagrant box (see the command below)
 ```
 $ mvn clean install -Psql -DskipTests
 ```
