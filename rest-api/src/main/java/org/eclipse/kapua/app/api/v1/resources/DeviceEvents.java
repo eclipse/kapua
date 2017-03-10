@@ -11,19 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.persistence.EntityNotFoundException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.google.common.base.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -38,9 +29,18 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.persistence.EntityNotFoundException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Api("Devices")
 @Path("{scopeId}/devices/{deviceId}/events")
@@ -55,6 +55,10 @@ public class DeviceEvents extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param deviceId
+     *            The id of the {@link Device} in which to search results
+     * @param resource
+     *            The resource of the {@link DeviceEvent} in which to search results
      * @param offset
      *            The result set offset.
      * @param limit
@@ -62,17 +66,18 @@ public class DeviceEvents extends AbstractKapuaResource {
      * @return The {@link DeviceEventListResult} of all the deviceEvents associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the DeviceEvent list in the scope", //
-            notes = "Returns the list of all the deviceEvents associated to the current selected scope.", //
-            response = DeviceEvent.class, //
+    @ApiOperation(value = "Gets the DeviceEvent list in the scope",
+            notes = "Returns the list of all the deviceEvents associated to the current selected scope.",
+            response = DeviceEvent.class,
             responseContainer = "DeviceEventListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DeviceEventListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
-            @PathParam("deviceId") EntityId deviceId,//
-            @QueryParam("resource") String resource, //
-            @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) //
+    public DeviceEventListResult simpleQuery(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The client id to filter results.") EntityId deviceId,
+            @ApiParam(value = "The resource of the DeviceEvent in which to search results") @QueryParam("resource") String resource,
+            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
         DeviceEventListResult deviceEventListResult = deviceEventFactory.newDeviceEventListResult();
         try {
@@ -80,7 +85,7 @@ public class DeviceEvents extends AbstractKapuaResource {
 
             AndPredicate andPredicate = new AndPredicate();
             andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
-            if (resource != null) {
+            if (!Strings.isNullOrEmpty(resource)) {
                 andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.RESOURCE, resource));
             }
             query.setPredicate(andPredicate);
@@ -100,18 +105,25 @@ public class DeviceEvents extends AbstractKapuaResource {
      * 
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param deviceId
+     *            The id of the {@link Device} in which to search results
      * @param query
-     *            The {@link DeviceEventQuery} to used to filter results.
+     *            The {@link DeviceEventQuery} to use to filter results.
      * @return The {@link DeviceEventListResult} of all the result matching the given {@link DeviceEventQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Queries the DeviceEvents",
+            notes = "Queries the DeviceEvents with the given DeviceEvents parameter returning all matching DeviceEvents",
+            response = DeviceEvent.class,
+            responseContainer = "DeviceEventListResult")
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public DeviceEventListResult query(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId,//
-            DeviceEventQuery query) {
+    public DeviceEventListResult query(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the Device in which to search results") @PathParam("deviceId") EntityId deviceId,
+            @ApiParam(value = "The DeviceEventQuery to use to filter results.", required = true) DeviceEventQuery query) {
         DeviceEventListResult deviceEventListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -133,18 +145,24 @@ public class DeviceEvents extends AbstractKapuaResource {
      * 
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param deviceId
+     *            The id of the {@link Device} in which to search results
      * @param query
-     *            The {@link DeviceEventQuery} to used to filter results.
+     *            The {@link DeviceEventQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DeviceEventQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Counts the DeviceEvents",
+            notes = "Counts the DeviceEvents with the given DeviceEventQuery parameter returning the number of matching DeviceEvents",
+            response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId,//
-            DeviceEventQuery query) {
+    public CountResult count(
+            @ApiParam(value = "The ScopeId in which to count results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the Device in which to count results") @PathParam("deviceId") EntityId deviceId,
+            @ApiParam(value = "The DeviceEventQuery to use to filter count results", required = true) DeviceEventQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -171,8 +189,9 @@ public class DeviceEvents extends AbstractKapuaResource {
     @GET
     @Path("{deviceEventId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DeviceEvent find(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId,//
+    public DeviceEvent find(
+            @ApiParam(value = "The ScopeId of the requested DeviceEvent.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the requested Device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The id of the requested DeviceEvent", required = true) @PathParam("deviceEventId") EntityId deviceEventId) {
         DeviceEvent deviceEvent = null;
         try {
@@ -198,16 +217,17 @@ public class DeviceEvents extends AbstractKapuaResource {
 
     /**
      * Deletes the DeviceEvent specified by the "deviceEventId" path parameter.
-     *
+     * @param deviceId
+     *            The id of the Device in which to delete the event
      * @param deviceEventId
      *            The id of the DeviceEvent to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
-    @ApiOperation(value = "Delete an DeviceEvent", notes = "Deletes the DeviceEvent specified by the \"deviceEventId\" path parameter.")
+    @ApiOperation(value = "Delete a DeviceEvent", notes = "Deletes the DeviceEvent specified by the \"deviceEventId\" path parameter.")
     @DELETE
     @Path("{deviceEventId}")
     public Response deleteDeviceEvent(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId,//
+            @ApiParam(value = "The id of the Device in which to delete the event.", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The id of the DeviceEvent to be deleted", required = true) @PathParam("deviceEventId") EntityId deviceEventId) {
         try {
             DeviceEvent deviceEvent = find(scopeId, deviceId, deviceEventId);

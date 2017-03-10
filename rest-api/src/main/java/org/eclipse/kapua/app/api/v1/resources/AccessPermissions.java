@@ -11,19 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.persistence.EntityNotFoundException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -39,9 +29,18 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionPredicates;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.persistence.EntityNotFoundException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * {@link AccessPermission} REST API resource.
@@ -70,16 +69,17 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @return The {@link AccessPermissionListResult} of all the {@link AccessPermission}s associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the AccessPermission list in the scope", //
-            notes = "Returns the list of all the accessPermissions associated to the current selected scope.", //
-            response = AccessPermission.class, //
+    @ApiOperation(value = "Gets the AccessPermission list in the scope",
+            notes = "Gets the AccessPermission list in the scope. The query parameter accessInfoId is optional and can be used to filter results",
+            response = AccessPermission.class,
             responseContainer = "AccessPermissionListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccessPermissionListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
-            @PathParam("accessInfoId") EntityId accessInfoId,//
-            @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) //
+    public AccessPermissionListResult simpleQuery(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The optional id to filter results.") @PathParam("accessInfoId") EntityId accessInfoId,
+            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
+            @ApiParam(value = "The result set limit.", defaultValue = "50")@QueryParam("limit") @DefaultValue("50") int limit)
     {
         AccessPermissionListResult accessPermissionListResult = accessPermissionFactory.newAccessPermissionListResult();
         try {
@@ -103,17 +103,22 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId
      *            The {@link AccessInfo} id in which to search results.
      * @param query
-     *            The {@link AccessPermissionQuery} to used to filter results.
+     *            The {@link AccessPermissionQuery} to use to filter results.
      * @return The {@link AccessPermissionListResult} of all the result matching the given {@link AccessPermissionQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Queries the AccessPermissions",
+                  notes = "Queries the AccessPermissions with the given AccessPermissionQuery parameter returning all matching AccessPermissions",
+                  response = AccessPermission.class,
+                  responseContainer = "AccessPermissionListResult")
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public AccessPermissionListResult query(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("accessInfoId") EntityId accessInfoId,//
-            AccessPermissionQuery query) {
+    public AccessPermissionListResult query(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The AccessInfo id in which to search results.") @PathParam("accessInfoId") EntityId accessInfoId,
+            @ApiParam(value = "The AccessPermissionQuery to use to filter results.", required = true) AccessPermissionQuery query) {
         AccessPermissionListResult accessPermissionListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -131,19 +136,23 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to count results.
      * @param accessInfoId
-     *            The {@link AccessInfo} id in which to search results.
+     *            The {@link AccessInfo} id in which to count results.
      * @param query
-     *            The {@link AccessPermissionQuery} to used to filter count results.
+     *            The {@link AccessPermissionQuery} to use to filter count results.
      * @return The count of all the result matching the given {@link AccessPermissionQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Counts the AccessPermissions",
+            notes = "Counts the AccessPermissions with the given AccessPermissionQuery parameter returning the number of matching AccessPermissions",
+            response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("accessInfoId") EntityId accessInfoId,//
-            AccessPermissionQuery query) {
+    public CountResult count(
+            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The AccessInfo id in which to count results.") @PathParam("accessInfoId") EntityId accessInfoId,
+            @ApiParam(value = "The AccessPermissionQuery to use to filter count results", required = true) AccessPermissionQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -160,19 +169,22 @@ public class AccessPermissions extends AbstractKapuaResource {
      * parameter.
      *
      * @param scopeId
-     *            The {@link ScopeId} in which to count results.
+     *            The {@link ScopeId} in which to create the AccessPermission.
      * @param accessInfoId
-     *            The {@link AccessInfo} id in which to search results.
+     *            The {@link AccessInfo} id in which to create the AccessPermission.
      * @param accessPermissionCreator
      *            Provides the information for the new {@link AccessPermission} to be created.
      * @return The newly created {@link AccessPermission} object.
      */
-    @ApiOperation(value = "Create an AccessPermission", notes = "Creates a new AccessPermission based on the information provided in AccessPermissionCreator parameter.", response = AccessPermission.class)
+    @ApiOperation(value = "Create an AccessPermission",
+            notes = "Creates a new AccessPermission based on the information provided in AccessPermissionCreator parameter.",
+            response = AccessPermission.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public AccessPermission create(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("accessInfoId") EntityId accessInfoId,//
+    public AccessPermission create(
+            @ApiParam(value = "The ScopeId in which to create the AccessPermission", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The AccessInfo id in which to create the AccessPermission.", required = true) @PathParam("accessInfoId") EntityId accessInfoId,
             @ApiParam(value = "Provides the information for the new AccessPermission to be created", required = true) AccessPermissionCreator accessPermissionCreator) {
         AccessPermission accessPermission = null;
         try {
@@ -200,8 +212,9 @@ public class AccessPermissions extends AbstractKapuaResource {
     @GET
     @Path("{accessPermissionId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccessPermission find(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("accessInfoId") EntityId accessInfoId,//
+    public AccessPermission find(
+            @ApiParam(value = "The ScopeId of the requested AccessPermission.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "Specifies the AccessPermissionId for the requested AccessPermission", required = true) @PathParam("accessInfoId") EntityId accessInfoId,
             @ApiParam(value = "The id of the requested AccessPermission", required = true) @PathParam("accessPermissionId") EntityId accessPermissionId) {
         AccessPermission accessPermission = null;
         try {
@@ -229,6 +242,10 @@ public class AccessPermissions extends AbstractKapuaResource {
     /**
      * Deletes the {@link AccessPermission} specified by the "accessPermissionId" path parameter.
      *
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link AccessPermission} to delete.
+     * @param accessInfoId
+     *            The {@link AccessInfo} id of the {@link AccessPermission} to delete.
      * @param accessPermissionId
      *            The id of the AccessPermission to be deleted.
      * @return HTTP 200 if operation has completed successfully.
@@ -236,8 +253,9 @@ public class AccessPermissions extends AbstractKapuaResource {
     @ApiOperation(value = "Delete an AccessPermission", notes = "Deletes the AccessPermission specified by the \"accessPermissionId\" path parameter.")
     @DELETE
     @Path("{accessPermissionId}")
-    public Response deleteAccessPermission(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("accessInfoId") EntityId accessInfoId,//
+    public Response deleteAccessPermission(
+            @ApiParam(value = "The ScopeId of the AccessPermission to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "Specifies the AccessInfo Id for the requested AccessPermission", required = true) @PathParam("accessInfoId") EntityId accessInfoId,
             @ApiParam(value = "The id of the AccessPermission to be deleted", required = true) @PathParam("accessPermissionId") EntityId accessPermissionId) {
         try {
             AccessPermission accessPermission = find(scopeId, accessInfoId, accessPermissionId);

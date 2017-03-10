@@ -11,19 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.google.common.base.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -39,9 +30,18 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserImpl;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Api("Users")
 @Path("{scopeId}/users")
@@ -56,6 +56,8 @@ public class Users extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param name
+     *            The {@link User} name in which to search results.
      * @param offset
      *            The result set offset.
      * @param limit
@@ -63,23 +65,24 @@ public class Users extends AbstractKapuaResource {
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the User list in the scope", //
-            notes = "Returns the list of all the users associated to the current selected scope.", //
-            response = User.class, //
+    @ApiOperation(value = "Gets the User list in the scope",
+            notes = "Returns the list of all the users associated to the current selected scope.",
+            response = User.class,
             responseContainer = "UserListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public UserListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,//
-            @QueryParam("name") String name, //
-            @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) //
+    public UserListResult simpleQuery(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The user name to filter results.") @QueryParam("name") String name,
+            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
         UserListResult userListResult = userFactory.newUserListResult();
         try {
             UserQuery query = userFactory.newQuery(scopeId);
 
             AndPredicate andPredicate = new AndPredicate();
-            if (name != null) {
+            if (!Strings.isNullOrEmpty(name)) {
                 andPredicate.and(new AttributePredicate<>(UserPredicates.NAME, name));
             }
             query.setPredicate(andPredicate);
@@ -100,15 +103,21 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link UserQuery} to used to filter results.
+     *            The {@link UserQuery} to use to filter results.
      * @return The {@link UserListResult} of all the result matching the given {@link UserQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Queries the Users",
+            notes = "Queries the Users with the given UserQuery parameter returning all matching Users",
+            response = User.class,
+            responseContainer = "UserListResult")
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public UserListResult query(@PathParam("scopeId") ScopeId scopeId, UserQuery query) {
+    public UserListResult query(
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The UserQuery to use to filter results.", required = true) UserQuery query) {
         UserListResult userListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -123,17 +132,22 @@ public class Users extends AbstractKapuaResource {
      * Counts the results with the given {@link UserQuery} parameter.
      * 
      * @param scopeId
-     *            The {@link ScopeId} in which to search results.
+     *            The {@link ScopeId} in which to count results.
      * @param query
-     *            The {@link UserQuery} to used to filter results.
+     *            The {@link UserQuery} to use to filter results.
      * @return The count of all the result matching the given {@link UserQuery} parameter.
      * @since 1.0.0
      */
+    @ApiOperation(value = "Counts the Users",
+            notes = "Counts the Users with the given UserQuery parameter returning the number of matching Users",
+            response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, UserQuery query) {
+    public CountResult count(
+            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The UserQuery to use to filter count results", required = true) UserQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -158,7 +172,8 @@ public class Users extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public User create(@PathParam("scopeId") ScopeId scopeId,
+    public User create(
+            @ApiParam(value = "The ScopeId in which to create the User", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Provides the information for the new User to be created", required = true) UserCreator userCreator) {
         User user = null;
         try {
@@ -173,6 +188,8 @@ public class Users extends AbstractKapuaResource {
     /**
      * Returns the User specified by the "userId" path parameter.
      *
+     * @param scopeId
+     *            The {@link ScopeId} of the requested {@link User}.
      * @param userId
      *            The id of the requested User.
      * @return The requested User object.
@@ -181,7 +198,8 @@ public class Users extends AbstractKapuaResource {
     @GET
     @Path("{userId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public User find(@PathParam("scopeId") ScopeId scopeId,
+    public User find(
+            @ApiParam(value = "The ScopeId of the requested User.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested User", required = true) @PathParam("userId") EntityId userId) {
         User user = null;
         try {
@@ -195,6 +213,10 @@ public class Users extends AbstractKapuaResource {
     /**
      * Updates the User based on the information provided in the User parameter.
      *
+     * @param scopeId
+     *            The ScopeId of the requested {@link User}.
+     * @param userId
+     *            The id of the requested {@link User}
      * @param user
      *            The modified User whose attributed need to be updated.
      * @return The updated user.
@@ -204,9 +226,10 @@ public class Users extends AbstractKapuaResource {
     @Path("{userId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public User update(@PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId,
-            @ApiParam(value = "The modified User whose attributed need to be updated", required = true) User user) {
+    public User update(
+            @ApiParam(value = "The ScopeId of the requested User.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The id of the requested User", required = true) @PathParam("userId") EntityId userId,
+            @ApiParam(value = "The modified User whose attributes needs to be updated", required = true) User user) {
         User userUpdated = null;
         try {
             ((UserImpl) user).setScopeId(scopeId);
@@ -222,6 +245,8 @@ public class Users extends AbstractKapuaResource {
     /**
      * Deletes the User specified by the "userId" path parameter.
      *
+     * @param scopeId
+     *            The ScopeId of the requested {@link User}.
      * @param userId
      *            The id of the User to be deleted.
      * @return HTTP 200 if operation has completed successfully.
@@ -229,7 +254,8 @@ public class Users extends AbstractKapuaResource {
     @ApiOperation(value = "Delete an User", notes = "Deletes the User specified by the \"userId\" path parameter.")
     @DELETE
     @Path("{userId}")
-    public Response deleteUser(@PathParam("scopeId") ScopeId scopeId,
+    public Response deleteUser(
+            @ApiParam(value = "The ScopeId of the User to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the User to be deleted", required = true) @PathParam("userId") EntityId userId) {
         try {
             userService.delete(scopeId, userId);
