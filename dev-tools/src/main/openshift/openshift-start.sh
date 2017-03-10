@@ -28,5 +28,5 @@ if [ "${DOCKERIZED}" == "FALSE" ]; then
     cd $OPENSHIFT_DIR
     $OPENSHIFT_DIR/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/openshift start
 else
-    $OC cluster up
+    $OC cluster up --metrics
 fi
