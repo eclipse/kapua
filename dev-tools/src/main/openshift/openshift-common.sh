@@ -10,13 +10,6 @@
 
 #!/usr/bin/env bash
 
-set -e
-
-# Configuration
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $SCRIPT_DIR/openshift-common.sh
-
-# Create Kapua project
-$OC login
-$OC new-project "$OPENSHIFT_PROJECT_NAME" --description="Open source IoT Platform" --display-name="Eclipse Kapua"
+export OPENSHIFT_PROJECT_NAME="eclipse-kapua"
+export OPENSHIFT_DIR=/tmp/openshift
+export OC=${OPENSHIFT_DIR}/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/oc

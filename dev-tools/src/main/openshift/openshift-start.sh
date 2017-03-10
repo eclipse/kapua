@@ -14,7 +14,8 @@ set -e
 
 ### Configuration
 
-OPENSHIFT_DIR=/tmp/openshift
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. $SCRIPT_DIR/openshift-common.sh
 
 ### Install OpenShift distribution
 
@@ -27,5 +28,5 @@ if [ "${DOCKERIZED}" == "FALSE" ]; then
     cd $OPENSHIFT_DIR
     $OPENSHIFT_DIR/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/openshift start
 else
-    $OPENSHIFT_DIR/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/oc cluster up
+    $OC cluster up
 fi
