@@ -109,7 +109,7 @@ export default class DevicesListCtrl {
   }
 
   getDevices() {
-    return this.$http.get<ListResult<Device>>("api/devices");
+    return this.$http.get<ListResult<Device>>("api/_/devices");
   }
 
   deleteDevices() {

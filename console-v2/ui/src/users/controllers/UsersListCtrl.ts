@@ -1,14 +1,14 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
-*                                                                               
-* All rights reserved. This program and the accompanying materials              
-* are made available under the terms of the Eclipse Public License v1.0         
-* which accompanies this distribution, and is available at                      
-* http://www.eclipse.org/legal/epl-v10.html                                     
-*                                                                               
-* Contributors:                                                                 
-*     Eurotech - initial API and implementation                                 
-*                                                                               
+* Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+*
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     Eurotech - initial API and implementation
+*
 *******************************************************************************/
 interface IUserResponse {
     type: string;
@@ -39,7 +39,7 @@ export default class UsersListCtrl {
     private users: IUser[];
     constructor(private $http: angular.IHttpService,
                 localStorageService: angular.local.storage.ILocalStorageService) {
-        this.$http.get("/api/users").then((responseData: angular.IHttpPromiseCallbackArg<IUserResponse>) => {
+        this.$http.get("/api/_/users").then((responseData: angular.IHttpPromiseCallbackArg<IUserResponse>) => {
             this.users = responseData.data.items.item;
         });
     }
