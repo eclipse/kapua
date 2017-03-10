@@ -19,16 +19,24 @@ Running Kapua on local docker containers is as easy as:
 ## OpenShift
 
 OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua support deployments into [OpenShift Origin](https://www.openshift.org),
-which is an open source community project. Origin sources, can be found [here](https://www.openshift.org/). For running Kapua on an OpenShift cluster you will need to:
+which is an open source community project. Origin sources, can be found [here](https://www.openshift.org/). We support Kapua on OpenShift Origin **1.4.1**.
 
-1. Download and install the OpenShift client 
-1. Log in to your OpenShift instance: `oc login`
-1. Create a new project: `oc new-project eclipse-kapua`
-1. Run: `dev-tools/src/main/openshift/openshift-deploy.sh`
+For running Kapua on an OpenShift you need to
+have OpenShift cluster installed and started in a first place. You can install it by yourself or rely on the script we provides:
 
-If you need a local instance of OpenShift you can create one on a local 64bit Linux by:
+    sudo kapua/dev-tools/src/main/openshift/openshift-start.sh
+    
+If you are running your OpenShift cluster for a first time, execute the following initialized script as well:
 
-    oc cluster up
+    kapua/dev-tools/src/main/openshift/openshift-initialize.sh
+    
+Initialization script is responsible for logging you into a cluster and creating new OpenShift project for Kapua.
+
+If for some reasons, you cannot start your cluster, try to execute the startup script with option `DOCKERIZED=FALSE`:
+
+    sudo DOCKERIZED=FALSE kapua/dev-tools/src/main/openshift/openshift-start.sh
+    
+Option `DOCKERIZED=FALSE` tells startup script to use standard binary installation of OpenShift Origin instead of Docker-based `oc cluster up` command.
 
 ## Vagrant
 
