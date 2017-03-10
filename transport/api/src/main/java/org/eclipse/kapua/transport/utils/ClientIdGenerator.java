@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.utils;
 
-import java.util.Random;
+import static org.apache.commons.lang3.RandomUtils.nextLong;
 
 /**
  * Utility class that generates random IDs for the transport layer.
@@ -37,19 +37,11 @@ public class ClientIdGenerator {
     private static final ClientIdGenerator INSTANCE = new ClientIdGenerator();
 
     /**
-     * Static random instance
-     *
-     * @since 1.0.0
-     */
-    private Random random;
-
-    /**
      * Private default constructor. To obtain an instance of {@link ClientIdGenerator} use {@link ClientIdGenerator#getInstance()}.
      *
      * @since 1.0.0
      */
     private ClientIdGenerator() {
-        random = new Random();
     }
 
     /**
@@ -84,10 +76,7 @@ public class ClientIdGenerator {
      */
     public String next(String prefix) {
         long timestamp = System.currentTimeMillis();
-        long randomNumber;
-        synchronized (INSTANCE.random) {
-            randomNumber = Math.abs(INSTANCE.random.nextLong());
-        }
+        long randomNumber = nextLong(0, Long.MAX_VALUE);
 
         return String.format(GENERATED_ID_STRING_FORMAT,
                 prefix,
