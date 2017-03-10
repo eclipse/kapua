@@ -256,24 +256,6 @@
 							</target>
 						</configuration>
 					</execution>
-					<execution>
-						<id>customize index</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-                                <echo>Swagger-ui: replace url in
-                                    index.html</echo>
-								<replaceregexp
-									byline="true" 
-                                               file="${project.build.directory}/${project.build.finalName}/doc/index.html" 
-                                               match="/api/docs/swagger.json" 
-                                               replace="/api/v1/swagger.json" />
-							</target>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
 		</plugins>
