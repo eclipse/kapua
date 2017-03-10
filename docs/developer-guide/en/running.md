@@ -18,7 +18,8 @@ Running Kapua on local docker containers is as easy as:
 
 ## OpenShift
 
-For running Kapua on an OpenShift cluster you will need to:
+OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua support deployments into [OpenShift Origin](https://www.openshift.org),
+which is an open source community project. Origin sources, can be found [here](https://www.openshift.org/). For running Kapua on an OpenShift cluster you will need to:
 
 1. Download and install the OpenShift client 
 1. Log in to your OpenShift instance: `oc login`
