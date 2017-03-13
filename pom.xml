@@ -58,9 +58,10 @@
         <elasticsearch.version>2.3.4</elasticsearch.version>
 
         <!-- Plugins versions -->
+        <docker-maven-plugin.version>0.17.2</docker-maven-plugin.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
-        <docker-maven-plugin.version>0.17.2</docker-maven-plugin.version>
+        <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
 
         <jacoco.version>0.7.4.201502262128</jacoco.version>
         <surefire.version>2.12.4</surefire.version>
@@ -104,7 +105,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>sql-maven-plugin</artifactId>
-                    <version>1.5</version>
+                    <version>${sql-maven-plugin.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.h2database</groupId>
