@@ -22,5 +22,7 @@ for name in $(find /kapua -name 'kapua-*.jar' | grep target | grep -Ev 'test|con
 echo 'create the symbolic links to Kapua jars DONE'
 echo 'remove old config links'
 rm /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/activemq.xml
+rm /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel.xml
 echo 'create new config links'
 ln -s /kapua/assembly/src/main/resources/conf/broker/activemq.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/activemq.xml
+ln -s /kapua/assembly/src/main/resources/conf/broker/camel.xml /usr/local/activemq/apache-activemq-ACTIVEMQ_VERSION/conf/camel.xml

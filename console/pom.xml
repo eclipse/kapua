@@ -221,12 +221,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- re-declare as provided as our web container will provide this -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -438,11 +432,13 @@
                     <configuration>
                         <webResources>
                             <resource>
-                                <directory>
-                                    ${project.build.directory}/${project.build.finalName}
-                                </directory>
+                                <directory>${project.build.directory}/${project.build.finalName}</directory>
                             </resource>
                         </webResources>
+                        <!-- exclude slf4j-api as the web container has to provide this -->
+                        <packagingExcludes>
+                            WEB-INF/lib/slf4j-api-*.jar
+                        </packagingExcludes>
                     </configuration>
                 </plugin>
             </plugins>

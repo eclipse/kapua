@@ -71,8 +71,7 @@ of images if needed.
 
 Kapua Docker images are hosted under [Kapua DockerHub account](https://hub.docker.com/r/kapua/). The latest snapshots of images are updated every 15 minutes.
 
-In order to build Kapua Docker images, execute Maven build with
-`docker` profile enabled:
+In order to build Kapua Docker images yourself, execute Maven build with `docker` profile enabled:
 
     cd kapua
     mvn
@@ -89,4 +88,8 @@ In order to build and push images into DockerHub registry, execute build with Ma
 If you would like to change account name (for example to push to your own account, instead of `kapua`) use `docker.account` property:
 
     mvn -Ddocker.account=henry -Pdocker-push
-    
+
+By default Kapua applies the following tags to the published images:
+- `latest`
+- daily timestamp in format `YYYY-MM-DD`
+- current project version (for example `0.0.1` or `0.1.2-SNAPSHOT`)
