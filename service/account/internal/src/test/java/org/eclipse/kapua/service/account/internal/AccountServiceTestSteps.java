@@ -577,7 +577,6 @@ public class AccountServiceTestSteps extends KapuaTest {
     private AccountCreator prepareRegularAccountCreator(KapuaId parentId, String name) {
         AccountCreator tmpAccCreator = accountFactory.newAccountCreator(parentId, name);
 
-        tmpAccCreator.setAccountPassword("pp12345678$$QQ");
         tmpAccCreator.setOrganizationName("org_" + name);
         tmpAccCreator.setOrganizationPersonName(String.format("person_%s", name));
         tmpAccCreator.setOrganizationCountry("home_country");

@@ -361,7 +361,6 @@ public class UserServiceSteps extends KapuaTest {
         AccountCreator accountCreator;
 
         accountCreator = new AccountFactoryImpl().newAccountCreator(new KapuaEid(scopeId), name);
-        accountCreator.setAccountPassword("TooManySecrets#123");
         accountCreator.setOrganizationName("ACME Inc.");
         accountCreator.setOrganizationEmail("some@one.com");
 

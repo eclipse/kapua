@@ -29,8 +29,7 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
  */
 @XmlRootElement(name="accountCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "accountPassword",
-                      "organizationName",
+@XmlType(propOrder = {"organizationName",
                       "organizationPersonName",
                       "organizationEmail",
                       "organizationPhoneNumber",
@@ -44,21 +43,6 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 		 factoryMethod = "newAccountCreator")
 public interface AccountCreator extends KapuaNamedEntityCreator<Account>
 {
-
-    /**
-     * Get the account password
-     * 
-     * @return
-     */
-	@XmlElement(name = "accountPassword")
-    public String getAccountPassword();
-
-    /**
-     * Set the account password
-     * 
-     * @param accountPassword
-     */
-    public void setAccountPassword(String accountPassword);
 
     /**
      * Get the organization name

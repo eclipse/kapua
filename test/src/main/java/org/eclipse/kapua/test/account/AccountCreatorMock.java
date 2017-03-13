@@ -19,7 +19,6 @@ public class AccountCreatorMock implements AccountCreator
 {
     private KapuaId scopeId;
     private String name;
-    private String accountPassword;
     private String organizationName;
     private String organizationEmail;
     
@@ -44,18 +43,6 @@ public class AccountCreatorMock implements AccountCreator
     public void setScopeId(KapuaId scopeId)
     {
         this.scopeId = scopeId;
-    }
-
-    @Override
-    public String getAccountPassword()
-    {
-        return this.accountPassword;
-    }
-
-    @Override
-    public void setAccountPassword(String accountPassword)
-    {
-        this.accountPassword = accountPassword;
     }
 
     @Override

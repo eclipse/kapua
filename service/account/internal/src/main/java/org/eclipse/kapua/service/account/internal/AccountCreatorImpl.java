@@ -29,8 +29,6 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
 
 	private String accountName;
 
-	private String accountPassword;
-
 	private String organizationName;
 
 	private String organizationPersonName;
@@ -80,18 +78,6 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
     public void setAccountName(String accountName)
     {
         this.accountName = accountName;
-    }
-
-    @Override
-    public String getAccountPassword()
-    {
-        return accountPassword;
-    }
-
-    @Override
-    public void setAccountPassword(String accountPassword)
-    {
-        this.accountPassword = accountPassword;
     }
 
     @Override

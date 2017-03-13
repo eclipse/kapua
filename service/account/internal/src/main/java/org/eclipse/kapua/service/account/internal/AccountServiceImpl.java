@@ -64,12 +64,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         // Validation of the fields
         ArgumentValidator.notNull(accountCreator, "accountCreator");
         ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "name");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getAccountPassword(), "accountPassword");
         ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "organizationName");
         ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "organizationEmail");
         ArgumentValidator.notNull(accountCreator.getScopeId(), "scopeId");
         ArgumentValidator.notNull(accountCreator.getScopeId().getId(), "scopeId.id");
-        ArgumentValidator.match(accountCreator.getAccountPassword(), ArgumentValidator.PASSWORD_REGEXP, "accountPassword");
         ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
 
         //

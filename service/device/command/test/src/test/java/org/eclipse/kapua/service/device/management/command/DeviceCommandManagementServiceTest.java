@@ -109,7 +109,6 @@ public class DeviceCommandManagementServiceTest extends Assert {
             AccountService accountService = locator.getService(AccountService.class);
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
             AccountCreator accountCreator = accountFactory.newAccountCreator(adminScopeId, accountName);
-            accountCreator.setAccountPassword("!bV0123456789");
             accountCreator.setOrganizationName(accountName);
             accountCreator.setOrganizationEmail(accountName + "@m.com");
             account = accountService.create(accountCreator);
