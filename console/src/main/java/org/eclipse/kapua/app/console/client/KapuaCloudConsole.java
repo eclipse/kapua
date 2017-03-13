@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
@@ -17,6 +17,7 @@ import java.util.Date;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
@@ -32,6 +33,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Viewport;
@@ -259,21 +261,7 @@ public class KapuaCloudConsole implements EntryPoint {
         creditLabel = new Label();
         creditLabel.setStyleName("margin-right:10px");
 
-        gwtSettingService.getLoginBackgroundCredits(new AsyncCallback<String>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.error(), caught.getLocalizedMessage());
-            }
-
-            @Override
-            public void onSuccess(String result) {
-                creditLabel.setText(result);
-                creditLabel.repaint();
-            }
-        });
-
-        layout = new TableLayout(1);
+        layout = new TableLayout(2);
         layout.setWidth("100%");
         LayoutContainer lcFooter = new LayoutContainer(layout);
         if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
@@ -282,6 +270,10 @@ public class KapuaCloudConsole implements EntryPoint {
             lcFooter.setStyleName("loginFooter-ie8");
         }
 
+        final Html genericNote = new Html();
+        genericNote.setId("login-generic-note");
+
+        lcFooter.add(genericNote, new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.BOTTOM));
         lcFooter.add(creditLabel, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.BOTTOM));
 
         BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 18);
@@ -293,6 +285,8 @@ public class KapuaCloudConsole implements EntryPoint {
         viewport.add(lcFooter, southData);
 
         RootPanel.get().add(viewport);
+
+        loadFooterData(lcFooter, genericNote, creditLabel);
 
         // Dialog window
         final LoginDialog loginDialog = new LoginDialog();
@@ -337,10 +331,36 @@ public class KapuaCloudConsole implements EntryPoint {
         }
 
         loginDialog.show();
-        
+
         if (accessToken != null && !accessToken.isEmpty()) {
             loginDialog.performSsoLogin(accessToken);
         }
+    }
+
+    private void loadFooterData(final LayoutContainer container, final Html genericNote, final Label creditLabel) {
+        this.gwtSettingService.getLoginInformation(new AsyncCallback<GwtLoginInformation>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.error(), caught.getLocalizedMessage());
+            }
+
+            @Override
+            public void onSuccess(GwtLoginInformation result) {
+                if (result.getBackgroundCredits() != null) {
+                    creditLabel.setText(result.getBackgroundCredits());
+                    creditLabel.repaint();
+                }
+
+                if (result.getInformationSnippet() != null) {
+                    genericNote.setHtml(result.getInformationSnippet());
+                    genericNote.repaint();
+                }
+
+                // re-layout
+                container.layout(true);
+            }
+        });
     }
 
     public Viewport getViewport() {
