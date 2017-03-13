@@ -114,7 +114,7 @@ public class KapuaModule extends AbstractModule {
                     for (Class<?> clazz : extendedClassInfo) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
                             @SuppressWarnings("unchecked")
-                            FactoryResolver<KapuaObjectFactory,?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
+                            FactoryResolver<KapuaObjectFactory, ?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getFactoryClass()).to(resolver.getImplementationClass()).in(Singleton.class);
                             logger.info("Bind Kapua factory {} to {}", kapuaObject, clazz);
                             isClassBound = true;
