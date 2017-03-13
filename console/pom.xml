@@ -208,12 +208,6 @@
             <version>0.9</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlets</artifactId>
-            <version>9.1.6.v20160112</version>
-        </dependency>
-
         <!-- use log4j only for testing -->
         <dependency>
             <groupId>org.slf4j</groupId>
