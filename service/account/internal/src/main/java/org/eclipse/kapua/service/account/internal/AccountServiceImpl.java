@@ -27,6 +27,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
@@ -36,7 +37,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.persistence.TypedQuery;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -86,18 +86,21 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         }
 
         // Check child account policy
-        /*
-         * To be rewritten from a child account point of view
-         *
         Map<String, Object> configValues = getConfigValues(accountCreator.getScopeId());
         boolean allowInfiniteChildAccounts = (boolean) configValues.get("infiniteChildAccounts");
         if (!allowInfiniteChildAccounts) {
             int maxChildAccounts = (int) configValues.get("maxNumberChildAccounts");
-            long currentChildAccounts = count(accountFactory.newAccountQuery(accountCreator.getScopeId()));
-            if (currentChildAccounts >= maxChildAccounts) {
+            AccountListResult currentChildAccounts = query(accountFactory.newAccountQuery(accountCreator.getScopeId()));
+            long childCount = currentChildAccounts.getSize();
+            for (Account childAccount : currentChildAccounts.getItems()) {
+                Map<String, Object> childConfigValues = getConfigValues(childAccount.getId());
+                int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildAccounts");
+                childCount += maxChildChildAccounts;
+            }
+            if (childCount >= maxChildAccounts) {
                 throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
             }
-        }*/
+        }
 
         return entityManagerSession.onInsert(em -> {
             try {
