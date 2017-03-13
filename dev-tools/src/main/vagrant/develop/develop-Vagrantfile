@@ -82,6 +82,7 @@ Vagrant.configure("2") do |config|
   	 cd /usr/local/activemq/apache-activemq-${ACTIVEMQ_VERSION}
 	 rm conf/activemq.xml
 	 ln -s /kapua/org.eclipse.kapua.assembly/src/main/resources/conf/broker/activemq.xml conf/activemq.xml
+	 ln -s /kapua/org.eclipse.kapua.assembly/src/main/resources/conf/broker/camel.xml conf/camel.xml
 	 echo 'configuring conf/log4j.properties'
 	 sudo sed -i 's/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %m | %c | %t%n/log4j.appender.logfile.layout.ConversionPattern=%d | %-5p | %t | %c | %m%n/g' conf/log4j.properties
 	 sudo sed -i 's/log4j.appender.audit.layout.ConversionPattern=%-5p | %m | %t%n/log4j.appender.audit.layout.ConversionPattern=%-5p | %t%n | %m/g' conf/log4j.properties
