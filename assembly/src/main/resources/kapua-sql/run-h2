@@ -21,7 +21,7 @@ if [ -n "$JAVA_OPTS" ]; then
 fi
 
 # create schema right before startup
-echo "CREATE SCHEMA KAPUADB;" > /home/kapua/tmp/backup.sql
+echo "CREATE SCHEMA IF NOT EXISTS KAPUADB;" > /home/kapua/tmp/backup.sql
 java -cp /home/kapua/h2.jar org.h2.tools.RunScript -url jdbc:h2:/var/h2/data/kapuadb  -user kapua -password kapua -script /home/kapua/tmp/backup.sql
 rm /home/kapua/tmp/backup.sql
 
