@@ -48,7 +48,7 @@ public class KapuaModule extends AbstractModule {
         try {
             // Find locator configuration file
             List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(SERVICE_RESOURCE));
-            if (locatorConfigurations == null || locatorConfigurations.size() == 0) {
+            if (locatorConfigurations.isEmpty()) {
                 return;
             }
 
