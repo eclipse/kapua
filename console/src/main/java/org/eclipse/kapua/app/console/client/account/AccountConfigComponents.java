@@ -54,7 +54,6 @@ import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenServiceAsync
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
 public class AccountConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
@@ -391,7 +390,7 @@ public class AccountConfigComponents extends LayoutContainer {
                                 public void onSuccess(GwtXSRFToken token) {
                                     final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
                                     gwtAccountService.updateComponentConfiguration(token,
-                                            m_currentSession.getSelectedAccount().getId(),
+                                            m_selectedAccount.getId(),
                                             configComponent,
                                             new AsyncCallback<Void>() {
 

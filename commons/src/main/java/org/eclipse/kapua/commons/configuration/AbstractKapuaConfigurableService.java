@@ -129,7 +129,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
 
-            String logicValidationResult = validateConfigValuesCoherence(ocd, updatedProps, scopeId);
+            String logicValidationResult = validateNewConfigValuesCoherence(ocd, updatedProps, scopeId);
             if (logicValidationResult != null && !logicValidationResult.isEmpty()) {
                 throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.OPERATION_NOT_ALLOWED, logicValidationResult);
             }
@@ -148,7 +148,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         }
     }
 
-    protected String validateConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
+    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
         return "";
     }
 
