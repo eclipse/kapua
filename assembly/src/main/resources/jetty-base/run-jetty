@@ -15,12 +15,9 @@
 START_ARGS="$START_ARGS -Djetty.home=/home/kapua/jetty"
 START_ARGS="$START_ARGS -Djetty.base=/var/lib/jetty"
 
-JAVA_ARGS="-javaagent:/jolokia-jvm-agent.jar"
-
-if [ -n "$JAVA_OPTS" ]; then
-   JAVA_ARGS="$JAVA_ARGS $JAVA_OPTS"
-fi 
+# START_ARGS : Arguments to the starter JVM
+# JAVA_OPTS : Arguments to the server JVMs
 
 eval echo "START_ARGS = $START_ARGS"
-eval echo "JAVA_ARGS = $JAVA_ARGS"
-eval exec /usr/bin/java $START_ARGS -jar /home/kapua/jetty/start.jar $JAVA_ARGS "$@"
+eval echo "JAVA_OPTS = $JAVA_OPTS"
+eval exec /usr/bin/java $START_ARGS -jar /home/kapua/jetty/start.jar $JAVA_OPTS "$@"

@@ -11,7 +11,45 @@ parameters:
 - name:           DOCKER_ACCOUNT
   description:      The docker hub account name to pull from
   value:            eclipse
+- name:           JOLOKIA_PASSWORD
+  description:      The password used for the Jolokia endpoint authentication
+  generate:         expression
+  from:             '[a-zA-Z0-9]{15}'
+  required:         true
+- name:           JOLOKIA_USER
+  description:      The username used for the Jolokia endpoint authentication
+  value:            jolokia
+
 objects:
+
+# Config Maps (Hawkular)
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-kapua
+    labels:
+      name: hawkular-openshift-agent-kapua
+      hawkular-openshift-agent: jolokia-kapua
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        credentials:
+          username: ${JOLOKIA_USER}
+          password: ${JOLOKIA_PASSWORD}
+        tls:
+          skip_certificate_validation: true
+        metrics:
+        - name: java.lang:type=Memory#HeapMemoryUsage#used
+          id: java_memory_heap_used
+          type: gauge
+          description: Heap Memory Used
+          units: B
 
 # Deployment configs
 
@@ -34,16 +72,20 @@ objects:
         labels:
           app: sql
           deploymentconfig: sql
+          hawkular-openshift-agent: jolokia-kapua
       spec:
         containers:
-        - image: ${DOCKER_ACCOUNT}/kapua-sql:${IMAGE_VERSION}
+        - env:
+          - name: H2_OPTS
+            value: -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+          image: ${DOCKER_ACCOUNT}/kapua-sql:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: sql
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 3306
-            protocol: TCP
           - containerPort: 8181
-            protocol: TCP
           readinessProbe:
             failureThreshold: 3
             initialDelaySeconds: 15
@@ -61,6 +103,10 @@ objects:
         volumes:
         - emptyDir: {}
           name: sql-data
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-kapua
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -82,19 +128,20 @@ objects:
         labels:
           app: kapua-broker
           deploymentconfig: kapua-broker
+          hawkular-openshift-agent: jolokia-kapua
       spec:
         containers:
         - env:
           - name: ACTIVEMQ_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-broker
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 1883
-            protocol: TCP
           - containerPort: 61614
-            protocol: TCP
           readinessProbe:
             failureThreshold: 3
             initialDelaySeconds: 15
@@ -112,6 +159,7 @@ objects:
         volumes:
         - emptyDir: {}
           name: kapua-broker-volume-1
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
@@ -129,17 +177,19 @@ objects:
         labels:
           app: kapua-console
           deploymentconfig: kapua-console
+          hawkular-openshift-agent: jolokia-kapua
       spec:
         containers:
         - env:
           - name: JAVA_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-console-jetty:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 8080
-            protocol: TCP
           readinessProbe:
             httpGet:
               path: /
@@ -151,12 +201,18 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
+        volumes:
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-kapua
+
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
     generation: 1
     labels:
       app: kapua-api
+      hawkular-openshift-agent: jolokia-kapua
     name: kapua-api
   spec:
     replicas: 1
@@ -168,17 +224,19 @@ objects:
         labels:
           app: kapua-api
           deploymentconfig: kapua-api
+          hawkular-openshift-agent: jolokia-kapua
       spec:
         containers:
         - env:
           - name: JAVA_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-api-jetty:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
           ports:
+          - containerPort: 8778 
+            name: jolokia
           - containerPort: 8080
-            protocol: TCP
           readinessProbe:
             httpGet:
               path: /
@@ -190,7 +248,11 @@ objects:
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
-        
+        volumes:
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-kapua
+
 # Services
         
 - apiVersion: v1
