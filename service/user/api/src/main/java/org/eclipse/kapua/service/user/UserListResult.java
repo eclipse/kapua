@@ -18,11 +18,11 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 
 /**
  * User result list definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlRootElement(name = "users")
 @XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newUserListResult")
 public interface UserListResult extends KapuaListResult<User> {
+
 }

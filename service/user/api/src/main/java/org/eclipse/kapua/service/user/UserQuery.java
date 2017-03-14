@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * User query definition.
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newQuery")
 public interface UserQuery extends KapuaQuery<User> {
+
 }
