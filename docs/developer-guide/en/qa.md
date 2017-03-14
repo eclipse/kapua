@@ -4,7 +4,7 @@ This chapter describes a quality assurance process of Kapua. Whenever you commit
 
 ## Build tests
 
-Kapua comes with a unit and simple integration tests as a part of regular build process. In order to be sure that Kapua is not broken, execute full build
+Kapua comes with unit and integration tests as a part of regular build process. In order to be sure that Kapua is not broken, execute full build
 using the following command:
 
     `mvn`
