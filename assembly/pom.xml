@@ -572,17 +572,11 @@
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
-					
 					<images>
 						<image>
 							<name>${docker.account}/java-base</name>
 							<build>
 								<from>${java.base.image}</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<runCmds>
 									<runCmd><![CDATA[
 									apk update && apk add curl tar && \
@@ -596,11 +590,6 @@
 							<name>${docker.account}/jetty-base</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<runCmds>
 									<runCmd><![CDATA[
 									apk update && apk add bash && \
@@ -636,11 +625,6 @@
 							<name>${docker.account}/kapua-sql</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
 									<basedir>/</basedir>
@@ -675,11 +659,6 @@
 							<name>${docker.account}/kapua-broker</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
 								</assembly>
@@ -714,11 +693,6 @@
 							<name>${docker.account}/kapua-console</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console.xml</descriptor>
 								</assembly>
@@ -749,11 +723,6 @@
 							<name>${docker.account}/kapua-console-jetty</name>
 							<build>
 								<from>${docker.account}/jetty-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
 									<basedir>/var/lib/jetty</basedir>
@@ -768,11 +737,6 @@
 							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-api.xml</descriptor>
 								</assembly>
@@ -803,11 +767,6 @@
 							<name>${docker.account}/kapua-api-jetty</name>
 							<build>
 								<from>${docker.account}/jetty-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-api-jetty.xml</descriptor>
 									<basedir>/var/lib/jetty</basedir>
@@ -822,6 +781,81 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<configuration>
+						<images>
+							<image>
+								<name>${docker.account}/java-base</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-sql</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-broker</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-console</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-console-jetty</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-api</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-api-jetty</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+						</images>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
@@ -889,6 +923,94 @@
 			</activation>
 			<build>
 				<defaultGoal>clean install docker:build docker:push</defaultGoal>
+			</build>
+		</profile>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>io.fabric8</groupId>
+							<artifactId>docker-maven-plugin</artifactId>
+							<configuration>
+								<images>
+									<image>
+										<name>${docker.account}/java-base</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-sql</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-broker</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-console</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-console-jetty</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-api</name>
+                                        <build>
+                                            <tags>
+                                                <tag>latest</tag>
+                                                <tag>${project.version}</tag>
+                                                <tag>${timestamp}</tag>
+                                            </tags>
+                                        </build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-api-jetty</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+								</images>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 	</profiles>
