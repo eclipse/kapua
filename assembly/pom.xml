@@ -690,7 +690,6 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</ACTIVEMQ_OPTS>
 								</env>
 								<ports>
@@ -730,7 +729,6 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</CATALINA_OPTS>
 								</env>
 								<ports>
@@ -785,7 +783,6 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</CATALINA_OPTS>
 								</env>
 								<ports>
