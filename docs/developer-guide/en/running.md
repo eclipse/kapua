@@ -55,6 +55,13 @@ credentials:
 	<dt>password</dt><dd>kapua-password</dd>
 </dl>
 
+### Adding metrics
+
+If you have enabled metrics support in OpenShift (e.g. with `oc cluster up --metrics`)
+then you can also install Grafana for Hawkular to visualize your data:
+
+    oc new-app -f https://raw.githubusercontent.com/hawkular/hawkular-grafana-datasource/master/docker/openshift/openshift-template-ephemeral.yaml
+
 ### Ensuring enough entropy
  
  It may happen that firing up docker containers and starting up application which use
