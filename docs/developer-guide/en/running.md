@@ -47,7 +47,7 @@ Now when you have OpenShift cluster up, running and initialized, execute the fol
     cd kapua/dev-tools/src/main/openshift
     ./openshift-deploy.sh
     
-Now open the following URL in your web browser - `http://localhost:8080/console`. And log-in into Kapua UI using default
+Now open the following URL in your web browser - `http://localhost:8080`. And log-in into Kapua UI using default
 credentials:
 
 <dl>
