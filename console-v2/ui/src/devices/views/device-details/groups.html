@@ -1,5 +1,6 @@
+<!--
 /*******************************************************************************
-* Copyright (c) 2016, 2017 Eurotech and/or its affiliates                       
+* Copyright (c) 2016, 2017 Eurotech and/or its affiliates                    
 *                                                                               
 * All rights reserved. This program and the accompanying materials              
 * are made available under the terms of the Eclipse Public License v1.0         
@@ -10,12 +11,7 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
-export default class DevicesService implements IDevicesService {
-
-    constructor(private $http: ng.IHttpService) {
-    }
-
-    getDeviceById(deviceID: string): ng.IHttpPromise<Device> {
-        return this.$http.get("/api/_/devices/" + deviceID);
-    }
-}
+-->
+<div>
+  Device groups list. id: {{ vm.deviceId }}
+</div>

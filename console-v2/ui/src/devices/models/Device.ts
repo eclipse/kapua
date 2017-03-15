@@ -10,19 +10,57 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
+interface ConnectionModel {
+  clientId: string;
+  clientIp: string;
+  createdBy: string;
+  createdOn: string;
+  id: string;
+  modifiedBy: string;
+  modifiedOn: string;
+  optlock: number;
+  protocol: string;
+  scopeId: string;
+  status: string;
+  userId: any;
+}
+
+interface LastEventModel {
+  action: string;
+  createdBy: string;
+  createdOn: string;
+  deviceId: any;
+  eventMessage: string;
+  id: string;
+  position: PositionModel;
+  receivedOn: string;
+  resource: string;
+  responseCode: string;
+  scopeId: string;
+}
+
+interface PositionModel {
+  altitude: number; 
+  latitude: number; 
+  longitude: number; 
+}
+
 interface Device {
   acceptEncoding: string;
   applicationIdentifiers: string;
   biosVersion: string;
   clientId: string;
+  connection: ConnectionModel;
   connectionId: string;
   createdBy: string;
   createdOn: string;
-  devoceCredentialsMode: string;
+  deviceCredentialsMode: string;
   displayName: string;
   firmwareVersion: string;
   id: string;
   jvmVersion: string;
+  lastEvent: LastEventModel;
+  lastEventId: string;
   modelId: string;
   modifiedBy: string;
   modifiedOn: string;

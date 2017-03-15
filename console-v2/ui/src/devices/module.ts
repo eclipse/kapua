@@ -19,6 +19,7 @@ import DeviceDetailEventsCtrl from "./controllers/DeviceDetailEventsCtrl";
 import DeviceDetailBundlesCtrl from "./controllers/DeviceDetailBundlesCtrl";
 import DeviceDetailConfigurationsCtrl from "./controllers/DeviceDetailConfigurationsCtrl";
 import DeviceDetailCommandsCtrl from "./controllers/DeviceDetailCommandsCtrl";
+import DeviceDetailGroupsCtrl from "./controllers/DeviceDetailGroupsCtrl";
 
 import DevicesService from "./services/DevicesService";
 import DeviceMapperService from "./services/DeviceMapperService";
@@ -92,6 +93,15 @@ angular.module("app.devices", [])
                             controller: "DeviceDetailCommandsCtrl as vm"
                         }
                     }
+                })
+                .state("kapua.devices.detail.groups", {
+                    url: "/groups",
+                    views: {
+                        "kapuaView@kapua": {
+                            template: require("./views/device-details/groups.html"),
+                            controller: "DeviceDetailGroupsCtrl as vm"
+                        }
+                    }
                 });
         }])
 
@@ -107,4 +117,5 @@ angular.module("app.devices", [])
     .controller("DeviceDetailEventsCtrl", ["$stateParams", "$http", DeviceDetailEventsCtrl])
     .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", DeviceDetailBundlesCtrl])
     .controller("DeviceDetailConfigurationsCtrl", ["$stateParams", "$http", DeviceDetailConfigurationsCtrl])
-    .controller("DeviceDetailCommandsCtrl", ["$stateParams", "$http", DeviceDetailCommandsCtrl]);
+    .controller("DeviceDetailCommandsCtrl", ["$stateParams", "$http", DeviceDetailCommandsCtrl])
+    .controller("DeviceDetailGroupsCtrl", ["$stateParams", "$http", DeviceDetailGroupsCtrl]);

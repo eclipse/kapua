@@ -104,11 +104,25 @@ export default class DeviceDetailCtrl {
     ]
   };
 
-  private listConfig = {
-    selectedItems: false,
-    showSelectBox: false,
-    useExpandingRows: true
+  private groupsStatus = {
+    "title": "Groups",
+    "count": 5,
+    "href": null,
+    "iconClass": "fa fa-object-group",
+    "notifications": [
+      {
+        "iconClass": "pficon pficon-error-circle-o",
+        "count": 9,
+        "href": "#"
+      },
+      {
+        "iconClass": "pficon pficon-warning-triangle-o",
+        "count": 6
+      }
+    ]
   };
+
+  private oneAtATime: boolean = true;
 
   constructor(private $stateParams: angular.ui.IStateParamsService,
     private $http: angular.IHttpService,
@@ -119,14 +133,15 @@ export default class DeviceDetailCtrl {
     this.bundlesStatus.href = `devices/${$stateParams["id"]}/bundles`;
     this.configurationsStatus.href = `devices/${$stateParams["id"]}/configurations`;
     this.commandsStatus.href = `devices/${$stateParams["id"]}/commands`;
+    this.groupsStatus.href = `devices/${$stateParams["id"]}/groups`;
     this.getDeviceById($stateParams["id"]);
   }
 
-  getDeviceById(deviceID): void {
-    this.devicesService.getDeviceById(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<Device>) => {
-      this.device = responseData.data;
-      this.items = this.deviceMapperService.prepareViewItems(this.device);
-    });
+    getDeviceById(deviceID): void {
+      this.devicesService.getDeviceById(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<Device>) => {      
+        this.device = responseData.data;
+        this.items = this.deviceMapperService.prepareViewItems(this.device);
+      });
   }
 
 
