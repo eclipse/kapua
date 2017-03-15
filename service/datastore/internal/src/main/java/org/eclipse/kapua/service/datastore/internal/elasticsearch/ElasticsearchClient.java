@@ -50,13 +50,7 @@ public class ElasticsearchClient
                 Class<?> clazz = Class.forName(clientProvidername, !initialize, classLoader);
                 clientProvider = (ElasticsearchClientProvider) clazz.newInstance();
             }
-            catch (ClassNotFoundException e) {
-                throw new EsClientUnavailableException("Client Provider can't be created", e);
-            }
-            catch (InstantiationException e) {
-                throw new EsClientUnavailableException("Client Provider can't be created", e);
-            }
-            catch (IllegalAccessException e) {
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                 throw new EsClientUnavailableException("Client Provider can't be created", e);
             }
         }
