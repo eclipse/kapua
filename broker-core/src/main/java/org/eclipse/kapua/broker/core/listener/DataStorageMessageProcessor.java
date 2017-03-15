@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
@@ -30,8 +30,7 @@ import com.codahale.metrics.Timer.Context;
  * @since 1.0
  */
 @UriEndpoint(title = "Data storage message processor", syntax = "bean:dataStorageMessageProcessor", scheme = "bean")
-public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>>
-{
+public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
 
@@ -42,10 +41,9 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     // store timers
     private Timer metricStorageDataSaveTime;
 
-    private MessageStoreService    messageStoreService    = KapuaLocator.getInstance().getService(MessageStoreService.class);
+    private MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
-    public DataStorageMessageProcessor()
-    {
+    public DataStorageMessageProcessor() {
         super("DataStorage");
 
         // data message
@@ -59,8 +57,7 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
      * Process a data message.
      */
     @Override
-    public void processMessage(CamelKapuaMessage<?> message)
-    {
+    public void processMessage(CamelKapuaMessage<?> message) {
 
         // TODO filter alert topic???
         //
@@ -68,17 +65,14 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
         // data messages
         try {
             Context metricStorageDataSaveTimeContext = metricStorageDataSaveTime.time();
-            logger.debug("Received data message from device channel: client id '{}' - {}",
-                         new Object[] { message.getMessage().getClientId(), message.getMessage().getChannel().toString() });
+            logger.debug("Received data message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
             messageStoreService.store(message.getMessage());
             metricStorageMessage.inc();
             metricStorageDataSaveTimeContext.stop();
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             metricStorageDataErrorMessage.inc();
-            logger.error("An error occurred while storing message: {}", e.getCode().toString());
+            logger.error("An error occurred while storing message: {}", e.getCode(), e);
         }
     }
-
 
 }
