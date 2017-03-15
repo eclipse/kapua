@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
  package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
@@ -75,7 +76,7 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider
 
         String[] nodeParts = getNodeParts(esNodes[0]);
         String esHost = null;
-        int esPort = DEFAULT_PORT;
+        final int esPort = config.getInt(DatastoreSettingKey.ELASTICSEARCH_PORT, DEFAULT_PORT);
 
         if (nodeParts.length > 0)
             esHost = nodeParts[0];

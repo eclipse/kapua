@@ -8,6 +8,7 @@
  *  
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.setting;
 
@@ -34,6 +35,10 @@ public enum DatastoreSettingKey implements SettingKey
      * Elasticsearch nodes count
      */
     ELASTICSEARCH_NODES("datastore.elasticsearch.node"),
+    /**
+     * Elasticsearch port
+     */
+    ELASTICSEARCH_PORT("datastore.elasticsearch.port"),
     /**
      * Elasticsearch cluster name
      */
