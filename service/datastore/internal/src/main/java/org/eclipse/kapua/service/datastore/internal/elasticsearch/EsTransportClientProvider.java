@@ -8,8 +8,9 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
- package org.eclipse.kapua.service.datastore.internal.elasticsearch;
+package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,27 +29,25 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  * @since 1.0
  *
  */
-public class EsTransportClientProvider implements ElasticsearchClientProvider
-{
+public class EsTransportClientProvider implements ElasticsearchClientProvider {
 
     private static final int DEFAULT_PORT = 9300;
 
-    private Client client;
+    private final Client client;
 
-    private static String[] getNodeParts(String node)
-    {
-        if (node == null)
+    private static String[] getNodeParts(String node) {
+        if (node == null) {
             return new String[] {};
+        }
 
         String[] split = node.split(":");
         return split;
     }
 
-    private static Client getEsClient(String hostname, int port, String clustername) throws UnknownHostException
-    {
+    private static Client getEsClient(String hostname, int port, String clustername) throws UnknownHostException {
 
         Settings settings = Settings.settingsBuilder()
-                                    .put("cluster.name", clustername).build();
+                .put("cluster.name", clustername).build();
 
         InetSocketTransportAddress ita = new InetSocketTransportAddress(InetAddress.getByName(hostname), port);
         Client esClient = TransportClient.builder().settings(settings).build().addTransportAddress(ita);
@@ -62,48 +61,43 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider
      * @throws EsClientUnavailableException
      */
     public EsTransportClientProvider()
-        throws EsClientUnavailableException
-    {
+            throws EsClientUnavailableException {
         DatastoreSettings config = DatastoreSettings.getInstance();
         Map<String, String> map = config.getMap(String.class, DatastoreSettingKey.ELASTICSEARCH_NODES, "[0-9]+");
         String[] esNodes = new String[] {};
-        if (map != null)
+        if (map != null) {
             esNodes = map.values().toArray(new String[] {});
+        }
 
-        if (esNodes == null || esNodes.length == 0)
+        if (esNodes == null || esNodes.length == 0) {
             throw new EsClientUnavailableException("No elasticsearch nodes found");
+        }
 
         String[] nodeParts = getNodeParts(esNodes[0]);
         String esHost = null;
-        int esPort = DEFAULT_PORT;
+        int esPort = config.getInt(DatastoreSettingKey.ELASTICSEARCH_PORT, DEFAULT_PORT);
 
-        if (nodeParts.length > 0)
+        if (nodeParts.length > 0) {
             esHost = nodeParts[0];
+        }
 
         if (nodeParts.length > 1) {
             try {
-                Integer.parseInt(nodeParts[1]);
-            }
-            catch (NumberFormatException e) {
+                esPort = Integer.parseInt(nodeParts[1]);
+            } catch (NumberFormatException e) {
                 throw new EsClientUnavailableException("Could not parse elasticsearch port: " + nodeParts[1]);
             }
         }
 
-        Client theClient = null;
         try {
-            theClient = getEsClient(esHost, esPort, config.getString(DatastoreSettingKey.ELASTICSEARCH_CLUSTER));
-        }
-        catch (UnknownHostException e) {
+            this.client = getEsClient(esHost, esPort, config.getString(DatastoreSettingKey.ELASTICSEARCH_CLUSTER));
+        } catch (UnknownHostException e) {
             throw new EsClientUnavailableException("Unknown elasticsearch node host", e);
         }
-
-        client = theClient;
-
     }
 
     @Override
-    public Client getClient()
-    {
+    public Client getClient() {
         return client;
     }
 

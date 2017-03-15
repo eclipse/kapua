@@ -18,5 +18,5 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $SCRIPT_DIR/openshift-common.sh
 
 # Create Kapua project
-$OC login
+$OC login -u admin -p admin
 $OC new-project "$OPENSHIFT_PROJECT_NAME" --description="Open source IoT Platform" --display-name="Eclipse Kapua"
