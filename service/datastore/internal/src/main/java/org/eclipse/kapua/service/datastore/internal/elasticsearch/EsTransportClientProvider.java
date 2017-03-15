@@ -89,15 +89,11 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider {
             }
         }
 
-        Client theClient = null;
         try {
-            theClient = getEsClient(esHost, esPort, config.getString(DatastoreSettingKey.ELASTICSEARCH_CLUSTER));
+            this.client = getEsClient(esHost, esPort, config.getString(DatastoreSettingKey.ELASTICSEARCH_CLUSTER));
         } catch (UnknownHostException e) {
             throw new EsClientUnavailableException("Unknown elasticsearch node host", e);
         }
-
-        client = theClient;
-
     }
 
     @Override
