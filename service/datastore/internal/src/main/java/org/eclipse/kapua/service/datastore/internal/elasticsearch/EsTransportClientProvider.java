@@ -75,7 +75,7 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider {
 
         String[] nodeParts = getNodeParts(esNodes[0]);
         String esHost = null;
-        final int esPort = config.getInt(DatastoreSettingKey.ELASTICSEARCH_PORT, DEFAULT_PORT);
+        int esPort = config.getInt(DatastoreSettingKey.ELASTICSEARCH_PORT, DEFAULT_PORT);
 
         if (nodeParts.length > 0) {
             esHost = nodeParts[0];
@@ -83,7 +83,7 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider {
 
         if (nodeParts.length > 1) {
             try {
-                Integer.parseInt(nodeParts[1]);
+                esPort = Integer.parseInt(nodeParts[1]);
             } catch (NumberFormatException e) {
                 throw new EsClientUnavailableException("Could not parse elasticsearch port: " + nodeParts[1]);
             }
