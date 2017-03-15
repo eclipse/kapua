@@ -17,6 +17,7 @@
 		<api>org.eclipse.kapua.service.account.AccountService</api>
 		
         <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
+        <api>org.eclipse.kapua.service.authentication.CertificateService</api>
         <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
 		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
 		<api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>

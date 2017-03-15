@@ -43,6 +43,9 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH("authentication.credential.apiKey.key.length"), //
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_ENABLE("authentication.credential.apiKey.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_TTL("authentication.credential.apiKey.cache.ttl"), //
+    
+    AUTHENTICATION_JWK_PRIVATE_KEY("authentication.jwk.private.key"),
+    AUTHENTICATION_JWK_PUBLIC_KEY("authentication.jwk.public.key"),
     ;
 
     private String key;
