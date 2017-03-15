@@ -47,8 +47,8 @@
                 -->
                 
                 
-				<exclude>activemq-all-*</exclude>
-				<exclude>lib/activemq-jaas-*</exclude>
+                <exclude>activemq-all-*</exclude>
+                <exclude>lib/activemq-jaas-*</exclude>
                 <exclude>lib/activemq-openwire-legacy*</exclude>
                 <exclude>lib/activemq-web-*</exclude>
                 <exclude>lib/activemq-rar.txt</exclude>
@@ -150,10 +150,10 @@
                 <include>com.h2database:h2</include>
                 <include>com.google.protobuf:protobuf-java</include>
                 <include>org.apache.shiro:shiro-core</include>
-				<include>org.elasticsearch:elasticsearch</include>
-				<include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
-				<include>org.apache.commons:commons-pool2</include>
-				<include>org.bitbucket.b_c:jose4j</include>
+                <include>org.elasticsearch:elasticsearch</include>
+                <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
+                <include>org.apache.commons:commons-pool2</include>
+                <include>org.bitbucket.b_c:jose4j</include>
                 <include>org.reflections:reflections</include>
                 <include>org.javassist:javassist</include>
                 <include>com.google.code.findbugs:annotations</include>
