@@ -32,9 +32,13 @@ public enum DatastoreSettingKey implements SettingKey
      */
     ELASTICSEARCH_CLIENT_PROVIDER("datastore.elasticsearch.client.provider"),
     /**
-     * Elasticsearch nodes count
+     * Comma separated list of elasticsearch nodes in the form "hostname[:port],hostname[:port]"
      */
-    ELASTICSEARCH_NODES("datastore.elasticsearch.node"),
+    ELASTICSEARCH_NODES("datastore.elasticsearch.nodes"),
+    /**
+     * Elasticsearch node map
+     */
+    ELASTICSEARCH_NODE("datastore.elasticsearch.node"),
     /**
      * Elasticsearch port
      */
