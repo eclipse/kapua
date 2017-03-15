@@ -12,25 +12,21 @@
 *                                                                               
 *******************************************************************************/
 -->
-<div class="detailsContent">
-  <div class="card-pf card-pf-accented card-pf-utilization">
-    <div class="row example-container">
-      <div class="list-view-container">
-        <div pf-list-view class="example-list-view" id="exampleListView" config="vm.listConfig" items="vm.items">
-          <div class="list-view-pf-description">
-            <div class="list-group-item-heading">
-              {{item.name}}
-            </div>
-          </div>
-          <list-expanded-content>
-            <div class="row">
-              <div class="col-md-12" ng-repeat="param in $parent.item.data">
-                <div class="col-md-3" style="font-weight: bold;">{{param.displayName}}:</div>
-                <div class="col-md-9">{{param.value}}</div>
-              </div>
-            </div>
-          </list-expanded-content>
-        </div>
+<div class="col-md-12" style="padding: 0px;">
+  <div class="displayDetailsContent">
+    <div class="card-pf card-pf-accented card-pf-utilization">
+      <div class="row example-container displayDeviceContainer">
+        <h3 class="col-md-12" style="font-weight: bold;">Device Details: </h3>
+        <div class="col-md-3" style="font-weight: bold;">Client ID:</div>
+        <div class="col-md-9">{{vm.device.clientId ? vm.device.clientId : "UNDEFINED"}}</div>
+        <div class="col-md-3" style="font-weight: bold;">Display Name:</div>
+        <div class="col-md-9">{{vm.device.displayName ? vm.device.displayName : "Untitled"}}</div>
+        <div class="col-md-3" style="font-weight: bold;">Connection Status:</div>
+        <div class="col-md-9">{{vm.device.connection.status ? vm.device.connection.status : "UNDEFINED"}}</div>
+        <div class="col-md-3" style="font-weight: bold;">Last Event On:</div>
+        <div class="col-md-9">{{vm.device.lastEvent.createdOn ? vm.device.lastEvent.createdOn : "UNDEFINED"}}</div>
+        <div class="col-md-3" style="font-weight: bold;">Last Event Type:</div>
+        <div class="col-md-9">{{vm.device.lastEvent.createdBy ? vm.device.lastEvent.createdBy : "UNDEFINED"}}</div>
       </div>
     </div>
   </div>
@@ -41,3 +37,23 @@
 <div class="col-md-4" pf-aggregate-status-card head-title="Bundles" show-top-border="true" status="vm.bundlesStatus"></div>
 <div class="col-md-4" pf-aggregate-status-card head-title="Configurations" show-top-border="true" status="vm.configurationsStatus"></div>
 <div class="col-md-4" pf-aggregate-status-card head-title="Commands" show-top-border="true" status="vm.commandsStatus"></div>
+<div class="col-md-4" pf-aggregate-status-card head-title="Groups" show-top-border="true" status="vm.groupsStatus"></div>
+
+<div class="col-md-12" style="padding: 0px;">
+  <div class="displayDetailsContent">
+    <div class="card-pf card-pf-accented card-pf-utilization">
+      <div class="row example-container">
+        <uib-accordion close-others="vm.oneAtATime">
+          <div uib-accordion-group class="panel-default" heading="{{item.name}}" ng-repeat="item in vm.items">
+            <div ng-repeat="param in item.data">
+              <div class="col-md-12" style="padding: 0px;">
+              <div class="col-md-3" style="font-weight: bold;">{{param.displayName}}:</div>
+              <div class="col-md-9">{{param.value}}</div>
+              </div>
+            </div>
+          </div>
+        </uib-accordion>
+      </div>
+    </div>
+  </div>
+</div>

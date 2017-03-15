@@ -16,6 +16,6 @@ export default class DevicesService implements IDevicesService {
     }
 
     getDeviceById(deviceID: string): ng.IHttpPromise<Device> {
-        return this.$http.get("/api/devices/" + deviceID);
+        return this.$http.get("/api/_/devices/" + deviceID);
     }
 }

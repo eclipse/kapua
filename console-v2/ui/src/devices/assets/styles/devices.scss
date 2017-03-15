@@ -21,3 +21,23 @@ table.dataTable {
 td.table-view-pf-select {
   width: 1px;
 }
+
+.detailsAccordion {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.displayDetailsContent {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.displayDeviceContainer {
+  padding-bottom: 16px;
+}
+
+uib-accordion {
+  .panel-group {
+    margin-bottom: 0px;
+  }
+}

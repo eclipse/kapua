@@ -25,6 +25,10 @@ export default class DeviceMapperService implements IDeviceMapperService {
                         value: device.status ? device.status : "UNDEFINED"
                     },
                     {
+                        displayName: "Connection Status",
+                        value: device.connection.status ? device.connection.status : "UNDEFINED"
+                    },
+                    {
                         displayName: "Connection ID",
                         value: device.connectionId ? device.connectionId : "UNDEFINED"
                     },
@@ -66,7 +70,7 @@ export default class DeviceMapperService implements IDeviceMapperService {
                     },
                     {
                         displayName: "Type",
-                        value: device.acceptEncoding ? device.acceptEncoding : "UNDEFINED"
+                        value: device.type ? device.type : "UNDEFINED"
                     },
                     {
                         displayName: "OptLock",
@@ -79,7 +83,7 @@ export default class DeviceMapperService implements IDeviceMapperService {
                 data: [
                     {
                         displayName: "Device Credentials Mode",
-                        value: device.devoceCredentialsMode ? device.devoceCredentialsMode : "UNDEFINED"
+                        value: device.deviceCredentialsMode ? device.deviceCredentialsMode : "UNDEFINED"
                     }
                 ]
             },
