@@ -48,7 +48,7 @@ public class KapuaModule extends AbstractModule {
         try {
             // Find locator configuration file
             List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(SERVICE_RESOURCE));
-            if (locatorConfigurations == null || locatorConfigurations.size() == 0) {
+            if (locatorConfigurations.isEmpty()) {
                 return;
             }
 
@@ -114,7 +114,7 @@ public class KapuaModule extends AbstractModule {
                     for (Class<?> clazz : extendedClassInfo) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
                             @SuppressWarnings("unchecked")
-                            FactoryResolver<KapuaObjectFactory,?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
+                            FactoryResolver<KapuaObjectFactory, ?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getFactoryClass()).to(resolver.getImplementationClass()).in(Singleton.class);
                             logger.info("Bind Kapua factory {} to {}", kapuaObject, clazz);
                             isClassBound = true;

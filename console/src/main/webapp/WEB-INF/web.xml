@@ -10,13 +10,12 @@
     Contributors:
         Eurotech - initial API and implementation
         Red Hat Inc
-   
  -->
 
-<web-app version="2.5" 
+<web-app version="3.0" 
          xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
     <listener>
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
@@ -60,53 +59,11 @@
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
 	</filter-mapping>
-	
-    <filter>
-	    <filter-name>jetty-gzip</filter-name>
-	    <filter-class>org.eclipse.jetty.servlets.GzipFilter</filter-class>
-	</filter>
-	<filter-mapping>
-	    <filter-name>jetty-gzip</filter-name>
-        <url-pattern>*.html</url-pattern>
-        <url-pattern>*.jsp</url-pattern>
-        <url-pattern>*.js</url-pattern>
-        <url-pattern>*.css</url-pattern>
-        <url-pattern>/xsrf/*</url-pattern>   
-        <url-pattern>/errroHandler/*</url-pattern>     
-        <url-pattern>/account/*</url-pattern>
-        <url-pattern>/auth/*</url-pattern>
-        <url-pattern>/device/*</url-pattern>
-        <url-pattern>/deviceManagement/*</url-pattern>
-        <url-pattern>/device_snapshots/*</url-pattern>
-        <url-pattern>/user/*</url-pattern>
-        <url-pattern>/data/*</url-pattern>
-        <url-pattern>/exporter/*</url-pattern>
-        <url-pattern>/exporter_usage/*</url-pattern>
-        <url-pattern>/exporter_device/*</url-pattern>
-        <url-pattern>/exporter_device_event/*</url-pattern>
-        <url-pattern>/role/*</url-pattern>
-        <url-pattern>/accessrole/*</url-pattern>
-        <url-pattern>/accessinfo/*</url-pattern>
-        <url-pattern>/accesspermission/*</url-pattern>
-        <url-pattern>/domain/*</url-pattern>
-        <url-pattern>/group/*</url-pattern>
-        <url-pattern>/credential/*</url-pattern>
-        <url-pattern>/settings/*</url-pattern>
-        <url-pattern>/image/*</url-pattern>
-   <!--
-   Do not include the following URL patterns for gzip
-   compression as it breaks the existing functionality.          
-        <url-pattern>/file/*</url-pattern>
-        <url-pattern>/SSLfile/*</url-pattern>
-        <url-pattern>/gwtComet/*</url-pattern>        
-    -->        
-	</filter-mapping>
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>console.jsp</welcome-file>
 	</welcome-file-list>
-
 
 	<!-- Session Timeout -->
 	<session-config>

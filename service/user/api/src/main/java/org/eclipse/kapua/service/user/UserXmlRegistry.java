@@ -17,9 +17,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
 
 /**
  * User xml factory class
- * 
+ *
  * @since 1.0
- * 
  */
 @XmlRegistry
 public class UserXmlRegistry {
@@ -29,7 +28,7 @@ public class UserXmlRegistry {
 
     /**
      * Creates a new user instance
-     * 
+     *
      * @return
      */
     public User newUser() {
@@ -38,7 +37,7 @@ public class UserXmlRegistry {
 
     /**
      * Creates a new user creator instance
-     * 
+     *
      * @return
      */
     public UserCreator newUserCreator() {
@@ -47,7 +46,7 @@ public class UserXmlRegistry {
 
     /**
      * Creates new user list result
-     * 
+     *
      * @return
      */
     public UserListResult newUserListResult() {

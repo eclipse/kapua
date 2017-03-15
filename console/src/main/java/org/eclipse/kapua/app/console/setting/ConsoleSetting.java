@@ -14,19 +14,17 @@ package org.eclipse.kapua.app.console.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
-public class ConsoleSetting extends AbstractKapuaSetting<ConsoleSettingKeys>
-{
-    private static final String         CONSOLE_SETTING_RESOURCE = "console-setting.properties";
+public class ConsoleSetting extends AbstractKapuaSetting<ConsoleSettingKeys> {
 
-    private static final ConsoleSetting instance                 = new ConsoleSetting();
+    private static final String CONSOLE_SETTING_RESOURCE = "console-setting.properties";
 
-    private ConsoleSetting()
-    {
+    private static final ConsoleSetting instance = new ConsoleSetting();
+
+    private ConsoleSetting() {
         super(CONSOLE_SETTING_RESOURCE);
     }
 
-    public static ConsoleSetting getInstance()
-    {
+    public static ConsoleSetting getInstance() {
         return instance;
     }
 }

@@ -34,7 +34,6 @@ import com.google.inject.Key;
  * Kapua locator implementation bases on Guice framework
  *
  * @since 1.0
- *
  */
 public class GuiceLocatorImpl extends KapuaLocator {
 

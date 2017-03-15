@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlEnum;
 
 /**
  * User status
- * 
+ *
  * @since 1.0
  *
  */

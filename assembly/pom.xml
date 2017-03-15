@@ -7,8 +7,8 @@
     http://www.eclipse.org/legal/epl-v10.html
    
     Contributors:
-        Eurotech - initial API and implementation
-        Red Hat Inc
+	   Eurotech - initial API and implementation
+	   Red Hat Inc
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -185,10 +185,10 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-            <!-- Google protobuf for message encoding -->
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-        </dependency>
+			<!-- Google protobuf for message encoding -->
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
@@ -216,11 +216,11 @@
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 		</dependency>
-	    <dependency>
-	        <groupId>org.springframework.security</groupId>
-	        <artifactId>spring-security-core</artifactId>
-	        <version>4.1.3.RELEASE</version>
-	    </dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>4.1.3.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>io.dropwizard.metrics</groupId>
 			<artifactId>metrics-core</artifactId>
@@ -572,17 +572,11 @@
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
-					
 					<images>
 						<image>
 							<name>${docker.account}/java-base</name>
 							<build>
 								<from>${java.base.image}</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<runCmds>
 									<runCmd><![CDATA[
 									apk update && apk add curl tar && \
@@ -596,11 +590,6 @@
 							<name>${docker.account}/jetty-base</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<runCmds>
 									<runCmd><![CDATA[
 									apk update && apk add bash && \
@@ -636,11 +625,6 @@
 							<name>${docker.account}/kapua-sql</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
 									<basedir>/</basedir>
@@ -675,11 +659,6 @@
 							<name>${docker.account}/kapua-broker</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
 								</assembly>
@@ -690,7 +669,6 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</ACTIVEMQ_OPTS>
 								</env>
 								<ports>
@@ -715,11 +693,6 @@
 							<name>${docker.account}/kapua-console</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console.xml</descriptor>
 								</assembly>
@@ -730,7 +703,6 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</CATALINA_OPTS>
 								</env>
 								<ports>
@@ -751,11 +723,6 @@
 							<name>${docker.account}/kapua-console-jetty</name>
 							<build>
 								<from>${docker.account}/jetty-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
 									<basedir>/var/lib/jetty</basedir>
@@ -770,11 +737,6 @@
 							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>${docker.account}/java-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-api.xml</descriptor>
 								</assembly>
@@ -785,7 +747,6 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<JAVA_OPTS>-javaagent:/jolokia-jvm-agent.jar</JAVA_OPTS>
 									<CATALINA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</CATALINA_OPTS>
 								</env>
 								<ports>
@@ -806,11 +767,6 @@
 							<name>${docker.account}/kapua-api-jetty</name>
 							<build>
 								<from>${docker.account}/jetty-base</from>
-								<tags>
-									<tag>latest</tag>
-									<tag>${project.version}</tag>
-									<tag>${timestamp}</tag>
-								</tags>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-api-jetty.xml</descriptor>
 									<basedir>/var/lib/jetty</basedir>
@@ -825,6 +781,81 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<configuration>
+						<images>
+							<image>
+								<name>${docker.account}/java-base</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-sql</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-broker</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-console</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-console-jetty</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-api</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+							<image>
+								<name>${docker.account}/kapua-api-jetty</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+						</images>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
@@ -836,9 +867,9 @@
 			<build>
 				<plugins>
 					<plugin>
-		                <groupId>org.codehaus.mojo</groupId>
-		                <artifactId>exec-maven-plugin</artifactId>
-		                <version>1.1</version>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.1</version>
 						<configuration>
 							<environmentVariables>
 								<KAPUA_VERSION>${project.version}</KAPUA_VERSION>
@@ -846,8 +877,8 @@
 								<ACTIVEMQ_VERSION>${activemq.version}</ACTIVEMQ_VERSION>
 							</environmentVariables>
 						</configuration>
-		                <executions>
-		                    <execution>
+						<executions>
+							<execution>
 								<id>vagrant_console_deploy</id>
 								<phase>install</phase>
 								<goals>
@@ -859,20 +890,20 @@
 								</configuration>
 							</execution>
 							<execution>
-		                        <id>vagrant_broker_deploy</id>
-		                        <phase>install</phase>
-		                        <goals>
-		                            <goal>exec</goal>
-		                        </goals>
-		                        <configuration>
+								<id>vagrant_broker_deploy</id>
+								<phase>install</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
 									<executable>./deployScript/deploy-broker.sh</executable>
 									<workingDirectory>${basedir}/../dev-tools/src/main/vagrant/demo</workingDirectory>
-		                        </configuration>
-		                    </execution>
-		                </executions>
-	            	</plugin>
-	     		</plugins>
-	     	</build>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 
 		<profile>
@@ -892,6 +923,94 @@
 			</activation>
 			<build>
 				<defaultGoal>clean install docker:build docker:push</defaultGoal>
+			</build>
+		</profile>
+
+		<profile>
+			<id>release</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>io.fabric8</groupId>
+							<artifactId>docker-maven-plugin</artifactId>
+							<configuration>
+								<images>
+									<image>
+										<name>${docker.account}/java-base</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-sql</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-broker</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-console</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-console-jetty</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-api</name>
+                                        <build>
+                                            <tags>
+                                                <tag>latest</tag>
+                                                <tag>${project.version}</tag>
+                                                <tag>${timestamp}</tag>
+                                            </tags>
+                                        </build>
+									</image>
+									<image>
+										<name>${docker.account}/kapua-api-jetty</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+								</images>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
 			</build>
 		</profile>
 	</profiles>

@@ -1,6 +1,6 @@
 # Running
 
-Kapua can be run in a few differnt ways. See th following chapters for
+Kapua can be run in a few different ways. See th following chapters for
 more information about how to start and run Kapua.
 
 {% hint style='info' %}
@@ -54,6 +54,13 @@ credentials:
 	<dt>username</dt><dd>kapua-sys</dd>
 	<dt>password</dt><dd>kapua-password</dd>
 </dl>
+
+### Adding metrics
+
+If you have enabled metrics support in OpenShift (e.g. with `oc cluster up --metrics`)
+then you can also install Grafana for Hawkular to visualize your data:
+
+    oc new-app -f https://raw.githubusercontent.com/hawkular/hawkular-grafana-datasource/master/docker/openshift/openshift-template-ephemeral.yaml
 
 ### Ensuring enough entropy
  
