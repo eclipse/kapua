@@ -33,11 +33,12 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider {
 
     private static final int DEFAULT_PORT = 9300;
 
-    private Client client;
+    private final Client client;
 
     private static String[] getNodeParts(String node) {
-        if (node == null)
+        if (node == null) {
             return new String[] {};
+        }
 
         String[] split = node.split(":");
         return split;
@@ -64,18 +65,21 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider {
         DatastoreSettings config = DatastoreSettings.getInstance();
         Map<String, String> map = config.getMap(String.class, DatastoreSettingKey.ELASTICSEARCH_NODES, "[0-9]+");
         String[] esNodes = new String[] {};
-        if (map != null)
+        if (map != null) {
             esNodes = map.values().toArray(new String[] {});
+        }
 
-        if (esNodes == null || esNodes.length == 0)
+        if (esNodes == null || esNodes.length == 0) {
             throw new EsClientUnavailableException("No elasticsearch nodes found");
+        }
 
         String[] nodeParts = getNodeParts(esNodes[0]);
         String esHost = null;
         final int esPort = config.getInt(DatastoreSettingKey.ELASTICSEARCH_PORT, DEFAULT_PORT);
 
-        if (nodeParts.length > 0)
+        if (nodeParts.length > 0) {
             esHost = nodeParts[0];
+        }
 
         if (nodeParts.length > 1) {
             try {
