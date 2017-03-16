@@ -78,9 +78,13 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
+import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.ChannelInfo;
+import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
@@ -160,6 +164,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccountQuery.class,
                     AccountXmlRegistry.class,
 
+                    // Data Channel Info
+                    ChannelInfo.class,
+                    ChannelInfoListResult.class,
+                    ChannelInfoQuery.class,
+                    ChannelInfoXmlRegistry.class,
+                    
                     // Data Client Info
                     ClientInfo.class,
                     ClientInfoListResult.class,
