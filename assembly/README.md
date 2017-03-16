@@ -28,7 +28,8 @@ Pushing to a specific docker registry under a specific account:
 ### Run
 
     docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
-    docker run -td --name kapua-broker --link kapua-sql:db -p 1883:1883 kapua/kapua-broker
+    docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:2.4
+    docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es -p 1883:1883 kapua/kapua-broker
     docker run -td --name kapua-console --link kapua-sql:db -p 8080:8080 kapua/kapua-console
     docker run -td --name kapua-api --link kapua-sql:db -p 8081:8080 kapua/kapua-api
 

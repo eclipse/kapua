@@ -669,7 +669,7 @@
 									</exec>
 								</entryPoint>
 								<env>
-									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT}</ACTIVEMQ_OPTS>
+									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Ddatastore.elasticsearch.nodes=\${ES_PORT_9200_TCP_ADDR}</ACTIVEMQ_OPTS>
 								</env>
 								<ports>
 									<port>1883</port>
