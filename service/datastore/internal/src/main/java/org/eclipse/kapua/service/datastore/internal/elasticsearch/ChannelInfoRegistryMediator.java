@@ -19,11 +19,9 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 /**
  * Channel information registry mediator definition
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface ChannelInfoRegistryMediator
-{
+public interface ChannelInfoRegistryMediator {
 
     /**
      * Get the channel info metadata
@@ -33,9 +31,11 @@ public interface ChannelInfoRegistryMediator
      * @return
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public Metadata getMetadata(KapuaId scopeId, long indexedOn)
-        throws EsDocumentBuilderException, EsClientUnavailableException;
+            throws EsDocumentBuilderException, EsClientUnavailableException;
 
     /**
      * On before channel info delete event handler
@@ -46,18 +46,22 @@ public interface ChannelInfoRegistryMediator
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public void onBeforeChannelInfoDelete(KapuaId scopeId, ChannelInfo channelInfo)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsQueryConversionException,
-        EsClientUnavailableException;
+    public void onBeforeChannelInfoDelete(ChannelInfo channelInfo)
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsQueryConversionException,
+            EsClientUnavailableException;
 
     /**
      * On after channel info delete event handler
      * 
      * @param scopeId
      * @param channelInfo
+     * 
+     * @since 1.0.0
      */
-    public void onAfterChannelInfoDelete(KapuaId scopeId, ChannelInfo channelInfo);
+    public void onAfterChannelInfoDelete(ChannelInfo channelInfo);
 }

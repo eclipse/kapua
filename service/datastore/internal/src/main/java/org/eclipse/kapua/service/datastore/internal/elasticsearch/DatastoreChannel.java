@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,43 +23,44 @@ import org.slf4j.LoggerFactory;
  * Topic are expected to be in the form of "account/clientId/&lt;application_specific&gt;";
  * system topic starts with the $EDC account.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
-public class DatastoreChannel
-{
+public class DatastoreChannel {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(DatastoreChannel.class);
 
-    public static final int    MIN_PARTS          = 3;
+    public static final int MIN_PARTS = 3;
+    /**
+     * Default topic parts separator
+     */
+    public static final String TOPIC_SEPARATOR = "/";
     /**
      * Default multiple level wild card
      */
-    public static final String MULTI_LEVEL_WCARD  = "#";
+    public static final String MULTI_LEVEL_WCARD = "#";
+
+    private static final String MULTI_LEVEL_SEPARATOR_WCARD = TOPIC_SEPARATOR + MULTI_LEVEL_WCARD;
+
     /**
      * Default single level wild card
      */
     public static final String SINGLE_LEVEL_WCARD = "+";
-    /**
-     * Default topic parts separator
-     */
-    public static final String TOPIC_SEPARATOR    = "/";
 
     public static final String ALERT_TOPIC = "ALERT";
 
-    private String   account;
-    private String   clientId;
-    private String   channel;
+    private KapuaId scopeId;
+    private String clientId;
+    private String channel;
     private String[] channelParts;
 
-    private void init(String account, String clientId, String channel) throws EsInvalidChannelException
-    {
+    private void init(KapuaId scopeId, String clientId, String channel) throws EsInvalidChannelException {
 
         // Must be not null and not multilevel wild card
-        if (account == null || MULTI_LEVEL_WCARD.equals(account))
-            throw new EsInvalidChannelException("Invalid account: " + account);
+        if (scopeId == null || MULTI_LEVEL_WCARD.equals(scopeId.toCompactId()))
+            throw new EsInvalidChannelException("Invalid scopeId: " + scopeId.toCompactId());
 
-        this.account = account;
+        this.scopeId = scopeId;
 
         // Must be not null and not multilevel wild card
         if (clientId == null || MULTI_LEVEL_WCARD.equals(clientId))
@@ -98,13 +100,14 @@ public class DatastoreChannel
      * @param clientId
      * @param channelParts
      * @throws EsInvalidChannelException
+     * 
+     * @since 1.0.0
      */
-    public DatastoreChannel(String account, String clientId, List<String> channelParts) throws EsInvalidChannelException
-    {
-        this(account, clientId, (new Object() {
+    public DatastoreChannel(KapuaId scopeId, String clientId, List<String> channelParts) throws EsInvalidChannelException {
+        this(scopeId, clientId, (new Object() {
+
             @Override
-            public String toString()
-            {
+            public String toString() {
                 return getChannel(channelParts);
             }
         }).toString());
@@ -117,10 +120,11 @@ public class DatastoreChannel
      * @param clientId
      * @param channel
      * @throws EsInvalidChannelException
+     * 
+     * @since 1.0.0
      */
-    public DatastoreChannel(String account, String clientId, String channel) throws EsInvalidChannelException
-    {
-        init(account, clientId, channel);
+    public DatastoreChannel(KapuaId scopeId, String clientId, String channel) throws EsInvalidChannelException {
+        init(scopeId, clientId, channel);
     }
 
     /**
@@ -129,8 +133,7 @@ public class DatastoreChannel
      * @param fullName
      * @throws EsInvalidChannelException
      */
-    public DatastoreChannel(String fullName) throws EsInvalidChannelException
-    {
+    public DatastoreChannel(String fullName) throws EsInvalidChannelException {
 
         // Must be not null and not multilevel wild card
         if (fullName == null)
@@ -140,17 +143,18 @@ public class DatastoreChannel
         if (parts.length < MIN_PARTS)
             throw new EsInvalidChannelException(String.format("Invalid channel: less than %d parts found.", MIN_PARTS));
 
-        init(parts[0], parts[1], fullName.substring(parts[0].length() + parts[1].length() + 2));
+        // init(parts[0], parts[1], fullName.substring(parts[0].length() + parts[1].length() + 2));
     }
 
     /**
      * Get the account
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getAccount()
-    {
-        return account;
+    public String getAccount() {
+        return null;
     }
 
     /**
@@ -158,19 +162,21 @@ public class DatastoreChannel
      * In the MQTT word this method return true if the topic starts with '+/'.
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public boolean isAnyAccount()
-    {
-        return SINGLE_LEVEL_WCARD.equals(this.account);
+    public boolean isAnyAccount() {
+        return SINGLE_LEVEL_WCARD.equals(this.scopeId);
     }
 
     /**
      * Get the client identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
@@ -180,9 +186,10 @@ public class DatastoreChannel
      * 
      * @param clientId
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static boolean isAnyClientId(String clientId)
-    {
+    public static boolean isAnyClientId(String clientId) {
         return SINGLE_LEVEL_WCARD.equals(clientId);
     }
 
@@ -190,9 +197,10 @@ public class DatastoreChannel
      * {@link DatastoreChannel#isAnyClientId(String clientId)}
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public boolean isAnyClientId()
-    {
+    public boolean isAnyClientId() {
         return isAnyClientId(clientId);
     }
 
@@ -202,9 +210,10 @@ public class DatastoreChannel
      * 
      * @param channel
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static boolean isAlertTopic(String channel)
-    {
+    public static boolean isAlertTopic(String channel) {
         return ALERT_TOPIC.equals(channel);
     }
 
@@ -212,9 +221,10 @@ public class DatastoreChannel
      * {@link DatastoreChannel#isAlertTopic(String channel)}
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public boolean isAlertTopic()
-    {
+    public boolean isAlertTopic() {
         return isAlertTopic(channel);
     }
 
@@ -223,30 +233,11 @@ public class DatastoreChannel
      * 
      * @param channel
      * @return
-     */
-    public static boolean isAnyChannel(String channel)
-    {
-        return (channel != null && MULTI_LEVEL_WCARD.equals(channel));
-    }
-
-    /**
-     * {@link DatastoreChannel#isAnyChannel(String channel)}
      * 
-     * @return
+     * @since 1.0.0
      */
-    public boolean isAnyChannel()
-    {
-        return isAnyChannel(channel);
-    }
-
-    /**
-     * {@link DatastoreChannel#isWildcardChannel(String channel)}
-     * 
-     * @return
-     */
-    public boolean isWildcardChannel()
-    {
-        return isWildcardChannel(channel);
+    public static boolean isAnyChannel(String channel) {
+        return channel != null && MULTI_LEVEL_WCARD.equals(channel);
     }
 
     /**
@@ -255,12 +246,11 @@ public class DatastoreChannel
      * 
      * @param channel
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static boolean isWildcardChannel(String channel)
-    {
-        final String multilevelAnySubtopic = String.format("%s%s", TOPIC_SEPARATOR, MULTI_LEVEL_WCARD);
-        MULTI_LEVEL_WCARD.equals(channel);
-        return (channel != null && channel.endsWith(multilevelAnySubtopic));
+    public static boolean isWildcardChannel(String channel) {
+        return channel != null && channel.endsWith(MULTI_LEVEL_SEPARATOR_WCARD);
     }
 
     /**
@@ -268,9 +258,10 @@ public class DatastoreChannel
      * 
      * @param parts
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static String getChannel(List<String> parts)
-    {
+    public static String getChannel(List<String> parts) {
         StringBuilder channelBuilder = new StringBuilder();
         for (String part : parts) {
             channelBuilder.append(part);
@@ -278,8 +269,7 @@ public class DatastoreChannel
         }
         if (channelBuilder.length() > 0) {
             return channelBuilder.substring(0, channelBuilder.length() - 1).toString();
-        }
-        else {
+        } else {
             return "";
         }
     }
@@ -288,9 +278,10 @@ public class DatastoreChannel
      * Get the channel
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getChannel()
-    {
+    public String getChannel() {
         return channel;
     }
 
@@ -298,9 +289,10 @@ public class DatastoreChannel
      * Get the last topic part (leaf)
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getLeafName()
-    {
+    public String getLeafName() {
         return this.channelParts[this.channelParts.length - 1];
     }
 
@@ -308,9 +300,10 @@ public class DatastoreChannel
      * Get the parent topic
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getParentTopic()
-    {
+    public String getParentTopic() {
         int iLastSlash = channel.lastIndexOf(TOPIC_SEPARATOR);
         return iLastSlash != -1 ? channel.substring(0, iLastSlash) : null;
     }
@@ -319,15 +312,15 @@ public class DatastoreChannel
      * Get the grand parent topic
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getGrandParentTopic()
-    {
+    public String getGrandParentTopic() {
         String parentTopic = getParentTopic();
         if (parentTopic != null) {
             int iLastSlash = parentTopic.lastIndexOf(TOPIC_SEPARATOR);
             return iLastSlash != -1 ? parentTopic.substring(0, iLastSlash) : null;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -336,9 +329,10 @@ public class DatastoreChannel
      * Get the channel parts
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String[] getParts()
-    {
+    public String[] getParts() {
         return channelParts;
     }
 
@@ -346,15 +340,15 @@ public class DatastoreChannel
      * Get the full channel name
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getFullName()
-    {
-        return account + TOPIC_SEPARATOR + clientId + TOPIC_SEPARATOR + channel;
+    public String getFullName() {
+        return scopeId + TOPIC_SEPARATOR + clientId + TOPIC_SEPARATOR + channel;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return channel;
     }
 

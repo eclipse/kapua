@@ -38,8 +38,8 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
      * Constructor
      */
     public KapuaListResultImpl() {
-        this.limitExceeded = false;
-        items = new ArrayList<E>();
+        limitExceeded = false;
+        items = new ArrayList<>();
     }
 
     @Override

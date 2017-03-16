@@ -19,35 +19,31 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
  * Metric info query converter.<br>
  * This object adds the specific metric info included and excluded fields definition to the abstract query converter.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class MetricInfoQueryConverter extends AbstractStorableQueryConverter<MetricInfo, MetricInfoQuery>
-{
+public class MetricInfoQueryConverter extends AbstractStorableQueryConverter<MetricInfo, MetricInfoQuery> {
 
     @Override
-    protected String[] getIncludes(StorableFetchStyle fetchStyle)
-    {
+    protected String[] getIncludes(StorableFetchStyle fetchStyle) {
         return new String[] { "" };
     }
 
     @Override
-    protected String[] getExcludes(StorableFetchStyle fetchStyle)
-    {
+    protected String[] getExcludes(StorableFetchStyle fetchStyle) {
         return new String[] { "*" };
     }
 
     @Override
-    protected String[] getFields()
-    {
-        return new String[] { MetricInfoField.ACCOUNT.field(),
-                              MetricInfoField.CLIENT_ID.field(),
-                              MetricInfoField.CHANNEL.field(),
-                              MetricInfoField.NAME_FULL.field(),
-                              MetricInfoField.TYPE_FULL.field(),
-                              MetricInfoField.VALUE_FULL.field(),
-                              MetricInfoField.TIMESTAMP_FULL.field(),
-                              MetricInfoField.MESSAGE_ID_FULL.field() };
+    protected String[] getFields() {
+        return new String[] { //
+                MetricInfoField.SCOPE_ID.field(),
+                MetricInfoField.CLIENT_ID.field(),
+                MetricInfoField.CHANNEL.field(),
+                MetricInfoField.NAME_FULL.field(),
+                MetricInfoField.TYPE_FULL.field(),
+                MetricInfoField.VALUE_FULL.field(),
+                MetricInfoField.TIMESTAMP_FULL.field(),
+                MetricInfoField.MESSAGE_ID_FULL.field() };
     }
 
 }

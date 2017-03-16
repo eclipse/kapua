@@ -12,39 +12,35 @@
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
  * Channel info query converter.<br>
  * This object adds the specific channel info included and excluded fields definition to the abstract query converter.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ChannelInfoQueryConverter extends AbstractStorableQueryConverter<ChannelInfo, ChannelInfoQuery>
-{
+public class ChannelInfoQueryConverter extends AbstractStorableQueryConverter<ChannelInfo, ChannelInfoQuery> {
 
     @Override
-    protected String[] getIncludes(StorableFetchStyle fetchStyle)
-    {
+    protected String[] getIncludes(StorableFetchStyle fetchStyle) {
         return new String[] { "" };
     }
 
     @Override
-    protected String[] getExcludes(StorableFetchStyle fetchStyle)
-    {
+    protected String[] getExcludes(StorableFetchStyle fetchStyle) {
         return new String[] { "*" };
     }
 
     @Override
-    protected String[] getFields()
-    {
-        return new String[] { ChannelInfoField.CHANNEL.field(),
-                              ChannelInfoField.TIMESTAMP.field(),
-                              ChannelInfoField.MESSAGE_ID.field(),
-                              ChannelInfoField.CLIENT_ID.field(),
-                              ChannelInfoField.ACCOUNT.field() };
+    protected String[] getFields() {
+        return new String[] { //
+                ChannelInfoField.CHANNEL.field(),
+                ChannelInfoField.TIMESTAMP.field(),
+                ChannelInfoField.MESSAGE_ID.field(),
+                ChannelInfoField.CLIENT_ID.field(),
+                ChannelInfoField.SCOPE_ID.field() };
     }
 
 }

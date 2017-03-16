@@ -13,22 +13,35 @@ package org.eclipse.kapua.service.datastore.model.query;
 
 import java.util.List;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.Storable;
 
 /**
  * Storable query definition.<br>
  * It defines the queries applicable to the persisted objects (such as messages, channeles information...)
  * 
- * @since 1.0
+ * @since 1.0.0
  *
- * @param <S> persisted object type (such as messages, channeles information...)
+ * @param <S>
+ *            persisted object type (such as messages, channeles information...)
  */
-public interface StorableQuery<S extends Storable>
-{
+public interface StorableQuery<S extends Storable> {
+
+    /**
+     * Gets the scopeI id
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public KapuaId getScopeId();
+
     /**
      * Get the predicate
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public StorablePredicate getPredicate();
 
@@ -36,6 +49,8 @@ public interface StorableQuery<S extends Storable>
      * Set the predicate
      * 
      * @param predicate
+     * 
+     * @since 1.0.0
      */
     public void setPredicate(StorablePredicate predicate);
 
@@ -43,6 +58,8 @@ public interface StorableQuery<S extends Storable>
      * Get the query result list offset
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public int getOffset();
 
@@ -50,6 +67,8 @@ public interface StorableQuery<S extends Storable>
      * Set the query result list offset
      * 
      * @param offset
+     * 
+     * @since 1.0.0
      */
     public void setOffset(int offset);
 
@@ -57,6 +76,8 @@ public interface StorableQuery<S extends Storable>
      * Get the result list limit count
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public int getLimit();
 
@@ -64,6 +85,8 @@ public interface StorableQuery<S extends Storable>
      * Set the result list limit count
      * 
      * @param limit
+     * 
+     * @since 1.0.0
      */
     public void setLimit(int limit);
 
@@ -71,6 +94,8 @@ public interface StorableQuery<S extends Storable>
      * Get the ask for the total count matching query objects
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public boolean isAskTotalCount();
 
@@ -78,6 +103,8 @@ public interface StorableQuery<S extends Storable>
      * Set the ask for the total count matching query objects
      * 
      * @param askTotalCount
+     * 
+     * @since 1.0.0
      */
     public void setAskTotalCount(boolean askTotalCount);
 
@@ -85,6 +112,8 @@ public interface StorableQuery<S extends Storable>
      * Get the fetch style
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public StorableFetchStyle getFetchStyle();
 
@@ -92,6 +121,8 @@ public interface StorableQuery<S extends Storable>
      * Set the fetch style
      * 
      * @param fetchStyle
+     * 
+     * @since 1.0.0
      */
     public void setFetchStyle(StorableFetchStyle fetchStyle);
 
@@ -99,6 +130,8 @@ public interface StorableQuery<S extends Storable>
      * Get the sort fields list
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public List<SortField> getSortFields();
 
@@ -106,6 +139,8 @@ public interface StorableQuery<S extends Storable>
      * Set the sort fields list
      * 
      * @param sortFields
+     * 
+     * @since 1.0.0
      */
     public void setSortFields(List<SortField> sortFields);
 
@@ -113,6 +148,8 @@ public interface StorableQuery<S extends Storable>
      * Create (and keep it internally) a copy of the given query
      * 
      * @param query
+     * 
+     * @since 1.0.0
      */
     public void copy(StorableQuery<S> query);
 }

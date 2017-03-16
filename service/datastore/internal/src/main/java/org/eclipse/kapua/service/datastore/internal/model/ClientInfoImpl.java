@@ -13,33 +13,35 @@ package org.eclipse.kapua.service.datastore.internal.model;
 
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
  * Client information schema implementation
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ClientInfoImpl implements ClientInfo
-{
+public class ClientInfoImpl implements ClientInfo {
+
     private StorableId id;
-    private String     account;
-    private String     clientId;
-    private StorableId firstPublishedMessageId;
-    private Date       firstPublishedMessageTimestamp;
-    private StorableId lastPublishedMessageId;
-    private Date       lastPublishedMessageTimestamp;
+    private KapuaId scopeId;
+    private String clientId;
+
+    private StorableId firstMessageId;
+    private Date firstMessageOn;
+    private StorableId lastMessageId;
+    private Date lastMessageOn;
 
     /**
      * Construct a client information for the given account
      * 
      * @param account
+     * 
+     * @since 1.0.0
      */
-    public ClientInfoImpl(String account)
-    {
-        this.account = account;
+    public ClientInfoImpl(KapuaId scopeId) {
+        setScopeId(scopeId);
     }
 
     /**
@@ -47,22 +49,25 @@ public class ClientInfoImpl implements ClientInfo
      * 
      * @param account
      * @param id
+     * 
+     * @since 1.0.0
      */
-    public ClientInfoImpl(String account, StorableId id)
-    {
-        this(account);
+    public ClientInfoImpl(KapuaId scopeId, StorableId id) {
+        this(scopeId);
         this.id = id;
     }
 
     @Override
-    public String getAccount()
-    {
-        return account;
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    protected void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId != null ? scopeId : null;
     }
 
     @Override
-    public StorableId getId()
-    {
+    public StorableId getId() {
         return id;
     }
 
@@ -71,68 +76,57 @@ public class ClientInfoImpl implements ClientInfo
      * 
      * @param id
      */
-    public void setId(StorableId id)
-    {
+    public void setId(StorableId id) {
         this.id = id;
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public StorableId getFirstPublishedMessageId()
-    {
-        return firstPublishedMessageId;
+    public StorableId getFirstMessageId() {
+        return firstMessageId;
     }
 
     @Override
-    public void setFirstPublishedMessageId(StorableId firstPublishedMessageId)
-    {
-        this.firstPublishedMessageId = firstPublishedMessageId;
+    public void setFirstMessageId(StorableId firstMessageId) {
+        this.firstMessageId = firstMessageId;
     }
 
     @Override
-    public Date getFirstPublishedMessageTimestamp()
-    {
-        return firstPublishedMessageTimestamp;
+    public Date getFirstMessageOn() {
+        return firstMessageOn;
     }
 
     @Override
-    public void setFirstPublishedMessageTimestamp(Date firstPublishedMessageTimestamp)
-    {
-        this.firstPublishedMessageTimestamp = firstPublishedMessageTimestamp;
+    public void setFirstMessageOn(Date firstMessageOn) {
+        this.firstMessageOn = firstMessageOn;
     }
 
     @Override
-    public StorableId getLastPublishedMessageId()
-    {
-        return lastPublishedMessageId;
+    public StorableId getLastMessageId() {
+        return lastMessageId;
     }
 
     @Override
-    public void setLastPublishedMessageId(StorableId lastPublishedMessageId)
-    {
-        this.lastPublishedMessageId = lastPublishedMessageId;
+    public void setLastMessageId(StorableId lastMessageId) {
+        this.lastMessageId = lastMessageId;
     }
 
     @Override
-    public Date getLastPublishedMessageTimestamp()
-    {
-        return lastPublishedMessageTimestamp;
+    public Date getLastMessageOn() {
+        return lastMessageOn;
     }
 
     @Override
-    public void setLastPublishedMessageTimestamp(Date lastPublishedMessageTimestamp)
-    {
-        this.lastPublishedMessageTimestamp = lastPublishedMessageTimestamp;
+    public void setLastMessageOn(Date lastMessageOn) {
+        this.lastMessageOn = lastMessageOn;
     }
 }

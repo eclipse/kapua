@@ -50,7 +50,6 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoField;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreConfiguration;
@@ -76,6 +75,7 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.datastore.model.StorableListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
@@ -102,13 +102,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     private static final long   QUERY_TIME_WINDOW                   = 2000l;
     private static final long   PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
 
-    private DeviceRegistryService      deviceRegistryService      = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-    private DeviceFactory              deviceFactory              = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
-    private MessageStoreService        messageStoreService        = KapuaLocator.getInstance().getService(MessageStoreService.class);
-    private DatastoreObjectFactory     datastoreObjectFactory     = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
-    private ChannelInfoRegistryService channelInfoRegistryService = KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
-    private MetricInfoRegistryService  metricInfoRegistryService  = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
-    private ClientInfoRegistryService  clientInfoRegistryService  = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
+    private static final DeviceRegistryService      deviceRegistryService      = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+    private static final DeviceFactory              deviceFactory              = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+    private static final MessageStoreService        messageStoreService        = KapuaLocator.getInstance().getService(MessageStoreService.class);
+    private static final DatastoreObjectFactory     datastoreObjectFactory     = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+    private static final ChannelInfoRegistryService channelInfoRegistryService = KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
+    private static final MetricInfoRegistryService  metricInfoRegistryService  = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
+    private static final ClientInfoRegistryService  clientInfoRegistryService  = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
 
     private long elasticsearchRefreshTime = DatastoreSettings.getInstance().getLong(DatastoreSettingKey.ELASTICSEARCH_IDX_REFRESH_INTERVAL) * KapuaDateUtils.SEC_MILLIS;
 
@@ -125,21 +125,21 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Random random = new Random();
 
         String[] semanticTopic = new String[] {
-                                                "/bus/route/one",
-                                                "/bus/route/one",
-                                                "/bus/route/two/a",
-                                                "/bus/route/two/b",
-                                                "/tram/route/one",
-                                                "/car/one"
+                                                "bus/route/one",
+                                                "bus/route/one",
+                                                "bus/route/two/a",
+                                                "bus/route/two/b",
+                                                "tram/route/one",
+                                                "car/one"
         };
 
         KapuaDataMessage message = null;
         String clientId = String.format("device-%d", new Date().getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
 
         for (int i = 0; i < 12; i++) {
             byte[] randomPayload = new byte[128];
@@ -165,7 +165,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             Date receivedOn = new Date();
             Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
             Date capturedOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2016").getTime());
-            message = getMessage(clientId, account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+            message = getMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
             updateChannel(message, semanticTopic[i % semanticTopic.length]);
             updatePayload(message, messagePayload);
             KapuaPosition messagePosition = getPosition(10.00d * (i + 1), 12d * (i + 1), 1.123d * (i + 1), 2d * (i + 1), 0001d * (i + 1), 1000 * (i + 1), 1d * (i + 1), 44 * (i + 1), new Date());
@@ -174,7 +174,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             try {
                 messageStoredIds = insertMessages(true, message);
 
-                DatastoreMessage messageQueried = messageStoreService.find(account.getScopeId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL);
+                DatastoreMessage messageQueried = messageStoreService.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL);
                 checkMessageId(messageQueried, messageStoredIds.get(0));
                 checkTopic(messageQueried, semanticTopic[i % semanticTopic.length]);
                 checkMessageBody(messageQueried, message.getPayload().getBody());
@@ -201,21 +201,21 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = getTestAccountCreator(adminScopeId);
 
         String[] semanticTopic = new String[] {
-                                                "/bus/route/one",
-                                                "/bus/route/one",
-                                                "/bus/route/two/a",
-                                                "/bus/route/two/b",
-                                                "/tram/route/one",
-                                                "/car/one"
+                                                "bus/route/one",
+                                                "bus/route/one",
+                                                "bus/route/two/a",
+                                                "bus/route/two/b",
+                                                "tram/route/one",
+                                                "car/one"
         };
 
         KapuaDataMessage message = null;
         String clientId1 = String.format("device-%d", new Date().getTime());
         Thread.sleep(100);
         String clientId2 = String.format("device-%d", new Date().getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId1);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId1);
         Device device1 = deviceRegistryService.create(deviceCreator);
-        DeviceCreator deviceCreator2 = deviceFactory.newCreator(account.getScopeId(), clientId2);
+        DeviceCreator deviceCreator2 = deviceFactory.newCreator(account.getId(), clientId2);
         Device device2 = deviceRegistryService.create(deviceCreator2);
         int messagesCount = 100;
         Date sentOn1 = new Date();
@@ -226,7 +226,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Device device = null;
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
 
         for (int i = 0; i < messagesCount; i++) {
             clientId = clientId1;
@@ -254,7 +254,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
                     device = device2;
                 }
             }
-            message = getMessage(clientId, account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+            message = getMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
             updateChannel(message, semanticTopic[i % semanticTopic.length]);
             insertMessages(false, message);
         }
@@ -272,13 +272,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         sortClientId.setField(EsSchema.MESSAGE_CLIENT_ID);
         sortClientId.setSortDirection(SortDirection.DESC);
         sort.add(sortClientId);
-        MessageQuery messageQuery = getMessageOrderedQuery(messagesCount + 1, sort);
-        setMessageQueryBaseCriteria(messageQuery, account.getName(), new DateRange(capturedOn1, capturedOn2));
+        MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), messagesCount + 1, sort);
+        setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn1, capturedOn2));
 
-        MessageListResult messageList = messageStoreService.query(account.getScopeId(), messageQuery);
+        MessageListResult messageList = messageStoreService.query( messageQuery);
         checkMessagesCount(messageList, messagesCount);
         checkMessagesDateBound(messageList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
-        for (DatastoreMessage messageStored : messageList) {
+        for (DatastoreMessage messageStored : messageList.getItems()) {
             s_logger.debug("message sentOn: '" + messageStored.getSentOn() + "' - capturedOn: '" + messageStored.getCapturedOn() + "' clientId: '" + messageStored.getClientId() + "'");
         }
         checkListOrder(messageList, sort);
@@ -296,26 +296,26 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String topicSemanticPart = "testStoreWithNullPayload/testStoreWithNullPayload/" + Calendar.getInstance().getTimeInMillis();
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message = getMessage(clientId, account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message = getMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message, topicSemanticPart);
         updatePayload(message, null);
         message.setReceivedOn(messageTime);
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         List<StorableId> messageStoredIds = insertMessages(true, message);
 
-        MessageQuery messageQuery = getBaseMessageQuery();
-        setMessageQueryBaseCriteria(messageQuery, account.getName(), new DateRange(capturedOn));
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId());
+        setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn));
 
-        MessageListResult result = messageStoreService.query(account.getScopeId(), messageQuery);
+        MessageListResult result = messageStoreService.query( messageQuery);
         DatastoreMessage messageQueried = checkMessagesCount(result, 1);
         checkMessageId(messageQueried, messageStoredIds.get(0));
         checkMessageBody(messageQueried, null);
@@ -336,19 +336,19 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String topicSemanticPart = "testStoreWithNullPayload/testStoreWithNullPayload/" + Calendar.getInstance().getTimeInMillis();
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message = getMessage(clientId, account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message = getMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message, topicSemanticPart);
         updatePayload(message, null);
         message.setReceivedOn(messageTime);
 
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.SERVER_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.SERVER_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         messageTime = new Date();
         message.setReceivedOn(messageTime);
         List<StorableId> messageStoredIds = insertMessages(true, message);
@@ -356,10 +356,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date timestampLowerBound = new Date(messageTime.getTime() - QUERY_TIME_WINDOW);
         Date timestampUpperBound = new Date(messageTime.getTime() + QUERY_TIME_WINDOW);
         DateRange dateRange = new DateRange(timestampLowerBound, timestampUpperBound);
-        MessageQuery messageQuery = getBaseMessageQuery();
-        setMessageQueryBaseCriteria(messageQuery, account.getName(), dateRange);
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId());
+        setMessageQueryBaseCriteria(messageQuery, dateRange);
 
-        MessageListResult result = messageStoreService.query(account.getScopeId(), messageQuery);
+        MessageListResult result = messageStoreService.query(messageQuery);
         DatastoreMessage messageQueried = checkMessagesCount(result, 1);
         checkMessageId(messageQueried, messageStoredIds.get(0));
         checkTopic(messageQueried, topicSemanticPart);
@@ -382,7 +382,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "ci_client_by_account_client1", "ci_client_by_account_client2", "ci_client_by_account_client3", "ci_client_by_account_client4" };
@@ -390,31 +390,31 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[0]);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[2], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[2], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message3, semanticTopic[0]);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[3], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[3], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message4, semanticTopic[0]);
         message4.setReceivedOn(messageTime);
-        KapuaDataMessage message5 = getMessage(clientIds[3], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message5 = getMessage(clientIds[3], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message5, semanticTopic[0]);
         message5.setReceivedOn(messageTime);
-        KapuaDataMessage message6 = getMessage(clientIds[3], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message6 = getMessage(clientIds[3], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message6, semanticTopic[0]);
         message6.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4, message5, message6);
 
-        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery();
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, account.getName(), new DateRange(messageTime));
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime));
 
-        ChannelInfoListResult channelList = channelInfoRegistryService.query(account.getScopeId(), channelInfoQuery);
+        ChannelInfoListResult channelList = channelInfoRegistryService.query( channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 4, clientIds, semanticTopic);
     }
 
@@ -432,7 +432,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "ci_client_by_pd_by_account_client1", "ci_client_by_pd_by_account_client2" };
@@ -442,36 +442,36 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
         Date capturedOnThirdMessage = new Date(capturedOnSecondMessage.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[0]);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
         updateChannel(message3, semanticTopic[0]);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
         updateChannel(message4, semanticTopic[0]);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
-        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery();
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, account.getName(), new DateRange(messageTime, capturedOnThirdMessage));
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime, capturedOnThirdMessage));
 
-        ChannelInfoListResult channelList = channelInfoRegistryService.query(account.getScopeId(), channelInfoQuery);
+        ChannelInfoListResult channelList = channelInfoRegistryService.query( channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 2, clientIds, semanticTopic);
 
         // check the channel info date
-        for (ChannelInfo channelInfo : channelList) {
+        for (ChannelInfo channelInfo : channelList.getItems()) {
             if (clientIds[0].equals(channelInfo.getClientId())) {
-                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[0]), capturedOn, channelInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[0]), capturedOn, channelInfo.getLastMessageOn());
             }
             else if (clientIds[1].equals(channelInfo.getClientId())) {
-                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, channelInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, channelInfo.getLastMessageOn());
             }
-            assertEquals(String.format("Wrong first publish date for the client id [%s]", channelInfo.getClientId()), capturedOn, channelInfo.getFirstPublishedMessageTimestamp());
+            assertEquals(String.format("Wrong first publish date for the client id [%s]", channelInfo.getClientId()), capturedOn, channelInfo.getFirstMessageOn());
         }
     }
 
@@ -487,7 +487,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "ci_topic_by_account_client1", "ci_topic_by_account_client2" };
@@ -495,31 +495,31 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[1]);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message3, semanticTopic[2]);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message4, semanticTopic[3]);
         message4.setReceivedOn(messageTime);
-        KapuaDataMessage message5 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message5 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message5, semanticTopic[0]);
         message5.setReceivedOn(messageTime);
-        KapuaDataMessage message6 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message6 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message6, semanticTopic[1]);
         message6.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4, message5, message6);
 
-        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery();
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, account.getName(), new DateRange(messageTime));
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime));
 
-        ChannelInfoListResult channelList = channelInfoRegistryService.query(account.getScopeId(), channelInfoQuery);
+        ChannelInfoListResult channelList = channelInfoRegistryService.query( channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 6, clientIds, semanticTopic);
     }
 
@@ -535,7 +535,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "ci_topic_by_client_client1" };
@@ -543,31 +543,31 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[1]);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message3, semanticTopic[2]);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message4, semanticTopic[3]);
         message4.setReceivedOn(messageTime);
-        KapuaDataMessage message5 = getMessage(clientIds[0] + "_NO", account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message5 = getMessage(clientIds[0] + "_NO", account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message5, semanticTopic[2]);
         message5.setReceivedOn(messageTime);
-        KapuaDataMessage message6 = getMessage(clientIds[0] + "_NO", account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message6 = getMessage(clientIds[0] + "_NO", account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message6, semanticTopic[3]);
         message6.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4, message5, message6);
 
-        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery();
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, account.getName(), clientIds[0], new DateRange(messageTime));
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, clientIds[0], new DateRange(messageTime));
 
-        ChannelInfoListResult channelList = channelInfoRegistryService.query(account.getScopeId(), channelInfoQuery);
+        ChannelInfoListResult channelList = channelInfoRegistryService.query( channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 4, clientIds, semanticTopic);
     }
 
@@ -583,7 +583,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "mi_client_by_account_client1", "mi_client_by_account_client2" };
@@ -592,25 +592,25 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         initMetrics(message1);
         message1.getPayload().getProperties().put(metrics[0], new Double(123));
         message1.getPayload().getProperties().put(metrics[1], new Integer(123));
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[0]);
         initMetrics(message2);
         message2.getPayload().getProperties().put(metrics[2], new String("123"));
         message2.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message2.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2);
 
-        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery();
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, account.getName(), new DateRange(capturedOn));
+        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn));
 
-        MetricInfoListResult metricList = metricInfoRegistryService.query(account.getScopeId(), metricInfoQuery);
+        MetricInfoListResult metricList = metricInfoRegistryService.query( metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, clientIds, metrics);
     }
 
@@ -628,7 +628,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "mi_client_by_pd_by_account_client1", "mi_client_by_pd_by_account_client2" };
@@ -639,61 +639,61 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
         Date capturedOnThirdMessage = new Date(capturedOnSecondMessage.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         initMetrics(message1);
         message1.getPayload().getProperties().put(metrics[0], new Double(123));
         message1.getPayload().getProperties().put(metrics[1], new Integer(123));
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[0]);
         initMetrics(message2);
         message2.getPayload().getProperties().put(metrics[2], new String("123"));
         message2.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
         updateChannel(message3, semanticTopic[0]);
         initMetrics(message3);
         message3.getPayload().getProperties().put(metrics[2], new String("123"));
         message3.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
         updateChannel(message4, semanticTopic[0]);
         initMetrics(message4);
         message4.getPayload().getProperties().put(metrics[2], new String("123"));
         message4.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message4.setReceivedOn(messageTime);
 
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         // Store messages
         insertMessages(true, message1, message2, message3, message4);
 
-        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery();
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, account.getName(), new DateRange(capturedOn, capturedOnThirdMessage));
+        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
 
-        MetricInfoListResult metricList = metricInfoRegistryService.query(account.getScopeId(), metricInfoQuery);
+        MetricInfoListResult metricList = metricInfoRegistryService.query( metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, clientIds, metrics);
         // check the metric info date
-        for (MetricInfo metricInfo : metricList) {
+        for (MetricInfo metricInfo : metricList.getItems()) {
             if (clientIds[0].equals(metricInfo.getClientId())) {
-                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[0]), capturedOn, metricInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[0]), capturedOn, metricInfo.getLastMessageOn());
             }
             else if (clientIds[1].equals(metricInfo.getClientId())) {
-                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, metricInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
             if (metrics[0].equals(metricInfo.getName())) {
-                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[0]), capturedOn, metricInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[0]), capturedOn, metricInfo.getLastMessageOn());
             }
             else if (metrics[1].equals(metricInfo.getName())) {
-                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[1]), capturedOn, metricInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[1]), capturedOn, metricInfo.getLastMessageOn());
             }
             else if (metrics[2].equals(metricInfo.getName())) {
-                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[2]), capturedOnThirdMessage, metricInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[2]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
             else if (metrics[3].equals(metricInfo.getName())) {
-                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[3]), capturedOnThirdMessage, metricInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[3]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
-            assertEquals(String.format("Wrong first publish date for the client id [%s]", metricInfo.getClientId()), capturedOn, metricInfo.getFirstPublishedMessageTimestamp());
+            assertEquals(String.format("Wrong first publish date for the client id [%s]", metricInfo.getClientId()), capturedOn, metricInfo.getFirstMessageOn());
         }
     }
 
@@ -709,7 +709,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "mi_client_by_client_client1", "mi_client_by_client_client2" };
@@ -718,31 +718,31 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         initMetrics(message1);
         message1.getPayload().getProperties().put(metrics[0], new Double(123));
         message1.getPayload().getProperties().put(metrics[1], new Integer(123));
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[0]);
         initMetrics(message2);
         message2.getPayload().getProperties().put(metrics[2], new String("123"));
         message2.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message3, semanticTopic[0]);
         initMetrics(message3);
         message3.getPayload().getProperties().put(metrics[2], new Double(123));
         message3.getPayload().getProperties().put(metrics[3], new Integer(123));
         message3.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3);
 
-        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery();
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, account.getName(), clientIds[0], new DateRange(capturedOn));
+        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], new DateRange(capturedOn));
 
-        MetricInfoListResult metricList = metricInfoRegistryService.query(account.getScopeId(), metricInfoQuery);
+        MetricInfoListResult metricList = metricInfoRegistryService.query( metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[] { clientIds[0] }, metrics);
     }
 
@@ -758,12 +758,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = getTestAccountCreator(adminScopeId);
 
         String[] semanticTopic = new String[] {
-                                                "/bus/route/one",
-                                                "/bus/route/one",
-                                                "/bus/route/two/a",
-                                                "/bus/route/two/b",
-                                                "/tram/route/one",
-                                                "/car/one"
+                                                "bus/route/one",
+                                                "bus/route/one",
+                                                "bus/route/two/a",
+                                                "bus/route/two/b",
+                                                "tram/route/one",
+                                                "car/one"
         };
         String[] metrics = new String[] { "m_order_metric1", "m_order_metric2", "m_order_metric3", "m_order_metric4", "m_order_metric5", "m_order_metric6" };
         String[] clientIds = new String[] { String.format("device-%d", new Date().getTime()), String.format("device-%d", new Date().getTime() + 100) };
@@ -779,9 +779,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         double[] metricsValuesDouble = new double[] { 1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d };
         boolean[] metricsValuesBoolean = new boolean[] { true, true, false, true, false, false };
 
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientIds[0]);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientIds[0]);
         Device device1 = deviceRegistryService.create(deviceCreator);
-        DeviceCreator deviceCreator2 = deviceFactory.newCreator(account.getScopeId(), clientIds[1]);
+        DeviceCreator deviceCreator2 = deviceFactory.newCreator(account.getId(), clientIds[1]);
         Device device2 = deviceRegistryService.create(deviceCreator2);
         int messagesCount = 100;
         Date sentOn1 = new Date();
@@ -792,7 +792,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Device device = null;
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
 
         for (int i = 0; i < messagesCount; i++) {
             clientId = clientIds[0];
@@ -820,7 +820,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
                     device = device2;
                 }
             }
-            KapuaDataMessage message = getMessage(clientId, account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+            KapuaDataMessage message = getMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
             updateChannel(message, semanticTopic[i % semanticTopic.length]);
             // insert metrics
             initMetrics(message);
@@ -842,15 +842,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         sortMetricValue.setField(EsSchema.METRIC_MTR_VALUE_FULL);
         sortMetricValue.setSortDirection(SortDirection.DESC);
         sort.add(sortMetricValue);
-        MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery((6 + 1) * messagesCount, sort);
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, account.getName(), new DateRange(capturedOn1, capturedOn2));
+        MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
 
-        MetricInfoListResult metricList = metricInfoRegistryService.query(account.getScopeId(), metricInfoQuery);
+        MetricInfoListResult metricList = metricInfoRegistryService.query( metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, metrics.length * semanticTopic.length, new String[] { clientIds[0], clientIds[1] }, new String[] { metrics[0], metrics[1], metrics[2],
                                                                                                                                                               metrics[3], metrics[4], metrics[5] });
         checkMetricDateBound(metricList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
 
-        for (MetricInfo metricInfo : metricList) {
+        for (MetricInfo metricInfo : metricList.getItems()) {
             s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getName()
                            + "' metric type: '" + metricInfo.getType() + "' metric value: '" + getPrivateField(metricInfo, "value") + "'");
         }
@@ -869,7 +869,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "clii_client_by_account_client1", "clii_client_by_account_client2" };
@@ -877,29 +877,29 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         initMetrics(message1);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[1]);
         initMetrics(message2);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message3, semanticTopic[2]);
         initMetrics(message3);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message4, semanticTopic[3]);
         initMetrics(message4);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
-        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery();
-        setClientInfoQueryBaseCriteria(clientInfoQuery, account.getName(), new DateRange(capturedOn));
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+        setClientInfoQueryBaseCriteria(clientInfoQuery, new DateRange(capturedOn));
 
-        ClientInfoListResult clientList = clientInfoRegistryService.query(account.getScopeId(), clientInfoQuery);
+        ClientInfoListResult clientList = clientInfoRegistryService.query( clientInfoQuery);
         checkClientInfo(clientList, 2, clientIds);
     }
 
@@ -915,7 +915,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "clii_client_by_pd_by_account_client1", "clii_client_by_pd_by_account_client2" };
@@ -925,38 +925,38 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
         Date capturedOnThirdMessage = new Date(capturedOnSecondMessage.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         initMetrics(message1);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[0]);
         initMetrics(message2);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
         updateChannel(message3, semanticTopic[0]);
         initMetrics(message3);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
         updateChannel(message4, semanticTopic[0]);
         initMetrics(message4);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
-        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery();
-        setClientInfoQueryBaseCriteria(clientInfoQuery, account.getName(), new DateRange(capturedOn, capturedOnThirdMessage));
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+        setClientInfoQueryBaseCriteria(clientInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
 
-        ClientInfoListResult clientList = clientInfoRegistryService.query(account.getScopeId(), clientInfoQuery);
+        ClientInfoListResult clientList = clientInfoRegistryService.query( clientInfoQuery);
         checkClientInfo(clientList, 2, clientIds);
-        for (ClientInfo clientInfo : clientList) {
+        for (ClientInfo clientInfo : clientList.getItems()) {
             if (clientIds[0].equals(clientInfo.getClientId())) {
-                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[0]), capturedOn, clientInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[0]), capturedOn, clientInfo.getLastMessageOn());
             }
             else if (clientIds[1].equals(clientInfo.getClientId())) {
-                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, clientInfo.getLastPublishedMessageTimestamp());
+                assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, clientInfo.getLastMessageOn());
             }
-            assertEquals(String.format("Wrong first publish date for the client id [%s]", clientInfo.getClientId()), capturedOn, clientInfo.getFirstPublishedMessageTimestamp());
+            assertEquals(String.format("Wrong first publish date for the client id [%s]", clientInfo.getClientId()), capturedOn, clientInfo.getFirstMessageOn());
         }
     }
 
@@ -972,7 +972,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "clii_by_client_client1", "clii_by_client_client2", "clii_by_client_client3", "clii_by_client_client4" };
@@ -980,29 +980,29 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message1, semanticTopic[0]);
         initMetrics(message1);
         message1.setReceivedOn(messageTime);
-        KapuaDataMessage message2 = getMessage(clientIds[1], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message2 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message2, semanticTopic[1]);
         initMetrics(message2);
         message2.setReceivedOn(messageTime);
-        KapuaDataMessage message3 = getMessage(clientIds[2], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message3 = getMessage(clientIds[2], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message3, semanticTopic[0]);
         initMetrics(message3);
         message3.setReceivedOn(messageTime);
-        KapuaDataMessage message4 = getMessage(clientIds[3], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+        KapuaDataMessage message4 = getMessage(clientIds[3], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message4, semanticTopic[1]);
         initMetrics(message4);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
-        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery();
-        setClientInfoQueryBaseCriteria(clientInfoQuery, account.getName(), clientIds[0], new DateRange(capturedOn));
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+        setClientInfoQueryBaseCriteria(clientInfoQuery, clientIds[0], new DateRange(capturedOn));
 
-        ClientInfoListResult clientList = clientInfoRegistryService.query(account.getScopeId(), clientInfoQuery);
+        ClientInfoListResult clientList = clientInfoRegistryService.query( clientInfoQuery);
         checkClientInfo(clientList, 1, new String[] { clientIds[0] });
     }
 
@@ -1013,7 +1013,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Account account = createAccount(null, null);
         Date messageTime = new Date();
         String clientId = String.format("device-%d", messageTime.getTime());
-        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getScopeId(), clientId);
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
         String[] clientIds = new String[] { "tba_client1" };
@@ -1024,9 +1024,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        updateConfiguration(messageStoreService, account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         for (String semanticTopicTmp : semanticTopic) {
-            KapuaDataMessage message1 = getMessage(clientIds[0], account.getScopeId(), device.getId(), receivedOn, capturedOn, sentOn);
+            KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
             updateChannel(message1, semanticTopicTmp);
             message1.setReceivedOn(messageTime);
             insertMessages(false, message1);
@@ -1088,7 +1088,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @return
      * @throws KapuaException
      */
-    private Account createAccount(String accountName, String password) throws KapuaException
+    private Account createAccount(KapuaId scopeId, String password) throws KapuaException
     {
         return getTestAccountCreator(adminScopeId);
     }
@@ -1186,9 +1186,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      *
      * @return
      */
-    private MessageQuery getBaseMessageQuery()
+    private MessageQuery getBaseMessageQuery(KapuaId scopeId)
     {
-        MessageQuery query = new MessageQueryImpl();
+        MessageQuery query = new MessageQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(10);
@@ -1207,9 +1207,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      *
      * @return
      */
-    private ChannelInfoQuery getBaseChannelInfoQuery()
+    private ChannelInfoQuery getBaseChannelInfoQuery(KapuaId scopeId)
     {
-        ChannelInfoQuery query = new ChannelInfoQueryImpl();
+        ChannelInfoQuery query = new ChannelInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(10);
@@ -1225,10 +1225,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
     private ChannelInfoListResult doChannelInfoQuery(Account account, String clientId, String channelFilter, Date queryDate) throws KapuaException
     {
-        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery();
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
         channelInfoQuery.setLimit(100);
-        setChannelInfoQueryChannelPredicateCriteria(channelInfoQuery, account.getName(), clientId, channelFilter, new DateRange(queryDate));
-        return channelInfoRegistryService.query(account.getScopeId(), channelInfoQuery);
+        setChannelInfoQueryChannelPredicateCriteria(channelInfoQuery, clientId, channelFilter, new DateRange(queryDate));
+        return channelInfoRegistryService.query( channelInfoQuery);
     }
 
     /**
@@ -1236,9 +1236,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      *
      * @return
      */
-    private MetricInfoQuery getBaseMetricInfoQuery()
+    private MetricInfoQuery getBaseMetricInfoQuery(KapuaId scopeId)
     {
-        MetricInfoQuery query = new MetricInfoQueryImpl();
+        MetricInfoQuery query = new MetricInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(10);
@@ -1257,9 +1257,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      *
      * @return
      */
-    private ClientInfoQuery getBaseClientInfoQuery()
+    private ClientInfoQuery getBaseClientInfoQuery(KapuaId scopeId)
     {
-        ClientInfoQuery query = new ClientInfoQueryImpl();
+        ClientInfoQuery query = new ClientInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(10);
@@ -1280,9 +1280,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param order
      * @return
      */
-    private MessageQuery getMessageOrderedQuery(int limit, List<SortField> order)
+    private MessageQuery getMessageOrderedQuery(KapuaId scopeId, int limit, List<SortField> order)
     {
-        MessageQuery query = new MessageQueryImpl();
+        MessageQuery query = new MessageQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
@@ -1298,9 +1298,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param accountName
      * @param dateRange
      */
-    private void setMessageQueryBaseCriteria(MessageQuery messageQuery, String accountName, DateRange dateRange)
+    private void setMessageQueryBaseCriteria(MessageQuery messageQuery, DateRange dateRange)
     {
-        setMessageQueryBaseCriteria(messageQuery, accountName, null, dateRange);
+        setMessageQueryBaseCriteria(messageQuery, null, dateRange);
     }
 
     /**
@@ -1311,13 +1311,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param clientId
      * @param dateRange
      */
-    private void setMessageQueryBaseCriteria(MessageQuery messageQuery, String accountName, String clientId, DateRange dateRange)
+    private void setMessageQueryBaseCriteria(MessageQuery messageQuery, String clientId, DateRange dateRange)
     {
         AndPredicate andPredicate = new AndPredicateImpl();
-        if (!StringUtils.isEmpty(accountName)) {
-            TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(MessageField.ACCOUNT, accountName);
-            andPredicate.getPredicates().add(accountNamePredicate);
-        }
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientPredicate);
@@ -1336,9 +1332,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param accountName
      * @param dateRange
      */
-    private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, String accountName, DateRange dateRange)
+    private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, DateRange dateRange)
     {
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, accountName, null, dateRange);
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, null, dateRange);
     }
 
     /**
@@ -1349,13 +1345,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param clientId
      * @param dateRange
      */
-    private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, String accountName, String clientId, DateRange dateRange)
+    private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, String clientId, DateRange dateRange)
     {
         AndPredicate andPredicate = new AndPredicateImpl();
-        if (!StringUtils.isEmpty(accountName)) {
-            TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.ACCOUNT, accountName);
-            andPredicate.getPredicates().add(accountNamePredicate);
-        }
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientPredicate);
@@ -1374,18 +1366,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param dateLowerBound
      * @param dateUpperBound
      */
-    private void setChannelInfoQueryChannelPredicateCriteria(ChannelInfoQuery channelInfoQuery, String accountName, String clientId, String channelPredicate, DateRange dateRange)
+    private void setChannelInfoQueryChannelPredicateCriteria(ChannelInfoQuery channelInfoQuery, String clientId, String channelPredicate, DateRange dateRange)
     {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
-            channelPredicate = clientId + "/" + channelPredicate;
-        }
-        if (!StringUtils.isEmpty(accountName)) {
-            TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.ACCOUNT, accountName);
-            andPredicate.getPredicates().add(accountNamePredicate);
-            channelPredicate = accountName + "/" + channelPredicate;
         }
         if (dateRange != null) {
             RangePredicate timestampPredicate = new RangePredicateImpl(ChannelInfoField.TIMESTAMP, dateRange.getLowerBound(), dateRange.getUpperBound());
@@ -1403,9 +1389,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param order
      * @return
      */
-    private MetricInfoQuery getMetricInfoOrderedQuery(int limit, List<SortField> order)
+    private MetricInfoQuery getMetricInfoOrderedQuery(KapuaId scopeId, int limit, List<SortField> order)
     {
-        MetricInfoQuery query = new MetricInfoQueryImpl();
+        MetricInfoQuery query = new MetricInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
@@ -1421,9 +1407,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param accountName
      * @param dateRange
      */
-    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String accountName, DateRange dateRange)
+    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, DateRange dateRange)
     {
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, accountName, null, dateRange);
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, null, dateRange);
     }
 
     /**
@@ -1434,13 +1420,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param clientId
      * @param dateRange
      */
-    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String accountName, String clientId, DateRange dateRange)
+    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String clientId, DateRange dateRange)
     {
         AndPredicate andPredicate = new AndPredicateImpl();
-        if (!StringUtils.isEmpty(accountName)) {
-            TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.ACCOUNT, accountName);
-            andPredicate.getPredicates().add(accountNamePredicate);
-        }
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
@@ -1459,9 +1441,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param accountName
      * @param dateRange
      */
-    private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, String accountName, DateRange dateRange)
+    private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, DateRange dateRange)
     {
-        setClientInfoQueryBaseCriteria(clientInfoQuery, accountName, null, dateRange);
+        setClientInfoQueryBaseCriteria(clientInfoQuery, null, dateRange);
     }
 
     /**
@@ -1472,13 +1454,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param clientId
      * @param dateRange
      */
-    private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, String accountName, String clientId, DateRange dateRange)
+    private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, String clientId, DateRange dateRange)
     {
         AndPredicate andPredicate = new AndPredicateImpl();
-        if (!StringUtils.isEmpty(accountName)) {
-            TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(ClientInfoField.ACCOUNT, accountName);
-            andPredicate.getPredicates().add(accountNamePredicate);
-        }
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
@@ -1506,13 +1484,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             assertNotNull("No result found!", result);
             assertNotNull("No result found!", result.getTotalCount());
             assertEquals("Result message has a wrong size!", messagesCount, result.getTotalCount().intValue());
-            messageQueried = result.get(0);
+            messageQueried = result.getFirstItem();
             assertNotNull("Result message is null!", messageQueried);
         }
         else {
             assertTrue("No result should be found!", result == null || result.getTotalCount() == null || result.getTotalCount() <= 0);
-
         }
+
         return messageQueried;
     }
 
@@ -1525,6 +1503,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     private void checkMessageId(DatastoreMessage message, StorableId storableId)
     {
         if (storableId != null) {
+            assertNotNull("Message is null", message);
             assertNotNull("Message id doesn't match", message.getId());
             assertEquals("Message id doesn't match", storableId.toString(), message.getId().toString());
         }
@@ -1661,7 +1640,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             assertNotNull("No result found!", result);
             assertNotNull("No result found!", result.getTotalCount());
             assertEquals("Result channel info list has a wrong size!", clientInfoCount, result.getTotalCount().intValue());
-            channelInfoQueried = result.get(0);
+            channelInfoQueried = result.getFirstItem();
             assertNotNull("Result channel info list is null!", channelInfoQueried);
         }
         else {
@@ -1682,7 +1661,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         checkChannelInfoCount(result, clientInfoCount);
         Set<String> allClientId = new HashSet<String>();
         Set<String> allTopics = new HashSet<String>();
-        for (ChannelInfo channelInfo : result) {
+        for (ChannelInfo channelInfo : result.getItems()) {
             allClientId.add(channelInfo.getClientId());
             allTopics.add(channelInfo.getChannel());
         }
@@ -1713,7 +1692,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             assertNotNull("No result found!", result);
             assertNotNull("No result found!", result.getTotalCount());
             assertEquals("Result metric info list has a wrong size!", metricInfoCount, result.getTotalCount().intValue());
-            metricInfoQueried = result.get(0);
+            metricInfoQueried = result.getFirstItem();
             assertNotNull("Result metric info list is null!", metricInfoQueried);
         }
         else {
@@ -1734,7 +1713,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         checkMetricInfoCount(result, metricInfoCount);
         Set<String> allClientId = new HashSet<String>();
         Set<String> allMetrics = new HashSet<String>();
-        for (MetricInfo metricInfo : result) {
+        for (MetricInfo metricInfo : result.getItems()) {
             allClientId.add(metricInfo.getClientId());
             allMetrics.add(metricInfo.getName());
         }
@@ -1765,7 +1744,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             assertNotNull("No result found!", result);
             assertNotNull("No result found!", result.getTotalCount());
             assertEquals("Result client id list has a wrong size!", clientInfoCount, result.getTotalCount().intValue());
-            clientInfoQueried = result.get(0);
+            clientInfoQueried = result.getItem(0);
             assertNotNull("Result client id list is null!", clientInfoQueried);
         }
         else {
@@ -1786,7 +1765,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     {
         checkClientInfoCount(result, clientInfoCount);
         Set<String> allClientId = new HashSet<String>();
-        for (ClientInfo clientInfo : result) {
+        for (ClientInfo clientInfo : result.getItems()) {
             allClientId.add(clientInfo.getClientId());
         }
         assertEquals("Wrong client ids size!", (clientIds != null ? clientIds.length : 0), allClientId.size());
@@ -1815,10 +1794,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
      * @param cleanComposedFieldName takes only the field part after the last dot (useful for clean up the composed field name)
      */
     @SuppressWarnings("rawtypes")
-    private void checkListOrder(List<?> result, List<SortField> sortFieldList)
+    private void checkListOrder(StorableListResult<?> result, List<SortField> sortFieldList)
     {
         Object previousItem = null;
-        for (Object item : result) {
+        for (Object item : result.getItems()) {
             for (SortField field : sortFieldList) {
                 if (previousItem != null) {
                     Comparable currentValue = getValue(item, field.getField());
@@ -2103,15 +2082,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         KapuaPositionImpl messagePosition = new KapuaPositionImpl();
         Map<String, Object> metrics = new HashMap<String, Object>();
 
+        channel.setClientId(device.getClientId());
+        channel.setSemanticParts(Arrays.asList("APP01"));
+
         message.setScopeId(account.getId());
         message.setDeviceId(device.getId());
         message.setCapturedOn(now);
         message.setReceivedOn(now);
-
-        DatastoreChannel datastoreChannel = new DatastoreChannel(account.getName(), clientId, "APP01");
-
-        channel.setClientId(datastoreChannel.getClientId());
-        channel.setSemanticParts(Arrays.asList(datastoreChannel.getParts()));
         message.setChannel(channel);
 
         metrics.put("distance", 1L);
@@ -2145,73 +2122,73 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         // The returned message must be not null and values must coincide
         assertNotNull(retrievedMessage);
         assertTrue(messageId.equals(retrievedMessage.getDatastoreId()));
-        assertTrue(account.getScopeId().equals(retrievedMessage.getScopeId()));
+        assertTrue(account.getId().equals(retrievedMessage.getScopeId()));
         assertTrue(device.getId().equals(retrievedMessage.getDeviceId()));
         assertTrue(device.getClientId().equals(retrievedMessage.getClientId()));
 
         TermPredicate equalsMessageId = datastoreObjectFactory.newTermPredicate(ClientInfoField.MESSAGE_ID, messageId);
 
-        ClientInfoQuery clientInfoQuery = datastoreObjectFactory.newClientInfoQuery();
+        ClientInfoQuery clientInfoQuery = datastoreObjectFactory.newClientInfoQuery(account.getId());
         clientInfoQuery.setOffset(0);
         clientInfoQuery.setLimit(1);
         clientInfoQuery.setFetchStyle(StorableFetchStyle.FIELDS);
         clientInfoQuery.setPredicate(equalsMessageId);
 
         ClientInfoRegistryService clientInfoRegistry = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
-        ClientInfoListResult clientInfos = clientInfoRegistry.query(account.getId(), clientInfoQuery);
+        ClientInfoListResult clientInfos = clientInfoRegistry.query(clientInfoQuery);
 
         assertNotNull(clientInfos);
-        assertTrue(clientInfos.size() == 1);
+        assertTrue(clientInfos.getSize() == 1);
 
-        ClientInfo clientInfo = clientInfos.get(0);
+        ClientInfo clientInfo = clientInfos.getItem(0);
 
         assertNotNull(clientInfo);
-        assertTrue(messageId.equals(clientInfo.getFirstPublishedMessageId()));
+        assertTrue(messageId.equals(clientInfo.getFirstMessageId()));
 
         // There must be a channel info entry in the registry
         equalsMessageId = datastoreObjectFactory.newTermPredicate(ChannelInfoField.MESSAGE_ID, messageId);
 
-        ChannelInfoQuery channelInfoQuery = datastoreObjectFactory.newChannelInfoQuery();
+        ChannelInfoQuery channelInfoQuery = datastoreObjectFactory.newChannelInfoQuery(account.getId());
         channelInfoQuery.setOffset(0);
         channelInfoQuery.setLimit(1);
         channelInfoQuery.setFetchStyle(StorableFetchStyle.FIELDS);
         channelInfoQuery.setPredicate(equalsMessageId);
 
         ChannelInfoRegistryService channelInfoRegistry = KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
-        ChannelInfoListResult channelInfos = channelInfoRegistry.query(account.getId(), channelInfoQuery);
+        ChannelInfoListResult channelInfos = channelInfoRegistry.query(channelInfoQuery);
 
         assertNotNull(channelInfos);
-        assertTrue(channelInfos.size() == 1);
+        assertTrue(channelInfos.getSize() == 1);
 
-        ChannelInfo channelInfo = channelInfos.get(0);
+        ChannelInfo channelInfo = channelInfos.getItem(0);
 
         assertNotNull(channelInfo);
-        assertTrue(messageId.equals(channelInfo.getFirstPublishedMessageId()));
+        assertTrue(messageId.equals(channelInfo.getFirstMessageId()));
 
         // There must be two metric info entries in the registry
         equalsMessageId = datastoreObjectFactory.newTermPredicate(MetricInfoField.MESSAGE_ID_FULL, messageId);
 
-        MetricInfoQuery metricInfoQuery = datastoreObjectFactory.newMetricInfoQuery();
+        MetricInfoQuery metricInfoQuery = datastoreObjectFactory.newMetricInfoQuery(account.getId());
         metricInfoQuery.setOffset(0);
         metricInfoQuery.setLimit(2);
         metricInfoQuery.setFetchStyle(StorableFetchStyle.FIELDS);
         metricInfoQuery.setPredicate(equalsMessageId);
 
         MetricInfoRegistryService metricInfoRegistry = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
-        MetricInfoListResult metricInfos = metricInfoRegistry.query(account.getId(), metricInfoQuery);
+        MetricInfoListResult metricInfos = metricInfoRegistry.query(metricInfoQuery);
 
         assertNotNull(metricInfos);
-        assertTrue(metricInfos.size() == 2);
+        assertTrue(metricInfos.getSize() == 2);
 
-        MetricInfo metricInfo = metricInfos.get(0);
-
-        assertNotNull(metricInfo);
-        assertTrue(messageId.equals(metricInfo.getFirstPublishedMessageId()));
-
-        metricInfo = metricInfos.get(1);
+        MetricInfo metricInfo = metricInfos.getItem(0);
 
         assertNotNull(metricInfo);
-        assertTrue(messageId.equals(metricInfo.getFirstPublishedMessageId()));
+        assertTrue(messageId.equals(metricInfo.getFirstMessageId()));
+
+        metricInfo = metricInfos.getItem(1);
+
+        assertNotNull(metricInfo);
+        assertTrue(messageId.equals(metricInfo.getFirstMessageId()));
     }
 
     /**

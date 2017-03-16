@@ -19,19 +19,17 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
  * Datastore cache manager.<br>
  * It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class DatastoreCacheManager
-{
+public class DatastoreCacheManager {
+
     private static final DatastoreCacheManager instance = new DatastoreCacheManager();
 
     private final LocalCache<String, Boolean> channelsCache;
     private final LocalCache<String, Boolean> metricsCache;
     private final LocalCache<String, Boolean> clientsCache;
 
-    private DatastoreCacheManager()
-    {
+    private DatastoreCacheManager() {
         DatastoreSettings config = DatastoreSettings.getInstance();
         int expireAfter = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
         int sizeMax = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
@@ -39,18 +37,19 @@ public class DatastoreCacheManager
         // TODO set expiration to happen frequently because the reset cache method will not get
         // called from service clients any more
         // TODO wrap the caches into a Statically accessible method
-        channelsCache = new LocalCache<String, Boolean>(sizeMax, expireAfter, false);
-        metricsCache = new LocalCache<String, Boolean>(sizeMax, expireAfter, false);
-        clientsCache = new LocalCache<String, Boolean>(sizeMax, expireAfter, false);
+        channelsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        metricsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        clientsCache = new LocalCache<>(sizeMax, expireAfter, false);
     }
 
     /**
      * Get the cache manager instance
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static DatastoreCacheManager getInstance()
-    {
+    public static DatastoreCacheManager getInstance() {
         return instance;
     }
 
@@ -58,9 +57,10 @@ public class DatastoreCacheManager
      * Get the channels informations cache
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public LocalCache<String, Boolean> getChannelsCache()
-    {
+    public LocalCache<String, Boolean> getChannelsCache() {
         return channelsCache;
     }
 
@@ -68,9 +68,10 @@ public class DatastoreCacheManager
      * Get the metrics informations cache
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public LocalCache<String, Boolean> getMetricsCache()
-    {
+    public LocalCache<String, Boolean> getMetricsCache() {
         return metricsCache;
     }
 
@@ -78,9 +79,10 @@ public class DatastoreCacheManager
      * Get the clients informations cache
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public LocalCache<String, Boolean> getClientsCache()
-    {
+    public LocalCache<String, Boolean> getClientsCache() {
         return clientsCache;
     }
 }

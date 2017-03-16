@@ -19,59 +19,50 @@ import org.eclipse.kapua.model.id.KapuaId;
 /**
  * Platform message container.<BR>
  * Contains the message and additional information such as the connection id and the connector descriptor (useful for the message translation process)
- * 
+ *
  * @param <M> Contained message type
- * 
  * @since 1.0
  */
-public class CamelKapuaMessage<M extends KapuaMessage<?,?>>
-{
+public class CamelKapuaMessage<M extends KapuaMessage<?, ?>> {
 
-    private M                   message;
-    private KapuaId             connectionId;
+    private M message;
+    private KapuaId connectionId;
     private ConnectorDescriptor connectorDescriptor;
 
     /**
      * Constructs a new Camel Kapua message
-     * 
-     * @param message message
-     * @param connectionId connection id
+     *
+     * @param message             message
+     * @param connectionId        connection id
      * @param connectorDescriptor connector descriptor
      */
-    public CamelKapuaMessage(M message, KapuaId connectionId, ConnectorDescriptor connectorDescriptor)
-    {
+    public CamelKapuaMessage(M message, KapuaId connectionId, ConnectorDescriptor connectorDescriptor) {
         this.connectionId = connectionId;
         this.message = message;
         this.connectorDescriptor = connectorDescriptor;
     }
 
-    public M getMessage()
-    {
+    public M getMessage() {
         return message;
     }
 
-    public void setMessage(M message)
-    {
+    public void setMessage(M message) {
         this.message = message;
     }
 
-    public KapuaId getConnectionId()
-    {
+    public KapuaId getConnectionId() {
         return connectionId;
     }
 
-    public void setConnectionId(KapuaId connectionId)
-    {
+    public void setConnectionId(KapuaId connectionId) {
         this.connectionId = connectionId;
     }
 
-    public ConnectorDescriptor getConnectorDescriptor()
-    {
+    public ConnectorDescriptor getConnectorDescriptor() {
         return connectorDescriptor;
     }
 
-    public void setConnectorDescriptor(ConnectorDescriptor connectorDescriptor)
-    {
+    public void setConnectorDescriptor(ConnectorDescriptor connectorDescriptor) {
         this.connectorDescriptor = connectorDescriptor;
     }
 

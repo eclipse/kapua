@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.model.id;
 
@@ -21,25 +20,40 @@ import java.util.Base64;
  * This object it's used to identify each entity.<br>
  * <b>It should be unique within the same entity.</b>
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public interface KapuaId extends Serializable
-{
+public interface KapuaId extends Serializable {
+
     /**
      * Get the identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public BigInteger getId();
 
     /**
-     * Get the identifier (Base64 url encoded identifier version)
+     * Get the identifier Base64 URL encoded formatted.
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    default public String toCompactId()
-    {
+    public default String toCompactId() {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(getId().toByteArray());
     }
+
+    /**
+     * Get the identifier numeric String formatted.
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public default String toStringId() {
+        return getId().toString();
+    }
+
 }

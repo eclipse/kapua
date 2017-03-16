@@ -27,10 +27,10 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
@@ -39,10 +39,10 @@ import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
-import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
@@ -57,27 +57,28 @@ import org.slf4j.LoggerFactory;
 /**
  * Channel info registry implementation
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
-public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements ChannelInfoRegistryService
-{
-    private static final long serialVersionUID = 7839070776817998600L;
+public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements ChannelInfoRegistryService {
 
     private static final Domain datastoreDomain = new DatastoreDomain();
 
     private static final Logger logger = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
-    private final AccountService            accountService;
-    private final AuthorizationService      authorizationService;
-    private final PermissionFactory         permissionFactory;
+    private final AccountService accountService;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
     private final ChannelInfoRegistryFacade channelInfoStoreFacade;
-    private final MessageStoreService       messageStoreService;
-    private final DatastoreObjectFactory    datastoreObjectFactory;
+    private final MessageStoreService messageStoreService;
+    private final DatastoreObjectFactory datastoreObjectFactory;
 
-    public ChannelInfoRegistryServiceImpl()
-    {
+    /**
+     * Default constructor.
+     * 
+     * @since 1.0.0
+     */
+    public ChannelInfoRegistryServiceImpl() {
         super(ChannelInfoRegistryService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -95,99 +96,93 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
     @Override
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkDataAccess(scopeId, Actions.delete);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkDataAccess(scopeId, Actions.delete);
-
-            this.channelInfoStoreFacade.delete(scopeId, id);
-        }
-        catch (Exception e) {
+            channelInfoStoreFacade.delete(scopeId, id);
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
     public ChannelInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkDataAccess(scopeId, Actions.read);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkDataAccess(scopeId, Actions.read);
-
-            ChannelInfo channelInfo = this.channelInfoStoreFacade.find(scopeId, id);
+            ChannelInfo channelInfo = channelInfoStoreFacade.find(scopeId, id);
 
             // populate the lastMessageTimestamp
-            updateLastPublishedFields(scopeId, channelInfo);
+            updateLastPublishedFields(channelInfo);
 
             return channelInfo;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
-    public ChannelInfoListResult query(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaException
-    {
+    public ChannelInfoListResult query(ChannelInfoQuery query)
+            throws KapuaException {
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        checkDataAccess(query.getScopeId(), Actions.read);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkDataAccess(scopeId, Actions.read);
-
-            ChannelInfoListResult result = this.channelInfoStoreFacade.query(scopeId, query);
+            ChannelInfoListResult result = channelInfoStoreFacade.query(query);
 
             // populate the lastMessageTimestamp
-            for (ChannelInfo channelInfo : result) {
-                updateLastPublishedFields(scopeId, channelInfo);
+            for (ChannelInfo channelInfo : result.getItems()) {
+                updateLastPublishedFields(channelInfo);
             }
 
             return result;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
-    public long count(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaException
-    {
+    public long count(ChannelInfoQuery query)
+            throws KapuaException {
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        checkDataAccess(query.getScopeId(), Actions.read);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkDataAccess(scopeId, Actions.read);
-
-            return this.channelInfoStoreFacade.count(scopeId, query);
-        }
-        catch (Exception e) {
+            return channelInfoStoreFacade.count(query);
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
-    public void delete(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaException
-    {
+    public void delete(ChannelInfoQuery query)
+            throws KapuaException {
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        checkDataAccess(query.getScopeId(), Actions.delete);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkDataAccess(scopeId, Actions.delete);
-
-            this.delete(scopeId, query);
-        }
-        catch (Exception e) {
+            channelInfoStoreFacade.delete(query);
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Check Access
         Permission permission = permissionFactory.newPermission(datastoreDomain, action, scopeId);
@@ -203,47 +198,51 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * @param channelInfo
      * 
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    private void updateLastPublishedFields(KapuaId scopeId, ChannelInfo channelInfo) throws KapuaException
-    {
-        StorableId lastPublishedMessageId = null;
-        Date lastPublishedMessageTimestamp = null;
-        MessageQuery messageQuery = new MessageQueryImpl();
-        messageQuery.setAskTotalCount(true);
-        messageQuery.setFetchStyle(StorableFetchStyle.SOURCE_SELECT);
-        messageQuery.setLimit(1);
-        messageQuery.setOffset(0);
-        List<SortField> sort = new ArrayList<SortField>();
+    private void updateLastPublishedFields(ChannelInfo channelInfo) throws KapuaException {
+        List<SortField> sort = new ArrayList<>();
         SortField sortTimestamp = new SortFieldImpl();
         sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
         sortTimestamp.setSortDirection(SortDirection.DESC);
         sort.add(sortTimestamp);
+
+        MessageQuery messageQuery = new MessageQueryImpl(channelInfo.getScopeId());
+        messageQuery.setAskTotalCount(true);
+        messageQuery.setFetchStyle(StorableFetchStyle.SOURCE_SELECT);
+        messageQuery.setLimit(1);
+        messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
-        AndPredicate andPredicate = new AndPredicateImpl();
-        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.CHANNEL_TIMESTAMP), channelInfo.getFirstPublishedMessageTimestamp(), null);
-        andPredicate.getPredicates().add(messageIdPredicate);
-        TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(MessageField.ACCOUNT, channelInfo.getAccount());
-        andPredicate.getPredicates().add(accountNamePredicate);
+
+        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.CHANNEL_TIMESTAMP), channelInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
-        andPredicate.getPredicates().add(clientIdPredicate);
         TermPredicate channelPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CHANNEL, channelInfo.getChannel());
+
+        AndPredicate andPredicate = new AndPredicateImpl();
+        andPredicate.getPredicates().add(messageIdPredicate);
+        andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(channelPredicate);
         messageQuery.setPredicate(andPredicate);
-        MessageListResult messageList = messageStoreService.query(scopeId, messageQuery);
-        if (messageList.size() == 1) {
-            lastPublishedMessageId = messageList.get(0).getDatastoreId();
-            lastPublishedMessageTimestamp = messageList.get(0).getTimestamp();
-        }
-        else if (messageList.size() == 0) {
+
+        MessageListResult messageList = messageStoreService.query(messageQuery);
+
+        StorableId lastPublishedMessageId = null;
+        Date lastPublishedMessageTimestamp = null;
+        if (messageList.getSize() == 1) {
+            lastPublishedMessageId = messageList.getFirstItem().getDatastoreId();
+            lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
+        } else if (messageList.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
-            logger.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { channelInfo.getAccount(), channelInfo.getClientId() });
-        }
-        else {
+            logger.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
+        } else {
             // this condition shouldn't never happens since the query has a limit 1
             // if happens it means than an elasticsearch internal error happens and/or our driver didn't set it correctly!
-            logger.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!", new Object[] { channelInfo.getAccount(), channelInfo.getClientId() });
+            logger.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
+                    new Object[] { channelInfo.getScopeId(), channelInfo.getClientId() });
         }
-        channelInfo.setLastPublishedMessageId(lastPublishedMessageId);
-        channelInfo.setLastPublishedMessageTimestamp(lastPublishedMessageTimestamp);
+
+        channelInfo.setLastMessageId(lastPublishedMessageId);
+        channelInfo.setLastMessageOn(lastPublishedMessageTimestamp);
     }
 }

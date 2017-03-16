@@ -15,31 +15,18 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
+import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 
 /**
  * Channel information registry service definition.<br>
  * The channel information binds information about the channels and the devices that published on these channels.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface ChannelInfoRegistryService extends KapuaService,
-                                            KapuaConfigurableService
-{
-
-    /**
-     * Delete channel information by identifier
-     * 
-     * @param scopeId
-     * @param id
-     * @throws KapuaException
-     */
-    public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException;
+public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigurableService {
 
     /**
      * Find channel information by identifier
@@ -48,9 +35,11 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @param id
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
     public ChannelInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Query for channels informations objects matching the given query
@@ -59,9 +48,11 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @param query
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public ChannelInfoListResult query(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaException;
+    public ChannelInfoListResult query(ChannelInfoQuery query)
+            throws KapuaException;
 
     /**
      * Get the channels informations count matching the given query
@@ -70,9 +61,23 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @param query
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public long count(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaException;
+    public long count(ChannelInfoQuery query)
+            throws KapuaException;
+
+    /**
+     * Delete channel information by identifier
+     * 
+     * @param scopeId
+     * @param id
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    public void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException;
 
     /**
      * Delete channels informations matching the given query
@@ -80,7 +85,9 @@ public interface ChannelInfoRegistryService extends KapuaService,
      * @param scopeId
      * @param query
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public void delete(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaException;
+    public void delete(ChannelInfoQuery query)
+            throws KapuaException;
 }

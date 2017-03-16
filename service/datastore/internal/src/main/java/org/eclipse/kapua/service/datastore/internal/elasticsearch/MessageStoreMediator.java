@@ -21,11 +21,10 @@ import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema.Metad
 /**
  * Message mediator definition
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface MessageStoreMediator
-{
+public interface MessageStoreMediator {
+
     /**
      * Get the message metadata
      * 
@@ -34,9 +33,11 @@ public interface MessageStoreMediator
      * @return
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public Metadata getMetadata(KapuaId scopeId, long indexedOn)
-        throws EsDocumentBuilderException, EsClientUnavailableException;
+            throws EsDocumentBuilderException, EsClientUnavailableException;
 
     /**
      * On after message mappings event handler
@@ -46,9 +47,11 @@ public interface MessageStoreMediator
      * @param esMetrics
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, EsMetric> esMetrics)
-        throws EsDocumentBuilderException, EsClientUnavailableException;
+            throws EsDocumentBuilderException, EsClientUnavailableException;
 
     /**
      * On after message store event handler
@@ -60,10 +63,12 @@ public interface MessageStoreMediator
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
+     * 
+     * @since 1.0.0
      */
-    public void onAfterMessageStore(KapuaId scopeId, MessageXContentBuilder docBuilder, KapuaMessage<?, ?> message)
-        throws KapuaIllegalArgumentException,
-        EsDocumentBuilderException,
-        EsClientUnavailableException,
-        EsConfigurationException;
+    public void onAfterMessageStore(MessageXContentBuilder docBuilder, KapuaMessage<?, ?> message)
+            throws KapuaIllegalArgumentException,
+            EsDocumentBuilderException,
+            EsClientUnavailableException,
+            EsConfigurationException;
 }

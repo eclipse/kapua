@@ -47,25 +47,25 @@ import org.slf4j.LoggerFactory;
 /**
  * Metric information registry facade
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class MetricInfoRegistryFacade
-{
+public class MetricInfoRegistryFacade {
+
     private static final Logger logger = LoggerFactory.getLogger(MetricInfoRegistryFacade.class);
 
     private final MetricInfoRegistryMediator mediator;
-    private final ConfigurationProvider      configProvider;
-    private final Object                     metadataUpdateSync;
+    private final ConfigurationProvider configProvider;
+    private final Object metadataUpdateSync;
 
     /**
      * Constructs the metric info registry facade
      * 
      * @param configProvider
      * @param mediator
+     * 
+     * @since 1.0.0
      */
-    public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator)
-    {
+    public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) {
         this.configProvider = configProvider;
         this.mediator = mediator;
         this.metadataUpdateSync = new Object();
@@ -81,19 +81,20 @@ public class MetricInfoRegistryFacade
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
+     * 
+     * @since 1.0.0
      */
-    public StorableId upstore(KapuaId scopeId, MetricInfo metricInfo)
-        throws KapuaIllegalArgumentException,
-        EsDocumentBuilderException,
-        EsClientUnavailableException,
-        EsConfigurationException
-    {
+    public StorableId upstore(MetricInfo metricInfo)
+            throws KapuaIllegalArgumentException,
+            EsDocumentBuilderException,
+            EsClientUnavailableException,
+            EsConfigurationException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(metricInfo, "metricInfoCreator");
-        ArgumentValidator.notNull(metricInfo.getFirstPublishedMessageId(), "metricInfoCreator.firstPublishedMessageId");
-        ArgumentValidator.notNull(metricInfo.getFirstPublishedMessageTimestamp(), "metricInfoCreator.firstPublishedMessageTimestamp");
+        ArgumentValidator.notNull(metricInfo.getScopeId(), "metricInfo.scopeId");
+        ArgumentValidator.notNull(metricInfo.getFirstMessageId(), "metricInfoCreator.firstPublishedMessageId");
+        ArgumentValidator.notNull(metricInfo.getFirstMessageOn(), "metricInfoCreator.firstPublishedMessageTimestamp");
 
         String metricInfoId = MetricInfoXContentBuilder.getOrDeriveId(metricInfo.getId(), metricInfo);
 
@@ -108,22 +109,21 @@ public class MetricInfoRegistryFacade
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(metricInfoId)) {
                     UpdateResponse response = null;
                     try {
-                        Metadata metadata = this.mediator.getMetadata(scopeId, metricInfo.getFirstPublishedMessageTimestamp().getTime());
+                        Metadata metadata = this.mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                         String kapuaIndexName = metadata.getKapuaIndexName();
 
                         response = EsMetricInfoDAO.getInstance()
-                                                  .index(metadata.getKapuaIndexName())
-                                                  .upsert(metricInfo);
+                                .index(metadata.getKapuaIndexName())
+                                .upsert(metricInfo);
 
                         metricInfoId = response.getId();
 
                         logger.debug(String.format("Upsert on metric succesfully executed [%s.%s, %s]",
-                                                   kapuaIndexName, EsSchema.METRIC_TYPE_NAME, metricInfoId));
+                                kapuaIndexName, EsSchema.METRIC_TYPE_NAME, metricInfoId));
 
-                    }
-                    catch (DocumentAlreadyExistsException exc) {
+                    } catch (DocumentAlreadyExistsException exc) {
                         logger.trace(String.format("Upsert failed because metric already exists [%s, %s]",
-                                                   metricInfoId, exc.getMessage()));
+                                metricInfoId, exc.getMessage()));
                     }
                     // Update cache if channel update is completed successfully
                     DatastoreCacheManager.getInstance().getChannelsCache().put(metricInfoId, true);
@@ -143,16 +143,16 @@ public class MetricInfoRegistryFacade
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
+     * 
+     * @since 1.0.0
      */
-    public StorableId[] upstore(KapuaId scopeId, MetricInfo[] metricInfos)
-        throws KapuaIllegalArgumentException,
-        EsDocumentBuilderException,
-        EsClientUnavailableException,
-        EsConfigurationException
-    {
+    public StorableId[] upstore(MetricInfo[] metricInfos)
+            throws KapuaIllegalArgumentException,
+            EsDocumentBuilderException,
+            EsClientUnavailableException,
+            EsConfigurationException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(metricInfos, "metricInfoCreator");
 
         // Create a bulk request
@@ -163,14 +163,14 @@ public class MetricInfoRegistryFacade
             if (DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId))
                 continue;
 
-            Metadata metadata = this.mediator.getMetadata(scopeId, metricInfo.getFirstPublishedMessageTimestamp().getTime());
+            Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
             String kapuaIndexName = metadata.getKapuaIndexName();
 
             EsMetricInfoDAO.getInstance().index(kapuaIndexName);
 
             bulkRequest.add(EsMetricInfoDAO.getInstance()
-                                           .index(kapuaIndexName)
-                                           .getUpsertRequest(metricInfo));
+                    .index(kapuaIndexName)
+                    .getUpsertRequest(metricInfo));
         }
 
         StorableId[] idResults = null;
@@ -193,7 +193,7 @@ public class MetricInfoRegistryFacade
                         MetricInfo failedMetricInfoCreator = metricInfos[bulkItemResponse.getItemId()];
                         String failureMessage = bulkItemResponse.getFailureMessage();
                         logger.trace(String.format("Upsert failed [%s, %s, %s]",
-                                                   failedMetricInfoCreator.getChannel(), failedMetricInfoCreator.getName(), failureMessage));
+                                failedMetricInfoCreator.getChannel(), failedMetricInfoCreator.getName(), failureMessage));
                         continue;
                     }
 
@@ -203,7 +203,7 @@ public class MetricInfoRegistryFacade
                     String kapuaIndexName = bulkItemResponse.getIndex();
                     String channelTypeName = bulkItemResponse.getType();
                     logger.debug(String.format("Upsert on channel metric succesfully executed [%s.%s, %s]",
-                                               kapuaIndexName, channelTypeName, channelMetricId));
+                            kapuaIndexName, channelTypeName, channelMetricId));
 
                     if (DatastoreCacheManager.getInstance().getMetricsCache().get(channelMetricId))
                         continue;
@@ -225,12 +225,13 @@ public class MetricInfoRegistryFacade
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsClientUnavailableException
-    {
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsClientUnavailableException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -248,8 +249,8 @@ public class MetricInfoRegistryFacade
 
         String indexName = EsSchema.getKapuaIndexName(scopeId);
         EsMetricInfoDAO.getInstance()
-                       .index(indexName)
-                       .deleteById(id.toString());
+                .index(indexName)
+                .deleteById(id.toString());
     }
 
     /**
@@ -263,34 +264,31 @@ public class MetricInfoRegistryFacade
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public MetricInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsQueryConversionException,
-        EsClientUnavailableException,
-        EsObjectBuilderException
-    {
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsQueryConversionException,
+            EsClientUnavailableException,
+            EsObjectBuilderException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
-        MetricInfoQueryImpl q = new MetricInfoQueryImpl();
-        q.setLimit(1);
+        MetricInfoQueryImpl query = new MetricInfoQueryImpl(scopeId);
+        query.setLimit(1);
 
-        ArrayList<StorableId> ids = new ArrayList<StorableId>();
+        ArrayList<StorableId> ids = new ArrayList<>();
         ids.add(id);
 
         AndPredicateImpl allPredicates = new AndPredicateImpl();
         allPredicates.addPredicate(new IdsPredicateImpl(EsSchema.MESSAGE_TYPE_NAME, ids));
 
-        MetricInfoListResult result = this.query(scopeId, q);
-        if (result == null || result.size() == 0)
-            return null;
-
-        MetricInfo metricInfo = result.get(0);
-        return metricInfo;
+        MetricInfoListResult result = query(query);
+        return result.getFirstItem();
     }
 
     /**
@@ -304,36 +302,34 @@ public class MetricInfoRegistryFacade
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
-    public MetricInfoListResult query(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsQueryConversionException,
-        EsClientUnavailableException,
-        EsObjectBuilderException
-    {
+    public MetricInfoListResult query(MetricInfoQuery query)
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsQueryConversionException,
+            EsClientUnavailableException,
+            EsObjectBuilderException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", scopeId);
+            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new MetricInfoListResultImpl();
         }
 
-        String indexNme = EsSchema.getKapuaIndexName(scopeId);
-        MetricInfoListResult result = null;
-        result = EsMetricInfoDAO.getInstance()
-                                .index(indexNme)
-                                .query(query);
-
-        return result;
+        String indexNme = EsSchema.getKapuaIndexName(query.getScopeId());
+        return EsMetricInfoDAO.getInstance()
+                .index(indexNme)
+                .query(query);
     }
 
     /**
@@ -346,35 +342,33 @@ public class MetricInfoRegistryFacade
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public long count(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsClientUnavailableException,
-        EsQueryConversionException
-    {
+    public long count(MetricInfoQuery query)
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsClientUnavailableException,
+            EsQueryConversionException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", scopeId);
+            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
 
-        String indexName = EsSchema.getKapuaIndexName(scopeId);
-        long result;
-        result = EsMetricInfoDAO.getInstance()
-                                .index(indexName)
-                                .count(query);
-
-        return result;
+        String indexName = EsSchema.getKapuaIndexName(query.getScopeId());
+        return EsMetricInfoDAO.getInstance()
+                .index(indexName)
+                .count(query);
     }
 
     /**
@@ -386,32 +380,31 @@ public class MetricInfoRegistryFacade
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public void delete(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsClientUnavailableException,
-        EsQueryConversionException
-    {
+    public void delete(MetricInfoQuery query)
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsClientUnavailableException,
+            EsQueryConversionException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", scopeId);
+            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
         }
 
-        String indexName = EsSchema.getKapuaIndexName(scopeId);
+        String indexName = EsSchema.getKapuaIndexName(query.getScopeId());
         EsMetricInfoDAO.getInstance()
-                       .index(indexName)
-                       .deleteByQuery(query);
-
-        return;
+                .index(indexName)
+                .deleteByQuery(query);
     }
 }

@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.concurrent.Callable;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -20,38 +18,33 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsConfigurationException;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageInfo;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreConfiguration;
 
 /**
  * Datastore configuration provider implementation.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ConfigurationProviderImpl implements ConfigurationProvider
-{
+public class ConfigurationProviderImpl implements ConfigurationProvider {
 
-    private AccountService           accountService;
+    private AccountService accountService;
     private KapuaConfigurableService configurableService;
 
     public ConfigurationProviderImpl(KapuaConfigurableService configurableService,
-                                     AccountService accountService)
-    {
+            AccountService accountService) {
         this.accountService = accountService;
         this.configurableService = configurableService;
     }
 
     @Override
     public MessageStoreConfiguration getConfiguration(KapuaId scopeId)
-        throws EsConfigurationException
-    {
+            throws EsConfigurationException {
 
         MessageStoreConfiguration messageStoreConfiguration = null;
         try {
             messageStoreConfiguration = new MessageStoreConfiguration(configurableService.getConfigValues(scopeId));
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             throw new EsConfigurationException(e);
         }
 
@@ -60,26 +53,15 @@ public class ConfigurationProviderImpl implements ConfigurationProvider
 
     @Override
     public MessageInfo getInfo(KapuaId scopeId)
-        throws EsConfigurationException
-    {
+            throws EsConfigurationException {
 
         Account account = null;
         if (scopeId != null) {
             try {
-                account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
-
-                    @Override
-                    public Account call() throws Exception
-                    {
-                        return accountService.find(scopeId);
-                    }
-
-                });
-            }
-            catch (KapuaException exc) {
+                account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(scopeId));
+            } catch (KapuaException exc) {
                 throw new EsConfigurationException(exc);
-            }
-            catch (Exception exc) {
+            } catch (Exception exc) {
                 throw new EsConfigurationException(exc);
             }
         }

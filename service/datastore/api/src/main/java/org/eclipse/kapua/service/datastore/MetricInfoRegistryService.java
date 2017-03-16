@@ -25,21 +25,10 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
  * Service dedicated for storing and reading named device metrics. Metric is an arbitrary named value. We usually
  * keep only the most recent value of the metric.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 public interface MetricInfoRegistryService extends KapuaService,
-                                           KapuaConfigurableService
-{
-
-    /**
-     * Delete metric information by identifier
-     * 
-     * @param scopeId
-     * @param id
-     * @throws KapuaException
-     */
-    public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException;
+        KapuaConfigurableService {
 
     /**
      * Find metric information by identifier
@@ -48,9 +37,11 @@ public interface MetricInfoRegistryService extends KapuaService,
      * @param id
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
     public MetricInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Query for metrics informations objects matching the given query
@@ -59,9 +50,11 @@ public interface MetricInfoRegistryService extends KapuaService,
      * @param query
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public MetricInfoListResult query(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaException;
+    public MetricInfoListResult query(MetricInfoQuery query)
+            throws KapuaException;
 
     /**
      * Get the metrics informations count matching the given query
@@ -70,9 +63,23 @@ public interface MetricInfoRegistryService extends KapuaService,
      * @param query
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public long count(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaException;
+    public long count(MetricInfoQuery query)
+            throws KapuaException;
+
+    /**
+     * Delete metric information by identifier
+     * 
+     * @param scopeId
+     * @param id
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    public void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException;
 
     /**
      * Delete metrics informations matching the given query
@@ -81,6 +88,6 @@ public interface MetricInfoRegistryService extends KapuaService,
      * @param query
      * @throws KapuaException
      */
-    public void delete(KapuaId scopeId, MetricInfoQuery query)
-        throws KapuaException;
+    public void delete(MetricInfoQuery query)
+            throws KapuaException;
 }

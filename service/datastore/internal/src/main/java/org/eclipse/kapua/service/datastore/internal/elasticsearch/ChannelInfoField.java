@@ -17,13 +17,11 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
 /**
  * This enumeration defines the fields names used in the {@link ChannelInfo} Elasticsearch schema
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public enum ChannelInfoField implements StorableField
-{
+public enum ChannelInfoField implements StorableField {
     /**
-     * Channel
+     * Channel name
      */
     CHANNEL(EsSchema.CHANNEL_NAME),
     /**
@@ -31,9 +29,9 @@ public enum ChannelInfoField implements StorableField
      */
     CLIENT_ID(EsSchema.CHANNEL_CLIENT_ID),
     /**
-     * Account name
+     * Scope id
      */
-    ACCOUNT(EsSchema.CHANNEL_ACCOUNT),
+    SCOPE_ID(EsSchema.CHANNEL_SCOPE_ID),
     /**
      * Timestamp
      */
@@ -45,14 +43,12 @@ public enum ChannelInfoField implements StorableField
 
     private String field;
 
-    private ChannelInfoField(String name)
-    {
+    private ChannelInfoField(String name) {
         this.field = name;
     }
 
     @Override
-    public String field()
-    {
+    public String field() {
         return field;
     }
 }
