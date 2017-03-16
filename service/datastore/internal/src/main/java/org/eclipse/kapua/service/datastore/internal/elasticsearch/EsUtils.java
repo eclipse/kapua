@@ -37,7 +37,7 @@ public class EsUtils {
     private static final char SPECIAL_DOLLAR = '$';
     private static final String SPECIAL_DOLLAR_ESC = "$24";
 
-    public static CharSequence ILLEGAL_CHARS = "\"\\/*?<>|,. ";
+    public static final CharSequence ILLEGAL_CHARS = "\"\\/*?<>|,. ";
 
     public static final String ES_TYPE_STRING = "string";
     public static final String ES_TYPE_INTEGER = "integer";
