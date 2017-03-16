@@ -14,11 +14,13 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
+import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
@@ -35,6 +37,16 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
 
     @Override
+    public ChannelInfoQuery newChannelInfoQuery(KapuaId scopeId) {
+        return new ChannelInfoQueryImpl(scopeId);
+    }
+    
+    @Override
+    public ChannelInfoListResult newChannelInfoListResult() {
+        return new ChannelInfoListResultImpl();
+    }
+
+    @Override
     public ClientInfoQuery newClientInfoQuery(KapuaId scopeId) {
         return new ClientInfoQueryImpl(scopeId);
     }
@@ -44,10 +56,6 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
         return new ClientInfoListResultImpl();
     }
 
-    @Override
-    public ChannelInfoQuery newChannelInfoQuery(KapuaId scopeId) {
-        return new ChannelInfoQueryImpl(scopeId);
-    }
 
     @Override
     public MetricInfoQuery newMetricInfoQuery(KapuaId scopeId) {
@@ -58,5 +66,6 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
     public <V> TermPredicate newTermPredicate(StorableField field, V value) {
         return new TermPredicateImpl(field, value);
     }
+
 
 }
