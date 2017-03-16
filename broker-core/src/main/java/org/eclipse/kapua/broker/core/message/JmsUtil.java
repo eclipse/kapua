@@ -36,31 +36,27 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Jms message utility class
- * 
+ *
  * @since 1.0
- * 
  */
-public class JmsUtil
-{
+public class JmsUtil {
+
     public static final Logger logger = LoggerFactory.getLogger(JmsUtil.class);
 
     /**
      * Return the topic for the message's destination
-     * 
+     *
      * @param jmsMessage
      * @return
      * @throws JMSException
      */
-    public static String getJmsTopic(ActiveMQMessage jmsMessage) throws JMSException
-    {
+    public static String getJmsTopic(ActiveMQMessage jmsMessage) throws JMSException {
         String jmsTopic = null;
         if (jmsMessage.getDestination().isTopic()) {
             jmsTopic = ((Topic) jmsMessage.getJMSDestination()).getTopicName().substring(AclConstants.VT_TOPIC_PREFIX.length());
-        }
-        else if (jmsMessage.getDestination().isQueue()) {
+        } else if (jmsMessage.getDestination().isQueue()) {
             jmsTopic = jmsMessage.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
-        }
-        else {
+        } else {
             logger.warn("jmsMessage destination is not a Topic or Queue: {}", jmsMessage.getDestination());
         }
         return jmsTopic;
@@ -68,24 +64,24 @@ public class JmsUtil
 
     /**
      * Convert a {@link BytesMessage} to {@link CamelKapuaMessage}
-     * 
+     *
      * @param jmsMessage
      * @throws JMSException
      * @throws KapuaException
      */
     public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, BytesMessage jmsMessage, KapuaId connectionId, String clientId)
-        throws JMSException, KapuaException
-    {
+            throws JMSException, KapuaException {
         String jmsTopic = jmsMessage.getStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC);
         Date queuedOn = new Date(jmsMessage.getLongProperty(MessageConstants.PROPERTY_ENQUEUED_TIMESTAMP));
-        return convertToKapuaMessage(connectorDescriptor, connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), jmsMessage, jmsTopic, queuedOn, connectionId, clientId);
+        return convertToKapuaMessage(connectorDescriptor, connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), jmsMessage, jmsTopic, queuedOn, connectionId,
+                clientId);
     }
 
     /**
      * Convert a {@link BytesMessage} to {@link KapuaMessage}
-     * 
+     * <p>
      * this code
-     * 
+     * <p>
      * <pre>
      * <code>
      * if (jmsMessage.getBodyLength() > 0) {
@@ -94,27 +90,25 @@ public class JmsUtil
      * }
      * </code>
      * </pre>
-     * 
+     * <p>
      * with camel doesn't work.<br>
      * The call getBodyLength returns the correct message size but the read call reads an empty array (-1 is returned).<br>
      * The following code return the payload evaluated.<br>
      * ((ActiveMQMessage)jmsMessage).getContent().data<br>
      * so we modify the method assuming that camel converter called this utility method with a byte[] representing the jms body message.
-     * 
-     * @see {@link AbstractKapuaConverter}
-     * 
-     * 
+     *
      * @param jmsMessage
      * @throws JMSException
      * @throws KapuaException
      * @throws KapuaInvalidTopicException
+     * @see {@link AbstractKapuaConverter}
      */
 
     // TODO check the code with huge messages
-    private static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, Class<? extends DeviceMessage<?, ?>> deviceMessageType, Class<? extends KapuaMessage<?, ?>> kapuaMessageType, BytesMessage jmsMessage, String jmsTopic,
-                                                              Date queuedOn, KapuaId connectionId, String clientId)
-        throws JMSException, KapuaException
-    {
+    private static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, Class<? extends DeviceMessage<?, ?>> deviceMessageType,
+            Class<? extends KapuaMessage<?, ?>> kapuaMessageType, BytesMessage jmsMessage, String jmsTopic,
+            Date queuedOn, KapuaId connectionId, String clientId)
+            throws JMSException, KapuaException {
         byte[] payload = null;
         // TODO JMS message have no size limits!
         if (jmsMessage.getBodyLength() > 0) {
@@ -128,7 +122,7 @@ public class JmsUtil
 
     /**
      * Convert raw byte[] message to {@link CamelKapuaMessage}
-     * 
+     *
      * @param connectorDescriptor
      * @param messageType
      * @param messageBody
@@ -138,16 +132,17 @@ public class JmsUtil
      * @return
      * @throws KapuaException
      */
-    public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, byte[] messageBody, String jmsTopic, Date queuedOn, KapuaId connectionId, String clientId)
-        throws KapuaException
-    {
-        KapuaMessage<?, ?> kapuaMessage = convertToKapuaMessage(connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), messageBody, jmsTopic, queuedOn, connectionId, clientId);
-        return new CamelKapuaMessage<KapuaMessage<?,?>>(kapuaMessage, connectionId, connectorDescriptor);
+    public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, byte[] messageBody, String jmsTopic, Date queuedOn,
+            KapuaId connectionId, String clientId)
+            throws KapuaException {
+        KapuaMessage<?, ?> kapuaMessage = convertToKapuaMessage(connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), messageBody, jmsTopic, queuedOn,
+                connectionId, clientId);
+        return new CamelKapuaMessage<KapuaMessage<?, ?>>(kapuaMessage, connectionId, connectorDescriptor);
     }
 
     /**
      * Convert raw byte[] message to {@link KapuaMessage}
-     * 
+     *
      * @param deviceMessageType
      * @param kapuaMessageType
      * @param messageBody
@@ -157,12 +152,12 @@ public class JmsUtil
      * @return
      * @throws KapuaException
      */
-    private static KapuaMessage<?,?> convertToKapuaMessage(Class<? extends DeviceMessage<?, ?>> deviceMessageType, Class<? extends KapuaMessage<?, ?>> kapuaMessageType, byte[] messageBody, String jmsTopic, Date queuedOn, KapuaId connectionId, String clientId)
-        throws KapuaException
-    {
+    private static KapuaMessage<?, ?> convertToKapuaMessage(Class<? extends DeviceMessage<?, ?>> deviceMessageType, Class<? extends KapuaMessage<?, ?>> kapuaMessageType, byte[] messageBody,
+            String jmsTopic, Date queuedOn, KapuaId connectionId, String clientId)
+            throws KapuaException {
         // first step... from jms to device dependent protocol level (unknown)
         Translator<JmsMessage, DeviceMessage<?, ?>> translatorFromJms = Translator.getTranslatorFor(JmsMessage.class, deviceMessageType);// birth ...
-        DeviceMessage<?,?> deviceMessage = translatorFromJms.translate(new JmsMessage(new JmsTopic(jmsTopic), queuedOn, new JmsPayload(messageBody)));
+        DeviceMessage<?, ?> deviceMessage = translatorFromJms.translate(new JmsMessage(new JmsTopic(jmsTopic), queuedOn, new JmsPayload(messageBody)));
 
         // second step.... from device dependent protocol (unknown) to Kapua
         Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = Translator.getTranslatorFor(deviceMessageType, kapuaMessageType);
@@ -173,7 +168,7 @@ public class JmsUtil
 
     /**
      * Convert a {@link KapuaMessage} message to a {@link JmsMessage}
-     * 
+     *
      * @param connectorDescriptor
      * @param messageType
      * @param kapuaMessage
@@ -181,11 +176,11 @@ public class JmsUtil
      * @throws KapuaException
      * @throws ClassNotFoundException
      */
-    public static JmsMessage convertToJmsMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, KapuaMessage<?,?> kapuaMessage) throws KapuaException, ClassNotFoundException
-    {
+    public static JmsMessage convertToJmsMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, KapuaMessage<?, ?> kapuaMessage) throws KapuaException, ClassNotFoundException {
         // first step... from Kapua to device level dependent protocol (unknown)
-        Translator<KapuaMessage<?, ?>, DeviceMessage<?, ?>> translatorFromKapua = Translator.getTranslatorFor(connectorDescriptor.getKapuaClass(messageType), connectorDescriptor.getDeviceClass(messageType));
-        DeviceMessage<?,?> deviceMessage = translatorFromKapua.translate(kapuaMessage);
+        Translator<KapuaMessage<?, ?>, DeviceMessage<?, ?>> translatorFromKapua = Translator
+                .getTranslatorFor(connectorDescriptor.getKapuaClass(messageType), connectorDescriptor.getDeviceClass(messageType));
+        DeviceMessage<?, ?> deviceMessage = translatorFromKapua.translate(kapuaMessage);
 
         // second step.... from device level dependent protocol (unknown) to jms
         Translator<DeviceMessage<?, ?>, JmsMessage> translatorToJms = Translator.getTranslatorFor(connectorDescriptor.getDeviceClass(messageType), JmsMessage.class);
@@ -195,18 +190,18 @@ public class JmsUtil
     // =========================================
     // wildcards conversion
     // =========================================
+
     /**
      * ActiveMQ translate wildcards from jms to mqtt
      * function ActiveMQ MQTT
      * separator . /
      * element * +
      * sub tree &gt; #
-     * 
+     *
      * @param jmsTopic
      * @return
      */
-    public static String convertJmsWildCardToMqtt(String jmsTopic)
-    {
+    public static String convertJmsWildCardToMqtt(String jmsTopic) {
         String processedTopic = null;
         if (jmsTopic != null) {
             StringBuilder sb = new StringBuilder();
@@ -218,15 +213,14 @@ public class JmsUtil
         return processedTopic;
     }
 
-    private static char convertWildcardJmsToMqtt(char c)
-    {
+    private static char convertWildcardJmsToMqtt(char c) {
         switch (c) {
-            case '.':
-                return '/';
-            case '/':
-                return '.';
-            default:
-                return c;
+        case '.':
+            return '/';
+        case '/':
+            return '.';
+        default:
+            return c;
         }
     }
 
@@ -236,12 +230,11 @@ public class JmsUtil
      * separator . /
      * element * +
      * sub tree &gt; #
-     * 
+     *
      * @param mqttTopic
      * @return
      */
-    public static String convertMqttWildCardToJms(String mqttTopic)
-    {
+    public static String convertMqttWildCardToJms(String mqttTopic) {
         String processedTopic = null;
         if (mqttTopic != null) {
             StringBuilder sb = new StringBuilder();
@@ -253,15 +246,14 @@ public class JmsUtil
         return processedTopic;
     }
 
-    private static char convertWildcardMqttToJms(char c)
-    {
+    private static char convertWildcardMqttToJms(char c) {
         switch (c) {
-            case '.':
-                return '/';
-            case '/':
-                return '.';
-            default:
-                return c;
+        case '.':
+            return '/';
+        case '/':
+            return '.';
+        default:
+            return c;
         }
     }
 
