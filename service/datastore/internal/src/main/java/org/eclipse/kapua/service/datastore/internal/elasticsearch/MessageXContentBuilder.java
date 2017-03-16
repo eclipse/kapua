@@ -21,6 +21,7 @@ import java.util.UUID;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -32,70 +33,64 @@ import org.slf4j.LoggerFactory;
  * Message object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua message object (marshal).
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class MessageXContentBuilder
-{
+public class MessageXContentBuilder {
 
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(MessageXContentBuilder.class);
 
-    private StorableIdImpl  messageId;
-    private String          accountName;
-    private String          clientId;
-    private String          channel;
-    private String[]        channelParts;
-    private Date            timestamp;
-    private Date            indexedOn;
-    private Date            capturedOn;
-    private Date            receivedOn;
-    private Date            sentOn;
+    private StorableIdImpl messageId;
+    private KapuaId scopeId;
+    private String clientId;
+    private String channel;
+    private String[] channelParts;
+    private Date timestamp;
+    private Date indexedOn;
+    private Date capturedOn;
+    private Date receivedOn;
+    private Date sentOn;
     private XContentBuilder messageBuilder;
 
     private Map<String, EsMetric> metricMappings;
 
-    private void init()
-    {
+    private void init() {
 
         messageId = null;
         messageBuilder = null;
         metricMappings = null;
     }
 
-    private XContentBuilder build(KapuaMessage<?, ?> message, String messageId,
-                                  Date timestamp, Date indexedOn, Date receivedOn)
-        throws EsDocumentBuilderException
-    {
+    private XContentBuilder build(KapuaMessage<?, ?> message, String messageId, Date timestamp, Date indexedOn, Date receivedOn)
+            throws EsDocumentBuilderException {
         try {
             String accountIdStr = message.getScopeId() == null ? null : message.getScopeId().toCompactId();
             String deviceIdStr = message.getDeviceId() == null ? null : message.getDeviceId().toCompactId();
 
             XContentBuilder messageBuilder = XContentFactory.jsonBuilder()
-                                                            .startObject()
-                                                            .field(EsSchema.MESSAGE_TIMESTAMP, timestamp)
-                                                            .field(EsSchema.MESSAGE_RECEIVED_ON, receivedOn) // TODO Which field ??
-                                                            .field(EsSchema.MESSAGE_IP_ADDRESS, "127.0.0.1")
-                                                            .field(EsSchema.MESSAGE_ACCOUNT_ID, accountIdStr)
-                                                            .field(EsSchema.MESSAGE_ACCOUNT, this.getAccountName())
-                                                            .field(EsSchema.MESSAGE_DEVICE_ID, deviceIdStr)
-                                                            .field(EsSchema.MESSAGE_CLIENT_ID, this.getClientId())
-                                                            .field(EsSchema.MESSAGE_CHANNEL, this.getChannel())
-                                                            .field(EsSchema.MESSAGE_CHANNEL_PARTS, this.getChannelParts())
-                                                            .field(EsSchema.MESSAGE_CAPTURED_ON, message.getCapturedOn())
-                                                            .field(EsSchema.MESSAGE_SENT_ON, message.getSentOn());
+                    .startObject()
+                    .field(EsSchema.MESSAGE_TIMESTAMP, timestamp)
+                    .field(EsSchema.MESSAGE_RECEIVED_ON, receivedOn) // TODO Which field ??
+                    .field(EsSchema.MESSAGE_IP_ADDRESS, "127.0.0.1")
+                    .field(EsSchema.MESSAGE_SCOPE_ID, accountIdStr)
+                    .field(EsSchema.MESSAGE_DEVICE_ID, deviceIdStr)
+                    .field(EsSchema.MESSAGE_CLIENT_ID, this.getClientId())
+                    .field(EsSchema.MESSAGE_CHANNEL, this.getChannel())
+                    .field(EsSchema.MESSAGE_CHANNEL_PARTS, this.getChannelParts())
+                    .field(EsSchema.MESSAGE_CAPTURED_ON, message.getCapturedOn())
+                    .field(EsSchema.MESSAGE_SENT_ON, message.getSentOn());
 
             KapuaPosition kapuaPosition = message.getPosition();
             if (kapuaPosition != null) {
 
                 Map<String, Object> location = null;
                 if (kapuaPosition.getLongitude() != null && kapuaPosition.getLatitude() != null) {
-                    location = new HashMap<String, Object>();
+                    location = new HashMap<>();
                     location.put("lon", kapuaPosition.getLongitude());
                     location.put("lat", kapuaPosition.getLatitude());
                 }
 
-                Map<String, Object> position = new HashMap<String, Object>();
+                Map<String, Object> position = new HashMap<>();
                 position.put(EsSchema.MESSAGE_POS_LOCATION, location);
                 position.put(EsSchema.MESSAGE_POS_ALT, kapuaPosition.getAltitude());
                 position.put(EsSchema.MESSAGE_POS_PRECISION, kapuaPosition.getPrecision());
@@ -115,12 +110,12 @@ public class MessageXContentBuilder
 
             messageBuilder.field(EsSchema.MESSAGE_BODY, payload.getBody());
 
-            Map<String, EsMetric> metricMappings = new HashMap<String, EsMetric>();
+            Map<String, EsMetric> metricMappings = new HashMap<>();
 
             Map<String, Object> kapuaMetrics = payload.getProperties();
             if (kapuaMetrics != null) {
 
-                Map<String, Object> metrics = new HashMap<String, Object>();
+                Map<String, Object> metrics = new HashMap<>();
                 String[] metricNames = kapuaMetrics.keySet().toArray(new String[] {});
                 for (String kapuaMetricName : metricNames) {
 
@@ -134,7 +129,7 @@ public class MessageXContentBuilder
                     esMetric.setName(esMetricName);
                     esMetric.setType(esType);
 
-                    Map<String, Object> field = new HashMap<String, Object>();
+                    Map<String, Object> field = new HashMap<>();
                     field.put(esTypeAcronim, metricValue);
                     metrics.put(esMetricName, field);
 
@@ -149,9 +144,8 @@ public class MessageXContentBuilder
 
             this.setMetricMappings(metricMappings);
             return messageBuilder;
-        }
-        catch (IOException e) {
-            throw new EsDocumentBuilderException(String.format("Unable to build message document"), e);
+        } catch (IOException e) {
+            throw new EsDocumentBuilderException("Unable to build message document", e);
         }
     }
 
@@ -160,8 +154,7 @@ public class MessageXContentBuilder
      * 
      * @return
      */
-    public MessageXContentBuilder clear()
-    {
+    public MessageXContentBuilder clear() {
         this.init();
         return this;
     }
@@ -175,24 +168,23 @@ public class MessageXContentBuilder
      * @param receivedOn
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
-    public MessageXContentBuilder build(String account, KapuaMessage<?, ?> message, Date indexedOn, Date receivedOn)
-        throws EsDocumentBuilderException
-    {
+    public MessageXContentBuilder build(KapuaId scopeId, KapuaMessage<?, ?> message, Date indexedOn, Date receivedOn)
+            throws EsDocumentBuilderException {
         StorableId messageId;
         UUID uuid = UUID.randomUUID();
         messageId = new StorableIdImpl(uuid.toString());
 
-        this.setAccountName(account);
+        this.setScopeId(scopeId);
         this.setClientId(message.getClientId());
 
         List<String> parts = message.getChannel().getSemanticParts();
         this.setChannel(DatastoreChannel.getChannel(parts));
         this.setChannelParts(parts.toArray(new String[] {}));
 
-        XContentBuilder messageBuilder;
-        messageBuilder = this.build(message, messageId.toString(),
-                                    indexedOn, indexedOn, receivedOn);
+        XContentBuilder messageBuilder = this.build(message, messageId.toString(), indexedOn, indexedOn, receivedOn);
 
         this.setTimestamp(indexedOn);
         this.setIndexedOn(indexedOn);
@@ -209,9 +201,10 @@ public class MessageXContentBuilder
      * Get the message identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public StorableId getMessageId()
-    {
+    public StorableId getMessageId() {
         return messageId;
     }
 
@@ -219,9 +212,10 @@ public class MessageXContentBuilder
      * Set the message identifier
      * 
      * @param esMessageId
+     * 
+     * @since 1.0.0
      */
-    private void setMessageId(StorableId esMessageId)
-    {
+    private void setMessageId(StorableId esMessageId) {
         this.messageId = (StorableIdImpl) esMessageId;
     }
 
@@ -229,29 +223,32 @@ public class MessageXContentBuilder
      * Get the account name
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getAccountName()
-    {
-        return accountName;
+    public KapuaId getScopeId() {
+        return scopeId;
     }
 
     /**
      * Set the account name
      * 
-     * @param accountName
+     * @param scopeId
+     * 
+     * @since 1.0.0
      */
-    public void setAccountName(String accountName)
-    {
-        this.accountName = accountName;
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     /**
      * Get the client identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
@@ -259,9 +256,10 @@ public class MessageXContentBuilder
      * Set the client identifier
      * 
      * @param clientId
+     * 
+     * @since 1.0.0
      */
-    private void setClientId(String clientId)
-    {
+    private void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -269,9 +267,10 @@ public class MessageXContentBuilder
      * Get the channel
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getChannel()
-    {
+    public String getChannel() {
         return channel;
     }
 
@@ -279,9 +278,10 @@ public class MessageXContentBuilder
      * Set the channel
      * 
      * @param channel
+     * 
+     * @since 1.0.0
      */
-    private void setChannel(String channel)
-    {
+    private void setChannel(String channel) {
         this.channel = channel;
     }
 
@@ -289,9 +289,10 @@ public class MessageXContentBuilder
      * Get the channel parts
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String[] getChannelParts()
-    {
+    public String[] getChannelParts() {
         return channelParts;
     }
 
@@ -299,9 +300,10 @@ public class MessageXContentBuilder
      * Set the channel parts
      * 
      * @param channelParts
+     * 
+     * @since 1.0.0
      */
-    private void setChannelParts(String[] channelParts)
-    {
+    private void setChannelParts(String[] channelParts) {
         this.channelParts = channelParts;
     }
 
@@ -309,9 +311,10 @@ public class MessageXContentBuilder
      * Get the message timestamp
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -319,9 +322,10 @@ public class MessageXContentBuilder
      * Set the message timestamp
      * 
      * @param timestamp
+     * 
+     * @since 1.0.0
      */
-    private void setTimestamp(Date timestamp)
-    {
+    private void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -329,9 +333,10 @@ public class MessageXContentBuilder
      * Get the message indexed on date
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getIndexedOn()
-    {
+    public Date getIndexedOn() {
         return indexedOn;
     }
 
@@ -339,9 +344,10 @@ public class MessageXContentBuilder
      * Set the message indexed on date
      * 
      * @param indexedOn
+     * 
+     * @since 1.0.0
      */
-    private void setIndexedOn(Date indexedOn)
-    {
+    private void setIndexedOn(Date indexedOn) {
         this.indexedOn = indexedOn;
     }
 
@@ -349,19 +355,21 @@ public class MessageXContentBuilder
      * Get the message received on date
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getReceivedOn()
-    {
+    public Date getReceivedOn() {
         return receivedOn;
     }
 
     /**
      * Set the received on date
      * 
-     * @param message receivedOn
+     * @param receivedOn
+     * 
+     * @since 1.0.0
      */
-    private void setReceivedOn(Date receivedOn)
-    {
+    private void setReceivedOn(Date receivedOn) {
         this.receivedOn = receivedOn;
     }
 
@@ -369,9 +377,10 @@ public class MessageXContentBuilder
      * Get the message captured on date
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getCapturedOn()
-    {
+    public Date getCapturedOn() {
         return capturedOn;
     }
 
@@ -379,9 +388,10 @@ public class MessageXContentBuilder
      * Set the message captured on date
      * 
      * @param capturedOn
+     * 
+     * @since 1.0.0
      */
-    public void setCapturedOn(Date capturedOn)
-    {
+    public void setCapturedOn(Date capturedOn) {
         this.capturedOn = capturedOn;
     }
 
@@ -389,9 +399,10 @@ public class MessageXContentBuilder
      * Get the message sent on date
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getSentOn()
-    {
+    public Date getSentOn() {
         return sentOn;
     }
 
@@ -399,9 +410,10 @@ public class MessageXContentBuilder
      * Set the message sent on date
      * 
      * @param sentOn
+     * 
+     * @since 1.0.0
      */
-    public void setSentOn(Date sentOn)
-    {
+    public void setSentOn(Date sentOn) {
         this.sentOn = sentOn;
     }
 
@@ -409,9 +421,10 @@ public class MessageXContentBuilder
      * Get the {@link XContentBuilder}
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public XContentBuilder getBuilder()
-    {
+    public XContentBuilder getBuilder() {
         return messageBuilder;
     }
 
@@ -419,9 +432,10 @@ public class MessageXContentBuilder
      * Set the {@link XContentBuilder}
      * 
      * @param esMessage
+     * 
+     * @since 1.0.0
      */
-    private void setBuilder(XContentBuilder esMessage)
-    {
+    private void setBuilder(XContentBuilder esMessage) {
         this.messageBuilder = esMessage;
     }
 
@@ -429,9 +443,10 @@ public class MessageXContentBuilder
      * Get the metrics map
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Map<String, EsMetric> getMetricMappings()
-    {
+    public Map<String, EsMetric> getMetricMappings() {
         return metricMappings;
     }
 
@@ -439,9 +454,10 @@ public class MessageXContentBuilder
      * Set the metrics map
      * 
      * @param metricMappings
+     * 
+     * @since 1.0.0
      */
-    private void setMetricMappings(Map<String, EsMetric> metricMappings)
-    {
+    private void setMetricMappings(Map<String, EsMetric> metricMappings) {
         this.metricMappings = metricMappings;
     }
 }

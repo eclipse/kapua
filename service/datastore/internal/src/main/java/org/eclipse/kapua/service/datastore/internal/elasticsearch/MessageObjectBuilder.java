@@ -34,11 +34,9 @@ import com.fasterxml.jackson.core.Base64Variants;
  * Message object builder.<br>
  * This object converts the schema coming from an Elasticsearch search hit to a Kapua message object (unmarshal).
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class MessageObjectBuilder
-{
+public class MessageObjectBuilder {
 
     private DatastoreMessage message;
 
@@ -49,12 +47,13 @@ public class MessageObjectBuilder
      * @param fetchStyle
      * @return
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public MessageObjectBuilder build(SearchHit searchHit, StorableFetchStyle fetchStyle)
-        throws EsObjectBuilderException
-    {
+            throws EsObjectBuilderException {
         Map<String, SearchHitField> searchHitFields = searchHit.getFields();
-        String accountId = searchHitFields.get(EsSchema.MESSAGE_ACCOUNT_ID).getValue();
+        String accountId = searchHitFields.get(EsSchema.MESSAGE_SCOPE_ID).getValue();
         String deviceId = searchHitFields.get(EsSchema.MESSAGE_DEVICE_ID).getValue();
         String clientId = searchHitFields.get(EsSchema.MESSAGE_CLIENT_ID).getValue();
 
@@ -184,9 +183,10 @@ public class MessageObjectBuilder
      * Get the built Kapua message object
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public DatastoreMessage getMessage()
-    {
+    public DatastoreMessage getMessage() {
         return message;
     }
 }

@@ -14,6 +14,9 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
@@ -21,6 +24,7 @@ import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.IdsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.ExistsQueryBuilder;
@@ -30,27 +34,53 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 
+import com.google.common.base.Strings;
+
 /**
  * Query predicate converter from Kapua abstraction layer to Elasticsearch domain.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class PredicateConverter
-{
+public class PredicateConverter {
+
+    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+
+    /**
+     * Converts the Kapua {@link StorablePredicate}s in the {@link StorableQuery} parameter in Elasticsearch {@link QueryBuilder}.
+     * 
+     * @param query
+     *            The {@link StorableQuery} the contains the {@link StorablePredicate}s to convert.
+     * @return The converted {@link QueryBuilder}.
+     * 
+     * @throws EsQueryConversionException
+     * @since 1.0.0
+     */
+    public static QueryBuilder convertQueryPredicates(StorableQuery<?> query)
+            throws EsQueryConversionException {
+
+        //
+        // Force the ScopeId predicate in order to partition data by it.
+        AndPredicate andPredicate = new AndPredicateImpl();
+        andPredicate.getPredicates().add(datastoreObjectFactory.newTermPredicate(ChannelInfoField.SCOPE_ID, query.getScopeId().toCompactId()));
+        andPredicate.getPredicates().add(query.getPredicate());
+
+        return toElasticsearchQuery(andPredicate);
+    }
 
     /**
      * Convert the Kapua {@link StorablePredicate} to Elasticsearch {@link QueryBuilder}
      * 
      * @param predicate
      * @return
-     * @throws EsQueryConversionException if the predicate is unknown or some exception is raised in the specific conversion operation
+     * @throws EsQueryConversionException
+     *             if the predicate is unknown or some exception is raised in the specific conversion operation
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(StorablePredicate predicate)
-        throws EsQueryConversionException
-    {
+    private static QueryBuilder toElasticsearchQuery(StorablePredicate predicate)
+            throws EsQueryConversionException {
         if (predicate == null)
-            throw new EsQueryConversionException(String.format("Predicate parameter is undefined"));
+            throw new EsQueryConversionException("Predicate parameter is undefined");
 
         if (predicate instanceof AndPredicate)
             return toElasticsearchQuery((AndPredicate) predicate);
@@ -70,7 +100,7 @@ public class PredicateConverter
         if (predicate instanceof ExistsPredicate)
             return toElasticsearchQuery((ExistsPredicate) predicate);
 
-        throw new EsQueryConversionException(String.format("Unknown predicate type %s", this.getClass().getName()));
+        throw new EsQueryConversionException(String.format("Unknown predicate type %s", predicate.getClass().getName()));
     }
 
     /**
@@ -79,13 +109,14 @@ public class PredicateConverter
      * @param predicate
      * @return
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(AndPredicate predicate)
-        throws EsQueryConversionException
-    {
+    private static QueryBuilder toElasticsearchQuery(AndPredicate predicate)
+            throws EsQueryConversionException {
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
         for (StorablePredicate subPredicate : predicate.getPredicates())
-            boolQuery.must(this.toElasticsearchQuery(subPredicate));
+            boolQuery.must(toElasticsearchQuery(subPredicate));
 
         return boolQuery;
     }
@@ -96,10 +127,11 @@ public class PredicateConverter
      * @param predicate
      * @return
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(IdsPredicate predicate)
-        throws EsQueryConversionException
-    {
+    private static QueryBuilder toElasticsearchQuery(IdsPredicate predicate)
+            throws EsQueryConversionException {
         if (predicate == null)
             throw new EsQueryConversionException(String.format("Predicate parameter is undefined"));
 
@@ -119,35 +151,21 @@ public class PredicateConverter
      * @param predicate
      * @return
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(ChannelMatchPredicate predicate)
-        throws EsQueryConversionException
-    {
-        if (predicate == null)
-            throw new EsQueryConversionException(String.format("Predicate parameter is undefined"));
+    private static QueryBuilder toElasticsearchQuery(ChannelMatchPredicate predicate)
+            throws EsQueryConversionException {
+        if (predicate == null || Strings.isNullOrEmpty(predicate.getExpression()))
+            throw new EsQueryConversionException("Predicate parameter is undefined");
 
-        DatastoreChannel datastoreChannel = null;
-        try {
-            datastoreChannel = new DatastoreChannel(predicate.getExpression());
-        }
-        catch (EsInvalidChannelException e) {
-            throw new EsQueryConversionException(e);
-        }
-
+        String channelString = predicate.getExpression();
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-
-        if (!datastoreChannel.isAnyAccount())
-            boolQuery.must(QueryBuilders.termQuery(MessageField.ACCOUNT.field(), datastoreChannel.getAccount()));
-
-        if (!datastoreChannel.isAnyClientId())
-            boolQuery.must(QueryBuilders.termQuery(MessageField.CLIENT_ID.field(), datastoreChannel.getClientId()));
-
-        if (datastoreChannel.isWildcardChannel()) {
-            PrefixQueryBuilder prefixFilter = QueryBuilders.prefixQuery(MessageField.CHANNEL.field(), datastoreChannel.getChannel().substring(0, datastoreChannel.getChannel().length() - 1));
+        if (DatastoreChannel.isWildcardChannel(channelString)) {
+            PrefixQueryBuilder prefixFilter = QueryBuilders.prefixQuery(MessageField.CHANNEL.field(), channelString.substring(0, channelString.length() - 1));
             boolQuery.filter(prefixFilter);
-        }
-        else if (!datastoreChannel.isAnyChannel()) {
-            boolQuery.must(QueryBuilders.termQuery(MessageField.CHANNEL.field(), datastoreChannel.getChannel()));
+        } else if (!DatastoreChannel.isAnyChannel(channelString)) {
+            boolQuery.must(QueryBuilders.termQuery(MessageField.CHANNEL.field(), channelString));
         }
 
         return boolQuery;
@@ -159,12 +177,13 @@ public class PredicateConverter
      * @param predicate
      * @return
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(RangePredicate predicate)
-        throws EsQueryConversionException
-    {
+    private static QueryBuilder toElasticsearchQuery(RangePredicate predicate)
+            throws EsQueryConversionException {
         if (predicate == null)
-            throw new EsQueryConversionException(String.format("Predicate parameter is undefined"));
+            throw new EsQueryConversionException("Predicate parameter is undefined");
 
         RangeQueryBuilder rangeQuery = QueryBuilders.rangeQuery(predicate.getField().field());
         if (predicate.getMinValue() != null)
@@ -181,12 +200,13 @@ public class PredicateConverter
      * @param predicate
      * @return
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(TermPredicate predicate)
-        throws EsQueryConversionException
-    {
+    private static QueryBuilder toElasticsearchQuery(TermPredicate predicate)
+            throws EsQueryConversionException {
         if (predicate == null)
-            throw new EsQueryConversionException(String.format("Predicate parameter is undefined"));
+            throw new EsQueryConversionException("Predicate parameter is undefined");
 
         TermQueryBuilder termQuery = QueryBuilders.termQuery(predicate.getField().field(), predicate.getValue());
 
@@ -199,10 +219,11 @@ public class PredicateConverter
      * @param predicate
      * @return
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
-    public QueryBuilder toElasticsearchQuery(ExistsPredicate predicate)
-        throws EsQueryConversionException
-    {
+    private static QueryBuilder toElasticsearchQuery(ExistsPredicate predicate)
+            throws EsQueryConversionException {
         if (predicate == null)
             throw new EsQueryConversionException(String.format("Predicate parameter is undefined"));
 

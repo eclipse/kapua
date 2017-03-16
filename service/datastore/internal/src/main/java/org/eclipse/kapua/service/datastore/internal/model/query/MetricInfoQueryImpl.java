@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -18,19 +19,29 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 /**
  * Metric information query implementation
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class MetricInfoQueryImpl extends AbstractStorableQuery<MetricInfo> implements MetricInfoQuery
-{
+public class MetricInfoQueryImpl extends AbstractStorableQuery<MetricInfo> implements MetricInfoQuery {
+
+    /**
+     * Constructor.
+     * 
+     * @param scopeId
+     * 
+     * @since 1.0.0
+     */
+    public MetricInfoQueryImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
 
     /**
      * Create and keep a copy of the given query
      * 
      * @param query
+     * 
+     * @since 1.0.0
      */
-    public void copy(MetricInfoQuery query)
-    {
+    public void copy(MetricInfoQuery query) {
         super.copy(query);
         // Add copy for local members
     }

@@ -44,26 +44,25 @@ import org.slf4j.LoggerFactory;
 /**
  * Channel information registry facade
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ChannelInfoRegistryFacade
-{
+public class ChannelInfoRegistryFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(ChannelInfoRegistryFacade.class);
 
     private final ChannelInfoRegistryMediator mediator;
-    private final ConfigurationProvider       configProvider;
-    private final Object                      metadataUpdateSync;
+    private final ConfigurationProvider configProvider;
+    private final Object metadataUpdateSync;
 
     /**
      * Constructs the channel info registry facade
      * 
      * @param configProvider
      * @param mediator
+     * 
+     * @since 1.0.0
      */
-    public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator)
-    {
+    public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator) {
         this.configProvider = configProvider;
         this.mediator = mediator;
         this.metadataUpdateSync = new Object();
@@ -79,20 +78,21 @@ public class ChannelInfoRegistryFacade
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
+     * 
+     * @since 1.0.0
      */
-    public StorableId upstore(KapuaId scopeId, ChannelInfo channelInfo)
-        throws KapuaIllegalArgumentException,
-        EsDocumentBuilderException,
-        EsClientUnavailableException,
-        EsConfigurationException
-    {
+    public StorableId upstore(ChannelInfo channelInfo)
+            throws KapuaIllegalArgumentException,
+            EsDocumentBuilderException,
+            EsClientUnavailableException,
+            EsConfigurationException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(channelInfo, "channelInfoCreator");
+        ArgumentValidator.notNull(channelInfo.getScopeId(), "channelInfoCreator.scopeId");
         ArgumentValidator.notNull(channelInfo.getChannel(), "channelInfoCreator.getChannel");
-        ArgumentValidator.notNull(channelInfo.getFirstPublishedMessageId(), "channelInfoCreator.messageId");
-        ArgumentValidator.notNull(channelInfo.getFirstPublishedMessageTimestamp(), "channelInfoCreator.messageTimestamp");
+        ArgumentValidator.notNull(channelInfo.getFirstMessageId(), "channelInfoCreator.messageId");
+        ArgumentValidator.notNull(channelInfo.getFirstMessageOn(), "channelInfoCreator.messageTimestamp");
 
         String channelInfoId = ChannelInfoXContentBuilder.getOrDeriveId(channelInfo.getId(), channelInfo);
 
@@ -107,22 +107,23 @@ public class ChannelInfoRegistryFacade
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
                     UpdateResponse response = null;
                     try {
-                        Metadata metadata = this.mediator.getMetadata(scopeId, channelInfo.getFirstPublishedMessageTimestamp().getTime());
+                        Metadata metadata = this.mediator.getMetadata(channelInfo.getScopeId(),
+                                channelInfo.getFirstMessageOn().getTime());
+
                         String kapuaIndexName = metadata.getKapuaIndexName();
 
                         response = EsChannelInfoDAO.getInstance()
-                                                   .index(metadata.getKapuaIndexName())
-                                                   .upsert(channelInfo);
+                                .index(metadata.getKapuaIndexName())
+                                .upsert(channelInfo);
 
                         channelInfoId = response.getId();
 
                         logger.debug(String.format("Upsert on channel succesfully executed [%s.%s, %s]",
-                                                   kapuaIndexName, EsSchema.CHANNEL_TYPE_NAME, channelInfoId));
+                                kapuaIndexName, EsSchema.CHANNEL_TYPE_NAME, channelInfoId));
 
-                    }
-                    catch (DocumentAlreadyExistsException exc) {
+                    } catch (DocumentAlreadyExistsException exc) {
                         logger.trace(String.format("Upsert failed because channel already exists [%s, %s]",
-                                                   channelInfoId, exc.getMessage()));
+                                channelInfoId, exc.getMessage()));
                     }
                     // Update cache if channel update is completed successfully
                     DatastoreCacheManager.getInstance().getChannelsCache().put(channelInfoId, true);
@@ -142,14 +143,15 @@ public class ChannelInfoRegistryFacade
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaIllegalArgumentException,
-        EsClientUnavailableException,
-        EsConfigurationException,
-        EsQueryConversionException,
-        EsObjectBuilderException
-    {
+            throws KapuaIllegalArgumentException,
+            EsClientUnavailableException,
+            EsConfigurationException,
+            EsQueryConversionException,
+            EsObjectBuilderException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -157,7 +159,7 @@ public class ChannelInfoRegistryFacade
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -167,13 +169,13 @@ public class ChannelInfoRegistryFacade
 
         String indexName = EsSchema.getKapuaIndexName(scopeId);
 
-        ChannelInfo channelInfo = this.find(scopeId, id);
+        ChannelInfo channelInfo = find(scopeId, id);
 
-        this.mediator.onBeforeChannelInfoDelete(scopeId, channelInfo);
+        mediator.onBeforeChannelInfoDelete(channelInfo);
 
         EsChannelInfoDAO.getInstance()
-                        .index(indexName)
-                        .deleteById(id.toString());
+                .index(indexName)
+                .deleteById(id.toString());
     }
 
     /**
@@ -187,34 +189,31 @@ public class ChannelInfoRegistryFacade
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public ChannelInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsClientUnavailableException,
-        EsQueryConversionException,
-        EsObjectBuilderException
-    {
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsClientUnavailableException,
+            EsQueryConversionException,
+            EsObjectBuilderException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
-        ChannelInfoQueryImpl q = new ChannelInfoQueryImpl();
-        q.setLimit(1);
+        ChannelInfoQueryImpl query = new ChannelInfoQueryImpl(scopeId);
+        query.setLimit(1);
 
-        ArrayList<StorableId> ids = new ArrayList<StorableId>();
+        ArrayList<StorableId> ids = new ArrayList<>();
         ids.add(id);
 
         AndPredicateImpl allPredicates = new AndPredicateImpl();
         allPredicates.addPredicate(new IdsPredicateImpl(EsSchema.CHANNEL_TYPE_NAME, ids));
 
-        ChannelInfoListResult result = this.query(scopeId, q);
-        if (result == null || result.size() == 0)
-            return null;
-
-        ChannelInfo channelInfo = result.get(0);
-        return channelInfo;
+        ChannelInfoListResult result = query(query);
+        return result.getFirstItem();
     }
 
     /**
@@ -228,36 +227,34 @@ public class ChannelInfoRegistryFacade
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
-    public ChannelInfoListResult query(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsClientUnavailableException,
-        EsQueryConversionException,
-        EsObjectBuilderException
-    {
+    public ChannelInfoListResult query(ChannelInfoQuery query)
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsClientUnavailableException,
+            EsQueryConversionException,
+            EsObjectBuilderException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", scopeId);
+            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new ChannelInfoListResultImpl();
         }
 
-        String indexName = EsSchema.getKapuaIndexName(scopeId);
-        ChannelInfoListResult result = null;
-        result = EsChannelInfoDAO.getInstance()
-                                 .index(indexName)
-                                 .query(query);
-
-        return result;
+        String indexName = EsSchema.getKapuaIndexName(query.getScopeId());
+        return EsChannelInfoDAO.getInstance()
+                .index(indexName)
+                .query(query);
     }
 
     /**
@@ -270,35 +267,33 @@ public class ChannelInfoRegistryFacade
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public long count(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsQueryConversionException,
-        EsClientUnavailableException
-    {
+    public long count(ChannelInfoQuery query)
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsQueryConversionException,
+            EsClientUnavailableException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", scopeId);
+            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
 
-        String indexName = EsSchema.getKapuaIndexName(scopeId);
-        long result;
-        result = EsChannelInfoDAO.getInstance()
-                                 .index(indexName)
-                                 .count(query);
-
-        return result;
+        String indexName = EsSchema.getKapuaIndexName(query.getScopeId());
+        return EsChannelInfoDAO.getInstance()
+                .index(indexName)
+                .count(query);
     }
 
     /**
@@ -311,40 +306,42 @@ public class ChannelInfoRegistryFacade
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
-    public void delete(KapuaId scopeId, ChannelInfoQuery query)
-        throws KapuaIllegalArgumentException,
-        EsQueryConversionException,
-        EsClientUnavailableException,
-        EsConfigurationException,
-        EsObjectBuilderException
-    {
+    public void delete(ChannelInfoQuery query)
+            throws KapuaIllegalArgumentException,
+            EsQueryConversionException,
+            EsClientUnavailableException,
+            EsConfigurationException,
+            EsObjectBuilderException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, skipping delete", scopeId);
+            logger.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
 
-        String indexName = EsSchema.getKapuaIndexName(scopeId);
+        String indexName = EsSchema.getKapuaIndexName(query.getScopeId());
 
-        ChannelInfoListResult channels = this.query(scopeId, query);
+        ChannelInfoListResult channels = query(query);
 
         // TODO Improve performances
-        for (ChannelInfo channelInfo : channels)
-            this.mediator.onBeforeChannelInfoDelete(scopeId, channelInfo);
+        for (ChannelInfo channelInfo : channels.getItems()) {
+            mediator.onBeforeChannelInfoDelete(channelInfo);
+        }
 
         EsChannelInfoDAO.getInstance()
-                        .index(indexName)
-                        .deleteByQuery(query);
+                .index(indexName)
+                .deleteByQuery(query);
     }
 
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -30,35 +31,30 @@ import com.google.common.hash.Hashing;
  * Client information object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua client information object (marshal).
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ClientInfoXContentBuilder
-{
+public class ClientInfoXContentBuilder {
 
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(ClientInfoXContentBuilder.class);
 
-    private String          clientId;
+    private String clientId;
     private XContentBuilder clientBuilder;
 
-    private void init()
-    {
+    private void init() {
         clientId = null;
         clientBuilder = null;
     }
 
-    private static String getHashCode(String aString)
-    {
+    private static String getHashCode(String aString) {
         byte[] hashCode = Hashing.sha256()
-                                 .hashString(aString, StandardCharsets.UTF_8)
-                                 .asBytes();
+                .hashString(aString, StandardCharsets.UTF_8)
+                .asBytes();
 
         return Base64.encodeBytes(hashCode);
     }
 
-    private void setClientBuilder(XContentBuilder esClient)
-    {
+    private void setClientBuilder(XContentBuilder esClient) {
         this.clientBuilder = esClient;
     }
 
@@ -67,16 +63,14 @@ public class ClientInfoXContentBuilder
      * <b>If the id is null then it is generated</b>
      * 
      * @param id
-     * @param accountName
+     * @param scopeId
      * @param clientId
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static String getOrDeriveId(StorableId id, String accountName, String clientId)
-    {
-        if (id == null)
-            return getClientKey(accountName, clientId);
-        else
-            return id.toString();
+    public static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId) {
+        return id == null ? getClientKey(scopeId, clientId) : id.toString();
     }
 
     /**
@@ -85,12 +79,12 @@ public class ClientInfoXContentBuilder
      * @param accountName
      * @param clientName
      * @return
+     * 
+     * @since 1.0.0
      */
-    private static String getClientKey(String accountName, String clientName)
-    {
-        String clientFullName = String.format("%s/%s", accountName, clientName);
-        String clientHashCode = getHashCode(clientFullName);
-        return clientHashCode;
+    private static String getClientKey(KapuaId scopeId, String clientName) {
+        String clientFullName = String.format("%s/%s", scopeId.toStringId(), clientName);
+        return getHashCode(clientFullName);
     }
 
     /**
@@ -102,22 +96,21 @@ public class ClientInfoXContentBuilder
      * @param account
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
-    private XContentBuilder getClientBuilder(String clientId, String msgId, Date msgTimestamp, String account)
-        throws EsDocumentBuilderException
-    {
+    private XContentBuilder getClientBuilder(String clientId, String msgId, Date msgTimestamp, KapuaId scopeId)
+            throws EsDocumentBuilderException {
         try {
-            XContentBuilder builder = XContentFactory.jsonBuilder()
-                                                     .startObject()
-                                                     .field(EsSchema.CLIENT_ID, clientId)
-                                                     .field(EsSchema.CLIENT_MESSAGE_ID, msgId)
-                                                     .field(EsSchema.CLIENT_TIMESTAMP, msgTimestamp)
-                                                     .field(EsSchema.CLIENT_ACCOUNT, account)
-                                                     .endObject();
-            return builder;
-        }
-        catch (IOException e) {
-            throw new EsDocumentBuilderException(String.format("Unable to build client info document"), e);
+            return XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field(EsSchema.CLIENT_ID, clientId)
+                    .field(EsSchema.CLIENT_MESSAGE_ID, msgId)
+                    .field(EsSchema.CLIENT_TIMESTAMP, msgTimestamp)
+                    .field(EsSchema.CLIENT_SCOPE_ID, scopeId.toCompactId())
+                    .endObject();
+        } catch (IOException e) {
+            throw new EsDocumentBuilderException("Unable to build client info document", e);
         }
     }
 
@@ -125,9 +118,10 @@ public class ClientInfoXContentBuilder
      * Initialize (clean all the instance field) and return the {@link ClientInfoXContentBuilder}
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public ClientInfoXContentBuilder clear()
-    {
+    public ClientInfoXContentBuilder clear() {
         this.init();
         return this;
     }
@@ -138,19 +132,19 @@ public class ClientInfoXContentBuilder
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public ClientInfoXContentBuilder build(ClientInfoCreator clientInfo)
-        throws EsDocumentBuilderException
-    {
-        String scopeName = clientInfo.getAccount();
+            throws EsDocumentBuilderException {
+        KapuaId scopeId = clientInfo.getScopeId();
         String clientId = clientInfo.getClientId();
         StorableId msgId = clientInfo.getMessageId();
         Date msgTimestamp = clientInfo.getMessageTimestamp();
 
-        XContentBuilder clientBuilder;
-        clientBuilder = this.getClientBuilder(clientId, msgId.toString(), msgTimestamp, scopeName);
+        XContentBuilder clientBuilder = this.getClientBuilder(clientId, msgId.toString(), msgTimestamp, scopeId);
 
-        this.setClientId(getClientKey(scopeName, clientId));
+        this.setClientId(getClientKey(scopeId, clientId));
         this.setClientBuilder(clientBuilder);
 
         return this;
@@ -162,18 +156,19 @@ public class ClientInfoXContentBuilder
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public ClientInfoXContentBuilder build(ClientInfo clientInfo)
-        throws EsDocumentBuilderException
-    {
-        String accountName = clientInfo.getAccount();
+            throws EsDocumentBuilderException {
+        KapuaId scopeId = clientInfo.getScopeId();
         String clientId = clientInfo.getClientId();
-        StorableId msgId = clientInfo.getFirstPublishedMessageId();
-        Date msgTimestamp = clientInfo.getFirstPublishedMessageTimestamp();
+        StorableId msgId = clientInfo.getFirstMessageId();
+        Date msgTimestamp = clientInfo.getFirstMessageOn();
 
-        clientBuilder = this.getClientBuilder(clientId, msgId.toString(), msgTimestamp, accountName);
+        clientBuilder = this.getClientBuilder(clientId, msgId.toString(), msgTimestamp, scopeId);
 
-        this.setClientId(getOrDeriveId(clientInfo.getId(), accountName, clientId));
+        this.setClientId(getOrDeriveId(clientInfo.getId(), scopeId, clientId));
         this.setClientBuilder(clientBuilder);
 
         return this;
@@ -183,9 +178,10 @@ public class ClientInfoXContentBuilder
      * Get the client identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
@@ -193,9 +189,10 @@ public class ClientInfoXContentBuilder
      * Set the client identifier
      * 
      * @param esClientId
+     * 
+     * @since 1.0.0
      */
-    private void setClientId(String esClientId)
-    {
+    private void setClientId(String esClientId) {
         this.clientId = esClientId;
     }
 
@@ -203,9 +200,10 @@ public class ClientInfoXContentBuilder
      * Get the content builder
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public XContentBuilder getClientBuilder()
-    {
+    public XContentBuilder getClientBuilder() {
         return clientBuilder;
     }
 }

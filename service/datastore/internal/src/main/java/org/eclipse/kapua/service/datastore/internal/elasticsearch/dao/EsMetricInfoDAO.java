@@ -16,8 +16,8 @@ import java.util.List;
 
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClientUnavailableException;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDocumentBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDatastoreException;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDocumentBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsObjectBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsQueryConversionException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
@@ -35,7 +35,6 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -49,11 +48,9 @@ import org.elasticsearch.search.SearchHits;
 /**
  * Metric information DAO
  *
- * @since 1.0
- * 
+ * @since 1.0.0
  */
-public class EsMetricInfoDAO
-{
+public class EsMetricInfoDAO {
 
     private EsTypeDAO esTypeDAO;
 
@@ -61,9 +58,10 @@ public class EsMetricInfoDAO
      * Default constructor
      * 
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public EsMetricInfoDAO() throws EsClientUnavailableException
-    {
+    public EsMetricInfoDAO() throws EsClientUnavailableException {
         esTypeDAO = new EsTypeDAO(ElasticsearchClient.getInstance());
     }
 
@@ -73,10 +71,11 @@ public class EsMetricInfoDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsMetricInfoDAO setListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.setListener(daoListener);
         return this;
     }
@@ -87,10 +86,11 @@ public class EsMetricInfoDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsMetricInfoDAO unsetListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.unsetListener(daoListener);
         return this;
     }
@@ -100,9 +100,10 @@ public class EsMetricInfoDAO
      * 
      * @return
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public static EsMetricInfoDAO getInstance() throws EsClientUnavailableException
-    {
+    public static EsMetricInfoDAO getInstance() throws EsClientUnavailableException {
         return new EsMetricInfoDAO();
     }
 
@@ -111,9 +112,10 @@ public class EsMetricInfoDAO
      * 
      * @param indexName
      * @return
+     * 
+     * @since 1.0.0
      */
-    public EsMetricInfoDAO index(String indexName)
-    {
+    public EsMetricInfoDAO index(String indexName) {
         this.esTypeDAO.type(indexName, EsSchema.METRIC_TYPE_NAME);
         return this;
     }
@@ -124,17 +126,18 @@ public class EsMetricInfoDAO
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(MetricInfoCreator metricInfoCreator)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
-        MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getAccount(), new StorableIdImpl(id));
+        MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setClientId(metricInfoCreator.getClientId());
         metricInfo.setChannel(metricInfoCreator.getChannel());
-        metricInfo.setFirstPublishedMessageId(metricInfoCreator.getMessageId());
-        metricInfo.setFirstPublishedMessageTimestamp(metricInfoCreator.getMessageTimestamp());
+        metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
+        metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
         metricInfo.setType(metricInfoCreator.getType());
         metricInfo.setValue(metricInfoCreator.getValue(Object.class));
@@ -147,10 +150,11 @@ public class EsMetricInfoDAO
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(MetricInfo metricInfo)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         MetricInfoXContentBuilder builder = new MetricInfoXContentBuilder();
         builder.build(metricInfo);
         List<MetricXContentBuilder> metricBuilders = builder.getBuilders();
@@ -162,9 +166,10 @@ public class EsMetricInfoDAO
      * 
      * @param esChannelMetric
      * @return
+     * 
+     * @since 1.0.0
      */
-    public UpdateRequest getUpsertRequest(MetricXContentBuilder esChannelMetric)
-    {
+    public UpdateRequest getUpsertRequest(MetricXContentBuilder esChannelMetric) {
         return this.esTypeDAO.getUpsertRequest(esChannelMetric.getId(), esChannelMetric.getContent());
     }
 
@@ -174,16 +179,17 @@ public class EsMetricInfoDAO
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse upsert(MetricInfoCreator metricInfoCreator)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
-        MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getAccount(), new StorableIdImpl(id));
+        MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setChannel(metricInfoCreator.getChannel());
-        metricInfo.setFirstPublishedMessageId(metricInfoCreator.getMessageId());
-        metricInfo.setFirstPublishedMessageTimestamp(metricInfoCreator.getMessageTimestamp());
+        metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
+        metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
         metricInfo.setType(metricInfoCreator.getType());
         metricInfo.setValue(metricInfoCreator.getValue(Object.class));
@@ -196,10 +202,11 @@ public class EsMetricInfoDAO
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse upsert(MetricInfo metricInfo)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         MetricInfoXContentBuilder docBuilder = new MetricInfoXContentBuilder().build(metricInfo);
         List<MetricXContentBuilder> metricInfos = docBuilder.getBuilders();
         return esTypeDAO.upsert(metricInfos.get(0).getId(), metricInfos.get(0).getContent());
@@ -210,79 +217,27 @@ public class EsMetricInfoDAO
      * 
      * @param esChannelMetric
      * @return
+     * 
+     * @since 1.0.0
      */
-    public UpdateResponse upsert(MetricXContentBuilder esChannelMetric)
-    {
+    public UpdateResponse upsert(MetricXContentBuilder esChannelMetric) {
         return esTypeDAO.upsert(esChannelMetric.getId(), esChannelMetric.getContent());
     }
-    //
-    // public void deleteByQuery(BoolQueryBuilder boolQuery)
-    // {
-    // this.esTypeDAO.deleteByQuery(boolQuery);
-    // }
-    //
-    // public BoolQueryBuilder getQueryByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic)
-    // {
-    //
-    // // Asset clauses
-    // QueryBuilder assetQuery = null;
-    // if (!isAnyAsset) {
-    // assetQuery = QueryBuilders.termQuery(EsSchema.METRIC_ASSET, asset);
-    // }
-    //
-    // // Topic clauses
-    // QueryBuilder topicQuery = null;
-    // if (isAnySubtopic) {
-    // topicQuery = QueryBuilders.prefixQuery(EsSchema.METRIC_SEM_NAME, semTopic);
-    // }
-    // else {
-    // topicQuery = QueryBuilders.termQuery(EsSchema.METRIC_SEM_NAME, semTopic);
-    // }
-    //
-    // // Composite clause
-    // BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-    // if (assetQuery != null)
-    // boolQuery.must(assetQuery);
-    // boolQuery.must(topicQuery);
-    // //
-    //
-    // return boolQuery;
-    // }
-    //
-    // public BoolQueryBuilder getQueryByTopicAndDate(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // long start,
-    // long end)
-    // {
-    //
-    // // Composite clause
-    // BoolQueryBuilder boolQuery = this.getQueryByTopic(asset, isAnyAsset, semTopic, isAnySubtopic);
-    // //
-    // // Timestamp clauses
-    // QueryBuilder dateQuery = QueryBuilders.rangeQuery(EsSchema.METRIC_MTR_TIMESTAMP).from(start).to(end);
-    // boolQuery.must(dateQuery);
-    //
-    // return boolQuery;
-    // }
 
     /**
      * Delete query action (delete document from the database by id)
      * 
      * @param id
+     * 
+     * @since 1.0.0
      */
-    public void deleteById(String id)
-    {
+    public void deleteById(String id) {
 
         esTypeDAO.getClient().prepareDelete()
-                 .setIndex(esTypeDAO.getIndexName())
-                 .setType(esTypeDAO.getTypeName())
-                 .setId(id)
-                 .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
+                .setIndex(esTypeDAO.getIndexName())
+                .setType(esTypeDAO.getTypeName())
+                .setId(id)
+                .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
     }
 
     /**
@@ -290,55 +245,13 @@ public class EsMetricInfoDAO
      * 
      * @param query
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
     public void deleteByQuery(MetricInfoQuery query)
-        throws EsQueryConversionException
-    {
-        StorablePredicate predicate = query.getPredicate();
-        PredicateConverter pc = new PredicateConverter();
-        this.esTypeDAO.deleteByQuery(pc.toElasticsearchQuery(predicate));
+            throws EsQueryConversionException {
+        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
-    //
-    // public void deleteByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic)
-    // {
-    //
-    // // Asset clauses
-    // BoolQueryBuilder boolQuery = this.getQueryByTopic(asset, isAnyAsset, semTopic, isAnySubtopic);
-    // this.esTypeDAO.deleteByQuery(boolQuery);
-    // }
-    //
-    // public void deleteByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // long start,
-    // long end)
-    // {
-    //
-    // // Asset clauses
-    // BoolQueryBuilder boolQuery = this.getQueryByTopicAndDate(asset, isAnyAsset, semTopic, isAnySubtopic, start, end);
-    // this.esTypeDAO.deleteByQuery(boolQuery);
-    // }
-    //
-    // public void deleteByAccount(String accountName, long start, long end)
-    // throws KapuaInvalidTopicException
-    // {
-    //
-    // KapuaTopic topic = new KapuaTopic(accountName, KapuaTopic.SINGLE_LEVEL_WCARD, KapuaTopic.MULTI_LEVEL_WCARD);
-    // String asset = topic.getAsset();
-    // boolean anyAsset = KapuaTopic.SINGLE_LEVEL_WCARD.equals(asset);
-    // String semTopic = topic.getSemanticTopic();
-    // boolean topicPrefix = KapuaTopic.MULTI_LEVEL_WCARD.equals(semTopic);
-    // if (topicPrefix) {
-    // semTopic = topic.getParentTopic();
-    // semTopic = semTopic == null ? "" : semTopic;
-    // }
-    //
-    // this.deleteByTopic(asset, anyAsset, semTopic, topicPrefix, start, end);
-    // }
 
     /**
      * Execute bulk request
@@ -346,8 +259,7 @@ public class EsMetricInfoDAO
      * @param aBulkRequest
      * @return
      */
-    public BulkResponse bulk(BulkRequest aBulkRequest)
-    {
+    public BulkResponse bulk(BulkRequest aBulkRequest) {
         return this.esTypeDAO.bulk(aBulkRequest);
     }
 
@@ -359,14 +271,15 @@ public class EsMetricInfoDAO
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public MetricInfoListResult query(MetricInfoQuery query)
-        throws EsQueryConversionException,
-        EsClientUnavailableException,
-        EsObjectBuilderException
-    {
+            throws EsQueryConversionException,
+            EsClientUnavailableException,
+            EsObjectBuilderException {
         // get one plus (if there is one) to later get the next key value
-        MetricInfoQueryImpl localQuery = new MetricInfoQueryImpl();
+        MetricInfoQueryImpl localQuery = new MetricInfoQueryImpl(query.getScopeId());
         localQuery.copy(query);
         localQuery.setLimit(query.getLimit() + 1);
 
@@ -381,7 +294,7 @@ public class EsMetricInfoDAO
         int i = 0;
         int searchHitsSize = searchHits.getHits().length;
 
-        List<MetricInfo> metricInfos = new ArrayList<MetricInfo>();
+        List<MetricInfo> metricInfos = new ArrayList<>();
         MetricInfoObjectBuilder metricInfoBuilder = new MetricInfoObjectBuilder();
         for (SearchHit searchHit : searchHits.getHits()) {
             if (i < query.getLimit()) {
@@ -399,7 +312,7 @@ public class EsMetricInfoDAO
         }
 
         MetricInfoListResult result = new MetricInfoListResultImpl(nextKey, (long) metricInfos.size());
-        result.addAll(metricInfos);
+        result.addItems(metricInfos);
 
         return result;
     }
@@ -411,11 +324,12 @@ public class EsMetricInfoDAO
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public long count(MetricInfoQuery query)
-        throws EsQueryConversionException,
-        EsClientUnavailableException
-    {
+            throws EsQueryConversionException,
+            EsClientUnavailableException {
         MetricInfoQueryConverter converter = new MetricInfoQueryConverter();
         SearchRequestBuilder builder = converter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), query);
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
@@ -426,33 +340,4 @@ public class EsMetricInfoDAO
 
         return searchHits.getTotalHits();
     }
-    //
-    // public SearchHits findByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // int offset,
-    // int limit)
-    // {
-    //
-    // long timeout = EsUtils.getQueryTimeout();
-    //
-    // BoolQueryBuilder topicQuery = this.getQueryByTopic(asset, isAnyAsset, semTopic, isAnySubtopic);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields(EsSchema.METRIC_MTR_NAME_FULL,
-    // EsSchema.METRIC_MTR_TYPE_FULL,
-    // EsSchema.METRIC_MTR_VALUE_FULL,
-    // EsSchema.METRIC_MTR_TIMESTAMP_FULL,
-    // EsSchema.METRIC_MTR_MSG_ID_FULL)
-    // .setQuery(topicQuery)
-    // .setFrom(offset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(timeout));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
 }

@@ -12,6 +12,9 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.kapua.service.datastore.model.Storable;
 import org.eclipse.kapua.service.datastore.model.StorableListResult;
@@ -19,21 +22,25 @@ import org.eclipse.kapua.service.datastore.model.StorableListResult;
 /**
  * Storable object list implementation
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  * @param <E>
  */
 @SuppressWarnings("serial")
-public class AbstractStorableListResult<E extends Storable> extends ArrayList<E> implements StorableListResult<E>
-{
+public class AbstractStorableListResult<E extends Storable> extends ArrayList<E> implements StorableListResult<E> {
+
+    private boolean limitExceeded;
+    private ArrayList<E> items;
     private Object nextKey;
-    private Long   totalCount;
+    private Long totalCount;
 
     /**
-     * Default constructor
+     * Default constructor.
+     * 
+     * @since 1.0.0
      */
-    public AbstractStorableListResult()
-    {
+    public AbstractStorableListResult() {
+        items = new ArrayList<>();
         nextKey = null;
         totalCount = null;
     }
@@ -42,11 +49,12 @@ public class AbstractStorableListResult<E extends Storable> extends ArrayList<E>
      * Construct a result list linking the next result list
      * 
      * @param nextKey
+     * 
+     * @since 1.0.0
      */
-    public AbstractStorableListResult(Object nextKey)
-    {
+    public AbstractStorableListResult(Object nextKey) {
+        this();
         this.nextKey = nextKey;
-        this.totalCount = null;
     }
 
     /**
@@ -54,22 +62,66 @@ public class AbstractStorableListResult<E extends Storable> extends ArrayList<E>
      * 
      * @param nextKeyOffset
      * @param totalCount
+     * 
+     * @since 1.0.0
      */
-    public AbstractStorableListResult(Object nextKeyOffset, Long totalCount)
-    {
+    public AbstractStorableListResult(Object nextKeyOffset, Long totalCount) {
         this(nextKeyOffset);
         this.totalCount = totalCount;
     }
 
     @Override
-    public Object getNextKey()
-    {
+    public boolean isLimitExceeded() {
+        return limitExceeded;
+    }
+
+    @Override
+    public void setLimitExceeded(boolean limitExceeded) {
+        this.limitExceeded = limitExceeded;
+    }
+
+    @Override
+    public E getItem(int index) {
+        return this.items.get(index);
+    }
+
+    @Override
+    public E getFirstItem() {
+        return this.isEmpty() ? null : getItem(0);
+    }
+
+    @Override
+    public int getSize() {
+        return this.items.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.items.isEmpty();
+    }
+
+    @Override
+    public List<E> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+
+    @Override
+    public void addItems(Collection<? extends E> items) {
+        this.items.addAll(items);
+    }
+
+    @Override
+    public void clearItems() {
+        this.items.clear();
+    }
+
+    @Override
+    public Object getNextKey() {
         return nextKey;
     }
 
     @Override
-    public Long getTotalCount()
-    {
+    public Long getTotalCount() {
         return totalCount;
     }
 }
