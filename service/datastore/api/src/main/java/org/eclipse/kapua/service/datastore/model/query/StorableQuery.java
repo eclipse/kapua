@@ -13,7 +13,12 @@ package org.eclipse.kapua.service.datastore.model.query;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.datastore.model.Storable;
 
 /**
@@ -28,14 +33,25 @@ import org.eclipse.kapua.service.datastore.model.Storable;
 public interface StorableQuery<S extends Storable> {
 
     /**
-     * Gets the scopeI id
+     * Gets the scope id
      * 
      * @return
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
 
+    /**
+     * Sets the scope id
+     * 
+     * @param scopeId
+     * 
+     * @since 1.0.0
+     */
+    public void setScopeId(KapuaId scopeId);
+    
     /**
      * Get the predicate
      * 
@@ -43,6 +59,7 @@ public interface StorableQuery<S extends Storable> {
      * 
      * @since 1.0.0
      */
+    @XmlTransient
     public StorablePredicate getPredicate();
 
     /**
@@ -61,6 +78,7 @@ public interface StorableQuery<S extends Storable> {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "offset")
     public int getOffset();
 
     /**
@@ -79,6 +97,7 @@ public interface StorableQuery<S extends Storable> {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "limit")
     public int getLimit();
 
     /**
@@ -97,6 +116,7 @@ public interface StorableQuery<S extends Storable> {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "askTotalCount")
     public boolean isAskTotalCount();
 
     /**
@@ -115,6 +135,7 @@ public interface StorableQuery<S extends Storable> {
      * 
      * @since 1.0.0
      */
+    @XmlTransient
     public StorableFetchStyle getFetchStyle();
 
     /**
@@ -133,6 +154,7 @@ public interface StorableQuery<S extends Storable> {
      * 
      * @since 1.0.0
      */
+    @XmlTransient
     public List<SortField> getSortFields();
 
     /**

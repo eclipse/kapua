@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.datastore;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -36,6 +37,15 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      */
     public ClientInfoQuery newClientInfoQuery(KapuaId scopeId);
 
+    /**
+     * Return a new client information query
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public ClientInfoListResult newClientInfoListResult();
+    
     /**
      * Return a new channel information query
      * 

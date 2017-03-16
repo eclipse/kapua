@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
+
 /**
  * Client information query result list definition.<br>
  * This object contains the list of the client information objects retrieved by the search service.
@@ -18,6 +23,8 @@ package org.eclipse.kapua.service.datastore.model;
  * @since 1.0
  *
  */
+@XmlRootElement(name = "clientInfos")
+@XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newClientInfoListResult")
 public interface ClientInfoListResult extends StorableListResult<ClientInfo>
 {
 
