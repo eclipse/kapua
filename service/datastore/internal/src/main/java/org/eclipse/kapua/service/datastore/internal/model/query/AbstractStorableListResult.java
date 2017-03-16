@@ -26,8 +26,7 @@ import org.eclipse.kapua.service.datastore.model.StorableListResult;
  *
  * @param <E>
  */
-@SuppressWarnings("serial")
-public class AbstractStorableListResult<E extends Storable> extends ArrayList<E> implements StorableListResult<E> {
+public class AbstractStorableListResult<E extends Storable> implements StorableListResult<E> {
 
     private boolean limitExceeded;
     private ArrayList<E> items;
