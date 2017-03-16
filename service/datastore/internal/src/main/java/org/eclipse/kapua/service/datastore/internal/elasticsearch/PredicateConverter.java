@@ -60,8 +60,11 @@ public class PredicateConverter {
         // Force the ScopeId predicate in order to partition data by it.
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(datastoreObjectFactory.newTermPredicate(ChannelInfoField.SCOPE_ID, query.getScopeId().toCompactId()));
-        andPredicate.getPredicates().add(query.getPredicate());
-
+        
+        if (query.getPredicate() != null) {
+            andPredicate.getPredicates().add(query.getPredicate());
+        }
+        
         return toElasticsearchQuery(andPredicate);
     }
 
