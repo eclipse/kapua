@@ -105,10 +105,12 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-account-internal</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>kapua-user-internal</artifactId>
-		</dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-internal</artifactId>
+        </dependency>
+		
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-security-shiro</artifactId>
@@ -145,6 +147,7 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-transport-test</artifactId>
 		</dependency>
+        
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-bundle-internal</artifactId>
@@ -161,6 +164,12 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-packages-internal</artifactId>
 		</dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-internal</artifactId>
+        </dependency>
+        
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
@@ -170,14 +179,14 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<!-- re-declare as provided as our web container will provide this -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 
 	</dependencies>
