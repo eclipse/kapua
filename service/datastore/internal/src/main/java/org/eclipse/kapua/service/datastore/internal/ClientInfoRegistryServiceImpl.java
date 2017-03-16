@@ -133,7 +133,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     public ClientInfoListResult query(ClientInfoQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "queryscopeId");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         checkAccess(query.getScopeId(), Actions.read);
 
