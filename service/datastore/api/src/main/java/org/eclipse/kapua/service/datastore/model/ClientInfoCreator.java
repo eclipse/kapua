@@ -13,25 +13,30 @@ package org.eclipse.kapua.service.datastore.model;
 
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
 /**
  * Client information schema creator definition
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface ClientInfoCreator extends StorableCreator<ClientInfo>
-{
+public interface ClientInfoCreator extends StorableCreator<ClientInfo> {
+
     /**
      * Get the account
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getAccount();
+    public KapuaId getScopeId();
 
     /**
      * Get the client identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getClientId();
 
@@ -39,6 +44,8 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo>
      * Set the client identifier
      * 
      * @param clientId
+     * 
+     * @since 1.0.0
      */
     public void setClientId(String clientId);
 
@@ -46,6 +53,8 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo>
      * Get the message identifier (of the first message published by this client)
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public StorableId getMessageId();
 
@@ -53,6 +62,8 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo>
      * Set the message identifier (of the first message published by this client)
      * 
      * @param messageId
+     * 
+     * @since 1.0.0
      */
     public void setMessageId(StorableId messageId);
 
@@ -60,6 +71,8 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo>
      * Get the message timestamp (of the first message published by this client)
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public Date getMessageTimestamp();
 
@@ -67,6 +80,8 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo>
      * Set the message timestamp (of the first message published by this client)
      * 
      * @param messageTimestamp
+     * 
+     * @since 1.0.0
      */
     public void setMessageTimestamp(Date messageTimestamp);
 }

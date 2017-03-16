@@ -13,32 +13,40 @@ package org.eclipse.kapua.service.datastore.model;
 
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
 /**
  * Information about device metric value. Metric is an arbitrary named value. We usually
  * keep only the most recent value of the metric.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
-public interface MetricInfo extends Storable
-{
+public interface MetricInfo extends Storable {
+
     /**
      * Get the record identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public StorableId getId();
 
     /**
-     * Get the account
+     * Get the scope id
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getAccount();
+    public KapuaId getScopeId();
 
     /**
      * Get the client identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getClientId();
 
@@ -46,6 +54,8 @@ public interface MetricInfo extends Storable
      * Get the channel
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getChannel();
 
@@ -53,6 +63,8 @@ public interface MetricInfo extends Storable
      * Set the channel
      * 
      * @param channel
+     * 
+     * @since 1.0.0
      */
     public void setChannel(String channel);
 
@@ -60,6 +72,8 @@ public interface MetricInfo extends Storable
      * Get the metric name
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getName();
 
@@ -67,6 +81,8 @@ public interface MetricInfo extends Storable
      * Set the metric name
      * 
      * @param name
+     * 
+     * @since 1.0.0
      */
     public void setName(String name);
 
@@ -74,6 +90,8 @@ public interface MetricInfo extends Storable
      * Get the metric type
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getType();
 
@@ -81,14 +99,19 @@ public interface MetricInfo extends Storable
      * Set the metric type
      * 
      * @param type
+     * 
+     * @since 1.0.0
      */
     public void setType(String type);
 
     /**
      * Get the metric value
      * 
-     * @param clazz metric value type
+     * @param clazz
+     *            metric value type
      * @return
+     * 
+     * @since 1.0.0
      */
     public <T> T getValue(Class<T> clazz);
 
@@ -96,6 +119,8 @@ public interface MetricInfo extends Storable
      * Set the metric value
      * 
      * @param value
+     * 
+     * @since 1.0.0
      */
     public <T> void setValue(T value);
 
@@ -103,59 +128,75 @@ public interface MetricInfo extends Storable
      * Get the message identifier (of the first message published that containing this metric)
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public StorableId getFirstPublishedMessageId();
+    public StorableId getFirstMessageId();
 
     /**
      * Set the message identifier (of the first message published that containing this metric)
      * 
-     * @param firstPublishedMessageId
+     * @param firstMessageId
+     * 
+     * @since 1.0.0
      */
-    public void setFirstPublishedMessageId(StorableId firstPublishedMessageId);
+    public void setFirstMessageId(StorableId firstMessageId);
 
     /**
      * Get the message timestamp (of the first message published that containing this metric)
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getFirstPublishedMessageTimestamp();
+    public Date getFirstMessageOn();
 
     /**
      * Set the message timestamp (of the first message published that containing this metric)
      * 
-     * @param firstPublishedMessageTimestamp
+     * @param firstMessageOn
+     * 
+     * @since 1.0.0
      */
-    public void setFirstPublishedMessageTimestamp(Date firstPublishedMessageTimestamp);
+    public void setFirstMessageOn(Date firstMessageOn);
 
     /**
      * Get the message identifier of the last published message for this metric.<br>
      * <b>Transient data field (the last publish message identifier should get from the message table by the find service)</b>
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public StorableId getLastPublishedMessageId();
+    public StorableId getLastMessageId();
 
     /**
      * Set the message identifier of the last published message for this metric.<br>
      * <b>Transient data field (the last publish message identifier should get from the message table by the find service)</b>
      * 
-     * @param lastPublishedMessageId
+     * @param lastMessageId
+     * 
+     * @since 1.0.0
      */
-    public void setLastPublishedMessageId(StorableId lastPublishedMessageId);
+    public void setLastMessageId(StorableId lastMessageId);
 
     /**
      * Get the timestamp of the last published message for this metric.<br>
      * <b>Transient data field (the last publish timestamp should get from the message table by the find service)</b>
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getLastPublishedMessageTimestamp();
+    public Date getLastMessageOn();
 
     /**
      * Set the timestamp of the last published message for this metric.<br>
      * <b>Transient data field (the last publish timestamp should get from the message table by the find service)</b>
      * 
-     * @param lastPublishedMessageTimestamp
+     * @param lastMessageOn
+     * 
+     * @since 1.0.0
      */
-    public void setLastPublishedMessageTimestamp(Date lastPublishedMessageTimestamp);
+    public void setLastMessageOn(Date lastMessageOn);
 }
