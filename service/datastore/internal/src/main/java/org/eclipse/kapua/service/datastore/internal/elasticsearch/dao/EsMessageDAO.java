@@ -41,8 +41,7 @@ import org.elasticsearch.search.SearchHits;
 /**
  * Message DAO
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class EsMessageDAO
 {
@@ -53,6 +52,8 @@ public class EsMessageDAO
      * Default constructor
      * 
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public EsMessageDAO() throws EsClientUnavailableException
     {
@@ -65,6 +66,8 @@ public class EsMessageDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsMessageDAO setListener(EsDaoListener daoListener)
         throws EsDatastoreException
@@ -79,6 +82,8 @@ public class EsMessageDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsMessageDAO unsetListener(EsDaoListener daoListener)
         throws EsDatastoreException
@@ -92,6 +97,8 @@ public class EsMessageDAO
      * 
      * @return
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public static EsMessageDAO getInstance() throws EsClientUnavailableException
     {
@@ -103,6 +110,8 @@ public class EsMessageDAO
      * 
      * @param indexName
      * @return
+     * 
+     * @since 1.0.0
      */
     public EsMessageDAO index(String indexName)
     {
@@ -116,6 +125,8 @@ public class EsMessageDAO
      * @param id
      * @param esClient
      * @return
+     * 
+     * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient)
     {
@@ -128,6 +139,8 @@ public class EsMessageDAO
      * @param id
      * @param esClient
      * @return
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient)
     {
@@ -139,12 +152,13 @@ public class EsMessageDAO
      * 
      * @param query
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
     public void deleteByQuery(MessageQuery query)
         throws EsQueryConversionException
     {
-        PredicateConverter pc = new PredicateConverter();
-        this.esTypeDAO.deleteByQuery(pc.toElasticsearchQuery(query.getPredicate()));
+        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
 
     /**
@@ -155,18 +169,20 @@ public class EsMessageDAO
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public MessageListResult query(MessageQuery query)
         throws EsQueryConversionException,
         EsClientUnavailableException,
         EsObjectBuilderException
     {
-        MessageQueryImpl localQuery = new MessageQueryImpl();
+        MessageQueryImpl localQuery = new MessageQueryImpl(query.getScopeId());
         localQuery.copy(query);
         localQuery.setLimit(query.getLimit() + 1);
 
         MessageQueryConverter converter = new MessageQueryConverter();
-        SearchRequestBuilder builder = converter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), query);
+        SearchRequestBuilder builder = converter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), localQuery);
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
@@ -175,7 +191,7 @@ public class EsMessageDAO
 
         int i = 0;
         int searchHitsSize = searchHits.getHits().length;
-        List<DatastoreMessage> messages = new ArrayList<DatastoreMessage>();
+        List<DatastoreMessage> messages = new ArrayList<>();
         MessageObjectBuilder msgBuilder = new MessageObjectBuilder();
         for (SearchHit searchHit : searchHits.getHits()) {
             if (i < query.getLimit()) {
@@ -203,8 +219,8 @@ public class EsMessageDAO
         if (totalCount != null && totalCount > Integer.MAX_VALUE)
             throw new RuntimeException("Total hits exceeds integer max value");
 
-        MessageListResultImpl result = new MessageListResultImpl(nextKey, totalCount);
-        result.addAll(messages);
+        MessageListResult result = new MessageListResultImpl(nextKey, totalCount);
+        result.addItems(messages);
         return result;
     }
 
@@ -215,6 +231,8 @@ public class EsMessageDAO
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public long count(MessageQuery query)
         throws EsQueryConversionException,
@@ -231,211 +249,13 @@ public class EsMessageDAO
         return searchHits.getTotalHits();
     }
 
-    //
-    // public SearchHits findByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // long start,
-    // long end,
-    // int indexOffset,
-    // int limit,
-    // Boolean isSortAscending,
-    // MessageFetchStyle fetchStyle)
-    // {
-    //
-    // // Asset clauses
-    // QueryBuilder boolQuery = this.getQueryByTopicAndDate(asset, isAnyAsset, semTopic, isAnySubtopic, start, end);
-    // //
-    //
-    // String[] includeFetch = this.getFetchIncluded(fetchStyle);
-    // String[] excludeFetch = this.getFetchExcluded(fetchStyle);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(includeFetch, excludeFetch)
-    // .addFields(EsSchema.MESSAGE_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP)
-    // .setQuery(boolQuery)
-    // .addSort(EsSchema.MESSAGE_TIMESTAMP,
-    // isSortAscending ? SortOrder.ASC : SortOrder.DESC)
-    // .setFrom(indexOffset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // public SearchHits findByAsset(String asset,
-    // boolean isAnyAsset,
-    // long start,
-    // long end,
-    // int indexOffset,
-    // int limit,
-    // Boolean sortAscending,
-    // MessageFetchStyle fetchStyle)
-    // {
-    //
-    // BoolQueryBuilder boolQuery = this.getQueryByAssetAndDate(asset, isAnyAsset, start, end);
-    //
-    // String[] includeFetch = this.getFetchIncluded(fetchStyle);
-    // String[] excludeFetch = this.getFetchExcluded(fetchStyle);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(includeFetch, excludeFetch)
-    // .addFields(EsSchema.MESSAGE_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP)
-    // .setQuery(boolQuery)
-    // .addSort(EsSchema.MESSAGE_TIMESTAMP,
-    // sortAscending ? SortOrder.ASC : SortOrder.DESC)
-    // .setFrom(indexOffset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // public SearchHits findByAccount(String account,
-    // long start,
-    // long end,
-    // int indexOffset,
-    // int limit,
-    // Boolean sortAscending,
-    // MessageFetchStyle fetchStyle)
-    // {
-    //
-    // boolean isAnyAccount = true;
-    // QueryBuilder boolQuery = this.getQueryByAccountAndDate(null, isAnyAccount, start, end);
-    //
-    // String[] includeFetch = this.getFetchIncluded(fetchStyle);
-    // String[] excludeFetch = this.getFetchExcluded(fetchStyle);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(includeFetch, excludeFetch)
-    // .addFields(EsSchema.MESSAGE_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP)
-    // .setQuery(boolQuery)
-    // .addSort(EsSchema.MESSAGE_TIMESTAMP,
-    // sortAscending ? SortOrder.ASC : SortOrder.DESC)
-    // .setFrom(indexOffset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // public SearchHits findByAccountCount(String account)
-    // {
-    //
-    // QueryBuilder accountQuery = QueryBuilders.termQuery(EsSchema.MESSAGE_ACCOUNT, account);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .setQuery(QueryBuilders.boolQuery().filter(accountQuery))
-    // .setSize(0)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // public SearchHits findById(String account,
-    // List<String> ids,
-    // MessageFetchStyle fetchStyle)
-    // {
-    //
-    // QueryBuilder idsQuery = QueryBuilders.idsQuery(ids.toArray(new String[] {}));
-    //
-    // String[] includeFetch = this.getFetchIncluded(fetchStyle);
-    // String[] excludeFetch = this.getFetchExcluded(fetchStyle);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(includeFetch, excludeFetch)
-    // .addFields(EsSchema.MESSAGE_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP)
-    // .setQuery(QueryBuilders.boolQuery().filter(idsQuery))
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // /**
-    // * @param topic exepected semantic topic
-    // * @param metric exepected full qualified metric name (example: "PROBE_TEMP.dbl")
-    // * @param start
-    // * @param end
-    // * @param min
-    // * @param max
-    // * @param indexOffset
-    // * @param limit
-    // * @param sortAscending
-    // * @param fetchStyle
-    // * @return
-    // */
-    // public SearchHits findByMetricValue(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // String metric,
-    // long start,
-    // long end,
-    // Object min,
-    // Object max,
-    // int offset,
-    // int limit,
-    // Boolean sortAscending,
-    // MessageFetchStyle fetchStyle)
-    // {
-    //
-    // // Query clause
-    // String fullMetricName = String.format("%s.%s", EsSchema.MESSAGE_MTR, metric);
-    // BoolQueryBuilder boolQuery = this.getQueryByMetricValueAndDate(asset,
-    // isAnyAsset,
-    // semTopic,
-    // isAnySubtopic,
-    // fullMetricName,
-    // start,
-    // end,
-    // min,
-    // max);
-    //
-    // String[] includeFetch = this.getFetchIncluded(fetchStyle);
-    // String[] excludeFetch = this.getFetchExcluded(fetchStyle);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(includeFetch, excludeFetch)
-    // .addFields(EsSchema.MESSAGE_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP)
-    // .setQuery(boolQuery)
-    // .addSort(EsSchema.MESSAGE_TIMESTAMP,
-    // sortAscending ? SortOrder.ASC : SortOrder.DESC)
-    // .setFrom(offset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-
+    /**
+     * Deletes by message id
+     * 
+     * @param id
+     * 
+     * @since 1.0.0
+     */
     public void deleteById(String id)
     {
 
@@ -445,91 +265,4 @@ public class EsMessageDAO
                  .setId(id)
                  .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
     }
-    //
-    // /**
-    // * @param topic exepected semantic topic
-    // * @param metric exepected full qualified metric name (example: "PROBE_TEMP.dbl")
-    // * @param start
-    // * @param end
-    // * @param min
-    // * @param max
-    // * @param indexOffset
-    // * @param limit
-    // * @param sortAscending
-    // * @param fetchStyle
-    // * @return
-    // */
-    // public SearchHits findMetricsByValue(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // String metric,
-    // long start,
-    // long end,
-    // Object min,
-    // Object max,
-    // int offset,
-    // int limit,
-    // Boolean sortAscending)
-    // {
-    //
-    // String fullMetricName = String.format("%s.%s", EsSchema.MESSAGE_MTR, metric);
-    // BoolQueryBuilder boolQuery = this.getQueryByMetricValueAndDate(asset, isAnyAsset, semTopic,
-    // isAnySubtopic, fullMetricName,
-    // start, end, min, max);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields(EsSchema.ASSET_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP,
-    // EsSchema.MESSAGE_MTR + ".*", fullMetricName)
-    // .setQuery(boolQuery)
-    // .addSort(EsSchema.MESSAGE_TIMESTAMP,
-    // sortAscending ? SortOrder.ASC : SortOrder.DESC)
-    // .setFrom(offset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // public SearchHits findMetricsByTimestamp(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // String metric,
-    // long start,
-    // long end,
-    // int offset,
-    // int limit,
-    // Boolean sortAscending)
-    // {
-    //
-    // // TODO Check if adding the field in the field list (below) is enough ... what id the metric does not exist ??
-    // String fullMetricName = String.format("%s.%s", EsSchema.MESSAGE_MTR, metric);
-    //
-    // BoolQueryBuilder boolQuery = this.getQueryByTopicAndDate(asset, isAnyAsset, semTopic, isAnySubtopic, start, end);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields(EsSchema.MESSAGE_ACCOUNT,
-    // EsSchema.MESSAGE_AS_NAME,
-    // EsSchema.MESSAGE_SEM_TOPIC,
-    // EsSchema.MESSAGE_TIMESTAMP,
-    // fullMetricName)
-    // .setQuery(boolQuery)
-    // .addSort(EsSchema.MESSAGE_TIMESTAMP,
-    // sortAscending ? SortOrder.ASC : SortOrder.DESC)
-    // .setFrom(offset)
-    // .setSize(limit)
-    // .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
 }

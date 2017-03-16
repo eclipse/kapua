@@ -13,32 +13,39 @@ package org.eclipse.kapua.service.datastore.model;
 
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
 /**
  * Channel information schema definition
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public interface ChannelInfo extends Storable
-{
+public interface ChannelInfo extends Storable {
+
     /**
      * Get the record identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public StorableId getId();
 
     /**
-     * Get the account
+     * Get the scope id
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getAccount();
+    public KapuaId getScopeId();
 
     /**
      * Get the client identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getClientId();
 
@@ -46,6 +53,8 @@ public interface ChannelInfo extends Storable
      * Get the channel
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     public String getChannel();
 
@@ -53,6 +62,8 @@ public interface ChannelInfo extends Storable
      * Set the channel
      * 
      * @param channel
+     * 
+     * @since 1.0.0
      */
     public void setChannel(String channel);
 
@@ -60,60 +71,75 @@ public interface ChannelInfo extends Storable
      * Get the message identifier (of the first message published on this channel)
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public StorableId getFirstPublishedMessageId();
+    public StorableId getFirstMessageId();
 
     /**
      * Set the message identifier (of the first message published on this channel)
      * 
-     * @param firstPublishedMessageId
+     * @param firstMessageId
+     * 
+     * @since 1.0.0
      */
-    public void setFirstPublishedMessageId(StorableId firstPublishedMessageId);
+    public void setFirstMessageId(StorableId firstMessageId);
 
     /**
      * Get the message timestamp (of the first message published on this channel)
      * 
      * @return
+     * 
+     * 
+     * @since 1.0.0
      */
-    public Date getFirstPublishedMessageTimestamp();
+    public Date getFirstMessageOn();
 
     /**
      * Set the message timestamp (of the first message published on this channel)
      * 
-     * @param firstPublishedMessageTimestamp
+     * @param firstMessageOn
      */
-    public void setFirstPublishedMessageTimestamp(Date firstPublishedMessageTimestamp);
+    public void setFirstMessageOn(Date firstMessageOn);
 
     /**
      * Get the message identifier of the last published message for this channel.<br>
      * <b>Transient data field (the last publish message identifier should get from the message table by the find service)</b>
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public StorableId getLastPublishedMessageId();
+    public StorableId getLastMessageId();
 
     /**
      * Set the message identifier of the last published message for this channel.<br>
      * <b>Transient data field (the last publish message identifier should get from the message table by the find service)</b>
      * 
-     * @param lastPublishedMessageId
+     * @param lastMessageId
+     * 
+     * @since 1.0.0
      */
-    public void setLastPublishedMessageId(StorableId lastPublishedMessageId);
+    public void setLastMessageId(StorableId lastMessageId);
 
     /**
      * Get the timestamp of the last published message for this channel.<br>
      * <b>Transient data field (the last publish timestamp should get from the message table by the find service)</b>
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public Date getLastPublishedMessageTimestamp();
+    public Date getLastMessageOn();
 
     /**
      * Set the timestamp of the last published message for this channel.<br>
      * <b>Transient data field (the last publish timestamp should get from the message table by the find service)</b>
      * 
-     * @param lastPublishedMessageTimestamp
+     * @param lastMessageOn
+     * 
+     * @since 1.0.0
      */
-    public void setLastPublishedMessageTimestamp(Date lastPublishedMessageTimestamp);
+    public void setLastMessageOn(Date lastMessageOn);
 
 }

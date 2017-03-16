@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
@@ -26,33 +27,28 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 /**
  * Datastore object factory implementation
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
-public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory
-{
+public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
 
     @Override
-    public ClientInfoQuery newClientInfoQuery()
-    {
-        return new ClientInfoQueryImpl();
+    public ClientInfoQuery newClientInfoQuery(KapuaId scopeId) {
+        return new ClientInfoQueryImpl(scopeId);
     }
 
     @Override
-    public ChannelInfoQuery newChannelInfoQuery()
-    {
-        return new ChannelInfoQueryImpl();
+    public ChannelInfoQuery newChannelInfoQuery(KapuaId scopeId) {
+        return new ChannelInfoQueryImpl(scopeId);
     }
 
     @Override
-    public MetricInfoQuery newMetricInfoQuery()
-    {
-        return new MetricInfoQueryImpl();
+    public MetricInfoQuery newMetricInfoQuery(KapuaId scopeId) {
+        return new MetricInfoQueryImpl(scopeId);
     }
 
     @Override
-    public <V> TermPredicate newTermPredicate(StorableField field, V value)
-    {
+    public <V> TermPredicate newTermPredicate(StorableField field, V value) {
         return new TermPredicateImpl(field, value);
     }
 }

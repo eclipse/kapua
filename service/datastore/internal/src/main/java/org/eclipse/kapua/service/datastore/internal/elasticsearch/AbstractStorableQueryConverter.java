@@ -25,11 +25,13 @@ import org.elasticsearch.search.sort.SortOrder;
  * Abstract storable query converter implementation.<br>
  * This object defines common method to all the query converter used by Kapua.
  *
- * @param <S> persisted object type (such as messages, channeles information...)
+ * @since 1.0.0
+ * 
+ * @param <S>
+ *            persisted object type (such as messages, channeles information...)
  * @param <Q>
  */
-public abstract class AbstractStorableQueryConverter<S extends Storable, Q extends StorableQuery<S>>
-{
+public abstract class AbstractStorableQueryConverter<S extends Storable, Q extends StorableQuery<S>> {
 
     /**
      * Convert to a count query
@@ -40,18 +42,18 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public SearchRequestBuilder toCountRequestBuilder(String indices, String type, Q query)
-        throws EsQueryConversionException, EsClientUnavailableException
-    {
+            throws EsQueryConversionException, EsClientUnavailableException {
         if (query == null)
             throw new NullPointerException(String.format("Query parameter is undefined"));
 
-        PredicateConverter pc = new PredicateConverter();
         SearchRequestBuilder searchReqBuilder = ElasticsearchClient.getInstance().prepareSearch(indices);
         searchReqBuilder.setTypes(type)
-                        .setQuery(pc.toElasticsearchQuery(query.getPredicate()))
-                        .setSize(0);
+                .setQuery(PredicateConverter.convertQueryPredicates(query))
+                .setSize(0);
 
         return searchReqBuilder;
     }
@@ -65,17 +67,18 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public SearchRequestBuilder toSearchRequestBuilder(String indices, String type, Q query)
-        throws EsQueryConversionException, EsClientUnavailableException
-    {
+            throws EsQueryConversionException, EsClientUnavailableException {
         if (query == null)
             throw new NullPointerException(String.format("Query parameter is undefined"));
 
-        PredicateConverter pc = new PredicateConverter();
         SearchRequestBuilder searchReqBuilder = ElasticsearchClient.getInstance().prepareSearch(indices);
         searchReqBuilder.setTypes(type)
-                        .setQuery(pc.toElasticsearchQuery(query.getPredicate()));
+                .setQuery(PredicateConverter.convertQueryPredicates(query));
+
         if (query.getSortFields() != null) {
             for (SortField sf : query.getSortFields()) {
                 if (sf.getSortDirection() == null) {
@@ -84,15 +87,15 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
                 FieldSortBuilder fsb = SortBuilders.fieldSort(sf.getField());
                 if (SortDirection.ASC.equals(sf.getSortDirection())) {
                     fsb.order(SortOrder.ASC);
-                }
-                else {
+                } else {
                     fsb.order(SortOrder.DESC);
                 }
                 searchReqBuilder.addSort(fsb);
             }
         }
+
         searchReqBuilder.setFrom(query.getOffset())
-                        .setSize(query.getLimit());
+                .setSize(query.getLimit());
 
         String[] includes = this.getIncludes(query.getFetchStyle());
         String[] excludes = this.getExcludes(query.getFetchStyle());
@@ -111,6 +114,8 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      * 
      * @param fetchStyle
      * @return
+     * 
+     * @since 1.0.0
      */
     protected abstract String[] getIncludes(StorableFetchStyle fetchStyle);
 
@@ -120,6 +125,8 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      * 
      * @param fetchStyle
      * @return
+     * 
+     * @since 1.0.0
      */
     protected abstract String[] getExcludes(StorableFetchStyle fetchStyle);
 
@@ -127,6 +134,8 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      * Query fields list
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
     protected abstract String[] getFields();
 }

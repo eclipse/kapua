@@ -41,7 +41,7 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     // store timers
     private Timer metricStorageDataSaveTime;
 
-    private MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
+    private MessageStoreService    messageStoreService    = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
     public DataStorageMessageProcessor() {
         super("DataStorage");
@@ -71,7 +71,7 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
             metricStorageDataSaveTimeContext.stop();
         } catch (KapuaException e) {
             metricStorageDataErrorMessage.inc();
-            logger.error("An error occurred while storing message: {}", e.getCode(), e);
+            logger.error("An error occurred while storing message: {}", e);
         }
     }
 

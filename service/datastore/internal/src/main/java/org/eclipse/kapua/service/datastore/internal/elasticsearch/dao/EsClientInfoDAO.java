@@ -19,8 +19,8 @@ import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoQuer
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoXContentBuilder;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClientUnavailableException;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDocumentBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDatastoreException;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDocumentBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsObjectBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsQueryConversionException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
@@ -42,11 +42,9 @@ import org.elasticsearch.search.SearchHits;
 /**
  * Client information DAO
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class EsClientInfoDAO
-{
+public class EsClientInfoDAO {
 
     private EsTypeDAO esTypeDAO;
 
@@ -54,9 +52,10 @@ public class EsClientInfoDAO
      * Default constructor
      * 
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public EsClientInfoDAO() throws EsClientUnavailableException
-    {
+    public EsClientInfoDAO() throws EsClientUnavailableException {
         esTypeDAO = new EsTypeDAO(ElasticsearchClient.getInstance());
     }
 
@@ -66,10 +65,11 @@ public class EsClientInfoDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsClientInfoDAO setListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.setListener(daoListener);
         return this;
     }
@@ -80,10 +80,11 @@ public class EsClientInfoDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsClientInfoDAO unsetListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.unsetListener(daoListener);
         return this;
     }
@@ -93,9 +94,10 @@ public class EsClientInfoDAO
      * 
      * @return
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public static EsClientInfoDAO getInstance() throws EsClientUnavailableException
-    {
+    public static EsClientInfoDAO getInstance() throws EsClientUnavailableException {
         return new EsClientInfoDAO();
     }
 
@@ -104,9 +106,10 @@ public class EsClientInfoDAO
      * 
      * @param indexName
      * @return
+     * 
+     * @since 1.0.0
      */
-    public EsClientInfoDAO index(String indexName)
-    {
+    public EsClientInfoDAO index(String indexName) {
         this.esTypeDAO.type(indexName, EsSchema.CLIENT_TYPE_NAME);
         return this;
     }
@@ -117,10 +120,11 @@ public class EsClientInfoDAO
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse upsert(ClientInfo clientInfo)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         ClientInfoXContentBuilder clientInfoBuilder = new ClientInfoXContentBuilder().build(clientInfo);
         return this.esTypeDAO.upsert(clientInfoBuilder.getClientId(), clientInfoBuilder.getClientBuilder());
     }
@@ -131,9 +135,10 @@ public class EsClientInfoDAO
      * @param id
      * @param esClient
      * @return
+     * 
+     * @since 1.0.0
      */
-    public UpdateResponse upsert(String id, XContentBuilder esClient)
-    {
+    public UpdateResponse upsert(String id, XContentBuilder esClient) {
         return this.esTypeDAO.upsert(id, esClient);
     }
 
@@ -143,10 +148,11 @@ public class EsClientInfoDAO
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse update(ClientInfo clientInfo)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         ClientInfoXContentBuilder clientInfoBuilder = new ClientInfoXContentBuilder().build(clientInfo);
         return this.esTypeDAO.upsert(clientInfoBuilder.getClientId(), clientInfoBuilder.getClientBuilder());
     }
@@ -157,9 +163,10 @@ public class EsClientInfoDAO
      * @param id
      * @param esClient
      * @return
+     * 
+     * @since 1.0.0
      */
-    public UpdateResponse update(String id, XContentBuilder esClient)
-    {
+    public UpdateResponse update(String id, XContentBuilder esClient) {
         return this.esTypeDAO.update(id, esClient);
     }
 
@@ -167,15 +174,16 @@ public class EsClientInfoDAO
      * Delete query action (delete document from the database by id)
      * 
      * @param id
+     * 
+     * @since 1.0.0
      */
-    public void deleteById(String id)
-    {
+    public void deleteById(String id) {
 
         esTypeDAO.getClient().prepareDelete()
-                 .setIndex(esTypeDAO.getIndexName())
-                 .setType(esTypeDAO.getTypeName())
-                 .setId(id)
-                 .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
+                .setIndex(esTypeDAO.getIndexName())
+                .setType(esTypeDAO.getTypeName())
+                .setId(id)
+                .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
     }
 
     /**
@@ -183,23 +191,13 @@ public class EsClientInfoDAO
      * 
      * @param query
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
     public void deleteByQuery(ClientInfoQuery query)
-        throws EsQueryConversionException
-    {
-        PredicateConverter pc = new PredicateConverter();
-        this.esTypeDAO.deleteByQuery(pc.toElasticsearchQuery(query.getPredicate()));
+            throws EsQueryConversionException {
+        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
-    //
-    // public void deleteByAccount(long start, long end)
-    // {
-    // this.deleteByQuery(this.getQueryByAssetAndDate(KapuaTopic.SINGLE_LEVEL_WCARD, true, start, end));
-    // }
-    //
-    // public void deleteByAsset(String asset, boolean isAnyAsset)
-    // {
-    // this.deleteByQuery(this.getQueryByAsset(asset, isAnyAsset));
-    // }
 
     /**
      * Query action (return objects matching the given query)
@@ -209,13 +207,14 @@ public class EsClientInfoDAO
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public ClientInfoListResult query(ClientInfoQuery query)
-        throws EsQueryConversionException,
-        EsClientUnavailableException,
-        EsObjectBuilderException
-    {
-        ClientInfoQueryImpl localQuery = new ClientInfoQueryImpl();
+            throws EsQueryConversionException,
+            EsClientUnavailableException,
+            EsObjectBuilderException {
+        ClientInfoQueryImpl localQuery = new ClientInfoQueryImpl(query.getScopeId());
         localQuery.copy(query);
 
         // get one plus (if there is one) to later get the next key value
@@ -232,7 +231,7 @@ public class EsClientInfoDAO
         int i = 0;
         long searchHitsSize = searchHits.getHits().length;
 
-        List<ClientInfo> clientInfos = new ArrayList<ClientInfo>();
+        List<ClientInfo> clientInfos = new ArrayList<>();
         ClientInfoObjectBuilder clientInfoBuilder = new ClientInfoObjectBuilder();
         for (SearchHit searchHit : searchHits.getHits()) {
             if (i < query.getLimit()) {
@@ -249,8 +248,8 @@ public class EsClientInfoDAO
             nextKey = query.getLimit();
         }
 
-        ClientInfoListResultImpl result = new ClientInfoListResultImpl(nextKey, searchHitsSize);
-        result.addAll(clientInfos);
+        ClientInfoListResult result = new ClientInfoListResultImpl(nextKey, searchHitsSize);
+        result.addItems(clientInfos);
 
         return result;
     }
@@ -262,10 +261,11 @@ public class EsClientInfoDAO
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public long count(ClientInfoQuery query)
-        throws EsQueryConversionException, EsClientUnavailableException
-    {
+            throws EsQueryConversionException, EsClientUnavailableException {
         ClientInfoQueryConverter converter = new ClientInfoQueryConverter();
         SearchRequestBuilder builder = converter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), query);
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
@@ -276,52 +276,4 @@ public class EsClientInfoDAO
 
         return searchHits.getTotalHits();
     }
-    //
-    // public SearchHits findByAccount(String name,
-    // int offset,
-    // int size)
-    // {
-    //
-    // long timeout = EsUtils.getQueryTimeout();
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields(EsSchema.ASSET_NAME,
-    // EsSchema.ASSET_TIMESTAMP,
-    // EsSchema.ASSET_ACCOUNT)
-    // .setFrom(offset)
-    // .setSize(size)
-    // .get(TimeValue.timeValueMillis(timeout));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
-    //
-    // public SearchHits findByAsset(String name,
-    // boolean isAnyAccount,
-    // String asset,
-    // boolean isAnyAsset,
-    // int offset,
-    // int size)
-    // {
-    //
-    // long timeout = EsUtils.getQueryTimeout();
-    //
-    // BoolQueryBuilder boolQuery = this.getQueryByAsset(asset, isAnyAsset);
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields(EsSchema.ASSET_NAME,
-    // EsSchema.ASSET_TIMESTAMP,
-    // EsSchema.ASSET_ACCOUNT)
-    // .setQuery(boolQuery)
-    // .setFrom(offset)
-    // .setSize(size)
-    // .get(TimeValue.timeValueMillis(timeout));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
 }

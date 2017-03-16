@@ -57,27 +57,28 @@ import org.slf4j.LoggerFactory;
 /**
  * Client information registry implementation.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
-public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements ClientInfoRegistryService
-{
-    private static final long serialVersionUID = 6772144495298409738L;
+public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements ClientInfoRegistryService {
 
     private static final Domain datastoreDomain = new DatastoreDomain();
 
     private static final Logger logger = LoggerFactory.getLogger(ClientInfoRegistryServiceImpl.class);
 
-    private final AccountService           accountService;
-    private final AuthorizationService     authorizationService;
-    private final PermissionFactory        permissionFactory;
-    private final ClientInfoRegistryFacade facade;
-    private final MessageStoreService      messageStoreService;
-    private final DatastoreObjectFactory   datastoreObjectFactory;
+    private final AccountService accountService;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final ClientInfoRegistryFacade clientInfoFacade;
+    private final MessageStoreService messageStoreService;
+    private final DatastoreObjectFactory datastoreObjectFactory;
 
-    public ClientInfoRegistryServiceImpl()
-    {
+    /**
+     * Default constructor.
+     * 
+     * @since 1.0.0
+     */
+    public ClientInfoRegistryServiceImpl() {
         super(ClientInfoRegistryService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -89,109 +90,107 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        this.facade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setClientInfoStoreFacade(this.facade);
+        this.clientInfoFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
+        DatastoreMediator.getInstance().setClientInfoStoreFacade(this.clientInfoFacade);
     }
 
     @Override
     public void delete(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkAccess(scopeId, Actions.delete);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkAccess(scopeId, Actions.delete);
-
-            this.facade.delete(scopeId, id);
-        }
-        catch (Exception e) {
+            clientInfoFacade.delete(scopeId, id);
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
     public ClientInfo find(KapuaId scopeId, StorableId id)
-        throws KapuaException
-    {
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkAccess(scopeId, Actions.read);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkAccess(scopeId, Actions.read);
-
-            ClientInfo clientInfo = this.facade.find(scopeId, id);
+            ClientInfo clientInfo = clientInfoFacade.find(scopeId, id);
 
             // populate the lastMessageTimestamp
-            updateLastPublishedFields(scopeId, clientInfo);
+            updateLastPublishedFields(clientInfo);
 
             return clientInfo;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
-    public ClientInfoListResult query(KapuaId scopeId, ClientInfoQuery query)
-        throws KapuaException
-    {
+    public ClientInfoListResult query(ClientInfoQuery query)
+            throws KapuaException {
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "queryscopeId");
+
+        checkAccess(query.getScopeId(), Actions.read);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkAccess(scopeId, Actions.read);
-
-            ClientInfoListResult result = this.facade.query(scopeId, query);
+            ClientInfoListResult result = clientInfoFacade.query(query);
 
             // populate the lastMessageTimestamp
-            for (ClientInfo clientInfo : result) {
-                updateLastPublishedFields(scopeId, clientInfo);
+            for (ClientInfo clientInfo : result.getItems()) {
+                updateLastPublishedFields(clientInfo);
             }
 
             return result;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
-    public long count(KapuaId scopeId, ClientInfoQuery query)
-        throws KapuaException
-    {
+    public long count(ClientInfoQuery query)
+            throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        //
+        // Check Access
+        checkAccess(query.getScopeId(), Actions.read);
+
         try {
-            //
-            // Argument Validation
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            //
-            // Check Access
-            this.checkAccess(scopeId, Actions.read);
-
-            return this.facade.count(scopeId, query);
-        }
-        catch (Exception e) {
+            return clientInfoFacade.count(query);
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     @Override
-    public void delete(KapuaId scopeId, ClientInfoQuery query)
-        throws KapuaException
-    {
+    public void delete(ClientInfoQuery query)
+            throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+
+        //
+        // Check Access
+        checkAccess(query.getScopeId(), Actions.delete);
+
         try {
-            ArgumentValidator.notNull(scopeId, "scopeId");
-
-            this.checkAccess(scopeId, Actions.delete);
-
-            this.facade.delete(scopeId, query);
-        }
-        catch (Exception e) {
+            clientInfoFacade.delete(query);
+        } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
     private void checkAccess(KapuaId scopeId, Actions action)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Check Access
         Permission permission = permissionFactory.newPermission(datastoreDomain, action, scopeId);
@@ -206,45 +205,48 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      * @param channelInfo
      * 
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    private void updateLastPublishedFields(KapuaId scopeId, ClientInfo clientInfo) throws KapuaException
-    {
-        StorableId lastPublishedMessageId = null;
-        Date lastPublishedMessageTimestamp = null;
-        MessageQuery messageQuery = new MessageQueryImpl();
-        messageQuery.setAskTotalCount(true);
-        messageQuery.setFetchStyle(StorableFetchStyle.SOURCE_SELECT);
-        messageQuery.setLimit(1);
-        messageQuery.setOffset(0);
-        List<SortField> sort = new ArrayList<SortField>();
+    private void updateLastPublishedFields(ClientInfo clientInfo) throws KapuaException {
+        List<SortField> sort = new ArrayList<>();
         SortField sortTimestamp = new SortFieldImpl();
         sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
         sortTimestamp.setSortDirection(SortDirection.DESC);
         sort.add(sortTimestamp);
+
+        MessageQuery messageQuery = new MessageQueryImpl(clientInfo.getScopeId());
+        messageQuery.setAskTotalCount(true);
+        messageQuery.setFetchStyle(StorableFetchStyle.SOURCE_SELECT);
+        messageQuery.setLimit(1);
+        messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
-        AndPredicate andPredicate = new AndPredicateImpl();
-        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.CLIENT_TIMESTAMP), clientInfo.getFirstPublishedMessageTimestamp(), null);
-        andPredicate.getPredicates().add(messageIdPredicate);
-        TermPredicate accountNamePredicate = datastoreObjectFactory.newTermPredicate(MessageField.ACCOUNT, clientInfo.getAccount());
-        andPredicate.getPredicates().add(accountNamePredicate);
+
+        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.CLIENT_TIMESTAMP), clientInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, clientInfo.getClientId());
+
+        AndPredicate andPredicate = new AndPredicateImpl();
+        andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         messageQuery.setPredicate(andPredicate);
-        MessageListResult messageList = messageStoreService.query(scopeId, messageQuery);
-        if (messageList.size() == 1) {
-            lastPublishedMessageId = messageList.get(0).getDatastoreId();
-            lastPublishedMessageTimestamp = messageList.get(0).getTimestamp();
-        }
-        else if (messageList.size() == 0) {
+
+        MessageListResult messageList = messageStoreService.query(messageQuery);
+
+        StorableId lastPublishedMessageId = null;
+        Date lastPublishedMessageTimestamp = null;
+        if (messageList.getSize() == 1) {
+            lastPublishedMessageId = messageList.getFirstItem().getDatastoreId();
+            lastPublishedMessageTimestamp = messageList.getFirstItem().getTimestamp();
+        } else if (messageList.isEmpty()) {
             // this condition could happens due to the ttl of the messages (so if it happens, it does not necessarily mean there has been an error!)
-            logger.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { clientInfo.getAccount(), clientInfo.getClientId() });
-        }
-        else {
+            logger.warn("Cannot find last timestamp for the specified client id '{}' - account '{}'", new Object[] { clientInfo.getScopeId(), clientInfo.getClientId() });
+        } else {
             // this condition shouldn't never happens since the query has a limit 1
             // if happens it means than an elasticsearch internal error happens and/or our driver didn't set it correctly!
-            logger.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!", new Object[] { clientInfo.getAccount(), clientInfo.getClientId() });
+            logger.error("Cannot find last timestamp for the specified client id '{}' - account '{}'. More than one result returned by the query!",
+                    new Object[] { clientInfo.getScopeId(), clientInfo.getClientId() });
         }
-        clientInfo.setLastPublishedMessageId(lastPublishedMessageId);
-        clientInfo.setLastPublishedMessageTimestamp(lastPublishedMessageTimestamp);
+        clientInfo.setLastMessageId(lastPublishedMessageId);
+        clientInfo.setLastMessageOn(lastPublishedMessageTimestamp);
     }
 }

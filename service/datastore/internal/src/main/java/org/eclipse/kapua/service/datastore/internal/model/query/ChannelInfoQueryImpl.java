@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
@@ -18,19 +19,30 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 /**
  * Channel information query implementation
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
-public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> implements ChannelInfoQuery
-{
+public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> implements ChannelInfoQuery {
+
+    /**
+     * Constructor.
+     * 
+     * @param scopeId
+     * 
+     * @since 1.0.0
+     */
+    public ChannelInfoQueryImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
 
     /**
      * Create and keep a copy of the given query
      * 
      * @param query
+     * 
+     * @since 1.0.0
      */
-    public void copy(ChannelInfoQuery query)
-    {
+    public void copy(ChannelInfoQuery query) {
         super.copy(query);
         // Add copy for local members
     }

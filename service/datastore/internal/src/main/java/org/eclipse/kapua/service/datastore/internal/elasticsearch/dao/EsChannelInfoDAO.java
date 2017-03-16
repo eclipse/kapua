@@ -14,24 +14,23 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoObjectBuilder;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoQueryConverter;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoXContentBuilder;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClientUnavailableException;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDocumentBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDatastoreException;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDocumentBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsObjectBuilderException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsQueryConversionException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsUtils;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.PredicateConverter;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoObjectBuilder;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoQueryConverter;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoXContentBuilder;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoCreator;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -44,10 +43,9 @@ import org.elasticsearch.search.SearchHits;
 /**
  * Channel information DAO
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public class EsChannelInfoDAO
-{
+public class EsChannelInfoDAO {
 
     private EsTypeDAO esTypeDAO;
 
@@ -55,9 +53,10 @@ public class EsChannelInfoDAO
      * Default constructor
      * 
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public EsChannelInfoDAO() throws EsClientUnavailableException
-    {
+    public EsChannelInfoDAO() throws EsClientUnavailableException {
         esTypeDAO = new EsTypeDAO(ElasticsearchClient.getInstance());
     }
 
@@ -67,10 +66,11 @@ public class EsChannelInfoDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsChannelInfoDAO setListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.setListener(daoListener);
         return this;
     }
@@ -81,10 +81,11 @@ public class EsChannelInfoDAO
      * @param daoListener
      * @return
      * @throws EsDatastoreException
+     * 
+     * @since 1.0.0
      */
     public EsChannelInfoDAO unsetListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.unsetListener(daoListener);
         return this;
     }
@@ -94,9 +95,10 @@ public class EsChannelInfoDAO
      * 
      * @return
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
-    public static EsChannelInfoDAO getInstance() throws EsClientUnavailableException
-    {
+    public static EsChannelInfoDAO getInstance() throws EsClientUnavailableException {
         return new EsChannelInfoDAO();
     }
 
@@ -105,9 +107,10 @@ public class EsChannelInfoDAO
      * 
      * @param indexName
      * @return
+     * 
+     * @since 1.0.0
      */
-    public EsChannelInfoDAO index(String indexName)
-    {
+    public EsChannelInfoDAO index(String indexName) {
         this.esTypeDAO.type(indexName, EsSchema.CHANNEL_TYPE_NAME);
         return this;
     }
@@ -118,10 +121,11 @@ public class EsChannelInfoDAO
      * @param channelInfoCreator
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse upsert(ChannelInfoCreator channelInfoCreator)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         ChannelInfoXContentBuilder documentBuilder = new ChannelInfoXContentBuilder().build(channelInfoCreator);
         return this.esTypeDAO.upsert(documentBuilder.getChannelId(), documentBuilder.getBuilder());
     }
@@ -132,10 +136,11 @@ public class EsChannelInfoDAO
      * @param channelInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse upsert(ChannelInfo channelInfo)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         ChannelInfoXContentBuilder documentBuilder = new ChannelInfoXContentBuilder().build(channelInfo);
         return this.esTypeDAO.upsert(documentBuilder.getChannelId(), documentBuilder.getBuilder());
     }
@@ -146,9 +151,10 @@ public class EsChannelInfoDAO
      * @param id
      * @param esClient
      * @return
+     * 
+     * @since 1.0.0
      */
-    public UpdateResponse upsert(String id, XContentBuilder esClient)
-    {
+    public UpdateResponse upsert(String id, XContentBuilder esClient) {
         return this.esTypeDAO.upsert(id, esClient);
     }
 
@@ -158,10 +164,11 @@ public class EsChannelInfoDAO
      * @param channelInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public UpdateResponse update(ChannelInfo channelInfo)
-        throws EsDocumentBuilderException
-    {
+            throws EsDocumentBuilderException {
         ChannelInfoXContentBuilder documentBuilder = new ChannelInfoXContentBuilder().build(channelInfo);
         return this.esTypeDAO.update(documentBuilder.getChannelId(), documentBuilder.getBuilder());
     }
@@ -172,9 +179,10 @@ public class EsChannelInfoDAO
      * @param id
      * @param esAsset
      * @return
+     * 
+     * @since 1.0.0
      */
-    public UpdateResponse update(String id, XContentBuilder esAsset)
-    {
+    public UpdateResponse update(String id, XContentBuilder esAsset) {
         return this.esTypeDAO.update(id, esAsset);
     }
 
@@ -182,15 +190,16 @@ public class EsChannelInfoDAO
      * Delete query action (delete document from the database by id)
      * 
      * @param id
+     * 
+     * @since 1.0.0
      */
-    public void deleteById(String id)
-    {
+    public void deleteById(String id) {
 
         esTypeDAO.getClient().prepareDelete()
-                 .setIndex(esTypeDAO.getIndexName())
-                 .setType(esTypeDAO.getTypeName())
-                 .setId(id)
-                 .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
+                .setIndex(esTypeDAO.getIndexName())
+                .setType(esTypeDAO.getTypeName())
+                .setId(id)
+                .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
     }
 
     /**
@@ -198,140 +207,13 @@ public class EsChannelInfoDAO
      * 
      * @param query
      * @throws EsQueryConversionException
+     * 
+     * @since 1.0.0
      */
     public void deleteByQuery(ChannelInfoQuery query)
-        throws EsQueryConversionException
-    {
-        StorablePredicate predicate = query.getPredicate();
-        PredicateConverter pc = new PredicateConverter();
-        this.esTypeDAO.deleteByQuery(pc.toElasticsearchQuery(predicate));
+            throws EsQueryConversionException {
+        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
-    //
-    // public BoolQueryBuilder getQueryBtTopic(String account,
-    // boolean isAnyAccount,
-    // String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic)
-    // {
-    //
-    // QueryBuilder accountQuery = null;
-    // if (!isAnyAccount)
-    // accountQuery = QueryBuilders.termQuery(EsSchema.TOPIC_ACCOUNT, account);
-    //
-    // // Asset clauses
-    // QueryBuilder assetQuery = null;
-    // if (!isAnyAsset) {
-    // assetQuery = QueryBuilders.termQuery(EsSchema.TOPIC_ASSET, asset);
-    // }
-    //
-    // // Topic clauses
-    // QueryBuilder topicQuery = null;
-    // if (isAnySubtopic) {
-    // topicQuery = QueryBuilders.prefixQuery(EsSchema.TOPIC_SEM_NAME, semTopic);
-    // }
-    // else {
-    // topicQuery = QueryBuilders.termQuery(EsSchema.TOPIC_SEM_NAME, semTopic);
-    // }
-    //
-    // // Composite clause
-    // BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-    //
-    // if (accountQuery != null)
-    // boolQuery.must(accountQuery);
-    //
-    // if (assetQuery != null)
-    // boolQuery.must(assetQuery);
-    //
-    // boolQuery.must(topicQuery);
-    //
-    // return boolQuery;
-    // }
-    //
-    // public BoolQueryBuilder getQueryBtTopicAndDate(String account,
-    // boolean isAnyAccount,
-    // String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // long start,
-    // long end)
-    // {
-    //
-    // BoolQueryBuilder boolQuery = this.getQueryBtTopic(account, isAnyAccount, asset, isAnyAsset, semTopic, isAnySubtopic);
-    //
-    // // Timestamp clauses
-    // QueryBuilder dateQuery = QueryBuilders.rangeQuery(EsSchema.TOPIC_TIMESTAMP).from(start).to(end);
-    // boolQuery.must(dateQuery);
-    // //
-    //
-    // return boolQuery;
-    // }
-    //
-    // public void deleteByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic)
-    // {
-    //
-    // boolean isAnyAccount = true;
-    // BoolQueryBuilder boolQuery = this.getQueryBtTopic(null, isAnyAccount, asset, isAnyAsset, semTopic, isAnySubtopic);
-    //
-    // // delete by query API is deprecated, scroll with bulk delete must be used
-    // this.esTypeDAO.deleteByQuery(boolQuery);
-    // }
-    //
-    // public void deleteByTopic(String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // long start,
-    // long end)
-    // {
-    //
-    // boolean isAnyAccount = true;
-    // BoolQueryBuilder boolQuery = this.getQueryBtTopicAndDate(null, isAnyAccount, asset, isAnyAsset, semTopic, isAnySubtopic, start, end);
-    //
-    // // delete by query API is deprecated, scroll with bulk delete must be used
-    // this.esTypeDAO.deleteByQuery(boolQuery);
-    // }
-    //
-    // public void deleteByAccount(String accountName, long start, long end)
-    // throws KapuaInvalidTopicException
-    // {
-    //
-    // KapuaTopic topic = new KapuaTopic(accountName, KapuaTopic.SINGLE_LEVEL_WCARD, KapuaTopic.MULTI_LEVEL_WCARD);
-    // String asset = topic.getAsset();
-    // boolean anyAsset = KapuaTopic.SINGLE_LEVEL_WCARD.equals(asset);
-    // String semTopic = topic.getSemanticTopic();
-    // boolean topicPrefix = KapuaTopic.MULTI_LEVEL_WCARD.equals(semTopic);
-    // if (topicPrefix) {
-    // semTopic = topic.getParentTopic();
-    // semTopic = semTopic == null ? "" : semTopic;
-    // }
-    //
-    // this.deleteByTopic(asset, anyAsset, semTopic, topicPrefix, start, end);
-    // }
-    //
-    // public SearchHits findByAccount(String semTopic,
-    // boolean isAnySubtopic,
-    // int offset,
-    // int size)
-    // {
-    //
-    // long timeout = EsUtils.getQueryTimeout();
-    //
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields("sem_topic", "timestamp", "asset", "account")
-    // .setFrom(offset)
-    // .setSize(size)
-    // .get(TimeValue.timeValueMillis(timeout));
-    //
-    // SearchHits searchHits = response.getHits();
-    // return searchHits;
-    // }
 
     /**
      * Query action (return objects matching the given query)
@@ -341,20 +223,20 @@ public class EsChannelInfoDAO
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
+     * 
+     * @since 1.0.0
      */
     public ChannelInfoListResult query(ChannelInfoQuery query)
-        throws EsClientUnavailableException,
-        EsQueryConversionException,
-        EsObjectBuilderException
-    {
+            throws EsClientUnavailableException,
+            EsQueryConversionException,
+            EsObjectBuilderException {
         // get one plus (if there is one) to later get the next key value
-        ChannelInfoQueryImpl localQuery = new ChannelInfoQueryImpl();
+        ChannelInfoQueryImpl localQuery = new ChannelInfoQueryImpl(query.getScopeId());
         localQuery.copy(query);
-
         localQuery.setLimit(query.getLimit() + 1);
 
-        ChannelInfoQueryConverter tic = new ChannelInfoQueryConverter();
-        SearchRequestBuilder builder = tic.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), localQuery);
+        ChannelInfoQueryConverter queryConverter = new ChannelInfoQueryConverter();
+        SearchRequestBuilder builder = queryConverter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), localQuery);
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
@@ -383,7 +265,7 @@ public class EsChannelInfoDAO
         }
 
         ChannelInfoListResult result = new ChannelInfoListResultImpl(nextKey, searchHitsSize);
-        result.addAll(channelInfos);
+        result.addItems(channelInfos);
 
         return result;
     }
@@ -395,11 +277,12 @@ public class EsChannelInfoDAO
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
+     * 
+     * @since 1.0.0
      */
     public long count(ChannelInfoQuery query)
-        throws EsQueryConversionException,
-        EsClientUnavailableException
-    {
+            throws EsQueryConversionException,
+            EsClientUnavailableException {
         ChannelInfoQueryConverter converter = new ChannelInfoQueryConverter();
         SearchRequestBuilder builder = converter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), query);
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
@@ -410,34 +293,4 @@ public class EsChannelInfoDAO
 
         return searchHits.getTotalHits();
     }
-    //
-    // public SearchHits findByTopic(String account,
-    // boolean isAnyAccount,
-    // String asset,
-    // boolean isAnyAsset,
-    // String semTopic,
-    // boolean isAnySubtopic,
-    // int offset,
-    // int size)
-    // {
-    //
-    // long timeout = EsUtils.getQueryTimeout();
-    //
-    // QueryBuilder boolQuery = this.getQueryBtTopic(account, isAnyAccount, asset, isAnyAsset, semTopic, isAnySubtopic);
-    //
-    // // Search by key should not need offset and size
-    // SearchResponse response = esTypeDAO.getClient().prepareSearch(esTypeDAO.getIndexName())
-    // .setTypes(esTypeDAO.getTypeName())
-    // .setFetchSource(false)
-    // .addFields(EsSchema.TOPIC_SEM_NAME,
-    // EsSchema.TOPIC_TIMESTAMP,
-    // EsSchema.TOPIC_ASSET,
-    // EsSchema.TOPIC_ACCOUNT)
-    // .setQuery(boolQuery)
-    // .setFrom(offset)
-    // .setSize(size)
-    // .get(TimeValue.timeValueMillis(timeout));
-    //
-    // return response.getHits();
-    // }
 }

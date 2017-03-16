@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
@@ -18,16 +19,28 @@ import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 /**
  * Message query implementation
  * 
- * @since 1.0
+ * @since 1.0.0
  *
  */
 public class MessageQueryImpl extends AbstractStorableQuery<DatastoreMessage> implements MessageQuery
 {
-
+    /**
+     * Constructor.
+     * 
+     * @param scopeId
+     * 
+     * @since 1.0.0
+     */
+    public MessageQueryImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+    
     /**
      * Create and keep a copy of the given query
      * 
      * @param query
+     * 
+     * @since 1.0.0
      */
     public void copy(MessageQuery query)
     {

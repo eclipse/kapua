@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
@@ -32,29 +33,25 @@ import com.google.common.hash.Hashing;
  * Channel information object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua channel information object (marshal).
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ChannelInfoXContentBuilder
-{
+public class ChannelInfoXContentBuilder {
 
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(ChannelInfoXContentBuilder.class);
 
-    private String          channelId;
+    private String channelId;
     private XContentBuilder channelBuilder;
 
-    private void init()
-    {
+    private void init() {
         channelId = null;
         channelBuilder = null;
     }
 
-    private static String getHashCode(String accountName, String clientId, String channel)
-    {
+    private static String getHashCode(KapuaId scopeId, String clientId, String channel) {
         byte[] hashCode = Hashing.sha256()
-                                 .hashString(String.format("%s/%s/%s", accountName, clientId, channel), StandardCharsets.UTF_8)
-                                 .asBytes();
+                .hashString(String.format("%s/%s/%s", scopeId.toStringId(), clientId, channel), StandardCharsets.UTF_8)
+                .asBytes();
 
         return Base64.encodeBytes(hashCode);
     }
@@ -66,28 +63,25 @@ public class ChannelInfoXContentBuilder
      * @param clientId
      * @param channel
      * @return
+     * 
+     * @since 1.0.0
      */
-    private static String getChannelKey(String accountName, String clientId, String channel)
-    {
-        return getHashCode(accountName, clientId, channel);
+    private static String getChannelKey(KapuaId scopeId, String clientId, String channel) {
+        return getHashCode(scopeId, clientId, channel);
     }
 
-    private XContentBuilder build(String semChannel, String msgId, Date msgTimestamp, String clientId, String account)
-        throws EsDocumentBuilderException
-    {
+    private XContentBuilder build(String semChannel, String msgId, Date msgTimestamp, String clientId, KapuaId scopeId)
+            throws EsDocumentBuilderException {
         try {
-            XContentBuilder builder = XContentFactory.jsonBuilder()
-                                                     .startObject()
-                                                     .field(EsSchema.CHANNEL_NAME, semChannel)
-                                                     .field(EsSchema.CHANNEL_TIMESTAMP, msgTimestamp)
-                                                     .field(EsSchema.CHANNEL_CLIENT_ID, clientId)
-                                                     .field(EsSchema.CHANNEL_ACCOUNT, account)
-                                                     .field(EsSchema.CHANNEL_MESSAGE_ID, msgId)
-                                                     .endObject();
-
-            return builder;
-        }
-        catch (IOException e) {
+            return XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field(EsSchema.CHANNEL_NAME, semChannel)
+                    .field(EsSchema.CHANNEL_TIMESTAMP, msgTimestamp)
+                    .field(EsSchema.CHANNEL_CLIENT_ID, clientId)
+                    .field(EsSchema.CHANNEL_SCOPE_ID, scopeId.toCompactId())
+                    .field(EsSchema.CHANNEL_MESSAGE_ID, msgId)
+                    .endObject();
+        } catch (IOException e) {
             throw new EsDocumentBuilderException(String.format("Unable to build channel info document"), e);
         }
     }
@@ -101,13 +95,13 @@ public class ChannelInfoXContentBuilder
      * @param clientId
      * @param channel
      * @return
+     * 
+     * @since 1.0.0
      */
-    private static String getOrDeriveId(StorableId id, String accountName, String clientId, String channel)
-    {
+    private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel) {
         if (id == null) {
-            return getChannelKey(accountName, clientId, channel);
-        }
-        else
+            return getChannelKey(scopeId, clientId, channel);
+        } else
             return id.toString();
     }
 
@@ -117,13 +111,14 @@ public class ChannelInfoXContentBuilder
      * @param id
      * @param channelInfoCreator
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static String getOrDeriveId(StorableId id, ChannelInfoCreator channelInfoCreator)
-    {
+    public static String getOrDeriveId(StorableId id, ChannelInfoCreator channelInfoCreator) {
         return getOrDeriveId(id,
-                             channelInfoCreator.getAccount(),
-                             channelInfoCreator.getClientId(),
-                             channelInfoCreator.getChannel());
+                channelInfoCreator.getScopeId(),
+                channelInfoCreator.getClientId(),
+                channelInfoCreator.getChannel());
     }
 
     /**
@@ -132,22 +127,24 @@ public class ChannelInfoXContentBuilder
      * @param id
      * @param channelInfo
      * @return
+     * 
+     * @since 1.0.0
      */
-    public static String getOrDeriveId(StorableId id, ChannelInfo channelInfo)
-    {
+    public static String getOrDeriveId(StorableId id, ChannelInfo channelInfo) {
         return getOrDeriveId(id,
-                             channelInfo.getAccount(),
-                             channelInfo.getClientId(),
-                             channelInfo.getChannel());
+                channelInfo.getScopeId(),
+                channelInfo.getClientId(),
+                channelInfo.getChannel());
     }
 
     /**
      * Initialize (clean all the instance field) and return the {@link ChannelInfoXContentBuilder}
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public ChannelInfoXContentBuilder clear()
-    {
+    public ChannelInfoXContentBuilder clear() {
         this.init();
         return this;
     }
@@ -158,18 +155,19 @@ public class ChannelInfoXContentBuilder
      * @param channelInfoCreator
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public ChannelInfoXContentBuilder build(ChannelInfoCreator channelInfoCreator)
-        throws EsDocumentBuilderException
-    {
-        StorableId id = new StorableIdImpl(getOrDeriveId(null, channelInfoCreator.getAccount(),
-                                                         channelInfoCreator.getClientId(),
-                                                         channelInfoCreator.getChannel()));
-        ChannelInfoImpl channelInfo = new ChannelInfoImpl(channelInfoCreator.getAccount(), id);
+            throws EsDocumentBuilderException {
+        StorableId id = new StorableIdImpl(getOrDeriveId(null, channelInfoCreator.getScopeId(),
+                channelInfoCreator.getClientId(),
+                channelInfoCreator.getChannel()));
+        ChannelInfoImpl channelInfo = new ChannelInfoImpl(channelInfoCreator.getScopeId(), id);
         channelInfo.setClientId(channelInfoCreator.getClientId());
         channelInfo.setChannel(channelInfoCreator.getChannel());
-        channelInfo.setFirstPublishedMessageId(channelInfoCreator.getMessageId());
-        channelInfo.setFirstPublishedMessageTimestamp(channelInfoCreator.getMessageTimestamp());
+        channelInfo.setFirstMessageId(channelInfoCreator.getMessageId());
+        channelInfo.setFirstMessageOn(channelInfoCreator.getMessageTimestamp());
 
         return this.build(channelInfo);
     }
@@ -181,23 +179,24 @@ public class ChannelInfoXContentBuilder
      * @param channelInfo
      * @return
      * @throws EsDocumentBuilderException
+     * 
+     * @since 1.0.0
      */
     public ChannelInfoXContentBuilder build(ChannelInfo channelInfo)
-        throws EsDocumentBuilderException
-    {
-        String account = channelInfo.getAccount();
+            throws EsDocumentBuilderException {
+        KapuaId scopeId = channelInfo.getScopeId();
         String clientId = channelInfo.getClientId();
         String channel = channelInfo.getChannel();
 
-        StorableId msgId = channelInfo.getFirstPublishedMessageId();
-        Date msgTimestamp = channelInfo.getFirstPublishedMessageTimestamp();
+        StorableId msgId = channelInfo.getFirstMessageId();
+        Date msgTimestamp = channelInfo.getFirstMessageOn();
 
         XContentBuilder channelBuilder;
-        channelBuilder = this.build(channel, msgId.toString(), msgTimestamp, clientId, account);
+        channelBuilder = this.build(channel, msgId.toString(), msgTimestamp, clientId, scopeId);
 
-        this.setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getAccount(),
-                                        channelInfo.getClientId(),
-                                        channelInfo.getChannel()));
+        this.setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getScopeId(),
+                channelInfo.getClientId(),
+                channelInfo.getChannel()));
         this.setBuilder(channelBuilder);
         return this;
     }
@@ -206,9 +205,10 @@ public class ChannelInfoXContentBuilder
      * Get the channel identifier
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public String getChannelId()
-    {
+    public String getChannelId() {
         return channelId;
     }
 
@@ -216,9 +216,10 @@ public class ChannelInfoXContentBuilder
      * Set the channel identifier
      * 
      * @param esChannelId
+     * 
+     * @since 1.0.0
      */
-    private void setChannelId(String esChannelId)
-    {
+    private void setChannelId(String esChannelId) {
         this.channelId = esChannelId;
     }
 
@@ -226,9 +227,10 @@ public class ChannelInfoXContentBuilder
      * Get the {@link XContentBuilder}
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public XContentBuilder getBuilder()
-    {
+    public XContentBuilder getBuilder() {
         return channelBuilder;
     }
 
@@ -236,9 +238,10 @@ public class ChannelInfoXContentBuilder
      * Set the {@link XContentBuilder}
      * 
      * @param esChannel
+     * 
+     * @since 1.0.0
      */
-    private void setBuilder(XContentBuilder esChannel)
-    {
+    private void setBuilder(XContentBuilder esChannel) {
         this.channelBuilder = esChannel;
     }
 }

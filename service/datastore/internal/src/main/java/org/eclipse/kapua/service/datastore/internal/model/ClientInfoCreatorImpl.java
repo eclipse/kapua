@@ -13,71 +13,69 @@ package org.eclipse.kapua.service.datastore.internal.model;
 
 import java.util.Date;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
  * Client information schema creator implementation
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ClientInfoCreatorImpl implements ClientInfoCreator
-{
-    private String     account;
-    private String     clientId;
+public class ClientInfoCreatorImpl implements ClientInfoCreator {
+
+    private KapuaId scopeId;
+    private String clientId;
     private StorableId messageId;
-    private Date       messageTimestamp;
+    private Date messageTimestamp;
 
     /**
      * Construct a client information creator for the given account
      * 
      * @param account
+     * 
+     * @since 1.0.0
      */
-    public ClientInfoCreatorImpl(String account)
-    {
-        this.account = account;
+    public ClientInfoCreatorImpl(KapuaId scopeId) {
+        setScopeId(scopeId);
     }
 
     @Override
-    public String getAccount()
-    {
-        return account;
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    protected void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId != null ? scopeId : scopeId;
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public StorableId getMessageId()
-    {
+    public StorableId getMessageId() {
         return messageId;
     }
 
     @Override
-    public void setMessageId(StorableId messageId)
-    {
+    public void setMessageId(StorableId messageId) {
         this.messageId = messageId;
     }
 
     @Override
-    public Date getMessageTimestamp()
-    {
+    public Date getMessageTimestamp() {
         return messageTimestamp;
     }
 
     @Override
-    public void setMessageTimestamp(Date messageTimestamp)
-    {
+    public void setMessageTimestamp(Date messageTimestamp) {
         this.messageTimestamp = messageTimestamp;
     }
 }
