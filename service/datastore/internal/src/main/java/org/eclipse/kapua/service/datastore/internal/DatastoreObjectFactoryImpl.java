@@ -14,10 +14,12 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.internal.model.ClientInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
+import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
@@ -25,7 +27,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 /**
- * Datastore object factory implementation
+ * {@link DatastoreObjectFactory} implementation.
  * 
  * @since 1.0.0
  */
@@ -35,6 +37,11 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
     @Override
     public ClientInfoQuery newClientInfoQuery(KapuaId scopeId) {
         return new ClientInfoQueryImpl(scopeId);
+    }
+
+    @Override
+    public ClientInfoListResult newClientInfoListResult() {
+        return new ClientInfoListResultImpl();
     }
 
     @Override
@@ -51,4 +58,5 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
     public <V> TermPredicate newTermPredicate(StorableField field, V value) {
         return new TermPredicateImpl(field, value);
     }
+
 }

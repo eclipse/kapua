@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.model.Storable;
@@ -73,9 +74,10 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
     public KapuaId getScopeId() {
         return scopeId;
     }
-
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId != null ? (scopeId instanceof KapuaEid ? (KapuaEid) scopeId : new KapuaEid(scopeId)) : null;
     }
 
     @Override
