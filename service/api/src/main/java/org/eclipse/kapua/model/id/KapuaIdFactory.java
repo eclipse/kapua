@@ -29,7 +29,7 @@ public interface KapuaIdFactory extends KapuaObjectFactory {
      * 
      * <pre>
      * {@code
-     * KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getService("some KapuaIdFactory implementation");<br>
+     * KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getService(KapuaIdFactory.class);
      * String shortId = "some well formed encoded short id";
      * KapuaId id = kapuaIdFactory.newKapuaId(shortId);
      * String shortIdConverted = id.getShortId();
