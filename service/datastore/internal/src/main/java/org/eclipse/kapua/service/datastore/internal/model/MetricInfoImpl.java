@@ -29,7 +29,7 @@ public class MetricInfoImpl implements MetricInfo {
     private String clientId;
     private String channel;
     private String name;
-    private String type;
+    private String metricType;
     private Object value;
 
     private StorableId firstMessageId;
@@ -121,22 +121,27 @@ public class MetricInfoImpl implements MetricInfo {
     }
 
     @Override
-    public String getType() {
-        return type;
+    public String getMetricType() {
+        return metricType;
     }
 
     @Override
-    public void setType(String type) {
-        this.type = type;
+    public void setMetricType(String metricType) {
+        this.metricType = metricType;
     }
 
     @Override
-    public <T> T getValue(Class<T> clazz) {
+    public Object getValue() {
+        return value;
+    }
+    
+    @Override
+    public <T> T getCastedValue(Class<T> clazz) {
         return clazz.cast(value);
     }
 
     @Override
-    public <T> void setValue(T value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 

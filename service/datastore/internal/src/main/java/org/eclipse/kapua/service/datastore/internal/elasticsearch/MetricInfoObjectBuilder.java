@@ -66,12 +66,12 @@ public class MetricInfoObjectBuilder {
         finalMetricInfo.setFirstMessageOn(timestamp);
 
         if (EsUtils.ES_TYPE_STRING.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((String) value);
         }
 
         if (EsUtils.ES_TYPE_INTEGER.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((Integer) value);
         }
 
@@ -80,7 +80,7 @@ public class MetricInfoObjectBuilder {
             if (value != null && value instanceof Integer)
                 obj = ((Integer) value).longValue();
 
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((Long) obj);
         }
 
@@ -89,31 +89,31 @@ public class MetricInfoObjectBuilder {
             if (value != null && value instanceof Double)
                 obj = ((Double) value).floatValue();
 
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((Float) obj);
         }
 
         if (EsUtils.ES_TYPE_DOUBLE.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((Double) value);
         }
 
         if (EsUtils.ES_TYPE_BOOL.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((Boolean) value);
         }
 
         if (EsUtils.ES_TYPE_BINARY.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((byte[]) value);
         }
 
         if (EsUtils.ES_TYPE_DATE.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
+            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
             finalMetricInfo.setValue((Date) EsUtils.convertToKapuaObject(type, (String) value));
         }
 
-        if (finalMetricInfo.getType() == null)
+        if (finalMetricInfo.getMetricType() == null)
             throw new EsObjectBuilderException(String.format("Unknown metric type [%s]", type));
 
         // FIXME - review all this generic

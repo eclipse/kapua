@@ -133,8 +133,8 @@ public class EsMetricInfoDAO {
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue(Object.class));
+        metricInfo.setMetricType(metricInfoCreator.getType());
+        metricInfo.setValue(metricInfoCreator.getValue());
         return this.getUpsertRequest(metricInfo);
     }
 
@@ -182,8 +182,8 @@ public class EsMetricInfoDAO {
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue(Object.class));
+        metricInfo.setMetricType(metricInfoCreator.getType());
+        metricInfo.setValue(metricInfoCreator.getValue());
         return this.upsert(metricInfo);
     }
 

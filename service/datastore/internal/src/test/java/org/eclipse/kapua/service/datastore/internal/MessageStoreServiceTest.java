@@ -852,7 +852,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
 
         for (MetricInfo metricInfo : metricList.getItems()) {
             s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getName()
-                           + "' metric type: '" + metricInfo.getType() + "' metric value: '" + getPrivateField(metricInfo, "value") + "'");
+                           + "' metric type: '" + metricInfo.getMetricType() + "' metric value: '" + getPrivateField(metricInfo, "value") + "'");
         }
         checkListOrder(metricList, sort);
     }

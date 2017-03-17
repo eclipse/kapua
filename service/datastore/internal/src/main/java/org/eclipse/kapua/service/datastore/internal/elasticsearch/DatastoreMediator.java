@@ -172,7 +172,7 @@ public class DatastoreMediator implements MessageStoreMediator,
             metricInfo.setClientId(docBuilder.getClientId());
             metricInfo.setChannel(docBuilder.getChannel());
             metricInfo.setName(entry.getKey());
-            metricInfo.setType(EsUtils.getEsTypeFromValue(entry.getValue()));
+            metricInfo.setMetricType(EsUtils.getEsTypeFromValue(entry.getValue()));
             metricInfo.setFirstMessageId(docBuilder.getMessageId());
             metricInfo.setFirstMessageOn(docBuilder.getTimestamp());
             metricInfo.setValue(entry.getValue());

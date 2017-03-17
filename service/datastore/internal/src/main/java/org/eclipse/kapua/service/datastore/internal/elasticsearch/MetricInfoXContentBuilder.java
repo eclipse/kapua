@@ -159,7 +159,7 @@ public class MetricInfoXContentBuilder {
                 metricInfo.getClientId(),
                 metricInfo.getChannel(),
                 metricInfo.getName(),
-                metricInfo.getType());
+                metricInfo.getMetricType());
     }
 
     /**
@@ -283,8 +283,8 @@ public class MetricInfoXContentBuilder {
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue(Object.class));
+        metricInfo.setMetricType(metricInfoCreator.getType());
+        metricInfo.setValue(metricInfoCreator.getValue());
 
         return this.build(metricInfo);
     }
@@ -302,9 +302,9 @@ public class MetricInfoXContentBuilder {
         StorableId msgId = metricInfo.getFirstMessageId();
         Date msgTimestamp = metricInfo.getFirstMessageOn();
         String metricName = metricInfo.getName();
-        Object value = metricInfo.getValue(Object.class);
+        Object value = metricInfo.getValue();
 
-        String metricMappedName = EsUtils.getMetricValueQualifier(metricName, EsUtils.convertToEsType(metricInfo.getType()));
+        String metricMappedName = EsUtils.getMetricValueQualifier(metricName, EsUtils.convertToEsType(metricInfo.getMetricType()));
 
         XContentBuilder metricContentBuilder;
         metricContentBuilder = this.build(metricInfo.getScopeId(),

@@ -110,7 +110,12 @@ public class MetricInfoCreatorImpl implements MetricInfoCreator {
     }
 
     @Override
-    public <T> T getValue(Class<T> clazz) {
+    public Object getValue() {
+        return value;
+    }
+    
+    @Override
+    public <T> T getCastedValue(Class<T> clazz) {
         return clazz.cast(value);
     }
 
