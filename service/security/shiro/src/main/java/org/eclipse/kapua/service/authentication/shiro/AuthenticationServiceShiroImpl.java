@@ -16,6 +16,7 @@ import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -343,14 +344,19 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Retrieve TTL access token
         KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
-        long ttl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
-
+        long tokenTtl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
+        long refreshTokenTtl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_REFRESH_TOKEN_EXPIRE_AFTER);
         // Generate token
         Date now = new Date();
-        String jwt = generateToken(session, now, ttl);
+        String jwt = generateToken(session, now, tokenTtl);
 
         // Persist token
-        AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, userId, jwt, new Date(now.getTime() + ttl));
+        AccessTokenCreator accessTokenCreator = accessTokenFactory.newCreator(scopeId, 
+                                                                              userId, 
+                                                                              jwt, 
+                                                                              new Date(now.getTime() + tokenTtl), 
+                                                                              UUID.randomUUID().toString(), 
+                                                                              new Date(now.getTime() + refreshTokenTtl));
         AccessToken accessToken;
         try {
             accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.create(accessTokenCreator));

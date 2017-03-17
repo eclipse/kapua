@@ -14,6 +14,12 @@ package org.eclipse.kapua.service.authentication.token;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -23,6 +29,16 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "tokenId",
+        "userId",
+        "expiresOn",
+        "refreshToken",
+        "refreshExpiresOn"
+}, //
+        factoryClass = AccessTokenXmlRegistry.class, //
+        factoryMethod = "newAccessTokenCreator")
 public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
 
     /**
@@ -31,6 +47,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @return The token id
      * @since 1.0
      */
+    @XmlElement(name = "tokenId")
     public String getTokenId();
 
     /**
@@ -48,6 +65,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @return The user id owner of this token
      * @since 1.0
      */
+    @XmlElement(name = "userId")
     public KapuaId getUserId();
 
     /**
@@ -65,6 +83,7 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @return The expire date of this token.
      * @since 1.0
      */
+    @XmlElement(name = "expiresOn")
     public Date getExpiresOn();
 
     /**
@@ -75,4 +94,38 @@ public interface AccessTokenCreator extends KapuaEntityCreator<AccessToken> {
      * @since 1.0
      */
     public void setExpiresOn(Date expiresOn);
+    
+    /**
+     * Gets the refresh token to obtain a new {@link AccessToken} after expiration.
+     *
+     * @since 1.0
+     */
+    @XmlElement(name = "refreshToken")
+    public String getRefreshToken();
+    
+    /**
+     * Sets the refresh token to obtain a new {@link AccessToken} after expiration.
+     * 
+     * @param refreshToken
+     *            The refresh token
+     * @since 1.0
+     */
+    public void setRefreshToken(String refreshToken);
+    
+    /**
+     * Gets the expiration date of the refresh token.
+     *
+     * @since 1.0
+     */
+    @XmlElement(name = "refreshExpiresOn")
+    public Date getRefreshExpiresOn();
+
+    /**
+     * Sets the expire date of this token.
+     *
+     * @param refreshExpiresOn
+     *            The expiration date of the refresh token.
+     * @since 1.0
+     */
+    public void setRefreshExpiresOn(Date refreshExpiresOn);
 }

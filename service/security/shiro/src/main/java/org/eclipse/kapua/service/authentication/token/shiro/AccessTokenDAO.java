@@ -45,7 +45,9 @@ public class AccessTokenDAO extends ServiceDAO {
         AccessTokenImpl accessTokenImpl = new AccessTokenImpl(accessTokenCreator.getScopeId(),
                 accessTokenCreator.getUserId(),
                 accessTokenCreator.getTokenId(),
-                accessTokenCreator.getExpiresOn());
+                accessTokenCreator.getExpiresOn(),
+                accessTokenCreator.getRefreshToken(),
+                accessTokenCreator.getRefreshExpiresOn());
 
         return ServiceDAO.create(em, accessTokenImpl);
     }
