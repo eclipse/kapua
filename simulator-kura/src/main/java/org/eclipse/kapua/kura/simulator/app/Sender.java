@@ -44,7 +44,7 @@ public abstract class Sender {
     }
 
     public void send() {
-        send((Map<String, Object>) null, (byte[]) null);
+        send(null, (byte[]) null);
     }
 
     public void send(final Map<String, Object> metrics, final byte[] body) {
