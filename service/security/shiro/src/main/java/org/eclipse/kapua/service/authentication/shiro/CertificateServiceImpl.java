@@ -35,16 +35,16 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 public class CertificateServiceImpl implements CertificateService {
 
     private final KeyPair keyPair;
-    private static final String PRIVATE_KEY_LOCAL_FILENAME = "jwk_private.key";
-    private static final String PUBLIC_KEY_LOCAL_FILENAME = "jwk_public.key";
+    private static final String PRIVATE_KEY_LOCAL_FILENAME = "jwt_private.key";
+    private static final String PUBLIC_KEY_LOCAL_FILENAME = "jwt_public.key";
 
     /**
      * Constructor
      */
     public CertificateServiceImpl() throws KapuaAuthenticationException {
         KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        File privateKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_JWK_PRIVATE_KEY, ""));
-        File publicKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_JWK_PUBLIC_KEY, ""));
+        File privateKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PRIVATE_KEY, ""));
+        File publicKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PUBLIC_KEY, ""));
         keyPair = new KeyPair(getPublicKey(publicKeyFile), getPrivateKey(privateKeyFile));
     }
 

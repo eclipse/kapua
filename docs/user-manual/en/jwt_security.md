@@ -4,7 +4,7 @@ To leverage JWT security features, a pair of RSA keys (a public one and a privat
 
 ## Use default Kapua keys
 
-A pair of RSA keys is already shipped within Kapua, and can be used **ONLY FOR DEVELOPMENT PURPOSES SINCE THEY ARE PUBLICLY AVAILABLE IN THE KAPUA REPOSITORY**. These keys will be automatically loaded when the system properties `authentication.jwk.private.key` and `authentication.jwk.public.key` are not set, or if the file entered in said properties cannot be read.
+A pair of RSA keys is already shipped within Kapua, and can be used **ONLY FOR DEVELOPMENT PURPOSES SINCE THEY ARE PUBLICLY AVAILABLE IN THE KAPUA REPOSITORY**. These keys will be automatically loaded when the system properties `authentication.session.jwt.private.key` and `authentication.session.jwt.public.key` are not set, or if the file entered in said properties cannot be read.
 
 ## Use custom keys
 
@@ -18,4 +18,4 @@ openssl rsa -in rsa-2048bit-key-pair.pem -pubout -out public.key
 
 Both keys MUST be in PEM PKCS8 non encrypted format (encrypted privte keys are currently not supported). 
 
-Once created, the path must be specified in `authentication.jwk.private.key` and `authentication.jwk.public.key` system properties, either via -D startup parameter or by manually modifying `service/security/shiro/src/main/resources/kapua-authentication-setting.properties`.
+Once created, the path must be specified in `authentication.session.jwt.private.key` and `authentication.session.jwt.public.key` system properties, either via -D startup parameter or by manually modifying `service/security/shiro/src/main/resources/kapua-authentication-setting.properties`.

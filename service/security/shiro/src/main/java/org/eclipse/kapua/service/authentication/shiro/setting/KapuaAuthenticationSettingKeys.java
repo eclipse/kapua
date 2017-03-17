@@ -29,7 +29,9 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_SESSION_JWT_ISSUER("authentication.session.jwt.issuer"),//
     AUTHENTICATION_SESSION_JWT_CACHE_ENABLE("authentication.session.jwt.cache.enabled"), //
     AUTHENTICATION_SESSION_JWT_CACHE_CACHE_TTL("authentication.session.jwt.cache.ttl"), //
-
+    AUTHENTICATION_SESSION_JWT_PRIVATE_KEY("authentication.session.jwt.private.key"),
+    AUTHENTICATION_SESSION_JWT_PUBLIC_KEY("authentication.session.jwt.public.key"),
+    
     AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_ENABLE("authentication.credential.userpass.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_USERPASS_CACHE_CACHE_TTL("authentication.credential.userpass.cache.ttl"), //
 
@@ -43,9 +45,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH("authentication.credential.apiKey.key.length"), //
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_ENABLE("authentication.credential.apiKey.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_TTL("authentication.credential.apiKey.cache.ttl"), //
-    
-    AUTHENTICATION_JWK_PRIVATE_KEY("authentication.jwk.private.key"),
-    AUTHENTICATION_JWK_PUBLIC_KEY("authentication.jwk.public.key"),
+   
     ;
 
     private String key;
