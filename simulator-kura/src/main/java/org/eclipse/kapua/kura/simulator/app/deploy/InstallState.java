@@ -11,40 +11,41 @@
 package org.eclipse.kapua.kura.simulator.app.deploy;
 
 public class InstallState {
-	public static final InstallState IDLE = new InstallState(null, null, "IDLE", null, null);
 
-	private final String name;
-	private final String version;
-	private final String status;
-	private final Long jobId;
-	private final Integer progress;
+    public static final InstallState IDLE = new InstallState(null, null, "IDLE", null, null);
 
-	public InstallState(final String name, final String version, final String status, final Long jobId,
-			final Integer progress) {
-		this.name = name;
-		this.version = version;
-		this.status = status;
-		this.jobId = jobId;
-		this.progress = progress;
-	}
+    private final String name;
+    private final String version;
+    private final String status;
+    private final Long jobId;
+    private final Integer progress;
 
-	public String getName() {
-		return this.name;
-	}
+    public InstallState(final String name, final String version, final String status, final Long jobId,
+            final Integer progress) {
+        this.name = name;
+        this.version = version;
+        this.status = status;
+        this.jobId = jobId;
+        this.progress = progress;
+    }
 
-	public String getVersion() {
-		return this.version;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getStatus() {
-		return this.status;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public Long getJobId() {
-		return this.jobId;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public Integer getProgress() {
-		return this.progress;
-	}
+    public Long getJobId() {
+        return jobId;
+    }
+
+    public Integer getProgress() {
+        return progress;
+    }
 }

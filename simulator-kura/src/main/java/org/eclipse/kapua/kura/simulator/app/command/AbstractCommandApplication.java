@@ -21,66 +21,67 @@ import org.eclipse.kapua.kura.simulator.payload.Metrics;
 
 public abstract class AbstractCommandApplication extends AbstractDefaultApplication {
 
-	public static class Result {
-		private final String standardOutput;
-		private final String standardError;
-		private final int returnCode;
-		private final boolean timeout;
+    public static class Result {
 
-		public Result(final String standardOutput, final String standardError, final int returnCode,
-				final boolean timeout) {
-			requireNonNull(standardOutput);
-			requireNonNull(standardError);
+        private final String standardOutput;
+        private final String standardError;
+        private final int returnCode;
+        private final boolean timeout;
 
-			this.standardOutput = standardOutput;
-			this.standardError = standardError;
-			this.returnCode = returnCode;
-			this.timeout = timeout;
-		}
+        public Result(final String standardOutput, final String standardError, final int returnCode,
+                final boolean timeout) {
+            requireNonNull(standardOutput);
+            requireNonNull(standardError);
 
-		public String getStandardOutput() {
-			return this.standardOutput;
-		}
+            this.standardOutput = standardOutput;
+            this.standardError = standardError;
+            this.returnCode = returnCode;
+            this.timeout = timeout;
+        }
 
-		public String getStandardError() {
-			return this.standardError;
-		}
+        public String getStandardOutput() {
+            return standardOutput;
+        }
 
-		public int getReturnCode() {
-			return this.returnCode;
-		}
+        public String getStandardError() {
+            return standardError;
+        }
 
-		public boolean isTimeout() {
-			return this.timeout;
-		}
-	}
+        public int getReturnCode() {
+            return returnCode;
+        }
 
-	public abstract Result executeCommand(String command);
+        public boolean isTimeout() {
+            return timeout;
+        }
+    }
 
-	public AbstractCommandApplication() {
-		super("CMD-V1");
-	}
+    public abstract Result executeCommand(String command);
 
-	@Override
-	protected void processRequest(final Request request) {
-		if (!"EXEC/command".equals(request.getMessage().getTopic().render(0, 2))) {
-			request.replyNotFound();
-			return;
-		}
+    public AbstractCommandApplication() {
+        super("CMD-V1");
+    }
 
-		final String command = Metrics.getAsString(request.getMetrics(), "command.command");
+    @Override
+    protected void processRequest(final Request request) {
+        if (!"EXEC/command".equals(request.getMessage().getTopic().render(0, 2))) {
+            request.replyNotFound();
+            return;
+        }
 
-		final Result resultValue = executeCommand(command);
-		if (resultValue == null) {
-			throw new IllegalStateException("Failed to execute command");
-		}
+        final String command = Metrics.getAsString(request.getMetrics(), "command.command");
 
-		final Map<String, Object> result = new HashMap<>();
-		result.put("command.stdout", resultValue.getStandardOutput());
-		result.put("command.stderr", resultValue.getStandardError());
-		result.put("command.exit.code", resultValue.getReturnCode());
-		result.put("command.timedout", resultValue.isTimeout());
-		request.replySuccess().send(result);
-	}
+        final Result resultValue = executeCommand(command);
+        if (resultValue == null) {
+            throw new IllegalStateException("Failed to execute command");
+        }
+
+        final Map<String, Object> result = new HashMap<>();
+        result.put("command.stdout", resultValue.getStandardOutput());
+        result.put("command.stderr", resultValue.getStandardError());
+        result.put("command.exit.code", resultValue.getReturnCode());
+        result.put("command.timedout", resultValue.isTimeout());
+        request.replySuccess().send(result);
+    }
 
 }

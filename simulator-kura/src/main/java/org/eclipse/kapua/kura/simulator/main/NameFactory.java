@@ -12,5 +12,6 @@ package org.eclipse.kapua.kura.simulator.main;
 
 @FunctionalInterface
 public interface NameFactory {
-	public String generateName(int instanceNumber);
+
+    public String generateName(int instanceNumber);
 }

@@ -24,49 +24,50 @@ import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Build
 import com.google.protobuf.ByteString;
 
 public abstract class Sender {
-	protected abstract void send(KuraPayload.Builder payload);
 
-	public void send(final byte[] body) {
-		send(Collections.emptyMap(), body);
-	}
+    protected abstract void send(KuraPayload.Builder payload);
 
-	public void send(final String body) {
-		send(Collections.emptyMap(), body.getBytes(StandardCharsets.UTF_8));
-	}
+    public void send(final byte[] body) {
+        send(Collections.emptyMap(), body);
+    }
 
-	public void send(final String body, final Charset charset) {
-		send(Collections.emptyMap(), body.getBytes(charset));
-	}
+    public void send(final String body) {
+        send(Collections.emptyMap(), body.getBytes(StandardCharsets.UTF_8));
+    }
 
-	public void send(final Map<String, Object> metrics) {
-		send(metrics, null);
-	}
+    public void send(final String body, final Charset charset) {
+        send(Collections.emptyMap(), body.getBytes(charset));
+    }
 
-	public void send() {
-		send((Map<String, Object>) null, (byte[]) null);
-	}
+    public void send(final Map<String, Object> metrics) {
+        send(metrics, null);
+    }
 
-	public void send(final Map<String, Object> metrics, final byte[] body) {
-		final Builder payload = KuraPayload.newBuilder();
+    public void send() {
+        send((Map<String, Object>) null, (byte[]) null);
+    }
 
-		if (metrics != null) {
-			Metrics.buildMetrics(payload, metrics);
-		}
+    public void send(final Map<String, Object> metrics, final byte[] body) {
+        final Builder payload = KuraPayload.newBuilder();
 
-		if (body != null) {
-			payload.setBody(ByteString.copyFrom(body));
-		}
+        if (metrics != null) {
+            Metrics.buildMetrics(payload, metrics);
+        }
 
-		send(payload);
-	}
+        if (body != null) {
+            payload.setBody(ByteString.copyFrom(body));
+        }
 
-	public static Sender transportSender(final Topic topic, final Transport transport) {
-		return new Sender() {
+        send(payload);
+    }
 
-			@Override
-			protected void send(final Builder payload) {
-				transport.sendMessage(topic, payload.build().toByteArray());
-			}
-		};
-	}
+    public static Sender transportSender(final Topic topic, final Transport transport) {
+        return new Sender() {
+
+            @Override
+            protected void send(final Builder payload) {
+                transport.sendMessage(topic, payload.build().toByteArray());
+            }
+        };
+    }
 }

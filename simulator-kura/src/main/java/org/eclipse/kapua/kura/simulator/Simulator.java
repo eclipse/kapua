@@ -25,60 +25,60 @@ import org.slf4j.LoggerFactory;
  */
 public class Simulator implements AutoCloseable {
 
-	private static final Logger logger = LoggerFactory.getLogger(Simulator.class);
+    private static final Logger logger = LoggerFactory.getLogger(Simulator.class);
 
-	protected final Transport transport;
+    protected final Transport transport;
 
-	protected List<Module> modules = new LinkedList<>();
+    protected List<Module> modules = new LinkedList<>();
 
-	public Simulator(final GatewayConfiguration configuration, final Transport transport,
-			final Set<Application> applications) {
+    public Simulator(final GatewayConfiguration configuration, final Transport transport,
+            final Set<Application> applications) {
 
-		this.transport = transport;
+        this.transport = transport;
 
-		// set up callbacks
+        // set up callbacks
 
-		this.transport.whenConnected(this::connected);
-		this.transport.whenDisconnected(this::disconnected);
+        this.transport.whenConnected(this::connected);
+        this.transport.whenDisconnected(this::disconnected);
 
-		// set up application controller
+        // set up application controller
 
-		final ApplicationController applicationController = new ApplicationController(transport, applications);
-		this.modules.add(applicationController);
+        final ApplicationController applicationController = new ApplicationController(transport, applications);
+        modules.add(applicationController);
 
-		// set up builder
+        // set up builder
 
-		this.modules.add(new BirthCertificateModule(configuration, applicationController::getApplicationIds));
+        modules.add(new BirthCertificateModule(configuration, applicationController::getApplicationIds));
 
-		// finally connect
+        // finally connect
 
-		this.transport.connect();
-	}
+        this.transport.connect();
+    }
 
-	@Override
-	public void close() {
-		// we don't close the transport here
-	}
+    @Override
+    public void close() {
+        // we don't close the transport here
+    }
 
-	protected void connected() {
-		logger.info("Connected ... sending birth certificate ...");
-		for (final Module module : this.modules) {
-			try {
-				module.connected(this.transport);
-			} catch (final Exception e) {
-				logger.warn("Failed to call module: {}", module, e);
-			}
-		}
-	}
+    protected void connected() {
+        logger.info("Connected ... sending birth certificate ...");
+        for (final Module module : modules) {
+            try {
+                module.connected(transport);
+            } catch (final Exception e) {
+                logger.warn("Failed to call module: {}", module, e);
+            }
+        }
+    }
 
-	protected void disconnected() {
-		for (final Module module : this.modules) {
-			try {
-				module.disconnected(this.transport);
-			} catch (final Exception e) {
-				logger.warn("Failed to call module: {}", module, e);
-			}
-		}
-	}
+    protected void disconnected() {
+        for (final Module module : modules) {
+            try {
+                module.disconnected(transport);
+            } catch (final Exception e) {
+                logger.warn("Failed to call module: {}", module, e);
+            }
+        }
+    }
 
 }

@@ -41,177 +41,178 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
  * instances
  */
 public class SimulatorRunner {
-	private static final Logger logger = LoggerFactory.getLogger(SimulatorRunner.class);
 
-	public static void main(final String[] args) throws Throwable {
+    private static final Logger logger = LoggerFactory.getLogger(SimulatorRunner.class);
 
-		toInfinityAndBeyond();
+    public static void main(final String[] args) throws Throwable {
 
-		final Options opts = new Options();
-		opts.addOption("n", "basename", true, "The base name of the simulator instance");
-		opts.addOption(null, "name-factory", true, "The name factory to use");
-		opts.addOption("c", "count", true, "The number of instances to start");
-		opts.addOption("b", "broker", true, "The URL to the broker");
-		opts.addOption("a", "account-name", true, "The name of the account");
-		opts.addOption("s", "shutdown", true, "Shutdown simulator after x seconds");
+        toInfinityAndBeyond();
 
-		final CommandLine cli = new DefaultParser().parse(opts, args);
+        final Options opts = new Options();
+        opts.addOption("n", "basename", true, "The base name of the simulator instance");
+        opts.addOption(null, "name-factory", true, "The name factory to use");
+        opts.addOption("c", "count", true, "The number of instances to start");
+        opts.addOption("b", "broker", true, "The URL to the broker");
+        opts.addOption("a", "account-name", true, "The name of the account");
+        opts.addOption("s", "shutdown", true, "Shutdown simulator after x seconds");
 
-		final String basename = replace(cli.getOptionValue('n', env("KSIM_BASE_NAME", "sim-")));
-		final String nameFactoryName = cli.getOptionValue("name-factory", env("KSIM_NAME_FACTORY", null));
-		final int count = Integer.parseInt(replace(cli.getOptionValue('c', env("KSIM_NUM_GATEWAYS", "1"))));
-		final String broker = replace(cli.getOptionValue('b', createBrokerUrl()));
-		final String accountName = replace(cli.getOptionValue('a', env("KSIM_ACCOUNT_NAME", "kapua-sys")));
-		final long shutdownAfter = Long
-				.parseLong(replace(cli.getOptionValue('s', Long.toString(Long.MAX_VALUE / 1_000L))));
+        final CommandLine cli = new DefaultParser().parse(opts, args);
 
-		dumpEnv();
+        final String basename = replace(cli.getOptionValue('n', env("KSIM_BASE_NAME", "sim-")));
+        final String nameFactoryName = cli.getOptionValue("name-factory", env("KSIM_NAME_FACTORY", null));
+        final int count = Integer.parseInt(replace(cli.getOptionValue('c', env("KSIM_NUM_GATEWAYS", "1"))));
+        final String broker = replace(cli.getOptionValue('b', createBrokerUrl()));
+        final String accountName = replace(cli.getOptionValue('a', env("KSIM_ACCOUNT_NAME", "kapua-sys")));
+        final long shutdownAfter = Long
+                .parseLong(replace(cli.getOptionValue('s', Long.toString(Long.MAX_VALUE / 1_000L))));
 
-		logger.info("Starting simulation ...");
-		logger.info("\tbasename : {}", basename);
-		logger.info("\tname-factory : {}", nameFactoryName);
-		logger.info("\tcount: {}", count);
-		logger.info("\tbroker: {}", broker);
-		logger.info("\taccount-name: {}", accountName);
+        dumpEnv();
 
-		final ScheduledExecutorService downloadExecutor = Executors
-				.newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
+        logger.info("Starting simulation ...");
+        logger.info("\tbasename : {}", basename);
+        logger.info("\tname-factory : {}", nameFactoryName);
+        logger.info("\tcount: {}", count);
+        logger.info("\tbroker: {}", broker);
+        logger.info("\taccount-name: {}", accountName);
 
-		final List<AutoCloseable> close = new LinkedList<>();
+        final ScheduledExecutorService downloadExecutor = Executors
+                .newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
 
-		final NameFactory nameFactory = createNameFactory(nameFactoryName)
-				.orElseGet(() -> NameFactories.prefixed(basename));
+        final List<AutoCloseable> close = new LinkedList<>();
 
-		try {
-			for (int i = 1; i <= count; i++) {
+        final NameFactory nameFactory = createNameFactory(nameFactoryName)
+                .orElseGet(() -> NameFactories.prefixed(basename));
 
-				final String name = nameFactory.generateName(i);
-				logger.info("Creating instance #{} - {}", i, name);
+        try {
+            for (int i = 1; i <= count; i++) {
 
-				final GatewayConfiguration configuration = new GatewayConfiguration(broker, accountName, name);
+                final String name = nameFactory.generateName(i);
+                logger.info("Creating instance #{} - {}", i, name);
 
-				final Set<Application> apps = new HashSet<>();
-				apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
-				apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
+                final GatewayConfiguration configuration = new GatewayConfiguration(broker, accountName, name);
 
-				final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
-				close.add(transport);
-				final Simulator simulator = new Simulator(configuration, transport, apps);
-				close.add(simulator);
-			}
+                final Set<Application> apps = new HashSet<>();
+                apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
+                apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
 
-			Thread.sleep(shutdownAfter * 1_000L);
-			logger.info("Bye bye...");
-		} finally {
-			downloadExecutor.shutdown();
-			closeAll(close);
-		}
+                final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
+                close.add(transport);
+                final Simulator simulator = new Simulator(configuration, transport, apps);
+                close.add(simulator);
+            }
 
-		logger.info("Exiting...");
-	}
+            Thread.sleep(shutdownAfter * 1_000L);
+            logger.info("Bye bye...");
+        } finally {
+            downloadExecutor.shutdown();
+            closeAll(close);
+        }
 
-	private static Optional<NameFactory> createNameFactory(final String nameFactoryName) throws Exception {
-		if (nameFactoryName == null || nameFactoryName.isEmpty()) {
-			return Optional.empty();
-		}
+        logger.info("Exiting...");
+    }
 
-		switch (nameFactoryName) {
-		case "default":
-			return Optional.empty();
-		case "host:name":
-			return Optional.of(NameFactories.hostname());
-		case "host:addr":
-			return Optional.of(NameFactories.hostnameAddress());
-		case "host:iface:name":
-			return Optional.of(NameFactories.mainInterfaceName());
-		case "host:iface:index":
-			return Optional.of(NameFactories.mainInterfaceIndex());
-		case "host:iface:mac":
-			return Optional.of(NameFactories.mainInterfaceAddress());
-		default:
-			throw new IllegalArgumentException(String.format("Unknown name factory '%s'", nameFactoryName));
-		}
-	}
+    private static Optional<NameFactory> createNameFactory(final String nameFactoryName) throws Exception {
+        if (nameFactoryName == null || nameFactoryName.isEmpty()) {
+            return Optional.empty();
+        }
 
-	private static void dumpEnv() {
+        switch (nameFactoryName) {
+        case "default":
+            return Optional.empty();
+        case "host:name":
+            return Optional.of(NameFactories.hostname());
+        case "host:addr":
+            return Optional.of(NameFactories.hostnameAddress());
+        case "host:iface:name":
+            return Optional.of(NameFactories.mainInterfaceName());
+        case "host:iface:index":
+            return Optional.of(NameFactories.mainInterfaceIndex());
+        case "host:iface:mac":
+            return Optional.of(NameFactories.mainInterfaceAddress());
+        default:
+            throw new IllegalArgumentException(String.format("Unknown name factory '%s'", nameFactoryName));
+        }
+    }
 
-		final List<String> keys = System.getenv().keySet().stream().filter(key -> key.startsWith("KSIM_")).sorted()
-				.collect(Collectors.toList());
+    private static void dumpEnv() {
 
-		if (keys.isEmpty()) {
-			logger.info("No KSIM_* env vars found");
-			return;
-		}
+        final List<String> keys = System.getenv().keySet().stream().filter(key -> key.startsWith("KSIM_")).sorted()
+                .collect(Collectors.toList());
 
-		logger.info("Dumping KSIM_* env vars:");
-		for (final String key : keys) {
-			logger.info("\t{} = '{}'", key, System.getenv(key));
-		}
-	}
+        if (keys.isEmpty()) {
+            logger.info("No KSIM_* env vars found");
+            return;
+        }
 
-	private static String createBrokerUrl() {
-		final String broker = System.getenv("KSIM_BROKER_URL");
-		if (broker != null && !broker.isEmpty()) {
-			return broker;
-		}
+        logger.info("Dumping KSIM_* env vars:");
+        for (final String key : keys) {
+            logger.info("\t{} = '{}'", key, System.getenv(key));
+        }
+    }
 
-		final String proto = replace(env("KSIM_BROKER_PROTO", "tcp"));
-		final String user = replace(env("KSIM_BROKER_USER", "kapua-broker"));
-		final String password = replace(env("KSIM_BROKER_PASSWORD", "kapua-password"));
-		final String host = replace(env("KSIM_BROKER_HOST", "localhost"));
-		final String port = replace(env("KSIM_BROKER_PORT", "1883"));
+    private static String createBrokerUrl() {
+        final String broker = System.getenv("KSIM_BROKER_URL");
+        if (broker != null && !broker.isEmpty()) {
+            return broker;
+        }
 
-		final StringBuilder sb = new StringBuilder(128);
+        final String proto = replace(env("KSIM_BROKER_PROTO", "tcp"));
+        final String user = replace(env("KSIM_BROKER_USER", "kapua-broker"));
+        final String password = replace(env("KSIM_BROKER_PASSWORD", "kapua-password"));
+        final String host = replace(env("KSIM_BROKER_HOST", "localhost"));
+        final String port = replace(env("KSIM_BROKER_PORT", "1883"));
 
-		sb.append(proto).append("://");
+        final StringBuilder sb = new StringBuilder(128);
 
-		if (user != null && !user.isEmpty()) {
-			sb.append(user);
-			if (password != null && !password.isEmpty()) {
-				sb.append(':').append(password);
-			}
-			sb.append('@');
-		}
+        sb.append(proto).append("://");
 
-		sb.append(host).append(':').append(port);
+        if (user != null && !user.isEmpty()) {
+            sb.append(user);
+            if (password != null && !password.isEmpty()) {
+                sb.append(':').append(password);
+            }
+            sb.append('@');
+        }
 
-		return sb.toString();
-	}
+        sb.append(host).append(':').append(port);
 
-	private static String env(final String envName, final String defaultValue) {
-		return System.getenv().getOrDefault(envName, defaultValue);
-	}
+        return sb.toString();
+    }
 
-	private static String replace(final String string) {
-		return StringReplacer.replace(string, StringReplacer.newExtendedSource(System.getenv()),
-				StringReplacer.DEFAULT_PATTERN);
-	}
+    private static String env(final String envName, final String defaultValue) {
+        return System.getenv().getOrDefault(envName, defaultValue);
+    }
 
-	private static void closeAll(final List<AutoCloseable> close) throws Throwable {
-		final LinkedList<Throwable> errors = new LinkedList<>();
+    private static String replace(final String string) {
+        return StringReplacer.replace(string, StringReplacer.newExtendedSource(System.getenv()),
+                StringReplacer.DEFAULT_PATTERN);
+    }
 
-		for (final AutoCloseable c : close) {
-			try {
-				c.close();
-			} catch (final Exception e) {
-				errors.add(e);
-			}
-		}
+    private static void closeAll(final List<AutoCloseable> close) throws Throwable {
+        final LinkedList<Throwable> errors = new LinkedList<>();
 
-		final Throwable e = errors.pollFirst();
-		if (e != null) {
-			errors.forEach(e::addSuppressed);
-			throw e;
-		}
-	}
+        for (final AutoCloseable c : close) {
+            try {
+                c.close();
+            } catch (final Exception e) {
+                errors.add(e);
+            }
+        }
 
-	/**
-	 * Redirect Paho logging to SLF4J
-	 */
-	private static void toInfinityAndBeyond() {
-		java.util.logging.LogManager.getLogManager().reset();
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
-		java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
-	}
+        final Throwable e = errors.pollFirst();
+        if (e != null) {
+            errors.forEach(e::addSuppressed);
+            throw e;
+        }
+    }
+
+    /**
+     * Redirect Paho logging to SLF4J
+     */
+    private static void toInfinityAndBeyond() {
+        java.util.logging.LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
+    }
 }

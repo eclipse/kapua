@@ -11,18 +11,19 @@
 package org.eclipse.kapua.kura.simulator.app;
 
 public class Descriptor {
-	private final String id;
 
-	public Descriptor(final String id) {
-		this.id = id;
-	}
+    private final String id;
 
-	/**
-	 * Get the ID of the application
-	 * 
-	 * @return the application ID, must never return {@code null}
-	 */
-	public String getId() {
-		return this.id;
-	}
+    public Descriptor(final String id) {
+        this.id = id;
+    }
+
+    /**
+     * Get the ID of the application
+     * 
+     * @return the application ID, must never return {@code null}
+     */
+    public String getId() {
+        return id;
+    }
 }

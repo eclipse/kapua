@@ -26,172 +26,174 @@ import org.slf4j.LoggerFactory;
 
 public final class AnnotatedApplication extends AbstractDefaultApplication {
 
-	private static final Logger logger = LoggerFactory.getLogger(AnnotatedApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnnotatedApplication.class);
 
-	private static interface ResourceHandler {
-		public void handle(Request request) throws Exception;
-	}
+    private static interface ResourceHandler {
 
-	private static class PlainMethodHandler implements ResourceHandler {
-		private final MethodHandle methodHandle;
+        public void handle(Request request) throws Exception;
+    }
 
-		public PlainMethodHandler(final MethodHandle methodHandle) {
-			this.methodHandle = methodHandle;
-		}
+    private static class PlainMethodHandler implements ResourceHandler {
 
-		@Override
-		public void handle(final Request request) throws Exception {
-			try {
-				this.methodHandle.invokeExact(request);
-			} catch (final Exception e) {
-				throw e;
-			} catch (final Throwable e) {
-				throw new InvocationTargetException(e);
-			}
-		}
+        private final MethodHandle methodHandle;
 
-	}
+        public PlainMethodHandler(final MethodHandle methodHandle) {
+            this.methodHandle = methodHandle;
+        }
 
-	private final Map<String, ResourceHandler> handlers;
+        @Override
+        public void handle(final Request request) throws Exception {
+            try {
+                methodHandle.invokeExact(request);
+            } catch (final Exception e) {
+                throw e;
+            } catch (final Throwable e) {
+                throw new InvocationTargetException(e);
+            }
+        }
 
-	private AnnotatedApplication(final String applicationId, final Map<String, ResourceHandler> handlers) {
-		super(applicationId);
-		this.handlers = handlers;
-	}
+    }
 
-	@Override
-	protected void processRequest(final Request request) throws Exception {
-		final String comand = request.getMessage().getTopic().render(0, 2);
+    private final Map<String, ResourceHandler> handlers;
 
-		final ResourceHandler handler = this.handlers.get(comand);
-		logger.debug("Mapping request - {} -> {}", comand, handler);
-		if (handler == null) {
-			request.replyNotFound();
-			return;
-		}
+    private AnnotatedApplication(final String applicationId, final Map<String, ResourceHandler> handlers) {
+        super(applicationId);
+        this.handlers = handlers;
+    }
 
-		handler.handle(request);
-	}
+    @Override
+    protected void processRequest(final Request request) throws Exception {
+        final String comand = request.getMessage().getTopic().render(0, 2);
 
-	public static org.eclipse.kapua.kura.simulator.app.Application build(final Object applicationInstance)
-			throws Exception {
-		Objects.requireNonNull(applicationInstance);
+        final ResourceHandler handler = handlers.get(comand);
+        logger.debug("Mapping request - {} -> {}", comand, handler);
+        if (handler == null) {
+            request.replyNotFound();
+            return;
+        }
 
-		final Class<? extends Object> clazz = applicationInstance.getClass();
-		final Application app = clazz.getAnnotation(Application.class);
-		if (app == null) {
-			throw new IllegalArgumentException(String.format("Application class %s is missing the @%s annotation",
-					clazz.getName(), Application.class.getName()));
-		}
+        handler.handle(request);
+    }
 
-		final String appId = app.value();
-		if (appId == null || appId.isEmpty()) {
-			throw new IllegalArgumentException(
-					String.format("Application annotation must have a valid application id value"));
-		}
+    public static org.eclipse.kapua.kura.simulator.app.Application build(final Object applicationInstance)
+            throws Exception {
+        Objects.requireNonNull(applicationInstance);
 
-		final Map<String, ResourceHandler> handlers = new HashMap<>();
+        final Class<? extends Object> clazz = applicationInstance.getClass();
+        final Application app = clazz.getAnnotation(Application.class);
+        if (app == null) {
+            throw new IllegalArgumentException(String.format("Application class %s is missing the @%s annotation",
+                    clazz.getName(), Application.class.getName()));
+        }
 
-		fillHandlers(handlers, clazz, applicationInstance);
+        final String appId = app.value();
+        if (appId == null || appId.isEmpty()) {
+            throw new IllegalArgumentException(
+                    String.format("Application annotation must have a valid application id value"));
+        }
 
-		return new AnnotatedApplication(appId, handlers);
-	}
+        final Map<String, ResourceHandler> handlers = new HashMap<>();
 
-	public static org.eclipse.kapua.kura.simulator.app.Application build(final Class<?> applicationClazz)
-			throws Exception {
-		try {
-			return build(applicationClazz.newInstance());
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Failed to create application instance", e);
-		}
-	}
+        fillHandlers(handlers, clazz, applicationInstance);
 
-	private static void fillHandlers(final Map<String, ResourceHandler> handlers, final Class<? extends Object> clazz,
-			final Object applicationInstance) throws Exception {
+        return new AnnotatedApplication(appId, handlers);
+    }
 
-		for (final Method method : clazz.getMethods()) {
-			fillHandlersFromMethod(handlers, clazz, applicationInstance, method);
-		}
-	}
+    public static org.eclipse.kapua.kura.simulator.app.Application build(final Class<?> applicationClazz)
+            throws Exception {
+        try {
+            return build(applicationClazz.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException("Failed to create application instance", e);
+        }
+    }
 
-	private static void fillHandlersFromMethod(final Map<String, ResourceHandler> handlers,
-			final Class<? extends Object> clazz, final Object applicationInstance, final Method method)
-			throws Exception {
+    private static void fillHandlers(final Map<String, ResourceHandler> handlers, final Class<? extends Object> clazz,
+            final Object applicationInstance) throws Exception {
 
-		final Resource r = method.getAnnotation(Resource.class);
-		if (r != null) {
-			fillHandlersFromResourceMethod(handlers, clazz, applicationInstance, method);
-		}
+        for (final Method method : clazz.getMethods()) {
+            fillHandlersFromMethod(handlers, clazz, applicationInstance, method);
+        }
+    }
 
-		fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, EXECUTE.class, "EXEC");
-		fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, GET.class, "GET");
-		fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, PUT.class, "PUT");
-		fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, POST.class, "POST");
-		fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, DELETE.class, "DEL");
-	}
+    private static void fillHandlersFromMethod(final Map<String, ResourceHandler> handlers,
+            final Class<? extends Object> clazz, final Object applicationInstance, final Method method)
+            throws Exception {
 
-	private static void fillHandlersFromVerbMethod(final Map<String, ResourceHandler> handlers, final Class<?> clazz,
-			final Object applicationInstance, final Method method, final Class<? extends Annotation> annotationClazz,
-			final String kuraVerb) throws IllegalAccessException {
+        final Resource r = method.getAnnotation(Resource.class);
+        if (r != null) {
+            fillHandlersFromResourceMethod(handlers, clazz, applicationInstance, method);
+        }
 
-		if (!method.isAnnotationPresent(annotationClazz)) {
-			return;
-		}
+        fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, EXECUTE.class, "EXEC");
+        fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, GET.class, "GET");
+        fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, PUT.class, "PUT");
+        fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, POST.class, "POST");
+        fillHandlersFromVerbMethod(handlers, clazz, applicationInstance, method, DELETE.class, "DEL");
+    }
 
-		mapMethod(handlers, applicationInstance, method, kuraVerb, method.getName());
-	}
+    private static void fillHandlersFromVerbMethod(final Map<String, ResourceHandler> handlers, final Class<?> clazz,
+            final Object applicationInstance, final Method method, final Class<? extends Annotation> annotationClazz,
+            final String kuraVerb) throws IllegalAccessException {
 
-	private static void fillHandlersFromResourceMethod(final Map<String, ResourceHandler> handlers,
-			final Class<? extends Object> clazz, final Object applicationInstance, final Method method)
-			throws Exception {
+        if (!method.isAnnotationPresent(annotationClazz)) {
+            return;
+        }
 
-		final String name = method.getName();
+        mapMethod(handlers, applicationInstance, method, kuraVerb, method.getName());
+    }
 
-		String verb = null;
-		final String resource;
+    private static void fillHandlersFromResourceMethod(final Map<String, ResourceHandler> handlers,
+            final Class<? extends Object> clazz, final Object applicationInstance, final Method method)
+            throws Exception {
 
-		StringBuilder verbBuilder = new StringBuilder();
-		final StringBuilder resourceBuilder = new StringBuilder();
+        final String name = method.getName();
 
-		for (int i = 0; i < name.length(); i++) {
-			final char c = name.charAt(i);
-			if (verbBuilder != null) {
-				if (Character.isUpperCase(c)) {
-					verb = verbBuilder.toString().toUpperCase();
-					resourceBuilder.append(Character.toLowerCase(c));
-					verbBuilder = null;
-				} else {
-					verbBuilder.append(c);
-				}
-			} else {
-				resourceBuilder.append(c);
-			}
-		}
+        String verb = null;
+        final String resource;
 
-		resource = resourceBuilder.toString();
+        StringBuilder verbBuilder = new StringBuilder();
+        final StringBuilder resourceBuilder = new StringBuilder();
 
-		if (verb == null || verb.isEmpty() || resource == null || resource.isEmpty()) {
-			throw new IllegalStateException(
-					String.format("Method '%s' of class '%s' has not a valid name", name, clazz.getName()));
-		}
+        for (int i = 0; i < name.length(); i++) {
+            final char c = name.charAt(i);
+            if (verbBuilder != null) {
+                if (Character.isUpperCase(c)) {
+                    verb = verbBuilder.toString().toUpperCase();
+                    resourceBuilder.append(Character.toLowerCase(c));
+                    verbBuilder = null;
+                } else {
+                    verbBuilder.append(c);
+                }
+            } else {
+                resourceBuilder.append(c);
+            }
+        }
 
-		mapMethod(handlers, applicationInstance, method, verb, resource);
-	}
+        resource = resourceBuilder.toString();
 
-	private static void mapMethod(final Map<String, ResourceHandler> handlers, final Object applicationInstance,
-			final Method method, String verb, final String resource) throws IllegalAccessException {
+        if (verb == null || verb.isEmpty() || resource == null || resource.isEmpty()) {
+            throw new IllegalStateException(
+                    String.format("Method '%s' of class '%s' has not a valid name", name, clazz.getName()));
+        }
 
-		// allow proper verbs
-		if ("DELETE".equals(verb)) {
-			verb = "DEL";
-		} else if ("EXECUTE".equals(verb)) {
-			verb = "EXEC";
-		}
+        mapMethod(handlers, applicationInstance, method, verb, resource);
+    }
 
-		logger.debug("Mapping - {} - {}/{}", method.getDeclaringClass().getName(), verb, resource);
+    private static void mapMethod(final Map<String, ResourceHandler> handlers, final Object applicationInstance,
+            final Method method, String verb, final String resource) throws IllegalAccessException {
 
-		final MethodHandle mh = MethodHandles.lookup().unreflect(method);
-		handlers.put(verb + "/" + resource, new PlainMethodHandler(mh.bindTo(applicationInstance)));
-	}
+        // allow proper verbs
+        if ("DELETE".equals(verb)) {
+            verb = "DEL";
+        } else if ("EXECUTE".equals(verb)) {
+            verb = "EXEC";
+        }
+
+        logger.debug("Mapping - {} - {}/{}", method.getDeclaringClass().getName(), verb, resource);
+
+        final MethodHandle mh = MethodHandles.lookup().unreflect(method);
+        handlers.put(verb + "/" + resource, new PlainMethodHandler(mh.bindTo(applicationInstance)));
+    }
 
 }

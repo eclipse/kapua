@@ -13,5 +13,6 @@ package org.eclipse.kapua.kura.simulator.app;
 import org.eclipse.kapua.kura.simulator.topic.Topic;
 
 public interface ApplicationContext {
-	public void sendMessage(Topic topic, byte[] payload);
+
+    public void sendMessage(Topic topic, byte[] payload);
 }

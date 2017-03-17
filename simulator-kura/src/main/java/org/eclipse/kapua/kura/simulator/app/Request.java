@@ -33,203 +33,203 @@ import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraM
 
 public class Request {
 
-	private static final String NL = System.lineSeparator();
+    private static final String NL = System.lineSeparator();
 
-	private final ApplicationContext applicationContext;
-	private final Message message;
-	private final Map<String, Object> metrics;
-	private final String requestId;
-	private final String requesterClientId;
+    private final ApplicationContext applicationContext;
+    private final Message message;
+    private final Map<String, Object> metrics;
+    private final String requestId;
+    private final String requesterClientId;
 
-	public Request(final ApplicationContext applicationContext, final Message message,
-			final Map<String, Object> metrics, final String requestId, final String requesterClientId) {
+    public Request(final ApplicationContext applicationContext, final Message message,
+            final Map<String, Object> metrics, final String requestId, final String requesterClientId) {
 
-		requireNonNull(applicationContext);
-		requireNonNull(message);
-		requireNonNull(metrics);
-		requireNonNull(requestId);
-		requireNonNull(requesterClientId);
+        requireNonNull(applicationContext);
+        requireNonNull(message);
+        requireNonNull(metrics);
+        requireNonNull(requestId);
+        requireNonNull(requesterClientId);
 
-		this.applicationContext = applicationContext;
-		this.message = message;
-		this.metrics = metrics;
-		this.requestId = requestId;
-		this.requesterClientId = requesterClientId;
-	}
+        this.applicationContext = applicationContext;
+        this.message = message;
+        this.metrics = metrics;
+        this.requestId = requestId;
+        this.requesterClientId = requesterClientId;
+    }
 
-	public ApplicationContext getApplicationContext() {
-		return this.applicationContext;
-	}
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
-	public Message getMessage() {
-		return this.message;
-	}
+    public Message getMessage() {
+        return message;
+    }
 
-	public Map<String, Object> getMetrics() {
-		return Collections.unmodifiableMap(this.metrics);
-	}
+    public Map<String, Object> getMetrics() {
+        return Collections.unmodifiableMap(metrics);
+    }
 
-	public String getRequesterClientId() {
-		return this.requesterClientId;
-	}
+    public String getRequesterClientId() {
+        return requesterClientId;
+    }
 
-	public String getRequestId() {
-		return this.requestId;
-	}
+    public String getRequestId() {
+        return requestId;
+    }
 
-	public String renderTopic(final int index) {
-		return this.message.getTopic().render(index, index + 1);
-	}
+    public String renderTopic(final int index) {
+        return message.getTopic().render(index, index + 1);
+    }
 
-	public String renderTopic(final int fromIndex, final int toIndex) {
-		return this.message.getTopic().render(fromIndex, toIndex);
-	}
+    public String renderTopic(final int fromIndex, final int toIndex) {
+        return message.getTopic().render(fromIndex, toIndex);
+    }
 
-	public static Request parse(final ApplicationContext context, final Message message) throws Exception {
+    public static Request parse(final ApplicationContext context, final Message message) throws Exception {
 
-		final KuraPayload payload = KuraPayloadProto.KuraPayload.parseFrom(message.getPayload());
+        final KuraPayload payload = KuraPayloadProto.KuraPayload.parseFrom(message.getPayload());
 
-		final Map<String, Object> metrics = Metrics.extractMetrics(payload);
+        final Map<String, Object> metrics = Metrics.extractMetrics(payload);
 
-		final String requestId = getAsString(metrics, KEY_REQUEST_ID);
-		if (requestId == null) {
-			throw new IllegalArgumentException("Request ID (" + KEY_REQUEST_ID + ") missing in message");
-		}
+        final String requestId = getAsString(metrics, KEY_REQUEST_ID);
+        if (requestId == null) {
+            throw new IllegalArgumentException("Request ID (" + KEY_REQUEST_ID + ") missing in message");
+        }
 
-		final String requesterClientId = getAsString(metrics, KEY_REQUESTER_CLIENT_ID);
-		if (requesterClientId == null) {
-			throw new IllegalArgumentException(
-					"Requester Client ID (" + KEY_REQUESTER_CLIENT_ID + ") missing in message");
-		}
+        final String requesterClientId = getAsString(metrics, KEY_REQUESTER_CLIENT_ID);
+        if (requesterClientId == null) {
+            throw new IllegalArgumentException(
+                    "Requester Client ID (" + KEY_REQUESTER_CLIENT_ID + ") missing in message");
+        }
 
-		return new Request(context, message, metrics, requestId, requesterClientId);
-	}
+        return new Request(context, message, metrics, requestId, requesterClientId);
+    }
 
-	/**
-	 * Get a success reply sender
-	 * <p>
-	 * <strong>Note:</strong> A reply will only be send when one of the
-	 * {@code send} methods of the result was invoked.
-	 * </p>
-	 *
-	 * @return a new sender, never returns {@code null}
-	 */
-	public Sender replySuccess() {
-		return reply(200);
-	}
+    /**
+     * Get a success reply sender
+     * <p>
+     * <strong>Note:</strong> A reply will only be send when one of the
+     * {@code send} methods of the result was invoked.
+     * </p>
+     *
+     * @return a new sender, never returns {@code null}
+     */
+    public Sender replySuccess() {
+        return reply(200);
+    }
 
-	/**
-	 * Get a error reply sender
-	 * <p>
-	 * <strong>Note:</strong> A reply will only be send when one of the
-	 * {@code send} methods of the result was invoked.
-	 * </p>
-	 *
-	 * @return a new sender, never returns {@code null}
-	 */
-	public Sender replyError() {
-		return reply(500);
-	}
+    /**
+     * Get a error reply sender
+     * <p>
+     * <strong>Note:</strong> A reply will only be send when one of the
+     * {@code send} methods of the result was invoked.
+     * </p>
+     *
+     * @return a new sender, never returns {@code null}
+     */
+    public Sender replyError() {
+        return reply(500);
+    }
 
-	/**
-	 * Get a reply sender
-	 * <p>
-	 * <strong>Note:</strong> A reply will only be send when one of the
-	 * {@code send} methods of the result was invoked.
-	 * </p>
-	 *
-	 * @return a new sender, never returns {@code null}
-	 */
-	public Sender reply(final int responseCode) {
-		return new Sender() {
+    /**
+     * Get a reply sender
+     * <p>
+     * <strong>Note:</strong> A reply will only be send when one of the
+     * {@code send} methods of the result was invoked.
+     * </p>
+     *
+     * @return a new sender, never returns {@code null}
+     */
+    public Sender reply(final int responseCode) {
+        return new Sender() {
 
-			@Override
-			protected void send(final KuraPayload.Builder payload) {
+            @Override
+            protected void send(final KuraPayload.Builder payload) {
 
-				// check for existing response code metric
+                // check for existing response code metric
 
-				for (final KuraMetricOrBuilder m : payload.getMetricOrBuilderList()) {
-					if (m.getName().equals(KEY_RESPONSE_CODE)) {
-						throw new IllegalArgumentException(
-								String.format("Metrics must not already contain '%s'", KEY_RESPONSE_CODE));
-					}
-				}
+                for (final KuraMetricOrBuilder m : payload.getMetricOrBuilderList()) {
+                    if (m.getName().equals(KEY_RESPONSE_CODE)) {
+                        throw new IllegalArgumentException(
+                                String.format("Metrics must not already contain '%s'", KEY_RESPONSE_CODE));
+                    }
+                }
 
-				// add response code
+                // add response code
 
-				Metrics.addMetric(payload, KEY_RESPONSE_CODE, responseCode);
+                Metrics.addMetric(payload, KEY_RESPONSE_CODE, responseCode);
 
-				Request.this.applicationContext.sendMessage(
-						Topic.reply(Request.this.requesterClientId, Request.this.requestId),
-						payload.build().toByteArray());
-			}
-		};
-	}
+                applicationContext.sendMessage(
+                        Topic.reply(requesterClientId, requestId),
+                        payload.build().toByteArray());
+            }
+        };
+    }
 
-	/**
-	 * Get a notification sender
-	 * <p>
-	 * <strong>Note:</strong> A reply will only be send when one of the
-	 * {@code send} methods of the result was invoked.
-	 * </p>
-	 *
-	 * @return a new sender, never returns {@code null}
-	 */
-	public Sender notification(final String resource) {
-		return new Sender() {
+    /**
+     * Get a notification sender
+     * <p>
+     * <strong>Note:</strong> A reply will only be send when one of the
+     * {@code send} methods of the result was invoked.
+     * </p>
+     *
+     * @return a new sender, never returns {@code null}
+     */
+    public Sender notification(final String resource) {
+        return new Sender() {
 
-			@Override
-			protected void send(final Builder payload) {
-				Request.this.applicationContext.sendMessage(Topic.notify(Request.this.requesterClientId, resource),
-						payload.build().toByteArray());
-			}
-		};
-	}
+            @Override
+            protected void send(final Builder payload) {
+                applicationContext.sendMessage(Topic.notify(requesterClientId, resource),
+                        payload.build().toByteArray());
+            }
+        };
+    }
 
-	/**
-	 * Send an error reply
-	 */
-	public void replyError(final Throwable error) {
-		final Map<String, Object> metrics = new HashMap<>();
-		if (error != null) {
-			metrics.put(KEY_RESPONSE_EXCEPTION_MESSAGE, ExceptionUtils.getRootCauseMessage(error));
-			metrics.put(KEY_RESPONSE_EXCEPTION_STACKTRACE, ExceptionUtils.getStackTrace(error));
-		}
-		reply(500).send(metrics);
-	}
+    /**
+     * Send an error reply
+     */
+    public void replyError(final Throwable error) {
+        final Map<String, Object> metrics = new HashMap<>();
+        if (error != null) {
+            metrics.put(KEY_RESPONSE_EXCEPTION_MESSAGE, ExceptionUtils.getRootCauseMessage(error));
+            metrics.put(KEY_RESPONSE_EXCEPTION_STACKTRACE, ExceptionUtils.getStackTrace(error));
+        }
+        reply(500).send(metrics);
+    }
 
-	/**
-	 * Send a
-	 * <q>not found</q> reply
-	 */
-	public void replyNotFound() {
-		reply(404).send(Collections.emptyMap());
-	}
+    /**
+     * Send a
+     * <q>not found</q> reply
+     */
+    public void replyNotFound() {
+        reply(404).send(Collections.emptyMap());
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
 
-		sb.append("[Request - ").append(this.message.getTopic());
+        sb.append("[Request - ").append(message.getTopic());
 
-		if (!this.metrics.isEmpty()) {
-			sb.append(NL);
-		}
+        if (!metrics.isEmpty()) {
+            sb.append(NL);
+        }
 
-		for (final Map.Entry<String, Object> entry : this.metrics.entrySet()) {
-			final Object value = entry.getValue();
+        for (final Map.Entry<String, Object> entry : metrics.entrySet()) {
+            final Object value = entry.getValue();
 
-			sb.append("\t");
-			sb.append(entry.getKey()).append(" => ");
-			if (value != null) {
-				sb.append(value.getClass().getSimpleName()).append(" : ").append(value);
-			} else {
-				sb.append("null");
-			}
-			sb.append(NL);
-		}
-		sb.append("]");
+            sb.append("\t");
+            sb.append(entry.getKey()).append(" => ");
+            if (value != null) {
+                sb.append(value.getClass().getSimpleName()).append(" : ").append(value);
+            } else {
+                sb.append("null");
+            }
+            sb.append(NL);
+        }
+        sb.append("]");
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

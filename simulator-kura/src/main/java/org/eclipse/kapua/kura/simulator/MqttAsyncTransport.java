@@ -35,159 +35,159 @@ import org.slf4j.LoggerFactory;
  */
 public class MqttAsyncTransport extends AbstractMqttTransport implements AutoCloseable {
 
-	private static final Logger logger = LoggerFactory.getLogger(MqttAsyncTransport.class);
+    private static final Logger logger = LoggerFactory.getLogger(MqttAsyncTransport.class);
 
-	private final MqttAsyncClient client;
+    private final MqttAsyncClient client;
 
-	private final MqttConnectOptions connectOptions;
+    private final MqttConnectOptions connectOptions;
 
-	private Runnable onConnected;
+    private Runnable onConnected;
 
-	private Runnable onDisconnected;
+    private Runnable onDisconnected;
 
-	public MqttAsyncTransport(final GatewayConfiguration configuration) throws MqttException {
-		super(configuration);
+    public MqttAsyncTransport(final GatewayConfiguration configuration) throws MqttException {
+        super(configuration);
 
-		final MemoryPersistence persistence = new MemoryPersistence();
-		final String plainBrokerUrl = plainUrl(configuration.getBrokerUrl());
-		this.client = new MqttAsyncClient(plainBrokerUrl, configuration.getClientId(), persistence);
-		this.client.setCallback(new MqttCallback() {
+        final MemoryPersistence persistence = new MemoryPersistence();
+        final String plainBrokerUrl = plainUrl(configuration.getBrokerUrl());
+        client = new MqttAsyncClient(plainBrokerUrl, configuration.getClientId(), persistence);
+        client.setCallback(new MqttCallback() {
 
-			@Override
-			public void messageArrived(final String topic, final MqttMessage message) throws Exception {
-			}
+            @Override
+            public void messageArrived(final String topic, final MqttMessage message) throws Exception {
+            }
 
-			@Override
-			public void deliveryComplete(final IMqttDeliveryToken token) {
-			}
+            @Override
+            public void deliveryComplete(final IMqttDeliveryToken token) {
+            }
 
-			@Override
-			public void connectionLost(final Throwable cause) {
-				handleDisconnected();
-			}
-		});
-		this.connectOptions = createConnectOptions(configuration.getBrokerUrl());
-	}
+            @Override
+            public void connectionLost(final Throwable cause) {
+                handleDisconnected();
+            }
+        });
+        connectOptions = createConnectOptions(configuration.getBrokerUrl());
+    }
 
-	@Override
-	public void connect() {
-		try {
-			this.client.connect(this.connectOptions, null, new IMqttActionListener() {
+    @Override
+    public void connect() {
+        try {
+            client.connect(connectOptions, null, new IMqttActionListener() {
 
-				@Override
-				public void onSuccess(final IMqttToken asyncActionToken) {
-					handleConnected();
-				}
+                @Override
+                public void onSuccess(final IMqttToken asyncActionToken) {
+                    handleConnected();
+                }
 
-				@Override
-				public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
-					logger.warn("Failed to connect", exception);
-				}
-			});
-		} catch (final MqttException e) {
-			logger.warn("Failed to initiate connect", e);
-		}
-	}
+                @Override
+                public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
+                    logger.warn("Failed to connect", exception);
+                }
+            });
+        } catch (final MqttException e) {
+            logger.warn("Failed to initiate connect", e);
+        }
+    }
 
-	@Override
-	public void disconnect() {
-		try {
-			this.client.disconnect(null, new IMqttActionListener() {
+    @Override
+    public void disconnect() {
+        try {
+            client.disconnect(null, new IMqttActionListener() {
 
-				@Override
-				public void onSuccess(final IMqttToken asyncActionToken) {
-					handleDisconnected();
-				}
+                @Override
+                public void onSuccess(final IMqttToken asyncActionToken) {
+                    handleDisconnected();
+                }
 
-				@Override
-				public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
-					logger.warn("Failed to disconnect", exception);
-				}
-			});
-		} catch (final MqttException e) {
-			logger.warn("Failed to initiatate disconnect", e);
-		}
-	}
+                @Override
+                public void onFailure(final IMqttToken asyncActionToken, final Throwable exception) {
+                    logger.warn("Failed to disconnect", exception);
+                }
+            });
+        } catch (final MqttException e) {
+            logger.warn("Failed to initiatate disconnect", e);
+        }
+    }
 
-	@Override
-	public void close() throws MqttException {
-		try {
-			this.client.disconnect(0).waitForCompletion();
-		} finally {
-			this.client.close();
-		}
-	}
+    @Override
+    public void close() throws MqttException {
+        try {
+            client.disconnect(0).waitForCompletion();
+        } finally {
+            client.close();
+        }
+    }
 
-	@Override
-	public void subscribe(final Topic topic, final Consumer<Message> consumer) {
-		requireNonNull(consumer);
+    @Override
+    public void subscribe(final Topic topic, final Consumer<Message> consumer) {
+        requireNonNull(consumer);
 
-		try {
-			this.client.subscribe(topic.render(this.topicContext), 0, null, null, new IMqttMessageListener() {
+        try {
+            client.subscribe(topic.render(topicContext), 0, null, null, new IMqttMessageListener() {
 
-				@Override
-				public void messageArrived(final String topic, final MqttMessage mqttMessage) throws Exception {
-					logger.debug("Received MQTT message from {}", topic);
-					consumer.accept(new Message(Topic.fromString(topic), mqttMessage.getPayload(),
-							MqttAsyncTransport.this.topicContext));
-				}
-			});
-		} catch (final MqttException e) {
-			if (e.getReasonCode() != MqttException.REASON_CODE_CLIENT_NOT_CONNECTED) {
-				logger.warn("Failed to subscribe to: {}", topic, e);
-			}
-		}
-	}
+                @Override
+                public void messageArrived(final String topic, final MqttMessage mqttMessage) throws Exception {
+                    logger.debug("Received MQTT message from {}", topic);
+                    consumer.accept(new Message(Topic.fromString(topic), mqttMessage.getPayload(),
+                            MqttAsyncTransport.this.topicContext));
+                }
+            });
+        } catch (final MqttException e) {
+            if (e.getReasonCode() != MqttException.REASON_CODE_CLIENT_NOT_CONNECTED) {
+                logger.warn("Failed to subscribe to: {}", topic, e);
+            }
+        }
+    }
 
-	@Override
-	public void unsubscribe(final Topic topic) {
-		try {
-			this.client.unsubscribe(topic.render(this.topicContext));
-		} catch (final MqttException e) {
-			if (e.getReasonCode() != MqttException.REASON_CODE_CLIENT_NOT_CONNECTED) {
-				logger.warn("Failed to unsubscribe: {}", topic, e);
-			}
-		}
-	}
+    @Override
+    public void unsubscribe(final Topic topic) {
+        try {
+            client.unsubscribe(topic.render(topicContext));
+        } catch (final MqttException e) {
+            if (e.getReasonCode() != MqttException.REASON_CODE_CLIENT_NOT_CONNECTED) {
+                logger.warn("Failed to unsubscribe: {}", topic, e);
+            }
+        }
+    }
 
-	@Override
-	public void whenConnected(final Runnable runnable) {
-		this.onConnected = runnable;
-	}
+    @Override
+    public void whenConnected(final Runnable runnable) {
+        onConnected = runnable;
+    }
 
-	@Override
-	public void whenDisconnected(final Runnable runnable) {
-		this.onDisconnected = runnable;
-	}
+    @Override
+    public void whenDisconnected(final Runnable runnable) {
+        onDisconnected = runnable;
+    }
 
-	protected void handleConnected() {
-		final Runnable runnable = this.onConnected;
-		if (runnable != null) {
-			runnable.run();
-		}
-	}
+    protected void handleConnected() {
+        final Runnable runnable = onConnected;
+        if (runnable != null) {
+            runnable.run();
+        }
+    }
 
-	protected void handleDisconnected() {
-		final Runnable runnable = this.onDisconnected;
-		if (runnable != null) {
-			runnable.run();
-		}
-	}
+    protected void handleDisconnected() {
+        final Runnable runnable = onDisconnected;
+        if (runnable != null) {
+            runnable.run();
+        }
+    }
 
-	@Override
-	public void sendMessage(final Topic topic, final byte[] payload) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Sending message - topic: {}, payload: {}", topic, Hex.toHex(payload, 256));
-		}
+    @Override
+    public void sendMessage(final Topic topic, final byte[] payload) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Sending message - topic: {}, payload: {}", topic, Hex.toHex(payload, 256));
+        }
 
-		try {
-			final String fullTopic = topic.render(this.topicContext);
-			logger.debug("Full topic: {}", fullTopic);
+        try {
+            final String fullTopic = topic.render(topicContext);
+            logger.debug("Full topic: {}", fullTopic);
 
-			this.client.publish(fullTopic, payload, 0, false);
-		} catch (final Exception e) {
-			logger.warn("Failed to send out message", e);
-		}
-	}
+            client.publish(fullTopic, payload, 0, false);
+        } catch (final Exception e) {
+            logger.warn("Failed to send out message", e);
+        }
+    }
 
 }

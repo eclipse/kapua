@@ -15,27 +15,27 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class NameThreadFactory implements ThreadFactory {
 
-	private final String baseName;
+    private final String baseName;
 
-	private final AtomicLong counter = new AtomicLong();
+    private final AtomicLong counter = new AtomicLong();
 
-	private final boolean daemon;
+    private final boolean daemon;
 
-	public NameThreadFactory(final String baseName) {
-		this(baseName, false);
-	}
+    public NameThreadFactory(final String baseName) {
+        this(baseName, false);
+    }
 
-	public NameThreadFactory(final String baseName, final boolean daemon) {
-		this.baseName = baseName;
-		this.daemon = daemon;
-	}
+    public NameThreadFactory(final String baseName, final boolean daemon) {
+        this.baseName = baseName;
+        this.daemon = daemon;
+    }
 
-	@Override
-	public Thread newThread(final Runnable r) {
-		final String name = String.format("%s/%s", this.baseName, this.counter.incrementAndGet());
-		final Thread t = new Thread(r, name);
-		t.setDaemon(this.daemon);
-		return t;
-	}
+    @Override
+    public Thread newThread(final Runnable r) {
+        final String name = String.format("%s/%s", baseName, counter.incrementAndGet());
+        final Thread t = new Thread(r, name);
+        t.setDaemon(daemon);
+        return t;
+    }
 
 }

@@ -26,42 +26,43 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class SingleTestApplication {
-	private static final Logger logger = LoggerFactory.getLogger(SingleTestApplication.class);
 
-	public static void main(final String[] args) throws Throwable {
+    private static final Logger logger = LoggerFactory.getLogger(SingleTestApplication.class);
 
-		toInfinityAndBeyond();
+    public static void main(final String[] args) throws Throwable {
 
-		logger.info("Starting ...");
+        toInfinityAndBeyond();
 
-		final ScheduledExecutorService downloadExecutor = Executors
-				.newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
+        logger.info("Starting ...");
 
-		final GatewayConfiguration configuration = new GatewayConfiguration(
-				"tcp://kapua-broker:kapua-password@localhost:1883", "kapua-sys", "sim-1");
+        final ScheduledExecutorService downloadExecutor = Executors
+                .newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
 
-		final Set<Application> apps = new HashSet<>();
-		apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
-		apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
+        final GatewayConfiguration configuration = new GatewayConfiguration(
+                "tcp://kapua-broker:kapua-password@localhost:1883", "kapua-sys", "sim-1");
 
-		try (final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
-				final Simulator simulator = new Simulator(configuration, transport, apps);) {
-			Thread.sleep(Long.MAX_VALUE);
-			logger.info("Bye bye...");
-		} finally {
-			downloadExecutor.shutdown();
-		}
+        final Set<Application> apps = new HashSet<>();
+        apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
+        apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
 
-		logger.info("Exiting...");
-	}
+        try (final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
+                final Simulator simulator = new Simulator(configuration, transport, apps);) {
+            Thread.sleep(Long.MAX_VALUE);
+            logger.info("Bye bye...");
+        } finally {
+            downloadExecutor.shutdown();
+        }
 
-	/**
-	 * Redirect Paho logging to SLF4J
-	 */
-	private static void toInfinityAndBeyond() {
-		java.util.logging.LogManager.getLogManager().reset();
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
-		java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
-	}
+        logger.info("Exiting...");
+    }
+
+    /**
+     * Redirect Paho logging to SLF4J
+     */
+    private static void toInfinityAndBeyond() {
+        java.util.logging.LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+        java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
+    }
 }

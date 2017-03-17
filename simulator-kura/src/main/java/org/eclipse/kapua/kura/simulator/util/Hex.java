@@ -14,20 +14,20 @@ import com.google.common.io.BaseEncoding;
 
 public final class Hex {
 
-	private Hex() {
-	}
+    private Hex() {
+    }
 
-	/**
-	 * Render a byte array as hex string
-	 * 
-	 * @param payload
-	 *            the data to render
-	 * @param maxLength
-	 *            the maximum number of byes to render
-	 * @return the string
-	 */
-	public static String toHex(final byte[] payload, final int maxLength) {
-		return BaseEncoding.base16().encode(payload, 0, payload.length > maxLength ? maxLength : payload.length)
-				+ (payload.length > maxLength ? "..." : "");
-	}
+    /**
+     * Render a byte array as hex string
+     * 
+     * @param payload
+     *            the data to render
+     * @param maxLength
+     *            the maximum number of byes to render
+     * @return the string
+     */
+    public static String toHex(final byte[] payload, final int maxLength) {
+        return BaseEncoding.base16().encode(payload, 0, payload.length > maxLength ? maxLength : payload.length)
+                + (payload.length > maxLength ? "..." : "");
+    }
 }

@@ -13,59 +13,60 @@ package org.eclipse.kapua.kura.simulator.app.deploy;
 import org.osgi.framework.Bundle;
 
 public class BundleInformation {
-	private final String symbolicName;
 
-	private final String version;
+    private final String symbolicName;
 
-	private final long id;
+    private final String version;
 
-	private final int state;
+    private final long id;
 
-	public BundleInformation(final String symbolicName, final String version, final long id, final int state) {
-		this.symbolicName = symbolicName;
-		this.version = version;
-		this.id = id;
-		this.state = state;
-	}
+    private final int state;
 
-	public String getSymbolicName() {
-		return this.symbolicName;
-	}
+    public BundleInformation(final String symbolicName, final String version, final long id, final int state) {
+        this.symbolicName = symbolicName;
+        this.version = version;
+        this.id = id;
+        this.state = state;
+    }
 
-	public String getVersion() {
-		return this.version;
-	}
+    public String getSymbolicName() {
+        return symbolicName;
+    }
 
-	public long getId() {
-		return this.id;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public int getState() {
-		return this.state;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public String getStateString() {
-		switch (this.state) {
-		case Bundle.UNINSTALLED:
-			return "UNINSTALLED";
+    public int getState() {
+        return state;
+    }
 
-		case Bundle.INSTALLED:
-			return "INSTALLED";
+    public String getStateString() {
+        switch (state) {
+        case Bundle.UNINSTALLED:
+            return "UNINSTALLED";
 
-		case Bundle.RESOLVED:
-			return "RESOLVED";
+        case Bundle.INSTALLED:
+            return "INSTALLED";
 
-		case Bundle.STARTING:
-			return "STARTING";
+        case Bundle.RESOLVED:
+            return "RESOLVED";
 
-		case Bundle.STOPPING:
-			return "STOPPING";
+        case Bundle.STARTING:
+            return "STARTING";
 
-		case Bundle.ACTIVE:
-			return "ACTIVE";
+        case Bundle.STOPPING:
+            return "STOPPING";
 
-		default:
-			return Integer.toString(this.state);
-		}
-	}
+        case Bundle.ACTIVE:
+            return "ACTIVE";
+
+        default:
+            return Integer.toString(state);
+        }
+    }
 }

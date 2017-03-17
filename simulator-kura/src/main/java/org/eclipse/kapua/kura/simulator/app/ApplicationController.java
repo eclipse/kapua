@@ -25,97 +25,98 @@ import org.eclipse.kapua.kura.simulator.topic.Topic;
 
 public class ApplicationController implements Module {
 
-	private final Map<String, Entry> applications = new HashMap<>();
-	private final Transport transport;
+    private final Map<String, Entry> applications = new HashMap<>();
+    private final Transport transport;
 
-	private static class Entry {
-		private final String id;
-		private final Handler handler;
+    private static class Entry {
 
-		public Entry(final String id, final ApplicationContext context, final Handler handler) {
-			this.id = id;
-			this.handler = handler;
-		}
+        private final String id;
+        private final Handler handler;
 
-		public String getId() {
-			return this.id;
-		}
+        public Entry(final String id, final ApplicationContext context, final Handler handler) {
+            this.id = id;
+            this.handler = handler;
+        }
 
-		public Handler getHandler() {
-			return this.handler;
-		}
-	}
+        public String getId() {
+            return id;
+        }
 
-	public ApplicationController(final Transport transport) {
-		this.transport = transport;
-	}
+        public Handler getHandler() {
+            return handler;
+        }
+    }
 
-	public ApplicationController(final Transport transport, final Collection<Application> applications) {
-		this.transport = transport;
-		applications.forEach(this::add);
-	}
+    public ApplicationController(final Transport transport) {
+        this.transport = transport;
+    }
 
-	public void add(final Application application) {
-		final Descriptor desc = application.getDescriptor();
-		final String id = desc.getId();
+    public ApplicationController(final Transport transport, final Collection<Application> applications) {
+        this.transport = transport;
+        applications.forEach(this::add);
+    }
 
-		remove(application);
+    public void add(final Application application) {
+        final Descriptor desc = application.getDescriptor();
+        final String id = desc.getId();
 
-		final ApplicationContext context = new ApplicationContext() {
+        remove(application);
 
-			@Override
-			public void sendMessage(final Topic topic, final byte[] payload) {
-				topic.attach("application-id", id);
-				ApplicationController.this.transport.sendMessage(topic, payload);
-			}
-		};
+        final ApplicationContext context = new ApplicationContext() {
 
-		final Handler handler = application.createHandler(context);
+            @Override
+            public void sendMessage(final Topic topic, final byte[] payload) {
+                topic.attach("application-id", id);
+                transport.sendMessage(topic, payload);
+            }
+        };
 
-		final Entry entry = new Entry(id, context, handler);
-		this.applications.put(id, entry);
+        final Handler handler = application.createHandler(context);
 
-		subscribeEntry(entry);
-	}
+        final Entry entry = new Entry(id, context, handler);
+        applications.put(id, entry);
 
-	public void remove(final Application application) {
-		final String id = application.getDescriptor().getId();
-		final Entry entry = this.applications.remove(id);
-		if (entry == null) {
-			return;
-		}
+        subscribeEntry(entry);
+    }
 
-		this.transport.unsubscribe(Topic.application(id).append(wildcard()));
-	}
+    public void remove(final Application application) {
+        final String id = application.getDescriptor().getId();
+        final Entry entry = applications.remove(id);
+        if (entry == null) {
+            return;
+        }
 
-	private void subscribeEntry(final Entry entry) {
-		this.transport.subscribe(Topic.application(entry.getId()).append(wildcard()), msg -> {
-			// try to cut off application id prefix
-			final Message message = msg.localize(Topic.application(entry.getId()));
-			if (message != null) {
-				// matches our pattern
-				entry.getHandler().processMessage(message);
-			}
-		});
-	}
+        transport.unsubscribe(Topic.application(id).append(wildcard()));
+    }
 
-	@Override
-	public void connected(final Transport transport) {
-		for (final Entry entry : this.applications.values()) {
-			entry.getHandler().connected();
-			subscribeEntry(entry);
-		}
-	}
+    private void subscribeEntry(final Entry entry) {
+        transport.subscribe(Topic.application(entry.getId()).append(wildcard()), msg -> {
+            // try to cut off application id prefix
+            final Message message = msg.localize(Topic.application(entry.getId()));
+            if (message != null) {
+                // matches our pattern
+                entry.getHandler().processMessage(message);
+            }
+        });
+    }
 
-	@Override
-	public void disconnected(final Transport transport) {
-		for (final Entry entry : this.applications.values()) {
-			entry.getHandler().disconnected();
-		}
-	}
+    @Override
+    public void connected(final Transport transport) {
+        for (final Entry entry : applications.values()) {
+            entry.getHandler().connected();
+            subscribeEntry(entry);
+        }
+    }
 
-	public Set<String> getApplicationIds() {
-		return Collections.unmodifiableSet(this.applications.keySet());
-	}
+    @Override
+    public void disconnected(final Transport transport) {
+        for (final Entry entry : applications.values()) {
+            entry.getHandler().disconnected();
+        }
+    }
+
+    public Set<String> getApplicationIds() {
+        return Collections.unmodifiableSet(applications.keySet());
+    }
 
 }

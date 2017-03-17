@@ -20,48 +20,48 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 public abstract class AbstractMqttTransport implements Transport {
 
-	protected final Map<String, String> topicContext;
+    protected final Map<String, String> topicContext;
 
-	public AbstractMqttTransport(final GatewayConfiguration configuration) {
-		final Map<String, String> topicContext = new HashMap<>();
-		topicContext.put("account-name", configuration.getAccountName());
-		topicContext.put("client-id", configuration.getClientId());
+    public AbstractMqttTransport(final GatewayConfiguration configuration) {
+        final Map<String, String> topicContext = new HashMap<>();
+        topicContext.put("account-name", configuration.getAccountName());
+        topicContext.put("client-id", configuration.getClientId());
 
-		this.topicContext = Collections.unmodifiableMap(topicContext);
+        this.topicContext = Collections.unmodifiableMap(topicContext);
 
-	}
+    }
 
-	protected MqttConnectOptions createConnectOptions(final String brokerUrl) {
-		try {
-			final URIBuilder u = new URIBuilder(brokerUrl);
+    protected MqttConnectOptions createConnectOptions(final String brokerUrl) {
+        try {
+            final URIBuilder u = new URIBuilder(brokerUrl);
 
-			final MqttConnectOptions result = new MqttConnectOptions();
-			result.setAutomaticReconnect(true);
+            final MqttConnectOptions result = new MqttConnectOptions();
+            result.setAutomaticReconnect(true);
 
-			final String ui = u.getUserInfo();
-			if (ui != null && !ui.isEmpty()) {
-				final String[] toks = ui.split("\\:", 2);
-				if (toks.length == 2) {
-					result.setUserName(toks[0]);
-					result.setPassword(toks[1].toCharArray());
-				}
-			}
+            final String ui = u.getUserInfo();
+            if (ui != null && !ui.isEmpty()) {
+                final String[] toks = ui.split("\\:", 2);
+                if (toks.length == 2) {
+                    result.setUserName(toks[0]);
+                    result.setPassword(toks[1].toCharArray());
+                }
+            }
 
-			return result;
-		} catch (final URISyntaxException e) {
-			throw new RuntimeException("Failed to create MQTT options", e);
+            return result;
+        } catch (final URISyntaxException e) {
+            throw new RuntimeException("Failed to create MQTT options", e);
 
-		}
-	}
+        }
+    }
 
-	protected static String plainUrl(final String brokerUrl) {
-		try {
-			final URIBuilder u = new URIBuilder(brokerUrl);
-			u.setUserInfo(null);
-			return u.build().toString();
-		} catch (final URISyntaxException e) {
-			throw new RuntimeException("Failed to clean up broker URL", e);
-		}
-	}
+    protected static String plainUrl(final String brokerUrl) {
+        try {
+            final URIBuilder u = new URIBuilder(brokerUrl);
+            u.setUserInfo(null);
+            return u.build().toString();
+        } catch (final URISyntaxException e) {
+            throw new RuntimeException("Failed to clean up broker URL", e);
+        }
+    }
 
 }

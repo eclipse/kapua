@@ -14,15 +14,15 @@ import java.util.function.Function;
 
 public class SimpleCommandApplication extends AbstractCommandApplication {
 
-	private final Function<String, String> handler;
+    private final Function<String, String> handler;
 
-	public SimpleCommandApplication(final Function<String, String> handler) {
-		this.handler = handler;
-	}
+    public SimpleCommandApplication(final Function<String, String> handler) {
+        this.handler = handler;
+    }
 
-	@Override
-	public Result executeCommand(final String command) {
-		return new Result(this.handler.apply(command), "", 0, false);
-	}
+    @Override
+    public Result executeCommand(final String command) {
+        return new Result(handler.apply(command), "", 0, false);
+    }
 
 }
