@@ -9,7 +9,7 @@
 To install Kapua on your local machine please refer to the following quickstart guides:
  * [Running with Vagrant](dev-tools/src/main/vagrant/README.md#demo-machine-quick-start)
  * [Running with Docker](assembly/README.md)
- * [Running with OpenShift](developer-guide/en/running.md#openshift)
+ * [Running with OpenShift](docs/developer-guide/en/running.md#openshift)
 
 For more information, refer to:
 
