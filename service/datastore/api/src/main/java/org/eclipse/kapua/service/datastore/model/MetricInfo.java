@@ -13,7 +13,16 @@ package org.eclipse.kapua.service.datastore.model;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Information about device metric value. Metric is an arbitrary named value. We usually
@@ -21,6 +30,19 @@ import org.eclipse.kapua.model.id.KapuaId;
  * 
  * @since 1.0.0
  */
+@XmlRootElement(name = "metricInfo")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { "id",
+                        "scopeId",
+                        "clientId",
+                        "channel",
+                        "name",
+//                        "metricType",
+                        "value",
+                        "firstMessageId",
+                        "firstMessageOn",
+                        "lastMessageId",
+                        "lastMessageOn"})
 public interface MetricInfo extends Storable {
 
     /**
@@ -30,6 +52,8 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "id")
+    @XmlJavaTypeAdapter(StorableIdAdapter.class)
     public StorableId getId();
 
     /**
@@ -39,6 +63,8 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
 
     /**
@@ -48,6 +74,7 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "clientId")
     public String getClientId();
 
     /**
@@ -57,6 +84,7 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "channel")
     public String getChannel();
 
     /**
@@ -75,6 +103,7 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "name")
     public String getName();
 
     /**
@@ -93,7 +122,8 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
-    public String getType();
+    @XmlTransient
+    public String getMetricType();
 
     /**
      * Set the metric type
@@ -102,10 +132,20 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
-    public void setType(String type);
+    public void setMetricType(String metrictype);
 
     /**
      * Get the metric value
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    @XmlElement(name = "value")
+    public Object getValue();
+    
+    /**
+     * Get the metric value casted to the given class.
      * 
      * @param clazz
      *            metric value type
@@ -113,7 +153,8 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
-    public <T> T getValue(Class<T> clazz);
+    @XmlTransient
+    public <T> T getCastedValue(Class<T> clazz);
 
     /**
      * Set the metric value
@@ -122,7 +163,7 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
-    public <T> void setValue(T value);
+    public void setValue(Object value);
 
     /**
      * Get the message identifier (of the first message published that containing this metric)
@@ -131,6 +172,8 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "firstMessageId")
+    @XmlJavaTypeAdapter(StorableIdAdapter.class)
     public StorableId getFirstMessageId();
 
     /**
@@ -149,6 +192,7 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "firstMessageOn")
     public Date getFirstMessageOn();
 
     /**
@@ -168,6 +212,8 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "lastMessageId")
+    @XmlJavaTypeAdapter(StorableIdAdapter.class)
     public StorableId getLastMessageId();
 
     /**
@@ -188,6 +234,7 @@ public interface MetricInfo extends Storable {
      * 
      * @since 1.0.0
      */
+    @XmlElement(name = "lastMessageOn")
     public Date getLastMessageOn();
 
     /**

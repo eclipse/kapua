@@ -103,7 +103,18 @@ public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
      * 
      * @since 1.0.0
      */
-    public <T> T getValue(Class<T> clazz);
+    public Object getValue();
+    
+    /**
+     * Get the metric value casted to the given class
+     * 
+     * @param clazz
+     *            metric value type
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public <T> T getCastedValue(Class<T> clazz);
 
     /**
      * Set the metric value
