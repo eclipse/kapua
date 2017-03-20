@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDatastoreException;
@@ -31,6 +33,7 @@ import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
+import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
@@ -52,6 +55,8 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsMetricInfoDAO {
 
+    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+    
     private EsTypeDAO esTypeDAO;
 
     /**
@@ -123,19 +128,20 @@ public class EsMetricInfoDAO {
      * @throws EsDocumentBuilderException
      * @since 1.0.0
      */
-    public UpdateRequest getUpsertRequest(MetricInfoCreator metricInfoCreator)
+    public UpdateRequest getUpsertRequest(MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
+        Metric<?> metric = datastoreObjectFactory.newMetric(metricInfoCreator.getName(), metricInfoCreator.getValue());
+        
         MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setClientId(metricInfoCreator.getClientId());
         metricInfo.setChannel(metricInfoCreator.getChannel());
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
-        metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setMetricType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue());
-        return this.getUpsertRequest(metricInfo);
+        metricInfo.setMetric(metric);
+
+        return getUpsertRequest(metricInfo);
     }
 
     /**
@@ -173,18 +179,19 @@ public class EsMetricInfoDAO {
      * @throws EsDocumentBuilderException
      * @since 1.0.0
      */
-    public UpdateResponse upsert(MetricInfoCreator metricInfoCreator)
+    public UpdateResponse upsert(MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
+        Metric<?> metric = datastoreObjectFactory.newMetric(metricInfoCreator.getName(), metricInfoCreator.getValue());;
+        
         MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setChannel(metricInfoCreator.getChannel());
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
-        metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setMetricType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue());
-        return this.upsert(metricInfo);
+        metricInfo.setMetric(metric);
+        
+        return upsert(metricInfo);
     }
 
     /**

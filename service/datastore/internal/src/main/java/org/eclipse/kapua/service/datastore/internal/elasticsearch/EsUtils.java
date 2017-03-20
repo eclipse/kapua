@@ -268,6 +268,37 @@ public class EsUtils {
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }
 
+    public static String getEsFromValue(Object value) {
+        if (value == null)
+            throw new NullPointerException("Metric value must not be null");
+
+        if (value instanceof String)
+            return ES_TYPE_STRING;
+
+        if (value instanceof Integer)
+            return ES_TYPE_INTEGER;
+
+        if (value instanceof Long)
+            return ES_TYPE_LONG;
+
+        if (value instanceof Float)
+            return ES_TYPE_FLOAT;
+
+        if (value instanceof Double)
+            return ES_TYPE_DOUBLE;
+
+        if (value instanceof Date)
+            return ES_TYPE_DATE;
+
+        if (value instanceof Byte[])
+            return ES_TYPE_BINARY;
+
+        if (value instanceof Boolean)
+            return ES_TYPE_BOOL;
+
+        throw new IllegalArgumentException(String.format("Metric value type for "));
+    }
+    
     /**
      * Get the Elasticsearch metric type acronym for the given Elasticsearch metric type full name
      *

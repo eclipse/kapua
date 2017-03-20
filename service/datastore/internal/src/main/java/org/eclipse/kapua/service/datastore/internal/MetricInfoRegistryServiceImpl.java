@@ -239,7 +239,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         // TODO check if this field is correct (EsSchema.METRIC_MTR_TIMESTAMP)!
         RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.METRIC_MTR_TIMESTAMP), metricInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
-        ExistsPredicate metricPredicate = new ExistsPredicateImpl(MessageField.METRICS.field(), metricInfo.getName());
+        ExistsPredicate metricPredicate = new ExistsPredicateImpl(MessageField.METRICS.field(), metricInfo.getMetric().getName());
 
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(messageIdPredicate);

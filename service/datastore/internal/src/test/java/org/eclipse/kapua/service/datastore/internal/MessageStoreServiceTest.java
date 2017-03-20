@@ -681,16 +681,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             else if (clientIds[1].equals(metricInfo.getClientId())) {
                 assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
-            if (metrics[0].equals(metricInfo.getName())) {
+            if (metrics[0].equals(metricInfo.getMetric().getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[0]), capturedOn, metricInfo.getLastMessageOn());
             }
-            else if (metrics[1].equals(metricInfo.getName())) {
+            else if (metrics[1].equals(metricInfo.getMetric().getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[1]), capturedOn, metricInfo.getLastMessageOn());
             }
-            else if (metrics[2].equals(metricInfo.getName())) {
+            else if (metrics[2].equals(metricInfo.getMetric().getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[2]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
-            else if (metrics[3].equals(metricInfo.getName())) {
+            else if (metrics[3].equals(metricInfo.getMetric().getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[3]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
             assertEquals(String.format("Wrong first publish date for the client id [%s]", metricInfo.getClientId()), capturedOn, metricInfo.getFirstMessageOn());
@@ -851,8 +851,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         checkMetricDateBound(metricList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
 
         for (MetricInfo metricInfo : metricList.getItems()) {
-            s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getName()
-                           + "' metric type: '" + metricInfo.getMetricType() + "' metric value: '" + getPrivateField(metricInfo, "value") + "'");
+            s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getMetric().getName()
+                           + "' metric type: '" + metricInfo.getMetric().getType() + "' metric value: '" + getPrivateField(metricInfo.getMetric(), "value") + "'");
         }
         checkListOrder(metricList, sort);
     }
@@ -1715,7 +1715,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Set<String> allMetrics = new HashSet<String>();
         for (MetricInfo metricInfo : result.getItems()) {
             allClientId.add(metricInfo.getClientId());
-            allMetrics.add(metricInfo.getName());
+            allMetrics.add(metricInfo.getMetric().getName());
         }
         assertEquals("Wrong client ids size!", (clientIds != null ? clientIds.length : 0), allClientId.size());
         assertEquals("Wrong metrics size!", (metrics != null ? metrics.length : 0), allMetrics.size());
@@ -1800,8 +1800,21 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         for (Object item : result.getItems()) {
             for (SortField field : sortFieldList) {
                 if (previousItem != null) {
-                    Comparable currentValue = getValue(item, field.getField());
-                    Comparable previousValue = getValue(previousItem, field.getField());
+                    
+                    Comparable currentValue;
+                    Comparable previousValue;
+                    if (field.getField().contains(".")) {
+                        currentValue = getValue(item, field.getField().split("\\.")[0]);
+                        previousValue = getValue(previousItem, field.getField().split("\\.")[0]);
+                        
+                        currentValue = getValue(currentValue, field.getField().split("\\.")[1]);
+                        previousValue = getValue(previousValue, field.getField().split("\\.")[1]);
+                    }
+                    else{                        
+                        currentValue = getValue(item, field.getField());
+                        previousValue = getValue(previousItem, field.getField());
+                    }
+                    
                     if (!currentValue.equals(previousValue)) {
                         checkNextValueCoherence(field, currentValue, previousValue);
                         // proceed with next message
@@ -1934,12 +1947,19 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     private Method getMethod(Class objetcClass, String field, String prefix)
     {
         String fieldName = prefix + field.substring(0, 1).toUpperCase() + field.substring(1);
-        try {
-            return objetcClass.getMethod(fieldName, new Class[0]);
+        
+        Method objMethod = null;
+        do {
+            try {
+                objMethod = objetcClass.getMethod(fieldName, new Class[0]);
+            }
+            catch(NoSuchMethodException e) {
+               objetcClass = objetcClass.getSuperclass();
+            }
         }
-        catch (NoSuchMethodException e) {
-            return null;
-        }
+        while(objMethod == null && objetcClass != null);
+        
+        return objMethod;
     }
 
     /**
@@ -1953,14 +1973,19 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
     @SuppressWarnings({ "rawtypes" })
     private Field getField(Class objetcClass, String field)
     {
-        try {
-            Field objField = objetcClass.getDeclaredField(field);
-            objField.setAccessible(true);
-            return objField;
+        Field objField = null;
+        do {
+            try {
+                objField = objetcClass.getDeclaredField(field);
+                objField.setAccessible(true);
+            }
+            catch(NoSuchFieldException e) {
+               objetcClass = objetcClass.getSuperclass();
+            }
         }
-        catch (NoSuchFieldException e) {
-            return null;
-        }
+        while(objField == null && objetcClass != null);
+        
+        return objField;
     }
 
     //

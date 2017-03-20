@@ -193,7 +193,7 @@ public class MetricInfoRegistryFacade {
                         MetricInfo failedMetricInfoCreator = metricInfos[bulkItemResponse.getItemId()];
                         String failureMessage = bulkItemResponse.getFailureMessage();
                         logger.trace(String.format("Upsert failed [%s, %s, %s]",
-                                failedMetricInfoCreator.getChannel(), failedMetricInfoCreator.getName(), failureMessage));
+                                failedMetricInfoCreator.getChannel(), failedMetricInfoCreator.getMetric().getName(), failureMessage));
                         continue;
                     }
 

@@ -15,9 +15,12 @@ import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
+import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
@@ -30,6 +33,8 @@ import org.elasticsearch.search.SearchHitField;
  */
 public class MetricInfoObjectBuilder {
 
+    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+    
     private MetricInfo metricInfo;
 
     /**
@@ -48,77 +53,61 @@ public class MetricInfoObjectBuilder {
         KapuaId scopeId = KapuaEid.parseCompactId(fields.get(MetricInfoField.SCOPE_ID.field()).getValue());
         String name = (String) fields.get(MetricInfoField.NAME_FULL.field()).getValue();
         String type = (String) fields.get(MetricInfoField.TYPE_FULL.field()).getValue();
-        String lastMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
-        String lastMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
+        String firstMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
+        String firstMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
         Object value = fields.get(MetricInfoField.VALUE_FULL.field()).getValue();
         String clientId = fields.get(MetricInfoField.CLIENT_ID.field()).getValue();
         String channel = fields.get(MetricInfoField.CHANNEL.field()).getValue();
 
+        value = fixEsTypeOptimization(type, value);
+        
+        String metricName = EsUtils.restoreMetricName(name);
+        Metric<?> metric = datastoreObjectFactory.newMetric(metricName, value);
+
+        Date timestamp = (Date) EsUtils.convertToKapuaObject("date", firstMsgTimestamp);
+        
         MetricInfoImpl finalMetricInfo = new MetricInfoImpl(scopeId, new StorableIdImpl(id));
         finalMetricInfo.setClientId(clientId);
         finalMetricInfo.setChannel(channel);
-        finalMetricInfo.setFirstMessageId(new StorableIdImpl(lastMsgId));
-
-        String metricName = EsUtils.restoreMetricName(name);
-        finalMetricInfo.setName(metricName);
-
-        Date timestamp = (Date) EsUtils.convertToKapuaObject("date", lastMsgTimestamp);
+        finalMetricInfo.setFirstMessageId(new StorableIdImpl(firstMsgId));
         finalMetricInfo.setFirstMessageOn(timestamp);
+        finalMetricInfo.setMetric(metric);
 
-        if (EsUtils.ES_TYPE_STRING.equals(type)) {
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((String) value);
-        }
-
-        if (EsUtils.ES_TYPE_INTEGER.equals(type)) {
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Integer) value);
-        }
-
-        if (EsUtils.ES_TYPE_LONG.equals(type)) {
-            Object obj = value;
-            if (value != null && value instanceof Integer)
-                obj = ((Integer) value).longValue();
-
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Long) obj);
-        }
-
-        if (EsUtils.ES_TYPE_FLOAT.equals(type)) {
-            Object obj = value;
-            if (value != null && value instanceof Double)
-                obj = ((Double) value).floatValue();
-
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Float) obj);
-        }
-
-        if (EsUtils.ES_TYPE_DOUBLE.equals(type)) {
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Double) value);
-        }
-
-        if (EsUtils.ES_TYPE_BOOL.equals(type)) {
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Boolean) value);
-        }
-
-        if (EsUtils.ES_TYPE_BINARY.equals(type)) {
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((byte[]) value);
-        }
-
-        if (EsUtils.ES_TYPE_DATE.equals(type)) {
-            finalMetricInfo.setMetricType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Date) EsUtils.convertToKapuaObject(type, (String) value));
-        }
-
-        if (finalMetricInfo.getMetricType() == null)
-            throw new EsObjectBuilderException(String.format("Unknown metric type [%s]", type));
-
-        // FIXME - review all this generic
         this.metricInfo = finalMetricInfo;
         return this;
+    }
+
+    private Object fixEsTypeOptimization(String type, Object value) {
+        if (EsUtils.ES_TYPE_STRING.equals(type)) {
+            // Do nothing
+        }
+        else if (EsUtils.ES_TYPE_INTEGER.equals(type)) {
+            if (value != null && value instanceof Number)
+                return ((Number) value).intValue();
+        }
+        else if (EsUtils.ES_TYPE_LONG.equals(type)) {
+            if (value != null && value instanceof Number)
+                return ((Number) value).longValue();
+        }
+        else if (EsUtils.ES_TYPE_FLOAT.equals(type)) {
+            if (value != null && value instanceof Number)
+                return ((Number) value).floatValue();
+        }
+        else if (EsUtils.ES_TYPE_DOUBLE.equals(type)) {
+            if (value != null && value instanceof Number)
+                return ((Number) value).doubleValue();
+        }
+        else if (EsUtils.ES_TYPE_BOOL.equals(type)) {
+            // Do nothing 
+        }
+        else if (EsUtils.ES_TYPE_BINARY.equals(type)) {
+            // Do nothing
+        }
+        if (EsUtils.ES_TYPE_DATE.equals(type)) {
+            // Do nothing
+        }
+        
+        return value;
     }
 
     /**
