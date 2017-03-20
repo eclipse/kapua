@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * 
  * @since 1.0.0
  */
-public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
+public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
 
     /**
      * Get the account
@@ -83,16 +83,7 @@ public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
      * 
      * @since 1.0.0
      */
-    public String getType();
-
-    /**
-     * Set the metric type
-     * 
-     * @param type
-     * 
-     * @since 1.0.0
-     */
-    public void setType(String type);
+    public Class<T> getType();
 
     /**
      * Get the metric value
@@ -103,18 +94,7 @@ public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
      * 
      * @since 1.0.0
      */
-    public Object getValue();
-    
-    /**
-     * Get the metric value casted to the given class
-     * 
-     * @param clazz
-     *            metric value type
-     * @return
-     * 
-     * @since 1.0.0
-     */
-    public <T> T getCastedValue(Class<T> clazz);
+    public T getValue();
 
     /**
      * Set the metric value
@@ -123,7 +103,7 @@ public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
      * 
      * @since 1.0.0
      */
-    public <T> void setValue(T value);
+    public void setValue(T value);
 
     /**
      * Get the message identifier (of the first message published that containing this metric)

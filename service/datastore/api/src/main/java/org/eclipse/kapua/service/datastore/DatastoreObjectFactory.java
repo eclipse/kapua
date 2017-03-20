@@ -15,6 +15,7 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
@@ -88,6 +89,15 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public MetricInfoListResult newMetricInfoListResult();
+    
+    /**
+     * Returns a new Metric instance
+     * 
+     * @param name
+     * @param value
+     * @return
+     */
+    public Metric<?> newMetric(String name, Object value);
     
     /**
      * Return a new term comparison predicate

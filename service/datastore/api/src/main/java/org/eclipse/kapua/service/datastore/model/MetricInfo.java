@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -36,9 +35,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
                         "scopeId",
                         "clientId",
                         "channel",
-                        "name",
-//                        "metricType",
-                        "value",
+                        "metric",
                         "firstMessageId",
                         "firstMessageOn",
                         "lastMessageId",
@@ -97,73 +94,23 @@ public interface MetricInfo extends Storable {
     public void setChannel(String channel);
 
     /**
-     * Get the metric name
+     * Get the metric
      * 
      * @return
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "name")
-    public String getName();
+    @XmlElement(name = "metric")
+    public Metric<?>  getMetric();
 
     /**
-     * Set the metric name
+     * Set the metric
      * 
-     * @param name
-     * 
-     * @since 1.0.0
-     */
-    public void setName(String name);
-
-    /**
-     * Get the metric type
-     * 
-     * @return
+     * @param metric
      * 
      * @since 1.0.0
      */
-    @XmlTransient
-    public String getMetricType();
-
-    /**
-     * Set the metric type
-     * 
-     * @param type
-     * 
-     * @since 1.0.0
-     */
-    public void setMetricType(String metrictype);
-
-    /**
-     * Get the metric value
-     * 
-     * @return
-     * 
-     * @since 1.0.0
-     */
-    @XmlElement(name = "value")
-    public Object getValue();
-    
-    /**
-     * Get the metric value casted to the given class.
-     * 
-     * @param clazz
-     *            metric value type
-     * @return
-     * 
-     * @since 1.0.0
-     */
-    @XmlTransient
-    public <T> T getCastedValue(Class<T> clazz);
-
-    /**
-     * Set the metric value
-     * 
-     * @param value
-     * 
-     * @since 1.0.0
-     */
-    public void setValue(Object value);
+    public void setMetric(Metric<?> metric);
 
     /**
      * Get the message identifier (of the first message published that containing this metric)
