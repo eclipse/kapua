@@ -23,12 +23,12 @@ public abstract class AbstractDefaultApplication implements Application {
     protected abstract void processRequest(final Request request) throws Exception;
 
     public AbstractDefaultApplication(final String applicationId) {
-        descriptor = new Descriptor(applicationId);
+        this.descriptor = new Descriptor(applicationId);
     }
 
     @Override
     public Descriptor getDescriptor() {
-        return descriptor;
+        return this.descriptor;
     }
 
     @Override
@@ -37,7 +37,12 @@ public abstract class AbstractDefaultApplication implements Application {
 
             @Override
             public void processMessage(final Message message) {
-                process(context, message);
+                AbstractDefaultApplication.this.process(context, message);
+            }
+
+            @Override
+            public void close() throws Exception {
+                AbstractDefaultApplication.this.close();
             }
         };
     }
@@ -61,6 +66,9 @@ public abstract class AbstractDefaultApplication implements Application {
             logger.info("Failed to process request", e);
             request.replyError(e);
         }
+    }
+
+    protected void close() throws Exception {
     }
 
 }
