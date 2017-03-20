@@ -39,11 +39,11 @@ public class ApplicationController implements Module {
         }
 
         public String getId() {
-            return id;
+            return this.id;
         }
 
         public Handler getHandler() {
-            return handler;
+            return this.handler;
         }
     }
 
@@ -65,32 +65,32 @@ public class ApplicationController implements Module {
         final ApplicationContext context = new ApplicationContext() {
 
             @Override
-            public void sendMessage(final Topic topic, final byte[] payload) {
+            public Sender sender(final Topic topic) {
                 topic.attach("application-id", id);
-                transport.sendMessage(topic, payload);
+                return Sender.transportSender(topic, ApplicationController.this.transport);
             }
         };
 
         final Handler handler = application.createHandler(context);
 
         final Entry entry = new Entry(id, context, handler);
-        applications.put(id, entry);
+        this.applications.put(id, entry);
 
         subscribeEntry(entry);
     }
 
     public void remove(final Application application) {
         final String id = application.getDescriptor().getId();
-        final Entry entry = applications.remove(id);
+        final Entry entry = this.applications.remove(id);
         if (entry == null) {
             return;
         }
 
-        transport.unsubscribe(Topic.application(id).append(wildcard()));
+        this.transport.unsubscribe(Topic.application(id).append(wildcard()));
     }
 
     private void subscribeEntry(final Entry entry) {
-        transport.subscribe(Topic.application(entry.getId()).append(wildcard()), msg -> {
+        this.transport.subscribe(Topic.application(entry.getId()).append(wildcard()), msg -> {
             // try to cut off application id prefix
             final Message message = msg.localize(Topic.application(entry.getId()));
             if (message != null) {
@@ -102,7 +102,7 @@ public class ApplicationController implements Module {
 
     @Override
     public void connected(final Transport transport) {
-        for (final Entry entry : applications.values()) {
+        for (final Entry entry : this.applications.values()) {
             entry.getHandler().connected();
             subscribeEntry(entry);
         }
@@ -110,13 +110,13 @@ public class ApplicationController implements Module {
 
     @Override
     public void disconnected(final Transport transport) {
-        for (final Entry entry : applications.values()) {
+        for (final Entry entry : this.applications.values()) {
             entry.getHandler().disconnected();
         }
     }
 
     public Set<String> getApplicationIds() {
-        return Collections.unmodifiableSet(applications.keySet());
+        return Collections.unmodifiableSet(this.applications.keySet());
     }
 
 }

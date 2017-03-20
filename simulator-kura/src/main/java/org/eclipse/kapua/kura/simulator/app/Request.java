@@ -58,31 +58,31 @@ public class Request {
     }
 
     public ApplicationContext getApplicationContext() {
-        return applicationContext;
+        return this.applicationContext;
     }
 
     public Message getMessage() {
-        return message;
+        return this.message;
     }
 
     public Map<String, Object> getMetrics() {
-        return Collections.unmodifiableMap(metrics);
+        return Collections.unmodifiableMap(this.metrics);
     }
 
     public String getRequesterClientId() {
-        return requesterClientId;
+        return this.requesterClientId;
     }
 
     public String getRequestId() {
-        return requestId;
+        return this.requestId;
     }
 
     public String renderTopic(final int index) {
-        return message.getTopic().render(index, index + 1);
+        return this.message.getTopic().render(index, index + 1);
     }
 
     public String renderTopic(final int fromIndex, final int toIndex) {
-        return message.getTopic().render(fromIndex, toIndex);
+        return this.message.getTopic().render(fromIndex, toIndex);
     }
 
     public static Request parse(final ApplicationContext context, final Message message) throws Exception {
@@ -144,12 +144,12 @@ public class Request {
         return new Sender() {
 
             @Override
-            protected void send(final KuraPayload.Builder payload) {
+            public void send(final KuraPayload.Builder payload) {
 
                 // check for existing response code metric
 
-                for (final KuraMetricOrBuilder m : payload.getMetricOrBuilderList()) {
-                    if (m.getName().equals(KEY_RESPONSE_CODE)) {
+                for (final KuraMetricOrBuilder metric : payload.getMetricOrBuilderList()) {
+                    if (metric.getName().equals(KEY_RESPONSE_CODE)) {
                         throw new IllegalArgumentException(
                                 String.format("Metrics must not already contain '%s'", KEY_RESPONSE_CODE));
                     }
@@ -159,9 +159,9 @@ public class Request {
 
                 Metrics.addMetric(payload, KEY_RESPONSE_CODE, responseCode);
 
-                applicationContext.sendMessage(
-                        Topic.reply(requesterClientId, requestId),
-                        payload.build().toByteArray());
+                Request.this.applicationContext
+                        .sender(Topic.reply(Request.this.requesterClientId, Request.this.requestId))
+                        .send(payload);
             }
         };
     }
@@ -179,9 +179,10 @@ public class Request {
         return new Sender() {
 
             @Override
-            protected void send(final Builder payload) {
-                applicationContext.sendMessage(Topic.notify(requesterClientId, resource),
-                        payload.build().toByteArray());
+            public void send(final Builder payload) {
+                Request.this.applicationContext
+                        .sender(Topic.notify(Request.this.requesterClientId, resource))
+                        .send(payload);
             }
         };
     }
@@ -210,13 +211,13 @@ public class Request {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append("[Request - ").append(message.getTopic());
+        sb.append("[Request - ").append(this.message.getTopic());
 
-        if (!metrics.isEmpty()) {
+        if (!this.metrics.isEmpty()) {
             sb.append(NL);
         }
 
-        for (final Map.Entry<String, Object> entry : metrics.entrySet()) {
+        for (final Map.Entry<String, Object> entry : this.metrics.entrySet()) {
             final Object value = entry.getValue();
 
             sb.append("\t");

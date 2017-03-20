@@ -23,31 +23,31 @@ import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Build
 
 import com.google.protobuf.ByteString;
 
-public abstract class Sender {
+public interface Sender {
 
-    protected abstract void send(KuraPayload.Builder payload);
+    public void send(KuraPayload.Builder payload);
 
-    public void send(final byte[] body) {
+    public default void send(final byte[] body) {
         send(Collections.emptyMap(), body);
     }
 
-    public void send(final String body) {
+    public default void send(final String body) {
         send(Collections.emptyMap(), body.getBytes(StandardCharsets.UTF_8));
     }
 
-    public void send(final String body, final Charset charset) {
+    public default void send(final String body, final Charset charset) {
         send(Collections.emptyMap(), body.getBytes(charset));
     }
 
-    public void send(final Map<String, Object> metrics) {
+    public default void send(final Map<String, Object> metrics) {
         send(metrics, null);
     }
 
-    public void send() {
+    public default void send() {
         send(null, (byte[]) null);
     }
 
-    public void send(final Map<String, Object> metrics, final byte[] body) {
+    public default void send(final Map<String, Object> metrics, final byte[] body) {
         final Builder payload = KuraPayload.newBuilder();
 
         if (metrics != null) {
@@ -65,7 +65,7 @@ public abstract class Sender {
         return new Sender() {
 
             @Override
-            protected void send(final Builder payload) {
+            public void send(final Builder payload) {
                 transport.sendMessage(topic, payload.build().toByteArray());
             }
         };

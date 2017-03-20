@@ -12,6 +12,7 @@ package org.eclipse.kapua.kura.simulator.topic;
 
 import static java.util.Collections.emptyMap;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.account;
+import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.applicationId;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.clientId;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.control;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.plain;
@@ -116,6 +117,10 @@ public final class Topic {
         public static Segment clientId() {
             return replace("client-id");
         }
+
+        public static Segment applicationId() {
+            return replace("application-id");
+        }
     }
 
     private static class ReplaceSegment implements Segment {
@@ -128,17 +133,17 @@ public final class Topic {
 
         @Override
         public String render(final Function<String, String> replaceMapper) {
-            final String value = replaceMapper.apply(key);
+            final String value = replaceMapper.apply(this.key);
             if (value == null || value.isEmpty()) {
                 throw new IllegalStateException(
-                        String.format("Unable to replace segment '%s', no value found", key));
+                        String.format("Unable to replace segment '%s', no value found", this.key));
             }
             return value;
         }
 
         @Override
         public String toString() {
-            return "<" + key + ">";
+            return "<" + this.key + ">";
         }
 
     }
@@ -155,7 +160,7 @@ public final class Topic {
     }
 
     public List<Segment> getSegments() {
-        return Collections.unmodifiableList(segments);
+        return Collections.unmodifiableList(this.segments);
     }
 
     public String renderSegment(final Segment segment, final Map<String, String> context) {
@@ -168,7 +173,7 @@ public final class Topic {
     }
 
     public String render(final Map<String, String> context) {
-        return renderInternal(segments, context);
+        return renderInternal(this.segments, context);
     }
 
     /**
@@ -184,11 +189,11 @@ public final class Topic {
      * @return the rendered string
      */
     public String render(final int fromIndex, final int toIndex, final Map<String, String> context) {
-        return renderInternal(segments.subList(fromIndex, toIndex), context);
+        return renderInternal(this.segments.subList(fromIndex, toIndex), context);
     }
 
     public String render() {
-        return renderInternal(segments, Collections.emptyMap());
+        return renderInternal(this.segments, Collections.emptyMap());
     }
 
     /**
@@ -202,7 +207,7 @@ public final class Topic {
      * @return the rendered string
      */
     public String render(final int fromIndex, final int toIndex) {
-        return renderInternal(segments.subList(fromIndex, toIndex), Collections.emptyMap());
+        return renderInternal(this.segments.subList(fromIndex, toIndex), Collections.emptyMap());
     }
 
     private String renderInternal(final List<Segment> segments, final Map<String, String> context) {
@@ -235,6 +240,16 @@ public final class Topic {
         return new Topic(s);
     }
 
+    /**
+     * Get the topic for an application
+     * <p>
+     * <strong>Note:</strong> This is a topic for a control application, for sending data use a data application topic created by {@link #data(String)}.
+     * </p>
+     *
+     * @param application
+     *            the application ID
+     * @return a new topic
+     */
     public static Topic application(final String application) {
         return new Topic(control(), account(), clientId(), plain(application));
     }
@@ -243,9 +258,22 @@ public final class Topic {
         return new Topic(control(), account(), clientId(), raw(localTopic));
     }
 
+    public static Topic data(final String dataTopic) {
+        if (dataTopic.isEmpty()) {
+            throw new IllegalArgumentException("Data topic must not be empty");
+        }
+        if (dataTopic.contains("#") || dataTopic.contains("+")) {
+            throw new IllegalArgumentException("Data topic must not contain wildcards");
+        }
+        if (dataTopic.startsWith("/")) {
+            throw new IllegalArgumentException("Data topic must not start with /");
+        }
+        return new Topic(account(), clientId(), applicationId(), raw(dataTopic));
+    }
+
     public Topic append(final Segment segment) {
-        final List<Segment> segs = new ArrayList<>(segments.size() + 1);
-        segs.addAll(segments);
+        final List<Segment> segs = new ArrayList<>(this.segments.size() + 1);
+        segs.addAll(this.segments);
         segs.add(segment);
         return new Topic(segs);
     }
@@ -260,12 +288,12 @@ public final class Topic {
      * @return the current instance
      */
     public Topic attach(final String key, final String value) {
-        context.put(key, value);
+        this.context.put(key, value);
         return this;
     }
 
     public Topic attachAll(final Map<String, String> topicContext) {
-        context.putAll(topicContext);
+        this.context.putAll(topicContext);
         return this;
     }
 
@@ -290,10 +318,10 @@ public final class Topic {
 
     @Override
     public String toString() {
-        return segments.stream().map(Object::toString).collect(Collectors.joining("/"));
+        return this.segments.stream().map(Object::toString).collect(Collectors.joining("/"));
     }
 
     public Map<String, String> getContext() {
-        return Collections.unmodifiableMap(context);
+        return Collections.unmodifiableMap(this.context);
     }
 }
