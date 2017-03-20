@@ -7,8 +7,8 @@ This chapter describes a quality assurance process of Kapua. Whenever you commit
 Kapua comes with unit and integration tests as a part of regular build process. In order to be sure that Kapua is not broken, execute full build
 using the following command:
 
-    `mvn`
-    
+    mvn
+
 ## Keep CI green
 
 Also be always sure that our CI environments are always green:
