@@ -162,7 +162,7 @@ public class BrokerSteps extends Assert {
         broker = new MQBrokerRunner(BROKER_STARTUP_WAIT_MILIS, ACTIVEMQ_XML);
         new Thread(broker).start();
         // FIXME Issue with broker startup, not listening on topics and missing client connect messages.
-        Thread.sleep(10_000);
+        Thread.sleep(60_000);
 
         kuraDevice = new KuraDevice();
         kuraDevice.mqttClientConnect();
