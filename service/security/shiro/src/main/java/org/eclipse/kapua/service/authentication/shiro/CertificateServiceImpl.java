@@ -63,8 +63,8 @@ public class CertificateServiceImpl implements CertificateService {
                 keyFromFile = ResourceUtils.readResource(ResourceUtils.getResource(PRIVATE_KEY_LOCAL_FILENAME));
             }
             keyFromFile = keyFromFile
-                    .replace("-----BEGIN PRIVATE KEY-----\n", "")
-                    .replaceAll("\n", "")
+                    .replaceAll("(\r)?\n", "")
+                    .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "");
             byte[] decoded = Base64.getDecoder().decode(keyFromFile);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
@@ -86,8 +86,8 @@ public class CertificateServiceImpl implements CertificateService {
                 keyFromFile = ResourceUtils.readResource(ResourceUtils.getResource(PUBLIC_KEY_LOCAL_FILENAME));
             }
             keyFromFile = keyFromFile
-                    .replace("-----BEGIN PUBLIC KEY-----\n", "")
-                    .replaceAll("\n", "")
+                    .replaceAll("(\r)?\n", "")
+                    .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "");
             byte[] decoded = Base64.getDecoder().decode(keyFromFile);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
