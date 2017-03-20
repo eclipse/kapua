@@ -34,7 +34,7 @@ import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
- * 
+ *
  * @since 1.0
  *
  */
