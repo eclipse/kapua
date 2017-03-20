@@ -35,7 +35,17 @@ import org.junit.Test;
 
 public class EsTransportClientProviderTest {
 
-    private static Condition<InetSocketAddress> unresolved = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
+    /**
+     * A hostname which does not exists
+     * <p>
+     * In case this hostname does exists on your network, which is highly unlikely, it can be overridden.
+     * </p>
+     */
+    private final static String UNKWNON_HOST = System.getProperty("test.org.eclipse.kapua.service.datastore.unknowHost", "26-non-existing-host-05");
+
+    private static final String CLUSTER_NAME = "foo-cluster";
+
+    private final static Condition<InetSocketAddress> unresolved = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
 
     private void assertThatResolvedAs(InetSocketAddress result, Class<? extends InetAddress> addressClazz, String hostAddress, int port) {
         assertThat(result).isNotNull();
@@ -85,14 +95,14 @@ public class EsTransportClientProviderTest {
 
     @Test
     public void testHostNotFound1() {
-        InetSocketAddress result = parseAddress("foo");
+        InetSocketAddress result = parseAddress(UNKWNON_HOST);
         assertThat(result).isNotNull();
         assertThat(result).has(unresolved);
     }
 
     @Test
     public void testHostNotFound2() {
-        InetSocketAddress result = parseAddress("foo:123");
+        InetSocketAddress result = parseAddress(UNKWNON_HOST + ":123");
         assertThat(result).isNotNull();
         assertThat(result).has(unresolved);
     }
@@ -117,7 +127,7 @@ public class EsTransportClientProviderTest {
         List<InetSocketAddress> result = parseAddresses(settings);
         assertThat(result).isEmpty();
     }
-    
+
     @Test
     public void testHostsEmpty4() throws EsClientUnavailableException {
         AbstractBaseKapuaSetting<DatastoreSettingKey> settings = fromMap(singletonMap(DatastoreSettingKey.ELASTICSEARCH_NODE.key(), ""));
@@ -135,56 +145,56 @@ public class EsTransportClientProviderTest {
         assertThatResolvedAs(result.get(1), Inet4Address.class, "127.0.0.2", 1234);
         assertThatResolvedAs(result.get(2), Inet6Address.class, "0:0:0:0:0:0:0:1", 5678);
     }
-    
+
     @Test
     public void testHosts2() throws EsClientUnavailableException {
         AbstractBaseKapuaSetting<DatastoreSettingKey> settings = fromMap(singletonMap(DatastoreSettingKey.ELASTICSEARCH_NODE.key() + ".01", "127.0.0.1:1234"));
         List<InetSocketAddress> result = parseAddresses(settings);
-        
+
         assertThat(result).hasSize(1);
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 1234);
     }
-    
+
     @Test
     public void testHosts3() throws EsClientUnavailableException {
         AbstractBaseKapuaSetting<DatastoreSettingKey> settings = fromMap(singletonMap(DatastoreSettingKey.ELASTICSEARCH_NODE.key(), "127.0.0.1:1234"));
         List<InetSocketAddress> result = parseAddresses(settings);
-        
+
         assertThat(result).hasSize(1);
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 1234);
     }
-    
+
     @Test
     public void testOverride1() throws EsClientUnavailableException {
         Map<String, Object> map = new HashMap<>();
         map.put(DatastoreSettingKey.ELASTICSEARCH_NODE.key(), "127.0.0.1:1234");
         map.put(DatastoreSettingKey.ELASTICSEARCH_NODES.key(), "127.0.0.2:5678");
-        map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), "foo");
-        
+        map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
+
         AbstractBaseKapuaSetting<DatastoreSettingKey> settings = fromMap(map);
         List<InetSocketAddress> result = parseAddresses(settings);
-        
+
         assertThat(result).hasSize(1);
-        
+
         /*
          * There must be only one entry, as the "nodes" entry overrides the "node" entry
          */
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.2", 5678);
     }
-    
+
     @Test
     public void testOverride2() throws EsClientUnavailableException {
         Map<String, Object> map = new HashMap<>();
         map.put(DatastoreSettingKey.ELASTICSEARCH_NODE.key(), "127.0.0.1:1234");
         map.put(DatastoreSettingKey.ELASTICSEARCH_NODES.key(), "127.0.0.2:5678");
-        map.put(DatastoreSettingKey.ELASTICSEARCH_NODE.key()+".01", "127.0.0.3:1234");
-        map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), "foo");
-        
+        map.put(DatastoreSettingKey.ELASTICSEARCH_NODE.key() + ".01", "127.0.0.3:1234");
+        map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
+
         AbstractBaseKapuaSetting<DatastoreSettingKey> settings = fromMap(map);
         List<InetSocketAddress> result = parseAddresses(settings);
-        
+
         assertThat(result).hasSize(1);
-        
+
         /*
          * There must be only one entry, as the "nodes" entry overrides the "node" entry
          */
@@ -195,7 +205,7 @@ public class EsTransportClientProviderTest {
     public void testClient1() throws EsClientUnavailableException {
         Map<String, Object> map = new HashMap<>();
         map.put(DatastoreSettingKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678");
-        map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), "foo");
+        map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
 
         try (Client result = EsTransportClientProvider.createClient(fromMap(map))) {
             assertThat(result).isNotNull();
@@ -203,24 +213,24 @@ public class EsTransportClientProviderTest {
     }
 
     @Test
-    public void testEmpty3()  {
+    public void testEmpty3() {
         Assertions.assertThatExceptionOfType(EsClientUnavailableException.class) //
                 .isThrownBy(() -> EsTransportClientProvider.getEsClient(null, null));
     }
-    
+
     @Test
-    public void testEmpty4()  {
+    public void testEmpty4() {
         Assertions.assertThatExceptionOfType(EsClientUnavailableException.class) //
                 .isThrownBy(() -> EsTransportClientProvider.getEsClient(Collections.emptyList(), null));
     }
-    
+
     @Test
-    public void testUnknownHost()  {
+    public void testUnknownHost() {
         Assertions.assertThatExceptionOfType(EsClientUnavailableException.class) //
                 .isThrownBy(() -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put(DatastoreSettingKey.ELASTICSEARCH_NODES.key(), "foo-bar-does-not-exist");
-                    map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), "foo");
+                    map.put(DatastoreSettingKey.ELASTICSEARCH_NODES.key(), UNKWNON_HOST);
+                    map.put(DatastoreSettingKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
 
                     try (Client result = EsTransportClientProvider.createClient(fromMap(map))) {
                     }
