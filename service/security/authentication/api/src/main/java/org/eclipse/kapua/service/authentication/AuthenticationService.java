@@ -66,5 +66,8 @@ public interface AuthenticationService extends KapuaService {
      */
     public AccessToken findAccessToken(String tokenId)
             throws KapuaException;
+    
+    public AccessToken refreshAccessToken(String tokenId, String refreshToken)
+            throws KapuaException;
 
 }

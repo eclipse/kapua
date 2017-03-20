@@ -25,6 +25,9 @@ CREATE TABLE atht_access_token (
   user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
   token_id					TEXT	      NOT NULL,
   expires_on				TIMESTAMP(3)  NOT NULL,
+  refresh_token				TEXT	      NOT NULL,
+  refresh_expires_on		TIMESTAMP(3)  NOT NULL,
+  invalidated_on			TIMESTAMP(3),
   
   optlock               	INT UNSIGNED,
   attributes             	TEXT,  
@@ -35,11 +38,3 @@ CREATE TABLE atht_access_token (
 
 CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
 CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
-
---changeset access_token:2
-
-ALTER TABLE atht_access_token ADD (
-  refresh_token				TEXT	      NOT NULL,
-  refresh_expires_on		TIMESTAMP(3)  NOT NULL,
-  refreshed_on				TIMESTAMP(3),
-)

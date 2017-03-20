@@ -19,6 +19,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
@@ -127,5 +128,25 @@ public class Authentication extends AbstractKapuaResource {
         } catch (Throwable t) {
             handleException(t);
         }
+    }
+    
+    /**
+     * Refreshes an expired {@link AccessToken}. Both the current AccessToken and the Refresh token will be invalidated.
+     * If also the Refresh token is expired, the user will have to restart with a new login.
+     */
+    @ApiOperation(value = "Refreshes an AccessToken", notes = "Both the current AccessToken and the Refresh token will be invalidated. "
+            + "If also the Refresh token is expired, the user will have to restart with a new login.")
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Path("/refresh")
+    public AccessToken refresh(@ApiParam(value = "The current AccessToken's tokenId and refreshToken", required = true) RefreshTokenCredentials refreshTokenCredentials) {
+        AccessToken accessToken = null;
+        try {
+            accessToken = authenticationService.refreshAccessToken(refreshTokenCredentials.getTokenId(), refreshTokenCredentials.getRefreshToken());
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return accessToken;
     }
 }

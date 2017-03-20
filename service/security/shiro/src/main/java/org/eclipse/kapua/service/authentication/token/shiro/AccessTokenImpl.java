@@ -67,8 +67,8 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     private Date refreshExpiresOn;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "refreshed_on", nullable = true)
-    private Date refreshedOn;
+    @Column(name = "invalidated_on", nullable = true)
+    private Date invalidatedOn;
 
     /**
      * Constructor.
@@ -168,12 +168,12 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     }
 
     @Override
-    public Date getRefreshedOn() {
-        return refreshedOn;
+    public Date getInvalidatedOn() {
+        return invalidatedOn;
     }
 
     @Override
-    public void setRefreshedOn(Date refreshedOn) {
-        this.refreshedOn = refreshedOn;
+    public void setInvalidatedOn(Date invalidatedOn) {
+        this.invalidatedOn = invalidatedOn;
     }
 }

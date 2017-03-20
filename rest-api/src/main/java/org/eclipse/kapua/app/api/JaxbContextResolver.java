@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -219,6 +220,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ApiKeyCredentials.class,
                     JwtCredentials.class,
                     UsernamePasswordCredentials.class,
+                    RefreshTokenCredentials.class,
 
                     // Credential
                     Credential.class,

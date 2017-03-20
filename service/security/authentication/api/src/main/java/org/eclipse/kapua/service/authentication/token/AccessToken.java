@@ -38,7 +38,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "expiresOn",
         "refreshToken",
         "refreshExpiresOn",
-        "refreshedOn"
+        "invalidatedOn"
 }, //
         factoryClass = AccessTokenXmlRegistry.class, //
         factoryMethod = "newAccessToken")
@@ -139,22 +139,24 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
     public void setRefreshExpiresOn(Date refreshExpiresOn);
     
     /**
-     * Gets the date the token has been refreshed (i.e. the date
-     * the refresh token has been used)
+     * Gets the date the token has been invalidated (i.e. the date
+     * the refresh token has been used, or it has been invalidated due
+     * to a logout)
      *
      * @since 1.0
      */
-    @XmlElement(name = "refreshedOn")
-    public Date getRefreshedOn();
+    @XmlElement(name = "invalidatedOn")
+    public Date getInvalidatedOn();
 
     /**
-     * Sets the date the token has been refreshed (i.e. the date
-     * the refresh token has been used)
+     * Sets the date the token has been invalidated (i.e. the date
+     * the refresh token has been used, or it has been invalidated due
+     * to a logout)
      *
-     * @param expiresOn
-     *            The date when the token has been refreshed.
+     * @param invalidatedOn
+     *            The date when the token has been invalidated.
      * @since 1.0
      */
-    public void setRefreshedOn(Date refresheedOn); 
+    public void setInvalidatedOn(Date invalidatedOn); 
 
 }

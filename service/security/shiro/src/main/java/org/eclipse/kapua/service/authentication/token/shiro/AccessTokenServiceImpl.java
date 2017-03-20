@@ -257,8 +257,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Do find
         entityManagerSession.onTransactedResult(em -> {
+            Date now = new Date();
             AccessToken accessToken = AccessTokenDAO.find(em, accessTokenId);
-            accessToken.setExpiresOn(new Date());
+            accessToken.setInvalidatedOn(now);
             return AccessTokenDAO.update(em, accessToken);
         });
     }
