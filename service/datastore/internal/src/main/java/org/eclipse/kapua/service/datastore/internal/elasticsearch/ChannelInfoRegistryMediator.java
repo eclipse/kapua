@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -18,20 +18,19 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 
 /**
  * Channel information registry mediator definition
- * 
+ *
  * @since 1.0.0
  */
 public interface ChannelInfoRegistryMediator {
 
     /**
      * Get the channel info metadata
-     * 
+     *
      * @param scopeId
      * @param indexedOn
      * @return
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public Metadata getMetadata(KapuaId scopeId, long indexedOn)
@@ -39,14 +38,13 @@ public interface ChannelInfoRegistryMediator {
 
     /**
      * On before channel info delete event handler
-     * 
+     *
      * @param scopeId
      * @param channelInfo
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public void onBeforeChannelInfoDelete(ChannelInfo channelInfo)
@@ -57,10 +55,9 @@ public interface ChannelInfoRegistryMediator {
 
     /**
      * On after channel info delete event handler
-     * 
+     *
      * @param scopeId
      * @param channelInfo
-     * 
      * @since 1.0.0
      */
     public void onAfterChannelInfoDelete(ChannelInfo channelInfo);

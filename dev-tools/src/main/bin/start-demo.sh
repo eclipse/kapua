@@ -1,6 +1,6 @@
 export KAPUA_GIT_ROOT="$(pwd)"
 export ACTIVEMQ_VERSION=5.14.0
-export TOMCAT_VERSION=8.0.38
+export TOMCAT_VERSION=8.0.41
 
 cd ../vagrant
 
@@ -22,7 +22,7 @@ echo 'creating demo vagrant machine'
 
 cd $KAPUA_GIT_ROOT/../../../../
 
-mvn clean install -Psql -Pdeploy
+mvn clean install -P deploy -D skipTests
 
 cd dev-tools/src/main/vagrant
 

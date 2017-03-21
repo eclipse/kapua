@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * Models a topic for messages posted to the Kapua platform.<br>
  * Topic are expected to be in the form of "account/clientId/&lt;application_specific&gt;";
  * system topic starts with the $EDC account.
- * 
+ *
  * @since 1.0.0
  */
 public class DatastoreChannel {
@@ -56,8 +56,11 @@ public class DatastoreChannel {
 
     private void init(KapuaId scopeId, String clientId, String channel) throws EsInvalidChannelException {
 
-        // Must be not null and not multilevel wild card
-        if (scopeId == null || MULTI_LEVEL_WCARD.equals(scopeId.toCompactId()))
+        // Must be not null
+        if (scopeId == null)
+            throw new EsInvalidChannelException("Empty scopeId.");
+        // Must be not multilevel wild card
+        if (MULTI_LEVEL_WCARD.equals(scopeId.toCompactId()))
             throw new EsInvalidChannelException("Invalid scopeId: " + scopeId.toCompactId());
 
         this.scopeId = scopeId;
@@ -95,12 +98,11 @@ public class DatastoreChannel {
 
     /**
      * Construct a datastore channel given the account, client identifier and the list of the channel parts.
-     * 
+     *
      * @param account
      * @param clientId
      * @param channelParts
      * @throws EsInvalidChannelException
-     * 
      * @since 1.0.0
      */
     public DatastoreChannel(KapuaId scopeId, String clientId, List<String> channelParts) throws EsInvalidChannelException {
@@ -115,12 +117,11 @@ public class DatastoreChannel {
 
     /**
      * Construct a datastore channel given the account, client identifier and the full channel string.
-     * 
+     *
      * @param account
      * @param clientId
      * @param channel
      * @throws EsInvalidChannelException
-     * 
      * @since 1.0.0
      */
     public DatastoreChannel(KapuaId scopeId, String clientId, String channel) throws EsInvalidChannelException {
@@ -129,7 +130,7 @@ public class DatastoreChannel {
 
     /**
      * Construct a datastore channel given full channel string.
-     * 
+     *
      * @param fullName
      * @throws EsInvalidChannelException
      */
@@ -148,9 +149,8 @@ public class DatastoreChannel {
 
     /**
      * Get the account
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getAccount() {
@@ -160,20 +160,18 @@ public class DatastoreChannel {
     /**
      * Check if the channel admit any account (so if the channel starts with a specific wildcard).<br>
      * In the MQTT word this method return true if the topic starts with '+/'.
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public boolean isAnyAccount() {
-        return SINGLE_LEVEL_WCARD.equals(this.scopeId);
+        return this.channel.startsWith(SINGLE_LEVEL_WCARD);
     }
 
     /**
      * Get the client identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getClientId() {
@@ -183,10 +181,9 @@ public class DatastoreChannel {
     /**
      * Check if the channel admit any client identifier (so if the channel has a specific wildcard in the second topic level).<br>
      * In the MQTT word this method return true if the topic starts with 'account/+/'.
-     * 
+     *
      * @param clientId
      * @return
-     * 
      * @since 1.0.0
      */
     public static boolean isAnyClientId(String clientId) {
@@ -195,9 +192,8 @@ public class DatastoreChannel {
 
     /**
      * {@link DatastoreChannel#isAnyClientId(String clientId)}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public boolean isAnyClientId() {
@@ -207,10 +203,9 @@ public class DatastoreChannel {
     /**
      * Check if the channel is an alert channel, so if it has 'ALERT' as third level topic (and no more topics level).<br>
      * In the MQTT word this method return true if the topic is like 'account/client/ALERT'.
-     * 
+     *
      * @param channel
      * @return
-     * 
      * @since 1.0.0
      */
     public static boolean isAlertTopic(String channel) {
@@ -219,9 +214,8 @@ public class DatastoreChannel {
 
     /**
      * {@link DatastoreChannel#isAlertTopic(String channel)}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public boolean isAlertTopic() {
@@ -230,10 +224,9 @@ public class DatastoreChannel {
 
     /**
      * Return true if the channel is single path channel and the last channel part is the {@link DatastoreChannel#MULTI_LEVEL_WCARD} char.
-     * 
+     *
      * @param channel
      * @return
-     * 
      * @since 1.0.0
      */
     public static boolean isAnyChannel(String channel) {
@@ -243,10 +236,9 @@ public class DatastoreChannel {
     /**
      * Return true if the channel is multi path channel and the last channel part is the {@link DatastoreChannel#MULTI_LEVEL_WCARD} char.<br>
      * <b>This method returns false if the channel is {@link DatastoreChannel#MULTI_LEVEL_WCARD}.</b>
-     * 
+     *
      * @param channel
      * @return
-     * 
      * @since 1.0.0
      */
     public static boolean isWildcardChannel(String channel) {
@@ -255,10 +247,9 @@ public class DatastoreChannel {
 
     /**
      * Get the channel formatted string given the topic parts
-     * 
+     *
      * @param parts
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getChannel(List<String> parts) {
@@ -276,9 +267,8 @@ public class DatastoreChannel {
 
     /**
      * Get the channel
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getChannel() {
@@ -287,9 +277,8 @@ public class DatastoreChannel {
 
     /**
      * Get the last topic part (leaf)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getLeafName() {
@@ -298,9 +287,8 @@ public class DatastoreChannel {
 
     /**
      * Get the parent topic
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getParentTopic() {
@@ -310,9 +298,8 @@ public class DatastoreChannel {
 
     /**
      * Get the grand parent topic
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getGrandParentTopic() {
@@ -327,9 +314,8 @@ public class DatastoreChannel {
 
     /**
      * Get the channel parts
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String[] getParts() {
@@ -338,9 +324,8 @@ public class DatastoreChannel {
 
     /**
      * Get the full channel name
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getFullName() {

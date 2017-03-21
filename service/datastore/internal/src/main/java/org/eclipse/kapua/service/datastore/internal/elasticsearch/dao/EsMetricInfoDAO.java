@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -56,9 +56,8 @@ public class EsMetricInfoDAO {
 
     /**
      * Default constructor
-     * 
+     *
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public EsMetricInfoDAO() throws EsClientUnavailableException {
@@ -67,11 +66,10 @@ public class EsMetricInfoDAO {
 
     /**
      * Set the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsMetricInfoDAO setListener(EsDaoListener daoListener)
@@ -82,11 +80,10 @@ public class EsMetricInfoDAO {
 
     /**
      * Unset the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsMetricInfoDAO unsetListener(EsDaoListener daoListener)
@@ -97,10 +94,9 @@ public class EsMetricInfoDAO {
 
     /**
      * Metric information DAO instance factory
-     * 
+     *
      * @return
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public static EsMetricInfoDAO getInstance() throws EsClientUnavailableException {
@@ -109,10 +105,9 @@ public class EsMetricInfoDAO {
 
     /**
      * Set the index name
-     * 
+     *
      * @param indexName
      * @return
-     * 
      * @since 1.0.0
      */
     public EsMetricInfoDAO index(String indexName) {
@@ -122,11 +117,10 @@ public class EsMetricInfoDAO {
 
     /**
      * Build the upsert request
-     * 
+     *
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(MetricInfoCreator metricInfoCreator)
@@ -146,11 +140,10 @@ public class EsMetricInfoDAO {
 
     /**
      * Build the upsert request
-     * 
+     *
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(MetricInfo metricInfo)
@@ -163,10 +156,9 @@ public class EsMetricInfoDAO {
 
     /**
      * Build the upsert request
-     * 
+     *
      * @param esChannelMetric
      * @return
-     * 
      * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(MetricXContentBuilder esChannelMetric) {
@@ -175,11 +167,10 @@ public class EsMetricInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(MetricInfoCreator metricInfoCreator)
@@ -198,11 +189,10 @@ public class EsMetricInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(MetricInfo metricInfo)
@@ -214,10 +204,9 @@ public class EsMetricInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param esChannelMetric
      * @return
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(MetricXContentBuilder esChannelMetric) {
@@ -226,9 +215,8 @@ public class EsMetricInfoDAO {
 
     /**
      * Delete query action (delete document from the database by id)
-     * 
+     *
      * @param id
-     * 
      * @since 1.0.0
      */
     public void deleteById(String id) {
@@ -242,10 +230,9 @@ public class EsMetricInfoDAO {
 
     /**
      * Delete query action (delete documents from the database)
-     * 
+     *
      * @param query
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     public void deleteByQuery(MetricInfoQuery query)
@@ -255,7 +242,7 @@ public class EsMetricInfoDAO {
 
     /**
      * Execute bulk request
-     * 
+     *
      * @param aBulkRequest
      * @return
      */
@@ -265,13 +252,12 @@ public class EsMetricInfoDAO {
 
     /**
      * Query action (return objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public MetricInfoListResult query(MetricInfoQuery query)
@@ -319,12 +305,11 @@ public class EsMetricInfoDAO {
 
     /**
      * Query count action (return the count of the objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public long count(MetricInfoQuery query)

@@ -124,7 +124,7 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 /**
  * Provide a customized JAXBContext that makes the concrete implementations
  * known and available for marshalling
- * 
+ *
  * @since 1.0.0
  */
 @Provider

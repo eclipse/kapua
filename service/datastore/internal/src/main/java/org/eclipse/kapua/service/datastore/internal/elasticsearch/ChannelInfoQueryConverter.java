@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 /**
  * Channel info query converter.<br>
  * This object adds the specific channel info included and excluded fields definition to the abstract query converter.
- * 
+ *
  * @since 1.0.0
  */
 public class ChannelInfoQueryConverter extends AbstractStorableQueryConverter<ChannelInfo, ChannelInfoQuery> {

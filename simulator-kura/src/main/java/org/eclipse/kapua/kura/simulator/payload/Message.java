@@ -19,49 +19,50 @@ import org.eclipse.kapua.kura.simulator.topic.Topic.Segment;
 import org.eclipse.kapua.kura.simulator.util.Hex;
 
 public class Message {
-	private final Topic topic;
-	private final byte[] payload;
-	private final Map<String, String> topicContext;
 
-	public Message(final Topic topic, final byte[] payload) {
-		this(topic, payload, Collections.emptyMap());
-	}
+    private final Topic topic;
+    private final byte[] payload;
+    private final Map<String, String> topicContext;
 
-	public Message(final Topic topic, final byte[] payload, final Map<String, String> topicContext) {
-		this.topic = topic;
-		this.payload = payload;
-		this.topicContext = topicContext;
-	}
+    public Message(final Topic topic, final byte[] payload) {
+        this(topic, payload, Collections.emptyMap());
+    }
 
-	public Topic getTopic() {
-		return this.topic;
-	}
+    public Message(final Topic topic, final byte[] payload, final Map<String, String> topicContext) {
+        this.topic = topic;
+        this.payload = payload;
+        this.topicContext = topicContext;
+    }
 
-	public byte[] getPayload() {
-		return this.payload;
-	}
+    public Topic getTopic() {
+        return topic;
+    }
 
-	public Message localize(final Topic topic) {
-		return localize(topic, this.topicContext);
-	}
+    public byte[] getPayload() {
+        return payload;
+    }
 
-	public Message localize(final Topic topic, final Map<String, String> topicContext) {
-		final LinkedList<Segment> newTopic = new LinkedList<>(this.topic.getSegments());
+    public Message localize(final Topic topic) {
+        return localize(topic, topicContext);
+    }
 
-		for (final Segment seg : topic.getSegments()) {
-			final String segValue1 = this.topic.renderSegment(newTopic.removeFirst(), topicContext);
-			final String segValue2 = topic.renderSegment(seg, topicContext);
+    public Message localize(final Topic topic, final Map<String, String> topicContext) {
+        final LinkedList<Segment> newTopic = new LinkedList<>(this.topic.getSegments());
 
-			if (!segValue1.equals(segValue2)) {
-				return null;
-			}
-		}
+        for (final Segment seg : topic.getSegments()) {
+            final String segValue1 = this.topic.renderSegment(newTopic.removeFirst(), topicContext);
+            final String segValue2 = topic.renderSegment(seg, topicContext);
 
-		return new Message(Topic.from(newTopic), this.payload);
-	}
+            if (!segValue1.equals(segValue2)) {
+                return null;
+            }
+        }
 
-	@Override
-	public String toString() {
-		return String.format("[%s -> %s]", this.topic, Hex.toHex(this.payload, 256));
-	}
+        return new Message(Topic.from(newTopic), payload);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%s -> %s]", topic, Hex.toHex(payload, 256));
+    }
 }

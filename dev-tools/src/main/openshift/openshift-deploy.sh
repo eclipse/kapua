@@ -31,14 +31,3 @@ echo Creating Kapua from template ...
 $OC new-app -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT"
 echo Creating Kapua from template ... done!
 
-### ElasticSearch
-
-echo Creating ElasticSearch server...
-
-if [ -z "${ELASTIC_SEARCH_MEMORY}" ]; then
-  ELASTIC_SEARCH_MEMORY=512M
-fi
-
-$OC new-app -e ES_JAVA_OPTS="-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}" elasticsearch:2.4 -n "$OPENSHIFT_PROJECT_NAME"
-
-echo ElasticSearch server created

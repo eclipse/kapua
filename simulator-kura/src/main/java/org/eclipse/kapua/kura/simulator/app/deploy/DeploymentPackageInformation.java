@@ -15,47 +15,49 @@ import java.util.Collections;
 import java.util.List;
 
 public class DeploymentPackageInformation {
-	public static class BundleInformation {
-		private final String symbolicName;
 
-		private final String version;
+    public static class BundleInformation {
 
-		public BundleInformation(final String symbolicName, final String version) {
-			this.symbolicName = symbolicName;
-			this.version = version;
-		}
+        private final String symbolicName;
 
-		public String getSymbolicName() {
-			return this.symbolicName;
-		}
+        private final String version;
 
-		public String getVersion() {
-			return this.version;
-		}
-	}
+        public BundleInformation(final String symbolicName, final String version) {
+            this.symbolicName = symbolicName;
+            this.version = version;
+        }
 
-	private final String symbolicName;
+        public String getSymbolicName() {
+            return symbolicName;
+        }
 
-	private final String version;
+        public String getVersion() {
+            return version;
+        }
+    }
 
-	private final List<BundleInformation> bundles;
+    private final String symbolicName;
 
-	public DeploymentPackageInformation(final String symbolicName, final String version,
-			final List<BundleInformation> bundles) {
-		this.symbolicName = symbolicName;
-		this.version = version;
-		this.bundles = Collections.unmodifiableList(new ArrayList<>(bundles));
-	}
+    private final String version;
 
-	public String getSymbolicName() {
-		return this.symbolicName;
-	}
+    private final List<BundleInformation> bundles;
 
-	public String getVersion() {
-		return this.version;
-	}
+    public DeploymentPackageInformation(final String symbolicName, final String version,
+            final List<BundleInformation> bundles) {
+        this.symbolicName = symbolicName;
+        this.version = version;
+        this.bundles = Collections.unmodifiableList(new ArrayList<>(bundles));
+    }
 
-	public List<BundleInformation> getBundles() {
-		return this.bundles;
-	}
+    public String getSymbolicName() {
+        return symbolicName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public List<BundleInformation> getBundles() {
+        return bundles;
+    }
 }

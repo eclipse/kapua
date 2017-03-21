@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -32,7 +32,7 @@ import com.google.common.hash.Hashing;
 /**
  * Channel information object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua channel information object (marshal).
- * 
+ *
  * @since 1.0.0
  */
 public class ChannelInfoXContentBuilder {
@@ -58,12 +58,11 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Get the channel key (return the hash code of the string obtained by concatenating the accountName, clientId and channel with the slash)
-     * 
+     *
      * @param accountName
      * @param clientId
      * @param channel
      * @return
-     * 
      * @since 1.0.0
      */
     private static String getChannelKey(KapuaId scopeId, String clientId, String channel) {
@@ -89,13 +88,12 @@ public class ChannelInfoXContentBuilder {
     /**
      * Get the channel identifier (combining accountName clientId and c).<br>
      * <b>If the id is null then it is generated</b>
-     * 
+     *
      * @param id
      * @param accountName
      * @param clientId
      * @param channel
      * @return
-     * 
      * @since 1.0.0
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel) {
@@ -107,11 +105,10 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Get the channel identifier getting parameters from the metricInfoCreator. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel)}
-     * 
+     *
      * @param id
      * @param channelInfoCreator
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, ChannelInfoCreator channelInfoCreator) {
@@ -123,11 +120,10 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Get the channel identifier getting parameters from the channelInfo. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel)}
-     * 
+     *
      * @param id
      * @param channelInfo
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, ChannelInfo channelInfo) {
@@ -139,9 +135,8 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Initialize (clean all the instance field) and return the {@link ChannelInfoXContentBuilder}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public ChannelInfoXContentBuilder clear() {
@@ -151,11 +146,10 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Get the {@link ChannelInfoXContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param channelInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public ChannelInfoXContentBuilder build(ChannelInfoCreator channelInfoCreator)
@@ -173,13 +167,13 @@ public class ChannelInfoXContentBuilder {
     }
 
     // TODO move to a dedicated EsChannelBuilder Class
+
     /**
      * Get the {@link XContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param channelInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public ChannelInfoXContentBuilder build(ChannelInfo channelInfo)
@@ -203,9 +197,8 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Get the channel identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getChannelId() {
@@ -214,9 +207,8 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Set the channel identifier
-     * 
+     *
      * @param esChannelId
-     * 
      * @since 1.0.0
      */
     private void setChannelId(String esChannelId) {
@@ -225,9 +217,8 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Get the {@link XContentBuilder}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public XContentBuilder getBuilder() {
@@ -236,9 +227,8 @@ public class ChannelInfoXContentBuilder {
 
     /**
      * Set the {@link XContentBuilder}
-     * 
+     *
      * @param esChannel
-     * 
      * @since 1.0.0
      */
     private void setBuilder(XContentBuilder esChannel) {

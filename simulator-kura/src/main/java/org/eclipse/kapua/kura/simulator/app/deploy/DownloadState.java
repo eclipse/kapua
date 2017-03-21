@@ -11,51 +11,52 @@
 package org.eclipse.kapua.kura.simulator.app.deploy;
 
 public class DownloadState {
-	public static final DownloadState DONE = new DownloadState(0, 100, "ALREADY_DONE", null);
 
-	private final int transferSize;
-	private final int transferProgress;
-	private final String status;
-	private final Long jobId;
+    public static final DownloadState DONE = new DownloadState(0, 100, "ALREADY_DONE", null);
 
-	/**
-	 * Create a new download state instance
-	 *
-	 * @param transferSize
-	 *            the amount of bytes to transfer
-	 * @param transferProgress
-	 *            the state of the progress (0 to 100)
-	 * @param status
-	 *            the status value (IN_PROGRESS, COMPLETED, CANCELLED, ...)
-	 * @param jobId
-	 *            the job jd
-	 */
-	public DownloadState(final int transferSize, final int transferProgress, final String status, final Long jobId) {
-		this.transferSize = transferSize;
-		this.transferProgress = transferProgress;
-		this.status = status;
-		this.jobId = jobId;
-	}
+    private final int transferSize;
+    private final int transferProgress;
+    private final String status;
+    private final Long jobId;
 
-	public int getTransferSize() {
-		return this.transferSize;
-	}
+    /**
+     * Create a new download state instance
+     *
+     * @param transferSize
+     *            the amount of bytes to transfer
+     * @param transferProgress
+     *            the state of the progress (0 to 100)
+     * @param status
+     *            the status value (IN_PROGRESS, COMPLETED, CANCELLED, ...)
+     * @param jobId
+     *            the job jd
+     */
+    public DownloadState(final int transferSize, final int transferProgress, final String status, final Long jobId) {
+        this.transferSize = transferSize;
+        this.transferProgress = transferProgress;
+        this.status = status;
+        this.jobId = jobId;
+    }
 
-	public int getTransferProgress() {
-		return this.transferProgress;
-	}
+    public int getTransferSize() {
+        return transferSize;
+    }
 
-	public String getStatus() {
-		return this.status;
-	}
+    public int getTransferProgress() {
+        return transferProgress;
+    }
 
-	public Long getJobId() {
-		return this.jobId;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("[DownloadState - jobId: %s, transferSize: %s, transferProgress: %s%%, status: %s",
-				this.jobId, this.transferSize, this.transferProgress, this.status);
-	}
+    public Long getJobId() {
+        return jobId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[DownloadState - jobId: %s, transferSize: %s, transferProgress: %s%%, status: %s",
+                jobId, transferSize, transferProgress, status);
+    }
 }

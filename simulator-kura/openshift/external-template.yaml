@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: kura-simulator
+  annotations:
+    openshift.io/display-name: "Eclipse Kura™ simulator"
+    description: "An IoT gateway simulator, simulating Eclipse Kura™ instances"
+labels:
+  kapua: simulator
+parameters:
+- name:           IMAGE_VERSION
+  description:      The version of the image to use
+  value:            latest
+- name:           DOCKER_ACCOUNT
+  description:      The docker hub account name to pull from
+  value:            kapua
+- name:           BROKER_URL
+  description:      The URL of the broker to connect to
+  required:         true
+
+objects:
+
+# Image streams
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: kura-simulator
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: ${DOCKER_ACCOUNT}/kura-simulator:${IMAGE_VERSION}
+      name: ${IMAGE_VERSION}
+      importPolicy:
+        scheduled: true
+
+# Deployment configs
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: simulator
+  spec:
+    template: 
+      metadata:
+        labels:
+          name: simulator
+      spec:
+        containers:
+          - name: simulator
+            image: kura-simulator:${IMAGE_VERSION}
+            env:
+              - name: KSIM_BROKER_URL
+                value: ${BROKER_URL}
+              - name: KSIM_NAME_FACTORY
+                value: host:addr
+              - name: KSIM_NUM_GATEWAYS
+                value: "10"
+    replicas: 1
+    triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - simulator
+          from:
+            kind: ImageStreamTag
+            name: kura-simulator:${IMAGE_VERSION}
+    strategy:
+      type: Recreate
+    paused: false
+    revisionHistoryLimit: 2
+    minReadySeconds: 0

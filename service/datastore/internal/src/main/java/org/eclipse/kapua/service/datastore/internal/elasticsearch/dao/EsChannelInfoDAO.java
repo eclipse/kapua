@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -51,9 +51,8 @@ public class EsChannelInfoDAO {
 
     /**
      * Default constructor
-     * 
+     *
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public EsChannelInfoDAO() throws EsClientUnavailableException {
@@ -62,11 +61,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Set the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsChannelInfoDAO setListener(EsDaoListener daoListener)
@@ -77,11 +75,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Unset the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsChannelInfoDAO unsetListener(EsDaoListener daoListener)
@@ -92,10 +89,9 @@ public class EsChannelInfoDAO {
 
     /**
      * Channel information DAO instance factory
-     * 
+     *
      * @return
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public static EsChannelInfoDAO getInstance() throws EsClientUnavailableException {
@@ -104,10 +100,9 @@ public class EsChannelInfoDAO {
 
     /**
      * Set the index name
-     * 
+     *
      * @param indexName
      * @return
-     * 
      * @since 1.0.0
      */
     public EsChannelInfoDAO index(String indexName) {
@@ -117,11 +112,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param channelInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(ChannelInfoCreator channelInfoCreator)
@@ -132,11 +126,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param channelInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(ChannelInfo channelInfo)
@@ -147,11 +140,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param id
      * @param esClient
      * @return
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient) {
@@ -160,11 +152,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Update action (update the document into the database)
-     * 
+     *
      * @param channelInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse update(ChannelInfo channelInfo)
@@ -175,11 +166,10 @@ public class EsChannelInfoDAO {
 
     /**
      * Update action (update the document into the database)
-     * 
+     *
      * @param id
      * @param esAsset
      * @return
-     * 
      * @since 1.0.0
      */
     public UpdateResponse update(String id, XContentBuilder esAsset) {
@@ -188,9 +178,8 @@ public class EsChannelInfoDAO {
 
     /**
      * Delete query action (delete document from the database by id)
-     * 
+     *
      * @param id
-     * 
      * @since 1.0.0
      */
     public void deleteById(String id) {
@@ -204,10 +193,9 @@ public class EsChannelInfoDAO {
 
     /**
      * Delete query action (delete documents from the database)
-     * 
+     *
      * @param query
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     public void deleteByQuery(ChannelInfoQuery query)
@@ -217,13 +205,12 @@ public class EsChannelInfoDAO {
 
     /**
      * Query action (return objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public ChannelInfoListResult query(ChannelInfoQuery query)
@@ -272,12 +259,11 @@ public class EsChannelInfoDAO {
 
     /**
      * Query count action (return the count of the objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public long count(ChannelInfoQuery query)

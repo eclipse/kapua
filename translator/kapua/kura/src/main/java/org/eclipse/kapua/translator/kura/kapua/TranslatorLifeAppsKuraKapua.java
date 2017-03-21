@@ -32,7 +32,7 @@ import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link KuraAppsMessage} to {@link KapuaAppsMessage}
- * 
+ *
  * @since 1.0
  *
  */

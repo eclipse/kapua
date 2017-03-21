@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -20,20 +20,19 @@ import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema.Metad
 
 /**
  * Message mediator definition
- * 
+ *
  * @since 1.0.0
  */
 public interface MessageStoreMediator {
 
     /**
      * Get the message metadata
-     * 
+     *
      * @param scopeId
      * @param indexedOn
      * @return
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public Metadata getMetadata(KapuaId scopeId, long indexedOn)
@@ -41,13 +40,12 @@ public interface MessageStoreMediator {
 
     /**
      * On after message mappings event handler
-     * 
+     *
      * @param scopeId
      * @param indexedOn
      * @param esMetrics
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, EsMetric> esMetrics)
@@ -55,7 +53,7 @@ public interface MessageStoreMediator {
 
     /**
      * On after message store event handler
-     * 
+     *
      * @param scopeId
      * @param docBuilder
      * @param message
@@ -63,7 +61,6 @@ public interface MessageStoreMediator {
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
-     * 
      * @since 1.0.0
      */
     public void onAfterMessageStore(MessageXContentBuilder docBuilder, KapuaMessage<?, ?> message)

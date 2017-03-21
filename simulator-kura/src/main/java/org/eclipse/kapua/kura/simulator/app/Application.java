@@ -12,20 +12,20 @@ package org.eclipse.kapua.kura.simulator.app;
 
 public interface Application {
 
-	/**
-	 * Get the application descriptor
-	 *
-	 * @return the application descriptor, must never return {@code null}
-	 */
-	public Descriptor getDescriptor();
+    /**
+     * Get the application descriptor
+     *
+     * @return the application descriptor, must never return {@code null}
+     */
+    public Descriptor getDescriptor();
 
-	/**
-	 * Create a new application handler
-	 *
-	 * @param context
-	 *            the application context, which can be used to send messages
-	 *
-	 * @return a new application handler, must never return {@code null}
-	 */
-	public Handler createHandler(ApplicationContext context);
+    /**
+     * Create a new application handler
+     *
+     * @param context
+     *            the application context, which can be used to send messages
+     *
+     * @return a new application handler, must never return {@code null}
+     */
+    public Handler createHandler(ApplicationContext context);
 }

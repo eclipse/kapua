@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -18,16 +18,14 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 
 /**
  * Client information registry mediator definition
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface ClientInfoRegistryMediator
-{
+public interface ClientInfoRegistryMediator {
 
     /**
      * Get the client info metadata
-     * 
+     *
      * @param scopeId
      * @param indexedOn
      * @return
@@ -35,11 +33,11 @@ public interface ClientInfoRegistryMediator
      * @throws EsClientUnavailableException
      */
     public Metadata getMetadata(KapuaId scopeId, long indexedOn)
-        throws EsDocumentBuilderException, EsClientUnavailableException;
+            throws EsDocumentBuilderException, EsClientUnavailableException;
 
     /**
      * On after client info delete event handler
-     * 
+     *
      * @param scopeId
      * @param clientInfo
      * @throws KapuaIllegalArgumentException
@@ -47,7 +45,7 @@ public interface ClientInfoRegistryMediator
      * @throws EsClientUnavailableException
      */
     public void onAfterClientInfoDelete(KapuaId scopeId, ClientInfo clientInfo)
-        throws KapuaIllegalArgumentException,
-        EsConfigurationException,
-        EsClientUnavailableException;
+            throws KapuaIllegalArgumentException,
+            EsConfigurationException,
+            EsClientUnavailableException;
 }

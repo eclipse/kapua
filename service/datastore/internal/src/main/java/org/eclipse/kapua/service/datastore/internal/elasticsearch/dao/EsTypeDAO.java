@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -30,51 +30,45 @@ import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * Type dao
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class EsTypeDAO
-{
-    private static final String CLIENT_UNDEFINED_MSG    = "ES client must be not null";
+public class EsTypeDAO {
+
+    private static final String CLIENT_UNDEFINED_MSG = "ES client must be not null";
     private static final String INVALID_DOCUMENT_ID_MSG = "Document id must be not empty %s";
 
     private Client client;
 
-    private String        indexName;
-    private String        typeName;
+    private String indexName;
+    private String typeName;
     private EsDaoListener eventListener;
 
-    public EsTypeDAO(Client client)
-    {
+    public EsTypeDAO(Client client) {
         this.client = client;
     }
 
-    protected Client getClient()
-    {
+    protected Client getClient() {
         return client;
     }
 
-    protected String getIndexName()
-    {
+    protected String getIndexName() {
         return indexName;
     }
 
-    protected String getTypeName()
-    {
+    protected String getTypeName() {
         return typeName;
     }
 
     /**
      * Set the dao listener
-     * 
+     *
      * @param eventListener
      * @return
      * @throws EsDatastoreException
      */
     public EsTypeDAO setListener(EsDaoListener eventListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         if (this.eventListener != null && this.eventListener != eventListener)
             throw new EsDatastoreException("Listener already set. Use unset to uregister the previuos listener.");
 
@@ -84,14 +78,13 @@ public class EsTypeDAO
 
     /**
      * Unset the dao listener
-     * 
+     *
      * @param eventListener
      * @return
      * @throws EsDatastoreException
      */
     public EsTypeDAO unsetListener(EsDaoListener eventListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         if (this.eventListener != null && this.eventListener != eventListener)
             throw new EsDatastoreException("Listener cannot be unset. The provided listener does not match.");
 
@@ -101,13 +94,12 @@ public class EsTypeDAO
 
     /**
      * Set the DAO type by index and type name (schema)
-     * 
+     *
      * @param indexName
      * @param typeName
      * @return
      */
-    public EsTypeDAO type(String indexName, String typeName)
-    {
+    public EsTypeDAO type(String indexName, String typeName) {
         this.indexName = indexName;
         this.typeName = typeName;
         return this;
@@ -115,12 +107,11 @@ public class EsTypeDAO
 
     /**
      * Insert action (insert the document into the database)
-     * 
+     *
      * @param esClient
      * @return
      */
-    public String insert(XContentBuilder esClient)
-    {
+    public String insert(XContentBuilder esClient) {
         if (this.client == null)
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
 
@@ -133,13 +124,12 @@ public class EsTypeDAO
 
     /**
      * Update action (update the document into the database)
-     * 
+     *
      * @param id
      * @param esClient
      * @return
      */
-    public UpdateResponse update(String id, XContentBuilder esClient)
-    {
+    public UpdateResponse update(String id, XContentBuilder esClient) {
         if (this.client == null)
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
 
@@ -147,19 +137,18 @@ public class EsTypeDAO
 
         UpdateRequest updRequest = new UpdateRequest(this.indexName, this.typeName, id).doc(esClient);
         UpdateResponse response = this.client.update(updRequest)
-                                             .actionGet(TimeValue.timeValueMillis(timeout));
+                .actionGet(TimeValue.timeValueMillis(timeout));
         return response;
     }
 
     /**
      * Build the upsert request
-     * 
+     *
      * @param id
      * @param esClient
      * @return
      */
-    public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient)
-    {
+    public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient) {
         if (this.client == null)
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
 
@@ -171,13 +160,12 @@ public class EsTypeDAO
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param id
      * @param esClient
      * @return
      */
-    public UpdateResponse upsert(String id, XContentBuilder esClient)
-    {
+    public UpdateResponse upsert(String id, XContentBuilder esClient) {
         if (this.client == null)
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
 
@@ -191,24 +179,23 @@ public class EsTypeDAO
 
     /**
      * Delete query action (delete documents from the database)
-     * 
+     *
      * @param query
      */
-    public void deleteByQuery(QueryBuilder query)
-    {
+    public void deleteByQuery(QueryBuilder query) {
         TimeValue queryTimeout = TimeValue.timeValueMillis(EsUtils.getQueryTimeout());
         TimeValue scrollTimeout = TimeValue.timeValueMillis(EsUtils.getScrollTimeout());
 
         // delete by query API is deprecated, scroll with bulk delete must be used
         SearchResponse scrollResponse = this.client.prepareSearch(this.getIndexName())
-                                                   .setTypes(this.getTypeName())
-                                                   .setFetchSource(false)
-                                                   .addSort("_doc", SortOrder.ASC)
-                                                   .setVersion(true)
-                                                   .setScroll(scrollTimeout)
-                                                   .setQuery(query)
-                                                   .setSize(100)
-                                                   .get(queryTimeout);
+                .setTypes(this.getTypeName())
+                .setFetchSource(false)
+                .addSort("_doc", SortOrder.ASC)
+                .setVersion(true)
+                .setScroll(scrollTimeout)
+                .setQuery(query)
+                .setSize(100)
+                .get(queryTimeout);
 
         // Scroll until no hits are returned
         while (true) {
@@ -220,9 +207,9 @@ public class EsTypeDAO
             BulkRequest bulkRequest = new BulkRequest();
             for (SearchHit hit : scrollResponse.getHits().hits()) {
                 DeleteRequest delete = new DeleteRequest().index(hit.index())
-                                                          .type(hit.type())
-                                                          .id(hit.id())
-                                                          .version(hit.version());
+                        .type(hit.type())
+                        .id(hit.id())
+                        .version(hit.version());
                 bulkRequest.add(delete);
             }
 
@@ -233,20 +220,19 @@ public class EsTypeDAO
                 eventListener.notify(new EsTypeCrudEvent());
 
             scrollResponse = this.client.prepareSearchScroll(scrollResponse.getScrollId())
-                                        .setScroll(scrollTimeout)
-                                        .execute()
-                                        .actionGet(queryTimeout);
+                    .setScroll(scrollTimeout)
+                    .execute()
+                    .actionGet(queryTimeout);
         }
     }
 
     /**
      * Execute bulk request
-     * 
+     *
      * @param bulkRequest
      * @return
      */
-    public BulkResponse bulk(BulkRequest bulkRequest)
-    {
+    public BulkResponse bulk(BulkRequest bulkRequest) {
         if (this.client == null)
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
 

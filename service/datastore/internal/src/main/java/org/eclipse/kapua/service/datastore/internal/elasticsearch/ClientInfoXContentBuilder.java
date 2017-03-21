@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -30,7 +30,7 @@ import com.google.common.hash.Hashing;
 /**
  * Client information object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua client information object (marshal).
- * 
+ *
  * @since 1.0.0
  */
 public class ClientInfoXContentBuilder {
@@ -61,12 +61,11 @@ public class ClientInfoXContentBuilder {
     /**
      * Get the client identifier (combining accountName and clientId).<br>
      * <b>If the id is null then it is generated</b>
-     * 
+     *
      * @param id
      * @param scopeId
      * @param clientId
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId) {
@@ -75,11 +74,10 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Get the client key (return the hash code of the string obtained by concatenating the accountName and the clientName with the slash)
-     * 
+     *
      * @param accountName
      * @param clientName
      * @return
-     * 
      * @since 1.0.0
      */
     private static String getClientKey(KapuaId scopeId, String clientName) {
@@ -89,14 +87,13 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Get the {@link XContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param clientId
      * @param msgId
      * @param msgTimestamp
      * @param account
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     private XContentBuilder getClientBuilder(String clientId, String msgId, Date msgTimestamp, KapuaId scopeId)
@@ -116,9 +113,8 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Initialize (clean all the instance field) and return the {@link ClientInfoXContentBuilder}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public ClientInfoXContentBuilder clear() {
@@ -128,11 +124,10 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Build the {@link ClientInfoXContentBuilder} from the Kapua {@link ClientInfoCreator}
-     * 
+     *
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public ClientInfoXContentBuilder build(ClientInfoCreator clientInfo)
@@ -152,11 +147,10 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Build the {@link ClientInfoXContentBuilder} from the Kapua {@link ClientInfo}
-     * 
+     *
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public ClientInfoXContentBuilder build(ClientInfo clientInfo)
@@ -176,9 +170,8 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Get the client identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getClientId() {
@@ -187,9 +180,8 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Set the client identifier
-     * 
+     *
      * @param esClientId
-     * 
      * @since 1.0.0
      */
     private void setClientId(String esClientId) {
@@ -198,9 +190,8 @@ public class ClientInfoXContentBuilder {
 
     /**
      * Get the content builder
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public XContentBuilder getClientBuilder() {

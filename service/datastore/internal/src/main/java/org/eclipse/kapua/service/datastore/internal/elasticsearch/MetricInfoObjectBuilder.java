@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.elasticsearch.search.SearchHitField;
 /**
  * Metric information object builder.<br>
  * This object converts the schema coming from an Elasticsearch search hit to a Kapua metric information object (unmarshal).
- * 
+ *
  * @since 1.0.0
  */
 public class MetricInfoObjectBuilder {
@@ -34,11 +34,10 @@ public class MetricInfoObjectBuilder {
 
     /**
      * Build a {@link MetricInfoObjectBuilder} from the Elasticsearch search hit
-     * 
+     *
      * @param searchHit
      * @return
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public MetricInfoObjectBuilder build(SearchHit searchHit)
@@ -124,9 +123,8 @@ public class MetricInfoObjectBuilder {
 
     /**
      * Get the built Kapua metric information object
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public MetricInfo getKapuaMetricInfo() {

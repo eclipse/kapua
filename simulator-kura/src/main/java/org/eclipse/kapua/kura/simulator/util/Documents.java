@@ -27,27 +27,27 @@ import org.w3c.dom.Document;
 
 public final class Documents {
 
-	private Documents() {
-	}
+    private Documents() {
+    }
 
-	public static String create(final Consumer<Document> documentBuilder)
-			throws ParserConfigurationException, TransformerException {
-		final StringWriter sw = new StringWriter();
-		create(documentBuilder, sw);
-		return sw.toString();
-	}
+    public static String create(final Consumer<Document> documentBuilder)
+            throws ParserConfigurationException, TransformerException {
+        final StringWriter sw = new StringWriter();
+        create(documentBuilder, sw);
+        return sw.toString();
+    }
 
-	public static void create(final Consumer<Document> documentBuilder, final Writer writer)
-			throws ParserConfigurationException, TransformerException {
-		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		final DocumentBuilder db = dbf.newDocumentBuilder();
-		final Document doc = db.newDocument();
+    public static void create(final Consumer<Document> documentBuilder, final Writer writer)
+            throws ParserConfigurationException, TransformerException {
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilder db = dbf.newDocumentBuilder();
+        final Document doc = db.newDocument();
 
-		documentBuilder.accept(doc);
+        documentBuilder.accept(doc);
 
-		final TransformerFactory tf = TransformerFactory.newInstance();
-		final Transformer t = tf.newTransformer();
+        final TransformerFactory tf = TransformerFactory.newInstance();
+        final Transformer t = tf.newTransformer();
 
-		t.transform(new DOMSource(doc), new StreamResult(writer));
-	}
+        t.transform(new DOMSource(doc), new StreamResult(writer));
+    }
 }

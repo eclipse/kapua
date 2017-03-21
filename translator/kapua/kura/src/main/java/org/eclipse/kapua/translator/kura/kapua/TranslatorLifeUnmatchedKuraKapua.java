@@ -30,7 +30,7 @@ import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link KuraUnmatchedMessage} to {@link KapuaUnmatchedMessage}
- * 
+ *
  * @since 1.0
  *
  */

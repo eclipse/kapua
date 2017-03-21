@@ -21,10 +21,11 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 @Inherited
 public @interface Application {
-	/**
-	 * The application id
-	 *
-	 * @return the application id
-	 */
-	public String value();
+
+    /**
+     * The application id
+     *
+     * @return the application id
+     */
+    public String value();
 }

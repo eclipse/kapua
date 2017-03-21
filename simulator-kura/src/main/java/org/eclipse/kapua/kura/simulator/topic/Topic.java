@@ -12,6 +12,7 @@ package org.eclipse.kapua.kura.simulator.topic;
 
 import static java.util.Collections.emptyMap;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.account;
+import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.applicationId;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.clientId;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.control;
 import static org.eclipse.kapua.kura.simulator.topic.Topic.Segment.plain;
@@ -32,267 +33,295 @@ import com.google.common.base.Function;
 
 public final class Topic {
 
-	private static final Segment CONTROL = new Segment() {
+    private static final Segment CONTROL = new Segment() {
 
-		@Override
-		public String render(final Function<String, String> replaceMapper) {
-			return "$EDC";
-		}
+        @Override
+        public String render(final Function<String, String> replaceMapper) {
+            return "$EDC";
+        }
 
-		@Override
-		public String toString() {
-			return render(null);
-		}
-	};
+        @Override
+        public String toString() {
+            return render(null);
+        }
+    };
 
-	private static final Segment WILDCARD = new Segment() {
+    private static final Segment WILDCARD = new Segment() {
 
-		@Override
-		public String render(final Function<String, String> replaceMapper) {
-			return "#";
-		}
+        @Override
+        public String render(final Function<String, String> replaceMapper) {
+            return "#";
+        }
 
-		@Override
-		public String toString() {
-			return render(null);
-		}
-	};
+        @Override
+        public String toString() {
+            return render(null);
+        }
+    };
 
-	public interface Segment {
-		public String render(Function<String, String> replaceMapper);
+    public interface Segment {
 
-		public default String render() {
-			return render(key -> null);
-		}
+        public String render(Function<String, String> replaceMapper);
 
-		public static Segment control() {
-			return CONTROL;
-		}
+        public default String render() {
+            return render(key -> null);
+        }
 
-		public static Segment wildcard() {
-			return WILDCARD;
-		}
+        public static Segment control() {
+            return CONTROL;
+        }
 
-		public static Segment plain(final String segment) {
-			Objects.requireNonNull(segment);
-			if (segment.isEmpty() || segment.contains("/")) {
-				throw new IllegalArgumentException(String.format("Illegal argument: '%s'", segment));
-			}
+        public static Segment wildcard() {
+            return WILDCARD;
+        }
 
-			return raw(segment);
-		}
+        public static Segment plain(final String segment) {
+            Objects.requireNonNull(segment);
+            if (segment.isEmpty() || segment.contains("/")) {
+                throw new IllegalArgumentException(String.format("Illegal argument: '%s'", segment));
+            }
 
-		public static List<Segment> plain(final String... segment) {
-			Objects.requireNonNull(segment);
-			return Arrays.stream(segment).map(Segment::plain).collect(Collectors.toList());
-		}
+            return raw(segment);
+        }
 
-		public static Segment raw(final String raw) {
-			Objects.requireNonNull(raw);
+        public static List<Segment> plain(final String... segment) {
+            Objects.requireNonNull(segment);
+            return Arrays.stream(segment).map(Segment::plain).collect(Collectors.toList());
+        }
 
-			return new Segment() {
+        public static Segment raw(final String raw) {
+            Objects.requireNonNull(raw);
 
-				@Override
-				public String render(final Function<String, String> replaceMapper) {
-					return raw;
-				}
+            return new Segment() {
 
-				@Override
-				public String toString() {
-					return render(null);
-				}
-			};
-		}
+                @Override
+                public String render(final Function<String, String> replaceMapper) {
+                    return raw;
+                }
 
-		public static Segment replace(final String key) {
-			return new ReplaceSegment(key);
-		}
+                @Override
+                public String toString() {
+                    return render(null);
+                }
+            };
+        }
 
-		public static Segment account() {
-			return replace("account-name");
-		}
+        public static Segment replace(final String key) {
+            return new ReplaceSegment(key);
+        }
 
-		public static Segment clientId() {
-			return replace("client-id");
-		}
-	}
+        public static Segment account() {
+            return replace("account-name");
+        }
 
-	private static class ReplaceSegment implements Segment {
+        public static Segment clientId() {
+            return replace("client-id");
+        }
 
-		private final String key;
+        public static Segment applicationId() {
+            return replace("application-id");
+        }
+    }
 
-		public ReplaceSegment(final String key) {
-			this.key = key;
-		}
+    private static class ReplaceSegment implements Segment {
 
-		@Override
-		public String render(final Function<String, String> replaceMapper) {
-			final String value = replaceMapper.apply(this.key);
-			if (value == null || value.isEmpty()) {
-				throw new IllegalStateException(
-						String.format("Unable to replace segment '%s', no value found", this.key));
-			}
-			return value;
-		}
+        private final String key;
 
-		@Override
-		public String toString() {
-			return "<" + this.key + ">";
-		}
+        public ReplaceSegment(final String key) {
+            this.key = key;
+        }
 
-	}
+        @Override
+        public String render(final Function<String, String> replaceMapper) {
+            final String value = replaceMapper.apply(this.key);
+            if (value == null || value.isEmpty()) {
+                throw new IllegalStateException(
+                        String.format("Unable to replace segment '%s', no value found", this.key));
+            }
+            return value;
+        }
 
-	private final List<Segment> segments;
-	private final Map<String, String> context = new HashMap<>();
+        @Override
+        public String toString() {
+            return "<" + this.key + ">";
+        }
 
-	private Topic(final List<Segment> segments) {
-		this.segments = segments;
-	}
+    }
 
-	private Topic(final Segment... segments) {
-		this.segments = Arrays.asList(segments);
-	}
+    private final List<Segment> segments;
+    private final Map<String, String> context = new HashMap<>();
 
-	public List<Segment> getSegments() {
-		return Collections.unmodifiableList(this.segments);
-	}
+    private Topic(final List<Segment> segments) {
+        this.segments = segments;
+    }
 
-	public String renderSegment(final Segment segment, final Map<String, String> context) {
-		return segment.render(key -> {
-			if (context.containsKey(key)) {
-				return context.get(key);
-			}
-			return Topic.this.context.get(key);
-		});
-	}
+    private Topic(final Segment... segments) {
+        this.segments = Arrays.asList(segments);
+    }
 
-	public String render(final Map<String, String> context) {
-		return renderInternal(this.segments, context);
-	}
+    public List<Segment> getSegments() {
+        return Collections.unmodifiableList(this.segments);
+    }
 
-	/**
-	 * Renders all tokens from {@code fromIndex} (inclusive) to {@code toIndex}
-	 * (exclusive)
-	 *
-	 * @param fromIndex
-	 *            first item to render
-	 * @param toIndex
-	 *            first item <strong>not</strong> to render
-	 * @param context
-	 *            the additional context to use
-	 * @return the rendered string
-	 */
-	public String render(final int fromIndex, final int toIndex, final Map<String, String> context) {
-		return renderInternal(this.segments.subList(fromIndex, toIndex), context);
-	}
+    public String renderSegment(final Segment segment, final Map<String, String> context) {
+        return segment.render(key -> {
+            if (context.containsKey(key)) {
+                return context.get(key);
+            }
+            return Topic.this.context.get(key);
+        });
+    }
 
-	public String render() {
-		return renderInternal(this.segments, Collections.emptyMap());
-	}
+    public String render(final Map<String, String> context) {
+        return renderInternal(this.segments, context);
+    }
 
-	/**
-	 * Renders all tokens from {@code fromIndex} (inclusive) to {@code toIndex}
-	 * (exclusive)
-	 *
-	 * @param fromIndex
-	 *            first item to render
-	 * @param toIndex
-	 *            first item <strong>not</strong> to render
-	 * @return the rendered string
-	 */
-	public String render(final int fromIndex, final int toIndex) {
-		return renderInternal(this.segments.subList(fromIndex, toIndex), Collections.emptyMap());
-	}
+    /**
+     * Renders all tokens from {@code fromIndex} (inclusive) to {@code toIndex}
+     * (exclusive)
+     *
+     * @param fromIndex
+     *            first item to render
+     * @param toIndex
+     *            first item <strong>not</strong> to render
+     * @param context
+     *            the additional context to use
+     * @return the rendered string
+     */
+    public String render(final int fromIndex, final int toIndex, final Map<String, String> context) {
+        return renderInternal(this.segments.subList(fromIndex, toIndex), context);
+    }
 
-	private String renderInternal(final List<Segment> segments, final Map<String, String> context) {
-		return segments.stream().map(seg -> renderSegment(seg, context)).collect(Collectors.joining("/"));
-	}
+    public String render() {
+        return renderInternal(this.segments, Collections.emptyMap());
+    }
 
-	public static Topic from(final List<Segment> segments) {
-		Objects.requireNonNull(segments);
+    /**
+     * Renders all tokens from {@code fromIndex} (inclusive) to {@code toIndex}
+     * (exclusive)
+     *
+     * @param fromIndex
+     *            first item to render
+     * @param toIndex
+     *            first item <strong>not</strong> to render
+     * @return the rendered string
+     */
+    public String render(final int fromIndex, final int toIndex) {
+        return renderInternal(this.segments.subList(fromIndex, toIndex), Collections.emptyMap());
+    }
 
-		return new Topic(segments);
-	}
+    private String renderInternal(final List<Segment> segments, final Map<String, String> context) {
+        return segments.stream().map(seg -> renderSegment(seg, context)).collect(Collectors.joining("/"));
+    }
 
-	public static Topic fromString(final String topic) {
-		return from(Arrays.stream(topic.split("\\/")).map(Segment::plain).collect(Collectors.toList()));
-	}
+    public static Topic from(final List<Segment> segments) {
+        Objects.requireNonNull(segments);
 
-	public static Topic reply(final String requesterClientId, final String requestId) {
-		return new Topic(control(), account(), plain(requesterClientId), replace("application-id"), plain("REPLY"),
-				plain(requestId));
-	}
+        return new Topic(segments);
+    }
 
-	public static Topic notify(final String requesterClientId, final String... resource) {
-		final List<Segment> s = new LinkedList<>();
-		s.add(control());
-		s.add(account());
-		s.add(plain(requesterClientId));
-		s.add(replace("application-id"));
-		s.add(plain("NOTIFY"));
-		s.addAll(plain(resource));
-		return new Topic(s);
-	}
+    public static Topic fromString(final String topic) {
+        return from(Arrays.stream(topic.split("\\/")).map(Segment::plain).collect(Collectors.toList()));
+    }
 
-	public static Topic application(final String application) {
-		return new Topic(control(), account(), clientId(), plain(application));
-	}
+    public static Topic reply(final String requesterClientId, final String requestId) {
+        return new Topic(control(), account(), plain(requesterClientId), replace("application-id"), plain("REPLY"),
+                plain(requestId));
+    }
 
-	public static Topic device(final String localTopic) {
-		return new Topic(control(), account(), clientId(), raw(localTopic));
-	}
+    public static Topic notify(final String requesterClientId, final String... resource) {
+        final List<Segment> s = new LinkedList<>();
+        s.add(control());
+        s.add(account());
+        s.add(plain(requesterClientId));
+        s.add(replace("application-id"));
+        s.add(plain("NOTIFY"));
+        s.addAll(plain(resource));
+        return new Topic(s);
+    }
 
-	public Topic append(final Segment segment) {
-		final List<Segment> segs = new ArrayList<>(this.segments.size() + 1);
-		segs.addAll(this.segments);
-		segs.add(segment);
-		return new Topic(segs);
-	}
+    /**
+     * Get the topic for an application
+     * <p>
+     * <strong>Note:</strong> This is a topic for a control application, for sending data use a data application topic created by {@link #data(String)}.
+     * </p>
+     *
+     * @param application
+     *            the application ID
+     * @return a new topic
+     */
+    public static Topic application(final String application) {
+        return new Topic(control(), account(), clientId(), plain(application));
+    }
 
-	/**
-	 * Attach information to the local topic context
-	 *
-	 * @param key
-	 *            the key of the value
-	 * @param value
-	 *            the value to attach
-	 * @return the current instance
-	 */
-	public Topic attach(final String key, final String value) {
-		this.context.put(key, value);
-		return this;
-	}
+    public static Topic device(final String localTopic) {
+        return new Topic(control(), account(), clientId(), raw(localTopic));
+    }
 
-	public Topic attachAll(final Map<String, String> topicContext) {
-		this.context.putAll(topicContext);
-		return this;
-	}
+    public static Topic data(final String dataTopic) {
+        if (dataTopic.isEmpty()) {
+            throw new IllegalArgumentException("Data topic must not be empty");
+        }
+        if (dataTopic.contains("#") || dataTopic.contains("+")) {
+            throw new IllegalArgumentException("Data topic must not contain wildcards");
+        }
+        if (dataTopic.startsWith("/")) {
+            throw new IllegalArgumentException("Data topic must not start with /");
+        }
+        return new Topic(account(), clientId(), applicationId(), raw(dataTopic));
+    }
 
-	public Topic localize(final Topic otherTopic) {
-		return localize(otherTopic, emptyMap());
-	}
+    public Topic append(final Segment segment) {
+        final List<Segment> segs = new ArrayList<>(this.segments.size() + 1);
+        segs.addAll(this.segments);
+        segs.add(segment);
+        return new Topic(segs);
+    }
 
-	public Topic localize(final Topic otherTopic, final Map<String, String> topicContext) {
-		final LinkedList<Segment> newTopic = new LinkedList<>(getSegments());
+    /**
+     * Attach information to the local topic context
+     *
+     * @param key
+     *            the key of the value
+     * @param value
+     *            the value to attach
+     * @return the current instance
+     */
+    public Topic attach(final String key, final String value) {
+        this.context.put(key, value);
+        return this;
+    }
 
-		for (final Segment seg : otherTopic.getSegments()) {
-			final String segValue1 = renderSegment(newTopic.removeFirst(), topicContext);
-			final String segValue2 = otherTopic.renderSegment(seg, topicContext);
+    public Topic attachAll(final Map<String, String> topicContext) {
+        this.context.putAll(topicContext);
+        return this;
+    }
 
-			if (!segValue1.equals(segValue2)) {
-				return null;
-			}
-		}
+    public Topic localize(final Topic otherTopic) {
+        return localize(otherTopic, emptyMap());
+    }
 
-		return Topic.from(newTopic);
-	}
+    public Topic localize(final Topic otherTopic, final Map<String, String> topicContext) {
+        final LinkedList<Segment> newTopic = new LinkedList<>(getSegments());
 
-	@Override
-	public String toString() {
-		return this.segments.stream().map(Object::toString).collect(Collectors.joining("/"));
-	}
+        for (final Segment seg : otherTopic.getSegments()) {
+            final String segValue1 = renderSegment(newTopic.removeFirst(), topicContext);
+            final String segValue2 = otherTopic.renderSegment(seg, topicContext);
 
-	public Map<String, String> getContext() {
-		return Collections.unmodifiableMap(this.context);
-	}
+            if (!segValue1.equals(segValue2)) {
+                return null;
+            }
+        }
+
+        return Topic.from(newTopic);
+    }
+
+    @Override
+    public String toString() {
+        return this.segments.stream().map(Object::toString).collect(Collectors.joining("/"));
+    }
+
+    public Map<String, String> getContext() {
+        return Collections.unmodifiableMap(this.context);
+    }
 }

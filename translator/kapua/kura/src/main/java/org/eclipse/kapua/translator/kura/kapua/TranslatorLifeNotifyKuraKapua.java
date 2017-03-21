@@ -32,7 +32,7 @@ import org.eclipse.kapua.translator.Translator;
 
 /**
  * Messages translator implementation from {@link KuraNotifyMessage} to {@link KapuaNotifyMessage}
- * 
+ *
  * @since 1.0
  *
  */

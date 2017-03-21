@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.elasticsearch.search.SearchHitField;
 /**
  * Client information object builder.<br>
  * This object converts the schema coming from an Elasticsearch search hit to a Kapua client information object (unmarshal).
- * 
+ *
  * @since 1.0.0
  */
 public class ClientInfoObjectBuilder {
@@ -34,11 +34,10 @@ public class ClientInfoObjectBuilder {
 
     /**
      * Build a {@link ClientInfoObjectBuilder} from the Elasticsearch search hit
-     * 
+     *
      * @param searchHit
      * @return
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public ClientInfoObjectBuilder build(SearchHit searchHit)
@@ -63,9 +62,8 @@ public class ClientInfoObjectBuilder {
 
     /**
      * Get the built Kapua client information object
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public ClientInfo getClientInfo() {

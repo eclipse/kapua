@@ -14,60 +14,61 @@ import org.eclipse.kapua.kura.simulator.payload.Metric;
 import org.eclipse.kapua.kura.simulator.payload.Optional;
 
 public class DeploymentUninstallPackageRequest {
-	@Metric("dp.name")
-	private String name;
 
-	@Metric("dp.version")
-	private String version;
+    @Metric("dp.name")
+    private String name;
 
-	@Metric("job.id")
-	private long jobId;
+    @Metric("dp.version")
+    private String version;
 
-	@Optional
-	@Metric("dp.reboot")
-	private Boolean reboot;
+    @Metric("job.id")
+    private long jobId;
 
-	@Optional
-	@Metric("dp.reboot.delay")
-	private Integer rebootDelay;
+    @Optional
+    @Metric("dp.reboot")
+    private Boolean reboot;
 
-	public String getName() {
-		return this.name;
-	}
+    @Optional
+    @Metric("dp.reboot.delay")
+    private Integer rebootDelay;
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getVersion() {
-		return this.version;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public void setVersion(final String version) {
-		this.version = version;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public long getJobId() {
-		return this.jobId;
-	}
+    public void setVersion(final String version) {
+        this.version = version;
+    }
 
-	public void setJobId(final long jobId) {
-		this.jobId = jobId;
-	}
+    public long getJobId() {
+        return jobId;
+    }
 
-	public Boolean getReboot() {
-		return this.reboot;
-	}
+    public void setJobId(final long jobId) {
+        this.jobId = jobId;
+    }
 
-	public void setReboot(final Boolean reboot) {
-		this.reboot = reboot;
-	}
+    public Boolean getReboot() {
+        return reboot;
+    }
 
-	public Integer getRebootDelay() {
-		return this.rebootDelay;
-	}
+    public void setReboot(final Boolean reboot) {
+        this.reboot = reboot;
+    }
 
-	public void setRebootDelay(final Integer rebootDelay) {
-		this.rebootDelay = rebootDelay;
-	}
+    public Integer getRebootDelay() {
+        return rebootDelay;
+    }
+
+    public void setRebootDelay(final Integer rebootDelay) {
+        this.rebootDelay = rebootDelay;
+    }
 }

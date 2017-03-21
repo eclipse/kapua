@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +73,12 @@ public class ResourceUtils {
     public static String readResource(URL resourceUrl) throws IOException {
         try (BufferedReader resourceBr = new BufferedReader(new InputStreamReader(resourceUrl.openStream()))) {
             return CharStreams.toString(resourceBr);
+        }
+    }
+    
+    public static byte[] readResourceAsByteArray(URL resourceUrl)throws IOException {
+        try (BufferedReader resourceBr = new BufferedReader(new InputStreamReader(resourceUrl.openStream()))) {
+            return IOUtils.toByteArray(resourceBr);
         }
     }
 }

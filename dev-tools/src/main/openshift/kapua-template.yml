@@ -1,9 +1,9 @@
 apiVersion: v1
-id: kapua-broker
+id: eclipse-kapua
 kind: Template
-name: kapua-broker
+name: eclipse-kapua
 metadata:
-  name: kapua-broker
+  name: eclipse-kapua
 parameters:
 - name:           IMAGE_VERSION 
   description:      The version of the image to use
@@ -19,6 +19,9 @@ parameters:
 - name:           JOLOKIA_USER
   description:      The username used for the Jolokia endpoint authentication
   value:            jolokia
+- name:           ELASTIC_SEARCH_MEMORY
+  descrption:       The minimum and maximun Java heap space for Elasticsearch
+  value:            512m
 
 objects:
 
@@ -133,7 +136,7 @@ objects:
         containers:
         - env:
           - name: ACTIVEMQ_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-broker
@@ -253,6 +256,59 @@ objects:
           configMap:
             name: hawkular-openshift-agent-kapua
 
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: elasticsearch
+      hawkular-openshift-agent: jolokia-kapua
+    name: elasticsearch
+  spec:
+    replicas: 1
+    selector:
+      app: elasticsearch
+      deploymentconfig: elasticsearch
+    template:
+      metadata:
+        labels:
+          app: elasticsearch
+          deploymentconfig: elasticsearch
+          hawkular-openshift-agent: jolokia-kapua
+      spec:
+        containers:
+        - env:
+          - name: ES_HEAP_SIZE
+            value: ${ELASTIC_SEARCH_MEMORY}
+          - name: ES_JAVA_OPTS
+            value: -Des.cluster.name=kapua-datastore
+          image: elasticsearch:2.4
+          imagePullPolicy: Always
+          name: elasticsearch
+          ports:
+          - containerPort: 9200
+          - containerPort: 9300
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9200
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+          volumeMounts:
+          - mountPath: /usr/share/elasticsearch/data
+            name: elasticsearch-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-kapua
+        - name: elasticsearch-data
+          emptyDir: {}
+
 # Services
         
 - apiVersion: v1
@@ -281,7 +337,7 @@ objects:
     labels:
       app: kapua-broker
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: mqtt-tcp
@@ -329,6 +385,24 @@ objects:
     selector:
       app: kapua-api
       deploymentconfig: kapua-api
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: elasticsearch
+    labels:
+      app: elasticsearch
+  spec:
+    ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+    - name: transport
+      port: 9300
+      targetPort: 9300
+    selector:
+      app: elasticsearch
+      deploymentconfig: elasticsearch
 
 # Routes
 

@@ -20,5 +20,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD })
 public @interface Metric {
-	String value();
+
+    String value();
 }

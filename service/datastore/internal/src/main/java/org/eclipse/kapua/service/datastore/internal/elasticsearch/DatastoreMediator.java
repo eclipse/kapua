@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 
 /**
  * Datastore mediator definition
- * 
+ *
  * @since 1.0.0
  */
 public class DatastoreMediator implements MessageStoreMediator,
@@ -71,9 +71,8 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     /**
      * Get the {@link DatastoreMediator} instance (singleton)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public static DatastoreMediator getInstance() {
@@ -82,9 +81,8 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     /**
      * Set the message store facade
-     * 
+     *
      * @param messageStoreFacade
-     * 
      * @since 1.0.0
      */
     public void setMessageStoreFacade(MessageStoreFacade messageStoreFacade) {
@@ -93,9 +91,8 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     /**
      * Set the client info facade
-     * 
+     *
      * @param clientInfoStoreFacade
-     * 
      * @since 1.0.0
      */
     public void setClientInfoStoreFacade(ClientInfoRegistryFacade clientInfoStoreFacade) {
@@ -104,9 +101,8 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     /**
      * Set the channel info facade
-     * 
+     *
      * @param channelInfoStoreFacade
-     * 
      * @since 1.0.0
      */
     public void setChannelInfoStoreFacade(ChannelInfoRegistryFacade channelInfoStoreFacade) {
@@ -115,9 +111,8 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     /**
      * Set the metric info facade
-     * 
+     *
      * @param metricInfoStoreFacade
-     * 
      * @since 1.0.0
      */
     public void setMetricInfoStoreFacade(MetricInfoRegistryFacade metricInfoStoreFacade) {

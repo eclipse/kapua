@@ -13,5 +13,17 @@ package org.eclipse.kapua.kura.simulator.app;
 import org.eclipse.kapua.kura.simulator.topic.Topic;
 
 public interface ApplicationContext {
-	public void sendMessage(Topic topic, byte[] payload);
+
+    /**
+     * Get a sender for any topic
+     * <p>
+     * The topic may contain the placeholder {@code application-id}, which will be replaced with
+     * the application ID of the application this context belongs to.
+     * </p>
+     *
+     * @param topic
+     *            The fully qualified topic, the topic may be un-expanded
+     * @return a new sender, never {@code null}
+     */
+    public Sender sender(Topic topic);
 }

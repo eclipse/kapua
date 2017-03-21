@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -25,24 +25,21 @@ import org.elasticsearch.search.sort.SortOrder;
  * Abstract storable query converter implementation.<br>
  * This object defines common method to all the query converter used by Kapua.
  *
- * @since 1.0.0
- * 
- * @param <S>
- *            persisted object type (such as messages, channeles information...)
+ * @param <S> persisted object type (such as messages, channeles information...)
  * @param <Q>
+ * @since 1.0.0
  */
 public abstract class AbstractStorableQueryConverter<S extends Storable, Q extends StorableQuery<S>> {
 
     /**
      * Convert to a count query
-     * 
+     *
      * @param indices
      * @param type
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public SearchRequestBuilder toCountRequestBuilder(String indices, String type, Q query)
@@ -60,14 +57,13 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
 
     /**
      * Convert to a search query
-     * 
+     *
      * @param indices
      * @param type
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public SearchRequestBuilder toSearchRequestBuilder(String indices, String type, Q query)
@@ -111,10 +107,9 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
     /**
      * Query included fields list.<br>
      * The list may use the fetchStyle parameter to differentiate the included fields list (depending on the type of the entity)
-     * 
+     *
      * @param fetchStyle
      * @return
-     * 
      * @since 1.0.0
      */
     protected abstract String[] getIncludes(StorableFetchStyle fetchStyle);
@@ -122,19 +117,17 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
     /**
      * Query excluded fields list.<br>
      * The list may use the fetchStyle parameter to differentiate the excluded fields list (depending on the type of the entity)
-     * 
+     *
      * @param fetchStyle
      * @return
-     * 
      * @since 1.0.0
      */
     protected abstract String[] getExcludes(StorableFetchStyle fetchStyle);
 
     /**
      * Query fields list
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     protected abstract String[] getFields();

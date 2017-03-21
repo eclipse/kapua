@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -43,140 +43,121 @@ import org.elasticsearch.search.SearchHits;
  *
  * @since 1.0.0
  */
-public class EsMessageDAO
-{
+public class EsMessageDAO {
 
     private EsTypeDAO esTypeDAO;
 
     /**
      * Default constructor
-     * 
+     *
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
-    public EsMessageDAO() throws EsClientUnavailableException
-    {
+    public EsMessageDAO() throws EsClientUnavailableException {
         esTypeDAO = new EsTypeDAO(ElasticsearchClient.getInstance());
     }
 
     /**
      * Set the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsMessageDAO setListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.setListener(daoListener);
         return this;
     }
 
     /**
      * Unset the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsMessageDAO unsetListener(EsDaoListener daoListener)
-        throws EsDatastoreException
-    {
+            throws EsDatastoreException {
         this.esTypeDAO.unsetListener(daoListener);
         return this;
     }
 
     /**
      * Message DAO instance factory
-     * 
+     *
      * @return
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
-    public static EsMessageDAO getInstance() throws EsClientUnavailableException
-    {
+    public static EsMessageDAO getInstance() throws EsClientUnavailableException {
         return new EsMessageDAO();
     }
 
     /**
      * Set the index name
-     * 
+     *
      * @param indexName
      * @return
-     * 
      * @since 1.0.0
      */
-    public EsMessageDAO index(String indexName)
-    {
+    public EsMessageDAO index(String indexName) {
         this.esTypeDAO.type(indexName, EsSchema.MESSAGE_TYPE_NAME);
         return this;
     }
 
     /**
      * Build the upsert request
-     * 
+     *
      * @param id
      * @param esClient
      * @return
-     * 
      * @since 1.0.0
      */
-    public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient)
-    {
+    public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient) {
         return this.esTypeDAO.getUpsertRequest(id, esClient);
     }
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param id
      * @param esClient
      * @return
-     * 
      * @since 1.0.0
      */
-    public UpdateResponse upsert(String id, XContentBuilder esClient)
-    {
+    public UpdateResponse upsert(String id, XContentBuilder esClient) {
         return this.esTypeDAO.upsert(id, esClient);
     }
 
     /**
      * Delete query action (delete documents from the database)
-     * 
+     *
      * @param query
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     public void deleteByQuery(MessageQuery query)
-        throws EsQueryConversionException
-    {
+            throws EsQueryConversionException {
         this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
 
     /**
      * Query action (return objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public MessageListResult query(MessageQuery query)
-        throws EsQueryConversionException,
-        EsClientUnavailableException,
-        EsObjectBuilderException
-    {
+            throws EsQueryConversionException,
+            EsClientUnavailableException,
+            EsObjectBuilderException {
         MessageQueryImpl localQuery = new MessageQueryImpl(query.getScopeId());
         localQuery.copy(query);
         localQuery.setLimit(query.getLimit() + 1);
@@ -226,18 +207,16 @@ public class EsMessageDAO
 
     /**
      * Query count action (return the count of the objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public long count(MessageQuery query)
-        throws EsQueryConversionException,
-        EsClientUnavailableException
-    {
+            throws EsQueryConversionException,
+            EsClientUnavailableException {
         MessageQueryConverter converter = new MessageQueryConverter();
         SearchRequestBuilder builder = converter.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), query);
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
@@ -251,18 +230,16 @@ public class EsMessageDAO
 
     /**
      * Deletes by message id
-     * 
+     *
      * @param id
-     * 
      * @since 1.0.0
      */
-    public void deleteById(String id)
-    {
+    public void deleteById(String id) {
 
         esTypeDAO.getClient().prepareDelete()
-                 .setIndex(esTypeDAO.getIndexName())
-                 .setType(esTypeDAO.getTypeName())
-                 .setId(id)
-                 .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
+                .setIndex(esTypeDAO.getIndexName())
+                .setType(esTypeDAO.getTypeName())
+                .setId(id)
+                .get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
     }
 }

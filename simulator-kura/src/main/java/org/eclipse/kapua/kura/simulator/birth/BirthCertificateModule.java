@@ -23,15 +23,15 @@ import org.eclipse.kapua.kura.simulator.Transport;
 
 public class BirthCertificateModule implements Module {
 
-	private final BirthCertificateBuilder birthCertificateBuilder;
+    private final BirthCertificateBuilder birthCertificateBuilder;
 
-	public BirthCertificateModule(final GatewayConfiguration configuration,
-			final Supplier<Set<String>> applicationIds) {
-		this.birthCertificateBuilder = new BirthCertificateBuilder(configuration, now(), applicationIds);
-	}
+    public BirthCertificateModule(final GatewayConfiguration configuration,
+            final Supplier<Set<String>> applicationIds) {
+        birthCertificateBuilder = new BirthCertificateBuilder(configuration, now(), applicationIds);
+    }
 
-	@Override
-	public void connected(final Transport transport) {
-		transportSender(device("MQTT/BIRTH"), transport).send(this.birthCertificateBuilder.build());
-	}
+    @Override
+    public void connected(final Transport transport) {
+        transportSender(device("MQTT/BIRTH"), transport).send(birthCertificateBuilder.build());
+    }
 }

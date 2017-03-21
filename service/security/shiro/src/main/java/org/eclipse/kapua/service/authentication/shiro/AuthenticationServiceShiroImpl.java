@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,11 +39,11 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CertificateService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
-import org.eclipse.kapua.service.authentication.shiro.utils.RSAUtil;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
@@ -396,13 +397,16 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         String jwt = null;
         try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            CertificateService certificateService = locator.getService(CertificateService.class);
+            KeyPair keyPair = certificateService.getJwtKeyPair();
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
-            jws.setKey(RSAUtil.getPrivateKey());
+            jws.setKey(keyPair.getPrivate());
 
             jwt = jws.getCompactSerialization();
-        } catch (JoseException e) {
+        } catch (JoseException | KapuaException e) {
             KapuaRuntimeException.internalError(e);
         }
         return jwt;

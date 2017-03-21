@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Elasticsearch utility class
- * 
+ *
  * @since 1.0.0
  */
 public class EsUtils {
@@ -74,10 +74,9 @@ public class EsUtils {
     /**
      * Normalize the metric name to be compliant to Kapua/Elasticserach constraints.<br>
      * It escapes the '$' and '.'
-     * 
+     *
      * @param name
      * @return
-     * 
      * @since 1.0.0
      */
     public static String normalizeMetricName(String name) {
@@ -93,10 +92,9 @@ public class EsUtils {
 
     /**
      * Restore the metric name, so switch back to the 'not escaped' values for '$' and '.'
-     * 
+     *
      * @param normalizedName
      * @return
-     * 
      * @since 1.0.0
      */
     public static String restoreMetricName(String normalizedName) {
@@ -110,7 +108,7 @@ public class EsUtils {
 
     /**
      * Return the metric parts for the composed metric name (split the metric name by '.')
-     * 
+     *
      * @param fullName
      * @return
      */
@@ -121,9 +119,8 @@ public class EsUtils {
     /**
      * Check the index alias correctness.<br>
      * The alias cnnot be null, starts with '_', contains uppercase character or contains {@link EsUtils#ILLEGAL_CHARS}
-     * 
+     *
      * @param alias
-     * 
      * @since 1.0.0
      */
     public static void checkIdxAliasName(String alias) {
@@ -144,9 +141,8 @@ public class EsUtils {
 
     /**
      * Check the index name ({@link EsUtils#checkIdxAliasName(String index)}
-     * 
+     *
      * @param index
-     * 
      * @since 1.0.0
      */
     public static void checkIdxName(String index) {
@@ -155,10 +151,9 @@ public class EsUtils {
 
     /**
      * Normalize the index alias name and replace the '-' with '_'
-     * 
+     *
      * @param alias
      * @return
-     * 
      * @since 1.0.0
      */
     public static String normalizeIndexAliasName(String alias) {
@@ -169,10 +164,9 @@ public class EsUtils {
 
     /**
      * Normalize the account index name and and the suffix '-*'
-     * 
+     *
      * @param accountName
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getDataIndexName(KapuaId scopeId) {
@@ -183,7 +177,7 @@ public class EsUtils {
 
     /**
      * Get the data index for the specified base name and timestamp
-     * 
+     *
      * @param baseName
      * @param timestamp
      * @return
@@ -200,10 +194,9 @@ public class EsUtils {
 
     /**
      * Get the Kapua index name for the specified base name
-     * 
+     *
      * @param baseName
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getKapuaIndexName(KapuaId scopeId) {
@@ -214,10 +207,9 @@ public class EsUtils {
 
     /**
      * Normalize the index ({@link EsUtils#normalizeIndexName(String index)}
-     * 
+     *
      * @param index
      * @return
-     * 
      * @since 1.0.0
      */
     public static String normalizedIndexName(String index) {
@@ -227,11 +219,10 @@ public class EsUtils {
     /**
      * Get the full metric name used to store the metric in Elasticsearch.<br>
      * The full metric name is composed by the metric and the type acronym as suffix ('.' is used as separator between the 2 parts)
-     * 
+     *
      * @param name
      * @param type
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getMetricValueQualifier(String name, String type) {
@@ -241,10 +232,9 @@ public class EsUtils {
 
     /**
      * Get the Elasticsearch metric type from the metric value type
-     * 
+     *
      * @param value
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getEsTypeFromValue(Object value) {
@@ -280,10 +270,9 @@ public class EsUtils {
 
     /**
      * Get the Elasticsearch metric type acronym for the given Elasticsearch metric type full name
-     * 
+     *
      * @param esType
      * @return
-     * 
      * @since 1.0.0
      */
     public static String getEsTypeAcronym(String esType) {
@@ -317,10 +306,9 @@ public class EsUtils {
 
     /**
      * Convert the metric value class type (Kapua side) to the proper string type description (Elasticsearch side)
-     * 
+     *
      * @param aClass
      * @return
-     * 
      * @since 1.0.0
      */
     public static <T> String convertToEsType(Class<T> aClass) {
@@ -354,10 +342,9 @@ public class EsUtils {
 
     /**
      * Convert the Kapua metric type to the corresponding Elasticsearch type
-     * 
+     *
      * @param kapuaType
      * @return
-     * 
      * @since 1.0.0
      */
     public static String convertToEsType(String kapuaType) {
@@ -392,10 +379,9 @@ public class EsUtils {
 
     /**
      * Convert the Elasticsearch metric type to the corresponding Kapua type
-     * 
+     *
      * @param esType
      * @return
-     * 
      * @since 1.0.0
      */
     public static String convertToKapuaType(String esType) {
@@ -430,11 +416,10 @@ public class EsUtils {
 
     /**
      * Convert the Elasticsearch metric value to the proper Kapua object
-     * 
+     *
      * @param type
      * @param value
      * @return
-     * 
      * @since 1.0.0
      */
     public static Object convertToKapuaObject(String type, String value) {
@@ -482,11 +467,10 @@ public class EsUtils {
 
     /**
      * Convert the metric value to the correct type using the metric acronym type
-     * 
+     *
      * @param acronymType
      * @param value
      * @return
-     * 
      * @since 1.0.0
      */
     public static Object convertToCorrectType(String acronymType, Object value) {
@@ -532,9 +516,8 @@ public class EsUtils {
 
     /**
      * Get the query timeout (default value)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public static long getQueryTimeout() {
@@ -543,9 +526,8 @@ public class EsUtils {
 
     /**
      * Get the scroll timeout (default value)
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public static long getScrollTimeout() {

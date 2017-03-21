@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -40,7 +40,7 @@ import com.google.common.hash.Hashing;
  * Metrics information object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua metrics information object (marshal).<br>
  * It uses {@link MetricXContentBuilder} as a container for the content builders used to build every metric.
- * 
+ *
  * @since 1.0.0
  */
 public class MetricInfoXContentBuilder {
@@ -65,13 +65,12 @@ public class MetricInfoXContentBuilder {
     /**
      * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and metricMappedName with the slash).<br>
      * <b>NOTE: metricMappedName is the metric name concatenated with its type (see {@link EsUtils#convertToEsType(String kapuaType)}</b>
-     * 
+     *
      * @param accountName
      * @param clientId
      * @param channel
      * @param metricMappedName
      * @return
-     * 
      * @since 1.0.0
      */
     private static String getMetricKey(KapuaId scopeId, String clientId, String channel, String metricMappedName) {
@@ -84,14 +83,13 @@ public class MetricInfoXContentBuilder {
      * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and metricMappedName with the slash).<br>
      * <b>NOTE: metricMappedName is the metric name concatenated with its type (see {@link EsUtils#convertToEsType(String kapuaType)}</b>
      * <b>If the id is null then it is generated.</b>
-     * 
+     *
      * @param id
      * @param accountName
      * @param clientId
      * @param channel
      * @param metricMappedName
      * @return
-     * 
      * @since 1.0.0
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricMappedName) {
@@ -104,7 +102,7 @@ public class MetricInfoXContentBuilder {
     /**
      * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and the converted metricName and metricType).<br>
      * <b>If the id is null then it is generated.</b>
-     * 
+     *
      * @param id
      * @param accountName
      * @param clientId
@@ -113,7 +111,6 @@ public class MetricInfoXContentBuilder {
      * @param metricType
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricName, String metricType)
@@ -128,12 +125,11 @@ public class MetricInfoXContentBuilder {
     /**
      * Get the metric identifier getting parameters from the metricInfoCreator. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel, String
      * metricName, String metricType)}
-     * 
+     *
      * @param id
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, MetricInfoCreator metricInfoCreator)
@@ -149,12 +145,11 @@ public class MetricInfoXContentBuilder {
     /**
      * Get the metric identifier getting parameters from the metricInfo. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel, String
      * metricName, String metricType)}
-     * 
+     *
      * @param id
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, MetricInfo metricInfo)
@@ -169,7 +164,7 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Get the {@link XContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param account
      * @param clientId
      * @param channel
@@ -179,7 +174,6 @@ public class MetricInfoXContentBuilder {
      * @param msgId
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     private XContentBuilder build(KapuaId scopeId, String clientId, String channel, String metricMappedName, Object value, Date msgTimestamp, String msgId)
@@ -262,9 +256,8 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Initialize (clean all the instance field) and return the {@link MetricInfoXContentBuilder}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public MetricInfoXContentBuilder clear() {
@@ -274,11 +267,10 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Get the {@link MetricInfoXContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public MetricInfoXContentBuilder build(MetricInfoCreator metricInfoCreator)
@@ -299,11 +291,10 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Get the {@link MetricInfoXContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public MetricInfoXContentBuilder build(MetricInfo metricInfo)
@@ -335,7 +326,7 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Get the {@link MetricInfoXContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param account
      * @param clientId
      * @param messageId
@@ -344,7 +335,6 @@ public class MetricInfoXContentBuilder {
      * @param receivedOn
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public MetricInfoXContentBuilder build(KapuaId scopeId, String clientId, StorableId messageId, DatastoreMessage message, Date indexedOn, Date receivedOn)
@@ -355,9 +345,8 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Get the {@link MetricXContentBuilder} list
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public List<MetricXContentBuilder> getBuilders() {
@@ -366,9 +355,8 @@ public class MetricInfoXContentBuilder {
 
     /**
      * Set the {@link MetricXContentBuilder} list
-     * 
+     *
      * @param metricBuilders
-     * 
      * @since 1.0.0
      */
     private void setBuilders(List<MetricXContentBuilder> metricBuilders) {

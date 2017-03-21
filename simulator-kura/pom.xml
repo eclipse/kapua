@@ -11,7 +11,6 @@
 
 	<artifactId>kapua-simulator-kura</artifactId>
 
-	<name>Eclipse Kura™ simulator framework</name>
 	<description>This is a framework for simulating Eclipse Kura IoT gateway instances</description>
 
 	<properties>
@@ -81,7 +80,6 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.1</version>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
@@ -140,10 +138,9 @@
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
-					<pushRegistry>registry.hub.docker.com</pushRegistry>
 					<images>
 						<image>
-							<name>ctron/kura-simulator:%v</name>
+							<name>kapua/kura-simulator:%v</name>
 							<build>
 								<from>java:8-jre-alpine</from>
 								<maintainer>Jens Reimann &lt;jreimann@redhat.com&gt;</maintainer>

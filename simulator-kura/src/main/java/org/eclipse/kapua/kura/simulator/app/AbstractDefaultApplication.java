@@ -16,50 +16,59 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDefaultApplication implements Application {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractDefaultApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDefaultApplication.class);
 
-	private final Descriptor descriptor;
+    private final Descriptor descriptor;
 
-	protected abstract void processRequest(final Request request) throws Exception;
+    protected abstract void processRequest(final Request request) throws Exception;
 
-	public AbstractDefaultApplication(final String applicationId) {
-		this.descriptor = new Descriptor(applicationId);
-	}
+    public AbstractDefaultApplication(final String applicationId) {
+        this.descriptor = new Descriptor(applicationId);
+    }
 
-	@Override
-	public Descriptor getDescriptor() {
-		return this.descriptor;
-	}
+    @Override
+    public Descriptor getDescriptor() {
+        return this.descriptor;
+    }
 
-	@Override
-	public Handler createHandler(final ApplicationContext context) {
-		return new Handler() {
-			@Override
-			public void processMessage(final Message message) {
-				process(context, message);
-			}
-		};
-	}
+    @Override
+    public Handler createHandler(final ApplicationContext context) {
+        return new Handler() {
 
-	protected void process(final ApplicationContext context, final Message message) {
-		logger.debug("Received message: {}", message);
+            @Override
+            public void processMessage(final Message message) {
+                AbstractDefaultApplication.this.process(context, message);
+            }
 
-		final Request request;
-		try {
-			request = Request.parse(context, message);
-		} catch (final Exception e) {
-			logger.warn("Failed to parse request message", e);
-			return;
-		}
+            @Override
+            public void close() throws Exception {
+                AbstractDefaultApplication.this.close();
+            }
+        };
+    }
 
-		logger.debug("Processing request: {}", request);
+    protected void process(final ApplicationContext context, final Message message) {
+        logger.debug("Received message: {}", message);
 
-		try {
-			processRequest(request);
-		} catch (final Exception e) {
-			logger.info("Failed to process request", e);
-			request.replyError(e);
-		}
-	}
+        final Request request;
+        try {
+            request = Request.parse(context, message);
+        } catch (final Exception e) {
+            logger.warn("Failed to parse request message", e);
+            return;
+        }
+
+        logger.debug("Processing request: {}", request);
+
+        try {
+            processRequest(request);
+        } catch (final Exception e) {
+            logger.info("Failed to process request", e);
+            request.replyError(e);
+        }
+    }
+
+    protected void close() throws Exception {
+    }
 
 }

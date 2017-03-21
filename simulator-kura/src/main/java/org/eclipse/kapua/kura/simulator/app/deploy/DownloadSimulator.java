@@ -16,149 +16,151 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class DownloadSimulator implements AutoCloseable {
-	private final ScheduledExecutorService executor;
-	private Job job;
-	private final long bytesPerSecond;
 
-	public static enum JobState {
-		RUNNING, COMPLETED, CANCELED, FAILED;
-	}
+    private final ScheduledExecutorService executor;
+    private Job job;
+    private final long bytesPerSecond;
 
-	private class Job {
-		private final long totalBytes;
-		private long currentBytes;
-		private final ScheduledFuture<?> future;
-		private JobState state = JobState.RUNNING;
-		private final long jobId;
-		private final Consumer<DownloadState> consumer;
-		private final Runnable whenCompleted;
+    public static enum JobState {
+        RUNNING, COMPLETED, CANCELED, FAILED;
+    }
 
-		public Job(final ScheduledFuture<?> future, final long totalBytes, final long jobId,
-				final Consumer<DownloadState> consumer, final Runnable whenCompleted) {
-			this.future = future;
-			this.totalBytes = totalBytes;
-			this.jobId = jobId;
-			this.consumer = consumer;
-			this.whenCompleted = whenCompleted;
-		}
+    private class Job {
 
-		public void tick() {
-			if (this.state != JobState.RUNNING) {
-				return;
-			}
+        private final long totalBytes;
+        private long currentBytes;
+        private final ScheduledFuture<?> future;
+        private JobState state = JobState.RUNNING;
+        private final long jobId;
+        private final Consumer<DownloadState> consumer;
+        private final Runnable whenCompleted;
 
-			this.currentBytes += DownloadSimulator.this.bytesPerSecond;
-			if (this.currentBytes >= this.totalBytes) {
-				this.currentBytes = this.totalBytes;
-				this.future.cancel(false);
-				this.state = JobState.COMPLETED;
-				if (this.whenCompleted != null) {
-					// run outside of sync lock
-					DownloadSimulator.this.executor.execute(this.whenCompleted);
-				}
-			}
-		}
+        public Job(final ScheduledFuture<?> future, final long totalBytes, final long jobId,
+                final Consumer<DownloadState> consumer, final Runnable whenCompleted) {
+            this.future = future;
+            this.totalBytes = totalBytes;
+            this.jobId = jobId;
+            this.consumer = consumer;
+            this.whenCompleted = whenCompleted;
+        }
 
-		public void cancel() {
-			this.future.cancel(false);
-			this.state = JobState.CANCELED;
-		}
+        public void tick() {
+            if (state != JobState.RUNNING) {
+                return;
+            }
 
-		public DownloadState getState() {
-			switch (this.state) {
-			case RUNNING:
-				return new DownloadState((int) this.totalBytes, (int) (getCompletion() * 100.0), "IN_PROGRESS",
-						this.jobId);
-			case CANCELED:
-				return new DownloadState(0, 0, "CANCELLED", this.jobId);
-			case COMPLETED:
-				// Kura actually sends a size of zero in this case
-				return new DownloadState(0, 100, "COMPLETED", this.jobId);
-			case FAILED:
-				return new DownloadState(0, 0, "FAILED", this.jobId);
-			}
-			return DownloadState.DONE;
-		}
+            currentBytes += bytesPerSecond;
+            if (currentBytes >= totalBytes) {
+                currentBytes = totalBytes;
+                future.cancel(false);
+                state = JobState.COMPLETED;
+                if (whenCompleted != null) {
+                    // run outside of sync lock
+                    executor.execute(whenCompleted);
+                }
+            }
+        }
 
-		private double getCompletion() {
-			return (double) this.currentBytes / (double) this.totalBytes;
-		}
-	}
+        public void cancel() {
+            future.cancel(false);
+            state = JobState.CANCELED;
+        }
 
-	public DownloadSimulator(final ScheduledExecutorService executor, final long bytesPerSecond) {
-		this.executor = executor;
-		this.bytesPerSecond = bytesPerSecond;
-	}
+        public DownloadState getState() {
+            switch (state) {
+            case RUNNING:
+                return new DownloadState((int) totalBytes, (int) (getCompletion() * 100.0), "IN_PROGRESS",
+                        jobId);
+            case CANCELED:
+                return new DownloadState(0, 0, "CANCELLED", jobId);
+            case COMPLETED:
+                // Kura actually sends a size of zero in this case
+                return new DownloadState(0, 100, "COMPLETED", jobId);
+            case FAILED:
+                return new DownloadState(0, 0, "FAILED", jobId);
+            }
+            return DownloadState.DONE;
+        }
 
-	public synchronized boolean startDownload(final long jobId, final long totalBytes,
-			final Consumer<DownloadState> consumer, final Runnable whenCompleted) {
+        private double getCompletion() {
+            return (double) currentBytes / (double) totalBytes;
+        }
+    }
 
-		if (this.job != null) {
-			// only one job can run at a time
-			return false;
-		}
+    public DownloadSimulator(final ScheduledExecutorService executor, final long bytesPerSecond) {
+        this.executor = executor;
+        this.bytesPerSecond = bytesPerSecond;
+    }
 
-		this.job = new Job(this.executor.scheduleAtFixedRate(this::tick, 0, 1, TimeUnit.SECONDS), totalBytes, jobId,
-				consumer, whenCompleted);
+    public synchronized boolean startDownload(final long jobId, final long totalBytes,
+            final Consumer<DownloadState> consumer, final Runnable whenCompleted) {
 
-		return true;
-	}
+        if (job != null) {
+            // only one job can run at a time
+            return false;
+        }
 
-	public boolean cancelDownload() {
-		DownloadState state;
-		Job job;
+        job = new Job(executor.scheduleAtFixedRate(this::tick, 0, 1, TimeUnit.SECONDS), totalBytes, jobId,
+                consumer, whenCompleted);
 
-		synchronized (this) {
-			if (this.job == null) {
-				return false;
-			}
+        return true;
+    }
 
-			this.job.cancel();
-			state = this.job.getState();
-			job = this.job;
-			this.job = null;
-		}
+    public boolean cancelDownload() {
+        DownloadState state;
+        Job job;
 
-		if (job.consumer != null) {
-			job.consumer.accept(state);
-		}
+        synchronized (this) {
+            if (this.job == null) {
+                return false;
+            }
 
-		return true;
-	}
+            this.job.cancel();
+            state = this.job.getState();
+            job = this.job;
+            this.job = null;
+        }
 
-	protected void tick() {
-		final DownloadState state;
-		synchronized (this) {
-			if (this.job == null) {
-				// this should never happen ;)
-				return;
-			}
+        if (job.consumer != null) {
+            job.consumer.accept(state);
+        }
 
-			this.job.tick();
+        return true;
+    }
 
-			state = this.job.getState();
-		}
+    protected void tick() {
+        final DownloadState state;
+        synchronized (this) {
+            if (job == null) {
+                // this should never happen ;)
+                return;
+            }
 
-		if (this.job.consumer != null) {
-			this.job.consumer.accept(state);
-		}
-	}
+            job.tick();
 
-	@Override
-	public synchronized void close() {
-		// we don't stop the executor ... it was not created by us
+            state = job.getState();
+        }
 
-		if (this.job != null) {
-			this.job.cancel();
-			this.job = null;
-		}
-	}
+        if (job.consumer != null) {
+            job.consumer.accept(state);
+        }
+    }
 
-	public synchronized DownloadState getState() {
-		if (this.job == null) {
-			return DownloadState.DONE;
-		}
+    @Override
+    public synchronized void close() {
+        // we don't stop the executor ... it was not created by us
 
-		return this.job.getState();
-	}
+        if (job != null) {
+            job.cancel();
+            job = null;
+        }
+    }
+
+    public synchronized DownloadState getState() {
+        if (job == null) {
+            return DownloadState.DONE;
+        }
+
+        return job.getState();
+    }
 }

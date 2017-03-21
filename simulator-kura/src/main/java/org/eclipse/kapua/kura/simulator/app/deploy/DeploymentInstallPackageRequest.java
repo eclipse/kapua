@@ -14,83 +14,84 @@ import org.eclipse.kapua.kura.simulator.payload.Metric;
 import org.eclipse.kapua.kura.simulator.payload.Optional;
 
 public class DeploymentInstallPackageRequest {
-	@Metric("dp.name")
-	private String name;
 
-	@Metric("dp.version")
-	private String version;
+    @Metric("dp.name")
+    private String name;
 
-	@Metric("job.id")
-	private long jobId;
+    @Metric("dp.version")
+    private String version;
 
-	@Metric("dp.install.system.update")
-	private boolean systemUpdate;
+    @Metric("job.id")
+    private long jobId;
 
-	@Optional
-	@Metric("dp.reboot")
-	private Boolean reboot;
+    @Metric("dp.install.system.update")
+    private boolean systemUpdate;
 
-	@Optional
-	@Metric("dp.reboot.delay")
-	private Integer rebootDelay;
+    @Optional
+    @Metric("dp.reboot")
+    private Boolean reboot;
 
-	@Optional
-	@Metric("dp.install.verifier.uri")
-	private String installVerifier;
+    @Optional
+    @Metric("dp.reboot.delay")
+    private Integer rebootDelay;
 
-	public String getName() {
-		return this.name;
-	}
+    @Optional
+    @Metric("dp.install.verifier.uri")
+    private String installVerifier;
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getVersion() {
-		return this.version;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public void setVersion(final String version) {
-		this.version = version;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public long getJobId() {
-		return this.jobId;
-	}
+    public void setVersion(final String version) {
+        this.version = version;
+    }
 
-	public void setJobId(final long jobId) {
-		this.jobId = jobId;
-	}
+    public long getJobId() {
+        return jobId;
+    }
 
-	public boolean isSystemUpdate() {
-		return this.systemUpdate;
-	}
+    public void setJobId(final long jobId) {
+        this.jobId = jobId;
+    }
 
-	public void setSystemUpdate(final boolean systemUpdate) {
-		this.systemUpdate = systemUpdate;
-	}
+    public boolean isSystemUpdate() {
+        return systemUpdate;
+    }
 
-	public Boolean getReboot() {
-		return this.reboot;
-	}
+    public void setSystemUpdate(final boolean systemUpdate) {
+        this.systemUpdate = systemUpdate;
+    }
 
-	public void setReboot(final Boolean reboot) {
-		this.reboot = reboot;
-	}
+    public Boolean getReboot() {
+        return reboot;
+    }
 
-	public Integer getRebootDelay() {
-		return this.rebootDelay;
-	}
+    public void setReboot(final Boolean reboot) {
+        this.reboot = reboot;
+    }
 
-	public void setRebootDelay(final Integer rebootDelay) {
-		this.rebootDelay = rebootDelay;
-	}
+    public Integer getRebootDelay() {
+        return rebootDelay;
+    }
 
-	public String getInstallVerifier() {
-		return this.installVerifier;
-	}
+    public void setRebootDelay(final Integer rebootDelay) {
+        this.rebootDelay = rebootDelay;
+    }
 
-	public void setInstallVerifier(final String installVerifier) {
-		this.installVerifier = installVerifier;
-	}
+    public String getInstallVerifier() {
+        return installVerifier;
+    }
+
+    public void setInstallVerifier(final String installVerifier) {
+        this.installVerifier = installVerifier;
+    }
 }

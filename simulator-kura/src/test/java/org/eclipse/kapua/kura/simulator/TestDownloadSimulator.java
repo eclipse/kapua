@@ -17,20 +17,21 @@ import org.eclipse.kapua.kura.simulator.app.deploy.DownloadSimulator;
 import org.eclipse.kapua.kura.simulator.util.NameThreadFactory;
 
 public class TestDownloadSimulator {
-	public static void main(final String[] args) throws Exception {
-		final ScheduledExecutorService executor = Executors
-				.newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
 
-		try (final DownloadSimulator sim = new DownloadSimulator(executor, 10 * 1024)) {
-			sim.startDownload(1, 1024 * 1024, System.out::println, () -> {
-				System.out.println("Download completed!");
-			});
-			Thread.sleep(10_000);
-			sim.cancelDownload();
-			System.out.println(sim.getState());
-			Thread.sleep(120_000);
-		}
+    public static void main(final String[] args) throws Exception {
+        final ScheduledExecutorService executor = Executors
+                .newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
 
-		executor.shutdown();
-	}
+        try (final DownloadSimulator sim = new DownloadSimulator(executor, 10 * 1024)) {
+            sim.startDownload(1, 1024 * 1024, System.out::println, () -> {
+                System.out.println("Download completed!");
+            });
+            Thread.sleep(10_000);
+            sim.cancelDownload();
+            System.out.println(sim.getState());
+            Thread.sleep(120_000);
+        }
+
+        executor.shutdown();
+    }
 }

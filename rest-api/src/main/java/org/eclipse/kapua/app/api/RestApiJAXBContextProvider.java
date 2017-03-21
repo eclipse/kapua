@@ -11,21 +11,21 @@ import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 
 public class RestApiJAXBContextProvider implements JAXBContextProvider {
 
-	@Context
-	Providers providers;
+    @Context
+    Providers providers;
 
-	@Override
-	public JAXBContext getJAXBContext() throws KapuaException {
-		if (providers == null)
-			throw KapuaException.internalError("Unable to find any provider.");
+    @Override
+    public JAXBContext getJAXBContext() throws KapuaException {
+        if (providers == null)
+            throw KapuaException.internalError("Unable to find any provider.");
 
-		ContextResolver<JAXBContext> cr = providers.getContextResolver(JAXBContext.class,
-																	   MediaType.APPLICATION_XML_TYPE);
-		JAXBContext jaxbContext = cr.getContext(JAXBContext.class);
-		if (jaxbContext == null)
-			throw KapuaException.internalError("Unable to get a JAXBContext.");
+        ContextResolver<JAXBContext> cr = providers.getContextResolver(JAXBContext.class,
+                MediaType.APPLICATION_XML_TYPE);
+        JAXBContext jaxbContext = cr.getContext(JAXBContext.class);
+        if (jaxbContext == null)
+            throw KapuaException.internalError("Unable to get a JAXBContext.");
 
-		return jaxbContext;
-	}
+        return jaxbContext;
+    }
 
 }
