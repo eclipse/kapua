@@ -14,13 +14,8 @@ set -e
 
 : ${OPENSHIFT_PROJECT_NAME:=kura-simulator}
 : ${DOCKER_HUB_ACCOUNT:=ctron}
-: ${BROKER_URL:=tcp://localhost:1883}
+: ${BROKER_URL:=tcp://kapua-broker:kapua-password@localhost:1883}
 
 # Set up new simulator instance
 
-oc new-app "$DOCKER_HUB_ACCOUNT/kura-simulator:0.1.2" -n "$OPENSHIFT_PROJECT_NAME" \
-  "-eKSIM_BROKER_URL=${BROKER_URL}" \
-  -eKSIM_NAME_FACTORY=host:addr \
-  -eKSIM_NUM_GATEWAYS=10
-
-oc patch dc/kura-simulator -n "$OPENSHIFT_PROJECT_NAME" -p '{"spec":{"strategy":{"type":"Recreate"}}}'
+oc new-app -n "$OPENSHIFT_PROJECT_NAME" -f external-template.yml -p "DOCKER_ACCOUNT=$DOCKER_HUB_ACCOUNT" -p "BROKER_URL=$BROKER_URL" -p "IMAGE_VERSION=0.1.2"

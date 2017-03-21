@@ -17,13 +17,12 @@ Afterwards start the following script
 Assuming your have already set up Kapua, either using OpenShift or in a different way, you can simply create
 a Kura simulator by:
 
-    oc new-project kura-simulator
-    BROKER_URL=tcp://localhost:1833 ./setup-external.sh
+    oc new-app -n "$OPENSHIFT_PROJECT_NAME" -f external-template.yml -p "DOCKER_ACCOUNT=ctron" -p "BROKER_URL=tcp://localhost:1833" -p "IMAGE_VERSION=0.1.2"
 
-The `BROKER_URL` variable must point to the MQTT broker you are using. It is also possible to use Websockets and user
+The `BROKER_URL` parameter must point to the MQTT broker you are using. It is also possible to use Websockets and user
 credentials:
 
-    BROKER_URL=ws://kapua-sys:kapua-password@localhost:80 ./setup-external.sh
+    ws://kapua-sys:kapua-password@localhost:80
 
 ## Scaling
 
