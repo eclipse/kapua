@@ -35,7 +35,8 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
                         "scopeId",
                         "clientId",
                         "channel",
-                        "metric",
+                        "name",
+                        "metricType",
                         "firstMessageId",
                         "firstMessageOn",
                         "lastMessageId",
@@ -75,6 +76,15 @@ public interface MetricInfo extends Storable {
     public String getClientId();
 
     /**
+     * Sets the client identifier
+     * 
+     * @param clientId The client identifier
+     * 
+     * @since 1.0.0
+     */
+    public void setClientId(String clientId);
+    
+    /**
      * Get the channel
      * 
      * @return
@@ -93,24 +103,38 @@ public interface MetricInfo extends Storable {
      */
     public void setChannel(String channel);
 
+    
     /**
-     * Get the metric
+     * Gets the metric name
      * 
-     * @return
-     * 
+     * @return The metric name
      * @since 1.0.0
      */
-    @XmlElement(name = "metric")
-    public Metric<?>  getMetric();
-
+    @XmlElement(name = "name")
+    public String getName();
+    
     /**
-     * Set the metric
-     * 
-     * @param metric
-     * 
+     * Sets the metric name
+     * @param name The metric name
      * @since 1.0.0
      */
-    public void setMetric(Metric<?> metric);
+    public void setName(String name);
+    
+    /**
+     * Get the metric type
+     * @return The metric type
+     * @since 1.0.0
+     */
+    @XmlElement(name = "metricType")
+    @XmlJavaTypeAdapter(MetricInfoTypeAdapter.class)
+    public Class<?> getMetricType();
+    
+    /**
+     * Sets the metric type
+     * 
+     * @param metricType The metric type
+     */
+    public void setMetricType(Class<?> metricType);
 
     /**
      * Get the message identifier (of the first message published that containing this metric)

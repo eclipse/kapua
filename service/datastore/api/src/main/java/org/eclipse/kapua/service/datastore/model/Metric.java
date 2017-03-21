@@ -44,7 +44,7 @@ public interface Metric<T> extends Comparable<T> {
      * @since 1.0.0
      */
     @XmlElement(name = "type")
-    @XmlJavaTypeAdapter(MetricTypeAdapter.class)
+    @XmlJavaTypeAdapter(MetricInfoTypeAdapter.class)
     public Class<T> getType();
 
     /**

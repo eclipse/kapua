@@ -41,6 +41,15 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     public String getClientId();
 
     /**
+     * Sets the client identifier
+     * 
+     * @param clientId The client identifier
+     * 
+     * @since 1.0.0
+     */
+    public void setClientId(String clientId);
+    
+    /**
      * Get the channel
      * 
      * @return
@@ -83,27 +92,14 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
      * 
      * @since 1.0.0
      */
-    public Class<T> getType();
+    public Class<T> getMetricType();
 
     /**
-     * Get the metric value
-     * 
-     * @param clazz
-     *            metric value type
-     * @return
-     * 
+     * Sets the metric type
+     * @param metricType The metric type
      * @since 1.0.0
      */
-    public T getValue();
-
-    /**
-     * Set the metric value
-     * 
-     * @param value
-     * 
-     * @since 1.0.0
-     */
-    public void setValue(T value);
+    public void setMetricType(Class<T> metricType);
 
     /**
      * Get the message identifier (of the first message published that containing this metric)
