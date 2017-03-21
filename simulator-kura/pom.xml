@@ -11,7 +11,6 @@
 
 	<artifactId>kapua-simulator-kura</artifactId>
 
-	<name>Eclipse Kura™ simulator framework</name>
 	<description>This is a framework for simulating Eclipse Kura IoT gateway instances</description>
 
 	<properties>
