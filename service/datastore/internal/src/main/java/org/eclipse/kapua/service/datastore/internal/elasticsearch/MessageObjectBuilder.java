@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.core.Base64Variants;
 /**
  * Message object builder.<br>
  * This object converts the schema coming from an Elasticsearch search hit to a Kapua message object (unmarshal).
- * 
+ *
  * @since 1.0.0
  */
 public class MessageObjectBuilder {
@@ -42,12 +42,11 @@ public class MessageObjectBuilder {
 
     /**
      * Build a {@link MessageObjectBuilder} from the Elasticsearch search hit
-     * 
+     *
      * @param searchHit
      * @param fetchStyle
      * @return
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public MessageObjectBuilder build(SearchHit searchHit, StorableFetchStyle fetchStyle)
@@ -181,9 +180,8 @@ public class MessageObjectBuilder {
 
     /**
      * Get the built Kapua message object
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public DatastoreMessage getMessage() {

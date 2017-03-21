@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Message object content builder.<br>
  * This object creates an ElasticSearch {@link XContentBuilder} from the Kapua message object (marshal).
- * 
+ *
  * @since 1.0.0
  */
 public class MessageXContentBuilder {
@@ -151,7 +151,7 @@ public class MessageXContentBuilder {
 
     /**
      * Initialize (clean all the instance field) and return the {@link ClientInfoXContentBuilder}
-     * 
+     *
      * @return
      */
     public MessageXContentBuilder clear() {
@@ -161,14 +161,13 @@ public class MessageXContentBuilder {
 
     /**
      * Get the {@link MessageXContentBuilder} initialized with the provided parameters
-     * 
+     *
      * @param account
      * @param message
      * @param indexedOn
      * @param receivedOn
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public MessageXContentBuilder build(KapuaId scopeId, KapuaMessage<?, ?> message, Date indexedOn, Date receivedOn)
@@ -199,9 +198,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the message identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public StorableId getMessageId() {
@@ -210,9 +208,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the message identifier
-     * 
+     *
      * @param esMessageId
-     * 
      * @since 1.0.0
      */
     private void setMessageId(StorableId esMessageId) {
@@ -221,9 +218,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the account name
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public KapuaId getScopeId() {
@@ -232,9 +228,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the account name
-     * 
+     *
      * @param scopeId
-     * 
      * @since 1.0.0
      */
     public void setScopeId(KapuaId scopeId) {
@@ -243,9 +238,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the client identifier
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getClientId() {
@@ -254,9 +248,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the client identifier
-     * 
+     *
      * @param clientId
-     * 
      * @since 1.0.0
      */
     private void setClientId(String clientId) {
@@ -265,9 +258,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the channel
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String getChannel() {
@@ -276,9 +268,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the channel
-     * 
+     *
      * @param channel
-     * 
      * @since 1.0.0
      */
     private void setChannel(String channel) {
@@ -287,9 +278,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the channel parts
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public String[] getChannelParts() {
@@ -298,9 +288,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the channel parts
-     * 
+     *
      * @param channelParts
-     * 
      * @since 1.0.0
      */
     private void setChannelParts(String[] channelParts) {
@@ -309,9 +298,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the message timestamp
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public Date getTimestamp() {
@@ -320,9 +308,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the message timestamp
-     * 
+     *
      * @param timestamp
-     * 
      * @since 1.0.0
      */
     private void setTimestamp(Date timestamp) {
@@ -331,9 +318,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the message indexed on date
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public Date getIndexedOn() {
@@ -342,9 +328,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the message indexed on date
-     * 
+     *
      * @param indexedOn
-     * 
      * @since 1.0.0
      */
     private void setIndexedOn(Date indexedOn) {
@@ -353,9 +338,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the message received on date
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public Date getReceivedOn() {
@@ -364,9 +348,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the received on date
-     * 
+     *
      * @param receivedOn
-     * 
      * @since 1.0.0
      */
     private void setReceivedOn(Date receivedOn) {
@@ -375,9 +358,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the message captured on date
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public Date getCapturedOn() {
@@ -386,9 +368,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the message captured on date
-     * 
+     *
      * @param capturedOn
-     * 
      * @since 1.0.0
      */
     public void setCapturedOn(Date capturedOn) {
@@ -397,9 +378,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the message sent on date
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public Date getSentOn() {
@@ -408,9 +388,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the message sent on date
-     * 
+     *
      * @param sentOn
-     * 
      * @since 1.0.0
      */
     public void setSentOn(Date sentOn) {
@@ -419,9 +398,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the {@link XContentBuilder}
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public XContentBuilder getBuilder() {
@@ -430,9 +408,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the {@link XContentBuilder}
-     * 
+     *
      * @param esMessage
-     * 
      * @since 1.0.0
      */
     private void setBuilder(XContentBuilder esMessage) {
@@ -441,9 +418,8 @@ public class MessageXContentBuilder {
 
     /**
      * Get the metrics map
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public Map<String, EsMetric> getMetricMappings() {
@@ -452,9 +428,8 @@ public class MessageXContentBuilder {
 
     /**
      * Set the metrics map
-     * 
+     *
      * @param metricMappings
-     * 
      * @since 1.0.0
      */
     private void setMetricMappings(Map<String, EsMetric> metricMappings) {

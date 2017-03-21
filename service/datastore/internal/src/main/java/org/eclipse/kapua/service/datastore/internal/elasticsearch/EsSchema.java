@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Elasticsearch schema
- * 
+ *
  * @since 1.0.0
  */
 public class EsSchema {
@@ -288,7 +288,7 @@ public class EsSchema {
 
     /**
      * Get the Elasticsearch data index name
-     * 
+     *
      * @param scopeId
      * @return
      */
@@ -298,7 +298,7 @@ public class EsSchema {
 
     /**
      * Get the Kapua data index name
-     * 
+     *
      * @param scopeId
      * @return
      */
@@ -308,7 +308,7 @@ public class EsSchema {
 
     /**
      * Synchronize metadata
-     * 
+     *
      * @param scopeId
      * @param time
      * @return
@@ -397,7 +397,7 @@ public class EsSchema {
 
     /**
      * Update metric mappings
-     * 
+     *
      * @param scopeId
      * @param time
      * @param esMetrics
@@ -881,7 +881,7 @@ public class EsSchema {
 
     /**
      * Metadata object
-     * 
+     *
      * @since 1.0.0
      */
     public class Metadata {
@@ -910,7 +910,7 @@ public class EsSchema {
 
         /**
          * Get the Elasticsearch data index name
-         * 
+         *
          * @return
          */
         public String getDataIndexName() {
@@ -919,7 +919,7 @@ public class EsSchema {
 
         /**
          * Get the Kapua data index name
-         * 
+         *
          * @return
          */
         public String getKapuaIndexName() {

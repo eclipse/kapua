@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -38,7 +38,7 @@ import com.google.common.base.Strings;
 
 /**
  * Query predicate converter from Kapua abstraction layer to Elasticsearch domain.
- * 
+ *
  * @since 1.0.0
  */
 public class PredicateConverter {
@@ -47,11 +47,9 @@ public class PredicateConverter {
 
     /**
      * Converts the Kapua {@link StorablePredicate}s in the {@link StorableQuery} parameter in Elasticsearch {@link QueryBuilder}.
-     * 
-     * @param query
-     *            The {@link StorableQuery} the contains the {@link StorablePredicate}s to convert.
+     *
+     * @param query The {@link StorableQuery} the contains the {@link StorablePredicate}s to convert.
      * @return The converted {@link QueryBuilder}.
-     * 
      * @throws EsQueryConversionException
      * @since 1.0.0
      */
@@ -69,12 +67,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link StorablePredicate} to Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
-     * @throws EsQueryConversionException
-     *             if the predicate is unknown or some exception is raised in the specific conversion operation
-     * 
+     * @throws EsQueryConversionException if the predicate is unknown or some exception is raised in the specific conversion operation
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(StorablePredicate predicate)
@@ -105,11 +101,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link AndPredicate} to the specific Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(AndPredicate predicate)
@@ -123,11 +118,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link IdsPredicate} to the specific Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(IdsPredicate predicate)
@@ -147,11 +141,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link ChannelMatchPredicate} to the specific Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(ChannelMatchPredicate predicate)
@@ -173,11 +166,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link RangePredicate} to the specific Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(RangePredicate predicate)
@@ -196,11 +188,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link TermPredicate} to the specific Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(TermPredicate predicate)
@@ -215,11 +206,10 @@ public class PredicateConverter {
 
     /**
      * Convert the Kapua {@link ExistsPredicate} to the specific Elasticsearch {@link QueryBuilder}
-     * 
+     *
      * @param predicate
      * @return
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(ExistsPredicate predicate)

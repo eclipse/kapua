@@ -34,7 +34,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  * Elasticsearch transport client implementation.
  *
  * @since 1.0
- *
  */
 public class EsTransportClientProvider implements ElasticsearchClientProvider {
 
