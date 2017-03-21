@@ -1,9 +1,9 @@
 apiVersion: v1
-id: kapua-broker
+id: eclipse-kapua
 kind: Template
-name: kapua-broker
+name: eclipse-kapua
 metadata:
-  name: kapua-broker
+  name: eclipse-kapua
 parameters:
 - name:           IMAGE_VERSION 
   description:      The version of the image to use
