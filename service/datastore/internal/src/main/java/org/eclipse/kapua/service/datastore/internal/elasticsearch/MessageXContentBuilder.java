@@ -123,7 +123,7 @@ public class MessageXContentBuilder {
 
                     // Sanitize field names: '.' is not allowed
                     String esMetricName = EsUtils.normalizeMetricName(kapuaMetricName);
-                    String esType = EsUtils.getEsTypeFromValue(metricValue);
+                    String esType = EsUtils.getEsTypeFromClass(metricValue.getClass());
                     String esTypeAcronim = EsUtils.getEsTypeAcronym(esType);
                     EsMetric esMetric = new EsMetric();
                     esMetric.setName(esMetricName);

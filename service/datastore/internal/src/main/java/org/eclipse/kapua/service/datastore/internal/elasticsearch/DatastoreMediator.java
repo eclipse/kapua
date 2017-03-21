@@ -20,7 +20,6 @@ import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryFacade;
@@ -29,7 +28,6 @@ import org.eclipse.kapua.service.datastore.internal.MetricInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoImpl;
-import org.eclipse.kapua.service.datastore.internal.model.MetricImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
@@ -37,7 +35,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
-import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 
 /**
@@ -51,8 +48,6 @@ public class DatastoreMediator implements MessageStoreMediator,
         MetricInfoRegistryMediator {
 
     private static DatastoreMediator instance;
-
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
 
     private final EsSchema esSchema;
 
@@ -174,12 +169,11 @@ public class DatastoreMediator implements MessageStoreMediator,
         MetricInfoImpl[] messageMetrics = new MetricInfoImpl[metrics.size()];
         for (Map.Entry<String, Object> entry : metrics.entrySet()) {
             
-            Metric<?> metric = datastoreObjectFactory.newMetric(entry.getKey(), entry.getValue());
-            
             MetricInfoImpl metricInfo = new MetricInfoImpl(docBuilder.getScopeId());
             metricInfo.setClientId(docBuilder.getClientId());
             metricInfo.setChannel(docBuilder.getChannel());
-            metricInfo.setMetric(metric);
+            metricInfo.setName(entry.getKey());
+            metricInfo.setMetricType(entry.getValue().getClass());
             metricInfo.setFirstMessageId(docBuilder.getMessageId());
             metricInfo.setFirstMessageOn(docBuilder.getTimestamp());
             metricInfo.setId(new StorableIdImpl(MetricInfoXContentBuilder.getOrDeriveId(null, metricInfo)));

@@ -681,16 +681,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             else if (clientIds[1].equals(metricInfo.getClientId())) {
                 assertEquals(String.format("Wrong last publish date for the client id [%s]", clientIds[1]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
-            if (metrics[0].equals(metricInfo.getMetric().getName())) {
+            if (metrics[0].equals(metricInfo.getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[0]), capturedOn, metricInfo.getLastMessageOn());
             }
-            else if (metrics[1].equals(metricInfo.getMetric().getName())) {
+            else if (metrics[1].equals(metricInfo.getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[1]), capturedOn, metricInfo.getLastMessageOn());
             }
-            else if (metrics[2].equals(metricInfo.getMetric().getName())) {
+            else if (metrics[2].equals(metricInfo.getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[2]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
-            else if (metrics[3].equals(metricInfo.getMetric().getName())) {
+            else if (metrics[3].equals(metricInfo.getName())) {
                 assertEquals(String.format("Wrong last publish date for the metric [%s]", metrics[3]), capturedOnThirdMessage, metricInfo.getLastMessageOn());
             }
             assertEquals(String.format("Wrong first publish date for the client id [%s]", metricInfo.getClientId()), capturedOn, metricInfo.getFirstMessageOn());
@@ -833,15 +833,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             insertMessages(false, message);
         }
         waitEsRefresh();
+        
         List<SortField> sort = new ArrayList<SortField>();
         SortField sortMetricName = new SortFieldImpl();
         sortMetricName.setField(EsSchema.METRIC_MTR_NAME_FULL);
         sortMetricName.setSortDirection(SortDirection.ASC);
         sort.add(sortMetricName);
-        SortField sortMetricValue = new SortFieldImpl();
-        sortMetricValue.setField(EsSchema.METRIC_MTR_VALUE_FULL);
-        sortMetricValue.setSortDirection(SortDirection.DESC);
-        sort.add(sortMetricValue);
+        
         MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
 
@@ -851,8 +849,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         checkMetricDateBound(metricList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
 
         for (MetricInfo metricInfo : metricList.getItems()) {
-            s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getMetric().getName()
-                           + "' metric type: '" + metricInfo.getMetric().getType() + "' metric value: '" + getPrivateField(metricInfo.getMetric(), "value") + "'");
+            s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getName()
+                           + "' metric type: '" + metricInfo.getMetricType() + "'");
         }
         checkListOrder(metricList, sort);
     }
@@ -1715,7 +1713,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         Set<String> allMetrics = new HashSet<String>();
         for (MetricInfo metricInfo : result.getItems()) {
             allClientId.add(metricInfo.getClientId());
-            allMetrics.add(metricInfo.getMetric().getName());
+            allMetrics.add(metricInfo.getName());
         }
         assertEquals("Wrong client ids size!", (clientIds != null ? clientIds.length : 0), allClientId.size());
         assertEquals("Wrong metrics size!", (metrics != null ? metrics.length : 0), allMetrics.size());
@@ -1801,19 +1799,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
             for (SortField field : sortFieldList) {
                 if (previousItem != null) {
                     
-                    Comparable currentValue;
-                    Comparable previousValue;
-                    if (field.getField().contains(".")) {
-                        currentValue = getValue(item, field.getField().split("\\.")[0]);
-                        previousValue = getValue(previousItem, field.getField().split("\\.")[0]);
-                        
-                        currentValue = getValue(currentValue, field.getField().split("\\.")[1]);
-                        previousValue = getValue(previousValue, field.getField().split("\\.")[1]);
-                    }
-                    else{                        
-                        currentValue = getValue(item, field.getField());
-                        previousValue = getValue(previousItem, field.getField());
-                    }
+                    Comparable currentValue = getValue(item, field.getField());
+                    Comparable previousValue = getValue(previousItem, field.getField());
                     
                     if (!currentValue.equals(previousValue)) {
                         checkNextValueCoherence(field, currentValue, previousValue);

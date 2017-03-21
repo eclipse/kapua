@@ -227,14 +227,14 @@ public class EsSchema {
      * Metric information - full type (so with the metric type suffix)
      */
     public static final String METRIC_MTR_TYPE_FULL = "metric.type";
-    /**
-     * Metric information - value
-     */
-    public static final String METRIC_MTR_VALUE = "value";
-    /**
-     * Metric information - full value (so with the metric type suffix)
-     */
-    public static final String METRIC_MTR_VALUE_FULL = "metric.value";
+//    /**
+//     * Metric information - value
+//     */
+//    public static final String METRIC_MTR_VALUE = "value";
+//    /**
+//     * Metric information - full value (so with the metric type suffix)
+//     */
+//    public static final String METRIC_MTR_VALUE_FULL = "metric.value";
     /**
      * Metric information - message timestamp (of the first message published in this channel)
      */
@@ -533,10 +533,10 @@ public class EsSchema {
                     .field("type", "string")
                     .field("index", "not_analyzed")
                     .endObject()
-                    .startObject(METRIC_MTR_VALUE)
-                    .field("type", "string")
-                    .field("index", "not_analyzed")
-                    .endObject()
+//                    .startObject(METRIC_MTR_VALUE)
+//                    .field("type", "string")
+//                    .field("index", "not_analyzed")
+//                    .endObject()
                     .startObject(METRIC_MTR_TIMESTAMP)
                     .field("type", "date")
                     .endObject()

@@ -29,8 +29,7 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
     private String channel;
     
     private String name;
-    private Class<T> type;
-    private T value;
+    private Class<T> metricType;
 
     private StorableId messageId;
     private Date messageTimestamp;
@@ -60,14 +59,8 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
         return this.clientId;
     }
 
-    /**
-     * Set the device identifier
-     * 
-     * @param clientId
-     * 
-     * @since 1.0.0
-     */
-    public void setDevice(String clientId) {
+    @Override
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -93,18 +86,13 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
     }
 
     @Override
-    public Class<T> getType() {
-        return type;
+    public Class<T> getMetricType() {
+        return metricType;
     }
     
     @Override
-    public T getValue() {
-        return value;
-    }
-    
-    @Override
-    public void setValue(T value) {
-        this.value = value;
+    public void setMetricType(Class<T> metricType) {
+        this.metricType = metricType;
     }
 
     @Override

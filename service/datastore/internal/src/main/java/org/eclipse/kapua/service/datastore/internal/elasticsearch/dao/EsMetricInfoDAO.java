@@ -132,14 +132,13 @@ public class EsMetricInfoDAO {
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
-        Metric<?> metric = datastoreObjectFactory.newMetric(metricInfoCreator.getName(), metricInfoCreator.getValue());
-        
         MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setClientId(metricInfoCreator.getClientId());
         metricInfo.setChannel(metricInfoCreator.getChannel());
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
-        metricInfo.setMetric(metric);
+        metricInfo.setName(metricInfoCreator.getName());
+        metricInfo.setMetricType(metricInfoCreator.getMetricType());
 
         return getUpsertRequest(metricInfo);
     }
@@ -182,14 +181,13 @@ public class EsMetricInfoDAO {
     public UpdateResponse upsert(MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
-
-        Metric<?> metric = datastoreObjectFactory.newMetric(metricInfoCreator.getName(), metricInfoCreator.getValue());;
         
         MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setChannel(metricInfoCreator.getChannel());
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
-        metricInfo.setMetric(metric);
+        metricInfo.setName(metricInfoCreator.getName());
+        metricInfo.setMetricType(metricInfoCreator.getMetricType());
         
         return upsert(metricInfo);
     }

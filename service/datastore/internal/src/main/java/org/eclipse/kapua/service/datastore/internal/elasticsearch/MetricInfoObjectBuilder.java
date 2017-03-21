@@ -51,63 +51,30 @@ public class MetricInfoObjectBuilder {
 
         Map<String, SearchHitField> fields = searchHit.fields();
         KapuaId scopeId = KapuaEid.parseCompactId(fields.get(MetricInfoField.SCOPE_ID.field()).getValue());
-        String name = (String) fields.get(MetricInfoField.NAME_FULL.field()).getValue();
-        String type = (String) fields.get(MetricInfoField.TYPE_FULL.field()).getValue();
-        String firstMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
-        String firstMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
-        Object value = fields.get(MetricInfoField.VALUE_FULL.field()).getValue();
         String clientId = fields.get(MetricInfoField.CLIENT_ID.field()).getValue();
         String channel = fields.get(MetricInfoField.CHANNEL.field()).getValue();
 
-        value = fixEsTypeOptimization(type, value);
+        String name = (String) fields.get(MetricInfoField.NAME_FULL.field()).getValue();
+        String typeString = (String) fields.get(MetricInfoField.TYPE_FULL.field()).getValue();
+        
+        String firstMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
+        String firstMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
+//        Object value = fields.get(MetricInfoField.VALUE_FULL.field()).getValue();
         
         String metricName = EsUtils.restoreMetricName(name);
-        Metric<?> metric = datastoreObjectFactory.newMetric(metricName, value);
-
+        Class<?> metricType = EsUtils.convertToKapuaType(typeString);
         Date timestamp = (Date) EsUtils.convertToKapuaObject("date", firstMsgTimestamp);
         
-        MetricInfoImpl finalMetricInfo = new MetricInfoImpl(scopeId, new StorableIdImpl(id));
+        MetricInfo finalMetricInfo = new MetricInfoImpl(scopeId, new StorableIdImpl(id));
         finalMetricInfo.setClientId(clientId);
         finalMetricInfo.setChannel(channel);
+        finalMetricInfo.setName(metricName);
+        finalMetricInfo.setMetricType(metricType);
         finalMetricInfo.setFirstMessageId(new StorableIdImpl(firstMsgId));
         finalMetricInfo.setFirstMessageOn(timestamp);
-        finalMetricInfo.setMetric(metric);
 
         this.metricInfo = finalMetricInfo;
         return this;
-    }
-
-    private Object fixEsTypeOptimization(String type, Object value) {
-        if (EsUtils.ES_TYPE_STRING.equals(type)) {
-            // Do nothing
-        }
-        else if (EsUtils.ES_TYPE_INTEGER.equals(type)) {
-            if (value != null && value instanceof Number)
-                return ((Number) value).intValue();
-        }
-        else if (EsUtils.ES_TYPE_LONG.equals(type)) {
-            if (value != null && value instanceof Number)
-                return ((Number) value).longValue();
-        }
-        else if (EsUtils.ES_TYPE_FLOAT.equals(type)) {
-            if (value != null && value instanceof Number)
-                return ((Number) value).floatValue();
-        }
-        else if (EsUtils.ES_TYPE_DOUBLE.equals(type)) {
-            if (value != null && value instanceof Number)
-                return ((Number) value).doubleValue();
-        }
-        else if (EsUtils.ES_TYPE_BOOL.equals(type)) {
-            // Do nothing 
-        }
-        else if (EsUtils.ES_TYPE_BINARY.equals(type)) {
-            // Do nothing
-        }
-        if (EsUtils.ES_TYPE_DATE.equals(type)) {
-            // Do nothing
-        }
-        
-        return value;
     }
 
     /**
@@ -117,6 +84,6 @@ public class MetricInfoObjectBuilder {
      * @since 1.0.0
      */
     public MetricInfo getKapuaMetricInfo() {
-        return this.metricInfo;
+        return metricInfo;
     }
 }

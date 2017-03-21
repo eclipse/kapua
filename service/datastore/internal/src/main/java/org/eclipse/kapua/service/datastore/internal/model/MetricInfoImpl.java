@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore.internal.model;
 import java.util.Date;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
@@ -30,7 +29,9 @@ public class MetricInfoImpl implements MetricInfo {
     private String clientId;
     private String channel;
 
-    private Metric<?> metric; 
+    private String name;
+    private Class<?> metricType;
+    
 
     private StorableId firstMessageId;
     private Date firstMessageOn;
@@ -91,11 +92,7 @@ public class MetricInfoImpl implements MetricInfo {
         return this.clientId;
     }
 
-    /**
-     * Set the client identifier
-     * 
-     * @param clientId
-     */
+    @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
@@ -109,15 +106,25 @@ public class MetricInfoImpl implements MetricInfo {
     public void setChannel(String channel) {
         this.channel = channel;
     }
-
+    
     @Override
-    public Metric<?> getMetric() {
-        return metric;
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public void setMetric(Metric<?> metric) {
-        this.metric = metric;        
+    public Class<?> getMetricType() {
+        return metricType;
+    }
+
+    @Override
+    public void setMetricType(Class<?> metricType) {
+        this.metricType = metricType;
     }
 
     @Override

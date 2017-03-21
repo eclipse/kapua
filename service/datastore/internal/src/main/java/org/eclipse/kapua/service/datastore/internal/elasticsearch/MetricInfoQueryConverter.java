@@ -41,7 +41,6 @@ public class MetricInfoQueryConverter extends AbstractStorableQueryConverter<Met
                 MetricInfoField.CHANNEL.field(),
                 MetricInfoField.NAME_FULL.field(),
                 MetricInfoField.TYPE_FULL.field(),
-                MetricInfoField.VALUE_FULL.field(),
                 MetricInfoField.TIMESTAMP_FULL.field(),
                 MetricInfoField.MESSAGE_ID_FULL.field() };
     }
