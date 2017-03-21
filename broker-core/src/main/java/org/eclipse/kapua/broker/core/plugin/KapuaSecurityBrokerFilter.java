@@ -312,7 +312,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             loginPreCheckTimeContext.stop();
 
             Context loginShiroLoginTimeContext = metricLoginShiroLoginTime.time();
-            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray());
+            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(username, password != null ? password.toCharArray() : null);
             AccessToken accessToken = authenticationService.login(credentials);
 
             KapuaId scopeId = accessToken.getScopeId();
