@@ -56,8 +56,11 @@ public class DatastoreChannel {
 
     private void init(KapuaId scopeId, String clientId, String channel) throws EsInvalidChannelException {
 
-        // Must be not null and not multilevel wild card
-        if (scopeId == null || MULTI_LEVEL_WCARD.equals(scopeId.toCompactId()))
+        // Must be not null
+        if (scopeId == null)
+            throw new EsInvalidChannelException("Empty scopeId.");
+        // Must be not multilevel wild card
+        if (MULTI_LEVEL_WCARD.equals(scopeId.toCompactId()))
             throw new EsInvalidChannelException("Invalid scopeId: " + scopeId.toCompactId());
 
         this.scopeId = scopeId;
