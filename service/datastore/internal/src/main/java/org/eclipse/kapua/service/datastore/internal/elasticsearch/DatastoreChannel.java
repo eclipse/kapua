@@ -169,7 +169,7 @@ public class DatastoreChannel {
      * @since 1.0.0
      */
     public boolean isAnyAccount() {
-        return SINGLE_LEVEL_WCARD.equals(this.scopeId);
+        return this.channel.startsWith(SINGLE_LEVEL_WCARD);
     }
 
     /**
