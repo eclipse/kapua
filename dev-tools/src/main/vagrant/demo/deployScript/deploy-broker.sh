@@ -18,8 +18,9 @@ vagrant ssh -c "echo 'deploying the Kapua broker'
 	echo 'deleting old Kapua runtime dependency'
 	find lib/extra ! -name 'mqtt-client*.jar' -type f -exec rm -f {} +
 	echo 'copying Kapua runtime dependency'
-	sudo cp /kapua/assembly/target/broker_dependency/* lib/extra
-	echo 'copying Kapua arctifact'
+    sudo cp /kapua/assembly/target/broker_dependency/* lib/extra
+	for name in \$(ls /kapua/broker-core/target/dependency/ | grep -Ev 'jaxb-|activemq-|kapua-'); do echo copying from /kapua/broker-core/target/dependency/\$name lib/extra/\$name; sudo cp /kapua/broker-core/target/dependency/\$name lib/extra/\$name; done;
+	echo 'copying Kapua artifact'
 	sudo cp /kapua/broker-core/target/kapua-*.jar lib/extra
 	sudo cp /kapua/commons/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/device/api/target/kapua-*.jar lib/extra
@@ -46,6 +47,7 @@ vagrant ssh -c "echo 'deploying the Kapua broker'
 	sudo cp /kapua/service/device/registry/internal/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/idgenerator/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/idgenerator/sequence/target/kapua-*.jar lib/extra
+	sudo cp /kapua/service/liquibase/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/security/authentication/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/security/authorization/api/target/kapua-*.jar lib/extra
 	sudo cp /kapua/service/security/shiro/target/kapua-*.jar lib/extra
@@ -59,6 +61,7 @@ vagrant ssh -c "echo 'deploying the Kapua broker'
 	sudo cp /kapua/transport/jms/target/kapua-*.jar lib/extra
 	sudo cp /kapua/transport/mqtt/target/kapua-*.jar lib/extra
 	echo 'copying Kapua configuration'
-	sudo cp /kapua/assembly/src/main/resources/conf/broker/activemq.xml conf/
+	sudo cp /kapua/assembly/src/main/resources/conf/broker/activemq.xml conf/ 
+	sudo cp /kapua/assembly/src/main/resources/conf/broker/camel.xml conf/
 	cd ..
 	sudo chown -R vagrant:vagrant apache-activemq-${ACTIVEMQ_VERSION}"
