@@ -218,6 +218,22 @@ public class UserServiceSteps extends KapuaTest {
         }
     }
 
+    @When("^I configure$")
+    public void setConfigurationValue(List<TestConfig> testConfigs)
+            throws KapuaException {
+        Map<String, Object> valueMap = new HashMap<>();
+
+        for (TestConfig config: testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            isException = false;
+            accountService.setConfigValues(lastAccount.getId(), valueMap);
+        } catch (KapuaException ex) {
+            isException = true;
+        }
+    }
+
     @Then("^I get KapuaException$")
     public void thenGetKapuaException() throws KapuaException {
         if (!isException) {

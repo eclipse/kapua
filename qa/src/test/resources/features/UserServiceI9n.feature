@@ -22,6 +22,10 @@ Feature: User Service Integration
     Given Account
       | name      | scopeId |
       | account-a | 1       |
+    And I configure
+      | type    | name                   | value |
+      | boolean | infiniteChildAccounts  | true  |
+      | integer | maxNumberChildAccounts |  5    |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -36,6 +40,10 @@ Feature: User Service Integration
     And Account
       | name      |
       | account-b |
+    And I configure
+      | type    | name                   | value |
+      | boolean | infiniteChildAccounts  | true  |
+      | integer | maxNumberChildAccounts |  5    |
     And User B
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
@@ -61,6 +69,10 @@ Feature: User Service Integration
     Given Account
       | name      | scopeId |
       | account-a | 1       |
+    And I configure
+      | type    | name                   | value |
+      | boolean | infiniteChildAccounts  | true  |
+      | integer | maxNumberChildAccounts |  5    |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -75,6 +87,10 @@ Feature: User Service Integration
     And Account
       | name      |
       | account-b |
+    And I configure
+      | type    | name                   | value |
+      | boolean | infiniteChildAccounts  | true  |
+      | integer | maxNumberChildAccounts |  5    |
     And User B
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
