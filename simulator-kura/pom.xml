@@ -138,7 +138,6 @@
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<configuration>
-					<pushRegistry>registry.hub.docker.com</pushRegistry>
 					<images>
 						<image>
 							<name>kapua/kura-simulator:%v</name>
