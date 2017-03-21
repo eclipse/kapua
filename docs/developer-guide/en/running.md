@@ -21,6 +21,9 @@ Running Kapua on local docker containers is as easy as:
 OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua support deployments into [OpenShift Origin](https://www.openshift.org),
 which is an open source community project. Origin sources, can be found [here](https://www.openshift.org/). We support Kapua on OpenShift Origin **1.4.1**.
 
+Currently we support running OpenShift only on Linux OS. If you would like to run Kapua on Mac OS or on Windows for development purposes, please install Linux
+(for example Fedora 25) into virtual machine (for example VirtualBox) and install OpenShift there.
+
 ### Starting OpenShift cluster
 
 For running Kapua on an OpenShift you need to
