@@ -142,7 +142,7 @@
 					<pushRegistry>registry.hub.docker.com</pushRegistry>
 					<images>
 						<image>
-							<name>ctron/kura-simulator:%v</name>
+							<name>kapua/kura-simulator:%v</name>
 							<build>
 								<from>java:8-jre-alpine</from>
 								<maintainer>Jens Reimann &lt;jreimann@redhat.com&gt;</maintainer>
