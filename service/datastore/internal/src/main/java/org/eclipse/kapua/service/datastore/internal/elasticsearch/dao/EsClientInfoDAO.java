@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
@@ -50,9 +50,8 @@ public class EsClientInfoDAO {
 
     /**
      * Default constructor
-     * 
+     *
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public EsClientInfoDAO() throws EsClientUnavailableException {
@@ -61,11 +60,10 @@ public class EsClientInfoDAO {
 
     /**
      * Set the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsClientInfoDAO setListener(EsDaoListener daoListener)
@@ -76,11 +74,10 @@ public class EsClientInfoDAO {
 
     /**
      * Unset the dao listener
-     * 
+     *
      * @param daoListener
      * @return
      * @throws EsDatastoreException
-     * 
      * @since 1.0.0
      */
     public EsClientInfoDAO unsetListener(EsDaoListener daoListener)
@@ -91,10 +88,9 @@ public class EsClientInfoDAO {
 
     /**
      * Client information DAO instance factory
-     * 
+     *
      * @return
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public static EsClientInfoDAO getInstance() throws EsClientUnavailableException {
@@ -103,10 +99,9 @@ public class EsClientInfoDAO {
 
     /**
      * Set the index name
-     * 
+     *
      * @param indexName
      * @return
-     * 
      * @since 1.0.0
      */
     public EsClientInfoDAO index(String indexName) {
@@ -116,11 +111,10 @@ public class EsClientInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(ClientInfo clientInfo)
@@ -131,11 +125,10 @@ public class EsClientInfoDAO {
 
     /**
      * Upsert action (insert the document (if not present) or update the document (if present) into the database)
-     * 
+     *
      * @param id
      * @param esClient
      * @return
-     * 
      * @since 1.0.0
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient) {
@@ -144,11 +137,10 @@ public class EsClientInfoDAO {
 
     /**
      * Update action (update the document into the database)
-     * 
+     *
      * @param clientInfo
      * @return
      * @throws EsDocumentBuilderException
-     * 
      * @since 1.0.0
      */
     public UpdateResponse update(ClientInfo clientInfo)
@@ -159,11 +151,10 @@ public class EsClientInfoDAO {
 
     /**
      * Update action (update the document into the database)
-     * 
+     *
      * @param id
      * @param esClient
      * @return
-     * 
      * @since 1.0.0
      */
     public UpdateResponse update(String id, XContentBuilder esClient) {
@@ -172,9 +163,8 @@ public class EsClientInfoDAO {
 
     /**
      * Delete query action (delete document from the database by id)
-     * 
+     *
      * @param id
-     * 
      * @since 1.0.0
      */
     public void deleteById(String id) {
@@ -188,10 +178,9 @@ public class EsClientInfoDAO {
 
     /**
      * Delete query action (delete documents from the database)
-     * 
+     *
      * @param query
      * @throws EsQueryConversionException
-     * 
      * @since 1.0.0
      */
     public void deleteByQuery(ClientInfoQuery query)
@@ -201,13 +190,12 @@ public class EsClientInfoDAO {
 
     /**
      * Query action (return objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
-     * 
      * @since 1.0.0
      */
     public ClientInfoListResult query(ClientInfoQuery query)
@@ -256,12 +244,11 @@ public class EsClientInfoDAO {
 
     /**
      * Query count action (return the count of the objects matching the given query)
-     * 
+     *
      * @param query
      * @return
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public long count(ClientInfoQuery query)
