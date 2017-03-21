@@ -20,7 +20,7 @@ a Kura simulator by:
     oc new-project kura-simulator
     BROKER_URL=tcp://localhost:1833 ./setup-external.sh
 
-The `BROKER_URL` variable must point to the MQTT you are using. It is also possible to use Websockets and user
+The `BROKER_URL` variable must point to the MQTT broker you are using. It is also possible to use Websockets and user
 credentials:
 
     BROKER_URL=ws://kapua-sys:kapua-password@localhost:80 ./setup-external.sh
