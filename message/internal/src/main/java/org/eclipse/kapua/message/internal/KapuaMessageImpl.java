@@ -39,9 +39,6 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-@XmlRootElement(name = "message")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "destination", "timestamp", "payload" })
 public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> implements Comparable<KapuaMessageImpl<C,P>>, KapuaMessage<C, P>
 {
     private UUID          id;

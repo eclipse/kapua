@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.kapua.message.KapuaPayload;
 
 /**
@@ -28,8 +24,6 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
-@XmlRootElement(name = "payload")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class KapuaPayloadImpl implements KapuaPayload
 {
     private Map<String, Object> properties;
@@ -40,12 +34,15 @@ public class KapuaPayloadImpl implements KapuaPayload
      */
     public KapuaPayloadImpl()
     {
-        properties = new HashMap<String, Object>();
     }
 
     @Override
     public Map<String, Object> getProperties()
-    {
+    {        
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        
         return properties;
     }
 

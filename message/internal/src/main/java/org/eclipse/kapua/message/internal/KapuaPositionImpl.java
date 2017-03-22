@@ -16,10 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Embeddable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.kapua.message.KapuaPosition;
 
@@ -31,64 +27,53 @@ import org.eclipse.kapua.message.KapuaPosition;
  * @since 1.0
  * 
  */
-@XmlRootElement(name = "position")
-@XmlAccessorType(XmlAccessType.FIELD)
 @Embeddable
 public class KapuaPositionImpl implements KapuaPosition
 {
     /**
      * Longitude of this position in degrees. This is a mandatory field.
      */
-    @XmlElement(name = "longitude")
     private Double  longitude;
 
     /**
      * Latitude of this position in degrees. This is a mandatory field.
      */
-    @XmlElement(name = "latitude")
     private Double  latitude;
 
     /**
      * Altitude of the position in meters.
      */
-    @XmlElement(name = "altitude")
     private Double  altitude;
 
     /**
      * Dilution of the precision (DOP) of the current GPS fix.
      */
-    @XmlElement(name = "precision")
     private Double  precision;
 
     /**
      * Heading (direction) of the position in degrees
      */
-    @XmlElement(name = "heading")
     private Double  heading;
 
     /**
      * Speed for this position in meter/sec.
      */
-    @XmlElement(name = "speed")
     private Double  speed;
 
     /**
      * Timestamp extracted from the GPS system
      */
-    @XmlElement(name = "timestamp")
     private Date    timestamp;
 
     /**
      * Number of satellites seen by the systems
      */
-    @XmlElement(name = "satellites")
     private Integer satellites;
 
     /**
      * Status of GPS system: 1 = no GPS response, 2 = error in response, 4 =
      * valid.
      */
-    @XmlElement(name = "status")
     private Integer status;
 
     /**
