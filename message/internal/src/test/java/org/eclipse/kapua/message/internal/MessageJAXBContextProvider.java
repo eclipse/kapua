@@ -18,10 +18,9 @@ import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
-import org.eclipse.kapua.message.internal.xml.KapuaMetric;
-import org.eclipse.kapua.message.internal.xml.KapuaMetricValue;
-import org.eclipse.kapua.message.internal.xml.KapuaMetricsMap;
-import org.eclipse.kapua.message.internal.xml.KapuaMetricsMapType;
+import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
+import org.eclipse.kapua.message.xml.XmlAdaptedMetrics;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,15 +42,15 @@ public class MessageJAXBContextProvider implements JAXBContextProvider {
                     KapuaChannel.class,
                     KapuaPayload.class,
                     KapuaPosition.class,
-                    KapuaMetric.class,
-                    KapuaMetricValue.class,
-                    KapuaMetricsMapType.class,
-                    KapuaMetricsMap.class
+                    
+                    
+                    XmlAdaptedMetric.class,
+                    XmlAdaptedMetrics.class, 
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);
             } catch (JAXBException jaxbException) {
-                logger.warn("Error creating JAXBContext, tests will fail!");
+                logger.warn("Error creating JAXBContext, tests will fail!", jaxbException);
             }
         }
         return context;

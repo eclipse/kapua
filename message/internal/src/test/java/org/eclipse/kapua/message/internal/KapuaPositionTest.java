@@ -41,10 +41,19 @@ public class KapuaPositionTest extends Assert {
     private static String referenceDateStr = referenceDate.
             format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
-    private static final String POSITION_XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
-            "<altitude>430.3</altitude><heading>280.0</heading><latitude>15.3333</latitude>" +
-            "<longitude>45.1111</longitude><precision>12.0</precision><satellites>5</satellites>" +
-            "<speed>60.2</speed><status>4</status><timestamp>" + referenceDateStr + "</timestamp>" + newline;
+    private static final String POSITION_XML_STR = //
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
+            "<position>" + newline +
+            "   <longitude>45.1111</longitude>" + newline +
+            "   <latitude>15.3333</latitude>" + newline +
+            "   <altitude>430.3</altitude>" + newline +
+            "   <precision>12.0</precision>" + newline +
+            "   <heading>280.0</heading>" + newline +
+            "   <speed>60.2</speed>" + newline +
+            "   <timestamp>" + referenceDateStr + "</timestamp>" + newline +
+            "   <satellites>5</satellites>" + newline +
+            "   <status>4</status>" + newline +
+            "</position>" + newline ;
 
     @Before
     public void before() throws Exception {
