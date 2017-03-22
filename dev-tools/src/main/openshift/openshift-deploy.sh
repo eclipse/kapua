@@ -28,6 +28,6 @@ $OC describe "project/$OPENSHIFT_PROJECT_NAME" &>/dev/null || die "Project '$OPE
 ### Create Kapua from template
 
 echo Creating Kapua from template ...
-$OC new-app -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT"
+$OC new-app -n "$OPENSHIFT_PROJECT_NAME" -f kapua-template.yml -p "DOCKER_ACCOUNT=$DOCKER_ACCOUNT"
 echo Creating Kapua from template ... done!
 
