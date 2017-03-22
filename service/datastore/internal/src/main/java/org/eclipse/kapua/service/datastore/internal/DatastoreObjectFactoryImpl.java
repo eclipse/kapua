@@ -25,18 +25,22 @@ import org.eclipse.kapua.service.datastore.internal.model.DoubleMetric;
 import org.eclipse.kapua.service.datastore.internal.model.FloatMetric;
 import org.eclipse.kapua.service.datastore.internal.model.IntMetric;
 import org.eclipse.kapua.service.datastore.internal.model.LongMetric;
+import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StringMetric;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
@@ -69,6 +73,15 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
         return new ClientInfoListResultImpl();
     }
 
+    @Override
+    public MessageQuery newDatastoreMessageQuery(KapuaId scopeId) {
+        return new MessageQueryImpl(scopeId);
+    }
+
+    @Override
+    public MessageListResult newDatastoreMessageListResult() {
+        return new MessageListResultImpl();
+    }
 
     @Override
     public MetricInfoQuery newMetricInfoQuery(KapuaId scopeId) {

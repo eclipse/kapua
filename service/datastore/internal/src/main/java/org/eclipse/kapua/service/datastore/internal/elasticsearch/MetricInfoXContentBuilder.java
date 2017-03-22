@@ -201,7 +201,7 @@ public class MetricInfoXContentBuilder {
         }
     }
 
-    private void getMessageBuilder(KapuaId scopeId, String clientId, KapuaMessage<?, ?> message, String messageId, Date indexedOn, Date receivedOn)
+    private void getMessageBuilder(KapuaId scopeId, String clientId, DatastoreMessage message, String messageId, Date indexedOn, Date receivedOn)
             throws EsDocumentBuilderException {
         KapuaPayload payload = message.getPayload();
         if (payload == null)
