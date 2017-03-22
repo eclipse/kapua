@@ -15,7 +15,15 @@ package org.eclipse.kapua.message;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Kapua message object definition.
@@ -26,30 +34,30 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
+@XmlRootElement(name = "message")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { //
+        "id", //
+        "scopeId", //
+        "deviceId", //
+        "clientId", //
+        "receivedOn", //
+        "sentOn", //
+        "capturedOn", //
+        "position", //
+        "channel", //
+        "payload", //
+        }) //
 public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P>
 {
-
-    /**
-     * Get client identifier
-     *
-     * @return
-     */
-    public String getClientId();
-
-    /**
-     * Set client identifier
-     *
-     * @param clientId
-     */
-    public void setClientId(String clientId);
-
     /**
      * Get the message identifier
      *
      * @return
      */
+    @XmlElement(name = "id")
     public UUID getId();
-
+    
     /**
      * Set the message identifier
      *
@@ -62,8 +70,10 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
-
+    
     /**
      * Set scope identifier
      *
@@ -72,10 +82,27 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
     public void setScopeId(KapuaId scopeId);
 
     /**
+     * Get client identifier
+     *
+     * @return
+     */
+    @XmlElement(name = "clientId")
+    public String getClientId();
+
+    /**
+     * Set client identifier
+     *
+     * @param clientId
+     */
+    public void setClientId(String clientId);
+
+    /**
      * Get device identifier
      *
      * @return
      */
+    @XmlElement(name = "deviceId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getDeviceId();
 
     /**
@@ -90,6 +117,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "receivedOn")
     public Date getReceivedOn();
 
     /**
@@ -104,6 +132,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "sentOn")
     public Date getSentOn();
 
     /**
@@ -118,6 +147,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "capturedOn")
     public Date getCapturedOn();
 
     /**
@@ -132,6 +162,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "position")
     public KapuaPosition getPosition();
 
     /**
@@ -146,6 +177,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "channel")
     public C getChannel();
 
     /**
@@ -160,6 +192,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      *
      * @return
      */
+    @XmlElement(name = "payload")
     public P getPayload();
 
     /**
