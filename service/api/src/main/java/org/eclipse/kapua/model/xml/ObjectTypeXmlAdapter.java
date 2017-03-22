@@ -16,7 +16,7 @@ public class ObjectTypeXmlAdapter extends XmlAdapter<String, Class<?>> {
     private static final String TYPE_BINARY = "binary";
 
     @Override
-    public String marshal(Class<?> clazz) throws Exception {
+    public String marshal(Class<?> clazz) {
         String value;
         if (clazz == String.class) {
             value = TYPE_STRING;
