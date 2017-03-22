@@ -80,15 +80,19 @@ import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
 import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
+import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
@@ -186,6 +190,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     MetricInfoQuery.class,
                     MetricInfoXmlRegistry.class,
                     
+                    
+                    // Data Messages
+                    DatastoreMessage.class,
+                    MessageListResult.class,
+                    MessageQuery.class,
+                    DatastoreMessageXmlRegistry.class,
+                   
                     // Device
                     Device.class,
                     DeviceCreator.class,
