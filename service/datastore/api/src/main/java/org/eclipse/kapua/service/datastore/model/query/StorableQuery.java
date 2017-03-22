@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.datastore.model.Storable;
  * @param <S>
  *            persisted object type (such as messages, channeles information...)
  */
-public interface StorableQuery<S extends Storable> {
+public interface StorableQuery<S extends Object> {
 
     /**
      * Gets the scope id

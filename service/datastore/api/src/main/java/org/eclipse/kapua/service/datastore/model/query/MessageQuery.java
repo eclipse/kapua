@@ -11,13 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 
 /**
- * Query message object definition
+ * Datastore message schema query definition
  * 
  * @since 1.0
  *
  */
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newQuery")
 public interface MessageQuery extends StorableQuery<DatastoreMessage>
-{}
+{
+
+}

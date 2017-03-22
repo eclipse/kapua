@@ -15,10 +15,12 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
@@ -71,6 +73,25 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
     public ClientInfoListResult newClientInfoListResult();
     
   
+    /**
+     * Return a new datastore message query
+     * 
+     * @param scopeId
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public MessageQuery newDatastoreMessageQuery(KapuaId scopeId);
+
+    /**
+     * Return a new metric information query
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public MessageListResult newDatastoreMessageListResult();
+    
     /**
      * Return a new metric information query
      * 

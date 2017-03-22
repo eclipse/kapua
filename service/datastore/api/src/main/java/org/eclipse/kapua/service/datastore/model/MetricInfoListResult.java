@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore.model;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
 
 /**
