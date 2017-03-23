@@ -1,5 +1,5 @@
 export KAPUA_GIT_ROOT="$(pwd)"
-export ACTIVEMQ_VERSION=5.14.0
+export ACTIVEMQ_VERSION=5.14.4
 export TOMCAT_VERSION=8.0.41
 
 cd ../vagrant
@@ -26,7 +26,7 @@ mvn clean install -P deploy -D skipTests
 
 cd dev-tools/src/main/vagrant
 
-vagrant ssh -c "nohup /usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/bin/activemq start xbean:/usr/local/kapua/apache-activemq-5.14.0/conf/activemq.xml >/dev/null 2>&1 &
+vagrant ssh -c "nohup /usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/bin/activemq start xbean:/usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}/conf/activemq.xml >/dev/null 2>&1 &
 nohup /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}/bin/startup.sh >/dev/null 2>&1 &
 ps -ef | grep active
 ps -ef | grep tomcat"
