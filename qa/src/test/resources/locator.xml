@@ -41,6 +41,7 @@
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
 		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 
+		<api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
 	</provided>
 	<packages>

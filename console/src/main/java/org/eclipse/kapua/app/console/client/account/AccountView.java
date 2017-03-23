@@ -12,12 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.app.console.client.account.childuser.AccountChildUserTab;
-import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
@@ -25,9 +20,8 @@ import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountView extends EntityView<GwtAccount> {
 
@@ -35,7 +29,8 @@ public class AccountView extends EntityView<GwtAccount> {
     private AccountDescriptionTab descriptionTab;
     private AccountFilterPanel filterPanel;
     private AccountChildUserTab accountChildTab;
-    
+    private AccountTabConfiguration accountConfigTab;
+
     public AccountView(GwtSession currentSession) {
         super(currentSession);
     }
@@ -49,8 +44,12 @@ public class AccountView extends EntityView<GwtAccount> {
         if(accountChildTab == null){
             accountChildTab = new AccountChildUserTab(currentSession);
         }
+        if (accountConfigTab == null) {
+            accountConfigTab = new AccountTabConfiguration(currentSession);
+        }
         tabs.add(descriptionTab);
         tabs.add(accountChildTab);
+        tabs.add(accountConfigTab);
         return tabs;
     }
 

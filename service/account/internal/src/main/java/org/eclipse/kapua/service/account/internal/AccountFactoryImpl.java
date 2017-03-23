@@ -53,4 +53,9 @@ public class AccountFactoryImpl implements AccountFactory {
     public AccountListResult newAccountListResult() {
         return new AccountListResultImpl();
     }
+
+    @Override
+    public AccountQuery newAccountQuery(KapuaId scopeId) {
+        return new AccountQueryImpl(scopeId);
+    }
 }

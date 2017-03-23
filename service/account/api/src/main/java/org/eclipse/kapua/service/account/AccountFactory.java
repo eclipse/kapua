@@ -61,4 +61,13 @@ public interface AccountFactory extends KapuaObjectFactory
      * @return
      */
     public AccountListResult newAccountListResult();
+
+    /**
+     * Creates a new account query
+     *
+     * @param scopeId scopeId
+     *
+     * @return
+     */
+    public AccountQuery newAccountQuery(KapuaId scopeId);
 }

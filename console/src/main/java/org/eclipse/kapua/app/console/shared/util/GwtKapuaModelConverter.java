@@ -11,12 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
+import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
@@ -633,5 +637,43 @@ public class GwtKapuaModelConverter {
 
     public static CredentialType convert(GwtCredentialType gwtCredentialType) {
         return CredentialType.valueOf(gwtCredentialType.toString());
+    }
+
+    public static Map<String, Object> convert(GwtConfigComponent configComponent) {
+        Map<String, Object> parameters = new HashMap<>();
+        for (GwtConfigParameter gwtConfigParameter : configComponent.getParameters()) {
+            switch(gwtConfigParameter.getType()) {
+            case BOOLEAN:
+                parameters.put(gwtConfigParameter.getId(), Boolean.parseBoolean(gwtConfigParameter.getValue()));
+                break;
+            case BYTE:
+                parameters.put(gwtConfigParameter.getId(), Byte.parseByte(gwtConfigParameter.getValue()));
+                break;
+            case CHAR:
+                parameters.put(gwtConfigParameter.getId(), gwtConfigParameter.getValue().toCharArray());
+                break;
+            case DOUBLE:
+                parameters.put(gwtConfigParameter.getId(), Double.parseDouble(gwtConfigParameter.getValue()));
+                break;
+            case FLOAT:
+                parameters.put(gwtConfigParameter.getId(), Float.parseFloat(gwtConfigParameter.getValue()));
+                break;
+            case INTEGER:
+                parameters.put(gwtConfigParameter.getId(), Integer.parseInt(gwtConfigParameter.getValue()));
+                break;
+            case LONG:
+                parameters.put(gwtConfigParameter.getId(), Long.parseLong(gwtConfigParameter.getValue()));
+                break;
+            case PASSWORD:
+            case STRING:
+            default:
+                parameters.put(gwtConfigParameter.getId(), gwtConfigParameter.getValue());
+                break;
+            case SHORT:
+                parameters.put(gwtConfigParameter.getId(), Short.parseShort(gwtConfigParameter.getValue()));
+                break;
+            }
+        }
+        return parameters;
     }
 }

@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.account.toolbar.AccountGridToolbar;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
@@ -27,13 +31,8 @@ import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountGrid extends EntityGrid<GwtAccount> {
 
@@ -41,10 +40,10 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
 
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
-    GwtAccountQuery filterQuery;
-    AccountGridToolbar toolbar;
+    private GwtAccountQuery filterQuery;
+    private AccountGridToolbar toolbar;
 
-    protected AccountGrid(EntityView<GwtAccount> entityView, GwtSession currentSession) {
+    AccountGrid(EntityView<GwtAccount> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
         filterQuery = new GwtAccountQuery();
         filterQuery.setScopeId(currentSession.getSelectedAccount().getId());
