@@ -50,6 +50,12 @@
             <outputDirectory>/user-service-i9n</outputDirectory>
             <directory>../qa/target/cucumber/UserServiceI9n</directory>
         </fileSet>
-    </fileSets>
+
+        <fileSet>
+            <outputDirectory>/device-service-i9n</outputDirectory>
+            <directory>../qa/target/cucumber/DeviceServiceI9n</directory>
+        </fileSet>
+
+        </fileSets>
 
 </assembly>
