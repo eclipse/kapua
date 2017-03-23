@@ -25,6 +25,9 @@ CREATE TABLE atht_access_token (
   user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
   token_id					TEXT	      NOT NULL,
   expires_on				TIMESTAMP(3)  NOT NULL,
+  refresh_token				TEXT	      NOT NULL,
+  refresh_expires_on		TIMESTAMP(3)  NOT NULL,
+  invalidated_on			TIMESTAMP(3),
   
   optlock               	INT UNSIGNED,
   attributes             	TEXT,  

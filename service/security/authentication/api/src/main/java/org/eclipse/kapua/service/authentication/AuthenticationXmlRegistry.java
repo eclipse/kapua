@@ -54,4 +54,13 @@ public class AuthenticationXmlRegistry {
     public AccessTokenCredentials newAccessTokenCredentials() {
         return credentialsFactory.newAccessTokenCredentials(null);
     }
+    
+    /**
+     * Creates a new {@link RefreshTokenCredentials} instance
+     * 
+     * @return
+     */
+    public RefreshTokenCredentials newRefreshTokenCredentials() {
+        return credentialsFactory.newRefreshTokenCredentials(null, null);
+    }
 }

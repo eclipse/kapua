@@ -62,5 +62,15 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      * @since 1.0
      */
     public AccessTokenCredentials newAccessTokenCredentials(String tokenId);
+    
+    /**
+     * Creates a new {@link RefreshTokenCredentials} instance based on provided tokenId and refresh token
+     * 
+     * @param tokenId
+     * @return
+     * 
+     * @since 1.0
+     */
+    public RefreshTokenCredentials newRefreshTokenCredentials(String tokenId, String refreshToken);
 
 }
