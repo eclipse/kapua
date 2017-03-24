@@ -14,8 +14,6 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsDatastoreException;
@@ -33,7 +31,6 @@ import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
@@ -55,8 +52,6 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsMetricInfoDAO {
 
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
-    
     private EsTypeDAO esTypeDAO;
 
     /**
