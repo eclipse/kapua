@@ -46,9 +46,12 @@ public class DataClients extends AbstractKapuaResource {
     /**
      * Gets the {@link ClientInfo} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param offset The result set offset.
-     * @param limit The result set limit.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param offset
+     *            The result set offset.
+     * @param limit
+     *            The result set limit.
      * @return The {@link ClientInfoListResult} of all the clientInfos associated to the current selected scope.
      * @since 1.0.0
      */
@@ -60,28 +63,30 @@ public class DataClients extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ClientInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
-            @ApiParam(value = "The result set offset", defaultValue = "0")  @QueryParam("offset") @DefaultValue("0") int offset,//
+            @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         ClientInfoListResult clientInfoListResult = datastoreObjectFactory.newClientInfoListResult();
         try {
             ClientInfoQuery query = datastoreObjectFactory.newClientInfoQuery(scopeId);
-                        
+
             query.setOffset(offset);
             query.setLimit(limit);
-            
+
             clientInfoListResult = query(scopeId, query);
         } catch (Throwable t) {
             handleException(t);
         }
         return clientInfoListResult;
     }
-    
+
     /**
      * Queries the results with the given {@link ClientInfoQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link ClientInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link ClientInfoQuery} to used to filter results.
      * @return The {@link ClientInfoListResult} of all the result matching the given {@link ClientInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -90,9 +95,9 @@ public class DataClients extends AbstractKapuaResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Queries the ClientInfos", //
-    notes = "Queries the ClientInfos with the given ClientInfoQuery parameter returning all matching ClientInfos",  //
-    response = ClientInfo.class, //
-    responseContainer = "ClientInfoListResult")  //
+            notes = "Queries the ClientInfos with the given ClientInfoQuery parameter returning all matching ClientInfos",  //
+            response = ClientInfo.class, //
+            responseContainer = "ClientInfoListResult")  //
     public ClientInfoListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The ClientInfoQuery to use to filter results", required = true) ClientInfoQuery query) {
@@ -105,12 +110,14 @@ public class DataClients extends AbstractKapuaResource {
         }
         return returnNotNullEntity(clientInfoListResult);
     }
-    
+
     /**
      * Counts the results with the given {@link ClientInfoQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link ClientInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link ClientInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ClientInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -119,8 +126,8 @@ public class DataClients extends AbstractKapuaResource {
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @ApiOperation(value = "Counts the ClientInfos", //
-    notes = "Counts the ClientInfos with the given ClientInfoQuery parameter returning the number of matching ClientInfos", //
-    response = CountResult.class)
+            notes = "Counts the ClientInfos with the given ClientInfoQuery parameter returning the number of matching ClientInfos", //
+            response = CountResult.class)
     public CountResult count( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The ClientInfoQuery to use to filter count results", required = true) ClientInfoQuery query) {
@@ -133,7 +140,6 @@ public class DataClients extends AbstractKapuaResource {
         }
         return returnNotNullEntity(countResult);
     }
-    
 
     /**
      * Returns the ClientInfo specified by the "clientInfoId" path parameter.
@@ -146,10 +152,10 @@ public class DataClients extends AbstractKapuaResource {
     @Path("{clientInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @ApiOperation(value = "Gets an ClientInfo", //
-    notes = "Gets the ClientInfo specified by the clientInfoId path parameter", //
-    response = ClientInfo.class)
+            notes = "Gets the ClientInfo specified by the clientInfoId path parameter", //
+            response = ClientInfo.class)
     public ClientInfo find( //
-            @ApiParam(value = "The ScopeId of the requested ClientInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, // 
+            @ApiParam(value = "The ScopeId of the requested ClientInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The id of the requested ClientInfo", required = true) @PathParam("clientInfoId") StorableEntityId clientInfoId) {
         ClientInfo clientInfo = null;
         try {

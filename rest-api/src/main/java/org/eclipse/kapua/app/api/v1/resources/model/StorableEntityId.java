@@ -40,7 +40,7 @@ public class StorableEntityId implements StorableId {
     public String toString() {
         return id;
     }
-    
+
     private void setId(String storableId) {
         this.id = storableId;
     }
