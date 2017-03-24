@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.ErrorBean;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
+import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.service.account.Account;
@@ -77,6 +78,22 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
+import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
+import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.model.ChannelInfo;
+import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
+import org.eclipse.kapua.service.datastore.model.ClientInfo;
+import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
+import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
+import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
@@ -145,6 +162,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaTocd.class,
                     KapuaTad.class,
                     KapuaTicon.class,
+                    KapuaTmetadata.class,
                     KapuaToption.class,
 
                     // Account
@@ -154,11 +172,29 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccountQuery.class,
                     AccountXmlRegistry.class,
 
-                    User.class,
-                    UserCreator.class,
-                    UserListResult.class,
-                    UserQuery.class,
-                    UserXmlRegistry.class,
+                    // Data Channel Info
+                    ChannelInfo.class,
+                    ChannelInfoListResult.class,
+                    ChannelInfoQuery.class,
+                    ChannelInfoXmlRegistry.class,
+
+                    // Data Client Info
+                    ClientInfo.class,
+                    ClientInfoListResult.class,
+                    ClientInfoQuery.class,
+                    ClientInfoXmlRegistry.class,
+
+                    // Data Metric Info
+                    MetricInfo.class,
+                    MetricInfoListResult.class,
+                    MetricInfoQuery.class,
+                    MetricInfoXmlRegistry.class,
+
+                    // Data Messages
+                    DatastoreMessage.class,
+                    MessageListResult.class,
+                    MessageQuery.class,
+                    DatastoreMessageXmlRegistry.class,
 
                     // Device
                     Device.class,
@@ -279,7 +315,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessRoleListResult.class,
                     AccessRoleCreator.class,
                     AccessRoleQuery.class,
-                    AccessRoleXmlRegistry.class
+                    AccessRoleXmlRegistry.class,
+
+                    // User
+                    User.class,
+                    UserCreator.class,
+                    UserListResult.class,
+                    UserQuery.class,
+                    UserXmlRegistry.class
 
             }, null);
         } catch (Exception e) {

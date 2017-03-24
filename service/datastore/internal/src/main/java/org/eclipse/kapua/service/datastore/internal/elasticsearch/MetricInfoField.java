@@ -41,10 +41,6 @@ public enum MetricInfoField implements StorableField {
      */
     TYPE_FULL(EsSchema.METRIC_MTR_TYPE_FULL),
     /**
-     * Metric value
-     */
-    VALUE_FULL(EsSchema.METRIC_MTR_VALUE_FULL),
-    /**
      * Metric timestamp (derived from the message that published the metric)
      */
     TIMESTAMP_FULL(EsSchema.METRIC_MTR_TIMESTAMP_FULL),

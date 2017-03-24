@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,16 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
 import java.util.Date;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua position object definition.
@@ -20,14 +25,27 @@ import java.util.Date;
  * @since 1.0
  *
  */
-public interface KapuaPosition extends Position
-{
+@XmlRootElement(name = "position")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(propOrder = { //
+        "longitude", //
+        "latitude", //
+        "altitude", //
+        "precision", //
+        "heading", //
+        "speed", //
+        "timestamp", //
+        "satellites", //
+        "status", //
+})
+public interface KapuaPosition extends Position {
 
     /**
      * Get the device position longitude
      * 
      * @return
      */
+    @XmlElement(name = "longitude")
     public Double getLongitude();
 
     /**
@@ -42,6 +60,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "latitude")
     public Double getLatitude();
 
     /**
@@ -56,6 +75,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "altitude")
     public Double getAltitude();
 
     /**
@@ -70,6 +90,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "precision")
     public Double getPrecision();
 
     /**
@@ -84,6 +105,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "heading")
     public Double getHeading();
 
     /**
@@ -98,6 +120,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "speed")
     public Double getSpeed();
 
     /**
@@ -112,6 +135,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "timestamp")
     public Date getTimestamp();
 
     /**
@@ -126,6 +150,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "satellites")
     public Integer getSatellites();
 
     /**
@@ -140,6 +165,7 @@ public interface KapuaPosition extends Position
      * 
      * @return
      */
+    @XmlElement(name = "status")
     public Integer getStatus();
 
     /**

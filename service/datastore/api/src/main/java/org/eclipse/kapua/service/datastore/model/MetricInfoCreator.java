@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * 
  * @since 1.0.0
  */
-public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
+public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
 
     /**
      * Get the account
@@ -39,6 +39,16 @@ public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
      * @since 1.0.0
      */
     public String getClientId();
+
+    /**
+     * Sets the client identifier
+     * 
+     * @param clientId
+     *            The client identifier
+     * 
+     * @since 1.0.0
+     */
+    public void setClientId(String clientId);
 
     /**
      * Get the channel
@@ -83,36 +93,16 @@ public interface MetricInfoCreator extends StorableCreator<MetricInfo> {
      * 
      * @since 1.0.0
      */
-    public String getType();
+    public Class<T> getMetricType();
 
     /**
-     * Set the metric type
+     * Sets the metric type
      * 
-     * @param type
-     * 
+     * @param metricType
+     *            The metric type
      * @since 1.0.0
      */
-    public void setType(String type);
-
-    /**
-     * Get the metric value
-     * 
-     * @param clazz
-     *            metric value type
-     * @return
-     * 
-     * @since 1.0.0
-     */
-    public <T> T getValue(Class<T> clazz);
-
-    /**
-     * Set the metric value
-     * 
-     * @param value
-     * 
-     * @since 1.0.0
-     */
-    public <T> void setValue(T value);
+    public void setMetricType(Class<T> metricType);
 
     /**
      * Get the message identifier (of the first message published that containing this metric)

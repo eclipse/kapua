@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,21 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlInlineBinaryData;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
 
 /**
  * Kapua message payload object definition.
@@ -20,18 +30,22 @@ import java.util.Map;
  * @since 1.0
  *
  */
-public interface KapuaPayload extends Payload
-{
+@XmlRootElement(name = "payload")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
+public interface KapuaPayload extends Payload {
 
     /**
-     * Get the properties map
+     * Get the metrics map
      * 
      * @return
      */
+    @XmlElement(name = "metrics")
+    @XmlJavaTypeAdapter(MetricsXmlAdapter.class)
     public Map<String, Object> getProperties();
 
     /**
-     * Set the properties map
+     * Set the metrics map
      * 
      * @param metrics
      */
@@ -42,6 +56,8 @@ public interface KapuaPayload extends Payload
      * 
      * @return
      */
+    @XmlElement(name = "body")
+    @XmlInlineBinaryData
     public byte[] getBody();
 
     /**

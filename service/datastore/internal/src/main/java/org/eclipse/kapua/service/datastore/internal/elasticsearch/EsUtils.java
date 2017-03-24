@@ -45,7 +45,7 @@ public class EsUtils {
     public static final String ES_TYPE_FLOAT = "float";
     public static final String ES_TYPE_DOUBLE = "double";
     public static final String ES_TYPE_DATE = "date";
-    public static final String ES_TYPE_BOOL = "boolean";
+    public static final String ES_TYPE_BOOLEAN = "boolean";
     public static final String ES_TYPE_BINARY = "binary";
 
     public static final String ES_TYPE_SHORT_STRING = "str";
@@ -237,7 +237,35 @@ public class EsUtils {
      * @return
      * @since 1.0.0
      */
-    public static String getEsTypeFromValue(Object value) {
+    public static String getEsTypeFromClass(Class<?> clazz) {
+
+        if (clazz == null)
+            throw new NullPointerException("Metric value must not be null");
+
+        String value;
+        if (clazz == String.class) {
+            value = ES_TYPE_STRING;
+        } else if (clazz == Integer.class) {
+            value = ES_TYPE_INTEGER;
+        } else if (clazz == Long.class) {
+            value = ES_TYPE_LONG;
+        } else if (clazz == Float.class) {
+            value = ES_TYPE_FLOAT;
+        } else if (clazz == Double.class) {
+            value = ES_TYPE_DOUBLE;
+        } else if (clazz == Boolean.class) {
+            value = ES_TYPE_BOOLEAN;
+        } else if (clazz == Date.class) {
+            value = ES_TYPE_DATE;
+        } else if (clazz == byte[].class) {
+            value = ES_TYPE_BINARY;
+        } else {
+            throw new IllegalArgumentException(String.format("Metric value type for "));
+        }
+        return value;
+    }
+
+    public static String getEsFromValue(Object value) {
         if (value == null)
             throw new NullPointerException("Metric value must not be null");
 
@@ -263,7 +291,7 @@ public class EsUtils {
             return ES_TYPE_BINARY;
 
         if (value instanceof Boolean)
-            return ES_TYPE_BOOL;
+            return ES_TYPE_BOOLEAN;
 
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }
@@ -328,7 +356,7 @@ public class EsUtils {
             return ES_TYPE_DOUBLE;
 
         if (aClass == Boolean.class)
-            return ES_TYPE_BOOL;
+            return ES_TYPE_BOOLEAN;
 
         if (aClass == Date.class)
             return ES_TYPE_DATE;
@@ -365,7 +393,7 @@ public class EsUtils {
             return ES_TYPE_DOUBLE;
 
         if ("boolean".equals(kapuaType) || "Boolean".equals(kapuaType))
-            return ES_TYPE_BOOL;
+            return ES_TYPE_BOOLEAN;
 
         if ("date".equals(kapuaType) || "Date".equals(kapuaType))
             return ES_TYPE_DATE;
@@ -384,34 +412,30 @@ public class EsUtils {
      * @return
      * @since 1.0.0
      */
-    public static String convertToKapuaType(String esType) {
+    public static Class<?> convertToKapuaType(String esType) {
 
-        if (ES_TYPE_STRING.equals(esType))
-            return "string";
-
-        if (ES_TYPE_INTEGER.equals(esType))
-            return "int";
-
-        if (ES_TYPE_LONG.equals(esType))
-            return "long";
-
-        if (ES_TYPE_FLOAT.equals(esType))
-            return "float";
-
-        if (ES_TYPE_DOUBLE.equals(esType))
-            return "double";
-
-        if (ES_TYPE_BOOL.equals(esType))
-            return "boolean";
-
-        if (ES_TYPE_DATE.equals(esType))
-            return "date";
-
-        if (ES_TYPE_BINARY.equals(esType)) {
-            return "base64Binary";
+        Class<?> clazz;
+        if (ES_TYPE_STRING.equals(esType)) {
+            clazz = String.class;
+        } else if (ES_TYPE_INTEGER.equals(esType)) {
+            clazz = Integer.class;
+        } else if (ES_TYPE_LONG.equals(esType)) {
+            clazz = Long.class;
+        } else if (ES_TYPE_FLOAT.equals(esType)) {
+            clazz = Float.class;
+        } else if (ES_TYPE_DOUBLE.equals(esType)) {
+            clazz = Double.class;
+        } else if (ES_TYPE_BOOLEAN.equals(esType)) {
+            clazz = Boolean.class;
+        } else if (ES_TYPE_DATE.equals(esType)) {
+            clazz = Date.class;
+        } else if (ES_TYPE_BINARY.equals(esType)) {
+            clazz = byte[].class;
+        } else {
+            throw new IllegalArgumentException(String.format("Unknown type [%s]", esType));
         }
 
-        throw new IllegalArgumentException(String.format("Unknown type [%s]", esType));
+        return clazz;
     }
 
     /**

@@ -11,6 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 
 /**
@@ -19,7 +25,9 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
  * @since 1.0
  *
  */
-public interface MetricInfoQuery extends StorableQuery<MetricInfo>
-{
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = MetricInfoXmlRegistry.class, factoryMethod = "newQuery")
+public interface MetricInfoQuery extends StorableQuery<MetricInfo> {
 
 }

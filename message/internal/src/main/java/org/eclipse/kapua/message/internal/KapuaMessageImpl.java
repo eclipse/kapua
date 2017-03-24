@@ -15,11 +15,6 @@ package org.eclipse.kapua.message.internal;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -39,32 +34,28 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-@XmlRootElement(name = "message")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "destination", "timestamp", "payload" })
-public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> implements Comparable<KapuaMessageImpl<C,P>>, KapuaMessage<C, P>
-{
-    private UUID          id;
+public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> implements Comparable<KapuaMessageImpl<C, P>>, KapuaMessage<C, P> {
 
-    private KapuaId       scopeId;
-    private KapuaId       deviceId;
-    private String  clientId;
+    private UUID id;
 
-    private Date          receivedOn;
-    private Date          sentOn;
-    private Date          capturedOn;
+    private KapuaId scopeId;
+    private KapuaId deviceId;
+    private String clientId;
+
+    private Date receivedOn;
+    private Date sentOn;
+    private Date capturedOn;
 
     private KapuaPosition position;
 
-    private C             channel;
+    private C channel;
 
-    private P             payload;
+    private P payload;
 
     /**
      * Constructor
      */
-    public KapuaMessageImpl()
-    {
+    public KapuaMessageImpl() {
         super();
     }
 
@@ -74,136 +65,114 @@ public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> im
      * @param channel
      * @param metrics
      */
-    public KapuaMessageImpl(C channel, P metrics)
-    {
+    public KapuaMessageImpl(C channel, P metrics) {
         this();
         this.channel = channel;
         this.payload = metrics;
     }
 
     @Override
-    public UUID getId()
-    {
+    public UUID getId() {
         return id;
     }
 
     @Override
-    public void setId(UUID id)
-    {
+    public void setId(UUID id) {
         this.id = id;
     }
 
     @Override
-    public KapuaId getScopeId()
-    {
+    public KapuaId getScopeId() {
         return scopeId;
     }
 
     @Override
-    public void setScopeId(KapuaId scopeId)
-    {
+    public void setScopeId(KapuaId scopeId) {
         this.scopeId = scopeId;
     }
 
     @Override
-    public KapuaId getDeviceId()
-    {
+    public KapuaId getDeviceId() {
         return deviceId;
     }
 
     @Override
-    public void setDeviceId(KapuaId deviceId)
-    {
+    public void setDeviceId(KapuaId deviceId) {
         this.deviceId = deviceId;
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public Date getReceivedOn()
-    {
+    public Date getReceivedOn() {
         return receivedOn;
     }
 
     @Override
-    public void setReceivedOn(Date receivedOn)
-    {
+    public void setReceivedOn(Date receivedOn) {
         this.receivedOn = receivedOn;
     }
 
     @Override
-    public Date getSentOn()
-    {
+    public Date getSentOn() {
         return sentOn;
     }
 
     @Override
-    public void setSentOn(Date sentOn)
-    {
+    public void setSentOn(Date sentOn) {
         this.sentOn = sentOn;
     }
 
     @Override
-    public Date getCapturedOn()
-    {
+    public Date getCapturedOn() {
         return capturedOn;
     }
 
     @Override
-    public void setCapturedOn(Date capturedOn)
-    {
+    public void setCapturedOn(Date capturedOn) {
         this.capturedOn = capturedOn;
     }
 
     @Override
-    public KapuaPosition getPosition()
-    {
+    public KapuaPosition getPosition() {
         return position;
     }
 
     @Override
-    public void setPosition(KapuaPosition position)
-    {
+    public void setPosition(KapuaPosition position) {
         this.position = position;
     }
 
     @Override
-    public C getChannel()
-    {
+    public C getChannel() {
         return channel;
     }
 
     @Override
-    public void setChannel(C channel)
-    {
+    public void setChannel(C channel) {
         this.channel = channel;
     }
 
     @Override
-    public P getPayload()
-    {
+    public P getPayload() {
         return payload;
     }
 
     @Override
-    public void setPayload(P payload)
-    {
+    public void setPayload(P payload) {
         this.payload = payload;
     }
 
     @Override
-    public int compareTo(KapuaMessageImpl<C,P> msg)
-    {
+    public int compareTo(KapuaMessageImpl<C, P> msg) {
         return (receivedOn.compareTo(msg.getReceivedOn()) * (-1));
     }
 
