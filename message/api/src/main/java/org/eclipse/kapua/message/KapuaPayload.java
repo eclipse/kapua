@@ -33,8 +33,7 @@ import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
-public interface KapuaPayload extends Payload
-{
+public interface KapuaPayload extends Payload {
 
     /**
      * Get the metrics map

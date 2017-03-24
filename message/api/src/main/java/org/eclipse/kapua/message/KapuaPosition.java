@@ -38,8 +38,7 @@ import javax.xml.bind.annotation.XmlType;
         "satellites", //
         "status", //
 })
-public interface KapuaPosition extends Position
-{
+public interface KapuaPosition extends Position {
 
     /**
      * Get the device position longitude

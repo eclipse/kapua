@@ -21,14 +21,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "metrics")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class XmlAdaptedMetrics{
+public class XmlAdaptedMetrics {
 
     private List<XmlAdaptedMetric> adaptedMetrics;
-    
+
     public XmlAdaptedMetrics() {
         super();
     }
-    
+
     public XmlAdaptedMetrics(List<XmlAdaptedMetric> adaptedItems) {
         setAdaptedMetrics(adaptedItems);
     }

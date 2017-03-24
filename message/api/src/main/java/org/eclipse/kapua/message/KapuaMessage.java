@@ -27,8 +27,10 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 /**
  * Kapua message object definition.
  *
- * @param <C> channel type
- * @param <P> payload type
+ * @param <C>
+ *            channel type
+ * @param <P>
+ *            payload type
  *
  * @since 1.0
  *
@@ -46,9 +48,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "position", //
         "channel", //
         "payload", //
-        }) //
-public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P>
-{
+}) //
+public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {
+
     /**
      * Get the message identifier
      *
@@ -56,7 +58,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      */
     @XmlElement(name = "id")
     public UUID getId();
-    
+
     /**
      * Set the message identifier
      *
@@ -72,7 +74,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
-    
+
     /**
      * Set scope identifier
      *
