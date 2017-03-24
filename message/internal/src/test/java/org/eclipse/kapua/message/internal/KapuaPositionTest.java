@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.message.KapuaPosition;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePosition;
 
 import java.io.StringWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePosition;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.message.KapuaPosition;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class KapuaPositionTest extends Assert {
 

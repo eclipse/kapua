@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -19,13 +22,9 @@ import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetrics;
-import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 
 public class MessageJAXBContextProvider implements JAXBContextProvider {
 
