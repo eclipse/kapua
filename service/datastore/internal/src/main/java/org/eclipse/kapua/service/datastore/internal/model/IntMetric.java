@@ -20,7 +20,7 @@ public class IntMetric extends MetricImpl<Integer> implements Metric<Integer> {
         setType(Integer.class);
         setValue(new Integer((Integer) value).intValue());
     }
-    
+
     @Override
     public int compareTo(Integer o) {
         return super.getValue().compareTo(o);

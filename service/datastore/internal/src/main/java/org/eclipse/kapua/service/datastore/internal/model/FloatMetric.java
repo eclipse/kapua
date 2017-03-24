@@ -21,7 +21,6 @@ public class FloatMetric extends MetricImpl<Float> implements Metric<Float> {
         setValue(new Float((Float) value).floatValue());
     }
 
-    
     @Override
     public int compareTo(Float o) {
         return getValue().compareTo(o);

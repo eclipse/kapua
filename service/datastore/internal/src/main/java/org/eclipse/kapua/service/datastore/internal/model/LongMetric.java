@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.datastore.internal.model;
 
 import org.eclipse.kapua.service.datastore.model.Metric;
 
-public class LongMetric extends MetricImpl<Long> implements Metric<Long>{
+public class LongMetric extends MetricImpl<Long> implements Metric<Long> {
 
     public LongMetric(String name, Object value) {
         setName(name);

@@ -18,7 +18,7 @@ public abstract class MetricImpl<T> implements Metric<T> {
     private String name;
     private Class<T> type;
     private T value;
-    
+
     @Override
     public String getName() {
         return name;
@@ -26,7 +26,7 @@ public abstract class MetricImpl<T> implements Metric<T> {
 
     @Override
     public void setName(String name) {
-      this.name = name;
+        this.name = name;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
     private KapuaId scopeId;
     private String clientId;
     private String channel;
-    
+
     private String name;
     private Class<T> metricType;
 
@@ -74,7 +74,6 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
         this.channel = channel;
     }
 
-
     @Override
     public String getName() {
         return name;
@@ -89,7 +88,7 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
     public Class<T> getMetricType() {
         return metricType;
     }
-    
+
     @Override
     public void setMetricType(Class<T> metricType) {
         this.metricType = metricType;
@@ -99,7 +98,7 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
     public StorableId getMessageId() {
         return messageId;
     }
-    
+
     @Override
     public void setMessageId(StorableId messageId) {
         this.messageId = messageId;

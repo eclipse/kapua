@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.datastore.internal.model;
 
 import org.eclipse.kapua.service.datastore.model.Metric;
 
-public class StringMetric extends MetricImpl<String> implements Metric<String>{
+public class StringMetric extends MetricImpl<String> implements Metric<String> {
 
     public StringMetric(String name, Object value) {
         setName(name);

@@ -31,7 +31,6 @@ public class MetricInfoImpl implements MetricInfo {
 
     private String name;
     private Class<?> metricType;
-    
 
     private StorableId firstMessageId;
     private Date firstMessageOn;
@@ -106,12 +105,12 @@ public class MetricInfoImpl implements MetricInfo {
     public void setChannel(String channel) {
         this.channel = channel;
     }
-    
+
     @Override
     public String getName() {
         return name;
     }
-    
+
     @Override
     public void setName(String name) {
         this.name = name;

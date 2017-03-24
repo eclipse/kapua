@@ -21,13 +21,12 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
  * @since 1.0
  *
  */
-public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricInfo> implements MetricInfoListResult
-{
+public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricInfo> implements MetricInfoListResult {
+
     /**
      * Construct a metric info result list
      */
-    public MetricInfoListResultImpl()
-    {
+    public MetricInfoListResultImpl() {
         super();
     }
 
@@ -36,8 +35,7 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
      * 
      * @param nextKey
      */
-    public MetricInfoListResultImpl(Object nextKey)
-    {
+    public MetricInfoListResultImpl(Object nextKey) {
         super(nextKey);
     }
 
@@ -47,8 +45,7 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
      * @param nextKey
      * @param totalCount
      */
-    public MetricInfoListResultImpl(Object nextKey, Long totalCount)
-    {
+    public MetricInfoListResultImpl(Object nextKey, Long totalCount) {
         super(nextKey, totalCount);
     }
 }
