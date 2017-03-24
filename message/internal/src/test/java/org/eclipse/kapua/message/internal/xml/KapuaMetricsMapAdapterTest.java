@@ -29,16 +29,15 @@ public class KapuaMetricsMapAdapterTest extends Assert {
 
     private static final String METRICS_XML_STR = //
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
-            "<payload>" + newline +
-            "   <metrics>" + newline +
-            "      <metric>" + newline +
-            "         <name>key1</name>" + newline +
-            "         <type>string</type>" + newline +
-            "         <value>value1</value>" + newline +
-            "      </metric>" + newline +
-            "   </metrics>" + newline +
-            "</payload>" + newline;
-
+                    "<payload>" + newline +
+                    "   <metrics>" + newline +
+                    "      <metric>" + newline +
+                    "         <name>key1</name>" + newline +
+                    "         <type>string</type>" + newline +
+                    "         <value>value1</value>" + newline +
+                    "      </metric>" + newline +
+                    "   </metrics>" + newline +
+                    "</payload>" + newline;
 
     @Before
     public void before() throws Exception {
