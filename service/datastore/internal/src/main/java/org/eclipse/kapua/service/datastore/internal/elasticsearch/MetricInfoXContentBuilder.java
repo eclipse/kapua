@@ -46,7 +46,6 @@ public class MetricInfoXContentBuilder {
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(MetricInfoXContentBuilder.class);
 
-    
     private List<MetricXContentBuilder> metricBuilders;
 
     private void init() {
@@ -268,7 +267,7 @@ public class MetricInfoXContentBuilder {
             throws EsDocumentBuilderException {
         String idStr = getOrDeriveId(null, metricInfoCreator);
         StorableId id = new StorableIdImpl(idStr);
-        
+
         MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), id);
         metricInfo.setClientId(metricInfoCreator.getClientId());
         metricInfo.setChannel(metricInfoCreator.getChannel());
@@ -294,7 +293,7 @@ public class MetricInfoXContentBuilder {
         Date msgTimestamp = metricInfo.getFirstMessageOn();
 
         String metricMappedName = EsUtils.getMetricValueQualifier(metricInfo.getName(), EsUtils.convertToEsType(metricInfo.getMetricType()));
-        
+
         XContentBuilder metricContentBuilder;
         metricContentBuilder = this.build(metricInfo.getScopeId(),
                 metricInfo.getClientId(),

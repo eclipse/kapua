@@ -15,9 +15,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
@@ -53,14 +51,14 @@ public class MetricInfoObjectBuilder {
 
         String name = (String) fields.get(MetricInfoField.NAME_FULL.field()).getValue();
         String typeString = (String) fields.get(MetricInfoField.TYPE_FULL.field()).getValue();
-        
+
         String firstMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
         String firstMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
-        
+
         String metricName = EsUtils.restoreMetricName(name);
         Class<?> metricType = EsUtils.convertToKapuaType(typeString);
         Date timestamp = (Date) EsUtils.convertToKapuaObject("date", firstMsgTimestamp);
-        
+
         MetricInfo finalMetricInfo = new MetricInfoImpl(scopeId, new StorableIdImpl(id));
         finalMetricInfo.setClientId(clientId);
         finalMetricInfo.setChannel(channel);

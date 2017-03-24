@@ -57,7 +57,7 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
     public ChannelInfoQuery newChannelInfoQuery(KapuaId scopeId) {
         return new ChannelInfoQueryImpl(scopeId);
     }
-    
+
     @Override
     public ChannelInfoListResult newChannelInfoListResult() {
         return new ChannelInfoListResultImpl();
@@ -88,12 +88,11 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
         return new MetricInfoQueryImpl(scopeId);
     }
 
-
     @Override
     public MetricInfoListResult newMetricInfoListResult() {
         return new MetricInfoListResultImpl();
     }
-    
+
     @Override
     public Metric<?> newMetric(String name, Object value) {
         if (value instanceof String)
@@ -112,7 +111,8 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
             return new DoubleMetric(name, value);
 
         if (value instanceof Date)
-            return new DateMetric(name, value);;
+            return new DateMetric(name, value);
+        ;
 
         if (value instanceof Byte[])
             return new BinaryMetric(name, value);
@@ -123,12 +123,9 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }
 
-    
     @Override
     public <V> TermPredicate newTermPredicate(StorableField field, V value) {
         return new TermPredicateImpl(field, value);
     }
-
-
 
 }

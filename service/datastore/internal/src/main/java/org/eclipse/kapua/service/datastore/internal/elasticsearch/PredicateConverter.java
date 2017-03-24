@@ -48,7 +48,8 @@ public class PredicateConverter {
     /**
      * Converts the Kapua {@link StorablePredicate}s in the {@link StorableQuery} parameter in Elasticsearch {@link QueryBuilder}.
      *
-     * @param query The {@link StorableQuery} the contains the {@link StorablePredicate}s to convert.
+     * @param query
+     *            The {@link StorableQuery} the contains the {@link StorablePredicate}s to convert.
      * @return The converted {@link QueryBuilder}.
      * @throws EsQueryConversionException
      * @since 1.0.0
@@ -60,11 +61,11 @@ public class PredicateConverter {
         // Force the ScopeId predicate in order to partition data by it.
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(datastoreObjectFactory.newTermPredicate(ChannelInfoField.SCOPE_ID, query.getScopeId().toCompactId()));
-        
+
         if (query.getPredicate() != null) {
             andPredicate.getPredicates().add(query.getPredicate());
         }
-        
+
         return toElasticsearchQuery(andPredicate);
     }
 
@@ -73,7 +74,8 @@ public class PredicateConverter {
      *
      * @param predicate
      * @return
-     * @throws EsQueryConversionException if the predicate is unknown or some exception is raised in the specific conversion operation
+     * @throws EsQueryConversionException
+     *             if the predicate is unknown or some exception is raised in the specific conversion operation
      * @since 1.0.0
      */
     private static QueryBuilder toElasticsearchQuery(StorablePredicate predicate)

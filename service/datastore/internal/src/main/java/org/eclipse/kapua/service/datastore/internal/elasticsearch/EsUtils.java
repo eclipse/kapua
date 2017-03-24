@@ -295,7 +295,7 @@ public class EsUtils {
 
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }
-    
+
     /**
      * Get the Elasticsearch metric type acronym for the given Elasticsearch metric type full name
      *
@@ -414,7 +414,6 @@ public class EsUtils {
      */
     public static Class<?> convertToKapuaType(String esType) {
 
-   
         Class<?> clazz;
         if (ES_TYPE_STRING.equals(esType)) {
             clazz = String.class;
@@ -432,10 +431,10 @@ public class EsUtils {
             clazz = Date.class;
         } else if (ES_TYPE_BINARY.equals(esType)) {
             clazz = byte[].class;
-        } else {    
+        } else {
             throw new IllegalArgumentException(String.format("Unknown type [%s]", esType));
         }
-        
+
         return clazz;
     }
 

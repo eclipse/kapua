@@ -168,7 +168,7 @@ public class DatastoreMediator implements MessageStoreMediator,
         int i = 0;
         MetricInfoImpl[] messageMetrics = new MetricInfoImpl[metrics.size()];
         for (Map.Entry<String, Object> entry : metrics.entrySet()) {
-            
+
             MetricInfoImpl metricInfo = new MetricInfoImpl(docBuilder.getScopeId());
             metricInfo.setClientId(docBuilder.getClientId());
             metricInfo.setChannel(docBuilder.getChannel());
@@ -177,7 +177,7 @@ public class DatastoreMediator implements MessageStoreMediator,
             metricInfo.setFirstMessageId(docBuilder.getMessageId());
             metricInfo.setFirstMessageOn(docBuilder.getTimestamp());
             metricInfo.setId(new StorableIdImpl(MetricInfoXContentBuilder.getOrDeriveId(null, metricInfo)));
-            
+
             messageMetrics[i++] = metricInfo;
         }
 
