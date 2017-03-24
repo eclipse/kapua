@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
+import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
@@ -69,9 +70,10 @@ public class DataClients extends AbstractKapuaResource {
             responseContainer = "ClientInfoListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ClientInfoListResult simpleQuery( @PathParam("scopeId") ScopeId scopeId,//
-                                        @QueryParam("offset") @DefaultValue("0") int offset,//
-                                        @QueryParam("limit") @DefaultValue("50") int limit) //
+    public ClientInfoListResult simpleQuery( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The result set offset", defaultValue = "0")  @QueryParam("offset") @DefaultValue("0") int offset,//
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         ClientInfoListResult clientInfoListResult = datastoreObjectFactory.newClientInfoListResult();
         try {
@@ -99,7 +101,13 @@ public class DataClients extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public ClientInfoListResult query(@PathParam("scopeId") ScopeId scopeId, ClientInfoQuery query) {
+    @ApiOperation(value = "Queries the ClientInfos", //
+    notes = "Queries the ClientInfos with the given ClientInfoQuery parameter returning all matching ClientInfos",  //
+    response = ClientInfo.class, //
+    responseContainer = "ClientInfoListResult")  //
+    public ClientInfoListResult query( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The ClientInfoQuery to use to filter results", required = true) ClientInfoQuery query) {
         ClientInfoListResult clientInfoListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -122,7 +130,12 @@ public class DataClients extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, ClientInfoQuery query) {
+    @ApiOperation(value = "Counts the ClientInfos", //
+    notes = "Counts the ClientInfos with the given ClientInfoQuery parameter returning the number of matching ClientInfos", //
+    response = CountResult.class)
+    public CountResult count( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The ClientInfoQuery to use to filter count results", required = true) ClientInfoQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -141,11 +154,14 @@ public class DataClients extends AbstractKapuaResource {
      *            The id of the requested ClientInfo.
      * @return The requested ClientInfo object.
      */
-    @ApiOperation(value = "Get an ClientInfo", notes = "Returns the ClientInfo specified by the \"clientInfoId\" path parameter.", response = ClientInfo.class)
     @GET
     @Path("{clientInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ClientInfo find(@PathParam("scopeId") ScopeId scopeId, 
+    @ApiOperation(value = "Gets an ClientInfo", //
+    notes = "Gets the ClientInfo specified by the clientInfoId path parameter", //
+    response = ClientInfo.class)
+    public ClientInfo find( //
+            @ApiParam(value = "The ScopeId of the requested ClientInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, // 
             @ApiParam(value = "The id of the requested ClientInfo", required = true) @PathParam("clientInfoId") StorableEntityId clientInfoId) {
         ClientInfo clientInfo = null;
         try {
