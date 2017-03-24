@@ -35,15 +35,14 @@ public class MessageJAXBContextProvider implements JAXBContextProvider {
     @Override
     public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
-            Class<?>[] classes = new Class<?>[]{
+            Class<?>[] classes = new Class<?>[] {
                     KapuaMessage.class,
                     KapuaChannel.class,
                     KapuaPayload.class,
                     KapuaPosition.class,
-                    
-                    
+
                     XmlAdaptedMetric.class,
-                    XmlAdaptedMetrics.class, 
+                    XmlAdaptedMetrics.class,
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);
