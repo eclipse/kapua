@@ -15,11 +15,6 @@ package org.eclipse.kapua.message.internal;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
