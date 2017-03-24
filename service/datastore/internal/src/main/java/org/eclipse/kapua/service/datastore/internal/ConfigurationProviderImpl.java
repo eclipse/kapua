@@ -17,9 +17,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsConfigurationException;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageInfo;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreConfiguration;
+import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 
 /**
  * Datastore configuration provider implementation.
@@ -31,6 +31,12 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
     private AccountService accountService;
     private KapuaConfigurableService configurableService;
 
+    /**
+     * Construct the configuration provider with the provided parameters
+     * 
+     * @param configurableService
+     * @param accountService
+     */
     public ConfigurationProviderImpl(KapuaConfigurableService configurableService,
             AccountService accountService) {
         this.accountService = accountService;
@@ -39,33 +45,27 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 
     @Override
     public MessageStoreConfiguration getConfiguration(KapuaId scopeId)
-            throws EsConfigurationException {
-
+            throws ConfigurationException {
         MessageStoreConfiguration messageStoreConfiguration = null;
         try {
             messageStoreConfiguration = new MessageStoreConfiguration(configurableService.getConfigValues(scopeId));
         } catch (KapuaException e) {
-            throw new EsConfigurationException(e);
+            throw new ConfigurationException("Cannot load configuration parameters", e);
         }
-
         return messageStoreConfiguration;
     }
 
     @Override
     public MessageInfo getInfo(KapuaId scopeId)
-            throws EsConfigurationException {
-
+            throws ConfigurationException {
         Account account = null;
         if (scopeId != null) {
             try {
                 account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(scopeId));
-            } catch (KapuaException exc) {
-                throw new EsConfigurationException(exc);
             } catch (Exception exc) {
-                throw new EsConfigurationException(exc);
+                throw new ConfigurationException("Cannot get account information", exc);
             }
         }
-
         return new MessageInfo(account);
     }
 

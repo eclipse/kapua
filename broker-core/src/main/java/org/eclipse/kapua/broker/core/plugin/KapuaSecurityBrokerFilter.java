@@ -604,6 +604,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             throw new SecurityException(message);
         }
         if (!isBrokerContext(producerExchange.getConnectionContext())) {
+            if (!StringUtils.containsNone(messageSend.getDestination().getPhysicalName(), new char[] { '+', '#' })) {
+                String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {}",
+                        messageSend.getDestination());
+                throw new SecurityException(message);
+            }
             KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(producerExchange.getConnectionContext());
             if (!messageSend.getDestination().isTemporary()) {
                 Set<?> allowedACLs = kapuaSecurityContext.getAuthorizationMap().getWriteACLs(messageSend.getDestination());

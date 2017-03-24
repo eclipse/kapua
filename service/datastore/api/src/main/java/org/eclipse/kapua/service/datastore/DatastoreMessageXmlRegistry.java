@@ -17,6 +17,11 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 
+/**
+ * Datastore message xml registry
+ *
+ * @since 1.0
+ */
 @XmlRegistry
 public class DatastoreMessageXmlRegistry {
 

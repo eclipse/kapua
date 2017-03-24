@@ -15,8 +15,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.BOOL_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.MUST_KEY;
 
 /**
  * Implementation of query "and" aggregation
@@ -24,29 +32,27 @@ import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
  * @since 1.0
  *
  */
-public class AndPredicateImpl implements AndPredicate
-{
+public class AndPredicateImpl implements AndPredicate {
+
     private List<StorablePredicate> predicates = new ArrayList<StorablePredicate>();
 
     /**
      * Default constructor
      */
-    public AndPredicateImpl()
-    {}
+    public AndPredicateImpl() {
+    }
 
     /**
      * Creates an and predicate for the given predicates collection
      * 
      * @param predicates
      */
-    public AndPredicateImpl(Collection<StorablePredicate> predicates)
-    {
+    public AndPredicateImpl(Collection<StorablePredicate> predicates) {
         predicates.addAll(predicates);
     }
 
     @Override
-    public List<StorablePredicate> getPredicates()
-    {
+    public List<StorablePredicate> getPredicates() {
         return this.predicates;
     }
 
@@ -56,8 +62,7 @@ public class AndPredicateImpl implements AndPredicate
      * @param predicate
      * @return
      */
-    public AndPredicate addPredicate(StorablePredicate predicate)
-    {
+    public AndPredicate addPredicate(StorablePredicate predicate) {
         this.predicates.add(predicate);
         return this;
 
@@ -68,10 +73,22 @@ public class AndPredicateImpl implements AndPredicate
      * 
      * @return
      */
-    public AndPredicate clearPredicates()
-    {
+    public AndPredicate clearPredicates() {
         this.predicates.clear();
         return this;
+    }
+
+    @Override
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode termNode = SchemaUtil.getObjectNode();
+        ArrayNode conditionsNode = SchemaUtil.getArrayNode();
+        for (StorablePredicate predicate : predicates) {
+            conditionsNode.add(predicate.toSerializedMap());
+        }
+        termNode.set(MUST_KEY, conditionsNode);
+        rootNode.set(BOOL_KEY, termNode);
+        return rootNode;
     }
 
 }

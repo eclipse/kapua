@@ -11,7 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.EXISTS_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.FIELD_KEY;
 
 /**
  * Implementation of query predicate for checking if a field exists
@@ -19,8 +27,7 @@ import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
  * @since 1.0
  *
  */
-public class ExistsPredicateImpl implements ExistsPredicate
-{
+public class ExistsPredicateImpl implements ExistsPredicate {
 
     private String name;
 
@@ -29,8 +36,7 @@ public class ExistsPredicateImpl implements ExistsPredicate
      * 
      * @param name
      */
-    public ExistsPredicateImpl(String name)
-    {
+    public ExistsPredicateImpl(String name) {
         this.name = name;
     }
 
@@ -39,8 +45,7 @@ public class ExistsPredicateImpl implements ExistsPredicate
      * 
      * @param paths
      */
-    public ExistsPredicateImpl(String... paths)
-    {
+    public ExistsPredicateImpl(String... paths) {
         StringBuilder builder = new StringBuilder();
         for (String str : paths) {
             builder.append(str);
@@ -50,9 +55,26 @@ public class ExistsPredicateImpl implements ExistsPredicate
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
+    }
+
+    @Override
+    /**
+     * <pre>
+     * GET /_search
+     *  {
+     *      "query": {
+     *          "exists" : { "field" : "metric" }
+     *      }
+     *   }
+     * </pre>
+     */
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(FIELD_KEY, (String) name) });
+        rootNode.set(EXISTS_KEY, termNode);
+        return rootNode;
     }
 
 }

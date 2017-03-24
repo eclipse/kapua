@@ -11,12 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.model.Storable;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
@@ -53,7 +51,6 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
         fetchStyle = StorableFetchStyle.SOURCE_FULL;
         askTotalCount = false;
-        limit = 50;
     }
 
     /**
@@ -69,6 +66,29 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
         setScopeId(scopeId);
     }
+
+    /**
+     * Get the includes fields by fetchStyle
+     * 
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getIncludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the excludes fields by fetchStyle
+     * 
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getExcludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the fields list
+     * 
+     * @return
+     */
+    public abstract String[] getFields();
 
     @Override
     public KapuaId getScopeId() {
@@ -151,34 +171,6 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
     @Override
     public void setFetchStyle(StorableFetchStyle fetchStyle) {
         this.fetchStyle = fetchStyle;
-    }
-
-    @Override
-    public void copy(StorableQuery<S> query) {
-        this.setAskTotalCount(query.isAskTotalCount());
-        this.setLimit(query.getLimit());
-        this.setOffset(query.getOffset());
-        this.setPredicate(query.getPredicate());
-        // TODO extend copy to predicate (not by ref as now)
-        this.setPredicate(query.getPredicate());
-        this.setFetchStyle(query.getFetchStyle());
-        this.setSortFields(copy(query.getSortFields()));
-    }
-
-    private List<SortField> copy(List<SortField> sortFields) {
-        if (sortFields == null) {
-            return null;
-        } else {
-            List<SortField> copySortFields = new ArrayList<SortField>();
-            for (int i = 0; i < sortFields.size(); i++) {
-                SortField original = sortFields.get(i);
-                SortField copy = new SortFieldImpl();
-                copy.setField(original.getField());
-                copy.setSortDirection(original.getSortDirection());
-                copySortFields.add(copy);
-            }
-            return copySortFields;
-        }
     }
 
 }

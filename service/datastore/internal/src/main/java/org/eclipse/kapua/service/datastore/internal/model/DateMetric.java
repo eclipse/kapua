@@ -15,8 +15,19 @@ import java.util.Date;
 
 import org.eclipse.kapua.service.datastore.model.Metric;
 
+/**
+ * Date metric implementation
+ * 
+ * @since 1.0
+ */
 public class DateMetric extends MetricImpl<Date> implements Metric<Date> {
 
+    /**
+     * Construct a date metric with the provided name and value
+     * 
+     * @param name
+     * @param value
+     */
     public DateMetric(String name, Object value) {
         setName(name);
         setType(Date.class);

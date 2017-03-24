@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -27,10 +28,10 @@ import java.util.Locale;
  */
 public class KapuaDateUtils {
 
-    private static final String DEFAULT_DATE_PATTERN = "MM/dd/yyyy h:mm a"; // example 24/01/2017 11:22 AM
+    public static final String ISO_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // example 24/01/2017T11:22:10.999Z
 
     private static final DateTimeFormatter formatter = DateTimeFormatter
-            .ofPattern(DEFAULT_DATE_PATTERN, Locale.US)
+            .ofPattern(ISO_DATE_PATTERN, Locale.US)
             .withZone(ZoneOffset.UTC);
 
     /**
@@ -47,14 +48,33 @@ public class KapuaDateUtils {
     }
 
     /**
-     * Parse the provided String using the default pattern {@value #DEFAULT_DATE_PATTERN} and the default locale {@link #getKapuaLocale() getKapuaLocale}
+     * Parse the provided String using the {@link KapuaDateUtils#ISO_DATE_PATTERN 'default pattern'}
      *
      * @param date
      * @return
      * @throws ParseException
      */
-    public static Instant parseDate(String date) throws ParseException {
-        return Instant.from(formatter.parse(date));
+    public static Date parseDate(String date) throws ParseException {
+        if (date == null) {
+            return null;
+        } else {
+            return Date.from(Instant.from(formatter.parse(date)));
+        }
+    }
+
+    /**
+     * Format the provided Date using the {@link KapuaDateUtils#ISO_DATE_PATTERN 'default pattern'}
+     *
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    public static String formatDate(Date date) throws ParseException {
+        if (date == null) {
+            return null;
+        } else {
+            return formatter.format(date.toInstant());
+        }
     }
 
 }

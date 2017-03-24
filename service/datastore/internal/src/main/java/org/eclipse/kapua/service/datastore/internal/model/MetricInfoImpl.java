@@ -40,7 +40,7 @@ public class MetricInfoImpl implements MetricInfo {
     /**
      * Construct a metric information for the given scope
      * 
-     * @param scope
+     * @param scopeId
      * 
      * @since 1.0.0
      */
@@ -51,7 +51,7 @@ public class MetricInfoImpl implements MetricInfo {
     /**
      * Construct a metric information for the given scope and storable identifier
      * 
-     * @param scope
+     * @param scopeId
      * @param id
      * 
      * @since 1.0.0
@@ -66,13 +66,7 @@ public class MetricInfoImpl implements MetricInfo {
         return id;
     }
 
-    /**
-     * Set the storable identifier
-     * 
-     * @param id
-     * 
-     * @since 1.0.0
-     */
+    @Override
     public void setId(StorableId id) {
         this.id = id;
     }

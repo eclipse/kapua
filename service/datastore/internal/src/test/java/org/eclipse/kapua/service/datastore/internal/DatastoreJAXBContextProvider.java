@@ -29,8 +29,7 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatastoreJAXBContextProvider implements JAXBContextProvider
-{
+public class DatastoreJAXBContextProvider implements JAXBContextProvider {
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(DatastoreJAXBContextProvider.class);
@@ -38,25 +37,23 @@ public class DatastoreJAXBContextProvider implements JAXBContextProvider
     private JAXBContext context;
 
     @Override
-    public JAXBContext getJAXBContext() throws KapuaException
-    {
+    public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
             Class<?>[] classes = new Class<?>[] {
-                                                  KapuaTmetadata.class,
-                                                  KapuaTocd.class,
-                                                  KapuaTad.class,
-                                                  KapuaTicon.class,
-                                                  TscalarImpl.class,
-                                                  KapuaToption.class,
-                                                  KapuaTmetadata.class,
-                                                  KapuaTdesignate.class,
-                                                  KapuaTobject.class,
-                                                  MetatypeXmlRegistry.class
+                    KapuaTmetadata.class,
+                    KapuaTocd.class,
+                    KapuaTad.class,
+                    KapuaTicon.class,
+                    TscalarImpl.class,
+                    KapuaToption.class,
+                    KapuaTmetadata.class,
+                    KapuaTdesignate.class,
+                    KapuaTobject.class,
+                    MetatypeXmlRegistry.class
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);
-            }
-            catch (JAXBException jaxbException) {
+            } catch (JAXBException jaxbException) {
                 throw KapuaException.internalError(jaxbException, "Error creating JAXBContext, tests will fail!");
             }
         }

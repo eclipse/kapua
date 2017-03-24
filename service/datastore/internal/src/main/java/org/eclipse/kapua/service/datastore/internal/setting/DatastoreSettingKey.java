@@ -20,42 +20,12 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * @since 1.0
  *
  */
-public enum DatastoreSettingKey implements SettingKey
-{
+public enum DatastoreSettingKey implements SettingKey {
 
     /**
-     * Elasticsearch datastore
+     * Client class implementation name
      */
-    ELASTICSEARCH("datastore.elasticsearch"),
-    /**
-     * Elasticsearch client provider
-     */
-    ELASTICSEARCH_CLIENT_PROVIDER("datastore.elasticsearch.client.provider"),
-    /**
-     * Comma separated list of elasticsearch nodes in the form "hostname[:port],hostname[:port]"
-     */
-    ELASTICSEARCH_NODES("datastore.elasticsearch.nodes"),
-    /**
-     * Elasticsearch node map
-     */
-    ELASTICSEARCH_NODE("datastore.elasticsearch.node"),
-    /**
-     * Elasticsearch port
-     */
-    ELASTICSEARCH_PORT("datastore.elasticsearch.port"),
-    /**
-     * Elasticsearch cluster name
-     */
-    ELASTICSEARCH_CLUSTER("datastore.elasticsearch.cluster"),
-    /**
-     * Elasticsearch Maximum topic depth
-     */
-    ELASTICSEARCH_TOPIC_MAX_DEPTH("datastore.elasticsearch.topic.max.depth"),
-    /**
-     * Elasticsearch index refresh interval (the data is available for a search operation only if it is indexed)
-     */
-    ELASTICSEARCH_IDX_REFRESH_INTERVAL("datastore.elasticsearch.index.refresh_interval"),
-
+    CONFIG_CLIENT_CLASS("datastore.client.class"),
     /**
      * Local cache expire time
      */
@@ -71,18 +41,20 @@ public enum DatastoreSettingKey implements SettingKey
     /**
      * Datastore timing profile threshold
      */
-    CONFIG_DATA_STORAGE_TIMING_PROFILE_THRESHOLD("datastore.timingProfileThreshold");
+    CONFIG_DATA_STORAGE_TIMING_PROFILE_THRESHOLD("datastore.timingProfileThreshold"),
+    /**
+     * Elasticsearch index refresh interval (the data is available for a search operation only if it is indexed)
+     */
+    INDEX_REFRESH_INTERVAL("datastore.index.refresh_interval");
 
     private String key;
 
-    private DatastoreSettingKey(String key)
-    {
+    private DatastoreSettingKey(String key) {
         this.key = key;
     }
 
     @Override
-    public String key()
-    {
+    public String key() {
         return key;
     }
 }

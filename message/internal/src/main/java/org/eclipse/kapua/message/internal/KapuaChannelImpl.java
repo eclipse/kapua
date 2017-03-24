@@ -42,14 +42,18 @@ public class KapuaChannelImpl implements KapuaChannel
     {
         StringBuilder strBuilder = new StringBuilder();
         if (semanticParts != null && !semanticParts.isEmpty()) {
+            boolean first = true;
             for (String str : semanticParts) {
+                if (!first) {
+                    strBuilder.append("/");
+                }
+                first = false;
                 strBuilder.append(str);
-                strBuilder.append("/");
             }
             return strBuilder.toString();
         }
         else {
-            return "NO semantic topic defined";
+            return "";
         }
     }
 

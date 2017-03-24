@@ -46,7 +46,6 @@ public interface MetricInfoRegistryService extends KapuaService,
     /**
      * Query for metrics informations objects matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -59,7 +58,6 @@ public interface MetricInfoRegistryService extends KapuaService,
     /**
      * Get the metrics informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -84,7 +82,6 @@ public interface MetricInfoRegistryService extends KapuaService,
     /**
      * Delete metrics informations matching the given query
      * 
-     * @param scopeId
      * @param query
      * @throws KapuaException
      */

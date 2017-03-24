@@ -17,6 +17,11 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 
+/**
+ * Client information xml registry
+ *
+ * @since 1.0
+ */
 @XmlRegistry
 public class ClientInfoXmlRegistry {
 

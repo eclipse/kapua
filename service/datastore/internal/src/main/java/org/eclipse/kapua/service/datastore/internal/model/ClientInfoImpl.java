@@ -36,7 +36,7 @@ public class ClientInfoImpl implements ClientInfo {
     /**
      * Construct a client information for the given account
      * 
-     * @param account
+     * @param scopeId
      * 
      * @since 1.0.0
      */
@@ -47,7 +47,7 @@ public class ClientInfoImpl implements ClientInfo {
     /**
      * Construct a client information for the given account and storable identifier
      * 
-     * @param account
+     * @param scopeId
      * @param id
      * 
      * @since 1.0.0
@@ -71,11 +71,7 @@ public class ClientInfoImpl implements ClientInfo {
         return id;
     }
 
-    /**
-     * Set the storable identifier
-     * 
-     * @param id
-     */
+    @Override
     public void setId(StorableId id) {
         this.id = id;
     }

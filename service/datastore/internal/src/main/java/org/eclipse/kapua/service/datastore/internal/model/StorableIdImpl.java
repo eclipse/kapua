@@ -23,6 +23,11 @@ public class StorableIdImpl implements StorableId {
 
     private final String sid;
 
+    /**
+     * Construct a storable id with the provided id
+     * 
+     * @param id
+     */
     public StorableIdImpl(String id) {
         sid = id;
     }
@@ -47,11 +52,12 @@ public class StorableIdImpl implements StorableId {
         if (sid == null) {
             if (other.sid != null) {
                 return false;
+        } else if (!sid.equals(other.sid))
             }
         } else if (!sid.equals(other.sid)) {
             return false;
-        }
 
         return true;
     }
+
 }

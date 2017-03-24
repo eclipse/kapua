@@ -35,6 +35,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.SerializationUtils;
 
 import com.codahale.metrics.Counter;
 

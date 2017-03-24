@@ -48,7 +48,7 @@ public class ChannelInfoImpl implements ChannelInfo {
     /**
      * Construct a channel information for the given scope and storable identifier
      * 
-     * @param scope
+     * @param scopeId
      * @param id
      * 
      * @since 1.0.0
@@ -63,11 +63,7 @@ public class ChannelInfoImpl implements ChannelInfo {
         return id;
     }
 
-    /**
-     * Set the storable identifier
-     * 
-     * @param id
-     */
+    @Override
     public void setId(StorableId id) {
         this.id = id;
     }
