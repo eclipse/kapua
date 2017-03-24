@@ -65,16 +65,16 @@ public class Accounts extends AbstractKapuaResource {
      * @return The {@link AccountListResult} of all the accounts associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Account list in the scope",
-            notes = "Returns the list of all the accounts associated to the current selected scope.",
-            response = Account.class,
-            responseContainer = "AccountListResult")
+    @ApiOperation(value = "Gets the Account list in the scope", //
+            notes = "Returns the list of all the accounts associated to the current selected scope.", //
+            response = Account.class, //
+            responseContainer = "AccountListResult") //
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public AccountListResult simpleQuery(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The account name to filter results.") @QueryParam("name") String name,
-            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
+    public AccountListResult simpleQuery( //
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The account name to filter results.") @QueryParam("name") String name, //
+            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset, //
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
         AccountListResult accountListResult = accountFactory.newAccountListResult();
@@ -107,16 +107,16 @@ public class Accounts extends AbstractKapuaResource {
      * @return The {@link AccountListResult} of all the result matching the given {@link AccountQuery} parameter.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Accounts",
-            notes = "Queries the Accounts with the given AccountQuery parameter returning all matching Accounts",
-            response = Account.class,
-            responseContainer = "AccountListResult")
+    @ApiOperation(value = "Queries the Accounts", //
+            notes = "Queries the Accounts with the given AccountQuery parameter returning all matching Accounts", //
+            response = Account.class, //
+            responseContainer = "AccountListResult") //
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public AccountListResult query(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The AccountQuery to use to filter results.", required = true) AccountQuery query) {
         AccountListResult accountListResult = null;
         try {
@@ -138,15 +138,15 @@ public class Accounts extends AbstractKapuaResource {
      * @return The count of all the result matching the given {@link AccountQuery} parameter.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Accounts",
-            notes = "Counts the Accounts with the given AccountQuery parameter returning the number of matching Accounts",
+    @ApiOperation(value = "Counts the Accounts", //
+            notes = "Counts the Accounts with the given AccountQuery parameter returning the number of matching Accounts", //
             response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public CountResult count(
-            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The AccountQuery to use to filter count results", required = true) AccountQuery query) {
         CountResult countResult = null;
         try {
@@ -168,12 +168,14 @@ public class Accounts extends AbstractKapuaResource {
      *            Provides the information for the new {@link Account} to be created.
      * @return The newly created {@link Account} object.
      */
-    @ApiOperation(value = "Create an Account", notes = "Creates a new Account based on the information provided in AccountCreator parameter.", response = Account.class)
+    @ApiOperation(value = "Create an Account",  //
+            notes = "Creates a new Account based on the information provided in AccountCreator parameter.",  //
+            response = Account.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Account create(
-            @ApiParam(value = "The ScopeId in which to create the Account", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The ScopeId in which to create the Account", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "Provides the information for the new Account to be created", required = true) AccountCreator accountCreator) {
         Account account = null;
         try {
@@ -194,12 +196,14 @@ public class Accounts extends AbstractKapuaResource {
      *            The id of the requested Account.
      * @return The requested Account object.
      */
-    @ApiOperation(value = "Get an Account", notes = "Returns the Account specified by the \"accountId\" path parameter.", response = Account.class)
+    @ApiOperation(value = "Get an Account",  //
+            notes = "Returns the Account specified by the \"accountId\" path parameter.",  //
+            response = Account.class)
     @GET
     @Path("{accountId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Account find(
-            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") EntityId accountId) {
         Account account = null;
         try {
@@ -222,14 +226,16 @@ public class Accounts extends AbstractKapuaResource {
      *
      * @return The updated account.
      */
-    @ApiOperation(value = "Update an Account", notes = "Updates a new Account based on the information provided in the Account parameter.", response = Account.class)
+    @ApiOperation(value = "Update an Account",  //
+            notes = "Updates a new Account based on the information provided in the Account parameter.",  //
+            response = Account.class)
     @PUT
     @Path("{accountId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Account update(
-            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") EntityId accountId,
+            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") EntityId accountId, //
             @ApiParam(value = "The modified Account whose attributes needs to be updated", required = true) Account account) {
         Account accountUpdated = null;
         try {
@@ -252,11 +258,12 @@ public class Accounts extends AbstractKapuaResource {
      *            The id of the Account to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
-    @ApiOperation(value = "Delete an Account", notes = "Deletes the Account specified by the \"accountId\" path parameter.")
+    @ApiOperation(value = "Delete an Account",  //
+            notes = "Deletes the Account specified by the \"accountId\" path parameter.")
     @DELETE
     @Path("{accountId}")
     public Response deleteAccount(
-            @ApiParam(value = "The ScopeId of the Account to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
+            @ApiParam(value = "The ScopeId of the Account to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The id of the Account to be deleted", required = true) @PathParam("accountId") EntityId accountId) {
         try {
             accountService.delete(scopeId, accountId);
