@@ -88,7 +88,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param updatedProps
      * @throws KapuaException
      */
-    private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId)
+    private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
             throws KapuaException {
         if (ocd != null) {
 
@@ -129,7 +129,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
 
-            String logicValidationResult = validateNewConfigValuesCoherence(ocd, updatedProps, scopeId);
+            String logicValidationResult = validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
             if (logicValidationResult != null && !logicValidationResult.isEmpty()) {
                 throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.OPERATION_NOT_ALLOWED, logicValidationResult);
             }
@@ -148,7 +148,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         }
     }
 
-    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
+    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         return "";
     }
 
@@ -308,7 +308,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     @Override
-    public void setConfigValues(KapuaId scopeId, Map<String, Object> values)
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values)
             throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
@@ -316,7 +316,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         KapuaTocd ocd = this.getConfigMetadata();
-        validateConfigurations(this.pid, ocd, values, scopeId);
+        validateConfigurations(this.pid, ocd, values, scopeId, parentId);
 
         Properties props = toProperties(values);
 

@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.apache.commons.lang3.BooleanUtils;
+import java.util.Objects;
+
+import javax.persistence.TypedQuery;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationErrorCodes;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
@@ -40,22 +39,20 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
-import com.google.common.collect.Lists;
-
-import javax.persistence.TypedQuery;
-
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 /**
  * Account service implementation.
  *
  * @since 1.0
  */
 @KapuaProvider
-public class AccountServiceImpl extends AbstractKapuaConfigurableService implements AccountService {
+public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<
+    Account, 
+    AccountCreator, 
+    AccountService, 
+    AccountListResult, 
+    AccountQuery, 
+    AccountFactory
+> implements AccountService {
 
     private static final Domain accountDomain = new AccountDomain();
     private KapuaLocator locator = KapuaLocator.getInstance();
@@ -64,7 +61,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
      * Constructor
      */
     public AccountServiceImpl() {
-        super(AccountService.class.getName(), accountDomain, AccountEntityManagerFactory.getInstance());
+        super(AccountService.class.getName(), accountDomain, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         }
 
         // Check child account policy
-        if (allowedChildAccounts(accountCreator.getScopeId()) <= 0) {
+        if (allowedChildEntities(accountCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
         }
 
@@ -362,65 +359,5 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
             AccountQuery query = new AccountQueryImpl(accountId);
             return AccountDAO.query(em, query);
         });
-    }
-
-    @Override
-    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
-        String result = "";
-        Account selfAccount = find(scopeId);
-        int availableChildAccounts = allowedChildAccounts(scopeId, updatedProps);
-        if (availableChildAccounts < 0) {
-            result = "you can't set limited child accounts if current limit is lower than actual child accounts count";
-        }
-        int availableParentAccounts = allowedChildAccounts(getParentAccountId(selfAccount.getParentAccountPath()));
-        if (availableParentAccounts - availableChildAccounts < 0) {
-            result = "parent account child accounts limit is lower than the sum of his child accounts and his children's assigned child accounts";
-        }
-        return result;
-    }
-
-    private int allowedChildAccounts(KapuaId scopeId) throws KapuaException {
-        return allowedChildAccounts(scopeId, null);
-    }
-
-    /**
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} of the account to be tested
-     * @param configuration
-     *            The configuration to be tested. If null will be read
-     *            from the current service configuration; otherwise the passed configuration
-     *            will be used in the test
-     * @return the number of child accounts spots still available
-     * @throws KapuaException
-     */
-    private int allowedChildAccounts(KapuaId scopeId, Map<String, Object> configuration) throws KapuaException {
-        AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
-        if (configuration == null) {
-            configuration = getConfigValues(scopeId);
-        }
-        boolean allowInfiniteChildAccounts = (boolean) configuration.get("infiniteChildAccounts");
-        if (!allowInfiniteChildAccounts) {
-            int maxChildAccounts = (int) configuration.get("maxNumberChildAccounts");
-            AccountListResult currentChildAccounts = query(accountFactory.newQuery(scopeId));
-            long childCount = currentChildAccounts.getSize();
-            for (Account childAccount : currentChildAccounts.getItems()) {
-                Map<String, Object> childConfigValues = getConfigValues(childAccount.getId());
-                int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildAccounts");
-                childCount += maxChildChildAccounts;
-            }
-            return (int) (maxChildAccounts - childCount);
-        }
-        return Integer.MAX_VALUE;
-    }
-    
-    private KapuaId getParentAccountId(String parentAccountPath) {
-        List<String> pathFragments = Lists.newArrayList(parentAccountPath.split("/"));
-        if (pathFragments.size() == 1) {
-            // Root account
-            return null;
-        } else {
-            return new KapuaEid(new BigInteger(pathFragments.get(pathFragments.size() - 2).replace("\\", "")));
-        }
     }
 }

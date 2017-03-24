@@ -114,7 +114,7 @@ public class AccountServiceMock implements AccountService {
     }
 
     @Override
-    public void setConfigValues(KapuaId scopeId, Map<String, Object> values)
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values)
             throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }

@@ -391,6 +391,7 @@ public class AccountConfigComponents extends LayoutContainer {
                                     final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
                                     gwtAccountService.updateComponentConfiguration(token,
                                             m_selectedAccount.getId(),
+                                            m_selectedAccount.getParentAccountId(),
                                             configComponent,
                                             new AsyncCallback<Void>() {
 

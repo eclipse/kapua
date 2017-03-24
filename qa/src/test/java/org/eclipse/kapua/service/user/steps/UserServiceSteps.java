@@ -228,7 +228,7 @@ public class UserServiceSteps extends KapuaTest {
         }
         try {
             isException = false;
-            accountService.setConfigValues(lastAccount.getId(), valueMap);
+            accountService.setConfigValues(lastAccount.getId(), lastAccount.getScopeId(), valueMap);
         } catch (KapuaException ex) {
             isException = true;
         }

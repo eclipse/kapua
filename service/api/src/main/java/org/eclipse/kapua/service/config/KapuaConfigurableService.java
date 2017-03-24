@@ -35,7 +35,7 @@ public interface KapuaConfigurableService
 	public KapuaTocd getConfigMetadata() throws KapuaException;
 	
     /**
-     * Return a map of dconfiguration values associated with the provided scope id
+     * Return a map of configuration values associated with the provided scope id
      * 
      * @param scopeId
      * @return
@@ -44,12 +44,12 @@ public interface KapuaConfigurableService
 	public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException;
 	
     /**
-     * Set the configurationd values for the specified scope id
+     * Set the configuration values for the specified scope id
      * 
      * @param scopeId
      * @param values
      * @throws KapuaException
      */
-	public void setConfigValues(KapuaId scopeId, Map<String, Object> values) throws KapuaException;
+	public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException;
 
 }

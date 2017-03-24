@@ -398,11 +398,11 @@ public class AccountServiceTestSteps extends KapuaTest {
         default:
             break;
         }
-        valueMap.put("infiniteChildAccounts", true);
+        valueMap.put("infiniteChildEntities", true);
 
         try {
             exceptionCaught = false;
-            accountService.setConfigValues(account.getId(), valueMap);
+            accountService.setConfigValues(account.getId(), account.getScopeId(), valueMap);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -413,7 +413,7 @@ public class AccountServiceTestSteps extends KapuaTest {
             throws KapuaException {
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
         valuesRead.put(name, value);
-        accountService.setConfigValues(account.getId(), valuesRead);
+        accountService.setConfigValues(account.getId(), account.getScopeId(), valuesRead);
     }
 
     @When("^I query for all accounts that have the system account as parent$")
@@ -526,8 +526,8 @@ public class AccountServiceTestSteps extends KapuaTest {
             throws KapuaException {
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertTrue(valuesRead.containsKey("maxNumberChildAccounts"));
-        assertEquals(0, valuesRead.get("maxNumberChildAccounts"));
+        assertTrue(valuesRead.containsKey("maxNumberChildEntities"));
+        assertEquals(0, valuesRead.get("maxNumberChildEntities"));
     }
 
     @Then("^The config item \"(.*)\" is set to \"(.*)\"$")
