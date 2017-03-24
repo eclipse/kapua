@@ -19,24 +19,26 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
  * @since 1.0
  *
  */
-public class StorableIdImpl implements StorableId
-{
+public class StorableIdImpl implements StorableId {
+
     private String sid;
 
-    public StorableIdImpl(String id)
-    {
+    /**
+     * Construct a storable id with the provided id
+     * 
+     * @param id
+     */
+    public StorableIdImpl(String id) {
         this.sid = id;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return sid.toString();
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
@@ -47,10 +49,10 @@ public class StorableIdImpl implements StorableId
         if (sid == null) {
             if (other.sid != null)
                 return false;
-        }
-        else if (!sid.equals(other.sid))
+        } else if (!sid.equals(other.sid))
             return false;
 
         return true;
     }
+
 }

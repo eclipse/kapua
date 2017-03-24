@@ -44,7 +44,6 @@ public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigura
     /**
      * Query for channels informations objects matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -57,7 +56,6 @@ public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigura
     /**
      * Get the channels informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -82,7 +80,6 @@ public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigura
     /**
      * Delete channels informations matching the given query
      * 
-     * @param scopeId
      * @param query
      * @throws KapuaException
      * 

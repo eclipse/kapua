@@ -49,7 +49,7 @@ public class KapuaChannelTest extends Assert {
         kapuaChannel.setSemanticParts(semanticParts);
         String toString = kapuaChannel.toString();
 
-        assertEquals("part1/part2/part3/", toString);
+        assertEquals("part1/part2/part3", toString);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class KapuaChannelTest extends Assert {
         kapuaChannel.setSemanticParts(semanticParts);
         String toString = kapuaChannel.toString();
 
-        assertEquals("NO semantic topic defined", toString);
+        assertEquals("", toString);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class KapuaChannelTest extends Assert {
         kapuaChannel.setSemanticParts(null);
         String toString = kapuaChannel.toString();
 
-        assertEquals("NO semantic topic defined", toString);
+        assertEquals("", toString);
     }
 
 }

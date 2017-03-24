@@ -17,6 +17,11 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 
+/**
+ * Channel information xml registry
+ *
+ * @since 1.0
+ */
 @XmlRegistry
 public class ChannelInfoXmlRegistry {
 

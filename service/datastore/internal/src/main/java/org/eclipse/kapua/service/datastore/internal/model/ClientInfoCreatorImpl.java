@@ -32,7 +32,7 @@ public class ClientInfoCreatorImpl implements ClientInfoCreator {
     /**
      * Construct a client information creator for the given account
      * 
-     * @param account
+     * @param scopeId
      * 
      * @since 1.0.0
      */

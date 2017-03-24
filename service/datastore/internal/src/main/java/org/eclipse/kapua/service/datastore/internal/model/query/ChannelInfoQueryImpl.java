@@ -13,8 +13,10 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
+import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
  * Channel information query implementation
@@ -35,15 +37,23 @@ public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> imp
         super(scopeId);
     }
 
-    /**
-     * Create and keep a copy of the given query
-     * 
-     * @param query
-     * 
-     * @since 1.0.0
-     */
-    public void copy(ChannelInfoQuery query) {
-        super.copy(query);
-        // Add copy for local members
+	@Override
+    public String[] getIncludes(StorableFetchStyle fetchStyle) {
+        return new String[] { "*" };
     }
+
+    @Override
+    public String[] getExcludes(StorableFetchStyle fetchStyle) {
+        return new String[] { "" };
+    }
+
+    @Override
+    public String[] getFields() {
+        return new String[] { ChannelInfoField.SCOPE_ID.field(),
+                ChannelInfoField.CHANNEL.field(),
+                ChannelInfoField.TIMESTAMP.field(),
+                ChannelInfoField.MESSAGE_ID.field(),
+                ChannelInfoField.CLIENT_ID.field() };
+    }
+
 }

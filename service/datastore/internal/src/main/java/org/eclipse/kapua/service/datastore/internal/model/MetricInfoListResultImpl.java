@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
+import org.eclipse.kapua.service.datastore.client.model.ResultList;
 import org.eclipse.kapua.service.datastore.internal.model.query.AbstractStorableListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
@@ -23,6 +24,7 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
  */
 public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricInfo> implements MetricInfoListResult {
 
+
     /**
      * Construct a metric info result list
      */
@@ -31,21 +33,13 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
     }
 
     /**
-     * Construct a metric info result list linking the next result list
+     * Construct the metric info result list from the provided list
      * 
-     * @param nextKey
+     * @param resultList
      */
-    public MetricInfoListResultImpl(Object nextKey) {
-        super(nextKey);
+    public MetricInfoListResultImpl(ResultList<MetricInfo> resultList) {
+        addItems(resultList.getResult());
+        setTotalCount(resultList.getTotalCount());
     }
 
-    /**
-     * Construct a metric info result list linking the next result list and setting the total count
-     * 
-     * @param nextKey
-     * @param totalCount
-     */
-    public MetricInfoListResultImpl(Object nextKey, Long totalCount) {
-        super(nextKey, totalCount);
-    }
 }

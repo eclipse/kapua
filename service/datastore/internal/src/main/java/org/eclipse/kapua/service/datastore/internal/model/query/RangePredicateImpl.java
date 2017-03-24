@@ -12,8 +12,16 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.RANGE_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.GTE_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.LTE_KEY;
 
 /**
  * Implementation of query predicate for matching range values
@@ -21,14 +29,13 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
  * @since 1.0
  *
  */
-public class RangePredicateImpl implements RangePredicate
-{
-    private StorableField field;
-    private Object        minValue;
-    private Object        maxValue;
+public class RangePredicateImpl implements RangePredicate {
 
-    private <V extends Comparable<V>> void checkRange(Class<V> clazz) throws KapuaException
-    {
+    private StorableField field;
+    private Object minValue;
+    private Object maxValue;
+
+    private <V extends Comparable<V>> void checkRange(Class<V> clazz) throws KapuaException {
         if (minValue == null || maxValue == null)
             return;
 
@@ -41,8 +48,8 @@ public class RangePredicateImpl implements RangePredicate
     /**
      * Default constructor
      */
-    public RangePredicateImpl()
-    {}
+    public RangePredicateImpl() {
+    }
 
     /**
      * Construct a range predicate given the field and the values
@@ -51,16 +58,14 @@ public class RangePredicateImpl implements RangePredicate
      * @param minValue
      * @param maxValue
      */
-    public <V extends Comparable<V>> RangePredicateImpl(StorableField field, V minValue, V maxValue)
-    {
+    public <V extends Comparable<V>> RangePredicateImpl(StorableField field, V minValue, V maxValue) {
         this.field = field;
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
 
     @Override
-    public StorableField getField()
-    {
+    public StorableField getField() {
         return this.field;
     }
 
@@ -70,21 +75,18 @@ public class RangePredicateImpl implements RangePredicate
      * @param field
      * @return
      */
-    public RangePredicate setField(StorableField field)
-    {
+    public RangePredicate setField(StorableField field) {
         this.field = field;
         return this;
     }
 
     @Override
-    public Object getMinValue()
-    {
+    public Object getMinValue() {
         return minValue;
     }
 
     @Override
-    public <V extends Comparable<V>> V getMinValue(Class<V> clazz)
-    {
+    public <V extends Comparable<V>> V getMinValue(Class<V> clazz) {
         return clazz.cast(minValue);
     }
 
@@ -96,22 +98,19 @@ public class RangePredicateImpl implements RangePredicate
      * @return
      * @throws KapuaException
      */
-    public <V extends Comparable<V>> RangePredicate setMinValue(Class<V> clazz, V minValue) throws KapuaException
-    {
+    public <V extends Comparable<V>> RangePredicate setMinValue(Class<V> clazz, V minValue) throws KapuaException {
         this.minValue = minValue;
         checkRange(clazz);
         return this;
     }
 
     @Override
-    public Object getMaxValue()
-    {
+    public Object getMaxValue() {
         return maxValue;
     }
 
     @Override
-    public <V extends Comparable<V>> V getMaxValue(Class<V> clazz)
-    {
+    public <V extends Comparable<V>> V getMaxValue(Class<V> clazz) {
         return clazz.cast(maxValue);
     }
 
@@ -123,10 +122,42 @@ public class RangePredicateImpl implements RangePredicate
      * @return
      * @throws KapuaException
      */
-    public <V extends Comparable<V>> RangePredicate setMaxValue(Class<V> clazz, V maxValue) throws KapuaException
-    {
+    public <V extends Comparable<V>> RangePredicate setMaxValue(Class<V> clazz, V maxValue) throws KapuaException {
         this.maxValue = maxValue;
         checkRange(clazz);
         return this;
     }
+
+    /**
+     * <pre>
+     * GET _search
+     *  {
+     *      "query": {
+     *          "range" : {
+     *              "temperature" : {
+     *                  "gte" : 10,
+     *                  "lte" : 20,
+     *              }
+     *          }
+     *      }
+     *  }
+     * </pre>
+     * 
+     * @throws DatamodelMappingException
+     */
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode valuesNode = SchemaUtil.getObjectNode();
+        if (maxValue != null) {
+            SchemaUtil.appendField(valuesNode, LTE_KEY, maxValue);
+        }
+        if (minValue != null) {
+            SchemaUtil.appendField(valuesNode, GTE_KEY, minValue);
+        }
+        ObjectNode termNode = SchemaUtil.getObjectNode();
+        termNode.set(field.field(), valuesNode);
+        rootNode.set(RANGE_KEY, termNode);
+        return rootNode;
+    }
+
 }

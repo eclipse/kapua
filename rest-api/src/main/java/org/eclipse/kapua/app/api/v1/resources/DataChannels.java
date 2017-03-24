@@ -27,7 +27,7 @@ import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
+import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;

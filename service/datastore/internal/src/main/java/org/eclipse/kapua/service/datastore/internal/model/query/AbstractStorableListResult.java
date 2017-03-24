@@ -123,4 +123,14 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
     public Long getTotalCount() {
         return totalCount;
     }
+
+    /**
+     * Set the total count
+     * 
+     * @param totalCount
+     */
+    public void setTotalCount(Long totalCount) {
+        this.totalCount = totalCount;
+    }
+
 }

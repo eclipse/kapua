@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
+import org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
