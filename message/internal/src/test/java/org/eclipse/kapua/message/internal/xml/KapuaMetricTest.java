@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
+import java.math.BigDecimal;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.StringWriter;
-import java.math.BigDecimal;
 
 public class KapuaMetricTest extends Assert {
 

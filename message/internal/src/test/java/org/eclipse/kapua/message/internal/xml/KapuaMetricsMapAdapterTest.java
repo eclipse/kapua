@@ -11,18 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
-import org.eclipse.kapua.message.xml.XmlAdaptedMetrics;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 public class KapuaMetricsMapAdapterTest extends Assert {
 
