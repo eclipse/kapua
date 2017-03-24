@@ -23,49 +23,43 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
-public class KapuaPayloadImpl implements KapuaPayload
-{
+public class KapuaPayloadImpl implements KapuaPayload {
+
     private Map<String, Object> properties;
-    private byte[]              body;
+    private byte[] body;
 
     /**
      * Constructor
      */
-    public KapuaPayloadImpl()
-    {
+    public KapuaPayloadImpl() {
     }
 
     @Override
-    public Map<String, Object> getProperties()
-    {        
+    public Map<String, Object> getProperties() {
         if (properties == null) {
             properties = new HashMap<>();
         }
-        
+
         return properties;
     }
 
     @Override
-    public void setProperties(Map<String, Object> properties)
-    {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 
     @Override
-    public byte[] getBody()
-    {
+    public byte[] getBody() {
         return body;
     }
 
     @Override
-    public void setBody(byte[] body)
-    {
+    public void setBody(byte[] body) {
         this.body = body;
     }
 
     @Override
-    public String toDisplayString()
-    {
+    public String toDisplayString() {
         StringBuilder sb = new StringBuilder();
         Iterator<String> hdrIterator = getProperties().keySet().iterator();
         while (hdrIterator.hasNext()) {
@@ -77,23 +71,17 @@ public class KapuaPayloadImpl implements KapuaPayload
                 Class<?> type = hdrValue.getClass();
                 if (type == Float.class) {
                     hdrValueString = Float.toString((Float) hdrValue);
-                }
-                else if (type == Double.class) {
+                } else if (type == Double.class) {
                     hdrValueString = Double.toString((Double) hdrValue);
-                }
-                else if (type == Integer.class) {
+                } else if (type == Integer.class) {
                     hdrValueString = Integer.toString((Integer) hdrValue);
-                }
-                else if (type == Long.class) {
+                } else if (type == Long.class) {
                     hdrValueString = Long.toString((Long) hdrValue);
-                }
-                else if (type == Boolean.class) {
+                } else if (type == Boolean.class) {
                     hdrValueString = Boolean.toString((Boolean) hdrValue);
-                }
-                else if (type == String.class) {
+                } else if (type == String.class) {
                     hdrValueString = (String) hdrValue;
-                }
-                else if (type == byte[].class) {
+                } else if (type == byte[].class) {
                     hdrValueString = byteArrayToHexString((byte[]) hdrValue);
                 }
                 sb.append(hdrName);
@@ -109,8 +97,7 @@ public class KapuaPayloadImpl implements KapuaPayload
         return sb.toString();
     }
 
-    private String byteArrayToHexString(byte[] b)
-    {
+    private String byteArrayToHexString(byte[] b) {
         StringBuffer sb = new StringBuffer(b.length * 2);
         for (int i = 0; i < b.length; i++) {
             int v = b[i] & 0xff;
