@@ -215,6 +215,15 @@
         <url-pattern>/group</url-pattern>
     </servlet-mapping>
 
+   	<servlet>
+   	    <servlet-name>dataServlet</servlet-name>
+   	    <servlet-class>org.eclipse.kapua.app.console.server.GwtDataServiceImpl</servlet-class>
+   	</servlet>
+   	<servlet-mapping>
+   	    <servlet-name>dataServlet</servlet-name>
+   	    <url-pattern>/data</url-pattern>
+   	</servlet-mapping>
+    
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
 		<servlet-class>org.eclipse.kapua.app.console.server.GwtUserServiceImpl</servlet-class>
