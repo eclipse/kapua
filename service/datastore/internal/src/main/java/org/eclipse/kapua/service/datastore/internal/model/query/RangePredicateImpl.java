@@ -12,8 +12,16 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.RANGE_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.GTE_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.LTE_KEY;
 
 /**
  * Implementation of query predicate for matching range values
@@ -128,4 +136,37 @@ public class RangePredicateImpl implements RangePredicate {
         checkRange(clazz);
         return this;
     }
+
+    /**
+     * <pre>
+     * GET _search
+     *  {
+     *      "query": {
+     *          "range" : {
+     *              "temperature" : {
+     *                  "gte" : 10,
+     *                  "lte" : 20,
+     *              }
+     *          }
+     *      }
+     *  }
+     * </pre>
+     * 
+     * @throws DatamodelMappingException
+     */
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode valuesNode = SchemaUtil.getObjectNode();
+        if (maxValue != null) {
+            SchemaUtil.appendField(valuesNode, LTE_KEY, maxValue);
+        }
+        if (minValue != null) {
+            SchemaUtil.appendField(valuesNode, GTE_KEY, minValue);
+        }
+        ObjectNode termNode = SchemaUtil.getObjectNode();
+        termNode.set(field.field(), valuesNode);
+        rootNode.set(RANGE_KEY, termNode);
+        return rootNode;
+    }
+
 }

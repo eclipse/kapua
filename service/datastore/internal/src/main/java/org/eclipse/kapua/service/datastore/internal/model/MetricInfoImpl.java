@@ -62,13 +62,7 @@ public class MetricInfoImpl implements MetricInfo {
         return id;
     }
 
-    /**
-     * Set the storable identifier
-     * 
-     * @param id
-     * 
-     * @since 1.0.0
-     */
+    @Override
     public void setId(StorableId id) {
         this.id = id;
     }

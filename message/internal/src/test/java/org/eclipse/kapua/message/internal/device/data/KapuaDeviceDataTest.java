@@ -39,7 +39,7 @@ public class KapuaDeviceDataTest extends Assert {
 
         kapuaDataChannel.setClientId("clientId-1");
         kapuaDataChannel.setSemanticParts(semanticParts);
-        assertEquals("semantic topic 'part1/part2/part3/'", kapuaDataChannel.toString());
+        assertEquals("part1/part2/part3", kapuaDataChannel.toString());
     }
 
     @Test

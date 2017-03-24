@@ -17,8 +17,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
 
 /**
- * Metric information query result list definition.<br>
- * This object contains the list of the metric information objects retrieved by the search service.
+ * Message information query result list definition.<br>
+ * This object contains the list of the message objects retrieved by the search service.
  * 
  * @since 1.0
  *

@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * Storable query predicate definition
  * 
@@ -18,4 +22,14 @@ package org.eclipse.kapua.service.datastore.model.query;
  *
  */
 public interface StorablePredicate
-{}
+{
+
+    /**
+     * Serialize the predicate to a Json object
+     * 
+     * @return
+     * @throws DatamodelMappingException
+     */
+    public ObjectNode toSerializedMap() throws DatamodelMappingException;
+
+}

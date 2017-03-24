@@ -64,6 +64,11 @@
         <logback.version>1.1.8</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
+        <cucumber.version>1.2.4</cucumber.version>
+        <elasticsearch.version>5.3.0</elasticsearch.version>
+        <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
+        <jackson.version>2.8.6</jackson.version> <!-- same version used by elasticsearch -->
+        <log4j-to-slf4j.version>2.7</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <tomcat.version>8.0.41</tomcat.version>
 
         <!-- Plugins versions -->
@@ -408,6 +413,21 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-datastore-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

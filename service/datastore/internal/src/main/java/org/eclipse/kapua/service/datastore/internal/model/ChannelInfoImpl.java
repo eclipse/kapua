@@ -61,11 +61,7 @@ public class ChannelInfoImpl implements ChannelInfo {
         return id;
     }
 
-    /**
-     * Set the storable identifier
-     * 
-     * @param id
-     */
+    @Override
     public void setId(StorableId id) {
         this.id = id;
     }

@@ -33,13 +33,15 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreMediator;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
+import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
+import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
@@ -75,11 +77,11 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     private final StorablePredicateFactory storablePredicateFactory;
 
     /**
-     * Default constructor.
+     * Default constructor
      * 
-     * @since 1.0.0
+     * @throws ClientUnavailableException
      */
-    public ClientInfoRegistryServiceImpl() {
+    public ClientInfoRegistryServiceImpl() throws ClientUnavailableException {
         super(ClientInfoRegistryService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -91,8 +93,8 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        this.clientInfoFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setClientInfoStoreFacade(this.clientInfoFacade);
+        clientInfoFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
+        DatastoreMediator.getInstance().setClientInfoStoreFacade(clientInfoFacade);
     }
 
     @Override
@@ -102,7 +104,6 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         ArgumentValidator.notNull(id, "id");
 
         checkAccess(scopeId, Actions.delete);
-
         try {
             clientInfoFacade.delete(scopeId, id);
         } catch (Exception e) {
@@ -117,13 +118,10 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         ArgumentValidator.notNull(id, "id");
 
         checkAccess(scopeId, Actions.read);
-
         try {
             ClientInfo clientInfo = clientInfoFacade.find(scopeId, id);
-
             // populate the lastMessageTimestamp
             updateLastPublishedFields(clientInfo);
-
             return clientInfo;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
@@ -137,15 +135,12 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         checkAccess(query.getScopeId(), Actions.read);
-
         try {
             ClientInfoListResult result = clientInfoFacade.query(query);
-
             // populate the lastMessageTimestamp
             for (ClientInfo clientInfo : result.getItems()) {
                 updateLastPublishedFields(clientInfo);
             }
-
             return result;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
@@ -155,15 +150,10 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     @Override
     public long count(ClientInfoQuery query)
             throws KapuaException {
-        //
-        // Argument Validation
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        //
-        // Check Access
         checkAccess(query.getScopeId(), Actions.read);
-
         try {
             return clientInfoFacade.count(query);
         } catch (Exception e) {
@@ -174,15 +164,10 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     @Override
     public void delete(ClientInfoQuery query)
             throws KapuaException {
-        //
-        // Argument Validation
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        //
-        // Check Access
         checkAccess(query.getScopeId(), Actions.delete);
-
         try {
             clientInfoFacade.delete(query);
         } catch (Exception e) {
@@ -192,8 +177,6 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
     private void checkAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        //
-        // Check Access
         Permission permission = permissionFactory.newPermission(datastoreDomain, action, scopeId);
         authorizationService.checkPermission(permission);
     }
@@ -212,12 +195,12 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         MessageQuery messageQuery = new MessageQueryImpl(clientInfo.getScopeId());
         messageQuery.setAskTotalCount(true);
-        messageQuery.setFetchStyle(StorableFetchStyle.SOURCE_SELECT);
+        messageQuery.setFetchStyle(StorableFetchStyle.FIELDS);
         messageQuery.setLimit(1);
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.CLIENT_TIMESTAMP), clientInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(ClientInfoSchema.CLIENT_TIMESTAMP), clientInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientInfo.getClientId());
 
         AndPredicate andPredicate = new AndPredicateImpl();

@@ -167,7 +167,11 @@
                 <include>org.apache.shiro:shiro-core</include>
 
                 <include>org.elasticsearch:elasticsearch</include>
+                <include>org.elasticsearch.client:transport</include>
                 <include>org.elasticsearch:securesm</include>
+                <include>org.slf4j:slf4j-api</include>
+                <include>org.slf4j:log4j-over-slf4j</include>
+                <include>org.apache.logging.log4j:log4j-to-slf4j</include>
                 <include>org.apache.lucene:*</include>
                 <include>com.twitter:jsr166e</include>
                 <include>joda-time:joda-time</include>
@@ -221,6 +225,8 @@
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
+                <include>${pom.groupId}:kapua-datastore-client-api</include>
+                <include>${pom.groupId}:kapua-datastore-client-transport</include>
                 <include>${pom.groupId}:kapua-datastore-internal</include>
                 <include>${pom.groupId}:kapua-account-api</include>
                 <include>${pom.groupId}:kapua-account-internal</include>

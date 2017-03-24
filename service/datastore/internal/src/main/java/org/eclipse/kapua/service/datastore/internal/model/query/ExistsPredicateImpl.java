@@ -11,7 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.EXISTS_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.FIELD_KEY;
 
 /**
  * Implementation of query predicate for checking if a field exists
@@ -49,6 +57,24 @@ public class ExistsPredicateImpl implements ExistsPredicate {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    /**
+     * <pre>
+     * GET /_search
+     *  {
+     *      "query": {
+     *          "exists" : { "field" : "metric" }
+     *      }
+     *   }
+     * </pre>
+     */
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(FIELD_KEY, (String) name) });
+        rootNode.set(EXISTS_KEY, termNode);
+        return rootNode;
     }
 
 }

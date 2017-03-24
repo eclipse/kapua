@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class KapuaUnmatchedMessageTest extends Assert {
 
-    private static final String UNMATCHED_MSG_STR = "Client id 'clientId-1' - semantic topic 'part1/part2/part3/'";
+    private static final String UNMATCHED_MSG_STR = "Client id 'clientId-1' - semantic topic 'part1/part2/part3'";
 
     @Test
     public void kapuaNotifyPayloadConstructor() {

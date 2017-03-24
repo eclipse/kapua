@@ -12,9 +12,9 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsConfigurationException;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageInfo;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreConfiguration;
+import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 
 /**
  * Define a datastore configuration provider.<br>
@@ -30,18 +30,18 @@ public interface ConfigurationProvider {
      * 
      * @param scopeId
      * @return
-     * @throws EsConfigurationException
+     * @throws ConfigurationException
      */
     public MessageStoreConfiguration getConfiguration(KapuaId scopeId)
-            throws EsConfigurationException;
+            throws ConfigurationException;
 
     /**
      * Get the message information for the given scope
      * 
      * @param scopeId
      * @return
-     * @throws EsConfigurationException
+     * @throws ConfigurationException
      */
     public MessageInfo getInfo(KapuaId scopeId)
-            throws EsConfigurationException;
+            throws ConfigurationException;
 }

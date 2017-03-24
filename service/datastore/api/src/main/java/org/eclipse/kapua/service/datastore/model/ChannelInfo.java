@@ -55,6 +55,17 @@ public interface ChannelInfo extends Storable {
     public StorableId getId();
 
     /**
+     * Set the record identifier
+     * 
+     * @param id
+     * 
+     * @since 1.0.0
+     */
+    @XmlElement(name = "id")
+    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    public void setId(StorableId id);
+
+    /**
      * Get the scope id
      * 
      * @return
@@ -74,6 +85,16 @@ public interface ChannelInfo extends Storable {
      */
     @XmlElement(name = "clientId")
     public String getClientId();
+
+    /**
+     * Set the client identifier
+     * 
+     * @param clientId
+     * 
+     * @since 1.0.0
+     */
+    @XmlElement(name = "clientId")
+    public void setClientId(String clientId);
 
     /**
      * Get the channel name

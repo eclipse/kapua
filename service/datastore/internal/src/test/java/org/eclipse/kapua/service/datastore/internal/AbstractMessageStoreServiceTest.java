@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 
 public abstract class AbstractMessageStoreServiceTest extends KapuaTest {
 
+
     public static final String DEFAULT_COMMONS_PATH = "../../../commons";
 
     @BeforeClass

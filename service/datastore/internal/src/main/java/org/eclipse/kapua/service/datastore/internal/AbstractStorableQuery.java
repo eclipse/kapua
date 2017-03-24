@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -53,7 +52,6 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
         fetchStyle = StorableFetchStyle.SOURCE_FULL;
         askTotalCount = false;
-        limit = 50;
     }
 
     /**
@@ -69,6 +67,29 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
         setScopeId(scopeId);
     }
+
+    /**
+     * Get the includes fields by fetchStyle
+     * 
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getIncludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the excludes fields by fetchStyle
+     * 
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getExcludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the fields list
+     * 
+     * @return
+     */
+    public abstract String[] getFields();
 
     @Override
     public KapuaId getScopeId() {
@@ -153,18 +174,4 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
         this.fetchStyle = fetchStyle;
     }
 
-    @Override
-    public void copy(StorableQuery<S> query) {
-        setAskTotalCount(query.isAskTotalCount());
-        setLimit(query.getLimit());
-        setOffset(query.getOffset());
-        setPredicate(query.getPredicate());
-        // TODO extend copy to predicate (not by ref as now)
-        setPredicate(query.getPredicate());
-        setFetchStyle(query.getFetchStyle());
-
-        if (query.getSortFields() != null) {
-            setSortFields(new ArrayList<>(query.getSortFields()));
-        }
-    }
 }

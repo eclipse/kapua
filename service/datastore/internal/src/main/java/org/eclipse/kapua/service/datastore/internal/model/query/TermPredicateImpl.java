@@ -11,8 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.TERM_KEY;
 
 /**
  * Implementation of query predicate for matching field value
@@ -77,4 +84,23 @@ public class TermPredicateImpl implements TermPredicate {
         this.value = value;
         return this;
     }
+
+    @Override
+    /**
+     * <pre>
+     * POST _search
+     *  {
+     *    "query": {
+     *      "term" : { "user" : "kapua" } 
+     *    }
+     *  }
+     * </pre>
+     */
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(field.field(), value) });
+        rootNode.set(TERM_KEY, termNode);
+        return rootNode;
+    }
+
 }

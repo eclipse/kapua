@@ -43,19 +43,20 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
     vb.gui = false
-    vb.memory = "2048"
+    vb.memory = "3072"
     vb.name = "develop"
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-  export DEBIAN_FRONTEND=noninteractive
+     export DEBIAN_FRONTEND=noninteractive
+     export BINDING_IP="192.168.33.10"
 
-	 export ELASTICSEARCH_VERSION="2.3.4"
+	 export ELASTICSEARCH_VERSION="5.3.0"
 	 export H2DB_VERSION="1.4.192"
 	 export ACTIVEMQ_VERSION="5.14.5"
 	 export TOMCAT_VERSION="8.0.41"
 	 export KAPUA_VERSION="0.2.0-SNAPSHOT"
-
+	 
 	 #########################
      ### H2 database setup ###
 	 #########################
@@ -66,13 +67,23 @@ Vagrant.configure("2") do |config|
 	 java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Shell -url jdbc:h2:tcp://localhost:3306/kapuadb -user "root" -password "password" -sql "CREATE SCHEMA IF NOT EXISTS kapuadb; \
 		CREATE USER IF NOT EXISTS kapua PASSWORD 'kapua'; \
 		GRANT ALL ON SCHEMA kapuadb TO kapua;"
+		
+	 pkill -f h2database
 
 	 ############################
      ### Elasticsearch Engine ###
 	 ############################
+	 ### needed by the elasticsearch 5.3.0 ###
+	 sudo bash -c "echo 'cluster.name: kapua-datastore' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+     sudo bash -c "echo 'transport.host: ${BINDING_IP}' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+     sudo bash -c "echo 'transport.tcp.port: 9300' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+     sudo bash -c "echo 'transport.tcp.connect_timeout: 30s' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+     sudo bash -c "echo 'http.host: 192.168.33.10' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+     sudo bash -c "echo 'http.port: 9200' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+     sudo bash -c "echo 'transport.ping_schedule: -1' >> /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/config/elasticsearch.yml"
+	 
      # Run the datastore engine
      sudo chown -R vagrant /usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}
-     su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d -Dnetwork.host=0.0.0.0 -Dcluster.name=kapua-datastore" vagrant
 
 	 #########################
      ### ActiveMQ setup    ###
@@ -122,6 +133,13 @@ Vagrant.configure("2") do |config|
      sudo sed -i 's/KAPUA_VERSION/'"$KAPUA_VERSION"'/g' update-kapua-war.sh
      # change the owner and the group to vagrant
      sudo chown -R vagrant /usr/local/tomcat/apache-tomcat-${TOMCAT_VERSION}
+  SHELL
 
+  config.vm.provision "shell", run: "always", inline: <<-SHELL
+  	  export DEBIAN_FRONTEND=noninteractive
+	  export ELASTICSEARCH_VERSION="5.3.0"
+	  export H2DB_VERSION="1.4.192"
+	  setsid su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
+	  setsid su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
   SHELL
 end

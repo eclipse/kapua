@@ -20,6 +20,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
+/**
+ * Metric definition
+ * 
+ * @since 1.0
+ *
+ * @param <T>
+ */
 @XmlRootElement(name = "metric")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "name",
