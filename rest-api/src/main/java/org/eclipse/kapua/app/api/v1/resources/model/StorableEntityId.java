@@ -11,23 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources.model;
 
-import java.math.BigInteger;
-import java.util.Base64;
-
 import javax.ws.rs.PathParam;
 
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.Storable;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
- * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} entityId.
+ * {@link StorableId} implementation to be used on REST API to parse the {@link PathParam} entityId.
  * 
  * @since 1.0.0
  */
 public class StorableEntityId implements StorableId {
-
-    private static final long serialVersionUID = 6893262093856905182L;
 
     private String id;
 
