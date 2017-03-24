@@ -176,14 +176,14 @@ public class EsMetricInfoDAO {
     public UpdateResponse upsert(MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
-        
+
         MetricInfoImpl metricInfo = new MetricInfoImpl(metricInfoCreator.getScopeId(), new StorableIdImpl(id));
         metricInfo.setChannel(metricInfoCreator.getChannel());
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
         metricInfo.setMetricType(metricInfoCreator.getMetricType());
-        
+
         return upsert(metricInfo);
     }
 
