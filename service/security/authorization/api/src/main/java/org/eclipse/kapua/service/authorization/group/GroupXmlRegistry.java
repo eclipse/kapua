@@ -27,7 +27,7 @@ public class GroupXmlRegistry {
      * @return
      */
     public Group newGroup() {
-        return factory.newGroup(null);
+        return factory.newEntity(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class GroupXmlRegistry {
      * @return
      */
     public GroupListResult newGroupListResult() {
-        return factory.newGroupListResult();
+        return factory.newListResult();
     }
 
     public GroupQuery newQuery() {

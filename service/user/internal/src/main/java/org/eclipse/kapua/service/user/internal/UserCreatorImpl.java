@@ -45,6 +45,10 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
         super(accountId, name);
     }
 
+    public UserCreatorImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
     @Override
     public String getDisplayName()
     {

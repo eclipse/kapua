@@ -32,14 +32,11 @@ public class UserFactoryImpl implements UserFactory
     @Override
     public UserCreator newCreator(KapuaId scopeId, String name)
     {
-        return new UserCreatorImpl(scopeId, name);
+        UserCreator creator = newCreator(scopeId);
+        creator.setName(name);
+        return creator;
     }
     
-    @Override
-    public User newUser() {
-        return new UserImpl();
-    }
-
     @Override
     public UserQuery newQuery(KapuaId scopeId)
     {
@@ -47,9 +44,19 @@ public class UserFactoryImpl implements UserFactory
     }
 
     @Override
-    public UserListResult newUserListResult()
+    public UserListResult newListResult()
     {
         return new UserListResultImpl();
+    }
+
+    @Override
+    public User newEntity(KapuaId scopeId) {
+        return new UserImpl(scopeId);
+    }
+
+    @Override
+    public UserCreator newCreator(KapuaId scopeId) {
+        return new UserCreatorImpl(scopeId);
     }
 
 }

@@ -73,7 +73,7 @@ public class Groups extends AbstractKapuaResource {
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
-        GroupListResult groupListResult = groupFactory.newGroupListResult();
+        GroupListResult groupListResult = groupFactory.newListResult();
         try {
             GroupQuery query = groupFactory.newQuery(scopeId);
             

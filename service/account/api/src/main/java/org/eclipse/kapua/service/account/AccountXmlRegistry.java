@@ -33,7 +33,7 @@ public class AccountXmlRegistry {
      * @return
      */
     public Account newAccount() {
-        return factory.newAccount();
+        return factory.newEntity(null);
     }
 
     /**
@@ -51,7 +51,7 @@ public class AccountXmlRegistry {
      * @return
      */
     public AccountCreator newAccountCreator() {
-        return factory.newAccountCreator(null, null);
+        return factory.newCreator(null);
     }
 
     /**
@@ -60,7 +60,7 @@ public class AccountXmlRegistry {
      * @return
      */
     public AccountListResult newAccountListResult() {
-        return factory.newAccountListResult();
+        return factory.newListResult();
     }
 
     public AccountQuery newQuery() {

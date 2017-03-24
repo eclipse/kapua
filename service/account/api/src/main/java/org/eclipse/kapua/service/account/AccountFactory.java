@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
-public interface AccountFactory extends KapuaObjectFactory
+public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreator, AccountQuery, AccountListResult>
 {
 
     /**
@@ -31,14 +31,7 @@ public interface AccountFactory extends KapuaObjectFactory
      * @param name
      * @return
      */
-    public AccountCreator newAccountCreator(KapuaId scopeId, String name);
-    
-    /**
-     * Creates a new account entity
-     * 
-     * @return
-     */
-    public Account newAccount();
+    public AccountCreator newCreator(KapuaId scopeId, String name);
     
     /**
      * Creates a new organization entity
@@ -46,28 +39,5 @@ public interface AccountFactory extends KapuaObjectFactory
      * @return
      */
     public Organization newOrganization();
-
-    /**
-     * Creates a new organization query for the specified scope identifier
-     * 
-     * @param scopeId
-     * @return
-     */
-    public AccountQuery newQuery(KapuaId scopeId);
     
-    /**
-     * Creates a new account result list
-     * 
-     * @return
-     */
-    public AccountListResult newAccountListResult();
-
-    /**
-     * Creates a new account query
-     *
-     * @param scopeId scopeId
-     *
-     * @return
-     */
-    public AccountQuery newAccountQuery(KapuaId scopeId);
 }

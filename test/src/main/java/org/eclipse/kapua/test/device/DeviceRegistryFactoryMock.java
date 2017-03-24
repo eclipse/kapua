@@ -33,16 +33,22 @@ public class DeviceRegistryFactoryMock implements DeviceFactory {
 		return null;
 	}
 
-	@Override
-	public Device newDevice() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Device newEntity(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public DeviceListResult newDeviceListResult() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public DeviceCreator newCreator(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public DeviceListResult newListResult() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -30,6 +30,11 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 public class AccessInfoFactoryImpl implements AccessInfoFactory {
 
     @Override
+    public AccessInfo newEntity(KapuaId scopeId) {
+        return new AccessInfoImpl();
+    }
+    
+    @Override
     public AccessInfoCreator newCreator(KapuaId scopeId) {
         return new AccessInfoCreatorImpl(scopeId);
     }
@@ -40,13 +45,8 @@ public class AccessInfoFactoryImpl implements AccessInfoFactory {
     }
 
     @Override
-    public AccessInfoListResult newAccessInfoListResult() {
+    public AccessInfoListResult newListResult() {
         return new AccessInfoListResultImpl();
-    }
-
-    @Override
-    public AccessInfo newAccessInfo() {
-        return new AccessInfoImpl();
     }
 
 }

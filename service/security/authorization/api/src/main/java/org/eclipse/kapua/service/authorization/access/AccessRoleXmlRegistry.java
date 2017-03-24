@@ -27,7 +27,7 @@ public class AccessRoleXmlRegistry {
      * @return
      */
     public AccessRole newAccessRole() {
-        return factory.newAccessRole(null);
+        return factory.newEntity(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class AccessRoleXmlRegistry {
      * @return
      */
     public AccessRoleListResult newAccessRoleListResult() {
-        return factory.newAccessRoleListResult();
+        return factory.newListResult();
     }
 
     public AccessRoleQuery newQuery() {

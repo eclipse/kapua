@@ -27,7 +27,7 @@ public class RolePermissionXmlRegistry {
      * @return
      */
     public RolePermission newRolePermission() {
-        return factory.newRolePermission();
+        return factory.newEntity(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class RolePermissionXmlRegistry {
      * @return
      */
     public RolePermissionListResult newRolePermissionListResult() {
-        return factory.newRolePermissionListResult();
+        return factory.newListResult();
     }
 
     public RolePermissionQuery newQuery() {

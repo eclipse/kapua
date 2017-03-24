@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 public class AccessPermissionFactoryImpl implements AccessPermissionFactory {
 
     @Override
-    public AccessPermission newAccessPermission(KapuaId scopeId) {
+    public AccessPermission newEntity(KapuaId scopeId) {
         return new AccessPermissionImpl(scopeId);
     }
 
@@ -45,13 +45,7 @@ public class AccessPermissionFactoryImpl implements AccessPermissionFactory {
     }
 
     @Override
-    public AccessPermissionListResult newAccessPermissionListResult() {
+    public AccessPermissionListResult newListResult() {
         return new AccessPermissionListResultImpl();
     }
-
-    @Override
-    public AccessPermission newAccessPermission() {
-        return new AccessPermissionImpl();
-    }
-
 }

@@ -33,7 +33,7 @@ public class DeviceEventXmlRegistry {
      * @return
      */
     public DeviceEvent newDeviceEvent() {
-        return factory.newDeviceEvent();
+        return factory.newEntity(null);
     }
 
     /**
@@ -42,7 +42,7 @@ public class DeviceEventXmlRegistry {
      * @return
      */
     public DeviceEventListResult newDeviceEventListResult() {
-        return factory.newDeviceEventListResult();
+        return factory.newListResult();
     }
 
     public DeviceEventQuery newQuery() {

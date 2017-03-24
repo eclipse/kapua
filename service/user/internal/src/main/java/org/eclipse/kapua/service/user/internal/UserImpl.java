@@ -82,6 +82,10 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User
         this.status = UserStatus.ENABLED;
     }
 
+    public UserImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
     @Override
     public UserStatus getStatus()
     {

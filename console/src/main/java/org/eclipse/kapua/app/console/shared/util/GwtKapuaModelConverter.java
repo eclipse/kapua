@@ -81,6 +81,7 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
@@ -265,11 +266,11 @@ public class GwtKapuaModelConverter {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
         RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
 
         // Convert scopeId
         KapuaId scopeId = convert(gwtRole.getScopeId());
-        Role role = roleFactory.newRole(scopeId);
+        Role role = roleFactory.newEntity(scopeId);
         convertEntity(gwtRole, role);
 
         // Convert name
@@ -285,9 +286,8 @@ public class GwtKapuaModelConverter {
                     gwtRolePermission.getTargetScopeId(),
                     gwtRolePermission.getGroupId()));
 
-                RolePermission rp = permissionFactory.newRolePermission(//
-                        scopeId, //
-                        p);
+                RolePermission rp = rolePermissionFactory.newEntity(scopeId);
+                rp.setPermission(p);
                 rp.setId(convert(gwtRolePermission.getId()));
                 rp.setRoleId(role.getId());
 

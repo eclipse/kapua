@@ -32,13 +32,13 @@ public class CredentialFactoryImpl implements CredentialFactory
     }
 
     @Override
-    public CredentialListResult newCredentialListResult() {
+    public CredentialListResult newListResult() {
         return new CredentialListResultImpl();
     }
 
     @Override
-    public Credential newCredential() {
-        return new CredentialImpl();
+    public Credential newEntity(KapuaId scopeId) {
+        return new CredentialImpl(scopeId);
     }
 
     @Override
@@ -49,5 +49,10 @@ public class CredentialFactoryImpl implements CredentialFactory
     @Override
     public CredentialQuery newQuery(KapuaId scopeId) {
         return new CredentialQueryImpl(scopeId);
+    }
+
+    @Override
+    public CredentialCreator newCreator(KapuaId scopeId) {
+        return new CredentialCreatorImpl(scopeId);
     }
 }

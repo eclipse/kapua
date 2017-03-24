@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * {@link Permission} object factory.
@@ -54,18 +53,6 @@ public interface PermissionFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId);
-
-    /**
-     * Instantiate a new {@link RolePermission} implementing object with the provided parameters.
-     * 
-     * @param scopeId
-     *            The scope id of the new {@link RolePemrission}.
-     * @param permission
-     *            The {@link Permission} of the {@link RolePermission}.
-     * @return A instance of the implementing class of {@link RolePermission}.
-     * @since 1.0.0
-     */
-    public RolePermission newRolePermission(KapuaId scopeId, Permission permission);
 
     /**
      * Parse the {@link Permission} {@link String} representation to build a new {@link Permission}.
