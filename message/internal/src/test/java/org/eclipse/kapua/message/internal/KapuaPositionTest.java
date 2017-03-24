@@ -34,25 +34,23 @@ public class KapuaPositionTest extends Assert {
     private static final String DISPLAY_STR = "^\\{\"longitude\":.*, \"latitude\":.*, \"altitude\":.*" +
             ", \"precision\":.*, \"heading\":.*, \"speed\":.*, \"timestamp\":.*, \"satellites\":.*, \"status\":.*\\}$";
 
-
     private static ZonedDateTime referenceDate = ZonedDateTime.of(2017, 1, 18, 13, 10, 46, 0, ZoneId.systemDefault());
 
-    private static String referenceDateStr = referenceDate.
-            format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    private static String referenceDateStr = referenceDate.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
     private static final String POSITION_XML_STR = //
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
-            "<position>" + newline +
-            "   <longitude>45.1111</longitude>" + newline +
-            "   <latitude>15.3333</latitude>" + newline +
-            "   <altitude>430.3</altitude>" + newline +
-            "   <precision>12.0</precision>" + newline +
-            "   <heading>280.0</heading>" + newline +
-            "   <speed>60.2</speed>" + newline +
-            "   <timestamp>" + referenceDateStr + "</timestamp>" + newline +
-            "   <satellites>5</satellites>" + newline +
-            "   <status>4</status>" + newline +
-            "</position>" + newline ;
+                    "<position>" + newline +
+                    "   <longitude>45.1111</longitude>" + newline +
+                    "   <latitude>15.3333</latitude>" + newline +
+                    "   <altitude>430.3</altitude>" + newline +
+                    "   <precision>12.0</precision>" + newline +
+                    "   <heading>280.0</heading>" + newline +
+                    "   <speed>60.2</speed>" + newline +
+                    "   <timestamp>" + referenceDateStr + "</timestamp>" + newline +
+                    "   <satellites>5</satellites>" + newline +
+                    "   <status>4</status>" + newline +
+                    "</position>" + newline;
 
     @Before
     public void before() throws Exception {
@@ -82,7 +80,7 @@ public class KapuaPositionTest extends Assert {
 
         String displayStr = position.toDisplayString();
         assertTrue("\nExpected: " + POSITION_DISPLAY_STR +
-                        "\nActual:   " + displayStr,
+                "\nActual:   " + displayStr,
                 displayStr.matches(POSITION_DISPLAY_STR));
     }
 
@@ -101,7 +99,7 @@ public class KapuaPositionTest extends Assert {
 
         String toStr = position.toString();
         assertTrue("\nExpected: " + DISPLAY_STR +
-                        "\nActual:   " + toStr,
+                "\nActual:   " + toStr,
                 toStr.matches(DISPLAY_STR));
     }
 
