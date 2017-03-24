@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**

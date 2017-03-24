@@ -31,14 +31,14 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 @XmlRootElement(name = "clientInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "id",
-                        "scopeId",
-                        "clientId",
-                        "firstMessageId",
-                        "firstMessageOn",
-                        "lastMessageId",
-                        "lastMessageOn"})
-public interface ClientInfo extends Storable
-{
+        "scopeId",
+        "clientId",
+        "firstMessageId",
+        "firstMessageOn",
+        "lastMessageId",
+        "lastMessageOn" })
+public interface ClientInfo extends Storable {
+
     /**
      * Get the record identifier
      * 
