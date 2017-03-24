@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 

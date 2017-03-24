@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
-import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 
 /**
