@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
-import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 
 /**
  * Kapua message payload object definition.
