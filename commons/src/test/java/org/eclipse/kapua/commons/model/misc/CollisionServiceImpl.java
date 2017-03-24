@@ -99,7 +99,7 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     }
 
     @Override
-    public void setConfigValues(KapuaId scopeId, Map<String, Object> values) throws KapuaException {
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
         // TODO Auto-generated method stub
 
     }
