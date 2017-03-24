@@ -1870,20 +1870,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest
         }
     }
 
-    private Object getPrivateField(Object object, String field)
-    {
-        Field objField = getField(object.getClass(), field);
-        if (objField != null) {
-            try {
-                return objField.get(object);
-            }
-            catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new IllegalArgumentException(String.format("Cannot get the value for the field [%s]", field), e);
-            }
-        }
-        throw new IllegalArgumentException(String.format("Cannot get the value for the field [%s]", field));
-    }
-
     /**
      * Return the suffix field name to compose (in a different method) the getter name.
      * It removes the _ and append the remaining part capitalizing the first letter (if capitalizeFirstLetter = true)
