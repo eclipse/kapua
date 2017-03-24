@@ -12,8 +12,8 @@
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
  * Metric info query converter.<br>

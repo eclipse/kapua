@@ -15,19 +15,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
-import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -51,7 +46,6 @@ public class MetricInfoXContentBuilder {
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(MetricInfoXContentBuilder.class);
 
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
     
     private List<MetricXContentBuilder> metricBuilders;
 
@@ -220,8 +214,6 @@ public class MetricInfoXContentBuilder {
                 String esMetricName = EsUtils.normalizeMetricName(kapuaMetricName);
                 String esType = EsUtils.getEsTypeFromClass(metricValue.getClass());
 
-//                String esTypeAcronim = EsUtils.getEsTypeAcronym(esType);
-                
                 EsMetric esMetric = new EsMetric();
                 esMetric.setName(esMetricName);
                 esMetric.setType(esType);

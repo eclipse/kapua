@@ -20,7 +20,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
-import org.eclipse.kapua.service.datastore.model.Metric;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
@@ -33,8 +32,6 @@ import org.elasticsearch.search.SearchHitField;
  */
 public class MetricInfoObjectBuilder {
 
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
-    
     private MetricInfo metricInfo;
 
     /**
@@ -59,7 +56,6 @@ public class MetricInfoObjectBuilder {
         
         String firstMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
         String firstMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
-//        Object value = fields.get(MetricInfoField.VALUE_FULL.field()).getValue();
         
         String metricName = EsUtils.restoreMetricName(name);
         Class<?> metricType = EsUtils.convertToKapuaType(typeString);
