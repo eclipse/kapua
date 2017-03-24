@@ -13,6 +13,8 @@
 package org.eclipse.kapua.app.console.servlet;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class DataExporterServlet extends HttpServlet {
 
     private static final long serialVersionUID = 226461063207179649L;
-    private static Logger s_logger = LoggerFactory.getLogger(DataExporterServlet.class);
+    private static Logger logger = LoggerFactory.getLogger(DataExporterServlet.class);
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -74,6 +76,18 @@ public class DataExporterServlet extends HttpServlet {
                 throw new IllegalArgumentException("topic, asset");
             }
 
+            if (startDate == null) {
+                throw new IllegalArgumentException("startDate");
+            }
+
+            if (endDate == null) {
+                throw new IllegalArgumentException("endDate");
+            }
+
+            if (headers == null) {
+                throw new IllegalArgumentException("headers");
+            }
+
             DataExporter dataExporter;
             if ("xls".equals(format)) {
                 dataExporter = new DataExporterExcel(response, topicOrAsset);
@@ -86,14 +100,21 @@ public class DataExporterServlet extends HttpServlet {
             KapuaLocator locator = KapuaLocator.getInstance();
             MessageStoreService messageService = locator.getService(MessageStoreService.class);
             MessageQuery query = new MessageQueryImpl(GwtKapuaModelConverter.convert(scopeIdString));
-            predicate.getPredicates().add(new RangePredicateImpl(MessageField.TIMESTAMP, startDate, endDate));
-            query.setLimit(-1);
-            query.setOffset(0);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+            Date start = dateFormat.parse(startDate);
+            Date end = dateFormat.parse(endDate);
+            predicate.getPredicates().add(new RangePredicateImpl(MessageField.TIMESTAMP, start, end));
             query.setPredicate(predicate);
-            MessageListResult result = messageService.query(query);
-            
-            dataExporter.append(result.getItems());
-
+            MessageListResult result; 
+            int offset = 0;
+            query.setLimit(250);
+            do{
+                query.setOffset(offset);
+                result = messageService.query(query);
+                dataExporter.append(result.getItems());
+                offset += result.getSize();
+            }while (result.getSize() > 0);
+            dataExporter.close();
         } catch (IllegalArgumentException iae) {
             response.sendError(400, "Illegal value for query parameter(s): " + iae.getMessage());
             return;
@@ -107,7 +128,7 @@ public class DataExporterServlet extends HttpServlet {
             response.sendError(403, eiae.getMessage());
             return;
         } catch (Exception e) {
-            s_logger.error("Error creating data export", e);
+            logger.error("Error creating data export", e);
             throw new ServletException(e);
         }
     }

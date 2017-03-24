@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtMessage;
@@ -33,9 +34,12 @@ import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.Loader;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -52,7 +56,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
@@ -134,6 +140,17 @@ public class ResultsTable extends LayoutContainer {
         };
 
         loader = new BasePagingLoader<PagingLoadResult<GwtMessage>>(proxy);
+        loader.addListener(Loader.Load, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(loader.getTotalCount() == 0){
+                    exportButton.disable();
+                } else {
+                    exportButton.enable();
+                }
+            }
+        });
 
         SwappableListStore<GwtMessage> store = new SwappableListStore<GwtMessage>(loader);
         resultsGrid = new Grid<GwtMessage>(store, new ColumnModel(columnConfigs));
@@ -152,7 +169,7 @@ public class ResultsTable extends LayoutContainer {
 
                     @Override
                     public void componentSelected(MenuEvent ce) {
-
+                        export("xls");
                     }
                 }));
         menu.add(new MenuItem(MSGS.resultsTableExportToCSV(), AbstractImagePrototype.create(Resources.INSTANCE.exportCSV()),
@@ -160,12 +177,13 @@ public class ResultsTable extends LayoutContainer {
 
                     @Override
                     public void componentSelected(MenuEvent ce) {
-
+                        export("csv");
                     }
                 }));
 
         exportButton = new ExportButton();
         exportButton.setMenu(menu);
+        exportButton.disable();
         resultsToolBar.add(exportButton);
         resultsToolBar.add(new SeparatorToolItem());
 
@@ -193,7 +211,7 @@ public class ResultsTable extends LayoutContainer {
         columnConfigs.clear();
         columnConfigs.add(timestampColumn);
         resultsGrid.getColumnModel().getColumns().clear();
-        resultsGrid.getColumnModel().getColumns().add(timestampColumn);        
+        resultsGrid.getColumnModel().getColumns().add(timestampColumn);
         selectedMetrics = headers;
         if (headers != null && !headers.isEmpty()) {
             resultsGrid.getColumnModel().getColumns().add(assetColumn);
@@ -216,6 +234,42 @@ public class ResultsTable extends LayoutContainer {
     public void refresh(GwtAsset asset, List<GwtHeader> headers) {
         this.selectedAsset = asset;
         refresh(headers);
+    }
+
+    private void export(String format) {
+        StringBuilder sbUrl = new StringBuilder();
+        if (UserAgentUtils.isSafari() || UserAgentUtils.isChrome()) {
+            sbUrl.append("console/exporter_data?");
+        } else {
+            sbUrl.append("exporter_data?");
+        }
+
+        sbUrl.append("format=")
+                .append(format).append("&scopeIdString=")
+                .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()));
+
+        if (selectedTopic != null) {
+            sbUrl.append("&topic=").append(URL.encodeQueryString(selectedTopic.getSemanticTopic()));
+        }
+
+        if (selectedAsset != null) {
+            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getAsset()));
+        }
+
+        if (selectedMetrics != null && !selectedMetrics.isEmpty()) {
+            for (GwtHeader metric : selectedMetrics) {
+                sbUrl.append("&headers=").append(metric.getName());
+            }
+        }
+
+        if (startDate != null) {
+            sbUrl.append("&startDate=").append(URL.encodeQueryString(startDate.toString()));
+        }
+        
+        if (endDate != null) {
+            sbUrl.append("&endDate=").append(URL.encodeQueryString(endDate.toString()));
+        }
+        Window.open(sbUrl.toString(), "_blank", "location=no");
     }
 
     // --------------------------------------------------------------------------------------
