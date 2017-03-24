@@ -37,6 +37,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.shared.model.GwtKapuaPublish;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
@@ -424,11 +425,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     @Override
-    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, GwtConfigComponent configComponent) throws GwtKapuaException {
+    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, String parentId, GwtConfigComponent configComponent) throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
         KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
+        KapuaId kapuaParentId = GwtKapuaModelConverter.convert(parentId);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             Class configurableServiceClass = Class.forName(configComponent.<String>get("componentId"));
@@ -437,7 +439,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             // execute the update
             Map<String, Object> parameters = GwtKapuaModelConverter.convert(configComponent);
             
-            configurableService.setConfigValues(kapuaScopeId, parameters);
+            configurableService.setConfigValues(kapuaScopeId, kapuaParentId, parameters);
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
