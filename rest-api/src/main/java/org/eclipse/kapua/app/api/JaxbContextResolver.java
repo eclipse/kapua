@@ -177,26 +177,25 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ChannelInfoListResult.class,
                     ChannelInfoQuery.class,
                     ChannelInfoXmlRegistry.class,
-                    
+
                     // Data Client Info
                     ClientInfo.class,
                     ClientInfoListResult.class,
                     ClientInfoQuery.class,
                     ClientInfoXmlRegistry.class,
-                 
+
                     // Data Metric Info
                     MetricInfo.class,
                     MetricInfoListResult.class,
                     MetricInfoQuery.class,
                     MetricInfoXmlRegistry.class,
-                    
-                    
+
                     // Data Messages
                     DatastoreMessage.class,
                     MessageListResult.class,
                     MessageQuery.class,
                     DatastoreMessageXmlRegistry.class,
-                   
+
                     // Device
                     Device.class,
                     DeviceCreator.class,
@@ -317,7 +316,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessRoleCreator.class,
                     AccessRoleQuery.class,
                     AccessRoleXmlRegistry.class,
-                    
+
                     // User
                     User.class,
                     UserCreator.class,
