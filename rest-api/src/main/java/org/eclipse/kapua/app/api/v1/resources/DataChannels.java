@@ -33,6 +33,7 @@ import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
@@ -57,9 +58,12 @@ public class DataChannels extends AbstractKapuaResource {
     /**
      * Gets the {@link ChannelInfo} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param offset The result set offset.
-     * @param limit The result set limit.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param offset
+     *            The result set offset.
+     * @param limit
+     *            The result set limit.
      * @return The {@link ChannelInfoListResult} of all the channelInfos associated to the current selected scope.
      * @since 1.0.0
      */
@@ -69,29 +73,32 @@ public class DataChannels extends AbstractKapuaResource {
             responseContainer = "ChannelInfoListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ChannelInfoListResult simpleQuery( @PathParam("scopeId") ScopeId scopeId,//
-                                        @QueryParam("offset") @DefaultValue("0") int offset,//
-                                        @QueryParam("limit") @DefaultValue("50") int limit) //
+    public ChannelInfoListResult simpleQuery( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         ChannelInfoListResult channelInfoListResult = datastoreObjectFactory.newChannelInfoListResult();
         try {
             ChannelInfoQuery query = datastoreObjectFactory.newChannelInfoQuery(scopeId);
-                        
+
             query.setOffset(offset);
             query.setLimit(limit);
-            
+
             channelInfoListResult = query(scopeId, query);
         } catch (Throwable t) {
             handleException(t);
         }
         return channelInfoListResult;
     }
-    
+
     /**
      * Queries the results with the given {@link ChannelInfoQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link ChannelInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link ChannelInfoQuery} to used to filter results.
      * @return The {@link ChannelInfoListResult} of all the result matching the given {@link ChannelInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -99,7 +106,13 @@ public class DataChannels extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public ChannelInfoListResult query(@PathParam("scopeId") ScopeId scopeId, ChannelInfoQuery query) {
+    @ApiOperation(value = "Queries the ChannelInfos", //
+            notes = "Queries the ChannelInfos with the given ChannelInfoQuery parameter returning all matching ChannelInfos",  //
+            response = ChannelInfo.class, //
+            responseContainer = "ChannelInfoListResult")  //
+    public ChannelInfoListResult query( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The ChannelInfoQuery to use to filter results", required = true) ChannelInfoQuery query) {
         ChannelInfoListResult channelInfoListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -109,12 +122,14 @@ public class DataChannels extends AbstractKapuaResource {
         }
         return returnNotNullEntity(channelInfoListResult);
     }
-    
+
     /**
      * Counts the results with the given {@link ChannelInfoQuery} parameter.
      * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link ChannelInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link ChannelInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ChannelInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -122,7 +137,12 @@ public class DataChannels extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, ChannelInfoQuery query) {
+    @ApiOperation(value = "Counts the ChannelInfos", //
+            notes = "Counts the ChannelInfos with the given ChannelInfoQuery parameter returning the number of matching ChannelInfos", //
+            response = CountResult.class)
+    public CountResult count( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The ChannelInfoQuery to use to filter count results", required = true) ChannelInfoQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -132,7 +152,6 @@ public class DataChannels extends AbstractKapuaResource {
         }
         return returnNotNullEntity(countResult);
     }
-    
 
     /**
      * Returns the ChannelInfo specified by the "channelInfoId" path parameter.
@@ -141,11 +160,14 @@ public class DataChannels extends AbstractKapuaResource {
      *            The id of the requested ChannelInfo.
      * @return The requested ChannelInfo object.
      */
-    @ApiOperation(value = "Get an ChannelInfo", notes = "Returns the ChannelInfo specified by the \"channelInfoId\" path parameter.", response = ChannelInfo.class)
     @GET
     @Path("{channelInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ChannelInfo find(@PathParam("scopeId") ScopeId scopeId, 
+    @ApiOperation(value = "Gets an ChannelInfo", //
+            notes = "Gets the ChannelInfo specified by the channelInfoId path parameter", //
+            response = ChannelInfo.class)
+    public ChannelInfo find( //
+            @ApiParam(value = "The ScopeId of the requested ChannelInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested ChannelInfo", required = true) @PathParam("channelInfoId") StorableEntityId channelInfoId) {
         ChannelInfo channelInfo = null;
         try {
