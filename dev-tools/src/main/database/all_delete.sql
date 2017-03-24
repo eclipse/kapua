@@ -26,7 +26,7 @@ DELETE FROM dvc_device;
 
 DELETE FROM dvc_device_event;
 
-DELETE FROM sys_configuration;
+DELETE FROM sys_configuration WHERE NOT (scope_id = 1 AND id = 1);
 
 DELETE FROM usr_user WHERE NOT (scope_id = 1 AND id IN (1,2));
 
