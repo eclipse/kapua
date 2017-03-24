@@ -64,7 +64,7 @@
         </init-param>
         <init-param>
             <param-name>swagger.api.basepath</param-name>
-            <param-value>/api/v1</param-value>
+            <param-value>{API_BASE_PATH}</param-value>
         </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>
