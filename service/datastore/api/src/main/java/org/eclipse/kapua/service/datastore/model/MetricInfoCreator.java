@@ -43,12 +43,13 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Sets the client identifier
      * 
-     * @param clientId The client identifier
+     * @param clientId
+     *            The client identifier
      * 
      * @since 1.0.0
      */
     public void setClientId(String clientId);
-    
+
     /**
      * Get the channel
      * 
@@ -96,7 +97,9 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
 
     /**
      * Sets the metric type
-     * @param metricType The metric type
+     * 
+     * @param metricType
+     *            The metric type
      * @since 1.0.0
      */
     public void setMetricType(Class<T> metricType);

@@ -34,6 +34,7 @@ public class MetricInfoXmlRegistry {
 
     /**
      * Creates a {@link MetricInfoQuery} instance.
+     * 
      * @return
      */
     public MetricInfoQuery newQuery() {

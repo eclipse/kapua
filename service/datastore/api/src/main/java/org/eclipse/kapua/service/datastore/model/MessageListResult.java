@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
  */
 @XmlRootElement(name = "datastoreMessages")
 @XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newDatastoreMessageListResult")
-public interface MessageListResult extends StorableListResult<DatastoreMessage>
-{
+public interface MessageListResult extends StorableListResult<DatastoreMessage> {
 
 }

@@ -32,15 +32,15 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 @XmlRootElement(name = "metricInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "id",
-                        "scopeId",
-                        "clientId",
-                        "channel",
-                        "name",
-                        "metricType",
-                        "firstMessageId",
-                        "firstMessageOn",
-                        "lastMessageId",
-                        "lastMessageOn"})
+        "scopeId",
+        "clientId",
+        "channel",
+        "name",
+        "metricType",
+        "firstMessageId",
+        "firstMessageOn",
+        "lastMessageId",
+        "lastMessageOn" })
 public interface MetricInfo extends Storable {
 
     /**
@@ -78,12 +78,13 @@ public interface MetricInfo extends Storable {
     /**
      * Sets the client identifier
      * 
-     * @param clientId The client identifier
+     * @param clientId
+     *            The client identifier
      * 
      * @since 1.0.0
      */
     public void setClientId(String clientId);
-    
+
     /**
      * Get the channel
      * 
@@ -103,7 +104,6 @@ public interface MetricInfo extends Storable {
      */
     public void setChannel(String channel);
 
-    
     /**
      * Gets the metric name
      * 
@@ -112,27 +112,31 @@ public interface MetricInfo extends Storable {
      */
     @XmlElement(name = "name")
     public String getName();
-    
+
     /**
      * Sets the metric name
-     * @param name The metric name
+     * 
+     * @param name
+     *            The metric name
      * @since 1.0.0
      */
     public void setName(String name);
-    
+
     /**
      * Get the metric type
+     * 
      * @return The metric type
      * @since 1.0.0
      */
     @XmlElement(name = "metricType")
     @XmlJavaTypeAdapter(MetricInfoTypeAdapter.class)
     public Class<?> getMetricType();
-    
+
     /**
      * Sets the metric type
      * 
-     * @param metricType The metric type
+     * @param metricType
+     *            The metric type
      */
     public void setMetricType(Class<?> metricType);
 

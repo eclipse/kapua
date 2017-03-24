@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
  */
 @XmlRootElement(name = "clientInfos")
 @XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newClientInfoListResult")
-public interface ClientInfoListResult extends StorableListResult<ClientInfo>
-{
+public interface ClientInfoListResult extends StorableListResult<ClientInfo> {
 
 }

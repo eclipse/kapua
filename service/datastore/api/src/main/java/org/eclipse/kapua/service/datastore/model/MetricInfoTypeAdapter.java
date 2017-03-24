@@ -20,5 +20,4 @@ import org.eclipse.kapua.model.xml.ObjectTypeXmlAdapter;
  */
 public class MetricInfoTypeAdapter extends ObjectTypeXmlAdapter {
 
-    
 }

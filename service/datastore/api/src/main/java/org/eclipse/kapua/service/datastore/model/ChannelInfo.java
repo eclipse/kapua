@@ -31,13 +31,13 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 @XmlRootElement(name = "channel")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "id",
-                        "scopeId",
-                        "clientId",
-                        "channel",
-                        "firstMessageId",
-                        "firstMessageOn",
-                        "lastMessageId",
-                        "lastMessageOn"})
+        "scopeId",
+        "clientId",
+        "channel",
+        "firstMessageId",
+        "firstMessageOn",
+        "lastMessageId",
+        "lastMessageOn" })
 public interface ChannelInfo extends Storable {
 
     /**
@@ -139,7 +139,7 @@ public interface ChannelInfo extends Storable {
      */
     @XmlElement(name = "lastMessageId")
     @XmlJavaTypeAdapter(StorableIdAdapter.class)
-    
+
     public StorableId getLastMessageId();
 
     /**

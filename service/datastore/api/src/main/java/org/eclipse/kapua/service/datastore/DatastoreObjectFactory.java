@@ -32,8 +32,6 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
  */
 public interface DatastoreObjectFactory extends KapuaObjectFactory {
 
-    
-    
     /**
      * Return a new channel information query
      * 
@@ -52,7 +50,7 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public ChannelInfoListResult newChannelInfoListResult();
-    
+
     /**
      * Return a new client information query
      * 
@@ -71,8 +69,7 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public ClientInfoListResult newClientInfoListResult();
-    
-  
+
     /**
      * Return a new datastore message query
      * 
@@ -91,7 +88,7 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public MessageListResult newDatastoreMessageListResult();
-    
+
     /**
      * Return a new metric information query
      * 
@@ -110,7 +107,7 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     public MetricInfoListResult newMetricInfoListResult();
-    
+
     /**
      * Returns a new Metric instance
      * 
@@ -119,7 +116,7 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @return
      */
     public Metric<?> newMetric(String name, Object value);
-    
+
     /**
      * Return a new term comparison predicate
      * 

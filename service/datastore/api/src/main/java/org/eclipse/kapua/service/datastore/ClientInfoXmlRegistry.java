@@ -34,6 +34,7 @@ public class ClientInfoXmlRegistry {
 
     /**
      * Creates a {@link ClientInfoQuery} instance.
+     * 
      * @return
      */
     public ClientInfoQuery newQuery() {

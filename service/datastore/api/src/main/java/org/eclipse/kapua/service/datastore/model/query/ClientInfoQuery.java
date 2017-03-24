@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newQuery")
-public interface ClientInfoQuery extends StorableQuery<ClientInfo>
-{
+public interface ClientInfoQuery extends StorableQuery<ClientInfo> {
 
 }

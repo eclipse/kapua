@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = MetricInfoXmlRegistry.class, factoryMethod = "newQuery")
-public interface MetricInfoQuery extends StorableQuery<MetricInfo>
-{
+public interface MetricInfoQuery extends StorableQuery<MetricInfo> {
 
 }

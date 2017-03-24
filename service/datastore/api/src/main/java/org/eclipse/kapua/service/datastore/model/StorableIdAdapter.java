@@ -21,28 +21,26 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * @since 1.0
  *
  */
-public class StorableIdAdapter extends XmlAdapter<String, StorableId>{
+public class StorableIdAdapter extends XmlAdapter<String, StorableId> {
 
     /**
      * Locator instance
      */
-	private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final KapuaLocator locator = KapuaLocator.getInstance();
 
     /**
      * Meta type factory instance
      */
-	private final StorableIdFactory storableIdFactory = locator.getFactory(StorableIdFactory.class);
+    private final StorableIdFactory storableIdFactory = locator.getFactory(StorableIdFactory.class);
 
-	@Override
-	public String marshal(StorableId v) throws Exception 
-	{
+    @Override
+    public String marshal(StorableId v) throws Exception {
         return v.toString();
-	}
+    }
 
-	@Override
-    public StorableId unmarshal(String v) throws Exception
-    {
-		return storableIdFactory.newStorableId(v);
-	}
+    @Override
+    public StorableId unmarshal(String v) throws Exception {
+        return storableIdFactory.newStorableId(v);
+    }
 
 }

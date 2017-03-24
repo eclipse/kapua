@@ -50,7 +50,7 @@ public interface StorableQuery<S extends Object> {
      * @since 1.0.0
      */
     public void setScopeId(KapuaId scopeId);
-    
+
     /**
      * Get the predicate
      * 

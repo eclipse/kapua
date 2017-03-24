@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
  */
 @XmlRootElement(name = "channelInfos")
 @XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newChannelInfoListResult")
-public interface ChannelInfoListResult extends StorableListResult<ChannelInfo>
-{
+public interface ChannelInfoListResult extends StorableListResult<ChannelInfo> {
 
 }

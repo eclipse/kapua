@@ -28,5 +28,5 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newQuery")
-public interface ChannelInfoQuery extends StorableQuery<ChannelInfo>
-{}
+public interface ChannelInfoQuery extends StorableQuery<ChannelInfo> {
+}

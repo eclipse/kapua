@@ -46,9 +46,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
         "position", //
         "channel", //
         "payload", //
-        }) //
-public interface DatastoreMessage extends Storable
-{
+}) //
+public interface DatastoreMessage extends Storable {
+
     /**
      * Stored message identifier
      * 
@@ -64,7 +64,7 @@ public interface DatastoreMessage extends Storable
      * @return
      */
     public Date getTimestamp();
-    
+
     /**
      * Get the message identifier
      *
@@ -72,7 +72,7 @@ public interface DatastoreMessage extends Storable
      */
     @XmlElement(name = "id")
     public UUID getId();
-    
+
     /**
      * Set the message identifier
      *
@@ -88,7 +88,7 @@ public interface DatastoreMessage extends Storable
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
-    
+
     /**
      * Set scope identifier
      *

@@ -34,6 +34,7 @@ public class ChannelInfoXmlRegistry {
 
     /**
      * Creates a {@link ChannelInfoQuery} instance.
+     * 
      * @return
      */
     public ChannelInfoQuery newQuery() {

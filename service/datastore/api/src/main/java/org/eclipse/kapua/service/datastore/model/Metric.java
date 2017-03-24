@@ -23,10 +23,10 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 @XmlRootElement(name = "metric")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "name",
-                        "type",
-                         "value"})
+        "type",
+        "value" })
 public interface Metric<T> extends Comparable<T> {
-    
+
     /**
      * Get the name
      * 
@@ -45,8 +45,7 @@ public interface Metric<T> extends Comparable<T> {
      * @since 1.0.0
      */
     public void setName(String name);
-    
-    
+
     /**
      * Get the type
      * 
@@ -59,14 +58,14 @@ public interface Metric<T> extends Comparable<T> {
     public Class<T> getType();
 
     /**
-     * Set the  type
+     * Set the type
      * 
      * @param type
      * 
      * @since 1.0.0
      */
     public void setType(Class<T> type);
-    
+
     /**
      * Get the metric value
      * 
@@ -77,7 +76,7 @@ public interface Metric<T> extends Comparable<T> {
     @XmlElement(name = "value")
     @XmlPath(".")
     public T getValue();
-    
+
     /**
      * Set the metric value
      * 

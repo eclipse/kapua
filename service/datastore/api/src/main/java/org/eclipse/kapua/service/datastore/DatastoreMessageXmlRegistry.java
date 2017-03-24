@@ -34,6 +34,7 @@ public class DatastoreMessageXmlRegistry {
 
     /**
      * Creates a {@link MessageQuery} instance.
+     * 
      * @return
      */
     public MessageQuery newQuery() {

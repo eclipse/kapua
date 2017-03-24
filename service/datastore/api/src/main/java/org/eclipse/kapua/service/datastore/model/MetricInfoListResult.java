@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
  */
 @XmlRootElement(name = "metricInfos")
 @XmlType(factoryClass = MetricInfoXmlRegistry.class, factoryMethod = "newMetricInfoListResult")
-public interface MetricInfoListResult extends StorableListResult<MetricInfo>
-{
+public interface MetricInfoListResult extends StorableListResult<MetricInfo> {
 
 }
