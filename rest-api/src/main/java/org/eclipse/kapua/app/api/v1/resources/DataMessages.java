@@ -37,6 +37,7 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
@@ -69,9 +70,10 @@ public class DataMessages extends AbstractKapuaResource {
             responseContainer = "DatastoreMessageListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public MessageListResult simpleQuery( @PathParam("scopeId") ScopeId scopeId,//
-                                        @QueryParam("offset") @DefaultValue("0") int offset,//
-                                        @QueryParam("limit") @DefaultValue("50") int limit) //
+    public MessageListResult simpleQuery(  //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The result set offset", defaultValue = "0")   @QueryParam("offset") @DefaultValue("0") int offset,//
+            @ApiParam(value = "The result set limit", defaultValue = "50")  @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         MessageListResult datastoreMessageListResult = datastoreObjectFactory.newDatastoreMessageListResult();
         try {
@@ -99,7 +101,13 @@ public class DataMessages extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public MessageListResult query(@PathParam("scopeId") ScopeId scopeId, MessageQuery query) {
+    @ApiOperation(value = "Queries the DatastoreMessages", //
+    notes = "Queries the DatastoreMessages with the given DatastoreMessageQuery parameter returning all matching DatastoreMessages",  //
+    response = DatastoreMessage.class, //
+    responseContainer = "DatastoreMessageListResult")
+    public MessageListResult query( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The DatastoreMessageQuery to use to filter results", required = true) MessageQuery query) {
         MessageListResult datastoreMessageListResult = null;
         try {
             query.setScopeId(scopeId);
@@ -122,7 +130,12 @@ public class DataMessages extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public CountResult count(@PathParam("scopeId") ScopeId scopeId, MessageQuery query) {
+    @ApiOperation(value = "Counts the DatastoreMessages", //
+    notes = "Counts the DatastoreMessages with the given DatastoreMessageQuery parameter returning the number of matching DatastoreMessages", //
+    response = CountResult.class)
+    public CountResult count( //
+            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
+            @ApiParam(value = "The DatastoreMessageQuery to use to filter count results", required = true) MessageQuery query) {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
@@ -141,11 +154,14 @@ public class DataMessages extends AbstractKapuaResource {
      *            The id of the requested DatastoreMessage.
      * @return The requested DatastoreMessage object.
      */
-    @ApiOperation(value = "Get an DatastoreMessage", notes = "Returns the DatastoreMessage specified by the \"datastoreMessageId\" path parameter.", response = DatastoreMessage.class)
     @GET
     @Path("{datastoreMessageId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public DatastoreMessage find(@PathParam("scopeId") ScopeId scopeId, 
+    @ApiOperation(value = "Gets an DatastoreMessage", //
+    notes = "Gets the DatastoreMessage specified by the datastoreMessageId path parameter", //
+    response = DatastoreMessage.class)
+    public DatastoreMessage find( //
+            @ApiParam(value = "The ScopeId of the requested DatastoreMessage.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, 
             @ApiParam(value = "The id of the requested DatastoreMessage", required = true) @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) {
         DatastoreMessage datastoreMessage = null;
         try {
