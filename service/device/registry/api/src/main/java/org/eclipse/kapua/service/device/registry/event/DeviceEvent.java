@@ -24,6 +24,7 @@ import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 
@@ -35,14 +36,18 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
  */
 @XmlRootElement(name = "deviceEvent")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "deviceId",
-        "sentOn",
-        "receivedOn",
-        "position",
-        "resource",
-        "action",
-        "responseCode",
-        "eventMessage" }, factoryClass = DeviceEventXmlRegistry.class, factoryMethod = "newDeviceEvent")
+@XmlType(propOrder = { //
+        "deviceId", //
+        "sentOn", //
+        "receivedOn", //
+        "position", //
+        "resource",  //
+        "action", //
+        "responseCode", //
+        "eventMessage" //
+}, //
+        factoryClass = DeviceEventXmlRegistry.class, //
+        factoryMethod = "newDeviceEvent")
 public interface DeviceEvent extends KapuaEntity {
 
     public static final String TYPE = "dvce-event";
@@ -73,6 +78,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @return
      */
     @XmlElement(name = "sentOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getSentOn();
 
     /**
@@ -88,6 +94,7 @@ public interface DeviceEvent extends KapuaEntity {
      * @return
      */
     @XmlElement(name = "receivedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getReceivedOn();
 
     /**
