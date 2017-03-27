@@ -13,8 +13,9 @@
 package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
+import org.eclipse.kapua.model.config.metatype.*;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserXmlRegistry;
@@ -38,7 +39,15 @@ public class UsersJAXBContextProvider implements JAXBContextProvider {
                     User.class,
                     UserListResult.class,
                     UserXmlRegistry.class,
-                    KapuaTmetadata.class
+                    KapuaTmetadata.class,
+                    KapuaTocd.class,
+                    KapuaTad.class,
+                    KapuaTicon.class,
+                    TscalarImpl.class,
+                    KapuaToption.class,
+                    KapuaTdesignate.class,
+                    KapuaTobject.class,
+                    MetatypeXmlRegistry.class
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);

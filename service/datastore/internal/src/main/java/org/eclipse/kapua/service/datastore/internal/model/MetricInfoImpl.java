@@ -28,9 +28,9 @@ public class MetricInfoImpl implements MetricInfo {
     private KapuaId scopeId;
     private String clientId;
     private String channel;
+
     private String name;
-    private String type;
-    private Object value;
+    private Class<?> metricType;
 
     private StorableId firstMessageId;
     private Date firstMessageOn;
@@ -91,11 +91,7 @@ public class MetricInfoImpl implements MetricInfo {
         return this.clientId;
     }
 
-    /**
-     * Set the client identifier
-     * 
-     * @param clientId
-     */
+    @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
@@ -121,23 +117,13 @@ public class MetricInfoImpl implements MetricInfo {
     }
 
     @Override
-    public String getType() {
-        return type;
+    public Class<?> getMetricType() {
+        return metricType;
     }
 
     @Override
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @Override
-    public <T> T getValue(Class<T> clazz) {
-        return clazz.cast(value);
-    }
-
-    @Override
-    public <T> void setValue(T value) {
-        this.value = value;
+    public void setMetricType(Class<?> metricType) {
+        this.metricType = metricType;
     }
 
     @Override

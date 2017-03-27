@@ -49,7 +49,6 @@ public class AccountsJAXBContextProvider implements JAXBContextProvider
                                                   KapuaTicon.class,
                                                   TscalarImpl.class,
                                                   KapuaToption.class,
-                                                  KapuaTmetadata.class,
                                                   KapuaTdesignate.class,
                                                   KapuaTobject.class,
                                                   MetatypeXmlRegistry.class

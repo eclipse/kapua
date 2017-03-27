@@ -21,15 +21,12 @@ import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
  * @since 1.0
  *
  */
-public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientInfo> implements ClientInfoListResult
-{
-    private static final long serialVersionUID = 3503852185102385667L;
+public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientInfo> implements ClientInfoListResult {
 
     /**
      * Construct a client info result list
      */
-    public ClientInfoListResultImpl()
-    {
+    public ClientInfoListResultImpl() {
         super();
     }
 
@@ -38,8 +35,7 @@ public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientI
      * 
      * @param nextKey
      */
-    public ClientInfoListResultImpl(Object nextKey)
-    {
+    public ClientInfoListResultImpl(Object nextKey) {
         super(nextKey);
     }
 
@@ -49,8 +45,7 @@ public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientI
      * @param nextKey
      * @param totalCount
      */
-    public ClientInfoListResultImpl(Object nextKey, Long totalCount)
-    {
+    public ClientInfoListResultImpl(Object nextKey, Long totalCount) {
         super(nextKey, totalCount);
     }
 }

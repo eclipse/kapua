@@ -38,6 +38,8 @@ Pushing to a specific docker registry under a specific account:
 Navigate your browser to http://localhost:8080 and log in using the following credentials:
 `kapua-sys` : `kapua-password`
 
+You can access the API using: http://localhost:8081
+
 ### Tomcat images
 
 It is also possible to use Tomcat as a web container. For this use the following run commands instead:

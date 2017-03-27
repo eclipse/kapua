@@ -8,35 +8,36 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
-
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.message.KapuaPayload;
+import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 public class KapuaMetricsMapAdapterTest extends Assert {
 
     private static final String newline = System.lineSeparator();
 
-    private static final String METRICS_XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
-            "<metricsmap>" + newline +
-            "   <metrics>" + newline +
-            "      <metric>" + newline +
-            "         <name>key1</name>" + newline +
-            "         <type>string</type>" + newline +
-            "         <value>value1</value>" + newline +
-            "      </metric>" + newline +
-            "   </metrics>" + newline +
-            "</metricsmap>" + newline;
-
+    private static final String METRICS_XML_STR = //
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
+                    "<payload>" + newline +
+                    "   <metrics>" + newline +
+                    "      <metric>" + newline +
+                    "         <name>key1</name>" + newline +
+                    "         <type>string</type>" + newline +
+                    "         <value>value1</value>" + newline +
+                    "      </metric>" + newline +
+                    "   </metrics>" + newline +
+                    "</payload>" + newline;
 
     @Before
     public void before() throws Exception {
@@ -45,10 +46,10 @@ public class KapuaMetricsMapAdapterTest extends Assert {
 
     @Test
     public void marshalWithAdapter() throws Exception {
-        KapuaMetricsMap metricsMap = new KapuaMetricsMap();
+        KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
         metrics.put(new String("key1"), new String("value1"));
-        metricsMap.setMetrics(metrics);
+        metricsMap.setProperties(metrics);
 
         StringWriter strWriter = new StringWriter();
         XmlUtil.marshal(metricsMap, strWriter);
@@ -57,13 +58,13 @@ public class KapuaMetricsMapAdapterTest extends Assert {
 
     @Test
     public void unmarshalWithAdapter() throws Exception {
-        KapuaMetricsMap metricsMap = new KapuaMetricsMap();
+        KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
         metrics.put(new String("key1"), new String("value1"));
-        metricsMap.setMetrics(metrics);
+        metricsMap.setProperties(metrics);
 
-        KapuaMetricsMap metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaMetricsMap.class);
-        assertEquals(metricsMap.getMetrics().get("key1"), metricsMapResp.getMetrics().get("key1"));
+        KapuaPayload metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);
+        assertEquals(metricsMap.getProperties().get("key1"), metricsMapResp.getProperties().get("key1"));
     }
 
 }

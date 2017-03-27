@@ -14,7 +14,7 @@
 
 --changeset commons:1
 
-CREATE TABLE sys_configuration (
+CREATE TABLE IF NOT EXISTS sys_configuration (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
   id                         BIGINT(21) 	  UNSIGNED NOT NULL,
   pid						 VARCHAR(255) 	  NOT NULL,
@@ -29,4 +29,4 @@ CREATE TABLE sys_configuration (
   PRIMARY KEY  (id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE INDEX idx_configurationScopeId ON sys_configuration (scope_id);
+CREATE INDEX IF NOT EXISTS idx_configurationScopeId ON sys_configuration (scope_id);

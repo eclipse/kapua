@@ -24,6 +24,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_KEY("authentication.key"), //
 
     AUTHENTICATION_TOKEN_EXPIRE_AFTER("authentication.token.expire.after"),//
+    AUTHENTICATION_REFRESH_TOKEN_EXPIRE_AFTER("authentication.refresh.token.expire.after"),//
 
     // AUTHENTICATION_TOKEN_JWT_SECRET("authentication.token.jwt.secret"),//
     AUTHENTICATION_SESSION_JWT_ISSUER("authentication.session.jwt.issuer"),//

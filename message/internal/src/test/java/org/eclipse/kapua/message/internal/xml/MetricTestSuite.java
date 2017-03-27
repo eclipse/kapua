@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
@@ -18,7 +17,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         KapuaMetricTest.class,
-        KapuaMetricValueTest.class,
         KapuaMetricsMapAdapterTest.class
 })
 public class MetricTestSuite {

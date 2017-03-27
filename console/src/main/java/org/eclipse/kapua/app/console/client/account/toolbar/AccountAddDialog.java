@@ -12,10 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account.toolbar;
 
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
-import org.eclipse.kapua.app.console.client.util.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
@@ -26,15 +33,6 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccountCreator;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
-
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AccountAddDialog extends EntityAddEditDialog {
 
@@ -110,26 +108,6 @@ public class AccountAddDialog extends EntityAddEditDialog {
         accountNameField.setValidator(new TextFieldValidator(accountNameField, FieldType.SIMPLE_NAME));
         fieldSet.add(accountNameField);
 
-        //
-        // passwords
-        //
-        accountPassword.setAllowBlank(false);
-        accountPassword.setName("accountPassword");
-        accountPassword.setFieldLabel("* " + MSGS.accountFormPassword());
-        accountPassword.setValidator(new TextFieldValidator(accountPassword, FieldType.PASSWORD));
-        accountPassword.setPassword(true);
-        fieldSet.add(accountPassword);
-
-        //
-        // Confirm password
-        //
-        confirmPassword.setAllowBlank(false);
-        confirmPassword.setName("confirmPassword");
-        confirmPassword.setFieldLabel("* " + MSGS.accountFormConfirmPassword());
-        confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, accountPassword));
-        confirmPassword.setPassword(true);
-        fieldSet.add(confirmPassword);
-
         accountFormPanel.add(fieldSet);
         
         // //////////////////////////////////////////
@@ -156,7 +134,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         fieldSetDeployment.add(optlock);
 
         // add the field set and reset
-        accountFormPanel.add(fieldSetDeployment);
+//        accountFormPanel.add(fieldSetDeployment);
         
         // //////////////////////////////////////////
         // Organization Information field set
@@ -269,6 +247,9 @@ public class AccountAddDialog extends EntityAddEditDialog {
                         FailureHandler.handleFormException(m_formPanel, caught);
                         m_status.hide();
                         m_formPanel.getButtonBar().enable();
+                        unmask();
+                        m_submitButton.enable();
+                        m_cancelButton.enable();
                     }
 
                     public void onSuccess(GwtAccount account)

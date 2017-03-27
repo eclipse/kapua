@@ -121,8 +121,8 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         // Check validity
-        if (accessToken.getExpiresOn() != null &&
-                accessToken.getExpiresOn().before(new Date())) {
+        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(new Date())) ||
+            (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(new Date()))){
             throw new ExpiredCredentialsException();
         }
 

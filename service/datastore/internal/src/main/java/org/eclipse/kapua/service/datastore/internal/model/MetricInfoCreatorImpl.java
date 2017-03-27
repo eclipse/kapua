@@ -22,16 +22,17 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
  * 
  * @since 1.0.0
  */
-public class MetricInfoCreatorImpl implements MetricInfoCreator {
+public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
 
     private KapuaId scopeId;
     private String clientId;
     private String channel;
+
+    private String name;
+    private Class<T> metricType;
+
     private StorableId messageId;
     private Date messageTimestamp;
-    private String name;
-    private String type;
-    private Object value;
 
     /**
      * Construct a metric information creator for the given account
@@ -58,14 +59,8 @@ public class MetricInfoCreatorImpl implements MetricInfoCreator {
         return this.clientId;
     }
 
-    /**
-     * Set the device identifier
-     * 
-     * @param clientId
-     * 
-     * @since 1.0.0
-     */
-    public void setDevice(String clientId) {
+    @Override
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -80,16 +75,6 @@ public class MetricInfoCreatorImpl implements MetricInfoCreator {
     }
 
     @Override
-    public StorableId getMessageId() {
-        return messageId;
-    }
-
-    @Override
-    public void setMessageId(StorableId messageId) {
-        this.messageId = messageId;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
@@ -100,23 +85,23 @@ public class MetricInfoCreatorImpl implements MetricInfoCreator {
     }
 
     @Override
-    public String getType() {
-        return type;
+    public Class<T> getMetricType() {
+        return metricType;
     }
 
     @Override
-    public void setType(String type) {
-        this.type = type;
+    public void setMetricType(Class<T> metricType) {
+        this.metricType = metricType;
     }
 
     @Override
-    public <T> T getValue(Class<T> clazz) {
-        return clazz.cast(value);
+    public StorableId getMessageId() {
+        return messageId;
     }
 
     @Override
-    public <T> void setValue(T value) {
-        this.value = value;
+    public void setMessageId(StorableId messageId) {
+        this.messageId = messageId;
     }
 
     @Override

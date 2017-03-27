@@ -11,14 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
+
 /**
- * Message query result list definition.<br>
- * This object contains the list of the message objects retrieved by the search service.
+ * Metric information query result list definition.<br>
+ * This object contains the list of the metric information objects retrieved by the search service.
  * 
  * @since 1.0
  *
  */
-public interface MessageListResult extends StorableListResult<DatastoreMessage>
-{
+@XmlRootElement(name = "datastoreMessages")
+@XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newDatastoreMessageListResult")
+public interface MessageListResult extends StorableListResult<DatastoreMessage> {
 
 }

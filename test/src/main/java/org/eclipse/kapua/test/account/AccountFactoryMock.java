@@ -61,4 +61,9 @@ public class AccountFactoryMock implements AccountFactory
 		return null;
 	}
 
+    @Override
+    public AccountQuery newAccountQuery(KapuaId scopeId) {
+        return new AccountQueryMock();
+    }
+
 }

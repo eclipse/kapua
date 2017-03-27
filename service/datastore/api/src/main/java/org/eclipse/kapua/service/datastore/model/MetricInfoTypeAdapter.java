@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,24 +8,16 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.xml;
+package org.eclipse.kapua.service.datastore.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
+import org.eclipse.kapua.model.xml.ObjectTypeXmlAdapter;
 
 /**
- * A container for KapuaMetric instances organized into a list.
+ * Kapua identifier adapter. It marshal and unmarshal the Kapua identifier in a proper way.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
-public class KapuaMetricsMapType {
-
-    @XmlElement(name="metric")
-    public List<KapuaMetric> metrics = new ArrayList<KapuaMetric>();
+public class MetricInfoTypeAdapter extends ObjectTypeXmlAdapter {
 
 }

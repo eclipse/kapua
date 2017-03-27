@@ -34,6 +34,15 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 public interface KapuaQuery<E extends KapuaEntity> {
 
     /**
+     * Gets the fetch attribute names list.
+     * 
+     * @return The fetch attribute names list.
+     */
+    @XmlElementWrapper(name = "fetchAttributeName")
+    @XmlElement(name = "fetchAttributeName")
+    public List<String> getFetchAttributes();
+
+    /**
      * Adds an attribute to the fetch attribute names list
      * 
      * @param fetchAttribute
@@ -53,13 +62,14 @@ public interface KapuaQuery<E extends KapuaEntity> {
     public void setFetchAttributes(List<String> fetchAttributeNames);
 
     /**
-     * Gets the fetch attribute names list.
+     * Get the scope {@link KapuaId} in which to query.
      * 
-     * @return The fetch attribute names list.
+     * @return The scope {@link KapuaId} in which to query.
+     * @since 1.0.0
      */
-    @XmlElementWrapper(name = "fetchAttributeName")
-    @XmlElement(name = "fetchAttributeName")
-    public List<String> getFetchAttributes();
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getScopeId();
 
     /**
      * Set the scope {@link KapuaId} in which to query.
@@ -71,14 +81,14 @@ public interface KapuaQuery<E extends KapuaEntity> {
     public void setScopeId(KapuaId scopeId);
 
     /**
-     * Get the scope {@link KapuaId} in which to query.
+     * Gets the {@link KapuaQuery} {@link KapuaPredicate}s.
      * 
-     * @return The scope {@link KapuaId} in which to query.
+     * @return The {@link KapuaQuery} {@link KapuaPredicate}s.
      * @since 1.0.0
      */
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getScopeId();
+    @XmlTransient
+    // @XmlElement(name = "predicate")
+    public KapuaPredicate getPredicate();
 
     /**
      * Sets the {@link KapuaQuery} {@link KapuaPredicate}s.<br>
@@ -92,14 +102,14 @@ public interface KapuaQuery<E extends KapuaEntity> {
     public void setPredicate(KapuaPredicate queryPredicate);
 
     /**
-     * Gets the {@link KapuaQuery} {@link KapuaPredicate}s.
+     * Gets the {@link KapuaQuery} {@link KapuaSortCriteria}
      * 
-     * @return The {@link KapuaQuery} {@link KapuaPredicate}s.
+     * @return The {@link KapuaQuery} {@link KapuaSortCriteria}
      * @since 1.0.0
      */
     @XmlTransient
-    // @XmlElement(name = "predicate")
-    public KapuaPredicate getPredicate();
+    // @XmlElement(name = "sortCriteria")
+    public KapuaSortCriteria getSortCriteria();
 
     /**
      * Sets the {@link KapuaQuery} {@link KapuaSortCriteria}.
@@ -111,14 +121,13 @@ public interface KapuaQuery<E extends KapuaEntity> {
     public void setSortCriteria(KapuaSortCriteria sortCriteria);
 
     /**
-     * Gets the {@link KapuaQuery} {@link KapuaSortCriteria}
+     * Gets the {@link KapuaQuery} offset.
      * 
-     * @return The {@link KapuaQuery} {@link KapuaSortCriteria}
+     * @return The {@link KapuaQuery} offset.
      * @since 1.0.0
      */
-    @XmlTransient
-    // @XmlElement(name = "sortCriteria")
-    public KapuaSortCriteria getSortCriteria();
+    @XmlElement(name = "offset")
+    public Integer getOffset();
 
     /**
      * Set the {@link KapuaQuery} offset in the result set from which start query.<br>
@@ -133,13 +142,13 @@ public interface KapuaQuery<E extends KapuaEntity> {
     public void setOffset(Integer offset);
 
     /**
-     * Gets the {@link KapuaQuery} offset.
+     * Gets the {@link KapuaQuery} limit.
      * 
-     * @return The {@link KapuaQuery} offset.
+     * @return The {@link KapuaQuery} limit.
      * @since 1.0.0
      */
-    @XmlElement(name = "offset")
-    public Integer getOffset();
+    @XmlElement(name = "limit")
+    public Integer getLimit();
 
     /**
      * Sets max number of result that will be fetched by this {@link KapuaEntity}.<br>
@@ -151,14 +160,4 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     public void setLimit(Integer limit);
-
-    /**
-     * Gets the {@link KapuaQuery} limit.
-     * 
-     * @return The {@link KapuaQuery} limit.
-     * @since 1.0.0
-     */
-    @XmlElement(name = "limit")
-    public Integer getLimit();
-
 }

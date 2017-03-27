@@ -12,8 +12,8 @@
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
  * Metric info query converter.<br>
@@ -41,7 +41,6 @@ public class MetricInfoQueryConverter extends AbstractStorableQueryConverter<Met
                 MetricInfoField.CHANNEL.field(),
                 MetricInfoField.NAME_FULL.field(),
                 MetricInfoField.TYPE_FULL.field(),
-                MetricInfoField.VALUE_FULL.field(),
                 MetricInfoField.TIMESTAMP_FULL.field(),
                 MetricInfoField.MESSAGE_ID_FULL.field() };
     }

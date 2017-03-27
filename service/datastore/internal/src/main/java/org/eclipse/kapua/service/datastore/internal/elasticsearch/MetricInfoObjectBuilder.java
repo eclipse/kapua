@@ -46,77 +46,27 @@ public class MetricInfoObjectBuilder {
 
         Map<String, SearchHitField> fields = searchHit.fields();
         KapuaId scopeId = KapuaEid.parseCompactId(fields.get(MetricInfoField.SCOPE_ID.field()).getValue());
-        String name = (String) fields.get(MetricInfoField.NAME_FULL.field()).getValue();
-        String type = (String) fields.get(MetricInfoField.TYPE_FULL.field()).getValue();
-        String lastMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
-        String lastMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
-        Object value = fields.get(MetricInfoField.VALUE_FULL.field()).getValue();
         String clientId = fields.get(MetricInfoField.CLIENT_ID.field()).getValue();
         String channel = fields.get(MetricInfoField.CHANNEL.field()).getValue();
 
-        MetricInfoImpl finalMetricInfo = new MetricInfoImpl(scopeId, new StorableIdImpl(id));
-        finalMetricInfo.setClientId(clientId);
-        finalMetricInfo.setChannel(channel);
-        finalMetricInfo.setFirstMessageId(new StorableIdImpl(lastMsgId));
+        String name = (String) fields.get(MetricInfoField.NAME_FULL.field()).getValue();
+        String typeString = (String) fields.get(MetricInfoField.TYPE_FULL.field()).getValue();
+
+        String firstMsgTimestamp = (String) fields.get(MetricInfoField.TIMESTAMP_FULL.field()).getValue();
+        String firstMsgId = (String) fields.get(MetricInfoField.MESSAGE_ID_FULL.field()).getValue();
 
         String metricName = EsUtils.restoreMetricName(name);
-        finalMetricInfo.setName(metricName);
+        Class<?> metricType = EsUtils.convertToKapuaType(typeString);
+        Date timestamp = (Date) EsUtils.convertToKapuaObject("date", firstMsgTimestamp);
 
-        Date timestamp = (Date) EsUtils.convertToKapuaObject("date", lastMsgTimestamp);
+        MetricInfo finalMetricInfo = new MetricInfoImpl(scopeId, new StorableIdImpl(id));
+        finalMetricInfo.setClientId(clientId);
+        finalMetricInfo.setChannel(channel);
+        finalMetricInfo.setName(metricName);
+        finalMetricInfo.setMetricType(metricType);
+        finalMetricInfo.setFirstMessageId(new StorableIdImpl(firstMsgId));
         finalMetricInfo.setFirstMessageOn(timestamp);
 
-        if (EsUtils.ES_TYPE_STRING.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((String) value);
-        }
-
-        if (EsUtils.ES_TYPE_INTEGER.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Integer) value);
-        }
-
-        if (EsUtils.ES_TYPE_LONG.equals(type)) {
-            Object obj = value;
-            if (value != null && value instanceof Integer)
-                obj = ((Integer) value).longValue();
-
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Long) obj);
-        }
-
-        if (EsUtils.ES_TYPE_FLOAT.equals(type)) {
-            Object obj = value;
-            if (value != null && value instanceof Double)
-                obj = ((Double) value).floatValue();
-
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Float) obj);
-        }
-
-        if (EsUtils.ES_TYPE_DOUBLE.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Double) value);
-        }
-
-        if (EsUtils.ES_TYPE_BOOL.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Boolean) value);
-        }
-
-        if (EsUtils.ES_TYPE_BINARY.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((byte[]) value);
-        }
-
-        if (EsUtils.ES_TYPE_DATE.equals(type)) {
-            finalMetricInfo.setType(EsUtils.convertToKapuaType(type));
-            finalMetricInfo.setValue((Date) EsUtils.convertToKapuaObject(type, (String) value));
-        }
-
-        if (finalMetricInfo.getType() == null)
-            throw new EsObjectBuilderException(String.format("Unknown metric type [%s]", type));
-
-        // FIXME - review all this generic
         this.metricInfo = finalMetricInfo;
         return this;
     }
@@ -128,6 +78,6 @@ public class MetricInfoObjectBuilder {
      * @since 1.0.0
      */
     public MetricInfo getKapuaMetricInfo() {
-        return this.metricInfo;
+        return metricInfo;
     }
 }

@@ -69,4 +69,10 @@ public class AuthenticationServiceMock implements AuthenticationService {
 
     }
 
+    @Override
+    public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

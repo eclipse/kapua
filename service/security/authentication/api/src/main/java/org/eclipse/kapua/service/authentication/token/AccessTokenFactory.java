@@ -26,6 +26,14 @@ import org.eclipse.kapua.model.id.KapuaId;
 public interface AccessTokenFactory extends KapuaObjectFactory {
 
     /**
+     * Creates a new {@link AccessToken}
+     * @return a new {@link AccessToken}
+     * 
+     * @since 1.0
+     */
+    public AccessToken newAccessToken();
+    
+    /**
      * Create a new {@link AccessTokenCreator} for the specific access credential type
      * 
      * @param scopeId
@@ -36,11 +44,13 @@ public interface AccessTokenFactory extends KapuaObjectFactory {
      *            The tokenId of the new {@link AccessToken}.
      * @param expiresOn
      *            The expiration date after which the token is no longer valid.
-     * 
-     * @return A new instance of {@link AccessToken}.
+     * @param refreshToken 
+     *            The refresh token to obtain a new {@link AccessToken} after expiration.
+     *            
+     * @return A new instance of {@link AccessTokenCreator}.
      * 
      * @since 1.0
      */
-    public AccessTokenCreator newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn);
+    public AccessTokenCreator newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn);
 
 }

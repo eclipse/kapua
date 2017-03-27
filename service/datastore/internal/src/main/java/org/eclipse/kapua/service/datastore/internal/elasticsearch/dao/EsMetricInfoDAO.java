@@ -123,7 +123,7 @@ public class EsMetricInfoDAO {
      * @throws EsDocumentBuilderException
      * @since 1.0.0
      */
-    public UpdateRequest getUpsertRequest(MetricInfoCreator metricInfoCreator)
+    public UpdateRequest getUpsertRequest(MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
@@ -133,9 +133,9 @@ public class EsMetricInfoDAO {
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue(Object.class));
-        return this.getUpsertRequest(metricInfo);
+        metricInfo.setMetricType(metricInfoCreator.getMetricType());
+
+        return getUpsertRequest(metricInfo);
     }
 
     /**
@@ -173,7 +173,7 @@ public class EsMetricInfoDAO {
      * @throws EsDocumentBuilderException
      * @since 1.0.0
      */
-    public UpdateResponse upsert(MetricInfoCreator metricInfoCreator)
+    public UpdateResponse upsert(MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
         String id = MetricInfoXContentBuilder.getOrDeriveId(null, metricInfoCreator);
 
@@ -182,9 +182,9 @@ public class EsMetricInfoDAO {
         metricInfo.setFirstMessageId(metricInfoCreator.getMessageId());
         metricInfo.setFirstMessageOn(metricInfoCreator.getMessageTimestamp());
         metricInfo.setName(metricInfoCreator.getName());
-        metricInfo.setType(metricInfoCreator.getType());
-        metricInfo.setValue(metricInfoCreator.getValue(Object.class));
-        return this.upsert(metricInfo);
+        metricInfo.setMetricType(metricInfoCreator.getMetricType());
+
+        return upsert(metricInfo);
     }
 
     /**
