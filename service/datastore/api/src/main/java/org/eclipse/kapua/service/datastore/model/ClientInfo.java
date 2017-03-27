@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Client information schema definition
@@ -30,13 +31,15 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "clientInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "id",
-        "scopeId",
-        "clientId",
-        "firstMessageId",
-        "firstMessageOn",
-        "lastMessageId",
-        "lastMessageOn" })
+@XmlType(propOrder = { //
+        "id", //
+        "scopeId", //
+        "clientId", //
+        "firstMessageId", //
+        "firstMessageOn", //
+        "lastMessageId", //
+        "lastMessageOn" //
+})
 public interface ClientInfo extends Storable {
 
     /**
@@ -108,6 +111,7 @@ public interface ClientInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getFirstMessageOn();
 
     /**
@@ -150,6 +154,7 @@ public interface ClientInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getLastMessageOn();
 
     /**
