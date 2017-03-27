@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
@@ -23,6 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Kapua updatable entity definition.
@@ -30,16 +30,20 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * @since 1.0
  * 
  */
-@XmlType(propOrder = {"modifiedOn", "modifiedBy", "optlock" })
-public interface KapuaUpdatableEntity extends KapuaEntity
-{
+@XmlType(propOrder = { //
+        "modifiedOn", //
+        "modifiedBy", //
+        "optlock" //
+})
+public interface KapuaUpdatableEntity extends KapuaEntity {
 
     /**
      * Get modified on date
      * 
      * @return
      */
-    @XmlElement(name="modifiedOn")
+    @XmlElement(name = "modifiedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getModifiedOn();
 
     /**
@@ -47,8 +51,8 @@ public interface KapuaUpdatableEntity extends KapuaEntity
      * 
      * @return
      */
-	@XmlElement(name="modifiedBy")
-	@XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @XmlElement(name = "modifiedBy")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getModifiedBy();
 
     /**
@@ -56,7 +60,7 @@ public interface KapuaUpdatableEntity extends KapuaEntity
      * 
      * @return
      */
-	@XmlElement(name="optlock")
+    @XmlElement(name = "optlock")
     public int getOptlock();
 
     /**
@@ -74,7 +78,7 @@ public interface KapuaUpdatableEntity extends KapuaEntity
      */
     @XmlTransient
     public Properties getEntityAttributes()
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Set entity attributes
@@ -83,7 +87,7 @@ public interface KapuaUpdatableEntity extends KapuaEntity
      * @throws KapuaException
      */
     public void setEntityAttributes(Properties props)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Get the property entities
@@ -93,7 +97,7 @@ public interface KapuaUpdatableEntity extends KapuaEntity
      */
     @XmlTransient
     public Properties getEntityProperties()
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Set the property entities
@@ -102,5 +106,5 @@ public interface KapuaUpdatableEntity extends KapuaEntity
      * @throws KapuaException
      */
     public void setEntityProperties(Properties props)
-        throws KapuaException;
+            throws KapuaException;
 }
