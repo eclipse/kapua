@@ -44,7 +44,7 @@ public interface GwtDataService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    public GwtTopic findTopicsTree(String accountName) throws GwtKapuaException;
+    public List<GwtTopic> findTopicsTree(String accountName) throws GwtKapuaException;
 
     PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException;
 

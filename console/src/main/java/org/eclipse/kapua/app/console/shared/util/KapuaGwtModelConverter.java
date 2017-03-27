@@ -577,7 +577,7 @@ public class KapuaGwtModelConverter {
     public static GwtHeader convertToHeader(MetricInfo metric){
         GwtHeader header = new GwtHeader();
         header.setName(metric.getName());
-        header.setType(metric.getType());
+        header.setType(metric.getMetricType().getSimpleName());
         return header;
     }
     

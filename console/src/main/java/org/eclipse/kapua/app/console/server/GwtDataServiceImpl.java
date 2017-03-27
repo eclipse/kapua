@@ -14,7 +14,9 @@ package org.eclipse.kapua.app.console.server;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.kapua.KapuaException;
@@ -39,6 +41,8 @@ import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
@@ -73,9 +77,71 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     private static final long serialVersionUID = -5518740923786017558L;
 
     @Override
-    public GwtTopic findTopicsTree(String accountName) throws GwtKapuaException {
-        // TODO Auto-generated method stub
-        return null;
+    public List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException {
+        List<GwtTopic> channelInfoList = new ArrayList<>();
+        HashMap<String, GwtTopic> topicMap = new HashMap<>();
+        ChannelInfoRegistryService channelInfoService = locator.getService(ChannelInfoRegistryService.class);
+        ChannelInfoQuery query = new ChannelInfoQueryImpl(GwtKapuaModelConverter.convert(scopeId));
+        int offset = 0;
+        int limit = 250;
+        try {
+            query.setOffset(offset);
+            query.setLimit(limit);
+            ChannelInfoListResult result = channelInfoService.query(query);
+            while (result != null && !result.isEmpty()) {
+                for (ChannelInfo channel : result.getItems()) {
+                    addToMap(topicMap, channel);
+                }
+                offset += limit;
+                query.setOffset(offset);
+                result = channelInfoService.query(query);
+            }
+            for (Map.Entry<String, GwtTopic> entry : topicMap.entrySet()) {
+                if (!entry.getKey().contains("/")) {
+                    channelInfoList.add(entry.getValue());
+                }
+            }
+        } catch (KapuaException e) {
+            KapuaExceptionHandler.handle(e);
+        }
+        return channelInfoList;
+    }
+
+    private void addToMap(HashMap<String, GwtTopic> topicMap, ChannelInfo channel) {
+        String[] topicParts = channel.getChannel().split("/");
+        GwtTopic previous = null;
+        String topicName = topicParts[0];
+        String baseTopic = topicParts[0];
+        String semanticTopic = baseTopic;
+        if (topicParts.length > 1) {
+            semanticTopic += "/#";
+        }
+        int i = 0;
+        do {
+            GwtTopic t = topicMap.get(baseTopic);
+            if (t == null) {
+                t = new GwtTopic(topicName, baseTopic, semanticTopic, channel.getLastMessageOn());
+                topicMap.put(baseTopic, t);
+                if (previous != null) {
+                    previous.add(t);
+                }
+            } else {
+                if (t.getTimestamp().before(channel.getLastMessageOn())) {
+                    t.setTimestamp(channel.getLastMessageOn());
+                }
+            }
+            previous = t;
+            i++;
+            if (i < topicParts.length) {
+                topicName = topicParts[i];
+                baseTopic += "/" + topicName;
+                semanticTopic = baseTopic;
+                if (i < (topicParts.length -1)) {
+                    semanticTopic += "/#";
+                }
+            }
+        } while (i < topicParts.length);
+
     }
 
     @Override
@@ -100,7 +166,6 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
         }
-
         return new BasePagingLoadResult<GwtTopic>(channelInfoList, config.getOffset(), totalLength);
     }
 
@@ -125,7 +190,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException {
-        TermPredicateImpl predicate = new TermPredicateImpl(MetricInfoField.CHANNEL, topic.getSemanticTopic());
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(topic.getSemanticTopic());
         return findHeaders(config, scopeId, predicate);
     }
 
@@ -144,7 +209,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByTopic(PagingLoadConfig loadConfig, String scopeId, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-        TermPredicate predicate = new TermPredicateImpl(MessageField.CHANNEL, topic.getSemanticTopic());
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(topic.getSemanticTopic());
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
@@ -180,7 +245,6 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         // TODO Auto-generated method stub
         return null;
     }
-
 
     private ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, StorablePredicate predicate) throws GwtKapuaException {
         MetricInfoRegistryService metricService = locator.getService(MetricInfoRegistryService.class);
@@ -229,8 +293,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         return new BasePagingLoadResult<GwtMessage>(messages, loadConfig.getOffset(), totalLength);
     }
-    
-    private List<GwtMessage> getMessagesList(MessageQuery query, List<GwtHeader> headers) throws GwtKapuaException{
+
+    private List<GwtMessage> getMessagesList(MessageQuery query, List<GwtHeader> headers) throws GwtKapuaException {
         MessageStoreService messageService = locator.getService(MessageStoreService.class);
         List<GwtMessage> messages = new ArrayList<>();
         try {

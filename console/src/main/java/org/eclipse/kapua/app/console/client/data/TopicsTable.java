@@ -16,45 +16,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages;
-import org.eclipse.kapua.app.console.client.util.SwappableListStore;
+import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtTopic;
-import org.eclipse.kapua.app.console.shared.model.data.GwtDataChannelInfoQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BasePagingLoader;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TopicsTable extends LayoutContainer {
 
-    private static final int topicINFO_PAGE_SIZE = 50;
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
     private static GwtDataServiceAsync dataService = GWT.create(GwtDataService.class);
 
-    private BasePagingLoader<PagingLoadResult<GwtTopic>> loader;
     private GwtSession currentSession;
-    private Grid<GwtTopic> topicInfoGrid;
-    // private TreeGrid<GwtTopic> topicInfoGrid;
+    private TreeGrid<GwtTopic> topicInfoGrid;
     private ContentPanel tableContainer;
     private PagingToolBar pagingToolBar;
     private List<SelectionChangedListener<GwtTopic>> listeners = new ArrayList<SelectionChangedListener<GwtTopic>>();
+    private TreeStore<GwtTopic> store;
 
     public TopicsTable(GwtSession currentGwtSession) {
         this.currentSession = currentGwtSession;
@@ -99,44 +94,37 @@ public class TopicsTable extends LayoutContainer {
     private void inittopicInfoGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("topicNameLimited", MSGS.topicInfoTableTopicHeader(), 150);
-        // column.setRenderer(new TreeGridCellRenderer<ModelData>());
+        ColumnConfig column = new ColumnConfig("topicName", MSGS.topicInfoTableTopicHeader(), 150);
+        column.setRenderer(new TreeGridCellRenderer<GwtTopic>());
         configs.add(column);
 
         column = new ColumnConfig("timestamp", MSGS.topicInfoTableLastPostedHeader(), 150);
         configs.add(column);
 
-        RpcProxy<PagingLoadResult<GwtTopic>> proxy = new RpcProxy<PagingLoadResult<GwtTopic>>() {
-
+        store = new TreeStore<GwtTopic>();
+        AsyncCallback<List<GwtTopic>> topicsCallback = new AsyncCallback<List<GwtTopic>>() {
+            
             @Override
-            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtTopic>> callback) {
-                GwtDataChannelInfoQuery query = new GwtDataChannelInfoQuery();
-                String scopeId = currentSession.getSelectedAccount().getId();
-                query.setScopeId(scopeId);
-                dataService.findTopicsList((PagingLoadConfig) loadConfig, query, callback);
+            public void onSuccess(List<GwtTopic> topics) {
+                store.add(topics, true);
+                topicInfoGrid.unmask();
+            }
+            
+            @Override
+            public void onFailure(Throwable t) {
+                FailureHandler.handle(t);
             }
         };
-
-        loader = new BasePagingLoader<PagingLoadResult<GwtTopic>>(proxy);
-        //loader.load();
-        // TreeLoader<GwtTopic> treeLoader = new BaseTreeLoader<GwtTopic>(proxy);
-
-        SwappableListStore<GwtTopic> store = new SwappableListStore<GwtTopic>(loader);
-
-        // TreeStore<ModelData> store = new TreeStore<ModelData>();
-        // topicInfoGrid = new TreeGrid<GwtTopic>(store, new ColumnModel(configs));
-        topicInfoGrid = new Grid<GwtTopic>(store, new ColumnModel(configs));
+        dataService.findTopicsTree(currentSession.getSelectedAccount().getId(), topicsCallback);
+        topicInfoGrid = new TreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.setBorders(false);
         topicInfoGrid.setStateful(false);
         topicInfoGrid.setLoadMask(true);
+        topicInfoGrid.mask("Loading");
         topicInfoGrid.setStripeRows(true);
         topicInfoGrid.getView().setAutoFill(true);
         topicInfoGrid.getView().setEmptyText(MSGS.topicInfoGridEmptyText());
         topicInfoGrid.disableTextSelection(false);
-        pagingToolBar = new PagingToolBar(topicINFO_PAGE_SIZE);
-        pagingToolBar.bind(loader);
-        pagingToolBar.enable();
-        pagingToolBar.refresh();
 
         GridSelectionModel<GwtTopic> selectionModel = new GridSelectionModel<GwtTopic>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);

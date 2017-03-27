@@ -111,7 +111,7 @@ public class MetricsTable extends LayoutContainer {
         ColumnConfig column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
         configs.add(column);
 
-        column = new ColumnConfig("typeFormatted", MSGS.metricsTableMetricTypeHeader(), 100);
+        column = new ColumnConfig("type", MSGS.metricsTableMetricTypeHeader(), 100);
         configs.add(column);
 
         RpcProxy<ListLoadResult<GwtHeader>> proxy = new RpcProxy<ListLoadResult<GwtHeader>>() {
