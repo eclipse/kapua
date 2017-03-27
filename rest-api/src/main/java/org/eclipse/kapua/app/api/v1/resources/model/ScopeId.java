@@ -24,10 +24,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} scopeId.
- * 
+ * <p>
  * If the {@link PathParam} is equals to "_" the scopeId used will be set to {@link KapuaSecurityUtils#getSession()#getId()},
  * which means that the scope of the current request will be the same of the current session scope.
- * 
+ *
  * @since 1.0.0
  */
 public class ScopeId implements KapuaId {
@@ -41,9 +41,8 @@ public class ScopeId implements KapuaId {
     /**
      * Builds the {@link KapuaId} from the given {@link String} compact scopeId.
      * If the given parameter equals to "_" the current session scope will be used.
-     * 
-     * @param compactScopeId
-     *            The compact scopeId to parse.
+     *
+     * @param compactScopeId The compact scopeId to parse.
      * @since 1.0.0
      */
     public ScopeId(String compactScopeId) {
