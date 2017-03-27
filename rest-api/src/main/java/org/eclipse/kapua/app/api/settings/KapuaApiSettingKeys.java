@@ -15,14 +15,12 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
  * Authorization setting key
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public enum KapuaApiSettingKeys implements SettingKey {
     API_KEY("api.key"), //
-    API_PATH_PARAM_SCOPEID_WILDCARD("api.path.param.scopeId.wildcard"),
-    ;
+    API_PATH_PARAM_SCOPEID_WILDCARD("api.path.param.scopeId.wildcard"),;
 
     private String key;
 
