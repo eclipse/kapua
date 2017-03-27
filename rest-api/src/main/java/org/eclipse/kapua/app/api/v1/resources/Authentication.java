@@ -74,7 +74,7 @@ public class Authentication extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Path("/apikey")
+    @Path("apikey")
     public AccessToken loginApiKey(
             @ApiParam(value = "The API KEY authentication credential of a user.", required = true) ApiKeyCredentials authenticationCredentials) {
         AccessToken accessToken = null;
@@ -99,7 +99,7 @@ public class Authentication extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Path("/jwt")
+    @Path("jwt")
     public AccessToken loginJwt(
             @ApiParam(value = "The JWT authentication credential of a user.", required = true) JwtCredentials authenticationCredentials) {
         AccessToken accessToken = null;
@@ -121,7 +121,7 @@ public class Authentication extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Path("/logout")
+    @Path("logout")
     public void logout() {
         try {
             authenticationService.logout();
@@ -139,7 +139,7 @@ public class Authentication extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Path("/refresh")
+    @Path("refresh")
     public AccessToken refresh(@ApiParam(value = "The current AccessToken's tokenId and refreshToken", required = true) RefreshTokenCredentials refreshTokenCredentials) {
         AccessToken accessToken = null;
         try {
