@@ -44,7 +44,7 @@ public class SimulatorRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(SimulatorRunner.class);
 
-    public static void main(final String[] args) throws Throwable {
+    public static void main(final String... args) throws Throwable {
 
         toInfinityAndBeyond();
 
