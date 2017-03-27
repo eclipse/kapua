@@ -22,25 +22,15 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.event.*;
 
 import javax.persistence.EntityNotFoundException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import static org.eclipse.kapua.model.KapuaEntityPredicates.ENTITY_ID;
+import static org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates.DEVICE_ID;
 
 @Api("Devices")
 @Path("{scopeId}/devices/{deviceId}/events")
@@ -84,7 +74,7 @@ public class DeviceEvents extends AbstractKapuaResource {
             DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
             AndPredicate andPredicate = new AndPredicate();
-            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            andPredicate.and(new AttributePredicate<>(DEVICE_ID, deviceId));
             if (!Strings.isNullOrEmpty(resource)) {
                 andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.RESOURCE, resource));
             }
@@ -129,7 +119,7 @@ public class DeviceEvents extends AbstractKapuaResource {
             query.setScopeId(scopeId);
 
             AndPredicate andPredicate = new AndPredicate();
-            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            andPredicate.and(new AttributePredicate<>(DEVICE_ID, deviceId));
             andPredicate.and(query.getPredicate());
             query.setPredicate(andPredicate);
 
@@ -166,7 +156,7 @@ public class DeviceEvents extends AbstractKapuaResource {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
-            query.setPredicate(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
+            query.setPredicate(new AttributePredicate<>(DEVICE_ID, deviceId));
             countResult = new CountResult(deviceEventService.count(query));
         } catch (Throwable t) {
             handleException(t);
@@ -198,9 +188,10 @@ public class DeviceEvents extends AbstractKapuaResource {
             DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
             AndPredicate andPredicate = new AndPredicate();
-            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.DEVICE_ID, deviceId));
-            andPredicate.and(new AttributePredicate<>(DeviceEventPredicates.ENTITY_ID, deviceEventId));
+            andPredicate.and(new AttributePredicate<>(DEVICE_ID, deviceId));
+            andPredicate.and(new AttributePredicate<>(ENTITY_ID, deviceEventId));
 
+            query.setPredicate(andPredicate);
             query.setOffset(0);
             query.setLimit(1);
 
