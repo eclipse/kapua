@@ -40,6 +40,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Get the Kapua identifier for the entity
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -49,6 +50,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Set the Kapua identifier for the entity
      * 
      * @param id
+     * @since 1.0.0
      */
     public void setId(KapuaId id);
 
@@ -59,6 +61,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Get the Kapua scope identifier for the entity
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -68,6 +71,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Get the created on date
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "createdOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
@@ -77,6 +81,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Set the created by Kapua identifier
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "createdBy")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
