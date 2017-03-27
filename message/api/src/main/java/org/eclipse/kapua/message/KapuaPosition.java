@@ -18,12 +18,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Kapua position object definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "position")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -136,6 +138,7 @@ public interface KapuaPosition extends Position {
      * @return
      */
     @XmlElement(name = "timestamp")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getTimestamp();
 
     /**
