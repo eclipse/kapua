@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 @TestService
 @KapuaProvider
@@ -33,12 +32,6 @@ public class PermissionFactoryMock implements PermissionFactory {
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
-        return null;
-    }
-
-    @Override
-    public RolePermission newRolePermission(KapuaId scopeId, Permission p) {
-        // TODO Auto-generated method stub
         return null;
     }
 

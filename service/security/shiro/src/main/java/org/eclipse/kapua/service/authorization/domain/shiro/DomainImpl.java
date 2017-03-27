@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
@@ -59,6 +60,10 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
      */
     public DomainImpl() {
         super();
+    }
+
+    public DomainImpl(KapuaId scopeId) {
+        super(scopeId);
     }
 
     @Override

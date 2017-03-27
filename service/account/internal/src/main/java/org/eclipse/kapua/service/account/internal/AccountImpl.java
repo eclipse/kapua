@@ -69,6 +69,17 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     protected AccountImpl() {
         super();
     }
+    
+    /**
+     * Constructor
+     *
+     * @param scopeId
+     * @param name
+     */
+    public AccountImpl(KapuaId scopeId) {
+        super(scopeId);
+        this.parentAccountPath = "";
+    }
 
     /**
      * Constructor

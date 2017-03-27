@@ -28,15 +28,22 @@ import org.eclipse.kapua.service.account.Organization;
  */
 @KapuaProvider
 public class AccountFactoryImpl implements AccountFactory {
-
+    
     @Override
-    public AccountCreator newAccountCreator(KapuaId scopeId, String name) {
-        return new AccountCreatorImpl(scopeId, name);
+    public AccountCreator newCreator(KapuaId scopeId) {
+        return new AccountCreatorImpl(scopeId, null);
     }
 
     @Override
-    public Account newAccount() {
-        return new AccountImpl();
+    public AccountCreator newCreator(KapuaId scopeId, String name) {
+        AccountCreator creator = newCreator(scopeId);
+        creator.setName(name);
+        return creator;
+    }
+
+    @Override
+    public Account newEntity(KapuaId scopeId) {
+        return new AccountImpl(scopeId);
     }
 
     @Override
@@ -50,12 +57,7 @@ public class AccountFactoryImpl implements AccountFactory {
     }
 
     @Override
-    public AccountListResult newAccountListResult() {
+    public AccountListResult newListResult() {
         return new AccountListResultImpl();
-    }
-
-    @Override
-    public AccountQuery newAccountQuery(KapuaId scopeId) {
-        return new AccountQueryImpl(scopeId);
     }
 }

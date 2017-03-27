@@ -8,20 +8,26 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.domain;
+package org.eclipse.kapua.model;
 
-import javax.xml.bind.annotation.XmlRegistry;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.model.query.KapuaQuery;
 
-import org.eclipse.kapua.locator.KapuaLocator;
+public interface KapuaEntityFactory<
+    E extends KapuaEntity, 
+    C extends KapuaEntityCreator<E>,
+    Q extends KapuaQuery<E>,
+    L extends KapuaListResult<E>
+> extends KapuaObjectFactory {
 
-@XmlRegistry
-public class DomainXmlRegistry {
-
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final DomainFactory factory = locator.getFactory(DomainFactory.class);
-
-    public DomainQuery newQuery() {
-        return factory.newQuery(null);
-    }
+    public E newEntity(KapuaId scopeId);
+    
+    public C newCreator(KapuaId scopeId);
+    
+    public Q newQuery(KapuaId scopeId);
+    
+    public L newListResult();
 }

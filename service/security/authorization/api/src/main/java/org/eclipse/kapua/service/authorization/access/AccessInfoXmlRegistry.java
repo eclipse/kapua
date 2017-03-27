@@ -27,7 +27,7 @@ public class AccessInfoXmlRegistry {
      * @return
      */
     public AccessInfo newAccessInfo() {
-        return factory.newAccessInfo();
+        return factory.newEntity(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class AccessInfoXmlRegistry {
      * @return
      */
     public AccessInfoListResult newAccessInfoListResult() {
-        return factory.newAccessInfoListResult();
+        return factory.newListResult();
     }
 
     public AccessInfoQuery newQuery() {

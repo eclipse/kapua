@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authentication.token;
 
 import java.util.Date;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -23,15 +23,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
-public interface AccessTokenFactory extends KapuaObjectFactory {
-
-    /**
-     * Creates a new {@link AccessToken}
-     * @return a new {@link AccessToken}
-     * 
-     * @since 1.0
-     */
-    public AccessToken newAccessToken();
+public interface AccessTokenFactory extends KapuaEntityFactory<AccessToken, AccessTokenCreator, AccessTokenQuery, AccessTokenListResult> {
     
     /**
      * Create a new {@link AccessTokenCreator} for the specific access credential type

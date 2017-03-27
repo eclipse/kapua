@@ -365,9 +365,8 @@ public class DeviceRegistryValidationTestSteps extends KapuaTest {
 
     // Create a device object. The device is pre-filled with default data.
     private DeviceImpl prepareRegularDevice(KapuaId accountId, KapuaId deviceId) {
-        DeviceImpl tmpDevice = (DeviceImpl) deviceFactory.newDevice();
+        DeviceImpl tmpDevice = (DeviceImpl) deviceFactory.newEntity(accountId);
 
-        tmpDevice.setScopeId(accountId);
         tmpDevice.setId(deviceId);
         tmpDevice.setConnectionId(new KapuaEid(BigInteger.valueOf(random.nextLong())));
         tmpDevice.setDisplayName("test_name");

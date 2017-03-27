@@ -108,7 +108,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
             String accountName = String.format("test-acct-%d", (new Date()).getTime());
             AccountService accountService = locator.getService(AccountService.class);
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
-            AccountCreator accountCreator = accountFactory.newAccountCreator(adminScopeId, accountName);
+            AccountCreator accountCreator = accountFactory.newCreator(adminScopeId, accountName);
             accountCreator.setOrganizationName(accountName);
             accountCreator.setOrganizationEmail(accountName + "@m.com");
             account = accountService.create(accountCreator);

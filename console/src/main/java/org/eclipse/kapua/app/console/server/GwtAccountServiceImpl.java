@@ -91,7 +91,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
 
-            AccountCreator accountCreator = accountFactory.newAccountCreator(parentAccountId,
+            AccountCreator accountCreator = accountFactory.newCreator(parentAccountId,
                     gwtAccountCreator.getAccountName());
 
             accountCreator.setOrganizationName(gwtAccountCreator.getOrganizationName());

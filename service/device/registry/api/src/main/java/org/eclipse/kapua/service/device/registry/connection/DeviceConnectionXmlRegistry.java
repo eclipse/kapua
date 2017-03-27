@@ -41,7 +41,7 @@ public class DeviceConnectionXmlRegistry {
      * @return
      */
     public DeviceConnection newDeviceConnection() {
-        return factory.newDeviceConnection();
+        return factory.newEntity(null);
     }
 
     /**
@@ -50,7 +50,7 @@ public class DeviceConnectionXmlRegistry {
      * @return
      */
     public DeviceConnectionListResult newDeviceConnectionListResult() {
-        return factory.newDeviceConnectionListResult();
+        return factory.newListResult();
     }
 
     public DeviceConnectionQuery newQuery() {

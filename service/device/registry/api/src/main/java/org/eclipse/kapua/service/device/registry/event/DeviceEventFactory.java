@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.device.registry.event;
 
 import java.util.Date;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface DeviceEventFactory extends KapuaObjectFactory {
+public interface DeviceEventFactory extends KapuaEntityFactory<DeviceEvent, DeviceEventCreator, DeviceEventQuery, DeviceEventListResult> {
 
     /**
      * Creates a new device event creator
@@ -35,25 +35,4 @@ public interface DeviceEventFactory extends KapuaObjectFactory {
      */
     DeviceEventCreator newCreator(KapuaId scopeId, KapuaId deviceId, Date receivedOn, String resource);
 
-    /**
-     * Creates a new device event query based on provided scope identifier
-     * 
-     * @param scopeId
-     * @return
-     */
-    DeviceEventQuery newQuery(KapuaId scopeId);
-
-    /**
-     * Creates a new {@link DeviceEvent}
-     * 
-     * @return
-     */
-    DeviceEvent newDeviceEvent();
-
-    /**
-     * Creates a new device event list result
-     * 
-     * @return
-     */
-    DeviceEventListResult newDeviceEventListResult();
 }

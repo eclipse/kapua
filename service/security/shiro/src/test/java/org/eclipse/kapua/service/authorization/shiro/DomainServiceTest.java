@@ -123,7 +123,7 @@ public class DomainServiceTest extends KapuaTest {
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainService domainService = locator.getService(DomainService.class);
 
-            long initialCount = domainService.count(domainFactory.newQuery());
+            long initialCount = domainService.count(domainFactory.newQuery(null));
 
             // Domain 1
             Set<Actions> domainActions = new HashSet<>();
@@ -147,7 +147,7 @@ public class DomainServiceTest extends KapuaTest {
 
             //
             // Test query
-            DomainQuery query = domainFactory.newQuery();
+            DomainQuery query = domainFactory.newQuery(null);
             DomainListResult result = domainService.query(query);
             long count = domainService.count(query);
 
@@ -157,7 +157,7 @@ public class DomainServiceTest extends KapuaTest {
 
             //
             // Test name filtered query
-            query = domainFactory.newQuery();
+            query = domainFactory.newQuery(null);
 
             query.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domain1.getName()));
             result = domainService.query(query);
@@ -170,7 +170,7 @@ public class DomainServiceTest extends KapuaTest {
 
             //
             // Test name filtered query
-            query = domainFactory.newQuery();
+            query = domainFactory.newQuery(null);
 
             query.setPredicate(new AttributePredicate<String>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
             result = domainService.query(query);

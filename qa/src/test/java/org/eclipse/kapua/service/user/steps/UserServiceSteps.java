@@ -376,7 +376,7 @@ public class UserServiceSteps extends KapuaTest {
     private AccountCreator accountCreatorCreator(String name, BigInteger scopeId) {
         AccountCreator accountCreator;
 
-        accountCreator = new AccountFactoryImpl().newAccountCreator(new KapuaEid(scopeId), name);
+        accountCreator = new AccountFactoryImpl().newCreator(new KapuaEid(scopeId), name);
         accountCreator.setOrganizationName("ACME Inc.");
         accountCreator.setOrganizationEmail("some@one.com");
 

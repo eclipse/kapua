@@ -58,6 +58,10 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
     }
+    
+    public CredentialCreatorImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
 
     @Override
     public KapuaId getUserId() {

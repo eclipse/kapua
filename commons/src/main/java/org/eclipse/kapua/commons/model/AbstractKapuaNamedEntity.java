@@ -30,8 +30,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 @SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEntity implements KapuaNamedEntity
-{
+public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEntity implements KapuaNamedEntity {
 
     @Basic
     @Column(name = "name")
@@ -40,9 +39,17 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
     /**
      * Constructor
      */
-    protected AbstractKapuaNamedEntity()
-    {
+    protected AbstractKapuaNamedEntity() {
         super();
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param scopeId
+     */
+    public AbstractKapuaNamedEntity(KapuaId scopeId) {
+        super(scopeId);
     }
 
     /**
@@ -52,21 +59,18 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
      * @param name
      */
     public AbstractKapuaNamedEntity(KapuaId scopeId,
-                                    String name)
-    {
+            String name) {
         super(scopeId);
         this.name = name;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 

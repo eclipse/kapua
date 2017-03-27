@@ -19,7 +19,7 @@ public class AccessTokenXmlRegistry {
     private final AccessTokenFactory factory = locator.getFactory(AccessTokenFactory.class);
     
     public AccessToken newAccessToken() {
-        return factory.newAccessToken();
+        return factory.newEntity(null);
     }
     
     public AccessTokenCreator newAccessTokenCreator() {

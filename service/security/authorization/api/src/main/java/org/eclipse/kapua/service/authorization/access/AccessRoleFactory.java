@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -21,43 +22,6 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0.0
  *
  */
-public interface AccessRoleFactory extends KapuaObjectFactory {
+public interface AccessRoleFactory extends KapuaEntityFactory<AccessRole, AccessRoleCreator, AccessRoleQuery, AccessRoleListResult> {
 
-    /**
-     * Instantiate a new {@link AccessRole} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessRole}.
-     * @since 1.0.0
-     */
-    public AccessRole newAccessRole(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link AccessRoleCreator} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessRoleCreator}.
-     * @since 1.0.0
-     */
-    public AccessRoleCreator newCreator(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link AccessRoleQuery} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessRoleQuery}.
-     * @since 1.0.0
-     */
-    public AccessRoleQuery newQuery(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link AccessRoleListResult} implementing object.
-     * 
-     * @return A instance of the implementing class of {@link AccessRoleListResult}.
-     * @since 1.0.0
-     */
-    public AccessRoleListResult newAccessRoleListResult();
 }

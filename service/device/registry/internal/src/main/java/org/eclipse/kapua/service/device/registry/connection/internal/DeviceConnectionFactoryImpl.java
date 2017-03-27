@@ -34,16 +34,6 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     }
 
     @Override
-    public DeviceConnection newDeviceConnection() {
-        return new DeviceConnectionImpl();
-    }
-
-    @Override
-    public DeviceConnectionListResult newDeviceConnectionListResult() {
-        return new DeviceConnectionListResultImpl();
-    }
-
-    @Override
     public DeviceConnectionQuery newQuery(KapuaId scopeId) {
         return new DeviceConnectionQueryImpl(scopeId);
     }
@@ -51,6 +41,16 @@ public class DeviceConnectionFactoryImpl implements DeviceConnectionFactory {
     @Override
     public DeviceConnectionSummary newConnectionSummary() {
         return new DeviceConnectionSummaryImpl();
+    }
+
+    @Override
+    public DeviceConnection newEntity(KapuaId scopeId) {
+        return new DeviceConnectionImpl(scopeId);
+    }
+
+    @Override
+    public DeviceConnectionListResult newListResult() {
+        return new DeviceConnectionListResultImpl();
     }
 
 }

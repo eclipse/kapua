@@ -27,7 +27,7 @@ public class CredentialXmlRegistry {
      * @return
      */
     public Credential newCredential() {
-        return factory.newCredential();
+        return factory.newEntity(null);
     }
 
     /**
@@ -36,7 +36,7 @@ public class CredentialXmlRegistry {
      * @return
      */
     public CredentialListResult newCredentialListResult() {
-        return factory.newCredentialListResult();
+        return factory.newListResult();
     }
 
     /**

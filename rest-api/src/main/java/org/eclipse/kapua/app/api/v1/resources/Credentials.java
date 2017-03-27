@@ -74,7 +74,7 @@ public class Credentials extends AbstractKapuaResource {
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
             @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit)
     {
-        CredentialListResult credentialListResult = credentialFactory.newCredentialListResult();
+        CredentialListResult credentialListResult = credentialFactory.newListResult();
         try {
             CredentialQuery query = credentialFactory.newQuery(scopeId);
 

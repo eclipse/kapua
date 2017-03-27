@@ -352,10 +352,10 @@ public class DeviceEventServiceTestSteps extends KapuaTest {
         DeviceEventQuery tmpQuery = null;
         DeviceEventListResult tmpList = null;
 
-        tmpEvent = eventFactory.newDeviceEvent();
+        tmpEvent = eventFactory.newEntity(rootScopeId);
         tmpCreator = eventFactory.newCreator(rootScopeId, new KapuaEid(BigInteger.valueOf(random.nextLong())), new Date(), "");
         tmpQuery = eventFactory.newQuery(rootScopeId);
-        tmpList = eventFactory.newDeviceEventListResult();
+        tmpList = eventFactory.newListResult();
 
         assertNotNull(tmpEvent);
         assertNotNull(tmpCreator);

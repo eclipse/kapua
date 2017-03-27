@@ -171,7 +171,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void countDomainEntries()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            count = domainService.count(domainFactory.newQuery());
+            count = domainService.count(domainFactory.newQuery(null));
             return null;
         });
     }
@@ -179,7 +179,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I query for domains with the name \"(.+)\"$")
     public void queryForNamedDomain(String name)
             throws KapuaException {
-        DomainQuery query = domainFactory.newQuery();
+        DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainList = domainService.query(query);
@@ -192,7 +192,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @When("^I query for domains with the service name \"(.+)\"$")
     public void queryForDomainsWithServiceName(String service_name)
             throws KapuaException {
-        DomainQuery query = domainFactory.newQuery();
+        DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, service_name));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainList = domainService.query(query);
