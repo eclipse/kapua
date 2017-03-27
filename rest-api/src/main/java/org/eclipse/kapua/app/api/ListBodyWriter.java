@@ -52,18 +52,18 @@ public class ListBodyWriter implements MessageBodyWriter<List<?>> {
             throws IOException, WebApplicationException {
         try {
             if (providers == null)
-                new WebApplicationException("Unable to find any provider.");
+                throw new WebApplicationException("Unable to find any provider.");
 
             ContextResolver<JAXBContext> cr = providers.getContextResolver(JAXBContext.class,
                     MediaType.APPLICATION_XML_TYPE);
             JAXBContext jaxbContext = cr.getContext(JAXBContext.class);
             if (jaxbContext == null)
-                new WebApplicationException("Unable to get a JAXBContext.");
+                throw new WebApplicationException("Unable to get a JAXBContext.");
 
             // serialize the entity myBean to the entity output stream
             jaxbContext.createMarshaller().marshal(t, entityStream);
         } catch (JAXBException e) {
-            new WebApplicationException(e);
+            throw new WebApplicationException(e);
         }
     }
 
