@@ -44,8 +44,8 @@ You can access the API using: http://localhost:8081
 
 It is also possible to use Tomcat as a web container. For this use the following run commands instead:
 
-    docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker -p 8080:8080 kapua/kapua-console
-    docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker -p 8081:8080 kapua/kapua-api
+    docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console
+    docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api
 
 Please note that in this case you also have to append `/console` and `/api` to the URL.
 
