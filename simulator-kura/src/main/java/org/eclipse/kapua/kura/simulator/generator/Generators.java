@@ -8,11 +8,12 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.kura.simulator.app.data;
+package org.eclipse.kapua.kura.simulator.generator;
+
+import static java.util.Collections.singletonMap;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -20,34 +21,47 @@ import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Descriptor;
 import org.eclipse.kapua.kura.simulator.app.Handler;
+import org.eclipse.kapua.kura.simulator.app.data.SimplePeriodicGenerator;
 
 public final class Generators {
 
     private Generators() {
     }
 
-    public static Function<Instant, Double> sine(final double amplitude, final double offset, final Duration period) {
+    public static Function<Instant, Double> sine(final Duration period, final double amplitude, final double offset, final Short shift) {
         final double freq = 1.0 / period.toMillis() * Math.PI * 2.0;
-        return (timestamp) -> Math.sin(freq * timestamp.toEpochMilli()) * amplitude + offset;
+        if (shift == null) {
+            return (timestamp) -> Math.sin(freq * timestamp.toEpochMilli()) * amplitude + offset;
+        } else {
+            final double radShift = Math.toRadians(shift);
+            return (timestamp) -> Math.sin(freq * timestamp.toEpochMilli() + radShift) * amplitude + offset;
+        }
+    }
+
+    public static Function<Instant, Map<String, Object>> fromSingle(final String name, final Function<Instant, Double> function) {
+        return function.andThen(value -> singletonMap(name, value));
     }
 
     public static Application simpleDataApplication(final String applicationId, final GeneratorScheduler scheduler, final String metricName,
             final Function<Instant, Double> metricFunction) {
-        return createApplication(applicationId, scheduler, "metrics", Collections.singletonMap(metricName, metricFunction));
+        return createApplication(applicationId, scheduler, "metrics", singletonMap(metricName, metricFunction));
     }
 
     public static Application createApplication(final String applicationId, final GeneratorScheduler scheduler, final String dataTopic,
             final String metricName, final Function<Instant, Double> metricFunction) {
-        return createApplication(applicationId, scheduler, dataTopic, Collections.singletonMap(metricName, metricFunction));
+        return createApplication(applicationId, scheduler, dataTopic, singletonMap(metricName, metricFunction));
     }
 
     public static Application createApplication(final String applicationId, final GeneratorScheduler scheduler, final String dataTopic,
             final Map<String, Function<Instant, Double>> generators) {
+
+        final Descriptor descriptor = new Descriptor(applicationId);
+
         return new Application() {
 
             @Override
             public Descriptor getDescriptor() {
-                return new Descriptor(applicationId);
+                return descriptor;
             }
 
             @Override

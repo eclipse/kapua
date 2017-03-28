@@ -15,6 +15,7 @@ import java.time.Instant;
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Handler;
 import org.eclipse.kapua.kura.simulator.app.Sender;
+import org.eclipse.kapua.kura.simulator.generator.GeneratorScheduler;
 import org.eclipse.kapua.kura.simulator.topic.Topic;
 
 public abstract class AbstractSingleTopicPeriodicGenerator implements Handler {
