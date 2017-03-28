@@ -153,7 +153,7 @@ public class SimulatorRunner {
         final String basename = replace(cli.getOptionValue('n', env("KSIM_BASE_NAME", "sim-")));
         final String nameFactoryName = cli.getOptionValue("name-factory", env("KSIM_NAME_FACTORY", null));
         final int count = Integer.parseInt(replace(cli.getOptionValue('c', env("KSIM_NUM_GATEWAYS", "1"))));
-        final String brokerHost = replace(cli.getOptionValue("bh"));
+        final String brokerHost = replace(cli.getOptionValue("h"));
         final String broker = replace(cli.getOptionValue('b', createBrokerUrl(Optional.ofNullable(brokerHost))));
         final String accountName = replace(cli.getOptionValue('a', env("KSIM_ACCOUNT_NAME", "kapua-sys")));
         final long shutdownAfter = Long
