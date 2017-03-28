@@ -137,9 +137,6 @@ public class UserServiceSteps extends KapuaTest {
         enableH2Connection();
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
-        // Create system configuration tables
-        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-
         // Inject actual implementation of UserService
         userService = new UserServiceImpl();
         MockedLocator mockLocator = (MockedLocator) locator;
