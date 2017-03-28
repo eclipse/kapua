@@ -18,6 +18,7 @@ import java.util.Objects;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -30,7 +31,9 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
 
@@ -41,7 +44,7 @@ import org.eclipse.kapua.service.user.UserType;
  *
  */
 @KapuaProvider
-public class UserServiceImpl extends AbstractKapuaConfigurableService implements UserService {
+public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
 
@@ -51,7 +54,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
      * Constructor
      */
     public UserServiceImpl() {
-        super(UserService.class.getName(), userDomain, UserEntityManagerFactory.getInstance());
+        super(UserService.class.getName(), userDomain, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
     }
 
     @Override
@@ -70,6 +73,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableService implements
             ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "externalId");
         } else {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "externalId");
+        }
+        
+        if (allowedChildEntities(userCreator.getScopeId()) <= 0) {
+            throw new KapuaIllegalArgumentException("scopeId", "max users reached");
         }
 
         //

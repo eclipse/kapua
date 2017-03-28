@@ -19,6 +19,25 @@
         
         <Icon resource="OSGI-INF/user-service.png" size="32"/>
 
+		<AD id="infiniteChildEntities"
+            name="infiniteChildEntities"
+            type="Boolean"
+            cardinality="0"
+            required="true"
+            default="false"
+            description="Whether to allow infinite users for this account.">
+        </AD>
+
+        <AD id="maxNumberChildEntities"  
+            name="maxNumberChildEntities"
+            type="Integer"
+            cardinality="0" 
+            required="true"
+            default="0" 
+            min="0"
+            description="Maximum number of users that are allowed to be created for this account.">
+        </AD>
+        
         <AD id="lockoutPolicy.enabled"  
             name="lockoutPolicy.enabled"
             type="Boolean"
