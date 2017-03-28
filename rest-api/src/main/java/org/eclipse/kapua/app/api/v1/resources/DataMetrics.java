@@ -27,7 +27,6 @@ import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
@@ -57,6 +56,12 @@ public class DataMetrics extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results.
+     * @param channel
+     *            The channel id to filter results. It allows '#' wildcard in last channel level
+     * @param name
+     *            The metric name to filter results
      * @param offset
      *            The result set offset.
      * @param limit
@@ -72,8 +77,8 @@ public class DataMetrics extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public MetricInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
-            @ApiParam(value = "The channel id to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId,
+            @ApiParam(value = "The channel id to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
             @ApiParam(value = "The metric name to filter results") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
@@ -85,17 +90,17 @@ public class DataMetrics extends AbstractKapuaResource {
                 ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
                 andPredicate.getPredicates().add(channelPredicate);
             }
-            
+
             if (!Strings.isNullOrEmpty(clientId)) {
                 TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
-            
+
             if (!Strings.isNullOrEmpty(name)) {
                 TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.NAME_FULL, name);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
-            
+
             MetricInfoQuery query = datastoreObjectFactory.newMetricInfoQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
