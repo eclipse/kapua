@@ -32,7 +32,6 @@ public class SimplePeriodicGenerator extends AbstractPeriodicGenerator {
 
     @Override
     protected void update(final Instant timestamp, final Sender sender) {
-
         final Map<String, Object> metrics = generateMetrics(timestamp);
 
         final Builder builder = KuraPayloadProto.KuraPayload.newBuilder();
