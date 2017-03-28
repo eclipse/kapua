@@ -1,0 +1,162 @@
+###############################################################################
+# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Eurotech - initial API and implementation
+#
+###############################################################################
+
+Feature: Group Service CRUD tests
+
+Scenario: Count groups in a blank database
+	The default group table must be empty.
+	
+	When I count the group entries in the database
+	Then I get 0 as result
+
+Scenario: Regular group in root scope
+	Create a regular group entry. The newly created entry must match the 
+	creator parameters.
+	 
+	Given I create the group
+	|scope |name        |
+	|0     |test_name_1 |
+	Then A group was created
+	And The group matches the creator
+
+Scenario: Regular group in random scope
+	Create a regular group entry. The newly created entry must match the 
+	creator parameters.
+	 
+	Given I create the group
+	|scope |name        |
+	|1234  |test_name_1 |
+	Then A group was created
+	And The group matches the creator
+
+Scenario: Duplicate group name in root scope
+	Create a regular group entry. The newly created entry must match the 
+	creator parameters. Try to create a second group entry with the same name.
+	An exception should be thrown.
+	 
+	Given I create the group
+	|scope |name        |
+	|0     |test_name_1 |
+	Then A group was created
+	And The group matches the creator
+	When I create the group
+	|scope |name        |
+	|0     |test_name_1 |
+	Then An exception was thrown
+	
+Scenario: Group with a null name
+	Try to create a second group entry with a null name.
+	An exception should be thrown.
+	 
+	Given I create the group
+	|scope |
+	|1234  |
+	Then An exception was thrown
+
+Scenario: Update a group entry in the database
+	Create a regular group entry. Change the entry name. The updated entry 
+	parameters should match the original group.
+	 
+	Given I create the group
+	|scope |name        |
+	|0     |test_name_1 |
+	Then A group was created
+	And The group matches the creator
+	When I update the group name to "test_name_new"
+	Then The group was correctly updated
+	
+Scenario: Update a group entry with a false ID
+	Create a regular group entry. Modify the group object ID to a random value.
+	Trying to update such an group object should raise an exception.
+	 
+	Given I create the group
+	|scope |name        |
+	|0     |test_name_1 |
+	Then A group was created
+	And The group matches the creator
+	When I update the group with an incorrect ID
+	Then An exception was thrown
+
+Scenario: Find a group entry in the database
+	It must be possible to find a specific group entry based on the group 
+	entry ID.
+	
+	Given I create the group	
+	|scope |name        |
+	|0     |test_name_1 |
+	Then A group was created
+	And The group matches the creator
+	When I search for the last created group
+	Then The group was correctly found
+
+Scenario: Delete a group from the database
+	It must be possible to delete a group entry from the database. In this test 
+	the last created entry is deleted.
+
+	Given I create the groups
+	|scope |name        |
+	|0     |test_name_1 |
+	|0     |test_name_2 |
+	When I delete the last created group
+	And I search for the last created group
+	Then No group was found
+
+Scenario: Delete a group from the database - Unknown group ID
+	Trying to delete a group record that does not exist (unknown group ID) should
+	raise an exception.
+	
+	When I try to delete a random group id
+	Then An exception was thrown
+
+Scenario: Count groups
+	It must be possible to count all the groups belonging to a certain scope.
+
+	Given I create the groups
+	|scope |name        |
+	|0     |test_name_1 |
+	|1     |test_name_2 |
+	|2     |test_name_3 |
+	|2     |test_name_4 |
+	|2     |test_name_5 |
+	|3     |test_name_6 |
+	|3     |test_name_7 |
+	|0     |test_name_8 |
+	When I count all the groups in scope 2
+	Then I get 3 as result
+	When I count all the groups in scope 3
+	Then I get 2 as result
+	When I count all the groups in scope 15
+	Then I get 0 as result
+
+Scenario: Query for a specific group by name
+	It must be possible to query the database for a specific group by name. Since the 
+	scope ID / name pairs must be unique, only a single entry can be returned by such a query.
+
+	Given I create the groups
+	|scope |name        |
+	|0     |test_name_1 |
+	|1     |test_name_2 |
+	|2     |test_name_1 |
+	|2     |test_name_4 |
+	|2     |test_name_5 |
+	|3     |test_name_6 |
+	|3     |test_name_7 |
+	|0     |test_name_8 |
+	When I query for the group "test_name_1" in scope 0
+	Then I get 1 as result
+	And The group name is "test_name_1"
+	When I query for the group "test_name_1" in scope 2
+	Then I get 1 as result
+	And The group name is "test_name_1"
+	When I query for the group "test_name_15" in scope 1
+	Then I get 0 as result

@@ -12,19 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
-import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
@@ -43,6 +41,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Implementation of Gherkin steps used in DomainService.feature scenarios.
@@ -52,12 +51,11 @@ import cucumber.api.java.en.When;
  *
  */
 
+@ScenarioScoped
 public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @SuppressWarnings("unused")
     private static final Logger s_logger = LoggerFactory.getLogger(DomainServiceTestSteps.class);
-
-    KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
     // Various domain related service references
     DomainService domainService = null;
@@ -68,28 +66,21 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     // Currently executing scenario.
     Scenario scenario;
 
-    // Domain service related objects
-    Domain domain = null;
-    DomainCreator domainCreator = null;
-    DomainListResult domainList = null;
-    KapuaId domainId = null;
+    // Test data scratchpads
+    CommonTestData commonData = null;
+    DomainServiceTestData domainData = null;
 
-    // Check if exception was fired in step.
-    boolean exceptionCaught = false;
-
-    // Interstep data scratchpads
-    int intVal;
-    String strVal;
-    long count;
-    long initial_count;
-    KapuaId lastId;
+    @Inject
+    public DomainServiceTestSteps(DomainServiceTestData domainData, CommonTestData commonData) {
+        this.domainData = domainData;
+        this.commonData = commonData;
+    }
 
     // Setup and tear-down steps
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
         this.scenario = scenario;
-        exceptionCaught = false;
 
         // Instantiate all the services and factories that are required by the tests
         domainService = new DomainServiceImpl();
@@ -101,6 +92,10 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         // test case executions!
         dropDatabase();
         setupDatabase();
+
+        // Clean up the test data scratchpads
+        commonData.clearData();
+        domainData.clearData();
     }
 
     // *************************************
@@ -111,25 +106,25 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void createAListOfDomains(List<CucDomain> domains)
             throws KapuaException {
         for (CucDomain tmpDom : domains) {
-            exceptionCaught = false;
+            commonData.exceptionCaught = false;
             tmpDom.doParse();
-            domainCreator = domainFactory.newCreator(tmpDom.getName(), tmpDom.getServiceName());
+            domainData.domainCreator = domainFactory.newCreator(tmpDom.getName(), tmpDom.getServiceName());
             if (tmpDom.getActionSet() != null) {
-                domainCreator.setActions(tmpDom.getActionSet());
+                domainData.domainCreator.setActions(tmpDom.getActionSet());
             }
             KapuaSecurityUtils.doPrivileged(() -> {
                 try {
-                    domain = domainService.create(domainCreator);
+                    domainData.domain = domainService.create(domainData.domainCreator);
                 } catch (KapuaException ex) {
-                    exceptionCaught = true;
+                    commonData.exceptionCaught = true;
                     return null;
                 }
-                assertNotNull(domain);
-                assertNotNull(domain.getId());
-                domainId = domain.getId();
+                assertNotNull(domainData.domain);
+                assertNotNull(domainData.domain.getId());
+                domainData.domainId = domainData.domain.getId();
                 return null;
             });
-            if (exceptionCaught) {
+            if (commonData.exceptionCaught) {
                 break;
             }
         }
@@ -139,7 +134,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void findDomainByRememberedId()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            domain = domainService.find(null, domainId);
+            domainData.domain = domainService.find(null, domainData.domainId);
             return null;
         });
     }
@@ -148,7 +143,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void deleteLastCreatedDomain()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainService.delete(null, domainId);
+            domainService.delete(null, domainData.domainId);
             return null;
         });
     }
@@ -158,10 +153,10 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                exceptionCaught = false;
+                commonData.exceptionCaught = false;
                 domainService.delete(null, generateId());
             } catch (KapuaException ex) {
-                exceptionCaught = true;
+                commonData.exceptionCaught = true;
             }
             return null;
         });
@@ -171,7 +166,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void countDomainEntries()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            count = domainService.count(domainFactory.newQuery(null));
+            commonData.count = domainService.count(domainFactory.newQuery(null));
             return null;
         });
     }
@@ -182,11 +177,11 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainList = domainService.query(query);
+            domainData.domainList = domainService.query(query);
             return null;
         });
-        assertNotNull(domainList);
-        count = domainList.getSize();
+        assertNotNull(domainData.domainList);
+        commonData.count = domainData.domainList.getSize();
     }
 
     @When("^I query for domains with the service name \"(.+)\"$")
@@ -195,35 +190,35 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, service_name));
         KapuaSecurityUtils.doPrivileged(() -> {
-            domainList = domainService.query(query);
+            domainData.domainList = domainService.query(query);
             return null;
         });
-        assertNotNull(domainList);
-        count = domainList.getSize();
+        assertNotNull(domainData.domainList);
+        commonData.count = domainData.domainList.getSize();
     }
 
     @When("^I search for the domains for the service \"(.+)\"$")
     public void findDomainsByServiceName(String serviceName)
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            domain = domainService.findByServiceName(serviceName);
+            domainData.domain = domainService.findByServiceName(serviceName);
             return null;
         });
     }
 
     @Then("^This is the initial count$")
     public void setInitialCount() {
-        initial_count = count;
+        domainData.initial_count = commonData.count;
     }
 
     @Then("^A domain was created$")
     public void checkDomainNotNull() {
-        assertNotNull(domain);
+        assertNotNull(domainData.domain);
     }
 
     @Then("^There is no domain$")
     public void checkDomainIsNull() {
-        assertNull(domain);
+        assertNull(domainData.domain);
     }
 
     // The following test step is more of a filler. The only purpose is to achieve some coverage
@@ -276,16 +271,16 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Then("^The domain matches the creator$")
     public void checkDomainAgainstCreator() {
-        assertNotNull(domain);
-        assertNotNull(domain.getId());
-        assertNotNull(domainCreator);
-        assertEquals(domainCreator.getName(), domain.getName());
-        assertEquals(domainCreator.getServiceName(), domain.getServiceName());
-        if (domainCreator.getActions() != null) {
-            assertNotNull(domain.getActions());
-            assertEquals(domainCreator.getActions().size(), domain.getActions().size());
-            for (Actions a : domainCreator.getActions()) {
-                assertTrue(domain.getActions().contains(a));
+        assertNotNull(domainData.domain);
+        assertNotNull(domainData.domain.getId());
+        assertNotNull(domainData.domainCreator);
+        assertEquals(domainData.domainCreator.getName(), domainData.domain.getName());
+        assertEquals(domainData.domainCreator.getServiceName(), domainData.domain.getServiceName());
+        if (domainData.domainCreator.getActions() != null) {
+            assertNotNull(domainData.domain.getActions());
+            assertEquals(domainData.domainCreator.getActions().size(), domainData.domain.getActions().size());
+            for (Actions a : domainData.domainCreator.getActions()) {
+                assertTrue(domainData.domain.getActions().contains(a));
             }
         }
     }
@@ -299,40 +294,21 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
         tmpDom.doParse();
         if (tmpDom.getName() != null) {
-            assertEquals(tmpDom.getName(), domain.getName());
+            assertEquals(tmpDom.getName(), domainData.domain.getName());
         }
         if (tmpDom.getServiceName() != null) {
-            assertEquals(tmpDom.getServiceName(), domain.getServiceName());
+            assertEquals(tmpDom.getServiceName(), domainData.domain.getServiceName());
         }
         if (tmpDom.getActionSet() != null) {
-            assertEquals(tmpDom.getActionSet().size(), domain.getActions().size());
+            assertEquals(tmpDom.getActionSet().size(), domainData.domain.getActions().size());
             for (Actions a : tmpDom.getActionSet()) {
-                assertTrue(domain.getActions().contains(a));
+                assertTrue(domainData.domain.getActions().contains(a));
             }
         }
     }
 
-    @Then("^There (?:is|are) (\\d+) domain(?:|s)$")
-    public void checkCountResult(int cnt) {
-        assertEquals(cnt, count);
-    }
-
     @Then("^(\\d+) more domains (?:was|were) created$")
     public void checkIncreasedCountResult(int cnt) {
-        assertEquals(cnt, count - initial_count);
-    }
-
-    @Then("^An exception was caught$")
-    public void exceptionWasCaught() {
-        assertTrue(exceptionCaught);
-    }
-
-    // *******************
-    // * Private Helpers *
-    // *******************
-
-    // Generate a random KapuaId
-    private KapuaId generateId() {
-        return new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        assertEquals(cnt, commonData.count - domainData.initial_count);
     }
 }
