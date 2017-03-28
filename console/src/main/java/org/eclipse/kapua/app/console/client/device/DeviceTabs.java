@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
+import org.eclipse.kapua.app.console.client.device.deviceGroup.DeviceGroupTabItem;
 import org.eclipse.kapua.app.console.client.device.management.packages.DeviceTabPackages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
@@ -44,7 +45,8 @@ public class DeviceTabs extends LayoutContainer {
     private TabItem m_tabPackages;
     private TabItem m_tabBundles;
     private TabItem m_tabConfiguration;
-
+    private TabItem m_tabDeviceGroups;
+    
     private TabItem m_tabCommand;
 
     private DeviceTabProfile m_deviceProfileTab;
@@ -53,6 +55,8 @@ public class DeviceTabs extends LayoutContainer {
     private DeviceTabBundles m_deviceBundlesTab;
     private DeviceTabConfiguration m_deviceConfigTab;
     private DeviceTabCommand m_deviceCommandTab;
+    private DeviceGroupTabItem m_deviceGroupTabItem;
+    
 
     public DeviceTabs(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
         m_devicesTable = devicesTable;
@@ -64,7 +68,8 @@ public class DeviceTabs extends LayoutContainer {
         m_devicePackagesTab = new DeviceTabPackages(m_currentSession, this);
         m_deviceBundlesTab = new DeviceTabBundles(m_currentSession, this);
         m_deviceConfigTab = new DeviceTabConfiguration(m_currentSession);
-
+        m_deviceGroupTabItem = new DeviceGroupTabItem(m_currentSession);
+        
         m_deviceCommandTab = new DeviceTabCommand(m_currentSession);
     }
 
@@ -133,7 +138,8 @@ public class DeviceTabs extends LayoutContainer {
         m_deviceBundlesTab.setDevice(selectedDevice);
         m_deviceConfigTab.setDevice(selectedDevice);
         m_deviceCommandTab.setDevice(selectedDevice);
-
+        m_deviceGroupTabItem.setSelectedDevice(selectedDevice);
+        
         if (m_tabsPanel.getSelectedItem() == m_tabProfile) {
             m_deviceProfileTab.refresh();
         } else if (m_tabsPanel.getSelectedItem() == m_tabHistory) {
@@ -146,6 +152,8 @@ public class DeviceTabs extends LayoutContainer {
             m_devicePackagesTab.refresh();
         } else if (m_tabsPanel.getSelectedItem() == m_tabBundles) {
             m_deviceBundlesTab.refresh();
+        }else if (m_tabsPanel.getSelectedItem()== m_tabDeviceGroups) {
+            m_deviceGroupTabItem.refresh();
         }
     }
 
@@ -233,6 +241,20 @@ public class DeviceTabs extends LayoutContainer {
             }
         });
         m_tabsPanel.add(m_tabCommand);
+        
+        m_tabDeviceGroups = new TabItem(MSGS.tabGroups(), new KapuaIcon(IconSet.OBJECT_GROUP));
+        m_tabDeviceGroups.setBorders(false);
+        m_tabDeviceGroups.setLayout(new FitLayout());
+        m_tabDeviceGroups.add(m_deviceGroupTabItem);
+        m_tabDeviceGroups.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            @Override
+            public void handleEvent(ComponentEvent be) {
+              m_deviceGroupTabItem.refresh();
+                
+            }
+        });
+        m_tabsPanel.add(m_tabDeviceGroups);
 
         add(m_tabsPanel);
     }

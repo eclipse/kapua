@@ -55,6 +55,9 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.devicegroup.DevGroupListResult;
+import org.eclipse.kapua.service.devicegroup.DeviceGroup;
+import org.eclipse.kapua.service.devicegroup.DeviceGroupService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
@@ -392,7 +395,14 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
+            DeviceGroupService devGrpService = locator.getService(DeviceGroupService.class);
             Device d = drs.findByClientId(scopeId, clientId);
+            DevGroupListResult deviceGroupListResult = devGrpService.findByDeviceId(scopeId, d.getId());
+            if (deviceGroupListResult != null && !deviceGroupListResult.isEmpty()) {
+            for (DeviceGroup pom : deviceGroupListResult.getItems()){
+                devGrpService.delete(pom);
+            }
+            }
             drs.delete(d.getScopeId(), d.getId());
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

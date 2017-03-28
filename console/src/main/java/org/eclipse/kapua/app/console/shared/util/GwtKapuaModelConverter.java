@@ -18,6 +18,7 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import org.eclipse.kapua.app.console.client.device.deviceGroup.GwtDeviceGroupQuery;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
@@ -90,6 +91,8 @@ import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConne
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
+import org.eclipse.kapua.service.devicegroup.DevGroupQuery;
+import org.eclipse.kapua.service.devicegroup.DeviceGroupFactory;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.internal.UserDomain;
@@ -145,6 +148,19 @@ public class GwtKapuaModelConverter {
         groupQuery.setLimit(loadConfig.getLimit());
 
         return groupQuery;
+    }
+    
+    public static DevGroupQuery convertDeviceGroupQuery(PagingLoadConfig loadConfig, GwtDeviceGroupQuery gwtDeviceGroupQuery){
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceGroupFactory factory = locator.getFactory(DeviceGroupFactory.class);
+        DevGroupQuery devQuery = factory.newQuery(convert(gwtDeviceGroupQuery.getScopeId()));
+        if (gwtDeviceGroupQuery.getDevId() != null && gwtDeviceGroupQuery.getGroupId() != null) {
+            devQuery.setPredicate(new AttributePredicate<String>("devId", gwtDeviceGroupQuery.getDevId(), Operator.LIKE));            
+        }
+        devQuery.setOffset(loadConfig.getOffset());
+        devQuery.setLimit(loadConfig.getLimit());
+        
+        return devQuery;
     }
 
     public static AccessRoleQuery convertAccessRoleQuery(PagingLoadConfig pagingLoadConfig,

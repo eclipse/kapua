@@ -93,6 +93,16 @@
             <artifactId>kapua-device-configuration-internal</artifactId>
         </dependency>
         <dependency>
+        	<groupId>org.eclipse.kapua</groupId>
+        	<artifactId>kapua-device-groups-internal</artifactId>
+        	<version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.eclipse.kapua</groupId>
+        	<artifactId>kapua-device-groups-api</artifactId>
+        	<version>0.2.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-packages-internal</artifactId>
         </dependency>
@@ -250,6 +260,7 @@
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDeviceGroupMessages</i18nMessagesBundle>
                     	<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
 
