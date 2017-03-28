@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.main;
 
+import static ch.qos.logback.classic.Level.ALL;
+import static ch.qos.logback.classic.Level.INFO;
+import static ch.qos.logback.classic.Level.WARN;
+import static org.apache.commons.cli.Option.builder;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +27,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 import org.eclipse.kapua.kura.simulator.MqttAsyncTransport;
 import org.eclipse.kapua.kura.simulator.Simulator;
@@ -35,6 +43,12 @@ import org.eclipse.scada.utils.str.StringReplacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.layout.TTLLLayout;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 
 /**
  * This is a main class running a simple default simulator setup with multiple
@@ -49,15 +63,91 @@ public class SimulatorRunner {
         toInfinityAndBeyond();
 
         final Options opts = new Options();
-        opts.addOption("n", "basename", true, "The base name of the simulator instance");
-        opts.addOption(null, "name-factory", true, "The name factory to use");
-        opts.addOption("c", "count", true, "The number of instances to start");
-        opts.addOption("h", "broker-host", true, "The broker's host");
-        opts.addOption("b", "broker", true, "The URL to the broker");
-        opts.addOption("a", "account-name", true, "The name of the account");
-        opts.addOption("s", "shutdown", true, "Shutdown simulator after x seconds");
 
-        final CommandLine cli = new DefaultParser().parse(opts, args);
+        opts.addOption(
+                builder("n")
+                        .longOpt("basename")
+                        .hasArg().argName("BASENAME")
+                        .desc("The base name of the simulator instance")
+                        .build());
+
+        opts.addOption(
+                builder()
+                        .longOpt("name-factory")
+                        .hasArg().argName("FACTORY")
+                        .desc("The name factory to use")
+                        .build());
+
+        opts.addOption(
+                builder("c")
+                        .longOpt("count")
+                        .hasArg().argName("COUNT")
+                        .type(Integer.class)
+                        .desc("The number of instances to start")
+                        .build());
+
+        opts.addOption(
+                builder("a")
+                        .longOpt("account-name")
+                        .hasArg().argName("NAME")
+                        .desc("The name of the account (defaults to 'kapua-sys')")
+                        .build());
+
+        opts.addOption(
+                builder("s")
+                        .longOpt("seconds")
+                        .hasArg().argName("SECONDS")
+                        .type(Long.class)
+                        .desc("Shutdown simulator after <SECONDS> seconds")
+                        .build());
+
+        opts.addOption("?", "help", false, null);
+
+        {
+            final OptionGroup broker = new OptionGroup();
+            broker.setRequired(false);
+
+            broker.addOption(
+                    builder("h")
+                            .longOpt("broker-host")
+                            .hasArg().argName("HOST")
+                            .desc("Only the hostname of the broker, used for building the full URL")
+                            .build());
+            broker.addOption(
+                    builder("b")
+                            .longOpt("broker")
+                            .hasArg().argName("URL")
+                            .desc("The full URL to the broker").build());
+
+            opts.addOptionGroup(broker);
+        }
+
+        {
+            final OptionGroup logging = new OptionGroup();
+            logging.setRequired(false);
+
+            logging.addOption(builder("q").longOpt("quiet").desc("Suppress output").build());
+            logging.addOption(builder("v").longOpt("verbose").desc("Show more output").build());
+            logging.addOption(builder("d").longOpt("debug").desc("Show debug output").build());
+
+            opts.addOptionGroup(logging);
+        }
+
+        final CommandLine cli;
+        try {
+            cli = new DefaultParser().parse(opts, args);
+        } catch (final ParseException e) {
+            System.err.println(e.getLocalizedMessage());
+            System.exit(-1);
+            return;
+        }
+
+        if (cli.hasOption('?')) {
+            showHelp(opts);
+            System.exit(0);
+        }
+
+        setupLogging(cli);
 
         final String basename = replace(cli.getOptionValue('n', env("KSIM_BASE_NAME", "sim-")));
         final String nameFactoryName = cli.getOptionValue("name-factory", env("KSIM_NAME_FACTORY", null));
@@ -111,6 +201,15 @@ public class SimulatorRunner {
         }
 
         logger.info("Exiting...");
+    }
+
+    private static void showHelp(final Options opts) {
+        final HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("SimulatorRunner",
+                "Run Kura gateway simulator\n\n",
+                opts,
+                "\nThis application is the default main entry point for this library. Other entry points may be available.",
+                true);
     }
 
     private static Optional<NameFactory> createNameFactory(final String nameFactoryName) throws Exception {
@@ -216,5 +315,42 @@ public class SimulatorRunner {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
         java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
+    }
+
+    private static void setupLogging(final CommandLine cli) {
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        // reset first
+
+        context.reset();
+
+        // now configure
+
+        final ConsoleAppender<ILoggingEvent> consoleAdapter = new ConsoleAppender<>();
+        consoleAdapter.setContext(context);
+        consoleAdapter.setName("console");
+        final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
+        encoder.setContext(context);
+
+        final TTLLLayout layout = new TTLLLayout();
+
+        layout.setContext(context);
+        layout.start();
+        encoder.setLayout(layout);
+
+        consoleAdapter.setEncoder(encoder);
+        consoleAdapter.start();
+
+        final ch.qos.logback.classic.Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+        if (cli.hasOption("d")) {
+            rootLogger.setLevel(ALL);
+        } else if (cli.hasOption("v")) {
+            rootLogger.setLevel(INFO);
+        } else if (cli.hasOption("q")) {
+            rootLogger.setLevel(WARN);
+        } else {
+            rootLogger.setLevel(INFO);
+        }
+        rootLogger.addAppender(consoleAdapter);
     }
 }
