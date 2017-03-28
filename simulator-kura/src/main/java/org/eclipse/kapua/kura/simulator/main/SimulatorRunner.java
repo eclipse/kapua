@@ -13,6 +13,7 @@ package org.eclipse.kapua.kura.simulator.main;
 import static ch.qos.logback.classic.Level.ALL;
 import static ch.qos.logback.classic.Level.INFO;
 import static ch.qos.logback.classic.Level.WARN;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.cli.Option.builder;
 
 import java.util.HashSet;
@@ -193,7 +194,7 @@ public class SimulatorRunner {
                 close.add(simulator);
             }
 
-            Thread.sleep(shutdownAfter * 1_000L);
+            Thread.sleep(SECONDS.toMillis(shutdownAfter));
             logger.info("Bye bye...");
         } finally {
             downloadExecutor.shutdown();
