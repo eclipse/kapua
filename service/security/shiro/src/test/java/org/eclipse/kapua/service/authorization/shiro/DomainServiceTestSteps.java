@@ -166,7 +166,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void countDomainEntries()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            commonData.count = domainService.count(domainFactory.newQuery());
+            commonData.count = domainService.count(domainFactory.newQuery(null));
             return null;
         });
     }
