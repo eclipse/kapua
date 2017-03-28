@@ -21,7 +21,7 @@ import org.eclipse.kapua.kura.simulator.payload.Metrics;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
 
-public class SimplePeriodicGenerator extends AbstractPeriodicGenerator {
+public class SimplePeriodicGenerator extends AbstractSingleTopicPeriodicGenerator {
 
     private final Map<String, Function<Instant, Double>> generators;
 
