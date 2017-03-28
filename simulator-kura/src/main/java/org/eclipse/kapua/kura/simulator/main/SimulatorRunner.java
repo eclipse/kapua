@@ -52,7 +52,7 @@ public class SimulatorRunner {
         opts.addOption("n", "basename", true, "The base name of the simulator instance");
         opts.addOption(null, "name-factory", true, "The name factory to use");
         opts.addOption("c", "count", true, "The number of instances to start");
-        opts.addOption("bh", "brokerHost", true, "The broker's host");
+        opts.addOption("h", "broker-host", true, "The broker's host");
         opts.addOption("b", "broker", true, "The URL to the broker");
         opts.addOption("a", "account-name", true, "The name of the account");
         opts.addOption("s", "shutdown", true, "Shutdown simulator after x seconds");
@@ -152,7 +152,7 @@ public class SimulatorRunner {
         }
     }
 
-    private static String createBrokerUrl(Optional<String> hostFromCli) {
+    private static String createBrokerUrl(final Optional<String> hostFromCli) {
         final String broker = System.getenv("KSIM_BROKER_URL");
         if (broker != null && !broker.isEmpty()) {
             return broker;
