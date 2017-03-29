@@ -24,6 +24,7 @@
         <class>org.eclipse.kapua.service.device.registry.internal.DeviceImpl</class>
         <class>org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl</class>
         <class>org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl</class>
+        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
          
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
