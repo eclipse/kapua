@@ -57,6 +57,10 @@ public class DataChannels extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results.
+     * @param name
+     *            The channel name to filter results. It allows '#' wildcard in last channel level
      * @param offset
      *            The result set offset.
      * @param limit
