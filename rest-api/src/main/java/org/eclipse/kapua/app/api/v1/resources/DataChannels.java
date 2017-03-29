@@ -28,7 +28,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
@@ -88,12 +87,12 @@ public class DataChannels extends AbstractKapuaResource {
                 TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
-            
+
             if (!Strings.isNullOrEmpty(name)) {
                 ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(name);
                 andPredicate.getPredicates().add(channelPredicate);
             }
-            
+
             ChannelInfoQuery query = datastoreObjectFactory.newChannelInfoQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
