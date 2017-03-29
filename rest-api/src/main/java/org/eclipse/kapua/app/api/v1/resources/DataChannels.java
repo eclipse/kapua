@@ -27,9 +27,18 @@ import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.MetricInfoField;
+import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
+import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
+import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+
+import com.google.common.base.Strings;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,13 +72,26 @@ public class DataChannels extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ChannelInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId,
+            @ApiParam(value = "The channel name to filter results. It allows '#' wildcard in last channel level") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         ChannelInfoListResult channelInfoListResult = datastoreObjectFactory.newChannelInfoListResult();
         try {
+            AndPredicate andPredicate = new AndPredicateImpl();
+            if (!Strings.isNullOrEmpty(clientId)) {
+                TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+                andPredicate.getPredicates().add(clientIdPredicate);
+            }
+            
+            if (!Strings.isNullOrEmpty(name)) {
+                ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(name);
+                andPredicate.getPredicates().add(channelPredicate);
+            }
+            
             ChannelInfoQuery query = datastoreObjectFactory.newChannelInfoQuery(scopeId);
-
+            query.setPredicate(andPredicate);
             query.setOffset(offset);
             query.setLimit(limit);
 

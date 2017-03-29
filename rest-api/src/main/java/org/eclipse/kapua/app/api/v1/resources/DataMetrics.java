@@ -78,7 +78,7 @@ public class DataMetrics extends AbstractKapuaResource {
     public MetricInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId,
-            @ApiParam(value = "The channel id to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
+            @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
             @ApiParam(value = "The metric name to filter results") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
@@ -86,14 +86,14 @@ public class DataMetrics extends AbstractKapuaResource {
         MetricInfoListResult metricInfoListResult = datastoreObjectFactory.newMetricInfoListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
-            if (!Strings.isNullOrEmpty(channel)) {
-                ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
-                andPredicate.getPredicates().add(channelPredicate);
-            }
-
             if (!Strings.isNullOrEmpty(clientId)) {
                 TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
+            }
+
+            if (!Strings.isNullOrEmpty(channel)) {
+                ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
+                andPredicate.getPredicates().add(channelPredicate);
             }
 
             if (!Strings.isNullOrEmpty(name)) {
