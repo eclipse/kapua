@@ -75,8 +75,8 @@ public class DataChannels extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ChannelInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
-            @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId,
-            @ApiParam(value = "The channel name to filter results. It allows '#' wildcard in last channel level") @QueryParam("name") String name,
+            @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
+            @ApiParam(value = "The channel name to filter results. It allows '#' wildcard in last channel level") @QueryParam("name") String name, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
