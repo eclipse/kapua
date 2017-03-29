@@ -495,6 +495,7 @@ public class KapuaGwtModelConverter {
         gwtDevice.setDisplayName(device.getDisplayName());
         gwtDevice.setModelId(device.getModelId());
         gwtDevice.setSerialNumber(device.getSerialNumber());
+        gwtDevice.setGroupId(convert(device.getGroupId()));
         gwtDevice.setFirmwareVersion(device.getFirmwareVersion());
         gwtDevice.setBiosVersion(device.getBiosVersion());
         gwtDevice.setOsVersion(device.getOsVersion());

@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.AddButton;
 import org.eclipse.kapua.app.console.client.ui.button.Button;
 import org.eclipse.kapua.app.console.client.ui.button.DeleteButton;
+import org.eclipse.kapua.app.console.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
@@ -104,6 +105,7 @@ public class DevicesTable extends LayoutContainer {
     private ToolBar m_devicesToolBar;
 
     private Button m_addDeviceButton;
+    private Button m_editDeviceButton;
 
     private Button m_refreshButton;
     private boolean refreshProcess;
@@ -186,6 +188,33 @@ public class DevicesTable extends LayoutContainer {
             m_devicesToolBar.add(m_addDeviceButton);
             m_devicesToolBar.add(new SeparatorToolItem());
         }
+
+        //
+        // Edit User Button
+        m_editDeviceButton = new EditButton(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (m_devicesGrid != null) {
+                    final GwtDevice gwtDevice = m_devicesGrid.getSelectionModel().getSelectedItem();
+                    if (gwtDevice != null) {
+                        DeviceForm deviceForm = new DeviceForm(gwtDevice, m_currentSession);
+                        deviceForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
+
+                            public void handleEvent(ComponentEvent be) {
+                                refresh();
+                            }
+                        });
+                        deviceForm.show();
+                    }
+                }
+            }
+
+        });
+
+        m_editDeviceButton.setEnabled(false);
+        m_devicesToolBar.add(m_editDeviceButton);
+        m_devicesToolBar.add(new SeparatorToolItem());
 
         //
         // Refresh Button
@@ -548,10 +577,15 @@ public class DevicesTable extends LayoutContainer {
             public void selectionChanged(SelectionChangedEvent<GwtDevice> se) {
                 m_selectedDevice = se.getSelectedItem();
                 if (m_selectedDevice != null) {
-                    m_deleteDeviceButton.setEnabled(true);
+                    if (m_currentSession.hasDeviceUpdatePermission()) {
+                        m_deleteDeviceButton.setEnabled(true);
+                    }
+                    if (m_currentSession.hasDeviceDeletePermission()) {
+                        m_editDeviceButton.setEnabled(true);
+                    }
                     m_devicesView.setDevice(m_selectedDevice);
                 } else {
-                    // m_editDeviceButton.setEnabled(false);
+                    m_editDeviceButton.setEnabled(false);
                     m_deleteDeviceButton.setEnabled(false);
                 }
             }

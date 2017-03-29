@@ -121,7 +121,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(entityId, "entityId");
 
         KapuaId groupId = findCurrentGroupId(scopeId, entityId);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, groupId));
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, scopeId, groupId));
     }
 
     /**

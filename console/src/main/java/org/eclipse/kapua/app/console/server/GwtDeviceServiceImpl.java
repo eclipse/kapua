@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDe
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
+import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
@@ -116,6 +117,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", connectionStatus.toString()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devClientId", device.getClientId()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devDisplayName", device.getDisplayName()));
+                String groupId = device.getGroupId() == null ? "N/A" : device.getGroupId().toCompactId();
+                pairs.add(new GwtGroupedNVPair("devInfo", "devGroupId", groupId));
+                
                 String lastEventType = device.getLastEvent() != null ? device.getLastEvent().getType() : "";
                 pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEventType));
                 if (device.getLastEvent() != null) {
@@ -312,7 +316,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());
-
+            deviceCreator.setGroupId(GwtKapuaModelConverter.convert(gwtDeviceCreator.getGroupId()));
+            
             deviceCreator.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDeviceCreator.getGwtCredentialsTight().name()));
 
             deviceCreator.setCustomAttribute1(gwtDeviceCreator.getCustomAttribute1());
@@ -354,11 +359,12 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             // Gerenal info
             device.setDisplayName(gwtDevice.getUnescapedDisplayName());
             device.setStatus(DeviceStatus.valueOf(gwtDevice.getGwtDeviceStatus()));
+            device.setGroupId(GwtKapuaModelConverter.convert(gwtDevice.getGroupId()));
 
             // Security Stuff
-            device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
-            KapuaId deviceUserId = KapuaEid.parseCompactId(gwtDevice.getDeviceUserId());
-            device.setPreferredUserId(deviceUserId);
+//            device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
+//            KapuaId deviceUserId = KapuaEid.parseCompactId(gwtDevice.getDeviceUserId());
+//            device.setPreferredUserId(deviceUserId);
 
             // Custom attributes
             device.setCustomAttribute1(gwtDevice.getUnescapedCustomAttribute1());

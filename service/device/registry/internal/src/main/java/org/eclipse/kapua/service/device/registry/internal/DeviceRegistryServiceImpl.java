@@ -70,6 +70,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaService implements D
 
             currentDevice.setStatus(device.getStatus());
             currentDevice.setDisplayName(device.getDisplayName());
+            currentDevice.setGroupId(device.getGroupId());
             currentDevice.setSerialNumber(device.getSerialNumber());
             currentDevice.setModelId(device.getModelId());
             currentDevice.setImei(device.getImei());
