@@ -19,13 +19,29 @@ Feature: User Service Integration
   level higher than scope of B. Scope of A is parent of scope B. This allows user A to delete
   user B.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
-    And I configure
+    And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -40,10 +56,14 @@ Feature: User Service Integration
     And Account
       | name      |
       | account-b |
-    And I configure
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
     And User B
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
@@ -58,7 +78,7 @@ Feature: User Service Integration
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-b"
-    Then I don't get KapuaException
+    Then I get KapuaException
     And I logout
 
   Scenario: Deleting user in account that is higher in hierarchy
@@ -66,31 +86,51 @@ Feature: User Service Integration
   level lower than scope of A. Scope of A is parent of scope B. Subordinate scope should not be
   allowed to delete user in parent scope, unless it has permissions in that scope.
     When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
-    And I configure
+    And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
-      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
+     | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
     And Credentials
       | name    | password          |
       | kapua-a | ToManySecrets123# |
     And Permissions
-      | domain | action |
+     | domain | action |
       | user   | read   |
       | user   | write  |
       | user   | delete |
     And Account
       | name      |
       | account-b |
-    And I configure
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
     And User B
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |

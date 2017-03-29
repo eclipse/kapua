@@ -12,17 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-
-import java.math.BigInteger;
-import java.text.MessageFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -38,21 +33,17 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserCreator;
-import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.*;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Mockito;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import java.math.BigInteger;
+import java.text.MessageFormat;
+import java.util.*;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 
 /**
  * Implementation of Gherkin steps used in UserService.feature scenarios.
@@ -63,9 +54,14 @@ import cucumber.api.java.en.When;
 public class UserServiceSteps extends KapuaTest {
 
     /**
-     * User service is mocked in beforeScenario()
+     * User service is implemented in beforeScenario()
      */
     private UserService userService = null;
+
+    /**
+     * User factory is implemented in beforeScenario()
+     */
+    private UserFactory userFactory = null;
 
     public static String DEFAULT_COMMONS_PATH = "../../../commons/";
     public static String DROP_FILTER = "usr_*_drop.sql";
@@ -139,8 +135,10 @@ public class UserServiceSteps extends KapuaTest {
 
         // Inject actual implementation of UserService
         userService = new UserServiceImpl();
+        userFactory = new UserFactoryImpl();
         MockedLocator mockLocator = (MockedLocator) locator;
         mockLocator.setMockedService(org.eclipse.kapua.service.user.UserService.class, userService);
+        mockLocator.setMockedFactory(org.eclipse.kapua.service.user.UserFactory.class, userFactory);
 
         // Inject mocked Authorization Service method checkPermission
         AuthorizationService mockedAuthorization = mock(AuthorizationService.class);
@@ -484,6 +482,23 @@ public class UserServiceSteps extends KapuaTest {
             break;
         default:
             break;
+        }
+    }
+
+    @When("^I configure$")
+    public void setConfigurationValue(List<TestConfig> testConfigs)
+            throws KapuaException {
+        Map<String, Object> valueMap = new HashMap<>();
+
+        for (TestConfig config : testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            isException = false;
+            userService.setConfigValues(new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID)),
+                    new KapuaEid(BigInteger.ONE), valueMap);
+        } catch (KapuaException ex) {
+            isException = true;
         }
     }
 
