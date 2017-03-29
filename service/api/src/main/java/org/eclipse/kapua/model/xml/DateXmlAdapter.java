@@ -20,9 +20,9 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class DateXmlAdapter extends XmlAdapter<String, Date> {
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.sss'Z'";
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-    private static final String TIME_ZONE_UTC = "UTC";
+    public static final String TIME_ZONE_UTC = "UTC";
 
     @Override
     public Date unmarshal(String v) throws Exception {
