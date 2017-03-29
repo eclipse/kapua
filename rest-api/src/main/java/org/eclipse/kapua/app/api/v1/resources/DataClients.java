@@ -28,7 +28,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoField;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
@@ -83,7 +82,7 @@ public class DataClients extends AbstractKapuaResource {
                 TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ClientInfoField.CLIENT_ID, name);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
-            
+
             ClientInfoQuery query = datastoreObjectFactory.newClientInfoQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
