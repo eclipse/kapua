@@ -15,10 +15,12 @@ package org.eclipse.kapua.app.console.server;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.group.GwtGroupCreator;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
+import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.data.*;
+import com.google.gwt.core.client.GWT;
 
 public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements GwtGroupService {
 
@@ -77,9 +80,9 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
     }
 
     @Override
-    public GwtGroup find(String scopeShortId, String roleShortId) throws GwtKapuaException {
+    public GwtGroup find(String scopeShortId, String groupShortId) throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
-        KapuaId groupId = KapuaEid.parseCompactId(roleShortId);
+        KapuaId groupId = KapuaEid.parseCompactId(groupShortId);
         GwtGroup gwtGroup = null;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -187,4 +190,5 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
         }
         return groupList;
     }
+
 }

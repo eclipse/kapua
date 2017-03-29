@@ -112,6 +112,18 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     public void setClientId(String clientId) {
         set("clientId", clientId);
     }
+    
+    public String getGroupId() {
+        return (String) get("groupId");
+    }
+
+    public String getUnescapedGroupId() {
+        return (String) getUnescaped("groupId");
+    }
+    
+    public void setGroupId(String groupId) {
+        set("groupId", groupId);
+    }
 
     public Long getUptime() {
         return (Long) get("uptime");
@@ -507,13 +519,13 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         set("credentialsTight", credentialsTight);
     }
 
-    public boolean getCredentialsAllowChange() {
-        return get("credentialsAllowChange");
-    }
-
-    public void setCredentialsAllowChange(boolean credentialsAllowChange) {
-        set("credentialsAllowChange", credentialsAllowChange);
-    }
+//    public boolean getCredentialsAllowChange() {
+//        return get("credentialsAllowChange");
+//    }
+//
+//    public void setCredentialsAllowChange(boolean credentialsAllowChange) {
+//        set("credentialsAllowChange", credentialsAllowChange);
+//    }
 
     public boolean isOnline() {
         return "CONNECTED".equals(getGwtDeviceConnectionStatus());

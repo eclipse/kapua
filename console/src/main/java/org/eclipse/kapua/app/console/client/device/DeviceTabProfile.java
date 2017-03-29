@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.client.util.DateUtils;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.KapuaLoadListener;
@@ -31,16 +30,10 @@ import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.GroupingStore;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -48,7 +41,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GroupingView;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,7 +52,6 @@ public class DeviceTabProfile extends LayoutContainer {
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
     private GwtSession m_currentSession;
-    private DevicesTable m_devicesTable;
     @SuppressWarnings("unused")
     private DeviceFilterPanel m_deviceFilterPanel;
 
@@ -72,10 +63,7 @@ public class DeviceTabProfile extends LayoutContainer {
     private GroupingStore<GwtGroupedNVPair> m_store;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
 
-    private Button m_editButton;
-
     public DeviceTabProfile(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
-        m_devicesTable = devicesTable;
         m_deviceFilterPanel = deviceFilterPanel;
         m_currentSession = currentSession;
         m_dirty = true;
@@ -97,7 +85,6 @@ public class DeviceTabProfile extends LayoutContainer {
         tabProfileContentPanel.setBorders(false);
         tabProfileContentPanel.setBodyBorder(false);
         tabProfileContentPanel.setHeaderVisible(false);
-        tabProfileContentPanel.setTopComponent(getToolbar());
 
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
 
@@ -159,55 +146,13 @@ public class DeviceTabProfile extends LayoutContainer {
         m_initialized = true;
     }
 
-    private ToolBar getToolbar() {
-
-        ToolBar menuToolBar = new ToolBar();
-
-        //
-        // Edit User Button
-        m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (m_grid != null) {
-                    GwtDevice gwtDevice = m_selectedDevice;
-                    if (gwtDevice != null) {
-                        DeviceForm deviceForm = new DeviceForm(gwtDevice, m_currentSession);
-                        deviceForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
-
-                            public void handleEvent(ComponentEvent be) {
-                                m_dirty = true;
-                                m_devicesTable.refresh();
-                                refresh();
-                            }
-                        });
-                        deviceForm.show();
-                    }
-                }
-            }
-
-        });
-        m_editButton.setEnabled(false);
-        menuToolBar.add(m_editButton);
-
-        return menuToolBar;
-    }
-
     public void refresh() {
         if (m_dirty && m_initialized) {
             m_dirty = false;
             if (m_selectedDevice != null) {
-
-                if (m_currentSession.hasDeviceUpdatePermission()) {
-                    m_editButton.setEnabled(true);
-                } else {
-                    m_editButton.setTitle(MSGS.youDontHavePermissionTo("click", "button", "device:update"));
-                }
-
                 m_loader.load();
             } else {
                 m_grid.getStore().removeAll();
-                m_editButton.setEnabled(false);
             }
         }
     }
