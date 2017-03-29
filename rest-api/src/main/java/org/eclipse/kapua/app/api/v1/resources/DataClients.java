@@ -55,6 +55,8 @@ public class DataClients extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param name
+     *            The client name to filter results
      * @param offset
      *            The result set offset.
      * @param limit
@@ -70,7 +72,7 @@ public class DataClients extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ClientInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
-            @ApiParam(value = "The client id to filter results") @QueryParam("name") String name, //
+            @ApiParam(value = "The client name to filter results") @QueryParam("name") String name, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
