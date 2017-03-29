@@ -12,6 +12,41 @@
 *                                                                               
 *******************************************************************************/
 -->
-<div>
-  Device bundles list. id: {{ vm.deviceId }}
-</div>
+
+
+<bundles>
+  <div class="displayDetailsContent">
+
+    <div class="card-pf card-pf-accented card-pf-utilization">
+      <div class="row example-container">
+        <div>
+          <h2 class="col-xs-6 headerTitle">Device Bundles</h2>
+          <div class="refreshWrapper">
+            <button ng-click="vm.getBundles(deviceId)" class="btn btn-primary refreshButton"><span class="fa fa-refresh"></span> Refresh</button>
+          </div>
+        </div>
+        <div class="list-view-container">
+          <div pf-list-view class="example-list-view" id="exampleListView" config="vm.config" items="bundles" action-buttons="actionButtons"
+            enable-button-for-item-fn="vm.enableButtonForItemFn">
+            <div class="list-view-pf-description">
+              <div class="list-group-item-heading">
+                {{item.name}}
+              </div>
+            </div>
+            <div class="list-view-pf-additional-info">
+              <div class="list-view-pf-additional-info-item">
+                {{item.id}}
+              </div>
+              <div class="list-view-pf-additional-info-item">
+                {{item.state}}
+              </div>
+              <div class="list-view-pf-additional-info-item">
+                {{item.version}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</bundles>

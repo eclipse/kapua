@@ -110,12 +110,12 @@ angular.module("app.devices", [])
     .service("deviceMapperService", [DeviceMapperService])
 
     //controllers
-    .controller("DevicesListCtrl", ["$http", "$modal", DevicesListCtrl])
+    .controller("DevicesListCtrl", ["$http", "$modal", "$state", DevicesListCtrl])
     .controller("DeleteDevicesModalCtrl", ["$modalInstance", "$http", "id", DeleteDevicesModalCtrl])
     .controller("DeviceDetailCtrl", ["$stateParams", "$http", "devicesService", "deviceMapperService", DeviceDetailCtrl])
-    .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$http", DeviceDetailPackagesCtrl])
+    .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$http", "devicesService", DeviceDetailPackagesCtrl])
     .controller("DeviceDetailEventsCtrl", ["$stateParams", "$http", DeviceDetailEventsCtrl])
-    .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", DeviceDetailBundlesCtrl])
+    .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", "$scope", "devicesService", DeviceDetailBundlesCtrl])
     .controller("DeviceDetailConfigurationsCtrl", ["$stateParams", "$http", DeviceDetailConfigurationsCtrl])
     .controller("DeviceDetailCommandsCtrl", ["$stateParams", "$http", DeviceDetailCommandsCtrl])
     .controller("DeviceDetailGroupsCtrl", ["$stateParams", "$http", DeviceDetailGroupsCtrl]);
