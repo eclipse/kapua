@@ -134,8 +134,7 @@ public class MessageXContentBuilder {
                     metrics.put(esMetricName, field);
 
                     // each metric is potentially a dynamic field so report it a new mapping
-                    String mappedName = EsUtils.getMetricValueQualifier(esMetricName, esType);
-                    metricMappings.put(mappedName, esMetric);
+                    metricMappings.put(esMetricName, esMetric);
                 }
                 messageBuilder.field(EsSchema.MESSAGE_METRICS, metrics);
             }

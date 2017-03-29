@@ -63,7 +63,7 @@ public class EsUtils {
             EsUtils.checkIdxAliasName(name);
             normName = name;
         } catch (IllegalArgumentException exc) {
-            s_logger.trace(exc.getMessage());
+            s_logger.trace(exc.getMessage(), exc);
             normName = name.toLowerCase().replace(ILLEGAL_CHARS, "_");
             EsUtils.checkIdxAliasName(normName);
         }
@@ -99,8 +99,6 @@ public class EsUtils {
      */
     public static String restoreMetricName(String normalizedName) {
         String oldName = normalizedName;
-        String[] split = oldName.split(Pattern.quote("."));
-        oldName = split[0];
         oldName = oldName.replace(SPECIAL_DOT_ESC, String.valueOf(SPECIAL_DOT));
         oldName = oldName.replace(SPECIAL_DOLLAR_ESC, String.valueOf(SPECIAL_DOLLAR));
         return oldName;
@@ -214,20 +212,6 @@ public class EsUtils {
      */
     public static String normalizedIndexName(String index) {
         return normalizeIndexName(index);
-    }
-
-    /**
-     * Get the full metric name used to store the metric in Elasticsearch.<br>
-     * The full metric name is composed by the metric and the type acronym as suffix ('.' is used as separator between the 2 parts)
-     *
-     * @param name
-     * @param type
-     * @return
-     * @since 1.0.0
-     */
-    public static String getMetricValueQualifier(String name, String type) {
-        String shortType = EsUtils.getEsTypeAcronym(type);
-        return String.format("%s.%s", name, shortType);
     }
 
     /**
