@@ -30,6 +30,7 @@
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
         <class>org.eclipse.kapua.message.internal.KapuaPositionImpl</class>
 
         <properties>
