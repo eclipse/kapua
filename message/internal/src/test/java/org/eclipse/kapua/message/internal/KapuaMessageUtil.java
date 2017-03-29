@@ -12,17 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.ZonedDateTime;
-import java.util.*;
 
 /**
  * Test Utility for repeating parts of code in Message module.
@@ -33,21 +37,23 @@ public class KapuaMessageUtil {
     /**
      * Prepare payload data that contains two metrics and simple byte payload.
      *
-     * @param kapuaPayload payload reference to fill with test data
+     * @param kapuaPayload
+     *            payload reference to fill with test data
      */
     public static void populatePayload(KapuaPayload kapuaPayload) {
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("key1", "value1");
         metrics.put("key2", "value2");
         kapuaPayload.setProperties(metrics);
-        byte[] body = {'b', 'o', 'd', 'y'};
+        byte[] body = { 'b', 'o', 'd', 'y' };
         kapuaPayload.setBody(body);
     }
 
     /**
      * Prepare payload data that contains metrics with all available types.
      *
-     * @param kapuaPayload payload reference to fill with test data
+     * @param kapuaPayload
+     *            payload reference to fill with test data
      */
     public static void populatePayloadWithAllTypesOfMetrics(KapuaPayload kapuaPayload) {
         Map<String, Object> metrics = new HashMap<>();
@@ -57,7 +63,7 @@ public class KapuaMessageUtil {
         metrics.put("Long", new Long(43l));
         metrics.put("Boolean", Boolean.TRUE);
         metrics.put("String", "Big brown fox");
-        metrics.put("byte", new byte[]{'b', 'o', 'd', 'y', 0});
+        metrics.put("byte", new byte[] { 'b', 'o', 'd', 'y', 0 });
         metrics.put("unknown", new BigDecimal("42.42"));
         kapuaPayload.setProperties(metrics);
     }
@@ -65,7 +71,8 @@ public class KapuaMessageUtil {
     /**
      * Prepare channel semantic parts with three part metric.
      *
-     * @param kapuaChannel channel reference to fill with test data
+     * @param kapuaChannel
+     *            channel reference to fill with test data
      */
     public static void populateChannel(KapuaChannel kapuaChannel) {
         List<String> semanticParts = new ArrayList<>();
@@ -79,10 +86,12 @@ public class KapuaMessageUtil {
      * Prepare full KapuaMessage with fixed data. Data is not semantically correct, just
      * tokens that fill all necessary fields.
      *
-     * @param kapuaMessage  KapuaMessage reference to fill with test data
-     * @param referenceDate reference date on which all date fields are based
+     * @param kapuaMessage
+     *            KapuaMessage reference to fill with test data
+     * @param referenceDate
+     *            reference date on which all date fields are based
      */
-    public static void populateKapuaMessage(KapuaMessage<?,?> kapuaMessage, ZonedDateTime referenceDate) {
+    public static void populateKapuaMessage(KapuaMessage<?, ?> kapuaMessage, ZonedDateTime referenceDate) {
         kapuaMessage.setId(UUID.fromString("11111111-2222-3333-4444-555555555555"));
         kapuaMessage.setScopeId(new KapuaEid(BigInteger.ONE));
         kapuaMessage.setDeviceId(new KapuaEid(BigInteger.ONE));
@@ -97,8 +106,10 @@ public class KapuaMessageUtil {
     /**
      * Prepare position data with fixed values. Values are semantically correct.
      *
-     * @param position      reference to position object that is filled with test data
-     * @param referenceDate reference date on which all date fields are based
+     * @param position
+     *            reference to position object that is filled with test data
+     * @param referenceDate
+     *            reference date on which all date fields are based
      */
     public static void populatePosition(KapuaPosition position, ZonedDateTime referenceDate) {
         position.setLongitude(Double.valueOf("45.1111"));
