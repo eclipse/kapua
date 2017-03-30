@@ -11,6 +11,5 @@
 *                                                                               
 *******************************************************************************/
 interface DeviceBundles {
-  deviceBundle: DeviceBundle[];
-  type: string;
+  bundle: DeviceBundle[];
 }
