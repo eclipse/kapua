@@ -31,6 +31,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
     @Override
     public void submit() {
         // TODO read enabled and expire date
+        selectedCredential.setCredentialKey(password.getValue());
         gwtCredentialService.update(xsrfToken, selectedCredential, new AsyncCallback<GwtCredential>() {
 
             @Override
@@ -72,8 +73,8 @@ public class CredentialEditDialog extends CredentialAddDialog {
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
         credentialType.disable();
-        password.disable();
-        confirmPassword.disable();
+        //password.disable();
+        //confirmPassword.disable();
     }
 
     @Override

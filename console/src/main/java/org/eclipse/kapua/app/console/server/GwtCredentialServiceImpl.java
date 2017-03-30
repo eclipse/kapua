@@ -25,6 +25,8 @@ import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.*;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
+import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -140,16 +142,20 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         //
         // Do update
         GwtCredential gwtCredentialUpdated = null;
-        try {
-            // Convert from GWT Entity
-            Credential credential = GwtKapuaModelConverter.convert(gwtCredential);
-
+        try {            
+            KapuaId scopeId = GwtKapuaModelConverter.convert(gwtCredential.getScopeId());
+            KapuaId credentialId = GwtKapuaModelConverter.convert(gwtCredential.getId());
             // Update
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
             UserService userService = locator.getService(UserService.class);
-            Credential credentialUpdated = credentialService.update(credential);
-            User user = userService.find(credential.getScopeId(), credential.getUserId());
+            
+            Credential currentCredential = credentialService.find(scopeId, credentialId);
+            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, gwtCredential.getCredentialKey());
+            currentCredential.setCredentialKey(encryptedPass);
+            
+            Credential credentialUpdated = credentialService.update(currentCredential);
+            User user = userService.find(credentialUpdated.getScopeId(), credentialUpdated.getUserId());
             // Convert
             gwtCredentialUpdated = KapuaGwtModelConverter.convert(credentialUpdated, user);
 
