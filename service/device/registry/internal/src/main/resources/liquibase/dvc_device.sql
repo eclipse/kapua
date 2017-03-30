@@ -81,3 +81,50 @@ CREATE INDEX idx_device_c1_dn ON dvc_device (scope_id, custom_attribute_1, displ
 CREATE INDEX idx_device_c2_id ON dvc_device (scope_id, custom_attribute_2, client_id);
 CREATE INDEX idx_device_c2_dn ON dvc_device (scope_id, custom_attribute_2, display_name);
 CREATE INDEX idx_device_preferred_user_id ON dvc_device (scope_id, preferred_user_id);
+
+--changeset device:2
+
+  -- WARNING: to be kept in sync with kapua/commons/src/main/resources/liquibase/configuration.sql
+  CREATE TABLE IF NOT EXISTS sys_configuration (
+  scope_id          		 BIGINT(21) 	  UNSIGNED,
+  id                         BIGINT(21) 	  UNSIGNED NOT NULL,
+  pid						 VARCHAR(255) 	  NOT NULL,
+  configurations			 TEXT,
+  created_on                 TIMESTAMP(3) 	  DEFAULT 0,
+  created_by                 BIGINT(21) 	  UNSIGNED NOT NULL,
+  modified_on                TIMESTAMP(3) 	  NOT NULL,
+  modified_by                BIGINT(21) 	  UNSIGNED NOT NULL,
+  optlock                    INT UNSIGNED,
+  attributes				 TEXT,
+  properties                 TEXT,
+  PRIMARY KEY  (id),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE INDEX IF NOT EXISTS idx_configurationScopeId ON sys_configuration (scope_id);
+
+INSERT INTO sys_configuration (
+  SCOPE_ID,
+  ID,
+  PID,
+  CONFIGURATIONS,
+  CREATED_ON,
+  CREATED_BY,
+  MODIFIED_ON,
+  MODIFIED_BY,
+  OPTLOCK,
+  ATTRIBUTES,
+  PROPERTIES)
+VALUES (1,
+        3,
+        'org.eclipse.kapua.service.device.registry.DeviceRegistryService',
+        CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
+        'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+        'infiniteChildEntities=true'),
+  CURRENT_TIMESTAMP(),
+  1,
+  CURRENT_TIMESTAMP(),
+  1,
+  0,
+  null,
+  null);
+

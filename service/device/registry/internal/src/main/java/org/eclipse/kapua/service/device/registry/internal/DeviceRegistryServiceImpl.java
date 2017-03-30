@@ -13,16 +13,20 @@ package org.eclipse.kapua.service.device.registry.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 
@@ -32,8 +36,9 @@ import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
  * @since 1.0.0
  */
 @KapuaProvider
-public class DeviceRegistryServiceImpl extends AbstractKapuaService implements DeviceRegistryService {
+public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Device, DeviceCreator, DeviceRegistryService, DeviceListResult, DeviceQuery, DeviceFactory> implements DeviceRegistryService {
 
+    private static final Domain deviceDomain = new DeviceDomain();
     // Constructors
     /**
      * Constructor
@@ -41,20 +46,24 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaService implements D
      * @param deviceEntityManagerFactory
      */
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(deviceEntityManagerFactory);
+        super(DeviceRegistryService.class.getName(), deviceDomain, deviceEntityManagerFactory, DeviceRegistryService.class, DeviceFactory.class);
     }
 
     /**
      * Constructor
      */
     public DeviceRegistryServiceImpl() {
-        super(DeviceEntityManagerFactory.instance());
+        this(DeviceEntityManagerFactory.instance());
     }
 
     // Operations implementation
     @Override
     public Device create(DeviceCreator deviceCreator) throws KapuaException {
         DeviceValidation.validateCreatePreconditions(deviceCreator);
+        if (allowedChildEntities(deviceCreator.getScopeId()) <= 0) {
+            // TODO Check exception type to be catched by the broker
+            throw new KapuaIllegalArgumentException("scopeId", "max devices reached");
+        }
         return entityManagerSession.onTransactedInsert(entityManager -> DeviceDAO.create(entityManager, deviceCreator));
     }
 
