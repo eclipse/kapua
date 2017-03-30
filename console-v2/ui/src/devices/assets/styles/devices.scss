@@ -10,34 +10,55 @@
 *     Eurotech - initial API and implementation                                 
 *                                                                               
 *******************************************************************************/
+
 table.dataTable {
-  height: inherit;
+    height: inherit;
 }
-
 .dataTables_wrapper .dataTable {
-  width: 100% !important;
+    width: 100% !important;
 }
-
 td.table-view-pf-select {
-  width: 1px;
+    width: 1px;
 }
-
 .detailsAccordion {
-  margin-left: 10px;
-  margin-right: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
-
 .displayDetailsContent {
-  margin-left: 20px;
-  margin-right: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
-
 .displayDeviceContainer {
-  padding-bottom: 16px;
+    padding-bottom: 16px;
+}
+uib-accordion {
+    .panel-group {
+        margin-bottom: 0px;
+    }
+}
+tr {
+    cursor: pointer;
+}
+.list-view-container {
+    .list-group {
+        margin-bottom: 0px;
+    }
 }
 
-uib-accordion {
-  .panel-group {
-    margin-bottom: 0px;
-  }
+bundles {
+    .headerTitle {
+        margin-top: 10px;
+        margin-bottom: 0px;
+        font-weight: bold;
+        padding-left: 15px;
+    }
+    .refreshWrapper {
+        text-align: right;
+    }
+    .refreshButton {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right: 16px;
+        width: 92px;
+    }
 }

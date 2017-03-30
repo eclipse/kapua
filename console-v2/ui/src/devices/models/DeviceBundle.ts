@@ -11,5 +11,8 @@
 *                                                                               
 *******************************************************************************/
 interface DeviceBundle {
+  id: number;
   name: string;
+  state: string;
+  version: string;
 }

@@ -12,4 +12,8 @@
 *******************************************************************************/
 interface IDevicesService {
     getDeviceById(deviceID: string): ng.IHttpPromise<Device>;
+    getBundlesByDeviceId(deviceID: string): ng.IHttpPromise<DeviceBundles>;
+    getPackagesByDeviceId(deviceID: string): ng.IHttpPromise<DevicePackages>;
+    startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
+    stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
 }

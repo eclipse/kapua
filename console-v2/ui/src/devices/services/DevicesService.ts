@@ -18,4 +18,23 @@ export default class DevicesService implements IDevicesService {
     getDeviceById(deviceID: string): ng.IHttpPromise<Device> {
         return this.$http.get("/api/_/devices/" + deviceID);
     }
+
+    getBundlesByDeviceId(deviceID: string): ng.IHttpPromise<DeviceBundles> {
+        return this.$http.get("/api/_/devices/" + deviceID + "/bundles");
+    };
+
+    getPackagesByDeviceId(deviceID: string): ng.IHttpPromise<DevicePackages> {
+        return this.$http.get("/api/_/devices/" + deviceID + "/packages");
+    };
+
+    startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
+        return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_start", {});
+        
+    };
+
+    stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
+        return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_stop", {});
+        
+    };
+
 }

@@ -20,106 +20,106 @@ export default class DeviceDetailCtrl {
   private items: DeviceViewModel[];
   private packagesStatus = {
     "title": "Installed Packages",
-    "count": 0,
+    "count": null,
     "href": null,
     "iconClass": "fa fa-cube",
-    "notifications": [
-      {
-        "iconClass": "pficon pficon-error-circle-o",
-        "count": 4,
-        "href": "#"
-      },
-      {
-        "iconClass": "pficon pficon-warning-triangle-o",
-        "count": 1
-      }
-    ]
+    // "notifications": [
+    //   {
+    //     "iconClass": "pficon pficon-error-circle-o",
+    //     "count": 4,
+    //     "href": "#"
+    //   },
+    //   {
+    //     "iconClass": "pficon pficon-warning-triangle-o",
+    //     "count": 1
+    //   }
+    // ]
   };
   private eventsStatus = {
     "title": "Events",
-    "count": 1,
+    "count": null,
     "href": null,
     "iconClass": "fa fa-history",
-    "notifications": [
-      {
-        "iconClass": "pficon pficon-error-circle-o",
-        "count": 5,
-        "href": "#"
-      },
-      {
-        "iconClass": "pficon pficon-warning-triangle-o",
-        "count": 2
-      }
-    ]
+    // "notifications": [
+    //   {
+    //     "iconClass": "pficon pficon-error-circle-o",
+    //     "count": 5,
+    //     "href": "#"
+    //   },
+    //   {
+    //     "iconClass": "pficon pficon-warning-triangle-o",
+    //     "count": 2
+    //   }
+    // ]
   };
   private bundlesStatus = {
     "title": "Bundles",
-    "count": 2,
+    "count": null,
     "href": null,
     "iconClass": "fa fa-cubes",
-    "notifications": [
-      {
-        "iconClass": "pficon pficon-error-circle-o",
-        "count": 6,
-        "href": "#"
-      },
-      {
-        "iconClass": "pficon pficon-warning-triangle-o",
-        "count": 3
-      }
-    ]
+    // "notifications": [
+    //   {
+    //     "iconClass": "pficon pficon-error-circle-o",
+    //     "count": 6,
+    //     "href": "#"
+    //   },
+    //   {
+    //     "iconClass": "pficon pficon-warning-triangle-o",
+    //     "count": 3
+    //   }
+    // ]
   };
   private configurationsStatus = {
     "title": "Configurations",
-    "count": 3,
+    "count": null,
     "href": null,
     "iconClass": "fa fa-cogs",
-    "notifications": [
-      {
-        "iconClass": "pficon pficon-error-circle-o",
-        "count": 7,
-        "href": "#"
-      },
-      {
-        "iconClass": "pficon pficon-warning-triangle-o",
-        "count": 4
-      }
-    ]
+    // "notifications": [
+    //   {
+    //     "iconClass": "pficon pficon-error-circle-o",
+    //     "count": 7,
+    //     "href": "#"
+    //   },
+    //   {
+    //     "iconClass": "pficon pficon-warning-triangle-o",
+    //     "count": 4
+    //   }
+    // ]
   };
   private commandsStatus = {
     "title": "Commands",
-    "count": 4,
+    "count": null,
     "href": null,
     "iconClass": "fa fa-terminal",
-    "notifications": [
-      {
-        "iconClass": "pficon pficon-error-circle-o",
-        "count": 8,
-        "href": "#"
-      },
-      {
-        "iconClass": "pficon pficon-warning-triangle-o",
-        "count": 5
-      }
-    ]
+    // "notifications": [
+    //   {
+    //     "iconClass": "pficon pficon-error-circle-o",
+    //     "count": 8,
+    //     "href": "#"
+    //   },
+    //   {
+    //     "iconClass": "pficon pficon-warning-triangle-o",
+    //     "count": 5
+    //   }
+    // ]
   };
 
   private groupsStatus = {
     "title": "Groups",
-    "count": 5,
+    "count": null,
     "href": null,
     "iconClass": "fa fa-object-group",
-    "notifications": [
-      {
-        "iconClass": "pficon pficon-error-circle-o",
-        "count": 9,
-        "href": "#"
-      },
-      {
-        "iconClass": "pficon pficon-warning-triangle-o",
-        "count": 6
-      }
-    ]
+    // "notifications": [
+    //   {
+    //     "iconClass": "pficon pficon-error-circle-o",
+    //     "count": 9,
+    //     "href": "#"
+    //   },
+    //   {
+    //     "iconClass": "pficon pficon-warning-triangle-o",
+    //     "count": 6
+    //   }
+    // ]
   };
 
   private oneAtATime: boolean = true;
@@ -135,14 +135,20 @@ export default class DeviceDetailCtrl {
     this.commandsStatus.href = `devices/${$stateParams["id"]}/commands`;
     this.groupsStatus.href = `devices/${$stateParams["id"]}/groups`;
     this.getDeviceById($stateParams["id"]);
+    this.getBundlesCount($stateParams["id"]);
+
   }
 
-    getDeviceById(deviceID): void {
-      this.devicesService.getDeviceById(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<Device>) => {      
-        this.device = responseData.data;
-        this.items = this.deviceMapperService.prepareViewItems(this.device);
-      });
+  getDeviceById(deviceID): void {
+    this.devicesService.getDeviceById(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<Device>) => {
+      this.device = responseData.data;
+      this.items = this.deviceMapperService.prepareViewItems(this.device);
+    });
   }
 
-
+  getBundlesCount(deviceID: string): void {
+    this.devicesService.getBundlesByDeviceId(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<DeviceBundles>) => {
+      this.bundlesStatus.count = responseData.data.bundle.length;
+    });
+  }
 }
