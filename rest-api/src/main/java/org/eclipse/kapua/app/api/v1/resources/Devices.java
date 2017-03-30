@@ -31,6 +31,8 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -61,6 +63,8 @@ public class Devices extends AbstractKapuaResource {
      *            The id of the {@link Device} in which to search results
      * @param connectionStatus
      *            The {@link DeviceConnectionStatus} in which to search results
+     * @param fetchAttributes
+     *            Additional attributes to be returned. Allowed values: connection, lastEvent
      * @param offset
      *            The result set offset.
      * @param limit
@@ -78,6 +82,7 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The client id to filter results.") @QueryParam("clientId") String clientId,
             @ApiParam(value = "The connection status to filter results.")@QueryParam("status") DeviceConnectionStatus connectionStatus,
+            @ApiParam(value = "Additional attributes to be returned. Allowed values: connection, lastEvent", allowableValues = "connection, lastEvent", allowMultiple = true) @QueryParam("fetchAttributes") List<String> fetchAttributes,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
@@ -93,7 +98,7 @@ public class Devices extends AbstractKapuaResource {
                 andPredicate.and(new AttributePredicate<>(DevicePredicates.CONNECTION_STATUS, connectionStatus));
             }
             query.setPredicate(andPredicate);
-
+            query.setFetchAttributes(fetchAttributes);
             query.setOffset(offset);
             query.setLimit(limit);
 

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -133,7 +135,13 @@ public final class DeviceValidation {
     public static void validateQueryPreconditions(KapuaQuery<Device> query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
-
+        List<String> fetchAttributes = query.getFetchAttributes();
+        String regex = "(" + DevicePredicates.CONNECTION + "|" + DevicePredicates.LAST_EVENT + ")";
+        if (fetchAttributes != null) {
+            for (String fetchAttribute : fetchAttributes) {
+                ArgumentValidator.match(fetchAttribute, regex, "fetchAttributes");
+            }
+        }
         authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId(), Group.ANY));
     }
 
