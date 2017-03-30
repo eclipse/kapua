@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
@@ -60,8 +61,12 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
+                FailureHandler.handleFormException(m_formPanel, cause);
+                m_status.hide();
+                m_formPanel.getButtonBar().enable();
+                unmask();
+                m_submitButton.enable();
+                m_cancelButton.enable();
             }
         });
 

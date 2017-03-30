@@ -14,7 +14,8 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -27,12 +28,14 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
@@ -43,12 +46,12 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
  *
  */
 @KapuaProvider
-public class RoleServiceImpl extends AbstractKapuaService implements RoleService {
+public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Role, RoleCreator, RoleService, RoleListResult, RoleQuery, RoleFactory> implements RoleService {
 
     private static final Domain roleDomain = new RoleDomain();
 
     public RoleServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+        super(RoleService.class.getName(), roleDomain, AuthorizationEntityManagerFactory.getInstance(), RoleService.class, RoleFactory.class);
     }
 
     @Override
@@ -65,6 +68,10 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
+        
+        if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
+            throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
+        }
         return entityManagerSession.onTransactedInsert(em -> {
             Role role = RoleDAO.create(em, roleCreator);
 
