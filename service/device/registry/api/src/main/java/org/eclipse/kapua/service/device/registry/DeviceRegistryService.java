@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * Device registry service definition.
@@ -24,7 +25,8 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  *
  */
 public interface DeviceRegistryService extends KapuaEntityService<Device, DeviceCreator>,
-        KapuaUpdatableEntityService<Device> {
+        KapuaUpdatableEntityService<Device>,
+        KapuaConfigurableService {
 
     /**
      * Returns the {@link DeviceListResult} with elements matching the provided query.
