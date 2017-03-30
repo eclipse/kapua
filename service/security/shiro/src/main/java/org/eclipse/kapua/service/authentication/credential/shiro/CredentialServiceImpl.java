@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -47,12 +48,12 @@ import org.apache.shiro.codec.Base64;
  *
  */
 @KapuaProvider
-public class CredentialServiceImpl extends AbstractKapuaService implements CredentialService {
+public class CredentialServiceImpl extends AbstractKapuaConfigurableService implements CredentialService {
 
     private static final Domain credentialDomain = new CredentialDomain();
 
     public CredentialServiceImpl() {
-        super(AuthenticationEntityManagerFactory.getInstance());
+        super(CredentialService.class.getName(), credentialDomain, AuthenticationEntityManagerFactory.getInstance());
     }
 
     @Override
