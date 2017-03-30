@@ -19,6 +19,14 @@ Scenario: Creating user
     Create user with all User entity fields set and persist it in database. Then try to
     find it by name and check all the fields.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -29,6 +37,14 @@ Scenario: Creating user
 Scenario: Create user with short name
     Create user that has less than required 3 characters in name.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name | displayName        | email              | phoneNumber     | status  |
         | u1   |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -37,6 +53,14 @@ Scenario: Create user with short name
 Scenario: Create user that has more than DB allowed length
     Create user with name that contains 280 characters.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name | displayName        | email              | phoneNumber     | status  |
         | uuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaa  |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -46,6 +70,14 @@ Scenario: Create user that has more than DB allowed length
 Scenario: Create user with special characters in his name
     Create user with #$% characters in his name
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name      | displayName        | email              | phoneNumber     | status  |
         | ###$$$%%% | Kapua User 1       | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -56,6 +88,14 @@ Scenario: Update user
     After that find that same user and modify all the fields by appending modified.
     Persist changes to database. At the end check that changes ware persisted
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -68,11 +108,19 @@ Scenario: Update user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1-mod |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
 
-    Scenario: Delete user
+Scenario: Delete user
     Create user with name kapua-user. Then delete this user and check it is
     deleted. This means that if trying to search user, no such user is found.
 
-    Given User with name "kapua-user" in scope with id 42 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
+    Given User with name "kapua-user" in scope with id 42
     When I create user 
     And I delete user 
     Then I don't find user with name "kapua-user" 
@@ -81,6 +129,14 @@ Scenario: Query user
     Create user with name kapua-user, than issue query for user based on scopeId.
     List of matching users should match single user.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given User with name "kapua-user" in scope with id 42 
     When I create user 
     And I query for users in scope with id 42 
@@ -91,6 +147,14 @@ Scenario: Count user
     scopeId specified. It is same as Query user, just that it only retrieves count
     of results and not list of users. Count should match just one user.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given User with name "kapua-user" in scope with id 42 
     When I create user 
     And I count for users in scope with id 42 
@@ -101,6 +165,14 @@ Scenario: Find user by id
     user id. Use this user id to search for user. Then check that user found is the same
     user as the one created. Check all fields.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -112,6 +184,14 @@ Scenario: Find user by name
     Create user with all User entity fields set. Use user name to search for user.
     Check that user found is the same user as the one created. Check all fields.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
@@ -123,6 +203,14 @@ Scenario: Create user that already exist
     Create user whit name kapua-user and than try to persist it two times.
     KapuaException should be thrown in such scenario.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given User with name "kapua-user" in scope with id 42
     When I create user
     And I create same user
@@ -170,6 +258,14 @@ Scenario: Create multiple users
     Create three ordinary users in same scopeId and then count to see if there are 3 users in
     that scopeId.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following users
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
@@ -182,6 +278,14 @@ Scenario: Find multiple users
     Create three ordinary users in same scopeId and then find all users and see if there are
     users with same data as those created.
 
+    When I configure
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
     Given I have following users
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
