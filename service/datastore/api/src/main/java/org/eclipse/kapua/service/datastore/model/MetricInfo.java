@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Information about device metric value. Metric is an arbitrary named value. We usually
@@ -31,15 +32,16 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "metricInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "id",
-        "scopeId",
-        "clientId",
-        "channel",
-        "name",
-        "metricType",
-        "firstMessageId",
-        "firstMessageOn",
-        "lastMessageId",
+@XmlType(propOrder = { //
+        "id", //
+        "scopeId", //
+        "clientId", //
+        "channel", //
+        "name", //
+        "metricType", //
+        "firstMessageId", //
+        "firstMessageOn", //
+        "lastMessageId", //
         "lastMessageOn" })
 public interface MetricInfo extends Storable {
 
@@ -168,6 +170,7 @@ public interface MetricInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getFirstMessageOn();
 
     /**
@@ -210,6 +213,7 @@ public interface MetricInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getLastMessageOn();
 
     /**
