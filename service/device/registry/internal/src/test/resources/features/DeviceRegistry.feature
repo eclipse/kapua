@@ -18,7 +18,11 @@ Feature: Device Registry Service
 Scenario: Create a single device
 	Create a single test device. The resulting device must have a unique ID assigned
 	by the creation process.
-	
+
+	When I configure
+		| type    | name                       | value | scopeId | parentScopeId |
+		| boolean | infiniteChildEntities      | true  |    1    |       1       |
+		| integer | maxNumberChildEntities     | 5     |    1    |       1       |
 	Given A device named "test_device"
 	Then The device has a non-null ID
 
@@ -94,9 +98,21 @@ Scenario: Count devices in a specific scope
 	It must be possible to count all the devices in a specific scope.
 	To this end several devices are created in 3 different scopes. When 
 	counted, only the number of devices in the specified scope must be returned.
-	
+
+	When I configure
+		| type    | name                       | value | scopeId | parentScopeId |
+		| boolean | infiniteChildEntities      | true  |    5    |       1       |
+		| integer | maxNumberChildEntities     | 50    |    5    |       1       |
 	Given I create 20 randomly named devices in scope 5
+	When I configure
+		| type    | name                       | value | scopeId | parentScopeId |
+		| boolean | infiniteChildEntities      | true  |    6    |       1       |
+		| integer | maxNumberChildEntities     | 5     |    6    |       1       |
 	Given I create 30 randomly named devices in scope 6
+	When I configure
+		| type    | name                       | value | scopeId | parentScopeId |
+		| boolean | infiniteChildEntities      | true  |    7    |       1       |
+		| integer | maxNumberChildEntities     | 5     |    7    |       1       |
 	Given I create 45 randomly named devices in scope 7
 	When I count the devices in scope 6
 	Then There are 30 devices

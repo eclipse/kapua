@@ -20,6 +20,9 @@ import static org.mockito.Mockito.mock;
 
 import java.math.BigInteger;
 import java.security.acl.Permission;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -28,16 +31,11 @@ import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceQuery;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.*;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
@@ -166,6 +164,9 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
         // All operations on database are performed using system user.
         KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
         KapuaSecurityUtils.setSession(kapuaSession);
+
+        // Setup JAXB context
+        XmlUtil.setContextProvider(new RegistryJAXBContextProvider());
     }
 
     @After
@@ -240,6 +241,27 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
         device = deviceRegistryService.create(deviceCreator);
         assertNotNull(device);
         deviceId = device.getId();
+    }
+
+    @When("^I configure$")
+    public void setConfigurationValue(List<TestConfig> testConfigs)
+            throws KapuaException {
+        Map<String, Object> valueMap = new HashMap<>();
+        KapuaEid scopeId = null;
+        KapuaEid parentScopeId = null;
+
+        for (TestConfig config : testConfigs) {
+            config.addConfigToMap(valueMap);
+            scopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getScopeId())));
+            parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));
+        }
+        try {
+            exceptionCaught = false;
+            deviceRegistryService.setConfigValues(scopeId,
+                    parentScopeId, valueMap);
+        } catch (KapuaException ex) {
+            exceptionCaught = true;
+        }
     }
 
     @When("^I search for a device with the remembered ID$")
