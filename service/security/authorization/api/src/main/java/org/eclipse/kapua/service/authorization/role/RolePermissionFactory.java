@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
  * {@link RolePermission} object factory.
@@ -21,51 +20,6 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0.0
  *
  */
-public interface RolePermissionFactory extends KapuaObjectFactory {
+public interface RolePermissionFactory extends KapuaEntityFactory<RolePermission, RolePermissionCreator, RolePermissionQuery, RolePermissionListResult> {
 
-    /**
-     * Instantiate a new {@link RolePermission} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link RolePermission}.
-     * @since 1.0.0
-     */
-    public RolePermission newRolePermission(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link RolePermissionCreator} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link RolePermissionCreator}.
-     * @since 1.0.0
-     */
-    public RolePermissionCreator newCreator(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link RolePermissionQuery} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link RolePermissionQuery}.
-     * @since 1.0.0
-     */
-    public RolePermissionQuery newQuery(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link RolePermissionListResult} implementing object.
-     * 
-     * @return A instance of the implementing class of {@link RolePermissionListResult}.
-     * @since 1.0.0
-     */
-    public RolePermissionListResult newRolePermissionListResult();
-
-    /**
-     * Instantiate a new {@link RolePermission} implementing object.
-     * 
-     * @return A instance of the implementing class of {@link RolePermission}.
-     * @since 1.0.0
-     */
-    public RolePermission newRolePermission();
 }

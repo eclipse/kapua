@@ -12,11 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.junit.Assert;
@@ -26,13 +29,17 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractAuthorizationServiceTest extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuthorizationServiceTest.class);
-    protected static Random random = new Random();
+    private static String DEFAULT_PATH = "../../../dev-tools/src/main/database";
+    private static String DROP_ALL_TABLES = "all_drop.sql";
 
-    public static String DEFAULT_PATH = "../../../dev-tools/src/main/database";
-    public static String DROP_ALL_TABLES = "all_drop.sql";
+    protected static Random random = new Random();
+    protected static KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
     // Drop the whole database. All tables are deleted.
     public static void dropDatabase() {
+        // TODO: Check if it is (will be) possible to scrub the database using the Liquibase client.
+        // Using two separate mechanisms to drop and create the database tables is inconvenient
+        // and introduces maintainability issues.
         scriptSession(DEFAULT_PATH, DROP_ALL_TABLES);
     }
 
@@ -75,6 +82,14 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
                 em.close();
             }
         }
+    }
 
+    // *******************
+    // * Private Helpers *
+    // *******************
+
+    // Generate a random KapuaId
+    protected KapuaId generateId() {
+        return new KapuaEid(BigInteger.valueOf(random.nextLong()));
     }
 }

@@ -17,7 +17,7 @@ Scenario: Count domains in a blank database
 	The default domain table must contain 15 preset entries.
 	
 	When I count the domain entries in the database
-	Then There are 15 domains
+	Then I get 15 as result
 
 Scenario: Regular domain
 	Create a regular domain entry. The newly created entry must match the 
@@ -36,7 +36,7 @@ Scenario: Domain with null name
 	Given I create the domain
 	|serviceName    |actions   |
 	|test_service_1 |read,write|
-	Then An exception was caught
+	Then An exception was thrown
 
 Scenario: Domain with null service name
 	It must not be possible to create a domain entry with a null service name. In 
@@ -45,7 +45,7 @@ Scenario: Domain with null service name
 	Given I create the domain
 	|name        |actions   |
 	|test_name_1 |read,write|
-	Then An exception was caught
+	Then An exception was thrown
 
 Scenario: Domain with null actions
 	It must not be possible to create a domain entry with a null set of supported actions. In 
@@ -54,7 +54,7 @@ Scenario: Domain with null actions
 	Given I create the domain
 	|name        |serviceName    |
 	|test_name_1 |test_service_1 |
-	Then An exception was caught
+	Then An exception was thrown
 
 Scenario: Domains with duplicate names
 	Domain names must be unique in the database. If an already existing name is used for a 
@@ -68,7 +68,7 @@ Scenario: Domains with duplicate names
 	When I create the domain
 	|name        |serviceName    |actions   |
 	|test_name_1 |test_service_1 |read,write|
-	Then An exception was caught
+	Then An exception was thrown
 
 Scenario: Find the last created domain entry
 	It must be possible to find a dmain entry based on its unique ID.
@@ -115,7 +115,7 @@ Scenario: Delete an inexistent domain
 	an exception.
 	
 	When I try to delete domain with a random ID
-	Then An exception was caught
+	Then An exception was thrown
 
 Scenario: Count domains in the database
 	It must be possible to count all the domain entries in the domain table.
@@ -139,7 +139,7 @@ Scenario: Domain entry query
 	|test_name_2 |test_service_2 |read,execute |
 	|test_name_3 |test_service_3 |write,delete |
 	When I query for domains with the name "test_name_2"
-	Then There is 1 domain
+	Then I get 1 as result
 
 Scenario: Domain entry query - service name
 	It must be possible to query domain entries based on the service name.
@@ -154,8 +154,8 @@ Scenario: Domain entry query - service name
 	|test_name_5 |test_service_3 |read,execute |
 	|test_name_6 |test_service_2 |write,delete |
 	When I query for domains with the service name "test_service_2"
-	Then There are 2 domains
+	Then I get 2 as result
 	When I query for domains with the service name "test_service_3"
-	Then There are 3 domains
+	Then I get 3 as result
 	When I query for domains with the service name "test_service_x"
-	Then There are 0 domains
+	Then I get 0 as result

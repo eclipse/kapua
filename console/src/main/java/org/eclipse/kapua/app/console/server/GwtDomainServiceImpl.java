@@ -44,7 +44,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainService domainService = locator.getService(DomainService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-            DomainQuery query = domainFactory.newQuery();
+            DomainQuery query = domainFactory.newQuery(null);
             DomainListResult list = domainService.query(query);
 
             for (Domain domain : list.getItems()) {
@@ -64,7 +64,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainService domainService = locator.getService(DomainService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-            DomainQuery query = domainFactory.newQuery();
+            DomainQuery query = domainFactory.newQuery(null);
             query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, domainName));
             DomainListResult queryResult = domainService.query(query);
             if (!queryResult.isEmpty()) {
@@ -85,7 +85,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         KapuaLocator locator = KapuaLocator.getInstance();
         DomainService domainService = locator.getService(DomainService.class);
         DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-        DomainQuery domainQuery = domainFactory.newQuery();
+        DomainQuery domainQuery = domainFactory.newQuery(null);
         domainQuery.setScopeId(scopeId);
         domainQuery.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, domainName));
         try {

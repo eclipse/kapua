@@ -21,7 +21,7 @@ import org.eclipse.kapua.kura.simulator.payload.Metrics;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
 
-public class SimplePeriodicGenerator extends AbstractPeriodicGenerator {
+public class SimplePeriodicGenerator extends AbstractSingleTopicPeriodicGenerator {
 
     private final Map<String, Function<Instant, Double>> generators;
 
@@ -32,7 +32,6 @@ public class SimplePeriodicGenerator extends AbstractPeriodicGenerator {
 
     @Override
     protected void update(final Instant timestamp, final Sender sender) {
-
         final Map<String, Object> metrics = generateMetrics(timestamp);
 
         final Builder builder = KuraPayloadProto.KuraPayload.newBuilder();

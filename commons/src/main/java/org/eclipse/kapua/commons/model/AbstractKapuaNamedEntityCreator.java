@@ -42,6 +42,10 @@ public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> ext
         this.name = name;
     }
 
+    public AbstractKapuaNamedEntityCreator(KapuaId scopeId) {
+        super(scopeId);
+    }
+
     @Override
     public String getName()
     {

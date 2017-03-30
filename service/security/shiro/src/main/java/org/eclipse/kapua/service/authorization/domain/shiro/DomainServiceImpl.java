@@ -114,7 +114,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
 
         return entityManagerSession.onResult(em -> {
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
-            DomainQuery query = domainFactory.newQuery();
+            DomainQuery query = domainFactory.newQuery(null);
             query.setPredicate(new AttributePredicate<String>(DomainPredicates.SERVICE_NAME, serviceName));
 
             DomainListResult results = DomainDAO.query(em, query);

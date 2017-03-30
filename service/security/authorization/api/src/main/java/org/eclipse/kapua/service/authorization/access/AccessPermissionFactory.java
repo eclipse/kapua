@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -21,51 +22,6 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0.0
  *
  */
-public interface AccessPermissionFactory extends KapuaObjectFactory {
+public interface AccessPermissionFactory extends KapuaEntityFactory<AccessPermission, AccessPermissionCreator, AccessPermissionQuery, AccessPermissionListResult> {
 
-    /**
-     * Instantiate a new {@link AccessPermission} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessPermission}.
-     * @since 1.0.0
-     */
-    public AccessPermission newAccessPermission(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link AccessPermissionCreator} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessPermissionCreator}.
-     * @since 1.0.0
-     */
-    public AccessPermissionCreator newCreator(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link AccessPermissionQuery} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link AccessPermissionQuery}.
-     * @since 1.0.0
-     */
-    public AccessPermissionQuery newQuery(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link AccessPermissionListResult} implementing object.
-     * 
-     * @return A instance of the implementing class of {@link AccessPermissionListResult}.
-     * @since 1.0.0
-     */
-    public AccessPermissionListResult newAccessPermissionListResult();
-
-    /**
-     * Instantiate a new {@link AccessPermission} implementing object.
-     * 
-     * @return A instance of the implementing class of {@link AccessPermission}.
-     * @since 1.0.0
-     */
-    public AccessPermission newAccessPermission();
 }

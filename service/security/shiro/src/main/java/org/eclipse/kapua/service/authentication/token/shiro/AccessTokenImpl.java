@@ -101,6 +101,10 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
         setRefreshExpiresOn(refreshExpiresOn);
     }
 
+    public AccessTokenImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
     @Override
     public KapuaId getUserId() {
         return userId;

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public interface DeviceFactory extends KapuaObjectFactory
+public interface DeviceFactory extends KapuaEntityFactory<Device, DeviceCreator, DeviceQuery, DeviceListResult>
 {
 
     /**
@@ -33,25 +33,4 @@ public interface DeviceFactory extends KapuaObjectFactory
      */
     public DeviceCreator newCreator(KapuaId scopeId, String clientId);
 
-    /**
-     * Creates a new {@link Device}
-     * 
-     * @return
-     */
-    public Device newDevice();
-    
-    /**
-     * Creates a new device query base on provided scoper identifier
-     * 
-     * @param scopeId
-     * @return
-     */
-    public DeviceQuery newQuery(KapuaId scopeId);
-    
-    /**
-     * Creates a new device list result
-     * 
-     * @return
-     */
-    public DeviceListResult newDeviceListResult();
 }

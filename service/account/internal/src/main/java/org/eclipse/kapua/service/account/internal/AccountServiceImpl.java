@@ -402,7 +402,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableService impleme
         boolean allowInfiniteChildAccounts = (boolean) configuration.get("infiniteChildAccounts");
         if (!allowInfiniteChildAccounts) {
             int maxChildAccounts = (int) configuration.get("maxNumberChildAccounts");
-            AccountListResult currentChildAccounts = query(accountFactory.newAccountQuery(scopeId));
+            AccountListResult currentChildAccounts = query(accountFactory.newQuery(scopeId));
             long childCount = currentChildAccounts.getSize();
             for (Account childAccount : currentChildAccounts.getItems()) {
                 Map<String, Object> childConfigValues = getConfigValues(childAccount.getId());

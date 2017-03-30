@@ -575,7 +575,7 @@ public class AccountServiceTestSteps extends KapuaTest {
      * @return The newly created account creator object.
      */
     private AccountCreator prepareRegularAccountCreator(KapuaId parentId, String name) {
-        AccountCreator tmpAccCreator = accountFactory.newAccountCreator(parentId, name);
+        AccountCreator tmpAccCreator = accountFactory.newCreator(parentId, name);
 
         tmpAccCreator.setOrganizationName("org_" + name);
         tmpAccCreator.setOrganizationPersonName(String.format("person_%s", name));

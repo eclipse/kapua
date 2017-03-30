@@ -32,7 +32,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  *
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "tokenId",
         "userId",
         "expiresOn",
@@ -46,7 +46,7 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
 
     public static final String TYPE = "accessToken";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

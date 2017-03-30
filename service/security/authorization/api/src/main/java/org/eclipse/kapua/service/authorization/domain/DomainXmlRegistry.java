@@ -22,6 +22,6 @@ public class DomainXmlRegistry {
     private final DomainFactory factory = locator.getFactory(DomainFactory.class);
 
     public DomainQuery newQuery() {
-        return factory.newQuery();
+        return factory.newQuery(null);
     }
 }

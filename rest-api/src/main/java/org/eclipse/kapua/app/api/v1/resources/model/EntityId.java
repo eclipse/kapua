@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} entityId.
- * 
+ *
  * @since 1.0.0
  */
 public class EntityId implements KapuaId {
@@ -31,9 +31,8 @@ public class EntityId implements KapuaId {
 
     /**
      * Builds the {@link KapuaId} from the given {@link String} compact entity id.
-     * 
-     * @param compactEntityId
-     *            The compact entityId to parse.
+     *
+     * @param compactEntityId The compact entityId to parse.
      * @since 1.0.0
      */
     public EntityId(String compactEntityId) {

@@ -530,10 +530,10 @@ public class DeviceRegistryServiceTestSteps extends KapuaTest {
         DeviceQuery tmpQuery = null;
         DeviceListResult tmpListRes = null;
 
-        tmpDevice = deviceFactory.newDevice();
+        tmpDevice = deviceFactory.newEntity(rootScopeId);
         tmpCreator = deviceFactory.newCreator(rootScopeId, "TestDevice");
         tmpQuery = deviceFactory.newQuery(rootScopeId);
-        tmpListRes = deviceFactory.newDeviceListResult();
+        tmpListRes = deviceFactory.newListResult();
 
         assertNotNull(tmpDevice);
         assertNotNull(tmpCreator);

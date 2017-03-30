@@ -33,7 +33,7 @@ public class DeviceXmlRegistry {
      * @return
      */
     public Device newDevice() {
-        return factory.newDevice();
+        return factory.newEntity(null);
     }
 
     /**
@@ -51,7 +51,7 @@ public class DeviceXmlRegistry {
      * @return
      */
     public DeviceListResult newDeviceListResult() {
-        return factory.newDeviceListResult();
+        return factory.newListResult();
     }
 
     public DeviceQuery newQuery() {

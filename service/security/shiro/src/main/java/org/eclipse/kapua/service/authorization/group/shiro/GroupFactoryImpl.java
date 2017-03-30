@@ -29,21 +29,28 @@ public class GroupFactoryImpl implements GroupFactory {
 
     @Override
     public GroupCreator newCreator(KapuaId scopeId, String name) {
-        return new GroupCreatorImpl(scopeId, name);
+        GroupCreator creator = newCreator(scopeId);
+        creator.setName(name);
+        return creator;
     }
 
     @Override
-    public Group newGroup(KapuaId scopeId) {
+    public Group newEntity(KapuaId scopeId) {
         return new GroupImpl(scopeId);
     }
 
     @Override
-    public GroupListResult newGroupListResult() {
+    public GroupListResult newListResult() {
         return new GroupListResultImpl();
     }
 
     @Override
     public GroupQuery newQuery(KapuaId scopeId) {
         return new GroupQueryImpl(scopeId);
+    }
+
+    @Override
+    public GroupCreator newCreator(KapuaId scopeId) {
+        return new GroupCreatorImpl(scopeId);
     }
 }

@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
  * {@link Role} object factory.
@@ -21,45 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0.0
  *
  */
-public interface RoleFactory extends KapuaObjectFactory {
-
-    /**
-     * Instantiate a new {@link Role} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link Role}.
-     * @since 1.0.0
-     */
-    public Role newRole(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link RoleCreator} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link RoleCreator}.
-     * @since 1.0.0
-     */
-    public RoleCreator newCreator(KapuaId scopeId);
-
-    /**
-     * Instantiate a new {@link RoleQuery} implementing object with the provided scope id.
-     * 
-     * @param scopeId
-     *            The scope id to set.
-     * @return A instance of the implementing class of {@link RoleQuery}.
-     * @since 1.0.0
-     */
-    public RoleQuery newQuery(KapuaId scopeId);
-    
-    /**
-     * Instantiate a new {@link RoleListResult} implementing object.
-     * 
-     * @return A instance of the implementing class of {@link RoleListResult}.
-     * @since 1.0.0
-     */
-    public RoleListResult newRoleListResult();
+public interface RoleFactory extends KapuaEntityFactory<Role, RoleCreator, RoleQuery, RoleListResult> {
     
     /**
      * Instantiate a new {@link RolePermission} implementing object.

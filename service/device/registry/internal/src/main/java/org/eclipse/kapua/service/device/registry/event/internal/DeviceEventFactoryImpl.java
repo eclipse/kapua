@@ -32,7 +32,7 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
 
     @Override
     public DeviceEventCreator newCreator(KapuaId scopeId, KapuaId deviceId, Date receivedOn, String resource) {
-        DeviceEventCreatorImpl creator = new DeviceEventCreatorImpl(scopeId);
+        DeviceEventCreator creator = newCreator(scopeId);
         creator.setDeviceId(deviceId);
         creator.setAction(KapuaMethod.CREATE);
         creator.setReceivedOn(new Date(receivedOn.getTime()));
@@ -46,12 +46,17 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
     }
 
     @Override
-    public DeviceEvent newDeviceEvent() {
+    public DeviceEvent newEntity(KapuaId scopeId) {
         return new DeviceEventImpl();
     }
 
     @Override
-    public DeviceEventListResult newDeviceEventListResult() {
+    public DeviceEventCreator newCreator(KapuaId scopeId) {
+        return new DeviceEventCreatorImpl(scopeId);
+    }
+
+    @Override
+    public DeviceEventListResult newListResult() {
         return new DeviceEventListResultImpl();
     }
 }

@@ -27,7 +27,7 @@ public class AccessPermissionXmlRegistry {
      * @return
      */
     public AccessPermission newAccessPermission() {
-        return factory.newAccessPermission();
+        return factory.newEntity(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class AccessPermissionXmlRegistry {
      * @return
      */
     public AccessPermissionListResult newAccessPermissionListResult() {
-        return factory.newAccessPermissionListResult();
+        return factory.newListResult();
     }
 
     public AccessPermissionQuery newQuery() {

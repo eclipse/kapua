@@ -77,7 +77,7 @@ public class Users extends AbstractKapuaResource {
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
     {
-        UserListResult userListResult = userFactory.newUserListResult();
+        UserListResult userListResult = userFactory.newListResult();
         try {
             UserQuery query = userFactory.newQuery(scopeId);
 

@@ -43,15 +43,19 @@ public class UserFactoryMock implements UserFactory
     }
 
     @Override
-    public User newUser()
-    {
+    public User newEntity(KapuaId scopeId) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public UserListResult newUserListResult()
-    {
+    public UserCreator newCreator(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public UserListResult newListResult() {
         // TODO Auto-generated method stub
         return null;
     }

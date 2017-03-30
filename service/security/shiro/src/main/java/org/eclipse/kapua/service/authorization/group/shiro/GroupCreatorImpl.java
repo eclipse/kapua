@@ -43,6 +43,10 @@ public class GroupCreatorImpl extends AbstractKapuaEntityCreator<Group> implemen
         setName(name);
     }
 
+    public GroupCreatorImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
     @Override
     public void setName(String name) {
         this.name = name;

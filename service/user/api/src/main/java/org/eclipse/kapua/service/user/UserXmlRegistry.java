@@ -32,7 +32,7 @@ public class UserXmlRegistry {
      * @return
      */
     public User newUser() {
-        return factory.newUser();
+        return factory.newEntity(null);
     }
 
     /**
@@ -50,7 +50,7 @@ public class UserXmlRegistry {
      * @return
      */
     public UserListResult newUserListResult() {
-        return factory.newUserListResult();
+        return factory.newListResult();
     }
 
     public UserQuery newQuery() {

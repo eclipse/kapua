@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 public class AccessRoleFactoryImpl implements AccessRoleFactory {
 
     @Override
-    public AccessRole newAccessRole(KapuaId scopeId) {
+    public AccessRole newEntity(KapuaId scopeId) {
         return new AccessRoleImpl(scopeId);
     }
 
@@ -45,7 +45,7 @@ public class AccessRoleFactoryImpl implements AccessRoleFactory {
     }
 
     @Override
-    public AccessRoleListResult newAccessRoleListResult() {
+    public AccessRoleListResult newListResult() {
         return new AccessRoleListResultImpl();
     }
 }

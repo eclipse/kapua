@@ -27,7 +27,7 @@ public class RoleXmlRegistry {
      * @return
      */
     public Role newRole() {
-        return factory.newRole(null);
+        return factory.newEntity(null);
     }
 
     /**
@@ -45,7 +45,7 @@ public class RoleXmlRegistry {
      * @return
      */
     public RoleListResult newRoleListResult() {
-        return factory.newRoleListResult();
+        return factory.newListResult();
     }
 
     public RoleQuery newQuery() {
