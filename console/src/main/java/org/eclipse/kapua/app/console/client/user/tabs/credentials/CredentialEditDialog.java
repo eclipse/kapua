@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
+import org.eclipse.kapua.app.console.client.util.ConfirmPasswordUpdateFieldValidator;
+import org.eclipse.kapua.app.console.client.util.PasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
@@ -65,16 +67,18 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     private void loadCredential() {
         credentialType.setSimpleValue(selectedCredential.getCredentialTypeEnum());
-        password.setValue(selectedCredential.getCredentialKey());
-        confirmPassword.setValue(selectedCredential.getCredentialKey());
     }
 
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
         credentialType.disable();
-        //password.disable();
-        //confirmPassword.disable();
+        password.setValidator(new PasswordUpdateFieldValidator(password));
+        password.setFieldLabel(MSGS.dialogEditFieldNewPassword());
+        password.setAllowBlank(true);
+        confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password));
+        confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
+        confirmPassword.setAllowBlank(true);
     }
 
     @Override

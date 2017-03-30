@@ -142,18 +142,19 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         //
         // Do update
         GwtCredential gwtCredentialUpdated = null;
-        try {            
+        try {
             KapuaId scopeId = GwtKapuaModelConverter.convert(gwtCredential.getScopeId());
             KapuaId credentialId = GwtKapuaModelConverter.convert(gwtCredential.getId());
             // Update
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
             UserService userService = locator.getService(UserService.class);
-            
+
             Credential currentCredential = credentialService.find(scopeId, credentialId);
-            String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, gwtCredential.getCredentialKey());
-            currentCredential.setCredentialKey(encryptedPass);
-            
+            if (gwtCredential.getCredentialKey() != null && !gwtCredential.getCredentialKey().trim().equals("")) {
+                String encryptedPass = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, gwtCredential.getCredentialKey());
+                currentCredential.setCredentialKey(encryptedPass);
+            }
             Credential credentialUpdated = credentialService.update(currentCredential);
             User user = userService.find(credentialUpdated.getScopeId(), credentialUpdated.getUserId());
             // Convert
