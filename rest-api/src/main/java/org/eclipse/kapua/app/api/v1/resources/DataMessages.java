@@ -57,6 +57,10 @@ public class DataMessages extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results.
+     * @param channel
+     *            The channel id to filter results. It allows '#' wildcard in last channel level
      * @param offset
      *            The result set offset.
      * @param limit
@@ -74,6 +78,7 @@ public class DataMessages extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
+            
             // @ApiParam(value = "The metric name to filter results") @QueryParam("metricName") String metricName, //
             // @ApiParam(value = "The metric type to filter results") @QueryParam("metricType") MetricType metricType, //
             // @ApiParam(value = "The min metric value to filter results") @QueryParam("metricValueMin") String metricMinValue, //
