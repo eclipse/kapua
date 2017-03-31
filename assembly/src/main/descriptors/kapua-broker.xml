@@ -100,6 +100,7 @@
                 <exclude>lib/web/jdom*</exclude>
                 <exclude>lib/web/geronimo*</exclude>
                 <exclude>lib/web/asm*</exclude>
+                <exclude>lib/web/tomcat*</exclude>
                 <exclude>bin/</exclude>
 
                 <exclude>examples/</exclude>
@@ -214,6 +215,19 @@
                 <include>${pom.groupId}:kapua-transport-api</include>
                 <include>${pom.groupId}:kapua-transport-jms</include>
                 <include>${pom.groupId}:kapua-transport-mqtt</include>
+            </includes>
+        </dependencySet>
+        
+        <dependencySet>
+            <outputDirectory>lib/web</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>org.apache.tomcat:tomcat-servlet-api</include>
+                <include>org.apache.tomcat:tomcat-websocket-api</include>
             </includes>
         </dependencySet>
 
