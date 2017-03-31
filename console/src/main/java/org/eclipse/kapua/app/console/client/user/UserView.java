@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.client.user.tabs.credentials.UserTabItemCredentials;
+import org.eclipse.kapua.app.console.client.user.tabs.description.UserTabDescription;
 import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPermission;
 import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -31,6 +32,7 @@ public class UserView extends EntityView<GwtUser> {
     private UserTabItemAccessRole accessRoleTab;
     private UserTabItemPermission permissionTab;
     private UserTabItemCredentials credentialsTab;
+    private UserTabDescription descriptionTab;
     
     public UserView(GwtSession gwtSession) {
         super(gwtSession);
@@ -39,6 +41,10 @@ public class UserView extends EntityView<GwtUser> {
     @Override
     public List<KapuaTabItem<GwtUser>> getTabs(EntityView<GwtUser> entityView, GwtSession currentSession) {
         List<KapuaTabItem<GwtUser>> tabs = new ArrayList<KapuaTabItem<GwtUser>>();
+        if (descriptionTab == null) {
+            descriptionTab = new UserTabDescription();
+            tabs.add(descriptionTab);
+        }
         if (accessRoleTab == null) {
             accessRoleTab = new UserTabItemAccessRole(currentSession);
             tabs.add(accessRoleTab);

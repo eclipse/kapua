@@ -13,6 +13,7 @@
 package org.eclipse.kapua.app.console.shared.service;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
@@ -93,4 +94,6 @@ public interface GwtUserService extends RemoteService {
      */
     public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery)
             throws GwtKapuaException;
+    
+    public ListLoadResult<GwtGroupedNVPair> getUserDescription(String shortScopeId, String shortUserId) throws GwtKapuaException;
 }
