@@ -16,6 +16,11 @@ import static ch.qos.logback.classic.Level.WARN;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.cli.Option.builder;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +44,10 @@ import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.annotated.AnnotatedApplication;
 import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
-import org.eclipse.kapua.kura.simulator.util.NameThreadFactory;
+import org.eclipse.kapua.kura.simulator.simulation.Configurations;
+import org.eclipse.kapua.kura.simulator.simulation.JsonReader;
+import org.eclipse.kapua.kura.simulator.simulation.Simulation;
+import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.eclipse.scada.utils.str.StringReplacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,12 +177,17 @@ public class SimulatorRunner {
         logger.info("\taccount-name: {}", accountName);
 
         final ScheduledExecutorService downloadExecutor = Executors
-                .newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
+                .newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));
 
         final List<AutoCloseable> close = new LinkedList<>();
 
         final NameFactory nameFactory = createNameFactory(nameFactoryName)
                 .orElseGet(() -> NameFactories.prefixed(basename));
+
+        final List<Simulation> simulations = createSimulations(cli);
+
+        // auto close all simulations
+        close.addAll(simulations);
 
         try {
             for (int i = 1; i <= count; i++) {
@@ -187,6 +200,10 @@ public class SimulatorRunner {
                 final Set<Application> apps = new HashSet<>();
                 apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
                 apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
+
+                for (final Simulation sim : simulations) {
+                    apps.add(sim.createApplication(name));
+                }
 
                 final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
                 close.add(transport);
@@ -204,6 +221,26 @@ public class SimulatorRunner {
         logger.info("Exiting...");
     }
 
+    private static List<Simulation> createSimulations(final CommandLine cli) throws IOException {
+
+        final String simulationConfiguration = cli.getOptionValue("simulation");
+        if (simulationConfiguration != null && !simulationConfiguration.isEmpty()) {
+            final URL url = new URL(simulationConfiguration);
+
+            try (final InputStream in = url.openStream()) {
+                return Configurations.createSimulations(JsonReader.parse(in, StandardCharsets.UTF_8));
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**
+     * Show command line help
+     *
+     * @param opts
+     *            configured options
+     */
     private static void showHelp(final Options opts) {
         final HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("SimulatorRunner",

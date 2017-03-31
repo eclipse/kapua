@@ -120,10 +120,10 @@
             <directory>${project.build.directory}/dependencies/activemq/apache-activemq-${activemq.version}/bin/</directory>
             <fileMode>0755</fileMode>
             <excludes>
-                <exclude>bin/wrapper.jar</exclude>
-                <exclude>bin/macosx/</exclude>
-                <exclude>bin/linux-x86-32/</exclude>
-                <exclude>bin/linux-x86-64/</exclude>
+                <exclude>wrapper.jar</exclude>
+                <exclude>macosx/</exclude>
+                <exclude>linux-x86-32/</exclude>
+                <exclude>linux-x86-64/</exclude>
             </excludes>
         </fileSet>
 

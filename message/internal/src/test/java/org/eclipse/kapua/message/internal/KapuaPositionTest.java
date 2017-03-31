@@ -16,10 +16,10 @@ import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePositi
 import java.io.StringWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +34,7 @@ public class KapuaPositionTest extends Assert {
     private static final String DISPLAY_STR = "^\\{\"longitude\":.*, \"latitude\":.*, \"altitude\":.*" +
             ", \"precision\":.*, \"heading\":.*, \"speed\":.*, \"timestamp\":.*, \"satellites\":.*, \"status\":.*\\}$";
 
-    private static ZonedDateTime referenceDate = ZonedDateTime.of(2017, 1, 18, 13, 10, 46, 0, ZoneId.systemDefault());
-
-    private static String referenceDateStr = referenceDate.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    private static ZonedDateTime referenceDate = ZonedDateTime.of(2017, 1, 18, 12, 10, 46, 238000000, ZoneId.of(DateXmlAdapter.TIME_ZONE_UTC));
 
     private static final String POSITION_XML_STR = //
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
@@ -47,7 +45,7 @@ public class KapuaPositionTest extends Assert {
                     "   <precision>12.0</precision>" + newline +
                     "   <heading>280.0</heading>" + newline +
                     "   <speed>60.2</speed>" + newline +
-                    "   <timestamp>" + referenceDateStr + "</timestamp>" + newline +
+                    "   <timestamp>2017-01-18T12:10:46.238Z</timestamp>" + newline +
                     "   <satellites>5</satellites>" + newline +
                     "   <status>4</status>" + newline +
                     "</position>" + newline;

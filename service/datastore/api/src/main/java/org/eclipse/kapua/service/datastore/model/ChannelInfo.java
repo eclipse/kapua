@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Channel information schema definition
@@ -30,14 +31,16 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  */
 @XmlRootElement(name = "channel")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "id",
-        "scopeId",
-        "clientId",
-        "channel",
-        "firstMessageId",
-        "firstMessageOn",
-        "lastMessageId",
-        "lastMessageOn" })
+@XmlType(propOrder = { //
+        "id", //
+        "scopeId", //
+        "clientId", //
+        "channel", //
+        "firstMessageId", //
+        "firstMessageOn", //
+        "lastMessageId", //
+        "lastMessageOn" //
+})
 public interface ChannelInfo extends Storable {
 
     /**
@@ -120,6 +123,7 @@ public interface ChannelInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getFirstMessageOn();
 
     /**
@@ -161,6 +165,7 @@ public interface ChannelInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getLastMessageOn();
 
     /**

@@ -18,12 +18,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Kapua position object definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "position")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -44,6 +46,7 @@ public interface KapuaPosition extends Position {
      * Get the device position longitude
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "longitude")
     public Double getLongitude();
@@ -52,6 +55,7 @@ public interface KapuaPosition extends Position {
      * Set the device position longitude
      * 
      * @param longitude
+     * @since 1.0.0
      */
     public void setLongitude(Double longitude);
 
@@ -59,6 +63,7 @@ public interface KapuaPosition extends Position {
      * Get the device position latitude
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "latitude")
     public Double getLatitude();
@@ -67,6 +72,7 @@ public interface KapuaPosition extends Position {
      * Set the device position latitude
      * 
      * @param latitude
+     * @since 1.0.0
      */
     public void setLatitude(Double latitude);
 
@@ -74,6 +80,7 @@ public interface KapuaPosition extends Position {
      * Get the device position altitude
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "altitude")
     public Double getAltitude();
@@ -82,6 +89,7 @@ public interface KapuaPosition extends Position {
      * Set the device position altitude
      * 
      * @param altitude
+     * @since 1.0.0
      */
     public void setAltitude(Double altitude);
 
@@ -89,6 +97,7 @@ public interface KapuaPosition extends Position {
      * Get the device precision
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "precision")
     public Double getPrecision();
@@ -97,6 +106,7 @@ public interface KapuaPosition extends Position {
      * Set the device precision
      * 
      * @param precision
+     * @since 1.0.0
      */
     public void setPrecision(Double precision);
 
@@ -112,6 +122,7 @@ public interface KapuaPosition extends Position {
      * Set the device heading
      * 
      * @param heading
+     * @since 1.0.0
      */
     public void setHeading(Double heading);
 
@@ -119,6 +130,7 @@ public interface KapuaPosition extends Position {
      * Get the device speed
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "speed")
     public Double getSpeed();
@@ -127,6 +139,7 @@ public interface KapuaPosition extends Position {
      * Set the device speed
      * 
      * @param speed
+     * @since 1.0.0
      */
     public void setSpeed(Double speed);
 
@@ -134,14 +147,17 @@ public interface KapuaPosition extends Position {
      * Get the timestamp
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "timestamp")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getTimestamp();
 
     /**
      * Set the timestamp
      * 
      * @param timestamp
+     * @since 1.0.0
      */
     public void setTimestamp(Date timestamp);
 

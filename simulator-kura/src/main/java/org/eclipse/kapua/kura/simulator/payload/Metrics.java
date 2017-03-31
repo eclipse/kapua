@@ -13,6 +13,7 @@ package org.eclipse.kapua.kura.simulator.payload;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,9 +21,12 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.eclipse.kapua.kura.simulator.generator.Payload;
+import org.eclipse.kapua.kura.simulator.generator.Position;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraMetric;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraMetric.ValueType;
+import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.KuraPosition;
 
 import com.google.protobuf.ByteString;
 
@@ -55,6 +59,79 @@ public final class Metrics {
         for (final Map.Entry<String, Object> metric : metrics.entrySet()) {
             addMetric(builder, metric.getKey(), metric.getValue());
         }
+    }
+
+    public static KuraPayload toKuraPayload(final Payload payload) {
+        if (payload == null) {
+            return null;
+        }
+
+        final KuraPayload.Builder result = KuraPayload.newBuilder();
+        buildPayload(result, payload);
+        return result.build();
+    }
+
+    public static void buildPayload(final KuraPayload.Builder builder, final Payload payload) {
+        Objects.requireNonNull(builder);
+        Objects.requireNonNull(payload);
+
+        buildBody(builder, payload.getBody());
+        buildPosition(builder, payload.getPosition());
+        buildMetrics(builder, payload.getMetrics());
+    }
+
+    public static void buildPosition(final KuraPayload.Builder builder, final Position position) {
+        if (position == null) {
+            return;
+        }
+
+        Objects.requireNonNull(builder);
+
+        final KuraPosition.Builder result = KuraPosition.newBuilder();
+
+        if (position.getAltitude() != null) {
+            result.setAltitude(position.getAltitude());
+        }
+
+        if (position.getHeading() != null) {
+            result.setHeading(position.getHeading());
+        }
+
+        if (position.getLatitude() != null) {
+            result.setLatitude(position.getLatitude());
+        }
+
+        if (position.getLongitude() != null) {
+            result.setLongitude(position.getLongitude());
+        }
+
+        if (position.getPrecision() != null) {
+            result.setPrecision(position.getPrecision());
+        }
+
+        if (position.getSatellites() != null) {
+            result.setSatellites(position.getSatellites());
+        }
+
+        if (position.getSpeed() != null) {
+            result.setSpeed(position.getSpeed());
+        }
+
+        if (position.getTimestamp() != null) {
+            result.setTimestamp(position.getTimestamp().toEpochMilli());
+        }
+
+        builder.setPosition(result);
+    }
+
+    public static void buildBody(final KuraPayload.Builder builder, final ByteBuffer body) {
+        if (body == null) {
+            return;
+        }
+
+        Objects.requireNonNull(builder);
+
+        builder.setBody(ByteString.copyFrom(body));
     }
 
     public static void addMetric(final KuraPayload.Builder builder, final String key, final Object value) {
