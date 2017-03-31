@@ -12,25 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.GroupCreator;
-import org.eclipse.kapua.service.authorization.group.GroupListResult;
-import org.eclipse.kapua.service.authorization.group.GroupQuery;
-import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.group.*;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupCreatorImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.ResourceLimitsConfig;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.math.BigInteger;
 
 public class GroupServiceTest extends KapuaTest {
 
@@ -50,6 +49,12 @@ public class GroupServiceTest extends KapuaTest {
         //        scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
     }
 
+    @Before
+    public void before() {
+        // Setup JAXB context
+        XmlUtil.setContextProvider(new ShiroJAXBContextProvider());
+    }
+
     // Tests
 
     @Test
@@ -65,6 +70,10 @@ public class GroupServiceTest extends KapuaTest {
             //
             // Create
             GroupService groupService = locator.getService(GroupService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
             //
@@ -92,6 +101,10 @@ public class GroupServiceTest extends KapuaTest {
             GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
             assertNotNull(group);
@@ -130,6 +143,10 @@ public class GroupServiceTest extends KapuaTest {
             GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
             assertNotNull(group);
@@ -165,6 +182,10 @@ public class GroupServiceTest extends KapuaTest {
             GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
             assertNotNull(group);
@@ -209,6 +230,10 @@ public class GroupServiceTest extends KapuaTest {
             GroupCreator groupCreator = new GroupCreatorImpl(scope, "test-" + random.nextLong());
 
             GroupService groupService = locator.getService(GroupService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
             assertNotNull(group);
