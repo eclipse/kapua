@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.shared.model;
 
 public class GwtGroup extends GwtUpdatableEntityModel {
 
+	private static final long serialVersionUID = 4881931163215324035L;
+	   
     public String getGroupName() {
         return get("groupName");
     }

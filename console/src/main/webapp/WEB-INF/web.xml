@@ -58,6 +58,7 @@
         <url-pattern>/credential/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
+        <url-pattern>/devicegroup/*</url-pattern>
 	</filter-mapping>
 
 	<!-- Default page to serve -->
@@ -151,6 +152,15 @@
 		<url-pattern>/device</url-pattern>
 	</servlet-mapping>
 
+    <servlet>
+        <servlet-name>deviceGroupServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceGroupServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deviceGroupServlet</servlet-name>
+        <url-pattern>/devicegroup</url-pattern>   
+    </servlet-mapping>
+    
     <servlet>
         <servlet-name>deviceManagementServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceManagementServiceImpl</servlet-class>

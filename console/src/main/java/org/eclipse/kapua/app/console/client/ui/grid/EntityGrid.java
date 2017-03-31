@@ -155,8 +155,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected abstract List<ColumnConfig> getColumns();
 
     public void refresh() {
-        entityLoader.load();
-        entityPagingToolbar.enable();
+    	 if (this.isRendered()) {
+             entityLoader.load();
+             entityPagingToolbar.enable();
+         }
     }
     
     public void refresh(GwtQuery query) {
