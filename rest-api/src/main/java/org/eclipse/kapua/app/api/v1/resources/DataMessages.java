@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
+import java.util.Date;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -22,19 +24,23 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
+import org.eclipse.kapua.app.api.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
@@ -78,7 +84,8 @@ public class DataMessages extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
-            
+            @ApiParam(value = "The start Date to filter the results. Must come before endDate param") @QueryParam("startDate") DateParam startDateParam,
+            @ApiParam(value = "The end Date to filter the results. Must come before endDate param") @QueryParam("endDate") DateParam endDateParam,
             // @ApiParam(value = "The metric name to filter results") @QueryParam("metricName") String metricName, //
             // @ApiParam(value = "The metric type to filter results") @QueryParam("metricType") MetricType metricType, //
             // @ApiParam(value = "The min metric value to filter results") @QueryParam("metricValueMin") String metricMinValue, //
@@ -97,6 +104,13 @@ public class DataMessages extends AbstractKapuaResource {
             if (!Strings.isNullOrEmpty(channel)) {
                 ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
                 andPredicate.getPredicates().add(channelPredicate);
+            }
+            
+            Date startDate = startDateParam != null ? startDateParam.getDate() : null;
+            Date endDate = endDateParam != null ? endDateParam.getDate() : null;
+            if ( startDate != null || endDate != null) {
+                RangePredicate timestampPredicate = new RangePredicateImpl(ChannelInfoField.TIMESTAMP, startDate, endDate);
+                andPredicate.getPredicates().add(timestampPredicate);
             }
 
             // manageMetricValueFiltering(andPredicate, metricName, metricType, metricMinValue, metricMaxValue);
