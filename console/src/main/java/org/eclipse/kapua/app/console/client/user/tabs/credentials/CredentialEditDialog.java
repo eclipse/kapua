@@ -18,6 +18,9 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -76,6 +79,13 @@ public class CredentialEditDialog extends CredentialAddDialog {
         password.setValidator(new PasswordUpdateFieldValidator(password));
         password.setFieldLabel(MSGS.dialogEditFieldNewPassword());
         password.setAllowBlank(true);
+        password.addListener(Events.Change, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                confirmPassword.setAllowBlank(password.getValue() == null || password.getValue().equals(""));
+            }
+        });
         confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password));
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
