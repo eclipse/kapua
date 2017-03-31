@@ -31,7 +31,7 @@ public class MetricTypeXmlAdapter extends ObjectTypeXmlAdapter {
     }
 
     @Override
-    public Class<?> unmarshal(String value) throws Exception {
+    public Class<?> unmarshal(String value) throws ClassNotFoundException {
         Class<?> clazz;
         if (TYPE_BASE_64_BINARY.equals(value)) {
             clazz = byte[].class;
