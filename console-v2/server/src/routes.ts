@@ -59,7 +59,7 @@ namespace Route {
                     return;
                 }
             }
-            let apiUrl = kapuaServerConf.restApi.baseUrl + _.replace(req.path, "/api", "");
+            let apiUrl = kapuaServerConf.restApi.baseUrl + _.replace(req.url, "/api", "");
             request({
                 url: apiUrl,
                 method: req.method,
