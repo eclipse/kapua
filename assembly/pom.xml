@@ -234,10 +234,6 @@
 			<artifactId>javassist</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>annotations</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
@@ -540,14 +536,6 @@
 									<groupId>org.javassist</groupId>
 									<artifactId>javassist</artifactId>
 									<version>${javassist.version}</version>
-									<type>jar</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>target/broker_dependency</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.google.code.findbugs</groupId>
-									<artifactId>annotations</artifactId>
-									<version>${findbugs.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
 									<outputDirectory>target/broker_dependency</outputDirectory>
