@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.server;
 
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserCreator;
@@ -317,5 +318,33 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
 
         return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);
+    }
+    
+    @Override
+    public ListLoadResult<GwtGroupedNVPair> getUserDescription(String shortScopeId,
+            String shortUserId) throws GwtKapuaException {
+       List<GwtGroupedNVPair> gwtUserDescription = new ArrayList<GwtGroupedNVPair>();
+       try {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        UserService userService = locator.getService(UserService.class);
+        KapuaId scopeId = KapuaEid.parseCompactId(shortScopeId);
+        KapuaId userId = KapuaEid.parseCompactId(shortUserId);
+        User user = userService.find(scopeId, userId);
+        
+        if (user != null) {
+            gwtUserDescription.add(new GwtGroupedNVPair("Entity", "Created By", user.getCreatedBy().toCompactId()));
+            gwtUserDescription.add(new GwtGroupedNVPair("Entity", "Created On", user.getCreatedOn().toString()));
+            gwtUserDescription.add(new GwtGroupedNVPair("User", "Status", user.getStatus().toString()));                                                                                                                                                                               
+            gwtUserDescription.add(new GwtGroupedNVPair("User", "User Name", user.getName()));
+            gwtUserDescription.add(new GwtGroupedNVPair("User", "Display Name", user.getDisplayName()));
+            gwtUserDescription.add(new GwtGroupedNVPair("User", "Phone Number", user.getPhoneNumber()));
+            gwtUserDescription.add(new GwtGroupedNVPair("User", "Email", user.getEmail()));
+           
+        }
+    } catch (Exception e) {
+        KapuaExceptionHandler.handle(e);
+    }
+       
+       return new BaseListLoadResult<GwtGroupedNVPair>(gwtUserDescription);
     }
 }
