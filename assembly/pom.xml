@@ -272,9 +272,29 @@
 			<artifactId>log4j-over-slf4j</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.ning</groupId>
 			<artifactId>compress-lzf</artifactId>
 			<version>1.0.3</version>
+		</dependency>
+		
+		<!--
+			Java APIs from Tomcat:
+			We stick to 8.0.38 because they are only APIs and we can
+			piggyback on this version. 
+			-->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-servlet-api</artifactId>
+			<version>8.0.38</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-websocket-api</artifactId>
+			<version>8.0.38</version>
 		</dependency>
 	</dependencies>
 

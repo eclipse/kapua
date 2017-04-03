@@ -25,6 +25,7 @@ import com.google.gwt.user.client.Element;
 
 public class DashboardView extends LayoutContainer {
 
+    @SuppressWarnings("unused")
     private GwtSession m_currentSession;
     private ContentPanel centerPanel;
 

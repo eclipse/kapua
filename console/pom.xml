@@ -171,18 +171,16 @@
         </dependency>
 
         <dependency>
-            <!-- Velocity stuff for error pages templating -->
-            <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-        </dependency>
-
-        <dependency>
             <!-- Apache shiro security framework web support -->
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
             <version>${shiro.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.neoscada.utils</groupId>
+            <artifactId>org.eclipse.scada.utils</artifactId>
+            <version>0.4.0</version>
         </dependency>
 
         <dependency>

@@ -51,6 +51,7 @@ public class DeviceTabProfile extends LayoutContainer {
 
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
+    @SuppressWarnings("unused")
     private GwtSession m_currentSession;
     @SuppressWarnings("unused")
     private DeviceFilterPanel m_deviceFilterPanel;

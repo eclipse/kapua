@@ -61,7 +61,6 @@ public class AccountConfigComponents extends LayoutContainer {
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    @SuppressWarnings("unused")
     private GwtSession m_currentSession;
 
     private boolean m_dirty;
