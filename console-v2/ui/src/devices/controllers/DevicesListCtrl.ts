@@ -15,9 +15,10 @@ import { DeviceConnectionStatus } from "../models/DeviceConnectionStatus";
 export default class DevicesListCtrl {
   private devices: Device[];
 
-  constructor(private $http: angular.IHttpService,
-              private $modal: angular.ui.bootstrap.IModalService) {
-    this.getDevices().then((result) => {
+  constructor(private $modal: angular.ui.bootstrap.IModalService,
+    private $state: any,
+    private devicesService: IDevicesService) {
+    this.devicesService.getDevices().then((result: ng.IHttpPromiseCallbackArg<ListResult<Device>>) => {
       $(() => {
         this.devices = result.data.items.item;
         // DataTable Config
@@ -25,10 +26,10 @@ export default class DevicesListCtrl {
           columns: [
             {
               data: null,
-              className: "table-view-pf-select",
+              className: "table-view-pf-select checkboxField",
               render: function (data, type, full, meta) {
                 // Select row checkbox renderer
-                let id = "select" + meta.row;
+                let id = "select" + data.id;
                 return `<label class="sr-only" for="` + id + `">Select row ` + meta.row +
                   `</label><input type="checkbox" id="` + id + `" name="` + id + `">`;
               },
@@ -36,10 +37,10 @@ export default class DevicesListCtrl {
               width: "10px"
             },
             {
-              data: "connectionId",
-              render: function(data, type, full, meta) {
-                    return data ? `<i class="fa fa-plug" style="color: rgb(29,158,116)"></i>` :
-                                  `<i class="fa fa-plug" style="color: rgb(230,200,29)"></i>`;
+              data: "connection.status",
+              render: function (data, type, full, meta) {
+                return data === 'CONNECTED' ? `<i class="fa fa-plug" style="color: rgb(29,158,116); padding-top: 4px;"></i>` :
+                  `<i class="fa fa-plug" style="color: rgb(255,0,0); padding-top: 4px;"></i>`;
               },
               width: "10px"
             },
@@ -98,6 +99,33 @@ export default class DevicesListCtrl {
           $(".btn-find-close").click(function () {
             $(".find-pf-dropdown-container").hide();
           });
+
+          // Upon clicking on table row
+          let table = $('#table1').DataTable();
+
+          $(".checkBoxField").on('click', function () {
+            let data: any = table.row(this).data();
+            if (data) {
+              if (!$('#select' + data.id).is(':focus')) {
+                $('#select' + data.id).focus();
+                $('#select' + data.id).click();
+              }
+            } else {
+              if (!$('#selectAll').is(':focus')) {
+                $('#selectAll').focus();
+                $('#selectAll').click();
+              }
+            }
+          });
+
+          $('tr').on('click', function () {
+            let data: any = table.row(this).data();
+            if (data) {
+              if (!$("#select" + data.id).is(':focus')) {
+                $state.go("kapua.devices.detail", { id: data.id });
+              }
+            }
+          });
         };
 
         // Initialize find util
@@ -106,10 +134,6 @@ export default class DevicesListCtrl {
         let dataTable = ($(".datatable") as any).dataTable();
       });
     });
-  }
-
-  getDevices() {
-    return this.$http.get<ListResult<Device>>("api/_/devices");
   }
 
   deleteDevices() {
@@ -123,8 +147,8 @@ export default class DevicesListCtrl {
     modal.result.then((result: any) => {
       console.info(result);
     },
-    (result) => {
-      console.warn(result);
-    });
+      (result) => {
+        console.warn(result);
+      });
   }
 }

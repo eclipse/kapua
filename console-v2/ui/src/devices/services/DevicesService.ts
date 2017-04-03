@@ -15,6 +15,10 @@ export default class DevicesService implements IDevicesService {
     constructor(private $http: ng.IHttpService) {
     }
 
+    getDevices(): ng.IHttpPromise<ListResult<Device>> {
+        return this.$http.get("api/_/devices?fetchAttributes=connection");
+    }
+
     getDeviceById(deviceID: string): ng.IHttpPromise<Device> {
         return this.$http.get("/api/_/devices/" + deviceID);
     }
@@ -29,12 +33,12 @@ export default class DevicesService implements IDevicesService {
 
     startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
         return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_start", {});
-        
+
     };
 
     stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
         return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_stop", {});
-        
+
     };
 
 }
