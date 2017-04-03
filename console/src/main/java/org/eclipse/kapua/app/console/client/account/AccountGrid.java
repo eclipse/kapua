@@ -66,7 +66,7 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
     }
     
     @Override
-    protected RpcProxy getDataProxy() {
+    protected RpcProxy<PagingLoadResult<GwtAccount>> getDataProxy() {
         return new RpcProxy<PagingLoadResult<GwtAccount>>() {
 
             @Override

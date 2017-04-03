@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
 public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
+    @SuppressWarnings("unused")
     private final ConsoleMessages msgs = GWT.create(ConsoleMessages.class);
 
     @SuppressWarnings("unused")

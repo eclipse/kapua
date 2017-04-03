@@ -31,6 +31,7 @@ import com.google.gwt.core.client.GWT;
 
 public class CredentialFilterPanel extends EntityFilterPanel<GwtCredential> {
 
+    @SuppressWarnings("unused")
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final static ConsoleCredentialMessages CREDENTIAL_MSGS = GWT.create(ConsoleCredentialMessages.class);
     private final int WIDTH = 200;
