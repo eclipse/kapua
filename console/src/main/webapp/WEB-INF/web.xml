@@ -24,19 +24,20 @@
 	<listener>
         <listener-class>org.eclipse.kapua.app.console.server.util.ConsoleListener</listener-class>
     </listener>
-    
-	<filter>
-	   <filter-name>ShiroFilter</filter-name>
+
+    <filter>
+        <filter-name>ShiroFilter</filter-name>
         <filter-class>org.eclipse.kapua.app.console.filter.KapuaWebFilter</filter-class>
-   	</filter>
-	<filter-mapping>
-		<filter-name>ShiroFilter</filter-name>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ShiroFilter</filter-name>
         <url-pattern>*.html</url-pattern>
         <url-pattern>*.jsp</url-pattern>
         <url-pattern>*.js</url-pattern>
         <url-pattern>*.css</url-pattern>
-        <url-pattern>/xsrf/*</url-pattern>   
-        <url-pattern>/errroHandler/*</url-pattern>     
+        <url-pattern>/xsrf/*</url-pattern>
+        <url-pattern>/errroHandler/*</url-pattern>
         <url-pattern>/account/*</url-pattern>
         <url-pattern>/auth/*</url-pattern>
         <url-pattern>/device/*</url-pattern>
@@ -58,7 +59,7 @@
         <url-pattern>/credential/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
-	</filter-mapping>
+    </filter-mapping>
 
 	<!-- Default page to serve -->
 	<welcome-file-list>
@@ -71,40 +72,40 @@
 	</session-config>
 
     <!--  -->
-	<!-- Servlets -->
-	<!--  -->
-    
-	<!-- Http error handling servlet -->
-	<servlet>
-      <servlet-name>KapuaErrorHandlerServlet</servlet-name>
-      <servlet-class>org.eclipse.kapua.app.console.servlet.KapuaErrorHandlerServlet
-      </servlet-class>
-   	</servlet>
-   	<servlet-mapping>
-      <servlet-name>KapuaErrorHandlerServlet</servlet-name>
-      <url-pattern>/errorHandler/*</url-pattern>
-   	</servlet-mapping>
-   
-	<!-- XSRF servlet support -->
-   <servlet>
-      <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
-      <servlet-class>org.eclipse.kapua.app.console.server.GwtSecurityTokenServiceImpl
-      </servlet-class>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
-      <url-pattern>/xsrf/*</url-pattern>
-   </servlet-mapping>
+    <!-- Servlets -->
+    <!--  -->
+
+    <!-- Http error handling servlet -->
+    <servlet>
+        <servlet-name>KapuaErrorHandlerServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.servlet.KapuaErrorHandlerServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>KapuaErrorHandlerServlet</servlet-name>
+        <url-pattern>/errorHandler/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- XSRF servlet support -->
+    <servlet>
+        <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtSecurityTokenServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
+        <url-pattern>/xsrf/*</url-pattern>
+    </servlet-mapping>
 
     <servlet>
-      <servlet-name>GwtSettingsServiceImpl</servlet-name>
-      <servlet-class>org.eclipse.kapua.app.console.server.GwtSettingsServiceImpl
-      </servlet-class>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>GwtSettingsServiceImpl</servlet-name>
-      <url-pattern>/settings/*</url-pattern>
-   </servlet-mapping>
+        <servlet-name>GwtSettingsServiceImpl</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtSettingsServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GwtSettingsServiceImpl</servlet-name>
+        <url-pattern>/settings/*</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>deviceExporterServlet</servlet-name>
@@ -115,7 +116,7 @@
         <url-pattern>/exporter_device/*</url-pattern>
     </servlet-mapping>
 
-	<servlet>
+    <servlet>
         <servlet-name>deviceSnapshotsServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.servlet.DeviceSnapshotsServlet</servlet-class>
     </servlet>
@@ -168,7 +169,7 @@
         <servlet-name>roleServlet</servlet-name>
         <url-pattern>/role</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>accessRoleServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessRoleServiceImpl</servlet-class>
@@ -186,7 +187,7 @@
         <servlet-name>accessInfoServlet</servlet-name>
         <url-pattern>/accessinfo</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>accessPermissionServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtAccessPermissionServiceImpl</servlet-class>
@@ -195,7 +196,7 @@
         <servlet-name>accessPermissionServlet</servlet-name>
         <url-pattern>/accesspermission</url-pattern>
     </servlet-mapping>
-    
+
     <servlet>
         <servlet-name>domainServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.server.GwtDomainServiceImpl</servlet-class>
@@ -260,35 +261,35 @@
       |  Error Pages
       |
       -->
-	<error-page>
-   		<exception-type>java.lang.Throwable</exception-type>
-   		<location>/errorHandler/throwable</location>
- 	</error-page>
- 	
- 	<error-page>
-   		<error-code>400</error-code>
-   		<location>/errorHandler/httpError</location>
- 	</error-page>
- 	
- 	<error-page>
-   		<error-code>401</error-code>
-   		<location>/errorHandler/httpError</location>
- 	</error-page>
- 	
- 	<error-page>
-   		<error-code>403</error-code>
-   		<location>/errorHandler/httpError</location>
- 	</error-page>
- 	
- 	<error-page>
-   		<error-code>404</error-code>
-   		<location>/errorHandler/httpError</location>
- 	</error-page>
- 	
- 	<error-page>
-   		<error-code>405</error-code>
-   		<location>/errorHandler/httpError</location>
- 	</error-page>
- 	
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/errorHandler/throwable</location>
+    </error-page>
+
+    <error-page>
+        <error-code>400</error-code>
+        <location>/errorHandler/httpError</location>
+    </error-page>
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/errorHandler/httpError</location>
+    </error-page>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/errorHandler/httpError</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errorHandler/httpError</location>
+    </error-page>
+
+    <error-page>
+        <error-code>405</error-code>
+        <location>/errorHandler/httpError</location>
+    </error-page>
+
 
 </web-app>
