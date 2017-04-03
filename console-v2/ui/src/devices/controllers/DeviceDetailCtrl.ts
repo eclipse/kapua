@@ -122,7 +122,7 @@ export default class DeviceDetailCtrl {
     // ]
   };
 
-  private oneAtATime: boolean = true;
+  private oneAtATime: boolean = false;
 
   constructor(private $stateParams: angular.ui.IStateParamsService,
     private $http: angular.IHttpService,

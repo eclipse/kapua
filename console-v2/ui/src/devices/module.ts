@@ -110,7 +110,7 @@ angular.module("app.devices", [])
     .service("deviceMapperService", [DeviceMapperService])
 
     //controllers
-    .controller("DevicesListCtrl", ["$http", "$modal", "$state", DevicesListCtrl])
+    .controller("DevicesListCtrl", ["$modal", "$state", "devicesService", DevicesListCtrl])
     .controller("DeleteDevicesModalCtrl", ["$modalInstance", "$http", "id", DeleteDevicesModalCtrl])
     .controller("DeviceDetailCtrl", ["$stateParams", "$http", "devicesService", "deviceMapperService", DeviceDetailCtrl])
     .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$http", "devicesService", DeviceDetailPackagesCtrl])

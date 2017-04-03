@@ -11,6 +11,7 @@
 *                                                                               
 *******************************************************************************/
 interface IDevicesService {
+    getDevices(): ng.IHttpPromise<ListResult<Device>>;
     getDeviceById(deviceID: string): ng.IHttpPromise<Device>;
     getBundlesByDeviceId(deviceID: string): ng.IHttpPromise<DeviceBundles>;
     getPackagesByDeviceId(deviceID: string): ng.IHttpPromise<DevicePackages>;
