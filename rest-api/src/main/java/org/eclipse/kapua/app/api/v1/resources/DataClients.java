@@ -54,8 +54,8 @@ public class DataClients extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
-     * @param name
-     *            The client name to filter results
+     * @param clientId
+     *            The client id to filter results
      * @param offset
      *            The result set offset.
      * @param limit

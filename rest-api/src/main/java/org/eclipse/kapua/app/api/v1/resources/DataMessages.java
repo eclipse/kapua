@@ -66,7 +66,11 @@ public class DataMessages extends AbstractKapuaResource {
      * @param clientId
      *            The client id to filter results.
      * @param channel
-     *            The channel id to filter results. It allows '#' wildcard in last channel level
+     *            The channel id to filter results. It allows '#' wildcard in last channel level.
+     * @param startDate
+     *            The start date to filter the results. Must come before endDate parameter.
+     * @param endDate
+     *            The end date to filter the results. Must come after startDate parameter
      * @param offset
      *            The result set offset.
      * @param limit
@@ -84,8 +88,8 @@ public class DataMessages extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
-            @ApiParam(value = "The start Date to filter the results. Must come before endDate param") @QueryParam("startDate") DateParam startDateParam,
-            @ApiParam(value = "The end Date to filter the results. Must come before endDate param") @QueryParam("endDate") DateParam endDateParam,
+            @ApiParam(value = "The start date to filter the results. Must come before endDate parameter") @QueryParam("startDate") DateParam startDateParam,
+            @ApiParam(value = "The end date to filter the results. Must come after startDate parameter") @QueryParam("endDate") DateParam endDateParam,
             // @ApiParam(value = "The metric name to filter results") @QueryParam("metricName") String metricName, //
             // @ApiParam(value = "The metric type to filter results") @QueryParam("metricType") MetricType metricType, //
             // @ApiParam(value = "The min metric value to filter results") @QueryParam("metricValueMin") String metricMinValue, //
