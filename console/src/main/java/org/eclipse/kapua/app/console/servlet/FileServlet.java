@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 public class FileServlet extends KapuaHttpServlet {
 
     private static final long serialVersionUID = -5016170117606322129L;
-    private static Logger s_logger = LoggerFactory.getLogger(FileServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -114,7 +114,7 @@ public class FileServlet extends KapuaHttpServlet {
             String xmlConfigurationString = new String(data, "UTF-8");
 
             deviceConfigurationManagementService.put(KapuaEid.parseCompactId(scopeIdString),
-                                                     KapuaEid.parseCompactId(deviceIdString),
+                    KapuaEid.parseCompactId(deviceIdString),
                     xmlConfigurationString,
                     null);
 
@@ -131,7 +131,7 @@ public class FileServlet extends KapuaHttpServlet {
             resp.sendError(403, eiae.getMessage());
             return;
         } catch (Exception e) {
-            s_logger.error("Error posting configuration", e);
+            logger.error("Error posting configuration", e);
             throw new ServletException(e);
         }
     }
@@ -192,14 +192,14 @@ public class FileServlet extends KapuaHttpServlet {
             }
 
             commandInput.setCommand(cmd);
-            commandInput.setPassword((password == null || password.isEmpty()) ? null : password);
+            commandInput.setPassword(password == null || password.isEmpty() ? null : password);
             commandInput.setArguments(args);
             commandInput.setTimeout(timeout);
             commandInput.setWorkingDir("/tmp/");
             commandInput.setBody(data);
 
             DeviceCommandOutput deviceCommandOutput = deviceService.exec(KapuaEid.parseCompactId(scopeIdString),
-                                                                         KapuaEid.parseCompactId(deviceIdString),
+                    KapuaEid.parseCompactId(deviceIdString),
                     commandInput,
                     null);
             resp.setContentType("text/plain");
@@ -229,7 +229,7 @@ public class FileServlet extends KapuaHttpServlet {
             resp.sendError(403, eiae.getMessage());
             return;
         } catch (Exception e) {
-            s_logger.error("Error sending command", e);
+            logger.error("Error sending command", e);
             throw new ServletException(e);
         }
     }
@@ -286,23 +286,21 @@ public class FileServlet extends KapuaHttpServlet {
 
 class UploadRequest extends ServletFileUpload {
 
-    private static Logger s_logger = LoggerFactory.getLogger(UploadRequest.class);
+    private static Logger logger = LoggerFactory.getLogger(UploadRequest.class);
 
-    Map<String, String> formFields;
-    List<FileItem> fileItems;
+    private final Map<String, String> formFields;
+    private final List<FileItem> fileItems;
 
     public UploadRequest(DiskFileItemFactory diskFileItemFactory) {
         super(diskFileItemFactory);
         setSizeMax(ConsoleSetting.getInstance().getLong(ConsoleSettingKeys.FILE_UPLOAD_SIZE_MAX));
-        formFields = new HashMap<String, String>();
-        fileItems = new ArrayList<FileItem>();
+        formFields = new HashMap<>();
+        fileItems = new ArrayList<>();
     }
 
-    @SuppressWarnings("unchecked")
-    public void parse(HttpServletRequest req)
-            throws FileUploadException {
-        s_logger.debug("upload.getFileSizeMax(): {}", getFileSizeMax());
-        s_logger.debug("upload.getSizeMax(): {}", getSizeMax());
+    public void parse(HttpServletRequest req) throws FileUploadException {
+        logger.debug("upload.getFileSizeMax(): {}", getFileSizeMax());
+        logger.debug("upload.getSizeMax(): {}", getSizeMax());
 
         // Parse the request
         List<FileItem> items = null;
@@ -311,13 +309,13 @@ class UploadRequest extends ServletFileUpload {
         // Process the uploaded items
         Iterator<FileItem> iter = items.iterator();
         while (iter.hasNext()) {
-            FileItem item = (FileItem) iter.next();
+            FileItem item = iter.next();
 
             if (item.isFormField()) {
                 String name = item.getFieldName();
                 String value = item.getString();
 
-                s_logger.debug("Form field item name: {}, value: {}", name, value);
+                logger.debug("Form field item name: {}, value: {}", name, value);
 
                 formFields.put(name, value);
             } else {
@@ -327,7 +325,7 @@ class UploadRequest extends ServletFileUpload {
                 boolean isInMemory = item.isInMemory();
                 long sizeInBytes = item.getSize();
 
-                s_logger.debug("File upload item name: {}, fileName: {}, contentType: {}, isInMemory: {}, size: {}",
+                logger.debug("File upload item name: {}, fileName: {}, contentType: {}, isInMemory: {}, size: {}",
                         new Object[] { fieldName, fileName, contentType, isInMemory, sizeInBytes });
 
                 fileItems.add(item);
