@@ -25,7 +25,7 @@ public class DateXmlAdapter extends XmlAdapter<String, Date> {
     public static final String TIME_ZONE_UTC = "UTC";
 
     @Override
-    public Date unmarshal(String v) throws IllegalArgumentException {
+    public Date unmarshal(String v) {
         return DatatypeConverter.parseDateTime(v).getTime();
     }
 
