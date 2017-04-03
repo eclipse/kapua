@@ -74,7 +74,7 @@ public class Devices extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Gets the Device list in the scope",
             notes = "Returns the list of all the devices associated to the current selected scope.",
-            response = Device.class,
+            response = DeviceListResult.class,
             responseContainer = "DeviceListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -121,7 +121,7 @@ public class Devices extends AbstractKapuaResource {
      */
     @ApiOperation(value = "Queries the Devices",
             notes = "Queries the Devices with the given Devices parameter returning all matching Devices",
-            response = Device.class,
+            response = DeviceListResult.class,
             responseContainer = "DeviceListResult")
     @POST
     @Path("_query")
