@@ -157,7 +157,7 @@ public class ChannelInfoXContentBuilder {
         StorableId id = new StorableIdImpl(getOrDeriveId(null, channelInfoCreator.getScopeId(),
                 channelInfoCreator.getClientId(),
                 channelInfoCreator.getName()));
-        
+
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(channelInfoCreator.getScopeId(), id);
         channelInfo.setClientId(channelInfoCreator.getClientId());
         channelInfo.setName(channelInfoCreator.getName());
@@ -192,7 +192,7 @@ public class ChannelInfoXContentBuilder {
         this.setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getScopeId(),
                 channelInfo.getClientId(),
                 channelInfo.getName()));
-        
+
         this.setBuilder(channelBuilder);
         return this;
     }
