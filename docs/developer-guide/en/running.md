@@ -1,6 +1,6 @@
 # Running
 
-Kapua can be run in a few different ways. See th following chapters for
+Kapua can be run in a few different ways. See the following chapters for
 more information about how to start and run Kapua.
 
 {% hint style='info' %}
