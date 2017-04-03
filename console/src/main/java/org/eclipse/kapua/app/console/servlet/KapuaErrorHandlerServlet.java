@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
@@ -28,12 +28,12 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
 
     private static final long serialVersionUID = 823090686760110256L;
 
-    private static Logger s_logger = LoggerFactory.getLogger(KapuaErrorHandlerServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaErrorHandlerServlet.class);
 
-    private static String HTTP_ERROR_PATH = "/httpError";
-    private static String THROWABLE_PATH = "/throwable";
+    private static final String HTTP_ERROR_PATH = "/httpError";
+    private static final String THROWABLE_PATH = "/throwable";
 
-    private static String httpErrorTemplate = "<!doctype html>" +
+    private static final String httpErrorTemplate = "<!doctype html>" +
             "<html>" +
             "   <head>" +
             "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
@@ -60,7 +60,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             "      </div>" +
             "   </body>" +
             "</html>";
-    private static String throwableErrorTemplate = "<!doctype html>" +
+    private static final String throwableErrorTemplate = "<!doctype html>" +
             "<html>" +
             "   <head>" +
             "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
@@ -92,15 +92,13 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             "   </body>" +
             "</html>";
 
-    public KapuaErrorHandlerServlet() {
-        super();
-    }
-
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processError(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processError(request, response);
@@ -111,7 +109,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
 
-        String pathInfo = (String) request.getPathInfo();
+        String pathInfo = request.getPathInfo();
         if (pathInfo == null) {
             response.sendError(404);
             return;
@@ -154,7 +152,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         Velocity.evaluate(velocityContext, out, "", httpErrorTemplate);
         out.close();
 
-        s_logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}",
+        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}",
                 new Object[] { statusCode, requestUri, errorMessage });
     }
 
@@ -198,7 +196,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         Velocity.evaluate(velocityContext, out, "", throwableErrorTemplate);
         out.close();
 
-        s_logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}",
+        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}",
                 new Object[] { statusCode, requestUri, errorMessage });
     }
 }
