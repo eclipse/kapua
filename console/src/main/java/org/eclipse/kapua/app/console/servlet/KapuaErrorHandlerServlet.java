@@ -12,15 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
+import static com.google.common.html.HtmlEscapers.htmlEscaper;
+
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.eclipse.scada.utils.ExceptionHelper;
+import org.eclipse.scada.utils.str.StringReplacer;
+import org.eclipse.scada.utils.str.StringReplacer.ReplaceSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +96,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             "   </body>" +
             "</html>";
 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -109,7 +114,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
 
-        String pathInfo = request.getPathInfo();
+        final String pathInfo = request.getPathInfo();
         if (pathInfo == null) {
             response.sendError(404);
             return;
@@ -121,7 +126,6 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             processThrowable(request, response);
         } else {
             response.sendError(404);
-            return;
         }
     }
 
@@ -143,17 +147,14 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             errorMessage = "Internal Server Error";
         }
 
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("statusCode", statusCode);
-        velocityContext.put("requestUri", requestUri);
-        velocityContext.put("errorMessage", errorMessage);
+        final Map<String, Object> data = new HashMap<>();
+        data.put("statusCode", statusCode);
+        data.put("requestUri", requestUri);
+        data.put("errorMessage", errorMessage);
 
-        PrintWriter out = response.getWriter();
-        Velocity.evaluate(velocityContext, out, "", httpErrorTemplate);
-        out.close();
+        response.getWriter().write(processTemplate(data, httpErrorTemplate));
 
-        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}",
-                new Object[] { statusCode, requestUri, errorMessage });
+        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
     }
 
     private void processThrowable(HttpServletRequest request, HttpServletResponse response)
@@ -163,11 +164,13 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
         String errorMessage = (String) request.getAttribute("javax.servlet.error.message");
 
-        Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
+        final Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
 
-        String exceptionMessage = null;
+        final String exceptionMessage;
         if (throwable != null) {
-            exceptionMessage = throwable.toString();
+            exceptionMessage = ExceptionHelper.getMessage(throwable);
+        } else {
+            exceptionMessage = "Unknown";
         }
 
         // Defaulting them if null
@@ -180,23 +183,26 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         if (errorMessage == null) {
             errorMessage = "Internal Server Error";
         }
-        if (exceptionMessage == null) {
-            exceptionMessage = "Unknown";
-        }
 
-        requestUri = requestUri == null ? "Unknown" : requestUri;
+        final Map<String, Object> data = new HashMap<>();
+        data.put("statusCode", statusCode);
+        data.put("requestUri", requestUri);
+        data.put("errorMessage", errorMessage);
+        data.put("exceptionMessage", exceptionMessage);
 
-        VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("statusCode", statusCode);
-        velocityContext.put("requestUri", requestUri);
-        velocityContext.put("errorMessage", errorMessage);
-        velocityContext.put("exceptionMessage", exceptionMessage);
+        response.getWriter().write(processTemplate(data, throwableErrorTemplate));
 
-        PrintWriter out = response.getWriter();
-        Velocity.evaluate(velocityContext, out, "", throwableErrorTemplate);
-        out.close();
+        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
+    }
 
-        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}",
-                new Object[] { statusCode, requestUri, errorMessage });
+    private static String processTemplate(Map<String, ?> properties, String template) {
+        final ReplaceSource mapSource = StringReplacer.newSource ( properties );
+        return StringReplacer.replace ( template, new ReplaceSource() {
+            
+            @Override
+            public String replace(String context, String key) {
+                return htmlEscaper().escape(mapSource.replace(context, key));
+            }
+        }, StringReplacer.DEFAULT_PATTERN );
     }
 }
