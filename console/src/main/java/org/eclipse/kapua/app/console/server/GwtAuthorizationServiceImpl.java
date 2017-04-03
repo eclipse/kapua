@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
@@ -45,12 +50,6 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserDomain;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
     private static final long serialVersionUID = -3919578632016541047L;
 
-    private static final Logger s_logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GwtAuthorizationServiceImpl.class);
 
     private static final Domain accountDomain = new AccountDomain();
     private static final Domain deviceDomain = new DeviceDomain();
@@ -72,16 +71,16 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     /**
      * Login call in response to the login dialog.
      */
+    @Override
     public GwtSession login(GwtLoginCredential gwtLoginCredentials)
             throws GwtKapuaException {
         // VIP
         // keep this here to make sure we initialize the logger.
         // Without the following, console logger may not log anything when deployed into tomcat.
-        s_logger.info(">>> THIS IS INFO <<<");
-        s_logger.warn(">>> THIS IS WARN <<<");
-        s_logger.debug(">>> THIS IS DEBUG <<<");
+        logger.info(">>> THIS IS INFO <<<");
+        logger.warn(">>> THIS IS WARN <<<");
+        logger.debug(">>> THIS IS DEBUG <<<");
 
-        GwtSession gwtSession = null;
         try {
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -93,25 +92,23 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             authenticationService.login(credentials);
 
             // Get the session infos
-            gwtSession = establishSession();
+            return establishSession();
         } catch (Throwable t) {
             logout();
             KapuaExceptionHandler.handle(t);
         }
-        return gwtSession;
+        return null;
     }
-
 
     @Override
     public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials) throws GwtKapuaException {
-     // VIP
+        // VIP
         // keep this here to make sure we initialize the logger.
         // Without the following, console logger may not log anything when deployed into tomcat.
-        s_logger.info(">>> THIS IS INFO <<<");
-        s_logger.warn(">>> THIS IS WARN <<<");
-        s_logger.debug(">>> THIS IS DEBUG <<<");
+        logger.info(">>> THIS IS INFO <<<");
+        logger.warn(">>> THIS IS WARN <<<");
+        logger.debug(">>> THIS IS DEBUG <<<");
 
-        GwtSession gwtSession = null;
         try {
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -123,17 +120,18 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             authenticationService.login(credentials);
 
             // Get the session infos
-            gwtSession = establishSession();
+            return establishSession();
         } catch (Throwable t) {
             logout();
             KapuaExceptionHandler.handle(t);
         }
-        return gwtSession;
+        return null;
     }
-    
+
     /**
      * Return the currently authenticated user or null if no session has been established.
      */
+    @Override
     public GwtSession getCurrentSession()
             throws GwtKapuaException {
         GwtSession gwtSession = null;
@@ -159,7 +157,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
                 }
             }
         } catch (Throwable t) {
-            s_logger.warn("Error in getCurrentSession.", t);
+            logger.warn("Error in getCurrentSession.", t);
             KapuaExceptionHandler.handle(t);
         }
 
@@ -271,6 +269,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     /**
      * Returns true if the currently connected user has the specified permission granted.
      */
+    @Override
     public Boolean hasAccess(String gwtPermission)
             throws GwtKapuaException {
         Boolean hasAccess = false;
@@ -293,6 +292,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     /**
      * Logout call in response to the logout link/button.
      */
+    @Override
     public void logout()
             throws GwtKapuaException {
         try {
