@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE xml>
 <!--
     Copyright (c) 2017 Red Hat Inc
    
@@ -16,7 +16,7 @@
 <module rename-to="console">
   <inherits name="org.eclipse.kapua.app.console.console" />
   
-  <!-- The 'user.agent' propery can be changed to the developer's
+  <!-- The 'user.agent' property can be changed to the developer's
        favorite browser engine for local testing. Just don't check
        it in every time -->
   <set-property name="user.agent" value="gecko1_8" />
