@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,6 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class MetricInfoXContentBuilder {
                 .hashString(aString, StandardCharsets.UTF_8)
                 .asBytes();
 
-        return Base64.encodeBytes(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     /**
