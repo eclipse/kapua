@@ -627,7 +627,7 @@
 									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
 									chown kapua:kapua /var/lib/jetty && \
 									cd /var/lib/jetty && \
-									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
+									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats,sessions,session-store-cache
 									]]></runCmd>
 								</runCmds>
 								<assembly>
