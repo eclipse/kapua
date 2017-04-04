@@ -448,6 +448,7 @@ objects:
     selector:
       app: kapua-broker
       deploymentconfig: kapua-broker
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -455,7 +456,7 @@ objects:
     labels:
       app: kapua-console
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: http
@@ -465,6 +466,7 @@ objects:
     selector:
       app: kapua-console
       deploymentconfig: kapua-console
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -472,7 +474,7 @@ objects:
     labels:
       app: kapua-api
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: http
