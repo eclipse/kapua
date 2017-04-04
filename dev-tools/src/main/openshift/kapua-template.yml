@@ -48,8 +48,11 @@ objects:
         tls:
           skip_certificate_validation: true
         metrics:
-        - name: "java.lang:type=Memory#HeapMemoryUsage#used"
-          id: java_memory_heap_used
+        - id: broker.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: javaMemoryUsage
           type: gauge
           description: Heap Memory Used
           units: B
@@ -164,8 +167,11 @@ objects:
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         volumes:
-        - emptyDir: {}
-          name: kapua-broker-volume-1
+        - name: kapua-broker-volume-1
+          emptyDir: {}
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-kapua
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -317,9 +323,6 @@ objects:
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         volumes:
-        - name: hawkular-openshift-agent
-          configMap:
-            name: hawkular-openshift-agent-kapua
         - name: elasticsearch-data
           emptyDir: {}
 
