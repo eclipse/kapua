@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 
 import org.eclipse.kapua.model.id.KapuaId;
@@ -21,7 +22,6 @@ import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class ChannelInfoXContentBuilder {
                 .hashString(String.format("%s/%s/%s", scopeId.toStringId(), clientId, channel), StandardCharsets.UTF_8)
                 .asBytes();
 
-        return Base64.encodeBytes(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     /**
