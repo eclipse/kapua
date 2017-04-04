@@ -115,7 +115,7 @@ public class ChannelInfoXContentBuilder {
         return getOrDeriveId(id,
                 channelInfoCreator.getScopeId(),
                 channelInfoCreator.getClientId(),
-                channelInfoCreator.getChannel());
+                channelInfoCreator.getName());
     }
 
     /**
@@ -130,7 +130,7 @@ public class ChannelInfoXContentBuilder {
         return getOrDeriveId(id,
                 channelInfo.getScopeId(),
                 channelInfo.getClientId(),
-                channelInfo.getChannel());
+                channelInfo.getName());
     }
 
     /**
@@ -156,10 +156,11 @@ public class ChannelInfoXContentBuilder {
             throws EsDocumentBuilderException {
         StorableId id = new StorableIdImpl(getOrDeriveId(null, channelInfoCreator.getScopeId(),
                 channelInfoCreator.getClientId(),
-                channelInfoCreator.getChannel()));
+                channelInfoCreator.getName()));
+
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(channelInfoCreator.getScopeId(), id);
         channelInfo.setClientId(channelInfoCreator.getClientId());
-        channelInfo.setChannel(channelInfoCreator.getChannel());
+        channelInfo.setName(channelInfoCreator.getName());
         channelInfo.setFirstMessageId(channelInfoCreator.getMessageId());
         channelInfo.setFirstMessageOn(channelInfoCreator.getMessageTimestamp());
 
@@ -180,7 +181,7 @@ public class ChannelInfoXContentBuilder {
             throws EsDocumentBuilderException {
         KapuaId scopeId = channelInfo.getScopeId();
         String clientId = channelInfo.getClientId();
-        String channel = channelInfo.getChannel();
+        String channel = channelInfo.getName();
 
         StorableId msgId = channelInfo.getFirstMessageId();
         Date msgTimestamp = channelInfo.getFirstMessageOn();
@@ -190,7 +191,8 @@ public class ChannelInfoXContentBuilder {
 
         this.setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getScopeId(),
                 channelInfo.getClientId(),
-                channelInfo.getChannel()));
+                channelInfo.getName()));
+
         this.setBuilder(channelBuilder);
         return this;
     }

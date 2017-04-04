@@ -53,7 +53,7 @@ public class ChannelInfoObjectBuilder {
 
         channelInfo = new ChannelInfoImpl(scopeId, new StorableIdImpl(id));
         channelInfo.setClientId(clientId);
-        channelInfo.setChannel(channel);
+        channelInfo.setName(channel);
         channelInfo.setFirstMessageId(new StorableIdImpl(lastMsgId));
 
         Date timestamp = (Date) EsUtils.convertToKapuaObject("date", lastMsgTimestampStr);

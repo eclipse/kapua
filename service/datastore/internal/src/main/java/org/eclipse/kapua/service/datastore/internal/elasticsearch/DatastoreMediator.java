@@ -151,7 +151,7 @@ public class DatastoreMediator implements MessageStoreMediator,
 
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(docBuilder.getScopeId());
         channelInfo.setClientId(docBuilder.getClientId());
-        channelInfo.setChannel(docBuilder.getChannel());
+        channelInfo.setName(docBuilder.getChannel());
         channelInfo.setFirstMessageId(docBuilder.getMessageId());
         channelInfo.setFirstMessageOn(docBuilder.getTimestamp());
         channelInfo.setId(new StorableIdImpl(ChannelInfoXContentBuilder.getOrDeriveId(null, channelInfo)));
@@ -206,7 +206,7 @@ public class DatastoreMediator implements MessageStoreMediator,
             EsConfigurationException,
             EsQueryConversionException,
             EsClientUnavailableException {
-        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(channelInfo.getChannel());
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(channelInfo.getName());
 
         MessageQueryImpl messageQuery = new MessageQueryImpl(channelInfo.getScopeId());
         messageQuery.setPredicate(predicate);

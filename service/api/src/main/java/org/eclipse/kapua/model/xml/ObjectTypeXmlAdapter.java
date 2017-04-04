@@ -52,7 +52,7 @@ public class ObjectTypeXmlAdapter extends XmlAdapter<String, Class<?>> {
     }
 
     @Override
-    public Class<?> unmarshal(String value) throws Exception {
+    public Class<?> unmarshal(String value) throws ClassNotFoundException {
         Class<?> clazz;
         if (TYPE_STRING.equals(value)) {
             clazz = String.class;
