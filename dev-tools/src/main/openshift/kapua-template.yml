@@ -48,7 +48,7 @@ objects:
         tls:
           skip_certificate_validation: true
         metrics:
-        - name: java.lang:type=Memory#HeapMemoryUsage#used
+        - name: "java.lang:type=Memory#HeapMemoryUsage#used"
           id: java_memory_heap_used
           type: gauge
           description: Heap Memory Used

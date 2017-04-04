@@ -18,8 +18,13 @@ import static org.apache.commons.cli.Option.builder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -100,6 +105,13 @@ public class SimulatorRunner {
                         .longOpt("account-name")
                         .hasArg().argName("NAME")
                         .desc("The name of the account (defaults to 'kapua-sys')")
+                        .build());
+
+        opts.addOption(
+                builder("f")
+                        .longOpt("simulation")
+                        .hasArg().argName("URI")
+                        .desc("The URI or path to a JSON file containing a simple simulation setup")
                         .build());
 
         opts.addOption(
@@ -221,12 +233,36 @@ public class SimulatorRunner {
         logger.info("Exiting...");
     }
 
+    private static boolean hasText(final String text) {
+        return text != null && !text.isEmpty();
+    }
+
     private static List<Simulation> createSimulations(final CommandLine cli) throws IOException {
 
-        final String simulationConfiguration = cli.getOptionValue("simulation");
-        if (simulationConfiguration != null && !simulationConfiguration.isEmpty()) {
-            final URL url = new URL(simulationConfiguration);
+        String simulationConfiguration = System.getenv("KSIM_SIMULATION_CONFIGURATION");
+        if (hasText(simulationConfiguration)) {
+            return Configurations.createSimulations(JsonReader.parse(simulationConfiguration));
+        }
 
+        simulationConfiguration = System.getenv("KSIM_SIMULATION_CONFIGURATION_URL");
+
+        if (!hasText(simulationConfiguration)) {
+            simulationConfiguration = cli.getOptionValue("simulation");
+        }
+
+        if (hasText(simulationConfiguration)) {
+
+            try {
+                final Path path = Paths.get(simulationConfiguration);
+                try (final Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                    return Configurations.createSimulations(JsonReader.parse(reader));
+                }
+
+            } catch (final InvalidPathException e) {
+                // ignore and re-try as URL
+            }
+
+            final URL url = new URL(simulationConfiguration);
             try (final InputStream in = url.openStream()) {
                 return Configurations.createSimulations(JsonReader.parse(in, StandardCharsets.UTF_8));
             }
