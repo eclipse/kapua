@@ -40,7 +40,9 @@
             dataDirectory="${activemq.data}"
             schedulePeriodForDestinationPurge="-1"
             networkConnectorStartAsync="true"
-            restartAllowed="false" useJmx="false" advisorySupport="false">
+            restartAllowed="false"
+            useJmx="false"
+            advisorySupport="false">
 
         <destinationPolicy>
             <policyMap>
