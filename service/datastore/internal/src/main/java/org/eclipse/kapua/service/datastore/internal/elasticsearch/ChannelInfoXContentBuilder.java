@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 
 import org.eclipse.kapua.model.id.KapuaId;
@@ -21,7 +22,6 @@ import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class ChannelInfoXContentBuilder {
                 .hashString(String.format("%s/%s/%s", scopeId.toStringId(), clientId, channel), StandardCharsets.UTF_8)
                 .asBytes();
 
-        return Base64.encodeBytes(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     /**
@@ -115,7 +115,7 @@ public class ChannelInfoXContentBuilder {
         return getOrDeriveId(id,
                 channelInfoCreator.getScopeId(),
                 channelInfoCreator.getClientId(),
-                channelInfoCreator.getChannel());
+                channelInfoCreator.getName());
     }
 
     /**
@@ -130,7 +130,7 @@ public class ChannelInfoXContentBuilder {
         return getOrDeriveId(id,
                 channelInfo.getScopeId(),
                 channelInfo.getClientId(),
-                channelInfo.getChannel());
+                channelInfo.getName());
     }
 
     /**
@@ -156,10 +156,11 @@ public class ChannelInfoXContentBuilder {
             throws EsDocumentBuilderException {
         StorableId id = new StorableIdImpl(getOrDeriveId(null, channelInfoCreator.getScopeId(),
                 channelInfoCreator.getClientId(),
-                channelInfoCreator.getChannel()));
+                channelInfoCreator.getName()));
+
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(channelInfoCreator.getScopeId(), id);
         channelInfo.setClientId(channelInfoCreator.getClientId());
-        channelInfo.setChannel(channelInfoCreator.getChannel());
+        channelInfo.setName(channelInfoCreator.getName());
         channelInfo.setFirstMessageId(channelInfoCreator.getMessageId());
         channelInfo.setFirstMessageOn(channelInfoCreator.getMessageTimestamp());
 
@@ -180,7 +181,7 @@ public class ChannelInfoXContentBuilder {
             throws EsDocumentBuilderException {
         KapuaId scopeId = channelInfo.getScopeId();
         String clientId = channelInfo.getClientId();
-        String channel = channelInfo.getChannel();
+        String channel = channelInfo.getName();
 
         StorableId msgId = channelInfo.getFirstMessageId();
         Date msgTimestamp = channelInfo.getFirstMessageOn();
@@ -190,7 +191,8 @@ public class ChannelInfoXContentBuilder {
 
         this.setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getScopeId(),
                 channelInfo.getClientId(),
-                channelInfo.getChannel()));
+                channelInfo.getName()));
+
         this.setBuilder(channelBuilder);
         return this;
     }

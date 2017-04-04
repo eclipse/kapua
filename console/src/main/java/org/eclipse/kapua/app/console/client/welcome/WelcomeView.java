@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.welcome;
 
@@ -31,11 +31,9 @@ public class WelcomeView extends LayoutContainer {
 
     private static final ConsoleWelcomeMessages MSGS = GWT.create(ConsoleWelcomeMessages.class);
 
-    private GwtSession m_currentSession;
     private ContentPanel centerPanel;
 
     public WelcomeView(GwtSession currentSession) {
-        m_currentSession = currentSession;
     }
 
     protected void onRender(final Element parent, int index) {

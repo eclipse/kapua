@@ -161,7 +161,7 @@ public class JmsUtil {
 
         // second step.... from device dependent protocol (unknown) to Kapua
         Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = Translator.getTranslatorFor(deviceMessageType, kapuaMessageType);
-        KapuaMessage message = translatorToKapua.translate(deviceMessage);
+        KapuaMessage<?,?> message = translatorToKapua.translate(deviceMessage);
         message.setClientId(clientId);
         return message;
     }

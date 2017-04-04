@@ -26,14 +26,14 @@ public class ChannelInfoCreatorImpl implements ChannelInfoCreator {
 
     private KapuaId scopeId;
     private String clientId;
-    private String channel;
+    private String name;
     private StorableId messageId;
     private Date messageTimestamp;
 
     /**
      * Construct a channel information creator for the given account
      * 
-     * @param account
+     * @param scopeId
      * 
      * @since 1.0.0
      */
@@ -65,13 +65,13 @@ public class ChannelInfoCreatorImpl implements ChannelInfoCreator {
     }
 
     @Override
-    public String getChannel() {
-        return channel;
+    public String getName() {
+        return name;
     }
 
     @Override
-    public void setChannel(String fullChannelName) {
-        this.channel = fullChannelName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

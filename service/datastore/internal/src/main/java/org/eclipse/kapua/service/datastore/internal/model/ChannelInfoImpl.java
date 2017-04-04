@@ -27,7 +27,7 @@ public class ChannelInfoImpl implements ChannelInfo {
     private StorableId id;
     private KapuaId scopeId;
     private String clientId;
-    private String channel;
+    private String name;
 
     private StorableId firstMessageId;
     private Date firstMessageOn;
@@ -98,13 +98,13 @@ public class ChannelInfoImpl implements ChannelInfo {
     }
 
     @Override
-    public String getChannel() {
-        return channel;
+    public String getName() {
+        return name;
     }
 
     @Override
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

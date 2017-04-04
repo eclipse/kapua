@@ -90,7 +90,7 @@ public class ChannelInfoRegistryFacade {
         // Argument Validation
         ArgumentValidator.notNull(channelInfo, "channelInfoCreator");
         ArgumentValidator.notNull(channelInfo.getScopeId(), "channelInfoCreator.scopeId");
-        ArgumentValidator.notNull(channelInfo.getChannel(), "channelInfoCreator.getChannel");
+        ArgumentValidator.notNull(channelInfo.getName(), "channelInfoCreator.name");
         ArgumentValidator.notNull(channelInfo.getFirstMessageId(), "channelInfoCreator.messageId");
         ArgumentValidator.notNull(channelInfo.getFirstMessageOn(), "channelInfoCreator.messageTimestamp");
 

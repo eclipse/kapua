@@ -112,7 +112,6 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
 
         if (value instanceof Date)
             return new DateMetric(name, value);
-        ;
 
         if (value instanceof Byte[])
             return new BinaryMetric(name, value);

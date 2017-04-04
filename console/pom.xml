@@ -206,7 +206,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
@@ -215,7 +221,8 @@
         <finalName>console</finalName>
 
         <!--
-        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>  -->
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+        -->
 
         <plugins>
             <plugin>
@@ -425,7 +432,8 @@
                         </webResources>
                         <!-- exclude slf4j-api as the web container has to provide this -->
                         <packagingExcludes>
-                            WEB-INF/lib/slf4j-api-*.jar
+                            WEB-INF/lib/slf4j-api-*.jar,
+                            WEB-INF/lib/log4j*.jar
                         </packagingExcludes>
                     </configuration>
                 </plugin>

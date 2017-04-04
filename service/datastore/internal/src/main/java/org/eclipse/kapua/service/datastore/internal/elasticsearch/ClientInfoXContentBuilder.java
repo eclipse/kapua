@@ -13,13 +13,13 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class ClientInfoXContentBuilder {
                 .hashString(aString, StandardCharsets.UTF_8)
                 .asBytes();
 
-        return Base64.encodeBytes(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     private void setClientBuilder(XContentBuilder esClient) {

@@ -40,7 +40,9 @@
             dataDirectory="${activemq.data}"
             schedulePeriodForDestinationPurge="-1"
             networkConnectorStartAsync="true"
-            restartAllowed="false" useJmx="false" advisorySupport="false">
+            restartAllowed="false"
+            useJmx="true"
+            advisorySupport="false">
 
         <destinationPolicy>
             <policyMap>
@@ -109,11 +111,9 @@
         </destinationPolicy>
 
         <!-- commented to remove all jmx management -->
-        <!--
         <managementContext>
             <managementContext createConnector="false"/>
         </managementContext>
-        -->
 
         <persistenceAdapter>
             <!--

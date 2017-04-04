@@ -35,7 +35,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
         "id", //
         "scopeId", //
         "clientId", //
-        "channel", //
+        "name", //
         "firstMessageId", //
         "firstMessageOn", //
         "lastMessageId", //
@@ -76,23 +76,23 @@ public interface ChannelInfo extends Storable {
     public String getClientId();
 
     /**
-     * Get the channel
+     * Get the channel name
      * 
      * @return
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "channel")
-    public String getChannel();
+    @XmlElement(name = "name")
+    public String getName();
 
     /**
-     * Set the channel
+     * Set the channel name
      * 
-     * @param channel
+     * @param name
      * 
      * @since 1.0.0
      */
-    public void setChannel(String channel);
+    public void setName(String name);
 
     /**
      * Get the message identifier (of the first message published on this channel)

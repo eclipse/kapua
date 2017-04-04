@@ -27,9 +27,15 @@ import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoField;
+import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
+import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+
+import com.google.common.base.Strings;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,6 +54,8 @@ public class DataClients extends AbstractKapuaResource {
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results
      * @param offset
      *            The result set offset.
      * @param limit
@@ -63,13 +71,20 @@ public class DataClients extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ClientInfoListResult simpleQuery( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
+            @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
         ClientInfoListResult clientInfoListResult = datastoreObjectFactory.newClientInfoListResult();
         try {
-            ClientInfoQuery query = datastoreObjectFactory.newClientInfoQuery(scopeId);
+            AndPredicate andPredicate = new AndPredicateImpl();
+            if (!Strings.isNullOrEmpty(clientId)) {
+                TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
+                andPredicate.getPredicates().add(clientIdPredicate);
+            }
 
+            ClientInfoQuery query = datastoreObjectFactory.newClientInfoQuery(scopeId);
+            query.setPredicate(andPredicate);
             query.setOffset(offset);
             query.setLimit(limit);
 
