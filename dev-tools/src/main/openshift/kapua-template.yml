@@ -92,7 +92,14 @@ objects:
             kapuaComponent: broker
             kapuaMetricType: connectionCount
           type: gauge
-          description: Total connection cound
+          description: Total connection count
+        - id: broker.messagesReceived
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalEnqueueCount"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: messagesReceived
+          type: counter
+          description: Total messages received by the broker
 
 - apiVersion: v1
   kind: ConfigMap
