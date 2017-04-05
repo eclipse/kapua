@@ -40,5 +40,5 @@ It is also possible to change the number of instances inside each pod by setting
 
 Loading a JSON simulator data model works using OpenShift's `ConfigMap` feature:
 
-    oc create configmap data-simulator-config --from-file=KSIM_SIMULATOR_CONFIGURATION../src/test/resources/example1.json
+    oc create configmap data-simulator-config --from-file=KSIM_SIMULATOR_CONFIGURATION=../src/test/resources/example1.json
     oc set env --from=configmap/data-simulator-config  dc/kura-simulator
