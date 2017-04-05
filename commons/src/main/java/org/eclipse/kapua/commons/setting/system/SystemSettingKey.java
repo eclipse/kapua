@@ -158,6 +158,11 @@ public enum SystemSettingKey implements SettingKey {
     BROKER_PORT("broker.port"),
 
     /**
+     * Metrics JMX disabled
+     */
+    METRICS_ENABLE_JMX("metrics.enable.jmx"),
+
+    /**
      * Tell if is running into ogsi container
      */
     OSGI_CONTEXT("commons.osgi.context"),
