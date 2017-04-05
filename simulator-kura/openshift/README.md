@@ -34,11 +34,11 @@ multiply the instances:
 
 It is also possible to change the number of instances inside each pod by setting an environment variable:
 
-    oc set env dc/kura-simulator KSIM_NUM_GATEWAYS=100
+    oc set env dc/simulator KSIM_NUM_GATEWAYS=100
 
 ## Loading a simple data simulator model
 
 Loading a JSON simulator data model works using OpenShift's `ConfigMap` feature:
 
-    oc create configmap data-simulator-config --from-file=KSIM_SIMULATOR_CONFIGURATION=../src/test/resources/example1.json
-    oc set env --from=configmap/data-simulator-config  dc/kura-simulator
+    oc create configmap data-simulator-config --from-file=KSIM_SIMULATION_CONFIGURATION=../src/test/resources/example1.json
+    oc set env --from=configmap/data-simulator-config dc/simulator
