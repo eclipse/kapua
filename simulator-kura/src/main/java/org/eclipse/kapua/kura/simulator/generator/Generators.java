@@ -71,7 +71,7 @@ public final class Generators {
     }
 
     public static Application createApplication(final String applicationId, final GeneratorScheduler scheduler, final String dataTopic,
-            final Map<String, Function<Instant, Double>> generators) {
+            final Map<String, Function<Instant, ?>> generators) {
 
         final Descriptor descriptor = new Descriptor(applicationId);
 
