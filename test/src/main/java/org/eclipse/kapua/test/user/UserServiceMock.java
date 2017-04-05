@@ -82,6 +82,7 @@ public class UserServiceMock implements UserService
         if (!users.containsKey(userId))
             throw KapuaException.internalError("User not found");
 
+        @SuppressWarnings("unused")
         UserMock userMock = users.remove(userId);
     }
 
@@ -92,6 +93,7 @@ public class UserServiceMock implements UserService
         if (!users.containsKey(user.getId()))
             throw KapuaException.internalError("User not found");
         
+        @SuppressWarnings("unused")
         UserMock userMock = users.remove(user.getId());
     }
 
