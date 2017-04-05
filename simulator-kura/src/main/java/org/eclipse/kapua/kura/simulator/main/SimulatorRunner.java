@@ -241,6 +241,7 @@ public class SimulatorRunner {
 
         String simulationConfiguration = System.getenv("KSIM_SIMULATION_CONFIGURATION");
         if (hasText(simulationConfiguration)) {
+            logger.info("Using direct simulator configuration");
             return Configurations.createSimulations(JsonReader.parse(simulationConfiguration));
         }
 
@@ -251,6 +252,7 @@ public class SimulatorRunner {
         }
 
         if (hasText(simulationConfiguration)) {
+            logger.info("Loading simulator configuration from: {}", simulationConfiguration);
 
             try {
                 final Path path = Paths.get(simulationConfiguration);
