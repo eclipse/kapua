@@ -15,7 +15,7 @@
 			<directory>${project.build.directory}</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>*-shaded.jar</include>
+				<include>*-app.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
