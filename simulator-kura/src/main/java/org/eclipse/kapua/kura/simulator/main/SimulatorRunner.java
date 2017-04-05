@@ -244,7 +244,7 @@ public class SimulatorRunner {
             return Configurations.createSimulations(JsonReader.parse(simulationConfiguration));
         }
 
-        simulationConfiguration = System.getenv("KSIM_SIMULATION_CONFIGURATION_URL");
+        simulationConfiguration = System.getenv("KSIM_SIMULATION_URL");
 
         if (!hasText(simulationConfiguration)) {
             simulationConfiguration = cli.getOptionValue("simulation");
