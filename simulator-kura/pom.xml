@@ -190,7 +190,7 @@
 										<arg>java</arg>
 										<arg>-Dlogback.configurationFile=/opt/${project.artifactId}/logback.xml</arg>
 										<arg>-cp</arg>
-										<arg>/opt/${project.artifactId}/${project.artifactId}-${project.version}-shaded.jar</arg>
+										<arg>/opt/${project.artifactId}/${project.artifactId}-${project.version}-app.jar</arg>
 										<arg>org.eclipse.kapua.kura.simulator.main.SimulatorRunner</arg>
 									</exec>
 								</entryPoint>
