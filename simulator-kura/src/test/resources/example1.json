@@ -4,6 +4,7 @@
 			"scheduler": { "period": 2000 },
 			"topics": {
 				"t1/data": {
+					"positionGenerator": "spos",
 					"metrics": {
 						"temp1": { "generator": "sine1", "name": "value" },
 						"temp2": { "generator": "sine2", "name": "value" }
@@ -22,6 +23,9 @@
 				},
 				"sine2": {
 					"type": "sine", "period": 2000, "shift": 45.5, "offset": 30, "amplitude": 100
+				},
+				"spos": {
+					"type": "spos"
 				}
 			}
 		}

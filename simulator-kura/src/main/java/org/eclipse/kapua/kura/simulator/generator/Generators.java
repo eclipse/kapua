@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 
 import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
@@ -29,6 +30,11 @@ public final class Generators {
     }
 
     public static Function<Instant, Double> sine(final Duration period, final double amplitude, final double offset, final Short shift) {
+        final ToDoubleFunction<Instant> func = sineDouble(period, amplitude, offset, shift);
+        return timestamp -> func.applyAsDouble(timestamp);
+    }
+
+    public static ToDoubleFunction<Instant> sineDouble(final Duration period, final double amplitude, final double offset, final Short shift) {
         final double freq = 1.0 / period.toMillis() * Math.PI * 2.0;
         if (shift == null) {
             return (timestamp) -> Math.sin(freq * timestamp.toEpochMilli()) * amplitude + offset;
@@ -36,6 +42,18 @@ public final class Generators {
             final double radShift = Math.toRadians(shift);
             return (timestamp) -> Math.sin(freq * timestamp.toEpochMilli() + radShift) * amplitude + offset;
         }
+    }
+
+    public static Function<Instant, Double> sineBetween(final Duration period, final double lower, final double upper, final Short shift) {
+        final ToDoubleFunction<Instant> func = sineDoubleBetween(period, lower, upper, shift);
+        return timestamp -> func.applyAsDouble(timestamp);
+    }
+
+    public static ToDoubleFunction<Instant> sineDoubleBetween(final Duration period, final double lower, final double upper, final Short shift) {
+        final double delta = Math.abs(upper - lower);
+        final double amplitude = delta / 2.0D;
+        final double offset = amplitude + Math.min(lower, upper);
+        return sineDouble(period, amplitude, offset, shift);
     }
 
     public static Function<Instant, Map<String, Object>> fromSingle(final String name, final Function<Instant, Double> function) {
