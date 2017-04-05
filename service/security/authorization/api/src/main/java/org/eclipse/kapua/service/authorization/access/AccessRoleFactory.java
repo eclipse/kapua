@@ -13,8 +13,6 @@
 package org.eclipse.kapua.service.authorization.access;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link AccessRole} object factory.
