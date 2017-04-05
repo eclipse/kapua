@@ -15,6 +15,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<docker.account>kapua</docker.account>
 	</properties>
 
 	<dependencies>
@@ -171,13 +172,10 @@
 				<configuration>
 					<images>
 						<image>
-							<name>kapua/kura-simulator:%v</name>
+							<name>${docker.account}/kura-simulator</name>
 							<build>
 								<from>java:8-jre-alpine</from>
 								<maintainer>Jens Reimann &lt;jreimann@redhat.com&gt;</maintainer>
-								<tags>
-									<tag>${project.version}</tag>
-								</tags>
 								<assembly>
 									<mode>dir</mode>
 									<targetDir>/opt/${project.artifactId}</targetDir>
@@ -203,7 +201,59 @@
 			</plugin>
 
 		</plugins>
+		
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<configuration>
+						<images>
+							<image>
+								<name>${docker.account}/kura-simulator</name>
+								<build>
+									<tags>
+										<tag>${project.version}</tag>
+										<tag>${timestamp}</tag>
+									</tags>
+								</build>
+							</image>
+						</images>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>io.fabric8</groupId>
+							<artifactId>docker-maven-plugin</artifactId>
+							<configuration>
+								<images>
+									<image>
+										<name>${docker.account}/kura-simulator</name>
+										<build>
+											<tags>
+												<tag>latest</tag>
+												<tag>${project.version}</tag>
+												<tag>${timestamp}</tag>
+											</tags>
+										</build>
+									</image>
+								</images>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
