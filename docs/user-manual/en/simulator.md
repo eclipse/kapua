@@ -200,6 +200,34 @@ The password to use for the MQTT connection to the broker, defaults to <code>kap
 
 If no broker connection options are specified this will result in a broker URL of: `tcp://kapua-broker:kapua-password@localhost:1883`.
 
+### Data generation
+
+The simulator runner can also provide a stream of metrics to be sent to Kapua. For this it is necessary to provide a
+[simple simulation model](#simple-simulation-model)  which maps data generators with the actual metrics names.
+
+The simulation configuration is read from a JSON configuration file and can be specified using a local file system path,
+a URI from which the file can be loaded or a plain JSON content through an environment variable.
+
+<dl>
+
+<dt>
+<code>-f</code>,
+<code>--simulation</code>,
+<code>KSIM_SIMULATION_URL</code>
+</dt>
+<dd>
+A local file system path or a URI to the JSON configuration file of the data simulation.
+</dd>
+
+<dt>
+<code>KSIM_SIMULATION_CONFIGURATION</code>
+</dt>
+<dd>
+The actual JSON content for the simulation.
+</dd>
+
+</dl>
+
 ### Name factories
 
 The following name factories are available:
@@ -252,3 +280,127 @@ The simulator currently supports the following control applications:
 * **Deployment** The deployment application will allow to view and controls OSGi bundles and allow to "download" DP archives.
   However the list of reported OSGi bundles and the download process are only simulated. But adding and removing DP archive will
   result in more or less OSGi bundles to be reported.
+
+## Simple simulation model
+
+This section describes the simple simulation model which is available in the basic simulation runner. The model
+is intended to provide a stream of telemetry data for testing.
+
+The basic runner allows to read a JSON representation of the model. Programmatically it is possible to
+also other other means of configuring a data simulator. This section will however focus on the JSON representation.
+
+A default model would look like:
+
+	{
+		"applications": {
+			"example1": {
+				"scheduler": { "period": 2000 },
+				"topics": {
+					"t1/data": {
+						"positionGenerator": "spos",
+						"metrics": {
+							"temp1": { "generator": "sine1", "name": "value" },
+							"temp2": { "generator": "sine2", "name": "value" }
+						}
+					},
+					"t2/data": {
+						"metrics": {
+							"temp1": { "generator": "sine1", "name": "value" },
+							"temp2": { "generator": "sine2", "name": "value" }
+						}
+					}
+				},
+				"generators": {
+					"sine1": {
+						"type": "sine", "period": 1000, "offset": 50, "amplitude": 100
+					},
+					"sine2": {
+						"type": "sine", "period": 2000, "shift": 45.5, "offset": 30, "amplitude": 100
+					},
+					"spos": {
+						"type": "spos"
+					}
+				}
+			}
+		}
+	}
+
+Each model consists of a number of "applications", which represent actual Kura applications.
+
+Each application consists of a scheduler, topics and generators. The scheduler defines when
+the generator values will be refreshed. The topics then map the generated data to topics and metrics.
+
+Generators typically generate their values on a function which maps from timestamp to a value. This
+makes the generated values comparable as it is clear what can be expected as values. As the scheduler
+runs all generators with exactly the same timestamp all generators in an application wil generate the
+same values. For simulators which spawn multiple instances in a single JVM, the scheduler will pass
+the same timestamp to all applications of all simulator instances.
+
+Under the "generators" section the generator instances get defined. The key can be later on used for
+referencing the generator. The simulation runner will search, using the Java `ServiceLoader` mechanism
+for generator implementations which can provide a generator. Typically the field `type` is used to
+identify a generator. However every generator factory can opt-in to provide a working generation. If no
+generator can be found, then the simulator will fail during startup. This way it is also possible
+providing additional generator factories.
+
+Generators can provide three different kinds of payload (body, position, metrics). It depends on the
+generator implementation which kinds (maybe multiple) it provides. For metrics it also depends on the
+generator which metric names it provides.
+
+For example the "sine" generator provide a single metric named "value".
+
+The topics section defines a map of topic and their payload mappings. The key of the map is the
+name of the topic. The available field then are:
+
+<dl>
+<dt>bodyGenerator</dt><dd>The name of the generator providing the body (BLOB) content</dd>
+<dt>positionGenerator</dt><dd>The name of the generator providing the position information</dd>
+<dt>metrics></dt><dd>A map for mapping generator values to metric entries</dd>
+</dl>
+
+Each metric mapping again has a key (which is used a metric name) and the reference to the
+generator (field `generator`) and a value of the generator (field `name`), as each
+generator can technically provide a map of values.
+
+In the above example there are three generators: sine1, sine2 and spos. The first two are
+sine generators with different configurations and the last one is a position generator with
+no further configuration.
+
+There is only one application configured (`example1`), which has two topics (`t1/data` 
+and `t2/data`). Each topic has two metrics (`temp1` and `temp2`), which each reference
+to the same generator (`temp1` ⇒ `sine1` : `value`).
+
+### Provided generators
+
+The following generators are available out of the box.
+
+#### Sine generator
+
+**Processes:** `type = "sine"`
+
+**Generates:** metrics
+
+<dl>
+<dt>value</dt><dd>A sine curve based on the provided parameters</dd>
+</dl>
+
+<table>
+<thead><tr><th>Name</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+
+<tr><td><code>period</code></td> <td>60000</td> <td>The period (in ms) for a full cycle of the curve</td></tr>
+<tr><td><code>amplitude</code></td> <td>100</td> <td>The amplitude of the curve</td></tr>
+<tr><td><code>offset</code></td> <td>0</td> <td>The offset of the curve</td></tr>
+<tr><td><code>shift</code></td> <td></td> <td>The shift in degrees (0-360) of the curve</td></tr>
+
+</tbody>
+</table>
+
+#### Straight position generator
+
+**Processes:** `type = "spos"`
+
+**Generates:** position
+
+Generates a position on the map which will move straight east on the equator. Circling the earth every 80 days.
+Speed, number of satellites, precision and altitude will be sine curves.

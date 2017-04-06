@@ -12,14 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.apache.commons.lang3.BooleanUtils;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.persistence.TypedQuery;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationErrorCodes;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -41,13 +45,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import com.google.common.collect.Lists;
-
-import javax.persistence.TypedQuery;
-
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Account service implementation.

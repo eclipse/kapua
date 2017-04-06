@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 ###############################################################################
 # Copyright (c) 2016, 2017 Red Hat Inc and others
 #
@@ -7,8 +9,6 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 ###############################################################################
-
-#!/usr/bin/env bash
 
 export OPENSHIFT_PROJECT_NAME="eclipse-kapua"
 

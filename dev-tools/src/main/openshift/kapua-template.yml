@@ -92,7 +92,14 @@ objects:
             kapuaComponent: broker
             kapuaMetricType: connectionCount
           type: gauge
-          description: Total connection cound
+          description: Total connection count
+        - id: broker.messagesReceived
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalEnqueueCount"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: messagesReceived
+          type: counter
+          description: Total messages received by the broker
 
 - apiVersion: v1
   kind: ConfigMap
@@ -216,6 +223,7 @@ objects:
             value:
               -Dcommons.db.connection.host=$SQL_SERVICE_HOST
               -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dmetrics.enable.jmx=true
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
@@ -441,6 +449,7 @@ objects:
     selector:
       app: kapua-broker
       deploymentconfig: kapua-broker
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -448,7 +457,7 @@ objects:
     labels:
       app: kapua-console
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: http
@@ -458,6 +467,7 @@ objects:
     selector:
       app: kapua-console
       deploymentconfig: kapua-console
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -465,7 +475,7 @@ objects:
     labels:
       app: kapua-api
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: http

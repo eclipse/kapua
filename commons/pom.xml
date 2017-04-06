@@ -29,15 +29,15 @@
             <artifactId>joda-time</artifactId>
         </dependency>
         <dependency>
-      		<groupId>org.eclipse.persistence</groupId>
-      		<artifactId>org.eclipse.persistence.moxy</artifactId>
-      		<scope>compile</scope>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
@@ -48,12 +48,12 @@
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
- 		<dependency>
- 		    <groupId>com.h2database</groupId>
- 		    <artifactId>h2</artifactId>
- 		</dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
 
         <!-- Testing dependencies -->
         <dependency>
@@ -69,6 +69,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

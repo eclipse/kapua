@@ -33,7 +33,7 @@ public class SimplePeriodicGenerator extends AbstractSingleTopicPeriodicGenerato
         this.generator = generator;
     }
 
-    public SimplePeriodicGenerator(final ApplicationContext context, final GeneratorScheduler scheduler, final String dataTopic, final Map<String, Function<Instant, Double>> generators) {
+    public SimplePeriodicGenerator(final ApplicationContext context, final GeneratorScheduler scheduler, final String dataTopic, final Map<String, Function<Instant, ?>> generators) {
         super(context, scheduler, dataTopic);
         this.generator = timestamp -> new Payload(generateMetrics(timestamp, generators));
     }
@@ -52,10 +52,10 @@ public class SimplePeriodicGenerator extends AbstractSingleTopicPeriodicGenerato
         sender.send(builder);
     }
 
-    protected static Map<String, Object> generateMetrics(final Instant timestamp, final Map<String, Function<Instant, Double>> generators) {
+    protected static Map<String, Object> generateMetrics(final Instant timestamp, final Map<String, Function<Instant, ?>> generators) {
         final Map<String, Object> result = new HashMap<>(generators.size());
 
-        for (final Map.Entry<String, Function<Instant, Double>> entry : generators.entrySet()) {
+        for (final Map.Entry<String, Function<Instant, ?>> entry : generators.entrySet()) {
             result.put(entry.getKey(), entry.getValue().apply(timestamp));
         }
 
