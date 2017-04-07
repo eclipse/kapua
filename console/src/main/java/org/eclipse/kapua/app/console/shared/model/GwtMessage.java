@@ -18,6 +18,7 @@ public class GwtMessage extends KapuaBaseModel implements Serializable {
     private static final long serialVersionUID = 5344433827767946887L;
 
     public GwtMessage() {
+        setAllowNestedValues(false);
     }
 }
 
