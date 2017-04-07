@@ -45,7 +45,7 @@ tr {
     }
 }
 
-bundles {
+bundles, packages {
     .headerTitle {
         margin-top: 10px;
         margin-bottom: 0px;
@@ -60,5 +60,13 @@ bundles {
         margin-bottom: 10px;
         margin-right: 16px;
         width: 92px;
+    }
+    .list-group-item-heading {
+        padding-top: 6px;
+    }
+
+    .list-group-item-container {
+        background: none;
+        border-top: none;
     }
 }

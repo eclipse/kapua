@@ -12,6 +12,56 @@
 *                                                                               
 *******************************************************************************/
 -->
-<div>
+<!--<div>
   Device packages list. id: {{ vm.deviceId }}
-</div>
+</div>-->
+<packages>
+  <div class="displayDetailsContent">
+
+    <div class="card-pf card-pf-accented card-pf-utilization">
+      <div class="row example-container">
+        <div>
+          <h2 class="col-xs-7 headerTitle"><span class="fa fa-cube" style="padding-right: 16px;"></span>Device Packages</h2>
+          <div class="refreshWrapper">
+            <button ng-click="vm.getPackages(deviceId)" class="btn btn-primary refreshButton"><span class="fa fa-refresh"></span> Refresh</button>
+          </div>
+        </div>
+        <div class="list-view-container">
+          <div pf-list-view class="example-list-view" id="exampleListView" config="vm.config" items="packages" action-buttons="actionButtons">
+            <div class="list-view-pf-description">
+              <div class="list-group-item-heading">
+                <span class="fa fa-folder-open" style="font-size: 16px; padding-right: 6px;"></span>{{item.name}}
+              </div>
+            </div>
+            <div class="list-view-pf-additional-info">
+              <div class="list-view-pf-additional-info-item">
+                {{item.version}}
+              </div>
+            </div>
+            <list-expanded-content>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="row row-cards-pf">
+                    <div class="col-sm-12 col-md-6" ng-repeat="bundleInfo in $parent.item.bundleInfos.bundleInfo">
+                      <div class="card-pf card-pf-aggregate-status">
+                        <h2 class="card-pf-title" style="font-weight: bold;">
+                          <span class="fa fa-puzzle-piece"></span><span>{{bundleInfo.name}}</span>
+                        </h2>
+                        <div class="card-pf-body">
+                          <div style="padding-top: 12px;">{{bundleInfo.version}}</div>
+                          <div style="padding-top: 12px;">
+                            <span class="card-pf-aggregate-status-notification"><button ng-click="vm.installPackage(bundleInfo)" class="btn btn-success">Install/Upgrade</button></span>
+                            <span class="card-pf-aggregate-status-notification"><button ng-click="vm.deletePackage(bundleInfo)" class="btn btn-danger">Delete</button></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </list-expanded-content>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</packages>

@@ -136,7 +136,7 @@ export default class DeviceDetailCtrl {
     this.groupsStatus.href = `devices/${$stateParams["id"]}/groups`;
     this.getDeviceById($stateParams["id"]);
     this.getBundlesCount($stateParams["id"]);
-
+    this.getPackagesCount($stateParams["id"]);
   }
 
   getDeviceById(deviceID): void {
@@ -149,6 +149,11 @@ export default class DeviceDetailCtrl {
   getBundlesCount(deviceID: string): void {
     this.devicesService.getBundlesByDeviceId(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<DeviceBundles>) => {
       this.bundlesStatus.count = responseData.data.bundle.length;
+    });
+  }
+  getPackagesCount(deviceID: string): void {
+    this.devicesService.getPackagesByDeviceId(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<DevicePackages>) => {
+      this.packagesStatus.count = responseData.data.devicePackage.length;
     });
   }
 }
