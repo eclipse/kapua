@@ -17,17 +17,18 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.KapuaBasePagingCursor;
-import org.eclipse.kapua.app.console.shared.model.KapuaPagingLoadConfig;
-import org.eclipse.kapua.app.console.shared.model.KapuaPagingLoadResult;
 import org.eclipse.kapua.app.console.shared.model.GwtAsset;
-import org.eclipse.kapua.app.console.shared.model.GwtKapuaChartResult;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
+import org.eclipse.kapua.app.console.shared.model.GwtKapuaChartResult;
 import org.eclipse.kapua.app.console.shared.model.GwtMessage;
 import org.eclipse.kapua.app.console.shared.model.GwtTopic;
+import org.eclipse.kapua.app.console.shared.model.KapuaBasePagingCursor;
+import org.eclipse.kapua.app.console.shared.model.data.GwtDataChannelInfoQuery;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.LoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -43,17 +44,9 @@ public interface GwtDataService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    public GwtTopic findTopicsTree(String accountName) throws GwtKapuaException;
+    public List<GwtTopic> findTopicsTree(String accountName) throws GwtKapuaException;
 
-    /**
-     * Return the Topics for a given account; the returned structure is a list
-     * with all tree limb expanded.
-     *
-     * @param accountName
-     * @return
-     * @throws GwtKapuaException
-     */
-    public List<GwtTopic> findTopicsList(String accountName) throws GwtKapuaException;
+    PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException;
 
 
     /**
@@ -104,20 +97,7 @@ public interface GwtDataService extends RemoteService {
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName, GwtAsset asset) throws GwtKapuaException;
 
 
-    /**
-     * Return messages based on the specified parameters.
-     * 
-     * @param loadConfig
-     * @param accountName
-     * @param topic
-     * @param headers
-     * @param startDate
-     * @param endDate
-     * @return
-     * @throws GwtKapuaException
-     */
-    public KapuaPagingLoadResult<GwtMessage> findMessagesByTopic(KapuaPagingLoadConfig loadConfig, String accountName,
-            GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
+    public PagingLoadResult<GwtMessage> findMessagesByTopic(PagingLoadConfig loadConfig, String accountName, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
 
     public List<GwtMessage> findLastMessageByTopic(String accountName, int limit) throws GwtKapuaException;
 
@@ -126,8 +106,7 @@ public interface GwtDataService extends RemoteService {
     public GwtKapuaChartResult findMessagesByTopic(String accountName, GwtTopic topic,
             List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit, int lastOffset, Integer indexOffset) throws GwtKapuaException;
 
-    public KapuaPagingLoadResult<GwtMessage> findMessagesByAsset(KapuaPagingLoadConfig loadConfig, String accountName,
-            GwtAsset asset, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
+    public PagingLoadResult<GwtMessage> findMessagesByAsset(PagingLoadConfig loadConfig, String accountName, GwtAsset asset, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
 
     public GwtKapuaChartResult findMessagesByAsset(String accountName, GwtAsset asset,
             List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit, int lastOffset, Integer indexOffset) throws GwtKapuaException;

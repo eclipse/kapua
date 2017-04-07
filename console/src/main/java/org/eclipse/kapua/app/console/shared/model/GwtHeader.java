@@ -22,7 +22,7 @@ public class GwtHeader extends KapuaBaseModel implements Serializable {
     public enum GwtHeaderType {
         FLOAT,
         STRING,
-        INTEGER,
+        INT,
         DOUBLE,
         LONG,
         BOOLEAN,

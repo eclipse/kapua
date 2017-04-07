@@ -39,6 +39,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.data.GwtDataChannelInfoQuery;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -86,6 +87,8 @@ import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
+import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
@@ -253,6 +256,13 @@ public class GwtKapuaModelConverter {
         return credentialQuery;
     }
 
+    public static ChannelInfoQuery convertChannelInfoQuery(GwtDataChannelInfoQuery query, PagingLoadConfig pagingLoadConfig){
+        ChannelInfoQueryImpl channelInfoQuery = new ChannelInfoQueryImpl(convert(query.getScopeId()));
+        channelInfoQuery.setOffset(pagingLoadConfig.getOffset());
+        channelInfoQuery.setLimit(pagingLoadConfig.getLimit());
+        return channelInfoQuery;
+    }
+    
     /**
      * Converts a {@link GwtRole} into a {@link Role} object for backend usage
      *
