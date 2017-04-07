@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 public abstract class DataExporter {
     
     protected static final String BLANK = "";
-    protected static final String[] mandatoryColumns = {"Timestamp (UTC)","Asset","Topic"};
+    protected static final String[] mandatoryColumns = {"Timestamp (UTC)","Device","Topic"};
     protected static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
     protected HttpServletResponse response;
     

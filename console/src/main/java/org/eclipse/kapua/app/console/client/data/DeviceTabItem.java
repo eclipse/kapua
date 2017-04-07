@@ -19,7 +19,7 @@ import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.Button;
 import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.shared.model.GwtAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
@@ -41,19 +41,19 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
 
-public class AssetTabItem extends TabItem {
+public class DeviceTabItem extends TabItem {
    
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
     
     private GwtSession currentSession;
-    private AssetTable assetTable;
+    private DeviceTable deviceTable;
     private Button queryButton;
     private MetricsTable metricsTable;
 
     private ResultsTable resultsTable;
     
-    public AssetTabItem(GwtSession currentSession) {
-        super(MSGS.assetTabItemTitle(), null);
+    public DeviceTabItem(GwtSession currentSession) {
+        super(MSGS.deviceTabItemTitle(), null);
         this.currentSession = currentSession;
         this.setBorders(false);
         this.setLayout(new BorderLayout());
@@ -67,7 +67,7 @@ public class AssetTabItem extends TabItem {
         BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.06f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
-        welcomeMessage.setText(MSGS.assetTabItemMessage());
+        welcomeMessage.setText(MSGS.deviceTabItemMessage());
         add(welcomeMessage, messageLayout);
         
         LayoutContainer tables = new LayoutContainer(new BorderLayout());
@@ -75,21 +75,21 @@ public class AssetTabItem extends TabItem {
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
         
-        BorderLayoutData assetLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
-        assetTable = new AssetTable(currentSession);
-        assetLayout.setMargins(new Margins(0, 5, 0, 0));
-        assetLayout.setSplit(true);
-        assetTable.addSelectionChangedListener(new SelectionChangedListener<GwtAsset>() {
+        BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.5f);
+        deviceTable = new DeviceTable(currentSession);
+        deviceLayout.setMargins(new Margins(0, 5, 0, 0));
+        deviceLayout.setSplit(true);
+        deviceTable.addSelectionChangedListener(new SelectionChangedListener<GwtDatastoreDevice>() {
             
             @Override
-            public void selectionChanged(SelectionChangedEvent<GwtAsset> selectedAsset) {
-                metricsTable.refresh(selectedAsset.getSelectedItem());
+            public void selectionChanged(SelectionChangedEvent<GwtDatastoreDevice> selectedDevice) {
+                metricsTable.refresh(selectedDevice.getSelectedItem());
             }
         });
-        tables.add(assetTable, assetLayout);
+        tables.add(deviceTable, deviceLayout);
         
         BorderLayoutData metricLayout = new BorderLayoutData(LayoutRegion.CENTER, 0.5f);
-        metricsTable = new MetricsTable(currentSession, MetricsTable.Type.ASSET);
+        metricsTable = new MetricsTable(currentSession, MetricsTable.Type.DEVICE);
         metricsTable.addSelectionListener(new SelectionChangedListener<GwtHeader>() {
             
             @Override
@@ -106,13 +106,13 @@ public class AssetTabItem extends TabItem {
 
         BorderLayoutData queryButtonLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.1f);
         queryButtonLayout.setMargins(new Margins(5));
-        queryButton = new Button(MSGS.assetTabItemQueryButtonText(), new KapuaIcon(IconSet.SEARCH), new SelectionListener<ButtonEvent>() {
+        queryButton = new Button(MSGS.deviceTabItemQueryButtonText(), new KapuaIcon(IconSet.SEARCH), new SelectionListener<ButtonEvent>() {
             
             @Override
             public void componentSelected(ButtonEvent ce) {
-                GwtAsset gwtAsset = assetTable.getSelectedAsset();
+                GwtDatastoreDevice gwtDevice = deviceTable.getSelectedDevice();
                 List<GwtHeader> metricsInfo = metricsTable.getSelectedMetrics();
-                resultsTable.refresh(gwtAsset, metricsInfo);
+                resultsTable.refresh(gwtDevice, metricsInfo);
             }
         });
         queryButton.disable();

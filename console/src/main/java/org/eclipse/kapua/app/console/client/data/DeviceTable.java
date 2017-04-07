@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.shared.model.GwtAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
@@ -38,27 +38,27 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AssetTable extends LayoutContainer {
+public class DeviceTable extends LayoutContainer {
 
-    //private static final int ASSET_PAGE_SIZE = 50;
+    //private static final int DEVICE_PAGE_SIZE = 50;
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
 
     private static GwtDataServiceAsync dataService = GWT.create(GwtDataService.class);
 
-    private BaseListLoader<ListLoadResult<GwtAsset>> loader;
+    private BaseListLoader<ListLoadResult<GwtDatastoreDevice>> loader;
     private GwtSession currentSession;
-    private Grid<GwtAsset> assetGrid;
+    private Grid<GwtDatastoreDevice> deviceGrid;
     private ContentPanel tableContainer;
-    private List<SelectionChangedListener<GwtAsset>> listeners = new ArrayList<SelectionChangedListener<GwtAsset>>();
+    private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
     //private PagingToolBar pagingToolBar;
 
-    public AssetTable(GwtSession currentSession) {
+    public DeviceTable(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
 
-    public GwtAsset getSelectedAsset() {
-        if (assetGrid != null) {
-            return assetGrid.getSelectionModel().getSelectedItem();
+    public GwtDatastoreDevice getSelectedDevice() {
+        if (deviceGrid != null) {
+            return deviceGrid.getSelectionModel().getSelectedItem();
         }
         return null;
     }
@@ -70,64 +70,64 @@ public class AssetTable extends LayoutContainer {
         setLayout(new FitLayout());
         setBorders(true);
 
-        initAssetTable();
+        initDeviceTable();
         add(tableContainer);
 
     }
 
-    private void initAssetTable() {
-        initAssetGrid();
+    private void initDeviceTable() {
+        initDeviceGrid();
 
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
         tableContainer.setBodyBorder(false);
         tableContainer.setHeaderVisible(true);
-        tableContainer.setHeading("Available assets");
+        tableContainer.setHeading(MSGS.deviceInfoTableHeader());
         tableContainer.setScrollMode(Scroll.AUTOY);
         tableContainer.setLayout(new FitLayout());
-        tableContainer.add(assetGrid);
+        tableContainer.add(deviceGrid);
         //tableContainer.setBottomComponent(pagingToolBar);
     }
 
-    private void initAssetGrid() {
+    private void initDeviceGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-        ColumnConfig column = new ColumnConfig("asset", "Asset", 150);
+        ColumnConfig column = new ColumnConfig("device", MSGS.deviceInfoTableTopicHeader(), 150);
         configs.add(column);
 
-        column = new ColumnConfig("timestamp", "Last Post Date", 150);
+        column = new ColumnConfig("timestamp", MSGS.deviceInfoTableLastPostedHeader(), 150);
         configs.add(column);
-        RpcProxy<ListLoadResult<GwtAsset>> proxy = new RpcProxy<ListLoadResult<GwtAsset>>() {
+        RpcProxy<ListLoadResult<GwtDatastoreDevice>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreDevice>>() {
 
             @Override
             protected void load(Object loadConfig,
-                    AsyncCallback<ListLoadResult<GwtAsset>> callback) {
-                dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), callback);
+                    AsyncCallback<ListLoadResult<GwtDatastoreDevice>> callback) {
+                dataService.findDevices((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), callback);
             }
         };
 
-        loader = new BaseListLoader<ListLoadResult<GwtAsset>>(proxy);
+        loader = new BaseListLoader<ListLoadResult<GwtDatastoreDevice>>(proxy);
         loader.load();
         //
-        SwappableListStore<GwtAsset> store = new SwappableListStore<GwtAsset>(loader);
-        assetGrid = new Grid<GwtAsset>(store, new ColumnModel(configs));
-        assetGrid.setBorders(false);
-        assetGrid.setStateful(false);
-        assetGrid.setLoadMask(true);
-        assetGrid.setStripeRows(true);
-        assetGrid.getView().setAutoFill(true);
-        assetGrid.getView().setEmptyText(MSGS.assetTableEmptyText());
-        assetGrid.disableTextSelection(false);      
-        for (SelectionChangedListener<GwtAsset> listener : listeners){
-            assetGrid.getSelectionModel().addSelectionChangedListener(listener);
+        SwappableListStore<GwtDatastoreDevice> store = new SwappableListStore<GwtDatastoreDevice>(loader);
+        deviceGrid = new Grid<GwtDatastoreDevice>(store, new ColumnModel(configs));
+        deviceGrid.setBorders(false);
+        deviceGrid.setStateful(false);
+        deviceGrid.setLoadMask(true);
+        deviceGrid.setStripeRows(true);
+        deviceGrid.getView().setAutoFill(true);
+        deviceGrid.getView().setEmptyText(MSGS.deviceTableEmptyText());
+        deviceGrid.disableTextSelection(false);      
+        for (SelectionChangedListener<GwtDatastoreDevice> listener : listeners){
+            deviceGrid.getSelectionModel().addSelectionChangedListener(listener);
         }
 
-//        pagingToolBar = new PagingToolBar(ASSET_PAGE_SIZE);
+//        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
 //        pagingToolBar.bind(loader);
 //        pagingToolBar.enable();
 
     }
     
-    public void addSelectionChangedListener(SelectionChangedListener<GwtAsset> listener) {
+    public void addSelectionChangedListener(SelectionChangedListener<GwtDatastoreDevice> listener) {
         listeners.add(listener);
     }
 

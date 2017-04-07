@@ -40,14 +40,14 @@ public class DataExporterExcel extends DataExporter {
     private Sheet sheet;
     private CellStyle dateStyle;
     private short rowCount;
-    private String topicOrAsset;
+    private String topicOrDevice;
 
     private static final int MAX_ROWS = 65535;
     private static final int MAX_CHAR = 32767;
 
-    protected DataExporterExcel(HttpServletResponse response, String topicOrAsset) {
+    protected DataExporterExcel(HttpServletResponse response, String topicOrDevice) {
         super(response);
-        this.topicOrAsset = topicOrAsset;
+        this.topicOrDevice = topicOrDevice;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DataExporterExcel extends DataExporter {
     @Override
     public void close() throws ServletException, IOException {
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(topicOrAsset, "UTF-8") + "_data.xls");
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(topicOrDevice, "UTF-8") + "_data.xls");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         workbook.write(response.getOutputStream());

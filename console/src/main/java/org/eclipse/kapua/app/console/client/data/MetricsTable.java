@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.shared.model.GwtAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.GwtTopic;
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class MetricsTable extends LayoutContainer {
 
     public enum Type {
-        TOPIC, ASSET
+        TOPIC, DEVICE
     }
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
@@ -57,7 +57,7 @@ public class MetricsTable extends LayoutContainer {
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtHeader>> listeners = new ArrayList<SelectionChangedListener<GwtHeader>>();
     private GwtTopic selectedTopic;
-    private GwtAsset selectedAsset;
+    private GwtDatastoreDevice selectedDevice;
     private Type type;
 
     public MetricsTable(GwtSession currentSession, Type type) {
@@ -91,8 +91,8 @@ public class MetricsTable extends LayoutContainer {
         case TOPIC:
             tableContainer.setHeading(MSGS.metricsTableHeaderTopic(""));
             break;
-        case ASSET:
-            tableContainer.setHeading(MSGS.metricsTableHeaderAsset(""));
+        case DEVICE:
+            tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
             break;
         default:
             break;
@@ -120,8 +120,8 @@ public class MetricsTable extends LayoutContainer {
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtHeader>> callback) {
                 if (selectedTopic != null) {
                     dataService.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, callback);
-                } else if (selectedAsset != null) {
-                    dataService.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, callback);
+                } else if (selectedDevice != null) {
+                    dataService.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
                 } else {
                     callback.onSuccess(new BaseListLoadResult<GwtHeader>(new ArrayList<GwtHeader>()));
                 }
@@ -161,13 +161,13 @@ public class MetricsTable extends LayoutContainer {
         refresh();
     }
 
-    public void refresh(GwtAsset selectedAsset) {
-        if (selectedAsset != null) {
-            tableContainer.setHeading(MSGS.metricsTableHeaderAsset(selectedAsset.getAsset()));
-            this.selectedAsset = selectedAsset;
+    public void refresh(GwtDatastoreDevice selectedDevice) {
+        if (selectedDevice != null) {
+            tableContainer.setHeading(MSGS.metricsTableHeaderDevice(selectedDevice.getDevice()));
+            this.selectedDevice = selectedDevice;
         } else {
-            tableContainer.setHeading(MSGS.metricsTableHeaderAsset(""));
-            this.selectedAsset = null;
+            tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
+            this.selectedDevice = null;
         }
         refresh();
     }
