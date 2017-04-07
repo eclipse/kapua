@@ -25,13 +25,13 @@
         <fileSet>
             <outputDirectory>home/kapua/</outputDirectory>
             <directory>src/main/resources/kapua-console</directory>
-            <fileMode>0755</fileMode>
+            <fileMode>0777</fileMode>
         </fileSet>
     </fileSets>
 
     <dependencySets>
         <dependencySet>
-            <outputDirectory>webapps/root</outputDirectory>
+            <outputDirectory>var/lib/jetty/webapps/root</outputDirectory>
             <unpack>true</unpack>
             <scope>runtime</scope>
 

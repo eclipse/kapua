@@ -12,6 +12,9 @@ parameters:
 - name:         GIT_REF
   description:     GitHub branch/tag/revision
   value:           develop
+- name:         KAPUA_CONSOLE_URL
+  description:     The URL to the Kapua Console
+  required:        true
 - name:         KEYCLOAK_ADMIN_USER
   description:     The admin user name
   value:           admin
@@ -110,6 +113,8 @@ objects:
               configMapKeyRef:
                 name: keycloak-config
                 key: keycloak.admin.password
+          - name: KAPUA_CONSOLE_URL
+            value: ${KAPUA_CONSOLE_URL}
           volumeMounts:
           - mountPath: /opt/jboss/keycloak/standalone/data
             name: keycloak-data
@@ -145,7 +150,7 @@ objects:
 - kind: Route
   apiVersion: v1
   metadata:
-    name: sso
+    name: web # Must not contain "console" - Also see: KEYCLOAK-4737
     labels:
       app: keycloak
   spec:
