@@ -29,12 +29,12 @@ import com.opencsv.CSVWriter;
 public class DataExporterCsv extends DataExporter {
 
     private CSVWriter writer;
-    private String topicOrAsset;
+    private String topicOrDevice;
     private String[] headers;
 
-    protected DataExporterCsv(HttpServletResponse response, String topicOrAsset) {
+    protected DataExporterCsv(HttpServletResponse response, String topicOrDevice) {
         super(response);
-        this.topicOrAsset = topicOrAsset;
+        this.topicOrDevice = topicOrDevice;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class DataExporterCsv extends DataExporter {
     public void close() throws ServletException, IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(topicOrAsset, "UTF-8") + "_data.csv");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(topicOrDevice, "UTF-8") + "_data.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         writer.flush();

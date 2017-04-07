@@ -17,14 +17,14 @@ import java.util.Date;
 
 import org.eclipse.kapua.app.console.client.util.DateUtils;
 
-public class GwtAsset extends KapuaBaseModel implements Serializable {
+public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
     private static final long serialVersionUID = 5756712401178232349L;
 
-    public GwtAsset() {
+    public GwtDatastoreDevice() {
     }
 
-    public GwtAsset(String asset, Date timestamp) {
-        set("asset", asset);
+    public GwtDatastoreDevice(String device, Date timestamp) {
+        set("device", device);
         set("timestamp", timestamp);
     }
 
@@ -38,20 +38,20 @@ public class GwtAsset extends KapuaBaseModel implements Serializable {
         }
     }
 
-    public String getAsset() {
-        return (String) get("asset");
+    public String getDevice() {
+        return (String) get("device");
     }
 
-    public String getUnescapedAsset() {
-        return (String) getUnescaped("asset");
+    public String getUnescapedDevice() {
+        return (String) getUnescaped("device");
     }
 
-    public String getFriendlyAsset() {
-        return (String) get("friendlyAsset");
+    public String getFriendlyDevice() {
+        return (String) get("friendlyDevice");
     }
 
-    public void setFriendlyAsset(String friendlyAsset) {
-        set("friendlyAsset", friendlyAsset);
+    public void setFriendlyDevice(String friendlyDevice) {
+        set("friendlyDevice", friendlyDevice);
     }
 
     public Date getTimestamp() {

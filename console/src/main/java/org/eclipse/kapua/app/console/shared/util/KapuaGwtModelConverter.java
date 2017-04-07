@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
@@ -626,8 +626,8 @@ public class KapuaGwtModelConverter {
      * @param client
      * @return
      */
-    public static GwtAsset convertToAsset(ClientInfo client) {
-        return new GwtAsset(client.getClientId(), client.getLastMessageOn());
+    public static GwtDatastoreDevice convertToDatastoreDevice(ClientInfo client) {
+        return new GwtDatastoreDevice(client.getClientId(), client.getLastMessageOn());
     }
 
     /**
@@ -645,7 +645,7 @@ public class KapuaGwtModelConverter {
         }
         semanticTopic.append(semanticParts.get(semanticParts.size()-1));
         gwtMessage.set("topic", semanticTopic.toString());
-        gwtMessage.set("asset", message.getClientId());
+        gwtMessage.set("device", message.getClientId());
         gwtMessage.set("timestamp", message.getTimestamp());
         for(GwtHeader header : headers){
             gwtMessage.set(header.getName(), message.getPayload().getProperties().get(header.getName()));

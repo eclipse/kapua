@@ -23,7 +23,7 @@ import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.shared.model.GwtAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtMessage;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -76,10 +76,10 @@ public class ResultsTable extends LayoutContainer {
     private ToolBar resultsToolBar;
     private ArrayList<ColumnConfig> columnConfigs;
     private ColumnConfig timestampColumn;
-    private ColumnConfig assetColumn;
+    private ColumnConfig deviceColumn;
     private ColumnConfig topicColumn;
     private GwtTopic selectedTopic;
-    private GwtAsset selectedAsset;
+    private GwtDatastoreDevice selectedDevice;
     private List<GwtHeader> selectedMetrics;
     private Date startDate;
     private Date endDate;
@@ -120,7 +120,7 @@ public class ResultsTable extends LayoutContainer {
 
         timestampColumn = new ColumnConfig("timestamp", MSGS.resultsTableTimestampHeader(), 140);
         columnConfigs.add(timestampColumn);
-        assetColumn = new ColumnConfig("asset", MSGS.resultsTableAssetHeader(), 90);
+        deviceColumn = new ColumnConfig("device", MSGS.resultsTableDeviceHeader(), 90);
         topicColumn = new ColumnConfig("topic", MSGS.resultsTableTopicHeader(), 140);
         
         RpcProxy<PagingLoadResult<GwtMessage>> proxy = new RpcProxy<PagingLoadResult<GwtMessage>>() {
@@ -130,8 +130,8 @@ public class ResultsTable extends LayoutContainer {
                 if (selectedMetrics != null && !selectedMetrics.isEmpty()) {
                     if (selectedTopic != null) {
                         dataService.findMessagesByTopic((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, selectedMetrics, startDate, endDate, callback);
-                    } else if (selectedAsset != null) {
-                        dataService.findMessagesByAsset((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, selectedMetrics, startDate, endDate, callback);
+                    } else if (selectedDevice != null) {
+                        dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
                     }
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GwtMessage>(new ArrayList<GwtMessage>()));
@@ -214,7 +214,7 @@ public class ResultsTable extends LayoutContainer {
         resultsGrid.getColumnModel().getColumns().add(timestampColumn);
         selectedMetrics = headers;
         if (headers != null && !headers.isEmpty()) {
-            resultsGrid.getColumnModel().getColumns().add(assetColumn);
+            resultsGrid.getColumnModel().getColumns().add(deviceColumn);
             resultsGrid.getColumnModel().getColumns().add(topicColumn);
             for (GwtHeader header : headers) {
                 resultsGrid.getColumnModel().getColumns().add(new ColumnConfig(header.getName(), header.getName(), 100));
@@ -231,8 +231,8 @@ public class ResultsTable extends LayoutContainer {
         refresh(headers);
     }
     
-    public void refresh(GwtAsset asset, List<GwtHeader> headers) {
-        this.selectedAsset = asset;
+    public void refresh(GwtDatastoreDevice device, List<GwtHeader> headers) {
+        this.selectedDevice = device;
         refresh(headers);
     }
 
@@ -252,8 +252,8 @@ public class ResultsTable extends LayoutContainer {
             sbUrl.append("&topic=").append(URL.encodeQueryString(selectedTopic.getSemanticTopic()));
         }
 
-        if (selectedAsset != null) {
-            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getAsset()));
+        if (selectedDevice != null) {
+            sbUrl.append("&device=").append(URL.encodeQueryString(selectedDevice.getDevice()));
         }
 
         if (selectedMetrics != null && !selectedMetrics.isEmpty()) {

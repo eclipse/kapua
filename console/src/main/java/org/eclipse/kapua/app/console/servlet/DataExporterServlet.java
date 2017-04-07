@@ -59,21 +59,21 @@ public class DataExporterServlet extends HttpServlet {
             String format = request.getParameter("format");
             String scopeIdString = request.getParameter("scopeIdString");
             String topic = request.getParameter("topic");
-            String asset = request.getParameter("asset");
+            String device = request.getParameter("device");
             String[] headers = request.getParameterValues("headers");
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
-            String topicOrAsset;
+            String topicOrDevice;
 
             AndPredicate predicate = new AndPredicateImpl();
             if (topic != null) {
-                topicOrAsset = topic;
+                topicOrDevice = topic;
                 predicate.getPredicates().add(new TermPredicateImpl(MessageField.CHANNEL, topic));
-            } else if (asset != null) {
-                topicOrAsset = asset;
-                predicate.getPredicates().add(new TermPredicateImpl(MessageField.CLIENT_ID, asset));
+            } else if (device != null) {
+                topicOrDevice = device;
+                predicate.getPredicates().add(new TermPredicateImpl(MessageField.CLIENT_ID, device));
             } else {
-                throw new IllegalArgumentException("topic, asset");
+                throw new IllegalArgumentException("topic, device");
             }
 
             if (startDate == null) {
@@ -90,9 +90,9 @@ public class DataExporterServlet extends HttpServlet {
 
             DataExporter dataExporter;
             if ("xls".equals(format)) {
-                dataExporter = new DataExporterExcel(response, topicOrAsset);
+                dataExporter = new DataExporterExcel(response, topicOrDevice);
             } else if ("csv".equals(format)) {
-                dataExporter = new DataExporterCsv(response, topicOrAsset);
+                dataExporter = new DataExporterCsv(response, topicOrDevice);
             } else {
                 throw new IllegalArgumentException("format");
             }

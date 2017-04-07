@@ -22,7 +22,7 @@ import java.util.Stack;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
-import org.eclipse.kapua.app.console.shared.model.GwtAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtKapuaChartResult;
 import org.eclipse.kapua.app.console.shared.model.GwtMessage;
@@ -170,22 +170,22 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public ListLoadResult<GwtAsset> findAssets(LoadConfig config, String scopeId) throws GwtKapuaException {
-        ClientInfoRegistryService assetsService = locator.getService(ClientInfoRegistryService.class);
-        List<GwtAsset> assets = new ArrayList<>();
+    public ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String scopeId) throws GwtKapuaException {
+        ClientInfoRegistryService clientInfoService = locator.getService(ClientInfoRegistryService.class);
+        List<GwtDatastoreDevice> devices = new ArrayList<>();
         KapuaId convertedScopeId = GwtKapuaModelConverter.convert(scopeId);
         ClientInfoQuery query = new ClientInfoQueryImpl(convertedScopeId);
         try {
-            ClientInfoListResult result = assetsService.query(query);
+            ClientInfoListResult result = clientInfoService.query(query);
             if (result != null && !result.isEmpty()) {
                 for (ClientInfo client : result.getItems()) {
-                    assets.add(KapuaGwtModelConverter.convertToAsset(client));
+                    devices.add(KapuaGwtModelConverter.convertToDatastoreDevice(client));
                 }
             }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
-        return new BaseListLoadResult<GwtAsset>(assets);
+        return new BaseListLoadResult<GwtDatastoreDevice>(devices);
     }
 
     @Override
@@ -201,8 +201,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtAsset asset) throws GwtKapuaException {
-        TermPredicateImpl predicate = new TermPredicateImpl(MetricInfoField.CLIENT_ID, asset.getAsset());
+    public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtDatastoreDevice device) throws GwtKapuaException {
+        TermPredicateImpl predicate = new TermPredicateImpl(MetricInfoField.CLIENT_ID, device.getDevice());
         return findHeaders(config, scopeId, predicate);
     }
 
@@ -233,14 +233,14 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public PagingLoadResult<GwtMessage> findMessagesByAsset(PagingLoadConfig loadConfig, String scopeId, GwtAsset asset, List<GwtHeader> headers, Date startDate, Date endDate)
+    public PagingLoadResult<GwtMessage> findMessagesByDevice(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-        TermPredicate predicate = new TermPredicateImpl(MessageField.CLIENT_ID, asset.getAsset());
+        TermPredicate predicate = new TermPredicateImpl(MessageField.CLIENT_ID, device.getDevice());
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
     @Override
-    public GwtKapuaChartResult findMessagesByAsset(String accountName, GwtAsset asset, List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit,
+    public GwtKapuaChartResult findMessagesByDevice(String accountName, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit,
             int lastOffset, Integer indexOffset) throws GwtKapuaException {
         // TODO Auto-generated method stub
         return null;
