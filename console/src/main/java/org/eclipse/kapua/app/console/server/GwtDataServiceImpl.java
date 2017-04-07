@@ -108,7 +108,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     private void addToMap(HashMap<String, GwtTopic> topicMap, ChannelInfo channel) {
-        String[] topicParts = channel.getChannel().split("/");
+        String[] topicParts = channel.getName().split("/");
         GwtTopic previous = null;
         String topicName = topicParts[0];
         String baseTopic = topicParts[0];
