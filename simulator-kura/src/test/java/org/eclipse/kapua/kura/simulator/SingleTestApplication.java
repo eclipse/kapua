@@ -11,8 +11,8 @@
 package org.eclipse.kapua.kura.simulator;
 
 import static java.time.Duration.ofSeconds;
-import static org.eclipse.kapua.kura.simulator.app.data.Generators.simpleDataApplication;
-import static org.eclipse.kapua.kura.simulator.app.data.Generators.sine;
+import static org.eclipse.kapua.kura.simulator.generator.Generators.simpleDataApplication;
+import static org.eclipse.kapua.kura.simulator.generator.Generators.sine;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -24,9 +24,9 @@ import java.util.logging.Level;
 import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.annotated.AnnotatedApplication;
 import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
-import org.eclipse.kapua.kura.simulator.app.data.GeneratorScheduler;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
-import org.eclipse.kapua.kura.simulator.util.NameThreadFactory;
+import org.eclipse.kapua.kura.simulator.generator.GeneratorScheduler;
+import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -42,7 +42,7 @@ public class SingleTestApplication {
         logger.info("Starting ...");
 
         final ScheduledExecutorService downloadExecutor = Executors
-                .newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
+                .newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));
 
         final GatewayConfiguration configuration = new GatewayConfiguration(
                 "tcp://kapua-broker:kapua-password@localhost:1883", "kapua-sys", "sim-1");
@@ -52,7 +52,7 @@ public class SingleTestApplication {
             final Set<Application> apps = new HashSet<>();
             apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
             apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
-            apps.add(simpleDataApplication("data-1", scheduler, "sine", sine(100, 0, ofSeconds(120))));
+            apps.add(simpleDataApplication("data-1", scheduler, "sine", sine(ofSeconds(120), 100, 0, null)));
 
             try (final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
                     final Simulator simulator = new Simulator(configuration, transport, apps);) {

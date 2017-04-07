@@ -14,8 +14,9 @@
 
 CURRDIR=$(pwd)
 BASEDIR=$(dirname "$0")
+KAPUA_BOX_VERSION=0.2
+KAPUA_BOX_NAME=trusty64/kapua-dev-box-$KAPUA_BOX_VERSION
 KAPUA_BOX_TMP_DIR=$BASEDIR/kapua-box-tmp
-KAPUA_BOX_NAME=trusty64/kapua-dev-box-0.1
 
 KAPUA_BOX_EXISTS=$(vagrant box list | grep $KAPUA_BOX_NAME)
 
@@ -73,9 +74,9 @@ then
       
    vagrant up
 
-   vagrant package --output trusty64-kapua-dev-0.1.box
+   vagrant package --output trusty64-kapua-dev-$KAPUA_BOX_VERSION.box
 
-   vagrant box add $KAPUA_BOX_NAME trusty64-kapua-dev-0.1.box
+   vagrant box add $KAPUA_BOX_NAME trusty64-kapua-dev-$KAPUA_BOX_VERSION.box
 
    vagrant destroy --force 
 

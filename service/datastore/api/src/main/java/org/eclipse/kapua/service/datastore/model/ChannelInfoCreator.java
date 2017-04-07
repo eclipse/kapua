@@ -41,22 +41,22 @@ public interface ChannelInfoCreator extends StorableCreator<ChannelInfo> {
     public String getClientId();
 
     /**
-     * Get the channel
+     * Get the name
      * 
      * @return
      * 
      * @since 1.0.0
      */
-    public String getChannel();
+    public String getName();
 
     /**
-     * Set the channel
+     * Set the channel name
      * 
-     * @param channel
+     * @param name
      * 
      * @since 1.0.0
      */
-    public void setChannel(String channel);
+    public void setName(String name);
 
     /**
      * Get the message identifier (of the first message published on this channel)

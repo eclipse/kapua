@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 ###############################################################################
 # Copyright (c) 2016, 2017 Red Hat Inc and others
 #
@@ -7,8 +9,6 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 ###############################################################################
-
-#!/usr/bin/env bash
 
 if [ "${DOCKERIZED}" == "FALSE" ]; then
     wget -nc https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz -O /tmp/openshift-origin-server-v1.4.1-3f9807a-linux-64bit.tar.gz

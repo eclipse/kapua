@@ -22,6 +22,7 @@ public class GwtDeviceCreator extends KapuaBaseModel implements Serializable
 
     // General info
     private String                    accountId;
+    private String                    groupId;
     private String                    clientId;
     private String                    displayName;
 
@@ -58,6 +59,16 @@ public class GwtDeviceCreator extends KapuaBaseModel implements Serializable
     public void setClientId(String clientId)
     {
         this.clientId = clientId;
+    }
+    
+    public String getGroupId()
+    {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId)
+    {
+        this.groupId = groupId;
     }
 
     public String getDisplayName()

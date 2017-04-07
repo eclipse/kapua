@@ -30,10 +30,10 @@ objects:
 - apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: hawkular-openshift-agent-kapua
+    name: hawkular-openshift-agent-java
     labels:
-      name: hawkular-openshift-agent-kapua
-      hawkular-openshift-agent: jolokia-kapua
+      name: hawkular-openshift-agent-java
+      hawkular-openshift-agent: jolokia-java
   data:
     hawkular-openshift-agent: |
       endpoints:
@@ -48,11 +48,95 @@ objects:
         tls:
           skip_certificate_validation: true
         metrics:
-        - name: java.lang:type=Memory#HeapMemoryUsage#used
-          id: java_memory_heap_used
+        - id: broker.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: generic
+            kapuaMetricType: javaHeapMemoryUsed
           type: gauge
           description: Heap Memory Used
           units: B
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-broker
+    labels:
+      name: hawkular-openshift-agent-broker
+      hawkular-openshift-agent: jolokia-broker
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        credentials:
+          username: ${JOLOKIA_USER}
+          password: ${JOLOKIA_PASSWORD}
+        tls:
+          skip_certificate_validation: true
+        metrics:
+        - id: broker.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: javaMemoryUsage
+          type: gauge
+          description: Heap Memory Used
+          units: B
+        - id: broker.connectionCount
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalConnectionsCount"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: connectionCount
+          type: gauge
+          description: Total connection count
+        - id: broker.messagesReceived
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalEnqueueCount"
+          tags:
+            kapuaComponent: broker
+            kapuaMetricType: messagesReceived
+          type: counter
+          description: Total messages received by the broker
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: hawkular-openshift-agent-jetty
+    labels:
+      name: hawkular-openshift-agent-jetty
+      hawkular-openshift-agent: jolokia-jetty
+  data:
+    hawkular-openshift-agent: |
+      endpoints:
+      - type: jolokia
+        protocol: https
+        port: 8778
+        path: /jolokia/
+        collection_interval: 15s
+        credentials:
+          username: ${JOLOKIA_USER}
+          password: ${JOLOKIA_PASSWORD}
+        tls:
+          skip_certificate_validation: true
+        metrics:
+        - id: jetty.javaHeapUsed
+          name: "java.lang:type=Memory#HeapMemoryUsage#used"
+          tags:
+            kapuaComponent: jetty
+            kapuaMetricType: javaMemoryUsage
+          type: gauge
+          description: Heap Memory Used
+          units: B
+        - id: jetty.requestsDispatched
+          name: "org.eclipse.jetty.server.handler:type=statisticshandler,id=0#dispatched"
+          tags:
+            kapuaComponent: jetty
+            kapuaMetricType: requestsDispatched
+          type: counter
+          description: Number fo requests dispatched
 
 # Deployment configs
 
@@ -75,7 +159,7 @@ objects:
         labels:
           app: sql
           deploymentconfig: sql
-          hawkular-openshift-agent: jolokia-kapua
+          hawkular-openshift-agent: jolokia-java
       spec:
         containers:
         - env:
@@ -108,7 +192,7 @@ objects:
           name: sql-data
         - name: hawkular-openshift-agent
           configMap:
-            name: hawkular-openshift-agent-kapua
+            name: hawkular-openshift-agent-java
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -131,12 +215,17 @@ objects:
         labels:
           app: kapua-broker
           deploymentconfig: kapua-broker
-          hawkular-openshift-agent: jolokia-kapua
+          hawkular-openshift-agent: jolokia-broker
       spec:
         containers:
         - env:
           - name: ACTIVEMQ_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+            value:
+              -Dcommons.db.connection.host=$SQL_SERVICE_HOST
+              -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dmetrics.enable.jmx=true
+              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
+              -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-broker:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-broker
@@ -160,8 +249,11 @@ objects:
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         volumes:
-        - emptyDir: {}
-          name: kapua-broker-volume-1
+        - name: kapua-broker-volume-1
+          emptyDir: {}
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-broker
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -180,12 +272,17 @@ objects:
         labels:
           app: kapua-console
           deploymentconfig: kapua-console
-          hawkular-openshift-agent: jolokia-kapua
+          hawkular-openshift-agent: jolokia-jetty
       spec:
         containers:
         - env:
           - name: JAVA_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+            value:
+              -Dcommons.db.connection.host=$SQL_SERVICE_HOST
+              -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
+              -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-console-jetty:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
@@ -207,7 +304,7 @@ objects:
         volumes:
         - name: hawkular-openshift-agent
           configMap:
-            name: hawkular-openshift-agent-kapua
+            name: hawkular-openshift-agent-jetty
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -215,7 +312,7 @@ objects:
     generation: 1
     labels:
       app: kapua-api
-      hawkular-openshift-agent: jolokia-kapua
+      hawkular-openshift-agent: jolokia-jetty
     name: kapua-api
   spec:
     replicas: 1
@@ -232,7 +329,12 @@ objects:
         containers:
         - env:
           - name: JAVA_OPTS
-            value: -Dcommons.db.connection.host=$SQL_SERVICE_HOST -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
+            value:
+              -Dcommons.db.connection.host=$SQL_SERVICE_HOST
+              -Dcommons.db.connection.port=$SQL_PORT_3306_TCP_PORT
+              -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
+              -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
+              -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
           image: ${DOCKER_ACCOUNT}/kapua-api-jetty:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
@@ -254,7 +356,7 @@ objects:
         volumes:
         - name: hawkular-openshift-agent
           configMap:
-            name: hawkular-openshift-agent-kapua
+            name: hawkular-openshift-agent-jetty
 
 - apiVersion: v1
   kind: DeploymentConfig
@@ -262,7 +364,6 @@ objects:
     generation: 1
     labels:
       app: elasticsearch
-      hawkular-openshift-agent: jolokia-kapua
     name: elasticsearch
   spec:
     replicas: 1
@@ -303,9 +404,6 @@ objects:
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         volumes:
-        - name: hawkular-openshift-agent
-          configMap:
-            name: hawkular-openshift-agent-kapua
         - name: elasticsearch-data
           emptyDir: {}
 
@@ -351,6 +449,7 @@ objects:
     selector:
       app: kapua-broker
       deploymentconfig: kapua-broker
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -358,7 +457,7 @@ objects:
     labels:
       app: kapua-console
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: http
@@ -368,6 +467,7 @@ objects:
     selector:
       app: kapua-console
       deploymentconfig: kapua-console
+
 - apiVersion: v1
   kind: Service
   metadata:
@@ -375,7 +475,7 @@ objects:
     labels:
       app: kapua-api
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name": "sql", "kind": "Service"}, {"name": "elasticsearch", "kind": "Service"}]'
   spec:
     ports:
     - name: http

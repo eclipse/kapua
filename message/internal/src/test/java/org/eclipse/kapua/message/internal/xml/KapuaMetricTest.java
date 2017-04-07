@@ -28,6 +28,7 @@ public class KapuaMetricTest extends Assert {
 
     private static final String BASE64_BYTES = "Ynl0ZXM=";
 
+    @SuppressWarnings("unused")
     private static final String METRIC_XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
             "<metric>" + newline +
             "   <name>name</name>" + newline +

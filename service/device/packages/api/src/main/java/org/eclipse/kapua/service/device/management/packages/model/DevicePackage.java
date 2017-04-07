@@ -71,6 +71,13 @@ public interface DevicePackage {
      */
     @XmlElement(name = "bundleInfos")
     public <B extends DevicePackageBundleInfos> B getBundleInfos();
+    
+    /**
+     * Set device package bundle informations
+     * 
+     * @return
+     */
+    public <B extends DevicePackageBundleInfos> void setBundleInfos(B bundleInfos);
 
     /**
      * Get the installation date

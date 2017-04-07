@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.authorization.group;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**

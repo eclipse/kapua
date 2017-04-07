@@ -8,7 +8,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.kura.simulator.app.data;
+package org.eclipse.kapua.kura.simulator.generator;
 
 import java.time.Duration;
 import java.time.Instant;

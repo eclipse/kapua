@@ -37,7 +37,7 @@ public class KuraCallTest extends Assert {
             throws Exception {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceCallFactory deviceCallFactory = locator.getFactory(DeviceCallFactory.class);
-        DeviceCall deviceCall = deviceCallFactory.newDeviceCall();
+        DeviceCall<KuraRequestMessage,?> deviceCall = deviceCallFactory.newDeviceCall();
 
         KuraRequestChannel requestChannel = new KuraRequestChannel("$EDC", "kapua-sys", "00:60:0C:82:52:34");
         requestChannel.setAppId("CMD-V1");

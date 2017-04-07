@@ -45,9 +45,7 @@ public abstract class AbstractKapuaResource {
             } else {
                 wae = new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
-        }
-
-        else {
+        } else {
             s_logger.error("Internal Error", t);
             wae = newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
         }

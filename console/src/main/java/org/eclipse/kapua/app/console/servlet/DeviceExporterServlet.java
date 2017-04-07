@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class DeviceExporterServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2533869595709953567L;
-    private static Logger s_logger = LoggerFactory.getLogger(DeviceExporterServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceExporterServlet.class);
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -86,7 +86,6 @@ public class DeviceExporterServlet extends HttpServlet {
             DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
             DeviceFactory drf = locator.getFactory(DeviceFactory.class);
 
-            int resultsCount = 0;
             int offset = 0;
 
             // paginate through the matching message
@@ -98,47 +97,47 @@ public class DeviceExporterServlet extends HttpServlet {
 
             String clientId = request.getParameter("clientId");
             if (clientId != null && !clientId.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CLIENT_ID, clientId, Operator.STARTS_WITH));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId, Operator.STARTS_WITH));
             }
 
             String displayName = request.getParameter("displayName");
             if (displayName != null && !displayName.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.DISPLAY_NAME, displayName, Operator.STARTS_WITH));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.DISPLAY_NAME, displayName, Operator.STARTS_WITH));
             }
 
             String serialNumber = request.getParameter("serialNumber");
             if (serialNumber != null && !serialNumber.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.SERIAL_NUMBER, serialNumber));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.SERIAL_NUMBER, serialNumber));
             }
 
             String deviceStatus = request.getParameter("deviceStatus");
             if (deviceStatus != null && !deviceStatus.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(deviceStatus)));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.valueOf(deviceStatus)));
             }
 
             String iotFrameworkVersion = request.getParameter("esfVersion");
             if (iotFrameworkVersion != null) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
             }
 
             String applicationIdentifiers = request.getParameter("applicationIdentifiers");
             if (applicationIdentifiers != null) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
             }
 
             String customAttribute1 = request.getParameter("customAttribute1");
             if (customAttribute1 != null) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
             }
 
             String customAttribute2 = request.getParameter("customAttribute2");
             if (customAttribute2 != null) {
-                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
             }
 
             String deviceConnectionStatus = request.getParameter("deviceConnectionStatus");
             if (deviceConnectionStatus != null) {
-                andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
+                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
             }
 
             String sortAttribute = request.getParameter("sortAttribute");
@@ -171,12 +170,13 @@ public class DeviceExporterServlet extends HttpServlet {
                 deviceExporter.append(results);
 
                 offset += results.getSize();
-                resultsCount += results.getSize();
+                results.getSize();
             } while (results.getSize() > 0);
 
             // Close things up
             deviceExporter.close();
         } catch (IllegalArgumentException iae) {
+            logger.info("Failed to export", iae);
             response.sendError(400, "Illegal value for query parameter: " + iae.getMessage());
             return;
         } catch (KapuaEntityNotFoundException eenfe) {
@@ -189,7 +189,7 @@ public class DeviceExporterServlet extends HttpServlet {
             response.sendError(403, eiae.getMessage());
             return;
         } catch (Exception e) {
-            s_logger.error("Error creating device export", e);
+            logger.error("Error creating device export", e);
             throw new ServletException(e);
         }
     }

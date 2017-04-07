@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.packages.model.internal;
 import java.util.Date;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 
 /**
  * Device package.
@@ -76,5 +77,10 @@ public class DevicePackageImpl implements DevicePackage
     public void setInstallDate(Date installDate)
     {
         this.installDate = installDate;
+    }
+
+    @Override
+    public void setBundleInfos(DevicePackageBundleInfos bundleInfos) {
+        this.bundleInfos = (DevicePackageBundleInfosImpl) bundleInfos;
     }
 }

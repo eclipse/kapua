@@ -1,0 +1,33 @@
+{
+	"applications": {
+		"example1": {
+			"scheduler": { "period": 1000 },
+			"topics": {
+				"t1/data": {
+					"positionGenerator": "spos",
+					"metrics": {
+						"temp1": { "generator": "sine1", "name": "value" },
+						"temp2": { "generator": "sine2", "name": "value" }
+					}
+				},
+				"t2/data": {
+					"metrics": {
+						"temp1": { "generator": "sine1", "name": "value" },
+						"temp2": { "generator": "sine2", "name": "value" }
+					}
+				}
+			},
+			"generators": {
+				"sine1": {
+					"type": "sine", "period": 60000, "offset": 50, "amplitude": 100
+				},
+				"sine2": {
+					"type": "sine", "period": 120000, "shift": 45.5, "offset": 30, "amplitude": 100
+				},
+				"spos": {
+					"type": "spos"
+				}
+			}
+		}
+	}
+}

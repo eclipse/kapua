@@ -76,6 +76,7 @@ public class AccountServiceMock implements AccountService {
         if (!accounts.containsKey(accountId))
             throw KapuaException.internalError("User not found");
 
+        @SuppressWarnings("unused")
         AccountMock accountMock = accounts.remove(accountId);
     }
 

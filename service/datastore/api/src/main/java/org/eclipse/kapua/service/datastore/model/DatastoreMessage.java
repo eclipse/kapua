@@ -26,6 +26,7 @@ import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Message returned by the data store find services
@@ -133,6 +134,7 @@ public interface DatastoreMessage extends Storable {
      * @return
      */
     @XmlElement(name = "receivedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getReceivedOn();
 
     /**
@@ -148,6 +150,7 @@ public interface DatastoreMessage extends Storable {
      * @return
      */
     @XmlElement(name = "sentOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getSentOn();
 
     /**
@@ -163,6 +166,7 @@ public interface DatastoreMessage extends Storable {
      * @return
      */
     @XmlElement(name = "capturedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getCapturedOn();
 
     /**

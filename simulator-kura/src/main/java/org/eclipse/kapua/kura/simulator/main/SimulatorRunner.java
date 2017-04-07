@@ -10,6 +10,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator.main;
 
+import static ch.qos.logback.classic.Level.ALL;
+import static ch.qos.logback.classic.Level.INFO;
+import static ch.qos.logback.classic.Level.WARN;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.commons.cli.Option.builder;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +38,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 import org.eclipse.kapua.kura.simulator.MqttAsyncTransport;
 import org.eclipse.kapua.kura.simulator.Simulator;
@@ -30,11 +49,20 @@ import org.eclipse.kapua.kura.simulator.app.Application;
 import org.eclipse.kapua.kura.simulator.app.annotated.AnnotatedApplication;
 import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
-import org.eclipse.kapua.kura.simulator.util.NameThreadFactory;
+import org.eclipse.kapua.kura.simulator.simulation.Configurations;
+import org.eclipse.kapua.kura.simulator.simulation.JsonReader;
+import org.eclipse.kapua.kura.simulator.simulation.Simulation;
+import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.eclipse.scada.utils.str.StringReplacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.layout.TTLLLayout;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 
 /**
  * This is a main class running a simple default simulator setup with multiple
@@ -44,24 +72,109 @@ public class SimulatorRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(SimulatorRunner.class);
 
-    public static void main(final String[] args) throws Throwable {
+    public static void main(final String... args) throws Throwable {
 
         toInfinityAndBeyond();
 
         final Options opts = new Options();
-        opts.addOption("n", "basename", true, "The base name of the simulator instance");
-        opts.addOption(null, "name-factory", true, "The name factory to use");
-        opts.addOption("c", "count", true, "The number of instances to start");
-        opts.addOption("b", "broker", true, "The URL to the broker");
-        opts.addOption("a", "account-name", true, "The name of the account");
-        opts.addOption("s", "shutdown", true, "Shutdown simulator after x seconds");
 
-        final CommandLine cli = new DefaultParser().parse(opts, args);
+        opts.addOption(
+                builder("n")
+                        .longOpt("basename")
+                        .hasArg().argName("BASENAME")
+                        .desc("The base name of the simulator instance")
+                        .build());
+
+        opts.addOption(
+                builder()
+                        .longOpt("name-factory")
+                        .hasArg().argName("FACTORY")
+                        .desc("The name factory to use")
+                        .build());
+
+        opts.addOption(
+                builder("c")
+                        .longOpt("count")
+                        .hasArg().argName("COUNT")
+                        .type(Integer.class)
+                        .desc("The number of instances to start")
+                        .build());
+
+        opts.addOption(
+                builder("a")
+                        .longOpt("account-name")
+                        .hasArg().argName("NAME")
+                        .desc("The name of the account (defaults to 'kapua-sys')")
+                        .build());
+
+        opts.addOption(
+                builder("f")
+                        .longOpt("simulation")
+                        .hasArg().argName("URI")
+                        .desc("The URI or path to a JSON file containing a simple simulation setup")
+                        .build());
+
+        opts.addOption(
+                builder("s")
+                        .longOpt("seconds")
+                        .hasArg().argName("SECONDS")
+                        .type(Long.class)
+                        .desc("Shutdown simulator after <SECONDS> seconds")
+                        .build());
+
+        opts.addOption("?", "help", false, null);
+
+        {
+            final OptionGroup broker = new OptionGroup();
+            broker.setRequired(false);
+
+            broker.addOption(
+                    builder("h")
+                            .longOpt("broker-host")
+                            .hasArg().argName("HOST")
+                            .desc("Only the hostname of the broker, used for building the full URL")
+                            .build());
+            broker.addOption(
+                    builder("b")
+                            .longOpt("broker")
+                            .hasArg().argName("URL")
+                            .desc("The full URL to the broker").build());
+
+            opts.addOptionGroup(broker);
+        }
+
+        {
+            final OptionGroup logging = new OptionGroup();
+            logging.setRequired(false);
+
+            logging.addOption(builder("q").longOpt("quiet").desc("Suppress output").build());
+            logging.addOption(builder("v").longOpt("verbose").desc("Show more output").build());
+            logging.addOption(builder("d").longOpt("debug").desc("Show debug output").build());
+
+            opts.addOptionGroup(logging);
+        }
+
+        final CommandLine cli;
+        try {
+            cli = new DefaultParser().parse(opts, args);
+        } catch (final ParseException e) {
+            System.err.println(e.getLocalizedMessage());
+            System.exit(-1);
+            return;
+        }
+
+        if (cli.hasOption('?')) {
+            showHelp(opts);
+            System.exit(0);
+        }
+
+        setupLogging(cli);
 
         final String basename = replace(cli.getOptionValue('n', env("KSIM_BASE_NAME", "sim-")));
         final String nameFactoryName = cli.getOptionValue("name-factory", env("KSIM_NAME_FACTORY", null));
         final int count = Integer.parseInt(replace(cli.getOptionValue('c', env("KSIM_NUM_GATEWAYS", "1"))));
-        final String broker = replace(cli.getOptionValue('b', createBrokerUrl()));
+        final String brokerHost = replace(cli.getOptionValue("h"));
+        final String broker = replace(cli.getOptionValue('b', createBrokerUrl(Optional.ofNullable(brokerHost))));
         final String accountName = replace(cli.getOptionValue('a', env("KSIM_ACCOUNT_NAME", "kapua-sys")));
         final long shutdownAfter = Long
                 .parseLong(replace(cli.getOptionValue('s', Long.toString(Long.MAX_VALUE / 1_000L))));
@@ -76,12 +189,17 @@ public class SimulatorRunner {
         logger.info("\taccount-name: {}", accountName);
 
         final ScheduledExecutorService downloadExecutor = Executors
-                .newSingleThreadScheduledExecutor(new NameThreadFactory("DownloadSimulator"));
+                .newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));
 
         final List<AutoCloseable> close = new LinkedList<>();
 
         final NameFactory nameFactory = createNameFactory(nameFactoryName)
                 .orElseGet(() -> NameFactories.prefixed(basename));
+
+        final List<Simulation> simulations = createSimulations(cli);
+
+        // auto close all simulations
+        close.addAll(simulations);
 
         try {
             for (int i = 1; i <= count; i++) {
@@ -95,13 +213,17 @@ public class SimulatorRunner {
                 apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
                 apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
 
+                for (final Simulation sim : simulations) {
+                    apps.add(sim.createApplication(name));
+                }
+
                 final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
                 close.add(transport);
                 final Simulator simulator = new Simulator(configuration, transport, apps);
                 close.add(simulator);
             }
 
-            Thread.sleep(shutdownAfter * 1_000L);
+            Thread.sleep(SECONDS.toMillis(shutdownAfter));
             logger.info("Bye bye...");
         } finally {
             downloadExecutor.shutdown();
@@ -109,6 +231,61 @@ public class SimulatorRunner {
         }
 
         logger.info("Exiting...");
+    }
+
+    private static boolean hasText(final String text) {
+        return text != null && !text.isEmpty();
+    }
+
+    private static List<Simulation> createSimulations(final CommandLine cli) throws IOException {
+
+        String simulationConfiguration = System.getenv("KSIM_SIMULATION_CONFIGURATION");
+        if (hasText(simulationConfiguration)) {
+            logger.info("Using direct simulator configuration");
+            return Configurations.createSimulations(JsonReader.parse(simulationConfiguration));
+        }
+
+        simulationConfiguration = System.getenv("KSIM_SIMULATION_URL");
+
+        if (!hasText(simulationConfiguration)) {
+            simulationConfiguration = cli.getOptionValue("simulation");
+        }
+
+        if (hasText(simulationConfiguration)) {
+            logger.info("Loading simulator configuration from: {}", simulationConfiguration);
+
+            try {
+                final Path path = Paths.get(simulationConfiguration);
+                try (final Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                    return Configurations.createSimulations(JsonReader.parse(reader));
+                }
+
+            } catch (final InvalidPathException e) {
+                // ignore and re-try as URL
+            }
+
+            final URL url = new URL(simulationConfiguration);
+            try (final InputStream in = url.openStream()) {
+                return Configurations.createSimulations(JsonReader.parse(in, StandardCharsets.UTF_8));
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**
+     * Show command line help
+     *
+     * @param opts
+     *            configured options
+     */
+    private static void showHelp(final Options opts) {
+        final HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("SimulatorRunner",
+                "Run Kura gateway simulator\n\n",
+                opts,
+                "\nThis application is the default main entry point for this library. Other entry points may be available.",
+                true);
     }
 
     private static Optional<NameFactory> createNameFactory(final String nameFactoryName) throws Exception {
@@ -150,7 +327,7 @@ public class SimulatorRunner {
         }
     }
 
-    private static String createBrokerUrl() {
+    private static String createBrokerUrl(final Optional<String> hostFromCli) {
         final String broker = System.getenv("KSIM_BROKER_URL");
         if (broker != null && !broker.isEmpty()) {
             return broker;
@@ -159,7 +336,7 @@ public class SimulatorRunner {
         final String proto = replace(env("KSIM_BROKER_PROTO", "tcp"));
         final String user = replace(env("KSIM_BROKER_USER", "kapua-broker"));
         final String password = replace(env("KSIM_BROKER_PASSWORD", "kapua-password"));
-        final String host = replace(env("KSIM_BROKER_HOST", "localhost"));
+        final String host = hostFromCli.orElse(replace(env("KSIM_BROKER_HOST", "localhost")));
         final String port = replace(env("KSIM_BROKER_PORT", "1883"));
 
         final StringBuilder sb = new StringBuilder(128);
@@ -214,5 +391,42 @@ public class SimulatorRunner {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
         java.util.logging.Logger.getLogger("org.eclipse.paho.client.mqttv3").setLevel(Level.ALL);
+    }
+
+    private static void setupLogging(final CommandLine cli) {
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        // reset first
+
+        context.reset();
+
+        // now configure
+
+        final ConsoleAppender<ILoggingEvent> consoleAdapter = new ConsoleAppender<>();
+        consoleAdapter.setContext(context);
+        consoleAdapter.setName("console");
+        final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
+        encoder.setContext(context);
+
+        final TTLLLayout layout = new TTLLLayout();
+
+        layout.setContext(context);
+        layout.start();
+        encoder.setLayout(layout);
+
+        consoleAdapter.setEncoder(encoder);
+        consoleAdapter.start();
+
+        final ch.qos.logback.classic.Logger rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+        if (cli.hasOption("d")) {
+            rootLogger.setLevel(ALL);
+        } else if (cli.hasOption("v")) {
+            rootLogger.setLevel(INFO);
+        } else if (cli.hasOption("q")) {
+            rootLogger.setLevel(WARN);
+        } else {
+            rootLogger.setLevel(INFO);
+        }
+        rootLogger.addAppender(consoleAdapter);
     }
 }

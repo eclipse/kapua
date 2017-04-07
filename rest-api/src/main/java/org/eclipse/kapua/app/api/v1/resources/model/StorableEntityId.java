@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
 
 /**
  * {@link StorableId} implementation to be used on REST API to parse the {@link PathParam} entityId.
- * 
+ *
  * @since 1.0.0
  */
 public class StorableEntityId implements StorableId {
@@ -27,9 +27,8 @@ public class StorableEntityId implements StorableId {
 
     /**
      * Builds the {@link Storable} from the given {@link String} representation.
-     * 
-     * @param id
-     *            The string storable id to parse.
+     *
+     * @param id The string storable id to parse.
      * @since 1.0.0
      */
     public StorableEntityId(String id) {

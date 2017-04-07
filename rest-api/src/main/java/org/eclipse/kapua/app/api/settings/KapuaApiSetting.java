@@ -16,9 +16,8 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
  * API setting implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
 
@@ -35,7 +34,7 @@ public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
 
     /**
      * Return the api setting instance (singleton)
-     * 
+     *
      * @return
      */
     public static KapuaApiSetting getInstance() {

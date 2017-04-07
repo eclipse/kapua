@@ -1595,7 +1595,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Set<String> allTopics = new HashSet<String>();
         for (ChannelInfo channelInfo : result.getItems()) {
             allClientId.add(channelInfo.getClientId());
-            allTopics.add(channelInfo.getChannel());
+            allTopics.add(channelInfo.getName());
         }
         assertEquals("Wrong client ids size!", (clientIds != null ? clientIds.length : 0), allClientId.size());
         assertEquals("Wrong topics size!", (topics != null ? topics.length : 0), allTopics.size());

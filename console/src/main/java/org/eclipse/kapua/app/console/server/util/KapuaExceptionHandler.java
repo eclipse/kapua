@@ -17,6 +17,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.shared.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +26,39 @@ public class KapuaExceptionHandler {
 
     private static final Logger s_logger = LoggerFactory.getLogger(KapuaExceptionHandler.class);
 
-    public static void handle(Throwable t)
-            throws GwtKapuaException {
+    public static void handle(Throwable t) throws GwtKapuaException {
         if (t instanceof KapuaUnauthenticatedException) {
 
             // sessions has expired
             throw new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, t);
+        } else if (t instanceof KapuaAuthenticationException) {
+            
+            final KapuaAuthenticationException ke = (KapuaAuthenticationException) t;
+            final String cause = ke.getCode().name();
+
+            // INVALID_USERNAME_PASSWORD
+            
+            if (cause.equals(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS.name())) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
+            }
+            if (cause.equals(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL.name())) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
+            }
+            
+            // LOCKED_USER
+            
+            if (cause.equals(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL.name())) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.LOCKED_USER, t);
+            }
+            if (cause.equals(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL.name())) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.LOCKED_USER, t);
+            }
+            if (cause.equals(KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS.name())) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.LOCKED_USER, t);
+            }
+
+            // default
+            throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
         }
         // else if (t instanceof KapuaInvalidUsernamePasswordException) {
         //

@@ -53,7 +53,8 @@ public class MessageObjectBuilder {
             throws EsObjectBuilderException {
         Map<String, SearchHitField> searchHitFields = searchHit.getFields();
         String accountId = searchHitFields.get(EsSchema.MESSAGE_SCOPE_ID).getValue();
-        String deviceId = searchHitFields.get(EsSchema.MESSAGE_DEVICE_ID) != null ? searchHitFields.get(EsSchema.MESSAGE_DEVICE_ID).getValue() : null;
+        SearchHitField deviceIdField = searchHitFields.get(EsSchema.MESSAGE_DEVICE_ID);
+        String deviceId = deviceIdField == null ? null : deviceIdField.getValue();
         String clientId = searchHitFields.get(EsSchema.MESSAGE_CLIENT_ID).getValue();
 
         DatastoreMessageImpl tmpMessage = new DatastoreMessageImpl();

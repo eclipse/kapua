@@ -24,37 +24,42 @@ import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
 
 /**
- * Device event entity definition.
+ * {@link DeviceEvent} entity definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "deviceEvent")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "deviceId",
-        "sentOn",
-        "receivedOn",
-        "position",
-        "resource",
-        "action",
-        "responseCode",
-        "eventMessage" }, factoryClass = DeviceEventXmlRegistry.class, factoryMethod = "newDeviceEvent")
+@XmlType(propOrder = { //
+        "deviceId", //
+        "sentOn", //
+        "receivedOn", //
+        "position", //
+        "resource",  //
+        "action", //
+        "responseCode", //
+        "eventMessage" //
+}, //
+        factoryClass = DeviceEventXmlRegistry.class, //
+        factoryMethod = "newDeviceEvent")
 public interface DeviceEvent extends KapuaEntity {
 
     public static final String TYPE = "dvce-event";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 
     /**
      * Get the device identifier
      * 
-     * @return
+     * @return The device identifier.
+     * @since 1.0.0
      */
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -64,6 +69,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Set the device identifier
      * 
      * @param deviceId
+     * @since 1.0.0
      */
     public void setDeviceId(KapuaId deviceId);
 
@@ -71,14 +77,17 @@ public interface DeviceEvent extends KapuaEntity {
      * Get the sent on date
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "sentOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getSentOn();
 
     /**
      * Set the sent on date
      * 
      * @param sentOn
+     * @since 1.0.0
      */
     public void setSentOn(Date sentOn);
 
@@ -86,14 +95,17 @@ public interface DeviceEvent extends KapuaEntity {
      * Get the received on date
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "receivedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getReceivedOn();
 
     /**
      * Set the received on date
      * 
      * @param receivedOn
+     * @since 1.0.0
      */
     public void setReceivedOn(Date receivedOn);
 
@@ -101,6 +113,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Get the device position
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "position")
     public KapuaPosition getPosition();
@@ -109,6 +122,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Set the device position
      * 
      * @param position
+     * @since 1.0.0
      */
     public void setPosition(KapuaPosition position);
 
@@ -116,6 +130,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Get resource
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "resource")
     public String getResource();
@@ -131,6 +146,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Get action
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "action")
     public KapuaMethod getAction();
@@ -139,6 +155,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Set action
      * 
      * @param action
+     * @since 1.0.0
      */
     public void setAction(KapuaMethod action);
 
@@ -146,6 +163,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Get response code
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "responseCode")
     public KapuaResponseCode getResponseCode();
@@ -154,6 +172,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Set the response code
      * 
      * @param responseCode
+     * @since 1.0.0
      */
     public void setResponseCode(KapuaResponseCode responseCode);
 
@@ -161,6 +180,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Get event message
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "eventMessage")
     public String getEventMessage();
@@ -169,6 +189,7 @@ public interface DeviceEvent extends KapuaEntity {
      * Set the event message
      * 
      * @param eventMessage
+     * @since 1.0.0
      */
     public void setEventMessage(String eventMessage);
 

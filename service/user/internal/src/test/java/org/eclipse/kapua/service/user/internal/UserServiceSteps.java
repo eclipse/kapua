@@ -424,6 +424,7 @@ public class UserServiceSteps extends KapuaTest {
                 String displayName = userItem.getDisplayName();
                 String email = userItem.getEmail();
                 String phone = userItem.getPhoneNumber();
+                @SuppressWarnings("unused")
                 UserStatus status = userItem.getStatus();
 
                 KapuaEid scpId = new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID));

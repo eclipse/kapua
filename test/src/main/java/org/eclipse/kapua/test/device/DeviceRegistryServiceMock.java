@@ -19,7 +19,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -67,7 +66,8 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
 	public void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         if (!deviceRegistry.containsKey(entityId))
             throw KapuaException.internalError("Device not found");
-
+        
+        @SuppressWarnings("unused")
         DeviceMock device = deviceRegistry.remove(entityId);
 	}
 

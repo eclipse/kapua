@@ -84,6 +84,7 @@
                 <exclude>lib/optional/proton-j*</exclude>
                 <exclude>lib/optional/scala-library*</exclude>
                 <exclude>lib/optional/shiro*</exclude>
+                <exclude>lib/optional/slf4j*</exclude> <!-- pull in version 1.7.21 - CQ12852 -->
                 <exclude>lib/optional/snappy-*</exclude>
                 <exclude>lib/optional/spring-oxm-*</exclude>
                 <exclude>lib/optional/velocity*</exclude>
@@ -100,6 +101,7 @@
                 <exclude>lib/web/jdom*</exclude>
                 <exclude>lib/web/geronimo*</exclude>
                 <exclude>lib/web/asm*</exclude>
+                <exclude>lib/web/tomcat*</exclude>
                 <exclude>bin/</exclude>
 
                 <exclude>examples/</exclude>
@@ -120,16 +122,28 @@
             <directory>${project.build.directory}/dependencies/activemq/apache-activemq-${activemq.version}/bin/</directory>
             <fileMode>0755</fileMode>
             <excludes>
-                <exclude>bin/wrapper.jar</exclude>
-                <exclude>bin/macosx/</exclude>
-                <exclude>bin/linux-x86-32/</exclude>
-                <exclude>bin/linux-x86-64/</exclude>
+                <exclude>wrapper.jar</exclude>
+                <exclude>macosx/</exclude>
+                <exclude>linux-x86-32/</exclude>
+                <exclude>linux-x86-64/</exclude>
             </excludes>
         </fileSet>
 
     </fileSets>
 
     <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib/optional</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>org.slf4j:slf4j-log4j12</include><!-- CQ12852 -->
+            </includes>
+        </dependencySet>
+        
         <dependencySet>
             <outputDirectory>lib/extra</outputDirectory>
             <unpack>false</unpack>
@@ -214,6 +228,19 @@
                 <include>${pom.groupId}:kapua-transport-api</include>
                 <include>${pom.groupId}:kapua-transport-jms</include>
                 <include>${pom.groupId}:kapua-transport-mqtt</include>
+            </includes>
+        </dependencySet>
+        
+        <dependencySet>
+            <outputDirectory>lib/web</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>org.apache.tomcat:tomcat-servlet-api</include>
+                <include>org.apache.tomcat:tomcat-websocket-api</include>
             </includes>
         </dependencySet>
 

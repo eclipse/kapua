@@ -13,8 +13,11 @@
 package org.eclipse.kapua.commons.metric;
 
 import java.text.MessageFormat;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.metric.MetricsService;
 import org.slf4j.Logger;
@@ -23,12 +26,14 @@ import org.slf4j.LoggerFactory;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
+import com.codahale.metrics.JmxReporter;
+import com.codahale.metrics.JmxReporter.Builder;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
 /**
  * Metric report exporter handler.
- * It provides methods for register/unregister metric in the context
+ * It provides methods for register/unregister metrics in the context
  *
  * @since 1.0
  */
@@ -41,11 +46,30 @@ public class MetricsServiceImpl implements MetricsService {
 
     private final MetricRegistry metricRegistry;
 
+    private JmxReporter jmxReporter;
+
     /**
      * Default metric service constructor
      */
     public MetricsServiceImpl() {
         metricRegistry = new MetricRegistry();
+
+        if (isJmxEnabled()) {
+            enableJmxSupport();
+        }
+    }
+
+    private void enableJmxSupport() {
+        final Builder builder = JmxReporter.forRegistry(this.metricRegistry);
+        builder.convertDurationsTo(TimeUnit.MILLISECONDS);
+        builder.convertRatesTo(TimeUnit.SECONDS);
+        builder.inDomain("org.eclipse.kapua");
+        this.jmxReporter = builder.build();
+        this.jmxReporter.start();
+        /*
+         * As Kapua services don't have any proper lifecycle management we can only
+         * start the reporter but never stop it.
+         */
     }
 
     @Override
@@ -125,6 +149,18 @@ public class MetricsServiceImpl implements MetricsService {
             builder.append(s);
         }
         return builder.toString();
+    }
+
+    /**
+     * Tests is JMX is enabled
+     * <p>
+     * The default is that JMX support is enabled
+     * </p>
+     * 
+     * @return {@code true} JMX should be enabled, {@code false} otherwise
+     */
+    private static boolean isJmxEnabled() {
+        return SystemSetting.getInstance().getBoolean(SystemSettingKey.METRICS_ENABLE_JMX, false);
     }
 
 }

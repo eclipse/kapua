@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,6 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
 import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class MetricInfoXContentBuilder {
                 .hashString(aString, StandardCharsets.UTF_8)
                 .asBytes();
 
-        return Base64.encodeBytes(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     /**
@@ -67,38 +67,17 @@ public class MetricInfoXContentBuilder {
      * @param accountName
      * @param clientId
      * @param channel
-     * @param metricMappedName
+     * @param metricName
      * @return
      * @since 1.0.0
      */
-    private static String getMetricKey(KapuaId scopeId, String clientId, String channel, String metricMappedName) {
-        String channelMetricFullName = String.format("%s/%s/%s/%s", scopeId.toStringId(), clientId, channel, metricMappedName);
-        String channelMetricHashCode = getHashCode(channelMetricFullName);
-        return channelMetricHashCode;
+    private static String getMetricKey(KapuaId scopeId, String clientId, String channel, String metricName) {
+        String channelMetricFullName = String.format("%s/%s/%s/%s", scopeId.toCompactId(), clientId, channel, metricName);
+        return getHashCode(channelMetricFullName);
     }
 
     /**
-     * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and metricMappedName with the slash).<br>
-     * <b>NOTE: metricMappedName is the metric name concatenated with its type (see {@link EsUtils#convertToEsType(String kapuaType)}</b>
-     * <b>If the id is null then it is generated.</b>
-     *
-     * @param id
-     * @param accountName
-     * @param clientId
-     * @param channel
-     * @param metricMappedName
-     * @return
-     * @since 1.0.0
-     */
-    private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricMappedName) {
-        if (id == null)
-            return getMetricKey(scopeId, clientId, channel, metricMappedName);
-        else
-            return id.toString();
-    }
-
-    /**
-     * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and the converted metricName and metricType).<br>
+     * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and the converted metricName).<br>
      * <b>If the id is null then it is generated.</b>
      *
      * @param id
@@ -106,16 +85,14 @@ public class MetricInfoXContentBuilder {
      * @param clientId
      * @param channel
      * @param metricName
-     * @param metricType
      * @return
      * @throws EsDocumentBuilderException
      * @since 1.0.0
      */
-    private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricName, Class<?> metricType)
+    private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricName)
             throws EsDocumentBuilderException {
         if (id == null) {
-            String metricMappedName = EsUtils.getMetricValueQualifier(metricName, EsUtils.convertToEsType(metricType));
-            return getMetricKey(scopeId, clientId, channel, metricMappedName);
+            return getMetricKey(scopeId, clientId, channel, metricName);
         } else
             return id.toString();
     }
@@ -136,8 +113,7 @@ public class MetricInfoXContentBuilder {
                 metricInfoCreator.getScopeId(),
                 metricInfoCreator.getClientId(),
                 metricInfoCreator.getChannel(),
-                metricInfoCreator.getName(),
-                metricInfoCreator.getMetricType());
+                metricInfoCreator.getName());
     }
 
     /**
@@ -156,8 +132,7 @@ public class MetricInfoXContentBuilder {
                 metricInfo.getScopeId(),
                 metricInfo.getClientId(),
                 metricInfo.getChannel(),
-                metricInfo.getName(),
-                metricInfo.getMetricType());
+                metricInfo.getName());
     }
 
     /**
@@ -166,7 +141,7 @@ public class MetricInfoXContentBuilder {
      * @param account
      * @param clientId
      * @param channel
-     * @param metricMappedName
+     * @param metricName
      * @param value
      * @param msgTimestamp
      * @param msgId
@@ -174,7 +149,7 @@ public class MetricInfoXContentBuilder {
      * @throws EsDocumentBuilderException
      * @since 1.0.0
      */
-    private XContentBuilder build(KapuaId scopeId, String clientId, String channel, String metricMappedName, Class<?> metricType, Date msgTimestamp, String msgId)
+    private XContentBuilder build(KapuaId scopeId, String clientId, String channel, String metricName, Class<?> metricType, Date msgTimestamp, String msgId)
             throws EsDocumentBuilderException {
         try {
             return XContentFactory.jsonBuilder()
@@ -183,7 +158,7 @@ public class MetricInfoXContentBuilder {
                     .field(EsSchema.METRIC_CLIENT_ID, clientId)
                     .field(EsSchema.METRIC_CHANNEL, channel)
                     .startObject(EsSchema.METRIC_MTR)
-                    .field(EsSchema.METRIC_MTR_NAME, metricMappedName)
+                    .field(EsSchema.METRIC_MTR_NAME, metricName)
                     .field(EsSchema.METRIC_MTR_TYPE, EsUtils.getEsTypeFromClass(metricType))
                     .field(EsSchema.METRIC_MTR_TIMESTAMP, msgTimestamp)
                     .field(EsSchema.METRIC_MTR_MSG_ID, msgId)
@@ -218,7 +193,6 @@ public class MetricInfoXContentBuilder {
                 esMetric.setType(esType);
 
                 // each metric is potentially a dynamic field so report it a new mapping
-                String mappedName = EsUtils.getMetricValueQualifier(esMetricName, esType);
                 String channel = DatastoreChannel.getChannel(message.getChannel().getSemanticParts());
 
                 MetricXContentBuilder metricBuilder = new MetricXContentBuilder();
@@ -226,14 +200,14 @@ public class MetricInfoXContentBuilder {
                         scopeId,
                         clientId,
                         channel,
-                        mappedName);
+                        esMetricName);
                 metricBuilder.setId(metricId);
 
                 // TODO retrieve the uuid field
                 metricBuilder.setContent(this.build(scopeId,
                         clientId,
                         channel,
-                        mappedName,
+                        esMetricName,
                         metricValue.getClass(),
                         indexedOn,
                         messageId));
@@ -292,13 +266,11 @@ public class MetricInfoXContentBuilder {
         StorableId msgId = metricInfo.getFirstMessageId();
         Date msgTimestamp = metricInfo.getFirstMessageOn();
 
-        String metricMappedName = EsUtils.getMetricValueQualifier(metricInfo.getName(), EsUtils.convertToEsType(metricInfo.getMetricType()));
-
         XContentBuilder metricContentBuilder;
         metricContentBuilder = this.build(metricInfo.getScopeId(),
                 metricInfo.getClientId(),
                 metricInfo.getChannel(),
-                metricMappedName,
+                metricInfo.getName(),
                 metricInfo.getMetricType(),
                 msgTimestamp,
                 msgId.toString());

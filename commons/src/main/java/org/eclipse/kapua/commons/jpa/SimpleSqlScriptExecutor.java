@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,6 +104,7 @@ public class SimpleSqlScriptExecutor {
         List<String> dropScripts = new ArrayList<String>();
         List<String> createScripts = new ArrayList<String>();
         List<String> seedScripts = new ArrayList<String>();
+        List<String> deleteScripts = new ArrayList<String>();
 
         String sep = String.valueOf(File.separatorChar);
         for (String sqlItem : dirContents) {
@@ -115,11 +116,14 @@ public class SimpleSqlScriptExecutor {
                 createScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
             if (sqlFile.isFile() && sqlItem.endsWith("_seed.sql"))
                 seedScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
+            if (sqlFile.isFile() && sqlItem.endsWith("_delete.sql"))
+                deleteScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
         }
 
         this.addQueries(dropScripts);
         this.addQueries(createScripts);
         this.addQueries(seedScripts);
+        this.addQueries(deleteScripts);
         return this;
     }
 

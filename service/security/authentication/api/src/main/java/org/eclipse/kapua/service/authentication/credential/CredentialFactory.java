@@ -13,17 +13,15 @@
 package org.eclipse.kapua.service.authentication.credential;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Credential factory service definition.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
-public interface CredentialFactory extends KapuaEntityFactory<Credential, CredentialCreator, CredentialQuery, CredentialListResult>
-{
+public interface CredentialFactory extends KapuaEntityFactory<Credential, CredentialCreator, CredentialQuery, CredentialListResult> {
 
     /**
      * Create a new {@link Credential}
@@ -35,10 +33,10 @@ public interface CredentialFactory extends KapuaEntityFactory<Credential, Creden
      * @return
      */
     public Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey);
-    
+
     /**
      * Create a new {@link CredentialCreator} for the specific credential type
-     * 
+     *
      * @param scopeId
      * @param userId
      * @param credentialType

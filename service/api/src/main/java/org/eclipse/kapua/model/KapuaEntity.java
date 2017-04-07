@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
@@ -22,21 +21,26 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
  * Kapua base entity definition.<br>
  * All the Kapua entities will be an extension of this entity.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-@XmlType(propOrder = { "id", "scopeId", "createdOn", "createdBy" })
+@XmlType(propOrder = { //
+        "id", //
+        "scopeId", //
+        "createdOn", //
+        "createdBy" })
 public interface KapuaEntity extends KapuaSerializable {
 
     /**
      * Get the Kapua identifier for the entity
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -46,6 +50,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Set the Kapua identifier for the entity
      * 
      * @param id
+     * @since 1.0.0
      */
     public void setId(KapuaId id);
 
@@ -56,6 +61,7 @@ public interface KapuaEntity extends KapuaSerializable {
      * Get the Kapua scope identifier for the entity
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -65,14 +71,17 @@ public interface KapuaEntity extends KapuaSerializable {
      * Get the created on date
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "createdOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getCreatedOn();
 
     /**
      * Set the created by Kapua identifier
      * 
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "createdBy")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)

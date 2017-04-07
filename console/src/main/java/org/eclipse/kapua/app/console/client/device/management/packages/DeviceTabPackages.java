@@ -45,8 +45,6 @@ public class DeviceTabPackages extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final static String SERVLET_URL = "console/file/deploy";
-
     @SuppressWarnings("unused")
     private GwtSession m_currentSession;
     private DeviceTabs m_deviceTabs;

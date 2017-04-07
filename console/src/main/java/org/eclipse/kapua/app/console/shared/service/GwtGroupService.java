@@ -12,16 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.service;
 
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.group.GwtGroupCreator;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
+
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -40,5 +41,7 @@ public interface GwtGroupService extends RemoteService {
 
     public ListLoadResult<GwtGroupedNVPair> getGroupDescription(String scopeShortId,
             String groupShortId) throws GwtKapuaException;
+    
     public List<GwtGroup> findAll(String scopeId);
+
 }

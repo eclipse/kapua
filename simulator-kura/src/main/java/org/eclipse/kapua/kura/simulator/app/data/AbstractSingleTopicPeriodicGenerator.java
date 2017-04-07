@@ -15,15 +15,16 @@ import java.time.Instant;
 import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Handler;
 import org.eclipse.kapua.kura.simulator.app.Sender;
+import org.eclipse.kapua.kura.simulator.generator.GeneratorScheduler;
 import org.eclipse.kapua.kura.simulator.topic.Topic;
 
-public abstract class AbstractPeriodicGenerator implements Handler {
+public abstract class AbstractSingleTopicPeriodicGenerator implements Handler {
 
     private final GeneratorScheduler.Handle handle;
     private final ApplicationContext context;
     private final Topic topic;
 
-    public AbstractPeriodicGenerator(final ApplicationContext context, final GeneratorScheduler scheduler, final String dataTopic) {
+    public AbstractSingleTopicPeriodicGenerator(final ApplicationContext context, final GeneratorScheduler scheduler, final String dataTopic) {
         this.context = context;
         this.handle = scheduler.add(this::tick);
         this.topic = Topic.data(dataTopic);

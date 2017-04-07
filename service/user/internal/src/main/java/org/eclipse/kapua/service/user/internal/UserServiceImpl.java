@@ -46,7 +46,6 @@ import org.eclipse.kapua.service.user.UserType;
 @KapuaProvider
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
 
-    private static final long serialVersionUID = 4319929212203916781L;
     private final KapuaLocator locator = KapuaLocator.getInstance();
 
     private static final Domain userDomain = new UserDomain();
