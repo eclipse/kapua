@@ -571,7 +571,7 @@ public class KapuaGwtModelConverter {
     }
     
     public static GwtTopic convertToTopic(ChannelInfo channelInfo){
-        return new GwtTopic(channelInfo.getChannel(), channelInfo.getChannel(),channelInfo.getChannel() , channelInfo.getLastMessageOn());
+        return new GwtTopic(channelInfo.getName(), channelInfo.getName(),channelInfo.getName() , channelInfo.getLastMessageOn());
     }
     
     public static GwtHeader convertToHeader(MetricInfo metric){
