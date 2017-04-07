@@ -22,17 +22,25 @@ Scenario: Count groups in a blank database
 Scenario: Regular group in root scope
 	Create a regular group entry. The newly created entry must match the 
 	creator parameters.
-	 
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    1    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    1    |       1       |
 	Given I create the group
 	|scope |name        |
-	|0     |test_name_1 |
+	|1     |test_name_1 |
 	Then A group was created
 	And The group matches the creator
 
 Scenario: Regular group in random scope
 	Create a regular group entry. The newly created entry must match the 
 	creator parameters.
-	 
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |  1234   |       1       |
+	| integer | maxNumberChildEntities     | 5     |  1234   |       1       |
 	Given I create the group
 	|scope |name        |
 	|1234  |test_name_1 |
@@ -43,7 +51,11 @@ Scenario: Duplicate group name in root scope
 	Create a regular group entry. The newly created entry must match the 
 	creator parameters. Try to create a second group entry with the same name.
 	An exception should be thrown.
-	 
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+    | integer | maxNumberChildEntities     | 5     |    0    |       1       |
 	Given I create the group
 	|scope |name        |
 	|0     |test_name_1 |
@@ -57,7 +69,11 @@ Scenario: Duplicate group name in root scope
 Scenario: Group with a null name
 	Try to create a second group entry with a null name.
 	An exception should be thrown.
-	 
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |   1234  |       1       |
+	| integer | maxNumberChildEntities     | 5     |   1234  |       1       |
 	Given I create the group
 	|scope |
 	|1234  |
@@ -66,7 +82,11 @@ Scenario: Group with a null name
 Scenario: Update a group entry in the database
 	Create a regular group entry. Change the entry name. The updated entry 
 	parameters should match the original group.
-	 
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    0    |       1       |
 	Given I create the group
 	|scope |name        |
 	|0     |test_name_1 |
@@ -78,7 +98,11 @@ Scenario: Update a group entry in the database
 Scenario: Update a group entry with a false ID
 	Create a regular group entry. Modify the group object ID to a random value.
 	Trying to update such an group object should raise an exception.
-	 
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    0    |       1       |
 	Given I create the group
 	|scope |name        |
 	|0     |test_name_1 |
@@ -90,7 +114,11 @@ Scenario: Update a group entry with a false ID
 Scenario: Find a group entry in the database
 	It must be possible to find a specific group entry based on the group 
 	entry ID.
-	
+
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    0    |       1       |
 	Given I create the group	
 	|scope |name        |
 	|0     |test_name_1 |
@@ -103,6 +131,10 @@ Scenario: Delete a group from the database
 	It must be possible to delete a group entry from the database. In this test 
 	the last created entry is deleted.
 
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    0    |       1       |
 	Given I create the groups
 	|scope |name        |
 	|0     |test_name_1 |
@@ -121,6 +153,22 @@ Scenario: Delete a group from the database - Unknown group ID
 Scenario: Count groups
 	It must be possible to count all the groups belonging to a certain scope.
 
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    0    |       1       |
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    1    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    1    |       1       |
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    2    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    2    |       1       |
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    3    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    3    |       1       |
 	Given I create the groups
 	|scope |name        |
 	|0     |test_name_1 |
@@ -142,6 +190,22 @@ Scenario: Query for a specific group by name
 	It must be possible to query the database for a specific group by name. Since the 
 	scope ID / name pairs must be unique, only a single entry can be returned by such a query.
 
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    0    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    0    |       1       |
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    1    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    1    |       1       |
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    2    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    2    |       1       |
+	When I configure
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    3    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    3    |       1       |
 	Given I create the groups
 	|scope |name        |
 	|0     |test_name_1 |
