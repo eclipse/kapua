@@ -13,7 +13,9 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -21,6 +23,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
@@ -28,6 +32,7 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
+import org.eclipse.kapua.service.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +89,43 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
         // Clean up the test data scratchpads
         commonData.clearData();
         groupData.clearData();
+
+        // All operations on database are performed using system user.
+        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
+        KapuaSecurityUtils.setSession(kapuaSession);
+
+        // Setup JAXB context
+        XmlUtil.setContextProvider(new ShiroJAXBContextProvider());
     }
 
     // *************************************
     // Definition of Cucumber scenario steps
     // *************************************
+    @When("^I configure$")
+    public void setConfigurationValue(List<TestConfig> testConfigs)
+            throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Map<String, Object> valueMap = new HashMap<>();
+            KapuaEid scopeId = null;
+            KapuaEid parentScopeId = null;
+
+            for (TestConfig config : testConfigs) {
+                config.addConfigToMap(valueMap);
+                scopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getScopeId())));
+                parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));
+            }
+            try {
+                commonData.exceptionCaught = false;
+                groupService.setConfigValues(scopeId, parentScopeId, valueMap);
+            } catch (KapuaException ex) {
+                commonData.exceptionCaught = true;
+            }
+
+            return null;
+        });
+    }
+
     @When("^I count the group entries in the database$")
     public void countDomainEntries()
             throws KapuaException {
