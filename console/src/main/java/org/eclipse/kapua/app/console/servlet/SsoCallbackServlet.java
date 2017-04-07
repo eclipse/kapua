@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
@@ -37,37 +37,39 @@ public class SsoCallbackServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ConsoleSetting settings = ConsoleSetting.getInstance();
-        
+
         String authCode = req.getParameter("code");
-        
+
         String uri = settings.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN);
         URL url = new URL(uri);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         urlConnection.setRequestMethod("POST");
 
-        String urlParameters = "grant_type=authorization_code&code=" + authCode + "&client_id=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID) + "&redirect_uri=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI);
-        
+        String urlParameters = "grant_type=authorization_code&code=" + authCode + "&client_id=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID) + "&redirect_uri="
+                + settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI);
+
         // Send post request
         urlConnection.setDoOutput(true);
-        DataOutputStream outputStream = new DataOutputStream(urlConnection.getOutputStream());
-        outputStream.writeBytes(urlParameters);
-        outputStream.flush();
-        outputStream.close();
 
-        BufferedReader inputReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        try (final DataOutputStream outputStream = new DataOutputStream(urlConnection.getOutputStream())) {
+            outputStream.writeBytes(urlParameters);
+            outputStream.flush();
+        }
 
-        // parse result
-        JsonReader jsonReader = Json.createReader(inputReader);
+        final JsonObject jsonObject;
+        try (BufferedReader inputReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
+            // parse result
+            JsonReader jsonReader = Json.createReader(inputReader);
 
-        // Parse json response
-        JsonObject jsonObject = jsonReader.readObject();
-        inputReader.close();
+            // Parse json response
+            jsonObject = jsonReader.readObject();
+        }
 
         // Get and clean jwks_uri property
         String accessToken = jsonObject.getString("access_token");
         String baseUri = settings.getString(ConsoleSettingKeys.SITE_HOME_URI);
         String separator = baseUri.contains("?") ? "&" : "?";
         resp.sendRedirect(baseUri + separator + "access_token=" + accessToken);
-    }    
+    }
 }
