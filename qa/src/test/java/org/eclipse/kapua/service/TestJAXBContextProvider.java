@@ -69,7 +69,8 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         KapuaTicon.class,
                         KapuaToption.class,
                         TscalarImpl.class,
-                        MetatypeXmlRegistry.class
+                        MetatypeXmlRegistry.class,
+                        KapuaTmetadata.class
                 }, null);
             }
             return context;

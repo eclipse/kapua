@@ -18,7 +18,7 @@ DELETE FROM atht_access_token;
 
 DELETE FROM athz_role WHERE NOT (scope_id = 1 AND id = 1);
 
-DELETE FROM athz_role_permission WHERE NOT (scope_id = 1 AND id = 1);
+DELETE FROM athz_role_permission WHERE NOT (scope_id = 1 AND role_id = 1 AND id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15));
 
 DELETE FROM dvc_device_connection;
 
@@ -26,7 +26,7 @@ DELETE FROM dvc_device;
 
 DELETE FROM dvc_device_event;
 
-DELETE FROM sys_configuration WHERE NOT (scope_id = 1 AND id = 1);
+DELETE FROM sys_configuration WHERE NOT (scope_id = 1 AND id IN (1,2,3,4,5));
 
 DELETE FROM usr_user WHERE NOT (scope_id = 1 AND id IN (1,2));
 
