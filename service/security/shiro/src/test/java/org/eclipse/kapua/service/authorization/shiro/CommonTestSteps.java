@@ -12,14 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import java.math.BigInteger;
+
 import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.test.KapuaTest;
 
 import cucumber.api.Scenario;
-import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
@@ -41,11 +44,17 @@ public class CommonTestSteps extends KapuaTest {
         commonData.clearData();
     }
 
-    @After
-    public void afterScenario() throws KapuaException {
+    // Cucumber test steps
+    @Given("^A scope with ID (\\d+)$")
+    public void setScopeId(Integer scope) {
+        commonData.scopeId = new KapuaEid(BigInteger.valueOf(scope));
+        assertNotNull(commonData.scopeId);
     }
 
-    // Cucumber test steps
+    @Given("^A null scope$")
+    public void setNullScopId() {
+        commonData.scopeId = null;
+    }
 
     @Then("^An exception was thrown$")
     public void exceptionCaught() {
@@ -58,8 +67,9 @@ public class CommonTestSteps extends KapuaTest {
     }
 
     @Then("^I get (\\d+) as result$")
-    public void checkCountResult(int num) {
-        assertEquals(num, commonData.count);
+    public void checkCountResult(Integer num) {
+        assertNotNull(num);
+        assertEquals(num.longValue(), commonData.count);
     }
 
     @Then("^I get the string \"(.+)\" as result$")

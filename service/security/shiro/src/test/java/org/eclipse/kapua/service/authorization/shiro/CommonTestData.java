@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.authorization.shiro;
 
 import javax.inject.Singleton;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
 @Singleton
 public class CommonTestData {
 
@@ -24,11 +26,13 @@ public class CommonTestData {
     public long count;
     public int intValue;
     public String stringValue;
+    public KapuaId scopeId;
 
     public void clearData() {
         exceptionCaught = false;
         count = 0;
         intValue = 0;
         stringValue = "";
+        scopeId = null;
     }
 }
