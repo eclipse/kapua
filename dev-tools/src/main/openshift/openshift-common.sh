@@ -11,11 +11,11 @@
 ###############################################################################
 
 export OPENSHIFT_PROJECT_NAME="eclipse-kapua"
+export OPENSHIFT_DIR=/tmp/openshift
 
 if which oc &>/dev/null; then
   echo Using "oc" from path
   export OC=oc
 else
-  export OPENSHIFT_DIR=/tmp/openshift
   export OC=${OPENSHIFT_DIR}/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/oc
 fi
