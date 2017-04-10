@@ -17,21 +17,26 @@ export default class DeviceDetailPackagesCtrl {
   constructor(private $stateParams: angular.ui.IStateParamsService,
     private $scope: any,
     private $http: angular.IHttpService,
+    private $templateCache: any,
     private devicesService: IDevicesService) {
     $scope.deviceId = $stateParams["id"];
 
     this.getPackages($scope.deviceId);
 
     let uninstallPackage = function (action, item) {
-      alert("Ininstalling: " + item.name);
+      alert("Uninstalling: " + item.name);
       // devicesService.uninstallPackage($scope.deviceId, item);
     }
+
+    var uninstallButtonInclude = '<span class="fa fa-minus-circle"></span> {{actionButton.name}}';
+    this.$templateCache.put('uninstall-button', uninstallButtonInclude);
 
     $scope.actionButtons = [
       {
         name: 'Uninstall',
         class: 'btn-primary',
         title: 'Uninstall package',
+        include: 'uninstall-button',
         actionFn: uninstallPackage
       }
     ];
@@ -43,13 +48,11 @@ export default class DeviceDetailPackagesCtrl {
     showSelectBox: false
   };
 
-  installPackage(packageItem: any): void {
-    alert("Installing item: " + packageItem.name);
-    // this.devicesService.uninstallPackage(this.$scope.deviceId, packageItem);
+  installPackage(packageItem): void {
+    alert("Installing ...");
+    this.devicesService.downloadPackage(this.$scope.deviceId, packageItem);
   }
-  deletePackage(packageItem: any): void {
-    alert("Deleting item: " + packageItem.name);
-  }
+  
 
   getPackages(deviceID: string): void {
     this.devicesService.getPackagesByDeviceId(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<DevicePackages>) => {

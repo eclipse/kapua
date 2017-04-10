@@ -20,10 +20,11 @@
 
     <div class="card-pf card-pf-accented card-pf-utilization">
       <div class="row example-container">
-        <div>
-          <h2 class="col-xs-7 headerTitle"><span class="fa fa-cube" style="padding-right: 16px;"></span>Device Packages</h2>
-          <div class="refreshWrapper">
-            <button ng-click="vm.getPackages(deviceId)" class="btn btn-primary refreshButton"><span class="fa fa-refresh"></span> Refresh</button>
+        <div class="header">
+          <div class="col-xs-6 headerTitle"><span class="fa fa-cube" style="padding-right: 16px;"></span>Device Packages</div>
+          <div class="col-xs-6 headerActions">
+            <button ng-click="vm.getPackages(deviceId)" class="btn btn-primary" style="margin-top: 5px;"><span class="fa fa-refresh"></span> Refresh</button>
+            <button ng-click="vm.installPackage(bundleInfo)" class="btn btn-success" style="margin-left: 8px; margin-top: 5px;"><span class="fa fa-plus-circle"></span> Install/Upgrade</button>
           </div>
         </div>
         <div class="list-view-container">
@@ -49,10 +50,6 @@
                         </h2>
                         <div class="card-pf-body">
                           <div style="padding-top: 12px;">{{bundleInfo.version}}</div>
-                          <div style="padding-top: 12px;">
-                            <span class="card-pf-aggregate-status-notification"><button ng-click="vm.installPackage(bundleInfo)" class="btn btn-success">Install/Upgrade</button></span>
-                            <span class="card-pf-aggregate-status-notification"><button ng-click="vm.deletePackage(bundleInfo)" class="btn btn-danger">Delete</button></span>
-                          </div>
                         </div>
                       </div>
                     </div>
