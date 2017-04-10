@@ -23,6 +23,8 @@ import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtMessage;
@@ -78,8 +80,11 @@ public class ResultsTable extends LayoutContainer {
     private ColumnConfig timestampColumn;
     private ColumnConfig deviceColumn;
     private ColumnConfig topicColumn;
+    private ColumnConfig channelColumn;
     private GwtTopic selectedTopic;
     private GwtDatastoreDevice selectedDevice;
+    private GwtDatastoreAsset selectedAsset;
+    private List<GwtDatastoreChannel> selectedChannels;
     private List<GwtHeader> selectedMetrics;
     private Date startDate;
     private Date endDate;
@@ -133,6 +138,8 @@ public class ResultsTable extends LayoutContainer {
                     } else if (selectedDevice != null) {
                         dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
                     }
+                } else if (selectedDevice != null && selectedAsset != null && selectedChannels != null && !selectedChannels.isEmpty()) {
+                    // TODO fetch data.
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GwtMessage>(new ArrayList<GwtMessage>()));
                 }
@@ -208,8 +215,6 @@ public class ResultsTable extends LayoutContainer {
     }
 
     private void refresh(List<GwtHeader> headers) {
-        columnConfigs.clear();
-        columnConfigs.add(timestampColumn);
         resultsGrid.getColumnModel().getColumns().clear();
         resultsGrid.getColumnModel().getColumns().add(timestampColumn);
         selectedMetrics = headers;
@@ -236,6 +241,17 @@ public class ResultsTable extends LayoutContainer {
         refresh(headers);
     }
 
+    public void refresh(GwtDatastoreDevice device, GwtDatastoreAsset asset, List<GwtDatastoreChannel> channels) {
+        if (channelColumn == null) {
+            channelColumn = new ColumnConfig("channel", MSGS.resultsTableChannelHeader(), 100);
+            columnConfigs.add(channelColumn);
+        }
+        this.selectedDevice = device;
+        this.selectedAsset = asset;
+        this.selectedChannels = channels;
+        loader.load();
+    }
+
     private void export(String format) {
         StringBuilder sbUrl = new StringBuilder();
         if (UserAgentUtils.isSafari() || UserAgentUtils.isChrome()) {
@@ -254,6 +270,16 @@ public class ResultsTable extends LayoutContainer {
 
         if (selectedDevice != null) {
             sbUrl.append("&device=").append(URL.encodeQueryString(selectedDevice.getDevice()));
+        }
+
+        if (selectedAsset != null) {
+            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getAsset()));
+        }
+
+        if (selectedChannels != null && !selectedChannels.isEmpty()) {
+            for (GwtDatastoreChannel channel : selectedChannels){
+                sbUrl.append("&channels=").append(channel.getChannel());
+            }
         }
 
         if (selectedMetrics != null && !selectedMetrics.isEmpty()) {
