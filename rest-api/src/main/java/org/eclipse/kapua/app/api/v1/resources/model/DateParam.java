@@ -33,11 +33,11 @@ public class DateParam extends DateXmlAdapter {
     }
 
     public Date getDate() {
-        return date;
+        return new Date(date.getTime());
     }
 
     private void setDate(Date date) {
-        this.date = date;
+        this.date = new Date(date.getTime());
     }
 
 }
