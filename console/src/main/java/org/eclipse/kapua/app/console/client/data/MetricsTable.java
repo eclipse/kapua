@@ -143,6 +143,7 @@ public class MetricsTable extends LayoutContainer {
         for(SelectionChangedListener<GwtHeader> listener : listeners){
             selectionModel.addSelectionChangedListener(listener);
         }
+        metricsInfoGrid.addPlugin(selectionModel);
         metricsInfoGrid.setSelectionModel(selectionModel);
     }
 
