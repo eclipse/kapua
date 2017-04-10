@@ -19,6 +19,8 @@ OC=oc
 
 # Functions
 
+function die() { printf "$@" "\n" 1>&2 ; exit 1; }
+
 function route_scheme () {
 	local project="$1"
 	local route="$2"
@@ -42,6 +44,13 @@ function route_url () {
 	echo "$(route_scheme "$project" "$route")://$(route_host "$project" "$route")"
 }
 
+# Check for mail server configuration
+
+test -n "$SMTP_HOST" || die "'SMTP_HOST' not set"
+test -n "$SMTP_USER" || die "'SMTP_USER' not set"
+test -n "$SMTP_PASSWORD" || die "'SMTP_PASSWORD' not set"
+test -n "$SMTP_FROM" || die "'SMTP_FROM' not set"
+
 # Get Kapua URL
 
 KAPUA_URL="$(route_url "$KAPUA_PROJECT_NAME" console)"
@@ -49,7 +58,17 @@ echo KAPUA_URL    = $KAPUA_URL
 
 # Create
 
-$OC process -n "$KEYCLOAK_PROJECT_NAME" -f keycloak-template.yml "GIT_REPO=${GIT_REPO:-https://github.com/eclipse/kapua}" "GIT_REF=${GIT_REF:-develop}" "KAPUA_CONSOLE_URL=$KAPUA_URL" $@ | $OC create -n "$KEYCLOAK_PROJECT_NAME" -f -
+$OC process -n "$KEYCLOAK_PROJECT_NAME" -f keycloak-template.yml \
+    "GIT_REPO=${GIT_REPO:-https://github.com/eclipse/kapua}" \
+    "GIT_REF=${GIT_REF:-develop}" \
+    "KAPUA_CONSOLE_URL=$KAPUA_URL" \
+    "SMTP_HOST=$SMTP_HOST" \
+    "SMTP_PORT=$SMTP_PORT" \
+    "SMTP_USER=$SMTP_USER" \
+    "SMTP_PASSWORD=$SMTP_PASSWORD" \
+    "SMTP_FROM=$SMTP_FROM" \
+    "SMTP_ENABLE_SSL=$SMTP_ENABLE_SSL" \
+    $@ | $OC create -n "$KEYCLOAK_PROJECT_NAME" -f -
 
 # Get Keycloak URL
 

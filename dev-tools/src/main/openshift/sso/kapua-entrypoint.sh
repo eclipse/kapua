@@ -17,10 +17,36 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
 
   KC=/opt/jboss/keycloak/bin/kcadm.sh
   $KC config credentials --server http://localhost:8080/auth --realm master --user "$KEYCLOAK_USER" --password "$KEYCLOAK_PASSWORD"
-  $KC create realms -s realm=kapua -s enabled=true
+  
+  $KC create realms -s realm=kapua \
+    -s enabled=true \
+    -s "smtpServer.host=${SMTP_HOST}" \
+    ${SMTP_PORT:+-s "smtpServer.port=${SMTP_PORT}"} \
+    -s "smtpServer.user=${SMTP_USER}" \
+    -s "smtpServer.password=${SMTP_PASSWORD}" \
+    -s "smtpServer.from=${SMTP_FROM}" \
+    ${SMTP_ENABLE_SSL:+-s "smtpServer.ssl=${SMTP_ENABLE_SSL}"} \
+    -f - << EOF
+    {
+        "displayName": "Eclipse Kapua",
+        "registrationAllowed": true,
+        "registrationEmailAsUsername": true,
+        "rememberMe": true,
+        "verifyEmail": true,
+        "smtpServer": {
+           "auth": true,
+           "starttls": true
+        }
+     }
+EOF
 
-  $KC create clients -r kapua -s "redirectUris=[\"${KAPUA_CONSOLE_URL}/sso/callback\"]" -f - << EOF
-    { "clientId": "kapua" }
+  $KC create clients -r kapua \
+    -s "redirectUris=[\"${KAPUA_CONSOLE_URL}/sso/callback\"]" \
+    -f - << EOF
+    {
+        "clientId": "console",
+        "name": "Web Console"
+    }
 EOF
 
   touch /opt/jboss/keycloak/standalone/data/first-run

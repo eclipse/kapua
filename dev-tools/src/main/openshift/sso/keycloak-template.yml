@@ -24,6 +24,23 @@ parameters:
   from:             '[a-zA-Z0-9]{15}'
   required:         true
 
+- name:         SMTP_HOST
+  description:     The hostname of the SMTP server to use
+  required:        true
+- name:         SMTP_PORT
+  description:     The port number of the SMTP server to use
+- name:         SMTP_USER
+  description:     The name of the user name to use for authenticating with the SMTP server
+  required:        true
+- name:         SMTP_PASSWORD
+  description:     The password of the user to use for authenticating with the SMTP server
+  required:        true
+- name:         SMTP_ENABLE_SSL
+  description:     "Whether SSL (in addition to TLS) should be enabled (true, false)"
+- name:         SMTP_FROM
+  description:     The "from" use which will be used for outgoing e-mails
+  required:        true
+
 objects:
 
 # Config map
