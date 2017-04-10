@@ -45,6 +45,7 @@
         <url-pattern>/device_snapshots/*</url-pattern>
         <url-pattern>/user/*</url-pattern>
         <url-pattern>/data/*</url-pattern>
+        <url-pattern>/exporter_data/*</url-pattern>
         <url-pattern>/exporter/*</url-pattern>
         <url-pattern>/exporter_usage/*</url-pattern>
         <url-pattern>/exporter_device/*</url-pattern>
@@ -215,6 +216,25 @@
         <url-pattern>/group</url-pattern>
     </servlet-mapping>
 
+   	<servlet>
+   	    <servlet-name>dataServlet</servlet-name>
+   	    <servlet-class>org.eclipse.kapua.app.console.server.GwtDataServiceImpl</servlet-class>
+   	</servlet>
+   	<servlet-mapping>
+   	    <servlet-name>dataServlet</servlet-name>
+   	    <url-pattern>/data</url-pattern>
+   	</servlet-mapping>
+   	
+   	<servlet>
+   	    <servlet-name>dataExporterServlet</servlet-name>
+   	    <servlet-class>org.eclipse.kapua.app.console.servlet.DataExporterServlet</servlet-class>
+   	</servlet>
+    
+   	<servlet-mapping>
+   	    <servlet-name>dataExporterServlet</servlet-name>
+   	    <url-pattern>/exporter_data/*</url-pattern>
+   	</servlet-mapping>
+   	
 	<servlet>
 		<servlet-name>userServlet</servlet-name>
 		<servlet-class>org.eclipse.kapua.app.console.server.GwtUserServiceImpl</servlet-class>

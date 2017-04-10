@@ -14,10 +14,13 @@ package org.eclipse.kapua.app.console.server;
 
 import java.util.UUID;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -27,6 +30,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
         GwtSettingsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(GwtSettingsServiceImpl.class);
+    
     private static final long serialVersionUID = -6876999298300071273L;
     private static final ConsoleSetting settings = ConsoleSetting.getInstance();
 
@@ -40,8 +45,20 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public String getSsoLoginUri() {
-        return settings.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH) + "?scope=openid&response_type=code&client_id=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID)
-                + "&state=" + UUID.randomUUID() + "&redirect_uri=" + settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI);
+        try {
+            final URIBuilder uri = new URIBuilder(settings.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH));
+
+            uri.addParameter("scope", "openid");
+            uri.addParameter("response_type", "code");
+            uri.addParameter("client_id", settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID));
+            uri.addParameter("state", UUID.randomUUID().toString());
+            uri.addParameter("redirect_uri", settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI));
+
+            return uri.toString();
+        } catch (Exception e) {
+            logger.warn("Failed to construct SSO URI", e );
+        }
+        return null;
     }
 
     @Override

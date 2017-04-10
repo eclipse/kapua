@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+
+ -->
+
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://activemq.apache.org/schema/core
+         http://activemq.apache.org/schema/core/activemq-core.xsd
+         http://camel.apache.org/schema/spring
+         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd
+         http://www.springframework.org/schema/util
+         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+    <!-- Configure the ActiveMQ broker connection -->
+    <!-- we can use also the tcp regular connection. it should be no performance difference! -->
+    <bean id="kapuaConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory" depends-on="kapua-broker">
+        <property name="brokerURL" value="vm://kapua?create=false"/>
+    </bean>
+
+    <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="kapuaConnectionFactory"/>
+    </bean>
+
+    <bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+        <property name="connectionFactory" ref="cachingConnectionFactory"/>
+        <!-- we can remove this setting because is overwritten by the concurrent consumer on jms route -->
+        <property name="concurrentConsumers" value="10"/>
+        <property name="cacheLevelName" value="CACHE_CONSUMER"/>
+    </bean>
+
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+        <property name="configuration" ref="jmsConfig"/>
+    </bean>
+    <!--  create connection pooling!!! -->
+
+    <!-- session filers (to bind Kapua and Shiro thread context) -->
+    <bean id="kapuaCamelFilter" class="org.eclipse.kapua.broker.core.converter.KapuaCamelFilter">
+    </bean>
+
+    <!-- Converter -->
+    <bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter"/>
+    <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter"/>
+
+    <!-- Consumer -->
+    <!-- ASSISTANTS -->
+    <bean id="deviceMessageListener" class="org.eclipse.kapua.broker.core.listener.DeviceMessageListener">
+    </bean>
+    <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DataStorageMessageProcessor">
+    </bean>
+    <!-- ERROR -->
+    <bean id="errorMessageListener" class="org.eclipse.kapua.broker.core.listener.ErrorMessageListener">
+    </bean>
+
+    <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
+        <!-- the beans are defined as spring bean so check if it's possible to remove the package scan at all. Remove also the endpoint annotation from the pojo endpoints and all should works. -->
+        <packageScan>
+            <package>org.ecplise.kapua</package>
+            <excludes>**.*Excluded*</excludes>
+            <includes>**.*</includes>
+        </packageScan>
+        <!-- exception/error handler -->
+        <!--
+        by default the errorHandler forward the message to a dead letter queue but in that way we lose the failure end point
+        deadLetterUri="activemq:queue:processedMessageWithError"
+        if we forward the message directly to an end point with the exchange in the signature
+        deadLetterUri="bean:errorMessagePojo?method=processMessage"
+        we have these properties evaluated (in the exchange field)
+        CamelFailureRouteId
+        CamelFailureEndpoint
+        CamelExceptionCaught
+        (others useful fields CamelMulticastIndex - CamelMessageHistory - CamelCreatedTimestamp)
+        -->
+        <errorHandler id="mainRouteMessageErrorHandler"
+                      type="DeadLetterChannel"
+                      deadLetterUri="bean:errorMessageListener?method=processMessage"
+                      useOriginalMessage="true">
+            <redeliveryPolicy maximumRedeliveries="1"/>
+        </errorHandler>
+
+        <!-- Executor thread pool
+        Please check the KapuaExecutorThreadPoolFactory comments before modify the threadName attributes
+        -->
+        <threadPool id="serviceThreads"
+                    threadName="kapuaExecutorPoolServiceProcessor"
+                    poolSize="3"
+                    maxPoolSize="5"
+                    maxQueueSize="2"/>
+        <!--
+        For the transaction/acknowledge mode please follow http://stackoverflow.com/questions/13498652/camel-jms-client-acknowledge-mode
+
+        Camel uses spring MessageListenerContainers.
+        The AbstractMessageListenerContainer, in case of CLIENT_AKNOWLEDGE mode, invokes comitIfNecessary method acknowledging message.
+        This happens only AFTER registered MessageListener processes message successfully (no exceptions)
+
+        Camel uses EndpointMessageListener which, eventually, invokes process method of next processor (or Producer) down the route.
+        As this is classic chain of responsibilities, if any processor down the route throws exception or sets exception on the Exchange,
+        it will be re-thrown by EndpointMessageListener preventing the AbstractMessageListener to acknowledge message.
+
+        So the camel-jms connections CONFIGURATION TESTED are:
+        acknowledgementModeName=CLIENT_ACKNOWLEDGE
+        transacted=false
+        -->
+        <route errorHandlerRef="mainRouteMessageErrorHandler">
+            <from uri="activemq:queue:Consumer.eurotech:mainRoutelisteners:EXACTLY_ONCE.VirtualTopic.>?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=10&amp;maxConcurrentConsumers=10"/>
+            <pipeline>
+                <bean ref="kapuaCamelFilter" method="bindSession"/>
+                <choice id="choice">
+                    <when id="systemMessageFilter">
+                        <simple>${header.originalTopic} regex '^\$EDC\..*'</simple>
+                        <choice id="choice">
+                            <when id="birthLifeCycleMessageFilter">
+                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.BIRTH'</simple>
+                                <bean ref="kapuaLifeCycleConverter" method="convertToBirth"/>
+                                <to uri="bean:deviceMessageListener?method=processBirthMessage"/>
+                            </when>
+                            <when id="disconnectLifeCycleMessageFilter">
+                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.DC'</simple>
+                                <bean ref="kapuaLifeCycleConverter" method="convertToDisconnect"/>
+                                <to uri="bean:deviceMessageListener?method=processDisconnectMessage"/>
+                            </when>
+                            <when id="appsLifeCycleMessageFilter">
+                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.APPS'</simple>
+                                <bean ref="kapuaLifeCycleConverter" method="convertToApps"/>
+                                <to uri="bean:deviceMessageListener?method=processAppsMessage"/>
+                            </when>
+                            <when id="missingLifeCycleMessageFilter">
+                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.LWT'</simple>
+                                <bean ref="kapuaLifeCycleConverter" method="convertToMissing"/>
+                                <to uri="bean:deviceMessageListener?method=processMissingMessage"/>
+                            </when>
+                            <when id="notifyLifeCycleMessageFilter">
+                                <simple>${header.originalTopic} regex '^\$EDC\.(.*\.){2}MQTT\.NOTIFY'</simple>
+                                <bean ref="kapuaLifeCycleConverter" method="convertToNotify"/>
+                                <to uri="bean:deviceMessageListener?method=processNotifyMessage"/>
+                            </when>
+                            <otherwise id="unmatchedLifeCycleMessageFilter">
+                                <bean ref="kapuaLifeCycleConverter" method="convertToUnmatched"/>
+                                <to uri="bean:deviceMessageListener?method=processUnmatchedMessage"/>
+                            </otherwise>
+                        </choice>
+                    </when>
+                    <!-- otherwise data messages -->
+                    <otherwise>
+                        <bean ref="kapuaDataConverter" method="convertToData"/>
+                        <to uri="bean:dataStorageMessageProcessor?method=processMessage"/>
+                    </otherwise>
+                </choice>
+                <bean ref="kapuaCamelFilter" method="unbindSession"/>
+            </pipeline>
+        </route>
+    </camelContext>
+</beans>

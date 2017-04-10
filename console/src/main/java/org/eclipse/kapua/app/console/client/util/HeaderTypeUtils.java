@@ -25,11 +25,11 @@ public class HeaderTypeUtils
 
     public static String format(GwtHeader header)
     {
-        GwtHeaderType type = GwtHeaderType.valueOf(header.getType());
+        GwtHeaderType type = GwtHeaderType.valueOf(header.getType().toUpperCase());
         switch (type) {
             case FLOAT:
                 return MSGS.floatType();
-            case INTEGER:
+            case INT:
                 return MSGS.integerType();
             case DOUBLE:
                 return MSGS.doubleType();

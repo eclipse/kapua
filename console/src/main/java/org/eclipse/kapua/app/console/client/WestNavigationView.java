@@ -15,6 +15,7 @@ package org.eclipse.kapua.app.console.client;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.credential.CredentialView;
+import org.eclipse.kapua.app.console.client.data.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.group.GroupView;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
@@ -189,6 +190,14 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("data".equals(selectedId)) {
+                    DataView dataView = new DataView(m_currentSession);
+                    panel.setHeaderVisible(false);
+                    panel.add(dataView);
+                    
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("user".equals(selectedId)) {
 
                     UserView userView = new UserView(m_currentSession);
@@ -328,6 +337,8 @@ public class WestNavigationView extends LayoutContainer {
                 cloudResourcesTreeStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
             }
 
+            cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
+            
             if (m_currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
             }

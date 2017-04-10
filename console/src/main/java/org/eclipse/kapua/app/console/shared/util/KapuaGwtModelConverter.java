@@ -13,17 +13,22 @@
 package org.eclipse.kapua.app.console.shared.util;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.shared.model.GwtHeader;
+import org.eclipse.kapua.app.console.shared.model.GwtMessage;
 import org.eclipse.kapua.app.console.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
+import org.eclipse.kapua.app.console.shared.model.GwtTopic;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
@@ -59,6 +64,10 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.datastore.model.ChannelInfo;
+import org.eclipse.kapua.service.datastore.model.ClientInfo;
+import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
+import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -560,7 +569,18 @@ public class KapuaGwtModelConverter {
         gwtCredential.setSubjectType(GwtSubjectType.USER.toString());
         return gwtCredential;
     }
-
+    
+    public static GwtTopic convertToTopic(ChannelInfo channelInfo){
+        return new GwtTopic(channelInfo.getName(), channelInfo.getName(),channelInfo.getName() , channelInfo.getLastMessageOn());
+    }
+    
+    public static GwtHeader convertToHeader(MetricInfo metric){
+        GwtHeader header = new GwtHeader();
+        header.setName(metric.getName());
+        header.setType(metric.getMetricType().getSimpleName());
+        return header;
+    }
+    
     /**
      * Utility method to convert commons properties of {@link KapuaUpdatableEntity} object to the GWT matching {@link GwtUpdatableEntityModel} object
      *
@@ -600,5 +620,36 @@ public class KapuaGwtModelConverter {
         gwtEntity.setId(convert(kapuaEntity.getId()));
         gwtEntity.setCreatedOn(kapuaEntity.getCreatedOn());
         gwtEntity.setCreatedBy(convert(kapuaEntity.getCreatedBy()));
+    }
+
+    /**
+     * @param client
+     * @return
+     */
+    public static GwtDatastoreDevice convertToDatastoreDevice(ClientInfo client) {
+        return new GwtDatastoreDevice(client.getClientId(), client.getLastMessageOn());
+    }
+
+    /**
+     * @param message
+     * @param headers
+     * @return
+     */
+    public static GwtMessage convertToMessage(DatastoreMessage message, List<GwtHeader> headers) {
+        GwtMessage gwtMessage = new GwtMessage();
+        List<String> semanticParts = message.getChannel().getSemanticParts();
+        StringBuilder semanticTopic = new StringBuilder();
+        for(int i=0;i<semanticParts.size()-1;i++){
+            semanticTopic.append(semanticParts.get(i));
+            semanticTopic.append("/");
+        }
+        semanticTopic.append(semanticParts.get(semanticParts.size()-1));
+        gwtMessage.set("topic", semanticTopic.toString());
+        gwtMessage.set("device", message.getClientId());
+        gwtMessage.set("timestamp", message.getTimestamp());
+        for(GwtHeader header : headers){
+            gwtMessage.set(header.getName(), message.getPayload().getProperties().get(header.getName()));
+        }
+        return gwtMessage;
     }
 }
