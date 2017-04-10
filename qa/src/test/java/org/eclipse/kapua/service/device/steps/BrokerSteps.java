@@ -75,6 +75,12 @@ public class BrokerSteps extends Assert {
     private static final long BROKER_STARTUP_WAIT_MILIS = 10_000;
 
     /**
+     * Timeout for complete broker with channels and rules to start.
+     * Might vary depending on system.
+     */
+    private static final long BROKER_RULES_WAIT_MILIS = 60_000;
+
+    /**
      * Device birth topic.
      */
     private static final String MQTT_BIRTH = "$EDC/kapua-sys/rpione3/MQTT/BIRTH";
@@ -159,10 +165,14 @@ public class BrokerSteps extends Assert {
          * Initialize broker from MQ configuration file ad start it.
          * After issuing start wait a moment to start completely.
          */
+        logger.info("******* Broker will start ********");
         broker = new MQBrokerRunner(BROKER_STARTUP_WAIT_MILIS, ACTIVEMQ_XML);
         new Thread(broker).start();
         // FIXME Issue with broker startup, not listening on topics and missing client connect messages.
-        Thread.sleep(60_000);
+        // This could be moved to Gherkin as first step.
+        logger.info("******* Wait for Broker ********");
+        Thread.sleep(BROKER_RULES_WAIT_MILIS);
+        logger.info("******* Wait Broker Finished ********");
 
         kuraDevice = new KuraDevice();
         kuraDevice.mqttClientConnect();
@@ -284,7 +294,9 @@ public class BrokerSteps extends Assert {
 
     @When("^I wait (\\d+) second")
     public void iWait(int waitInSeconds) throws Exception {
+        logger.info("***** Start wait step ******");
         Thread.sleep(1000L * waitInSeconds);
+        logger.info("***** End wait step ******");
     }
 
 }
