@@ -6,4 +6,5 @@
   * [OpenShift](running.md#openshift)
   * [Vagrant](running.md#vagrant)
 * [Working with database](database.md)
+* [Client generation](client.md)
 * [QA process](qa.md)
