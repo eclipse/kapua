@@ -132,6 +132,18 @@ objects:
                 key: keycloak.admin.password
           - name: KAPUA_CONSOLE_URL
             value: ${KAPUA_CONSOLE_URL}
+          - name: SMTP_HOST
+            value: ${SMTP_HOST}
+          - name: SMTP_PORT
+            value: ${SMTP_PORT}
+          - name: SMTP_FROM
+            value: ${SMTP_FROM}
+          - name: SMTP_USER
+            value: ${SMTP_USER}
+          - name: SMTP_PASSWORD
+            value: ${SMTP_PASSWORD}
+          - name: SMTP_ENABLE_SSL
+            value: ${SMTP_ENABLE_SSL}
           volumeMounts:
           - mountPath: /opt/jboss/keycloak/standalone/data
             name: keycloak-data
