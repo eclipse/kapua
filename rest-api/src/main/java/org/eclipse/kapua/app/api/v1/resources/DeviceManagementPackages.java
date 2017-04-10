@@ -44,12 +44,9 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     /**
      * Returns the list of all the packages installed on the device.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param deviceId
-     *            The id of the device
-     * @param timeout
-     *            The timeout of the operation
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param deviceId The id of the device
+     * @param timeout  The timeout of the operation
      * @return The list of packages installed.
      */
     @GET
@@ -71,14 +68,10 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     /**
      * Download and optionally installs a package into the device.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param timeout
-     *            The timeout of the operation
-     * @param packageDownloadRequest
-     *            Mandatory object with all the informations needed to download and install a package
+     * @param scopeId                The {@link ScopeId} in which to search results.
+     * @param deviceId               The {@link Device} ID.
+     * @param timeout                The timeout of the operation
+     * @param packageDownloadRequest Mandatory object with all the informations needed to download and install a package
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST
@@ -101,14 +94,10 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     /**
      * Uninstalls a package into the device.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param timeout
-     *            The timeout of the operation
-     * @param packageUninstallRequest
-     *            Mandatory object with all the informations needed to uninstall a package
+     * @param scopeId                 The {@link ScopeId} in which to search results.
+     * @param deviceId                The {@link Device} ID.
+     * @param timeout                 The timeout of the operation
+     * @param packageUninstallRequest Mandatory object with all the informations needed to uninstall a package
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST

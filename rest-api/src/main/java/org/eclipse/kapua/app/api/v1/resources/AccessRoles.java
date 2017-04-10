@@ -52,12 +52,9 @@ public class AccessRoles extends AbstractKapuaResource {
     /**
      * Gets the {@link AccessRole} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link AccessRoleListResult} of all the accessRoles associated to the current selected scope.
      * @since 1.0.0
      */
@@ -71,8 +68,7 @@ public class AccessRoles extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The optional id to filter results.") @PathParam("accessInfoId") EntityId accessInfoId,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit) {
         AccessRoleListResult accessRoleListResult = accessRoleFactory.newListResult();
         try {
             AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
@@ -89,11 +85,9 @@ public class AccessRoles extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link AccessRoleQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link AccessRoleQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link AccessRoleQuery} to use to filter results.
      * @return The {@link AccessRoleListResult} of all the result matching the given {@link AccessRoleQuery} parameter.
      * @since 1.0.0
      */
@@ -122,11 +116,9 @@ public class AccessRoles extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link AccessRoleQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link AccessRoleQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link AccessRoleQuery} to use to filter results.
      * @return The count of all the result matching the given {@link AccessRoleQuery} parameter.
      * @since 1.0.0
      */
@@ -156,10 +148,8 @@ public class AccessRoles extends AbstractKapuaResource {
      * Creates a new AccessRole based on the information provided in AccessRoleCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link AccessRole}.
-     * @param accessRoleCreator
-     *            Provides the information for the new AccessRole to be created.
+     * @param scopeId           The {@link ScopeId} in which to create the {@link AccessRole}.
+     * @param accessRoleCreator Provides the information for the new AccessRole to be created.
      * @return The newly created AccessRole object.
      */
     @ApiOperation(value = "Create an AccessRole",
@@ -186,10 +176,8 @@ public class AccessRoles extends AbstractKapuaResource {
     /**
      * Returns the AccessRole specified by the "accessRoleId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link AccessRole}.
-     * @param accessRoleId
-     *            The id of the requested {@link AccessRole}.
+     * @param scopeId      The {@link ScopeId} of the requested {@link AccessRole}.
+     * @param accessRoleId The id of the requested {@link AccessRole}.
      * @return The requested {@link AccessRole} object.
      */
     @ApiOperation(value = "Get an AccessRole",
@@ -228,8 +216,7 @@ public class AccessRoles extends AbstractKapuaResource {
     /**
      * Deletes the AccessRole specified by the "accessRoleId" path parameter.
      *
-     * @param accessRoleId
-     *            The id of the AccessRole to be deleted.
+     * @param accessRoleId The id of the AccessRole to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an AccessRole",

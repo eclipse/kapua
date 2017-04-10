@@ -53,12 +53,9 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Gets the {@link Credential} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link CredentialListResult} of all the credentials associated to the current selected scope.
      * @since 1.0.0
      */
@@ -72,8 +69,7 @@ public class Credentials extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The optional id to filter results.") @QueryParam("userId") EntityId userId,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit) {
         CredentialListResult credentialListResult = credentialFactory.newListResult();
         try {
             CredentialQuery query = credentialFactory.newQuery(scopeId);
@@ -96,11 +92,9 @@ public class Credentials extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link CredentialQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link CredentialQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link CredentialQuery} to use to filter results.
      * @return The {@link CredentialListResult} of all the result matching the given {@link CredentialQuery} parameter.
      * @since 1.0.0
      */
@@ -127,11 +121,9 @@ public class Credentials extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link CredentialQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link CredentialQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link CredentialQuery} to use to filter results.
      * @return The count of all the result matching the given {@link CredentialQuery} parameter.
      * @since 1.0.0
      */
@@ -159,10 +151,8 @@ public class Credentials extends AbstractKapuaResource {
      * Creates a new Credential based on the information provided in CredentialCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link Credential}
-     * @param credentialCreator
-     *            Provides the information for the new Credential to be created.
+     * @param scopeId           The {@link ScopeId} in which to create the {@link Credential}
+     * @param credentialCreator Provides the information for the new Credential to be created.
      * @return The newly created Credential object.
      */
     @ApiOperation(value = "Create a Credential", notes = "Creates a new Credential based on the information provided in CredentialCreator parameter.", response = Credential.class)
@@ -185,10 +175,8 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Returns the Credential specified by the "credentialId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Credential}.
-     * @param credentialId
-     *            The id of the requested Credential.
+     * @param scopeId      The {@link ScopeId} of the requested {@link Credential}.
+     * @param credentialId The id of the requested Credential.
      * @return The requested Credential object.
      */
     @ApiOperation(value = "Get a Credential", notes = "Returns the Credential specified by the \"credentialId\" path parameter.", response = Credential.class)
@@ -210,8 +198,7 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Updates the Credential based on the information provided in the Credential parameter.
      *
-     * @param credential
-     *            The modified Credential whose attributed need to be updated.
+     * @param credential The modified Credential whose attributed need to be updated.
      * @return The updated credential.
      */
     @ApiOperation(value = "Update an Credential", notes = "Updates a new Credential based on the information provided in the Credential parameter.", response = Credential.class)
@@ -238,8 +225,7 @@ public class Credentials extends AbstractKapuaResource {
     /**
      * Deletes the Credential specified by the "credentialId" path parameter.
      *
-     * @param credentialId
-     *            The id of the Credential to be deleted.
+     * @param credentialId The id of the Credential to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete a Credential", notes = "Deletes the Credential specified by the \"credentialId\" path parameter.")

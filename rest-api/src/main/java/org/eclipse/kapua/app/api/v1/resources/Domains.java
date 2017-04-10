@@ -49,14 +49,10 @@ public class Domains extends AbstractKapuaResource {
     /**
      * Gets the {@link Domain} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param name
-     *            The {@link Domain} name in which to search results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param name    The {@link Domain} name in which to search results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link DomainListResult} of all the domains associated to the current selected scope.
      * @since 1.0.0
      */
@@ -70,8 +66,7 @@ public class Domains extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The domain name to filter results.") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         DomainListResult domainListResult = domainFactory.newListResult();
         try {
             DomainQuery query = domainFactory.newQuery(null);
@@ -94,11 +89,9 @@ public class Domains extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link DomainQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link DomainQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link DomainQuery} to use to filter results.
      * @return The {@link DomainListResult} of all the result matching the given {@link DomainQuery} parameter.
      * @since 1.0.0
      */
@@ -124,11 +117,9 @@ public class Domains extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link DomainQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link DomainQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link DomainQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DomainQuery} parameter.
      * @since 1.0.0
      */
@@ -141,7 +132,8 @@ public class Domains extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The DomainQuery to use to filter count results", required = true) DomainQuery query) {        CountResult countResult = null;
+            @ApiParam(value = "The DomainQuery to use to filter count results", required = true) DomainQuery query) {
+        CountResult countResult = null;
         try {
             countResult = new CountResult(domainService.count(query));
         } catch (Throwable t) {
@@ -153,10 +145,8 @@ public class Domains extends AbstractKapuaResource {
     /**
      * Returns the Domain specified by the "domainId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Domain}.
-     * @param domainId
-     *            The id of the requested {@link Domain}.
+     * @param scopeId  The {@link ScopeId} of the requested {@link Domain}.
+     * @param domainId The id of the requested {@link Domain}.
      * @return The requested Domain object.
      */
     @ApiOperation(value = "Get a Domain", notes = "Returns the Domain specified by the \"domainId\" path parameter.", response = Domain.class)

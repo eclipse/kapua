@@ -51,16 +51,11 @@ public class DeviceConnections extends AbstractKapuaResource {
     /**
      * Gets the {@link DeviceConnection} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param clientId
-     *            The id of the {@link Device} in which to search results
-     * @param status
-     *            The {@link DeviceConnectionStatus} in which to search results
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param clientId The id of the {@link Device} in which to search results
+     * @param status   The {@link DeviceConnectionStatus} in which to search results
+     * @param offset   The result set offset.
+     * @param limit    The result set limit.
      * @return The {@link DeviceConnectionListResult} of all the deviceConnections associated to the current selected scope.
      * @since 1.0.0
      */
@@ -73,10 +68,9 @@ public class DeviceConnections extends AbstractKapuaResource {
     public DeviceConnectionListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The client id to filter results.") String clientId,
-            @ApiParam(value = "The connection status to filter results.")@QueryParam("status") DeviceConnectionStatus status,
+            @ApiParam(value = "The connection status to filter results.") @QueryParam("status") DeviceConnectionStatus status,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         DeviceConnectionListResult deviceConnectionListResult = deviceConnectionFactory.newListResult();
         try {
             DeviceConnectionQuery query = deviceConnectionFactory.newQuery(scopeId);
@@ -102,11 +96,9 @@ public class DeviceConnections extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link DeviceConnectionQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link DeviceConnectionQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link DeviceConnectionQuery} to use to filter results.
      * @return The {@link DeviceConnectionListResult} of all the result matching the given {@link DeviceConnectionQuery} parameter.
      * @since 1.0.0
      */
@@ -133,11 +125,9 @@ public class DeviceConnections extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link DeviceConnectionQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link DeviceConnectionQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link DeviceConnectionQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DeviceConnectionQuery} parameter.
      * @since 1.0.0
      */
@@ -164,10 +154,8 @@ public class DeviceConnections extends AbstractKapuaResource {
     /**
      * Returns the DeviceConnection specified by the "deviceConnectionId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link DeviceConnection}.
-     * @param deviceConnectionId
-     *            The id of the requested DeviceConnection.
+     * @param scopeId            The {@link ScopeId} of the requested {@link DeviceConnection}.
+     * @param deviceConnectionId The id of the requested DeviceConnection.
      * @return The requested DeviceConnection object.
      */
     @ApiOperation(value = "Get an DeviceConnection", notes = "Returns the DeviceConnection specified by the \"deviceConnectionId\" path parameter.", response = DeviceConnection.class)

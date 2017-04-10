@@ -44,7 +44,7 @@ import io.swagger.annotations.ApiParam;
 
 /**
  * {@link AccessInfo} REST API resource.
- * 
+ *
  * @since 1.0.0
  */
 @Api("Access Info")
@@ -58,14 +58,10 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Gets the {@link AccessInfo} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param userId
-     *            The optional {@link User} id to filter results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param userId  The optional {@link User} id to filter results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link AccessInfoListResult} of all the {@link AccessInfo}s associated to the current selected scope.
      * @since 1.0.0
      */
@@ -103,11 +99,9 @@ public class AccessInfos extends AbstractKapuaResource {
 
     /**
      * Queries the {@link AccessInfo}s with the given {@link AccessInfoQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link AccessInfoQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link AccessInfoQuery} to use to filter results.
      * @return The {@link AccessInfoListResult} of all the result matching the given {@link AccessInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -134,11 +128,9 @@ public class AccessInfos extends AbstractKapuaResource {
 
     /**
      * Counts the {@link AccessInfo}s with the given {@link AccessInfoQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to count results.
-     * @param query
-     *            The {@link AccessInfoQuery} to use to filter count results.
+     *
+     * @param scopeId The {@link ScopeId} in which to count results.
+     * @param query   The {@link AccessInfoQuery} to use to filter count results.
      * @return The count of all the result matching the given {@link AccessInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -166,10 +158,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * Creates a new {@link AccessInfo} based on the information provided in {@link AccessInfoCreator}
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link AccessInfo}.
-     * @param accessInfoCreator
-     *            Provides the information for the new {@link AccessInfo} to be created.
+     * @param scopeId           The {@link ScopeId} in which to create the {@link AccessInfo}.
+     * @param accessInfoCreator Provides the information for the new {@link AccessInfo} to be created.
      * @return The newly created {@link AccessInfo} object.
      * @since 1.0.0
      */
@@ -195,10 +185,8 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Gets the {@link AccessInfo} specified by the "accessInfoId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link AccessInfo}.
-     * @param accessInfoId
-     *            The id of the requested {@link AccessInfo}.
+     * @param scopeId      The {@link ScopeId} of the requested {@link AccessInfo}.
+     * @param accessInfoId The id of the requested {@link AccessInfo}.
      * @return The requested {@link AccessInfo} object.
      * @since 1.0.0
      */
@@ -223,10 +211,8 @@ public class AccessInfos extends AbstractKapuaResource {
     /**
      * Deletes the {@link AccessInfo} specified by the "accessInfoId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link AccessInfo} to be deleted.
-     * @param accessInfoId
-     *            The id of the {@link AccessInfo} to be deleted.
+     * @param scopeId      The {@link ScopeId} of the {@link AccessInfo} to be deleted.
+     * @param accessInfoId The id of the {@link AccessInfo} to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      * @since 1.0.0
      */

@@ -40,12 +40,9 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     /**
      * Returns the list of all the Snapshots available on the device.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The id of the device
-     * @param timeout
-     *            The timeout of the operation
+     * @param scopeId  The {@link ScopeId} of the {@link Device}.
+     * @param deviceId The id of the device
+     * @param timeout  The timeout of the operation
      * @return The list of Snapshot Ids.
      */
     @GET
@@ -67,14 +64,10 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     /**
      * Updates the configuration of a device rolling back a given snapshot ID.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param snapshotId
-     *            the ID of the snapshot to rollback to.
-     * @param timeout
-     *            The timeout of the operation
+     * @param scopeId    The {@link ScopeId} of the {@link Device}.
+     * @param deviceId   The {@link Device} ID.
+     * @param snapshotId the ID of the snapshot to rollback to.
+     * @param timeout    The timeout of the operation
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST

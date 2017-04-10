@@ -55,18 +55,12 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Gets the {@link RolePermission} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param roleId
-     *            The id of the {@link Role} in which to search results.
-     * @param domain
-     *            The domain name to filter results.
-     * @param action
-     *            The action to filter results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param roleId  The id of the {@link Role} in which to search results.
+     * @param domain  The domain name to filter results.
+     * @param action  The action to filter results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link RolePermissionListResult} of all the rolePermissions associated to the current selected scope.
      * @since 1.0.0
      */
@@ -82,8 +76,7 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The domain name to filter results.") @QueryParam("name") String domain,
             @ApiParam(value = "The action to filter results.") @QueryParam("action") Actions action,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         RolePermissionListResult rolePermissionListResult = rolePermissionFactory.newListResult();
         try {
             RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
@@ -110,13 +103,10 @@ public class RolesPermissions extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link RolePermissionQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param roleId
-     *            The {@link Role} id in which to search results.
-     * @param query
-     *            The {@link RolePermissionQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param roleId  The {@link Role} id in which to search results.
+     * @param query   The {@link RolePermissionQuery} to use to filter results.
      * @return The {@link RolePermissionListResult} of all the result matching the given {@link RolePermissionQuery} parameter.
      * @since 1.0.0
      */
@@ -149,13 +139,10 @@ public class RolesPermissions extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link RolePermissionQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to count results.
-     * @param roleId
-     *            The {@link Role} id in which to count results.
-     * @param query
-     *            The {@link RolePermissionQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to count results.
+     * @param roleId  The {@link Role} id in which to count results.
+     * @param query   The {@link RolePermissionQuery} to use to filter results.
      * @return The count of all the result matching the given {@link RolePermissionQuery} parameter.
      * @since 1.0.0
      */
@@ -186,12 +173,9 @@ public class RolesPermissions extends AbstractKapuaResource {
      * Creates a new RolePermission based on the information provided in RolePermissionCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link RolePermission}
-     * @param roleId
-     *            The {@link Role} id in which to create the RolePermission.
-     * @param rolePermissionCreator
-     *            Provides the information for the new RolePermission to be created.
+     * @param scopeId               The {@link ScopeId} in which to create the {@link RolePermission}
+     * @param roleId                The {@link Role} id in which to create the RolePermission.
+     * @param rolePermissionCreator Provides the information for the new RolePermission to be created.
      * @return The newly created RolePermission object.
      */
     @ApiOperation(value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
@@ -216,12 +200,9 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Returns the RolePermission specified by the "rolePermissionId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link RolePermission}.
-     * @param roleId
-     *            The {@link Role} id of the requested {@link RolePermission}.
-     * @param rolePermissionId
-     *            The id of the requested RolePermission.
+     * @param scopeId          The {@link ScopeId} of the requested {@link RolePermission}.
+     * @param roleId           The {@link Role} id of the requested {@link RolePermission}.
+     * @param rolePermissionId The id of the requested RolePermission.
      * @return The requested RolePermission object.
      */
     @ApiOperation(value = "Get a RolePermission", notes = "Returns the RolePermission specified by the \"rolePermissionId\" path parameter.", response = RolePermission.class)
@@ -258,12 +239,9 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Deletes the RolePermission specified by the "rolePermissionId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link RolePermission} to delete.
-     * @param roleId
-     *            The {@link Role} id of the {@link RolePermission} to delete.
-     * @param rolePermissionId
-     *            The id of the RolePermission to be deleted.
+     * @param scopeId          The {@link ScopeId} of the {@link RolePermission} to delete.
+     * @param roleId           The {@link Role} id of the {@link RolePermission} to delete.
+     * @param rolePermissionId The id of the RolePermission to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an RolePermission", notes = "Deletes the RolePermission specified by the \"rolePermissionId\" path parameter.")

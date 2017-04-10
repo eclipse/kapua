@@ -54,14 +54,10 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Gets the {@link Role} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param name
-     *            The {@link Role} name in which to search results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param name    The {@link Role} name in which to search results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link RoleListResult} of all the roles associated to the current selected scope.
      * @since 1.0.0
      */
@@ -75,8 +71,7 @@ public class Roles extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The role name to filter results.") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         RoleListResult roleListResult = roleFactory.newListResult();
         try {
             RoleQuery query = roleFactory.newQuery(scopeId);
@@ -99,11 +94,9 @@ public class Roles extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link RoleQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link RoleQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link RoleQuery} to use to filter results.
      * @return The {@link RoleListResult} of all the result matching the given {@link RoleQuery} parameter.
      * @since 1.0.0
      */
@@ -130,11 +123,9 @@ public class Roles extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link RoleQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link RoleQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link RoleQuery} to use to filter results.
      * @return The count of all the result matching the given {@link RoleQuery} parameter.
      * @since 1.0.0
      */
@@ -162,10 +153,8 @@ public class Roles extends AbstractKapuaResource {
      * Creates a new Role based on the information provided in RoleCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link Role}
-     * @param roleCreator
-     *            Provides the information for the new {@link Role} to be created.
+     * @param scopeId     The {@link ScopeId} in which to create the {@link Role}
+     * @param roleCreator Provides the information for the new {@link Role} to be created.
      * @return The newly created {@link Role} object.
      */
     @ApiOperation(value = "Create a Role", notes = "Creates a new Role based on the information provided in RoleCreator parameter.", response = Role.class)
@@ -188,10 +177,8 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Returns the Role specified by the "roleId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Role}.
-     * @param roleId
-     *            The id of the requested {@link Role}.
+     * @param scopeId The {@link ScopeId} of the requested {@link Role}.
+     * @param roleId  The id of the requested {@link Role}.
      * @return The requested {@link Role} object.
      */
     @ApiOperation(value = "Get a Role", notes = "Returns the Role specified by the \"roleId\" path parameter.", response = Role.class)
@@ -213,12 +200,9 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Updates the Role based on the information provided in the Role parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Role}.
-     * @param roleId
-     *            The id of the requested {@link Role}
-     * @param role
-     *            The modified Role whose attributed need to be updated.
+     * @param scopeId The ScopeId of the requested {@link Role}.
+     * @param roleId  The id of the requested {@link Role}
+     * @param role    The modified Role whose attributed need to be updated.
      * @return The updated {@link Role}.
      */
     @ApiOperation(value = "Update an Role", notes = "Updates a new Role based on the information provided in the Role parameter.", response = Role.class)
@@ -245,10 +229,8 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Deletes the Role specified by the "roleId" path parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Role}.
-     * @param roleId
-     *            The id of the Role to be deleted.
+     * @param scopeId The ScopeId of the requested {@link Role}.
+     * @param roleId  The id of the Role to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete a Role", notes = "Deletes the Role specified by the \"roleId\" path parameter.")

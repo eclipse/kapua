@@ -54,14 +54,10 @@ public class Users extends AbstractKapuaResource {
     /**
      * Gets the {@link User} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param name
-     *            The {@link User} name in which to search results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param name    The {@link User} name in which to search results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
      * @since 1.0.0
      */
@@ -75,8 +71,7 @@ public class Users extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The user name to filter results.") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         UserListResult userListResult = userFactory.newListResult();
         try {
             UserQuery query = userFactory.newQuery(scopeId);
@@ -99,11 +94,9 @@ public class Users extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link UserQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link UserQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link UserQuery} to use to filter results.
      * @return The {@link UserListResult} of all the result matching the given {@link UserQuery} parameter.
      * @since 1.0.0
      */
@@ -130,11 +123,9 @@ public class Users extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link UserQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to count results.
-     * @param query
-     *            The {@link UserQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to count results.
+     * @param query   The {@link UserQuery} to use to filter results.
      * @return The count of all the result matching the given {@link UserQuery} parameter.
      * @since 1.0.0
      */
@@ -162,10 +153,8 @@ public class Users extends AbstractKapuaResource {
      * Creates a new User based on the information provided in UserCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link User}
-     * @param userCreator
-     *            Provides the information for the new User to be created.
+     * @param scopeId     The {@link ScopeId} in which to create the {@link User}
+     * @param userCreator Provides the information for the new User to be created.
      * @return The newly created User object.
      */
     @ApiOperation(value = "Create an User", notes = "Creates a new User based on the information provided in UserCreator parameter.", response = User.class)
@@ -188,10 +177,8 @@ public class Users extends AbstractKapuaResource {
     /**
      * Returns the User specified by the "userId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link User}.
-     * @param userId
-     *            The id of the requested User.
+     * @param scopeId The {@link ScopeId} of the requested {@link User}.
+     * @param userId  The id of the requested User.
      * @return The requested User object.
      */
     @ApiOperation(value = "Get an User", notes = "Returns the User specified by the \"userId\" path parameter.", response = User.class)
@@ -213,12 +200,9 @@ public class Users extends AbstractKapuaResource {
     /**
      * Updates the User based on the information provided in the User parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link User}.
-     * @param userId
-     *            The id of the requested {@link User}
-     * @param user
-     *            The modified User whose attributed need to be updated.
+     * @param scopeId The ScopeId of the requested {@link User}.
+     * @param userId  The id of the requested {@link User}
+     * @param user    The modified User whose attributed need to be updated.
      * @return The updated user.
      */
     @ApiOperation(value = "Update an User", notes = "Updates a new User based on the information provided in the User parameter.", response = User.class)
@@ -245,10 +229,8 @@ public class Users extends AbstractKapuaResource {
     /**
      * Deletes the User specified by the "userId" path parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link User}.
-     * @param userId
-     *            The id of the User to be deleted.
+     * @param scopeId The ScopeId of the requested {@link User}.
+     * @param userId  The id of the User to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an User", notes = "Deletes the User specified by the \"userId\" path parameter.")

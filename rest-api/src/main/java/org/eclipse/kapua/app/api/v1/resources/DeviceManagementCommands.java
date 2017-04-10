@@ -39,10 +39,10 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
 
     /**
      * Executes a remote command on a device and return the command output.
-     *
+     * <p>
      * <p>
      * Example to list all files in the current working directory:
-     *
+     * <p>
      * <pre>
      * Client client = client();
      * WebResource apisWeb = client.resource(APIS_TEST_URL);
@@ -59,15 +59,10 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
      * DeviceCommandOutput commandOutput = deviceCommandWebXml.post(DeviceCommandOutput.class, commandInput);
      * </pre>
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param timeout
-     *            The timeout of the command execution
-     * @param commandInput
-     *            The input command
-     *
+     * @param scopeId      The {@link ScopeId} of the {@link Device}.
+     * @param deviceId     The {@link Device} ID.
+     * @param timeout      The timeout of the command execution
+     * @param commandInput The input command
      * @return The command output.
      */
     @POST

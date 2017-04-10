@@ -39,12 +39,10 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
 
     /**
      * Returns the list of all the Bundles installed on the device.
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The id of the device
-     * @param timeout
-     *            The timeout of the operation in milliseconds
+     *
+     * @param scopeId  The {@link ScopeId} of the {@link Device}.
+     * @param deviceId The id of the device
+     * @param timeout  The timeout of the operation in milliseconds
      * @return The list of Bundles
      */
     @GET
@@ -65,14 +63,11 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
 
     /**
      * Starts the bundle
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param bundleId
-     *            the ID of the bundle to start
-     * @param timeout
-     *            The timeout of the operation in milliseconds
+     *
+     * @param scopeId  The {@link ScopeId} of the {@link Device}.
+     * @param deviceId The {@link Device} ID.
+     * @param bundleId the ID of the bundle to start
+     * @param timeout  The timeout of the operation in milliseconds
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST
@@ -94,10 +89,8 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
     /**
      * Stops the bundle
      *
-     * @param deviceId
-     *            The {@link Device} ID.
-     * @param bundleId
-     *            the ID of the bundle to stop
+     * @param deviceId The {@link Device} ID.
+     * @param bundleId the ID of the bundle to stop
      * @return HTTP 200 if operation has completed successfully.
      */
     @POST
