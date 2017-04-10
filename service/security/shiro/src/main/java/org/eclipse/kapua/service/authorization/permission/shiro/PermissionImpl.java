@@ -37,9 +37,9 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
- * Permission implementation.
+ * {@link Permission} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @Embeddable
 public class PermissionImpl extends WildcardPermission implements Permission, org.apache.shiro.authz.Permission, Serializable {
@@ -47,22 +47,22 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     private static final long serialVersionUID = 1480557438886065675L;
 
     @Basic
-    @Column(name = "domain", nullable = false, updatable = false)
+    @Column(name = "domain", nullable = true, updatable = false)
     private String domain;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "action", updatable = false)
+    @Column(name = "action", nullable = true, updatable = false)
     private Actions action;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "target_scope_id", updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "target_scope_id", nullable = true, updatable = false))
     })
     private KapuaEid targetScopeId;
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "group_id", updatable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "group_id", nullable = true, updatable = false))
     })
     private KapuaEid groupId;
 
@@ -95,6 +95,8 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * @param action
      * @param targetScopeId
      * @param groupId
+     * 
+     * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
 
@@ -128,11 +130,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public void setTargetScopeId(KapuaId targetScopeId) {
-        if (targetScopeId != null) {
-            this.targetScopeId = new KapuaEid(targetScopeId);
-        } else {
-            this.targetScopeId = null;
-        }
+        this.targetScopeId = targetScopeId != null ? (targetScopeId instanceof KapuaEid ? (KapuaEid) targetScopeId : new KapuaEid(targetScopeId)) : null;
     }
 
     @Override
@@ -142,11 +140,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public void setGroupId(KapuaId groupId) {
-        if (groupId != null) {
-            this.groupId = new KapuaEid(groupId);
-        } else {
-            this.groupId = null;
-        }
+        this.groupId = groupId != null ? (groupId instanceof KapuaEid ? (KapuaEid) groupId : new KapuaEid(groupId)) : null;
     }
 
     @Override
@@ -185,7 +179,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(domain) //
+        sb.append(domain != null ? domain : Permission.WILDCARD) //
                 .append(Permission.SEPARATOR) //
                 .append(action != null ? action.name() : Permission.WILDCARD) //
                 .append(Permission.SEPARATOR) //
