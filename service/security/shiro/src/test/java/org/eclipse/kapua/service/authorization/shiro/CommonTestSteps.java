@@ -55,7 +55,7 @@ public class CommonTestSteps extends KapuaTest {
     public void setNullScopId() {
         commonData.scopeId = null;
     }
-
+    
     @Then("^An exception was thrown$")
     public void exceptionCaught() {
         assertTrue(commonData.exceptionCaught);

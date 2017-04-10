@@ -19,6 +19,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
@@ -32,8 +33,9 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
     private static String DEFAULT_PATH = "../../../dev-tools/src/main/database";
     private static String DROP_ALL_TABLES = "all_drop.sql";
 
+    protected static final KapuaLocator locator = KapuaLocator.getInstance();
+    protected static final KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
     protected static Random random = new Random();
-    protected static KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
     // Drop the whole database. All tables are deleted.
     public static void dropDatabase() {
@@ -91,5 +93,10 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
     // Generate a random KapuaId
     protected KapuaId generateId() {
         return new KapuaEid(BigInteger.valueOf(random.nextLong()));
+    }
+    
+    // Generate a KapuaId from an integer
+    protected KapuaId generateId(Integer id) {
+        return new KapuaEid(BigInteger.valueOf(id));
     }
 }

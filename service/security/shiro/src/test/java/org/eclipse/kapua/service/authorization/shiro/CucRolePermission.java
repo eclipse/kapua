@@ -66,7 +66,7 @@ public class CucRolePermission {
     public void setRoleId(KapuaId id) {
         this.role = id;
     }
-    
+
     public KapuaId getRoleId() {
         return this.role;
     }
