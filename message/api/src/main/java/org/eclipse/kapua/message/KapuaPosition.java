@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,7 +41,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
         "satellites", //
         "status", //
 })
-public interface KapuaPosition extends Position {
+public interface KapuaPosition extends Position, Serializable {
 
     /**
      * Get the device position longitude
