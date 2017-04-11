@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
@@ -16,8 +16,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import org.apache.shiro.codec.Base64;
-import org.apache.shiro.crypto.hash.Sha1Hash;
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.apache.shiro.crypto.hash.Sha512Hash;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -86,16 +86,17 @@ public class AuthenticationUtils {
             case "SHA256":
                 hashedValue = (new Sha256Hash(plainValue, salt)).toHex();
                 break;
-            case "SHA1":
+            case "SHA512":
             default:
-                hashedValue = (new Sha1Hash(plainValue, salt)).toHex();
+                hashedValue = (new Sha512Hash(plainValue, salt)).toHex();
+                break;
             }
 
             //
             // Return value
             return salt + ":" + hashedValue;
         } catch (NoSuchAlgorithmException e) {
-            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e, (Object[]) null);
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
         }
     }
 
