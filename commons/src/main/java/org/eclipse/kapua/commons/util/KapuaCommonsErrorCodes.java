@@ -16,12 +16,11 @@ import org.eclipse.kapua.KapuaErrorCode;
 
 /**
  * Kapua commons error codes
- * 
+ *
  * @since 1.0
  *
  */
-public enum KapuaCommonsErrorCodes implements KapuaErrorCode
-{
+public enum KapuaCommonsErrorCodes implements KapuaErrorCode {
     /**
      * Identifier generation error
      */

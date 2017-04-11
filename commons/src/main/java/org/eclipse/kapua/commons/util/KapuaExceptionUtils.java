@@ -24,26 +24,24 @@ import org.eclipse.persistence.exceptions.DatabaseException;
 
 /**
  * Exception utilities
- * 
+ *
  * @since 1.0
  *
  */
-public class KapuaExceptionUtils
-{
+public class KapuaExceptionUtils {
+
     /**
      * Converts a low-level PersistenceException/SQLException to a business-level KapuaException.
-     * 
+     *
      * @param he
      */
-    public static KapuaException convertPersistenceException(Exception he)
-    {
+    public static KapuaException convertPersistenceException(Exception he) {
         Exception e = he;
 
         // Handle the case of an incoming KapuaException
         if (he instanceof KapuaException && he.getCause() != null && he.getCause() instanceof PersistenceException) {
             e = (Exception) he.getCause();
-        }
-        else if (he instanceof KapuaException) {
+        } else if (he instanceof KapuaException) {
             return (KapuaException) e;
         }
 
@@ -51,8 +49,7 @@ public class KapuaExceptionUtils
         KapuaException ee = null;
         if (e instanceof OptimisticLockException) {
             ee = new KapuaOptimisticLockingException(e);
-        }
-        else {
+        } else {
             Throwable t = e.getCause();
             if (t instanceof PersistenceException) {
                 t = t.getCause();
@@ -68,46 +65,44 @@ public class KapuaExceptionUtils
                 int sqlErrorCode = cve.getErrorCode();
                 switch (sqlErrorCode) {
 
-                    // SQL Error: 1062, SQLState: 23000 - ER_DUP_KEYNAME - Unique Constraints Exception
-                    case 1062:
-                    {
-                        //
-                        // Extract the constraint name
-                        // e.g. SQL Message: Duplicate entry 'test_account_1,322,584,746,357' for key 'uc_accountName'
-                        String message = cve.getInternalException().getMessage();
-                        String[] parts = message.split("'");
-                        String constraintName = parts[parts.length - 1];
+                // SQL Error: 1062, SQLState: 23000 - ER_DUP_KEYNAME - Unique Constraints Exception
+                case 1062: {
+                    //
+                    // Extract the constraint name
+                    // e.g. SQL Message: Duplicate entry 'test_account_1,322,584,746,357' for key 'uc_accountName'
+                    String message = cve.getInternalException().getMessage();
+                    String[] parts = message.split("'");
+                    String constraintName = parts[parts.length - 1];
 
-                        //
-                        // populate the duplicated field name
-                        // String duplicateNameField = s_uniqueConstraints.get(constraintName);
-                        if (constraintName != null) {
-                            ee = new KapuaDuplicateNameException(constraintName);
-                        }
+                    //
+                    // populate the duplicated field name
+                    // String duplicateNameField = s_uniqueConstraints.get(constraintName);
+                    if (constraintName != null) {
+                        ee = new KapuaDuplicateNameException(constraintName);
                     }
-                        break;
+                }
+                    break;
 
-                    // SQL Error: 1048, SQLSTATE: 23000 - ER_BAD_NULL_ERROR - Not Null Violation
-                    case 1048:
-                    {
-                        //
-                        // Extract the name of the null attribute
-                        // e.g. SQL Message: Column '%s' cannot be null
-                        String message = cve.getInternalException().getMessage();
-                        String[] parts = message.split("'");
-                        String columnName = null;
-                        if (parts.length == 3) {
-                            columnName = parts[1];
-                        }
-
-                        //
-                        // populate the null field name
-                        if (columnName != null) {
-                            ee = new KapuaIllegalNullArgumentException(columnName);
-                        }
-
+                // SQL Error: 1048, SQLSTATE: 23000 - ER_BAD_NULL_ERROR - Not Null Violation
+                case 1048: {
+                    //
+                    // Extract the name of the null attribute
+                    // e.g. SQL Message: Column '%s' cannot be null
+                    String message = cve.getInternalException().getMessage();
+                    String[] parts = message.split("'");
+                    String columnName = null;
+                    if (parts.length == 3) {
+                        columnName = parts[1];
                     }
-                        break;
+
+                    //
+                    // populate the null field name
+                    if (columnName != null) {
+                        ee = new KapuaIllegalNullArgumentException(columnName);
+                    }
+
+                }
+                    break;
                 }
             }
         }

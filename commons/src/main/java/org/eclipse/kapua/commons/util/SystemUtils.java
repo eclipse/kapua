@@ -20,29 +20,27 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 /**
  * System utilities.
- * 
+ *
  * @since 1.0
  *
  */
-public class SystemUtils
-{
+public class SystemUtils {
 
     /**
      * Get the broker url. Gets the broker schema, host and port from the {@link SystemSetting}
-     * 
+     *
      * @return
      * @throws URISyntaxException
      */
     public static URI getBrokerURI()
-        throws URISyntaxException
-    {
+            throws URISyntaxException {
         SystemSetting envConfig = SystemSetting.getInstance();
         return new URI(envConfig.getString(SystemSettingKey.BROKER_SCHEME),
-                       null,
-                       envConfig.getString(SystemSettingKey.BROKER_HOST),
-                       envConfig.getInt(SystemSettingKey.BROKER_PORT),
-                       null,
-                       null,
-                       null);
+                null,
+                envConfig.getString(SystemSettingKey.BROKER_HOST),
+                envConfig.getInt(SystemSettingKey.BROKER_PORT),
+                null,
+                null,
+                null);
     }
 }

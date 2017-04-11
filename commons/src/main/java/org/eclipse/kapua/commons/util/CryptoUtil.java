@@ -20,7 +20,7 @@ import javax.xml.bind.DatatypeConverter;
 
 /**
  * Encrypt/Decrypt and encode/decode utilities
- * 
+ *
  * @since 1.0
  *
  */
@@ -28,7 +28,7 @@ public class CryptoUtil {
 
     /**
      * Evaluate the sha1 hash for the provided String
-     * 
+     *
      * @param s
      * @return
      * @throws NoSuchAlgorithmException
@@ -41,7 +41,7 @@ public class CryptoUtil {
 
     /**
      * Encode a base 64 String
-     * 
+     *
      * @param stringValue
      * @return
      */
@@ -52,7 +52,7 @@ public class CryptoUtil {
 
     /**
      * Decode a base 64 String
-     * 
+     *
      * @param encodedValue
      * @return
      */
