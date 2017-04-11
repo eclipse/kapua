@@ -16,23 +16,21 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
  * Authorization setting key
- * 
+ *
  * @since 1.0
  *
  */
-public enum KapuaAuthorizationSettingKeys implements SettingKey
-{
+public enum KapuaAuthorizationSettingKeys implements SettingKey {
     AUTHORIZATION_KEY("authorization.key");
 
     private String key;
 
-    private KapuaAuthorizationSettingKeys(String key)
-    {
+    private KapuaAuthorizationSettingKeys(String key) {
         this.key = key;
     }
 
-    public String key()
-    {
+    @Override
+    public String key() {
         return key;
     }
 }
