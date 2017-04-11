@@ -17,7 +17,7 @@
 if [ -n "$KEYCLOAK_URL" -a -n "$KAPUA_URL" ]; then
    echo "Activating Keycloak integration"
    echo "  Keycloak: $KEYCLOAK_URL"
-   echo "  Kapua: $KAPUA_URL"
+   echo "  Kapua:    $KAPUA_URL"
    
    : KEYCLOAK_REALM=${KEYCLOAK_REALM:=kapua}
    : KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID:=console}
