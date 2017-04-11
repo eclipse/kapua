@@ -27,6 +27,7 @@
 
     <modules>
         <module>api</module>
+        <module>asset</module>
         <module>commons</module>
         <module>call</module>
         <module>configuration</module>
