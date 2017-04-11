@@ -14,11 +14,9 @@ package org.eclipse.kapua.message;
 
 /**
  * Channel definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface Channel
-{
+public interface Channel {
 
 }

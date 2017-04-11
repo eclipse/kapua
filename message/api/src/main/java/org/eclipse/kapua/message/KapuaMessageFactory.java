@@ -16,16 +16,14 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
  * Kapua message service factory definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface KapuaMessageFactory extends KapuaObjectFactory
-{
+public interface KapuaMessageFactory extends KapuaObjectFactory {
 
     /**
      * Creates and returns a new {@link KapuaMessage}
-     * 
+     *
      * @return
      */
     @SuppressWarnings("rawtypes")
@@ -33,21 +31,21 @@ public interface KapuaMessageFactory extends KapuaObjectFactory
 
     /**
      * Creates and returns a new {@link KapuaChannel}
-     * 
+     *
      * @return
      */
     public KapuaChannel newChannel();
 
     /**
      * Creates and returns a new {@link KapuaPayload}
-     * 
+     *
      * @return
      */
     public KapuaPayload newPayload();
 
     /**
      * Creates and returns a new {@link KapuaPosition}
-     * 
+     *
      * @return
      */
     public KapuaPosition newPosition();

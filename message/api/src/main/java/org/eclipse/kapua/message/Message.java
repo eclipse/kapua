@@ -17,10 +17,8 @@ package org.eclipse.kapua.message;
  *
  * @param <C> channel type
  * @param <P> payload type
- * 
  * @since 1.0
  */
-public interface Message<C extends Channel, P extends Payload>
-{
+public interface Message<C extends Channel, P extends Payload> {
 
 }

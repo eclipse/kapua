@@ -14,10 +14,9 @@ package org.eclipse.kapua.message;
 
 /**
  * Message payload definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface Payload
-{
+public interface Payload {
+
 }
