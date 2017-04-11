@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -143,8 +144,8 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
             // Get and clean jwks_uri property
             final JsonValue jwksUriJsonValue = jsonObject.get(JWKS_URI_WELL_KNOWN_KEY);
 
-            if (jwksUriJsonValue != null) {
-                String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
+            if (jwksUriJsonValue instanceof JsonString) {
+                final String jwksUriString = ((JsonString)jwksUriJsonValue).getString();
                 final URI uri = new URI(jwksUriString);
                 synchronized (ISSUER_JWKSURI_CACHE) {
                     if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
