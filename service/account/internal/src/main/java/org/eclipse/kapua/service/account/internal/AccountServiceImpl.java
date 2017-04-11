@@ -93,25 +93,15 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
         }
 
-        return entityManagerSession.onInsert(em -> {
-            try {
-                Account account = null;
-                em.beginTransaction();
-                account = AccountDAO.create(em, accountCreator);
-                em.persist(account);
+        return entityManagerSession.onTransactedInsert(em -> {
+            Account account = null;
+            account = AccountDAO.create(em, accountCreator);
+            em.persist(account);
 
-                // Set the parent account path
-                String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
-                account.setParentAccountPath(parentAccountPath);
-                account = AccountDAO.update(em, account);
-                em.commit();
-                return account;
-            } catch (Exception e) {
-                if (em != null) {
-                    em.rollback();
-                }
-                throw e;
-            }
+            // Set the parent account path
+            String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
+            account.setParentAccountPath(parentAccountPath);
+            return AccountDAO.update(em, account);
         });
     }
 
@@ -160,8 +150,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Validation of the fields
-        ArgumentValidator.notNull(accountId, "id");
-        ArgumentValidator.notNull(scopeId, "id.id");
+        ArgumentValidator.notNull(accountId, "scopeId");
+        ArgumentValidator.notNull(scopeId, "accountId");
 
         //
         // Check Access
@@ -196,14 +186,12 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public Account find(KapuaId scopeId, KapuaId id)
+    public Account find(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
         //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(scopeId.getId(), "scopeId.id");
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(id.getId(), "id.id");
+        ArgumentValidator.notNull(accountId, "id");
 
         //
         // Check Access
@@ -211,24 +199,23 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Make sure account exists
-        return findById(id);
+        return findById(accountId);
     }
 
     @Override
-    public Account find(KapuaId id)
+    public Account find(KapuaId accountId)
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(id.getId(), "id.id");
+        ArgumentValidator.notNull(accountId, "id");
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, id));
+        authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, accountId));
 
         //
         // Make sure account exists
-        return findById(id);
+        return findById(accountId);
     }
 
     @Override
