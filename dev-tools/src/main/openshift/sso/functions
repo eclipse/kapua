@@ -1,0 +1,46 @@
+# -*-Shell-script-*-
+
+###############################################################################
+# Copyright (c) 2017 Red Hat Inc and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+###############################################################################
+
+# Common functions
+
+function die() { printf "$@" "\n" 1>&2 ; exit 1; }
+
+function route_scheme () {
+	local project="$1"
+	local route="$2"
+	
+	local tls=$($OC -n "$project" get "route/$route" -ojsonpath={.spec.tls})
+	test "$tls" = "nil" && echo "http" || echo "https"
+}
+
+function route_host () {
+	local project="$1"
+	local route="$2"
+	
+	local host=$($OC -n "$project" get "route/$route" -ojsonpath={.spec.host})
+	echo "$host"
+}
+
+function route_url () {
+	local project="$1"
+	local route="$2"
+	
+	echo "$(route_scheme "$project" "$route")://$(route_host "$project" "$route")"
+}
+
+function kapua_url () {
+	echo "$(route_url "$KAPUA_PROJECT_NAME" console)"
+}
+
+function keycloak_url () {
+	echo "$(route_url "$KEYCLOAK_PROJECT_NAME" web)"
+}
