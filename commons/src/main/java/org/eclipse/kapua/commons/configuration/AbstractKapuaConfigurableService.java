@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
@@ -26,7 +25,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -68,7 +66,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         this.pid = pid;
         this.domain = domain;
     }
-    
+
     /**
      * Reads metadata for the service pid
      *
@@ -100,6 +98,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      *
      * @param ocd
      * @param updatedProps
+     * @param scopeId
+     * @param parentId
+     * 
      * @throws KapuaException
      */
     private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
@@ -107,7 +108,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         if (ocd != null) {
 
             // build a map of all the attribute definitions
-            Map<String, KapuaTad> attrDefs = new HashMap<String, KapuaTad>();
+            Map<String, KapuaTad> attrDefs = new HashMap<>();
             List<KapuaTad> defs = ocd.getAD();
             for (KapuaTad def : defs) {
                 attrDefs.put(def.getId(), def);
@@ -187,7 +188,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException {
         List<KapuaTad> ads = ocd.getAD();
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         for (KapuaTad ad : ads) {
             String valueStr = props == null ? ad.getDefault() : props.getProperty(ad.getId(), ad.getDefault());
             Object value = StringUtil.stringToValue(ad.getType().value(), valueStr);
@@ -208,9 +209,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
 
-        return entityManagerSession.onTransactedInsert(em -> {
-                return ServiceConfigDAO.create(em, serviceConfig);
-        });
+        return entityManagerSession.onTransactedInsert(em -> ServiceConfigDAO.create(em, serviceConfig));
     }
 
     /**
@@ -253,7 +252,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         try {
             KapuaTmetadata metadata = readMetadata(this.pid);
-            if (metadata != null && metadata.getOCD() != null && metadata.getOCD().size() > 0) {
+            if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
                 for (KapuaTocd ocd : metadata.getOCD()) {
                     if (ocd.getId() != null && ocd.getId().equals(pid)) {
                         return ocd;
@@ -284,9 +283,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         Properties properties = null;
-        if (result != null && result.getSize() > 0)
-            properties = result.getItem(0).getConfigurations();
-
+        if (result != null && !result.isEmpty()) {
+            properties = result.getFirstItem().getConfigurations();
+        }
+            
         KapuaTocd ocd = this.getConfigMetadata();
         return toValues(ocd, properties);
     }
@@ -311,22 +311,21 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
 
-        ServiceConfig serviceConfig = null;
         ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
-        // In not exists create then return
         if (result == null || result.getSize() == 0) {
-            ServiceConfigImpl serviceConfigNew = new ServiceConfigImpl(scopeId);
+            // In not exists create then return
+            ServiceConfig serviceConfigNew = new ServiceConfigImpl(scopeId);
             serviceConfigNew.setPid(this.pid);
             serviceConfigNew.setConfigurations(props);
-            serviceConfig = this.createConfig(serviceConfigNew);
-            return;
-        }
 
-        // If exists update it
-        serviceConfig = result.getItem(0);
-        serviceConfig.setConfigurations(props);
-        this.updateConfig(serviceConfig);
-        return;
+            createConfig(serviceConfigNew);
+        } else {
+            // If exists update it
+            ServiceConfig serviceConfig = result.getFirstItem();
+            serviceConfig.setConfigurations(props);
+
+            updateConfig(serviceConfig);
+        }
     }
 }
