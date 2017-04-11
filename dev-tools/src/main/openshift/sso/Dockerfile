@@ -9,7 +9,7 @@ COPY kapua-entrypoint /opt/jboss/kapua-entrypoint
 
 RUN chmod a+rw -R /opt/jboss && \
     find /opt/jboss -type d | xargs chmod a+rwx && \
-    chmod a+x /opt/jboss/kapua-entrypoint.sh
+    chmod a+x /opt/jboss/kapua-entrypoint
 
 USER jboss
 
