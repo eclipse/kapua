@@ -30,7 +30,7 @@ test -n "$SMTP_FROM" || die "'SMTP_FROM' not set"
 
 # Create
 
-$OC process -n "$KEYCLOAK_PROJECT_NAME" -f keycloak-template.yml \
+$OC process -n "$KEYCLOAK_PROJECT_NAME" -f "${BASH_SOURCE%/*}/keycloak-template.yml" \
     "GIT_REPO=${GIT_REPO:-https://github.com/eclipse/kapua}" \
     "GIT_REF=${GIT_REF:-develop}" \
     "KAPUA_CONSOLE_URL=$(kapua_url)" \
@@ -43,4 +43,4 @@ $OC process -n "$KEYCLOAK_PROJECT_NAME" -f keycloak-template.yml \
     "SMTP_ENABLE_SSL=$SMTP_ENABLE_SSL" \
     $@ | $OC create -n "$KEYCLOAK_PROJECT_NAME" -f -
 
-./activate
+exec ${BASH_SOURCE%/*}/activate
