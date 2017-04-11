@@ -12,6 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
+
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -20,7 +32,6 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -34,16 +45,6 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 /**
  * Configurable service definition abstract reference implementation.
@@ -129,11 +130,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
 
-            String logicValidationResult = validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
-            if (logicValidationResult != null && !logicValidationResult.isEmpty()) {
-                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.OPERATION_NOT_ALLOWED, logicValidationResult);
-            }
-
             // make sure all required properties are set
             for (KapuaTad attrDef : ocd.getAD()) {
                 // to the required attributes make sure a value is defined.
@@ -145,11 +141,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                     }
                 }
             }
+
+            validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         }
     }
 
-    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
-        return "";
+    protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
+        return true;
     }
 
     /**
@@ -194,22 +192,24 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return
      * @throws KapuaException
      */
-    private ServiceConfig create(EntityManager em, ServiceConfig serviceConfig)
+    private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        try {
 
-            em.beginTransaction();
-
-            ServiceConfig newServiceConfig = ServiceConfigDAO.create(em, serviceConfig);
-            newServiceConfig = ServiceConfigDAO.find(em, newServiceConfig.getId());
-            em.commit();
-            return newServiceConfig;
-        } catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        } finally {
-            em.close();
-        }
+        return entityManagerSession.onInsert(em -> {
+            try {
+                ServiceConfig newServiceConfig = null;
+                em.beginTransaction();
+                newServiceConfig = ServiceConfigDAO.create(em, serviceConfig);
+                em.persist(newServiceConfig);
+                em.commit();
+                return newServiceConfig;
+            } catch (Exception pe) {
+                if (em != null) {
+                    em.rollback();
+                }
+                throw pe;
+            }
+        });
 
     }
 
@@ -221,27 +221,24 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return
      * @throws KapuaException
      */
-    private ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
+    private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        try {
-
-            ServiceConfig theServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
-            if (theServiceConfig == null) {
+        return entityManagerSession.onTransactedResult(em -> {
+            ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
+            if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
             }
 
-            em.beginTransaction();
-            ServiceConfigDAO.update(em, serviceConfig);
-            em.commit();
+            if (!Objects.equals(oldServiceConfig.getScopeId(), serviceConfig.getScopeId())) {
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ILLEGAL_ARGUMENT, null, "scopeId");
+            }
+            if (!oldServiceConfig.getPid().equals(serviceConfig.getPid())) {
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ILLEGAL_ARGUMENT, null, "pid");
+            }
 
-            ServiceConfig updServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
-            return updServiceConfig;
-        } catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        } finally {
-            em.close();
-        }
+            // Update
+            return ServiceConfigDAO.update(em, serviceConfig);
+        });
     }
 
     /**
@@ -336,14 +333,14 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             ServiceConfigImpl serviceConfigNew = new ServiceConfigImpl(scopeId);
             serviceConfigNew.setPid(this.pid);
             serviceConfigNew.setConfigurations(props);
-            serviceConfig = this.create(em, serviceConfigNew);
+            serviceConfig = this.createConfig(serviceConfigNew);
             return;
         }
 
         // If exists update it
         serviceConfig = result.getItem(0);
         serviceConfig.setConfigurations(props);
-        this.update(em, serviceConfig);
+        this.updateConfig(serviceConfig);
         return;
     }
 }

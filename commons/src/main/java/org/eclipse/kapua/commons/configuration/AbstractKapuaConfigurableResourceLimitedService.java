@@ -47,17 +47,19 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     }
 
     @Override
-    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
-        String parentValidation = "";
+    protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
+        boolean parentValidation = super.validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, updatedProps);
         if (availableChildEntitiesWithNewConfig < 0) {
-            parentValidation = "you can't set limited entities if current limit is lower than actual child accounts count";
+            throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG);
+//            parentValidation = "you can't set limited entities if current limit is lower than actual child accounts count";
         }
         int availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId);
         if (availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig < 0) {
-            parentValidation = "parent account child entities limit is lower than the sum of his child entities and his children's assigned child entities";
+            throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG);
+//            parentValidation = "parent account child entities limit is lower than the sum of his child entities and his children's assigned child entities";
         }
-        return parentValidation;
+        return true;
     }
 
     protected int allowedChildEntities(KapuaId scopeId) throws KapuaException {
