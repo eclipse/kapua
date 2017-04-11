@@ -11,7 +11,7 @@
 ###############################################################################
 
 #
-# This script deploys Keyloak and activates it in Kapua
+# This script deploys Keycloak and activates it in Kapua
 #
 
 set -e
