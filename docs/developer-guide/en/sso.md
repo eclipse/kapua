@@ -1,10 +1,10 @@
-# Single-sign on (SSO)
+# Single sign-on (SSO)
 
-This section describes the single sign on integration of Eclipse Kapua.
+This section describes the single sign-on integration of Eclipse Kapua.
 
 ## OpenShift
 
-This project provides a template to bootstrap single-sign on based on [Keycloak](http://keycloak.org).
+This project provides a template to bootstrap single sign-on based on [Keycloak](http://keycloak.org).
 The scripts for this are located in the director `kapua.git/dev-tools/src/main/openshift/sso`.
 
 Assuming you have already installed Kapua into OpenShift, it is possible to run the script `deploy`, which
