@@ -33,6 +33,7 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
         "registrationEmailAsUsername": true,
         "rememberMe": true,
         "verifyEmail": true,
+        "resetPasswordAllowed": true,
         "smtpServer": {
            "auth": true,
            "starttls": true
