@@ -28,9 +28,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
@@ -49,11 +51,18 @@ public class SsoCallbackServlet extends HttpServlet {
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         urlConnection.setRequestMethod("POST");
+        urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
 
         final List<NameValuePair> parameters = new ArrayList<>(4);
         parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
         parameters.add(new BasicNameValuePair("code", authCode));
         parameters.add(new BasicNameValuePair("client_id", settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID)));
+
+        final String clientSecret = settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_SECRET);
+        if (clientSecret != null && !clientSecret.isEmpty()) {
+            parameters.add(new BasicNameValuePair("client_secret", clientSecret));
+        }
+
         parameters.add(new BasicNameValuePair("redirect_uri", settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI)));
         final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 

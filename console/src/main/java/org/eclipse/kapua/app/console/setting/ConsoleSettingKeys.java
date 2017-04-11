@@ -35,6 +35,7 @@ public enum ConsoleSettingKeys implements SettingKey {
     SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.openid.server.endpoint.auth"),
     SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.openid.server.endpoint.token"),
     SSO_OPENID_CLIENT_ID("sso.openid.client.id"),
+    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"),
     SSO_OPENID_REDIRECT_URI("sso.openid.redirect.uri"),
     ;
 
