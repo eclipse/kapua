@@ -225,7 +225,7 @@ public final class DeviceValidation {
 
         DeviceListResult results = null;
         try {
-            results = KapuaSecurityUtils.doPrivileged(() -> (DeviceListResult) deviceRegistryService.query(query));
+            results = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.query(query));
         } catch (Exception e) {
             throw KapuaException.internalError(e, "Error while searching groupId");
         }
