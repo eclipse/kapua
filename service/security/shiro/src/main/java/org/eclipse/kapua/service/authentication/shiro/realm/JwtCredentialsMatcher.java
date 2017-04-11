@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,23 +8,19 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonValue;
 
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -32,7 +28,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -47,14 +42,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link UsernamePasswordCredentials} credential matcher implementation
- * 
+ * {@link JwtCredentialsMatcher} credential matcher implementation
+ *
  * @since 1.0
- * 
+ *
  */
 public class JwtCredentialsMatcher implements CredentialsMatcher {
 
-    private static Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
 
     // FIXME: Add a time-to-live cache???
     private static final Map<String, URI> ISSUER_JWKSURI_CACHE = new HashMap<>();
@@ -75,10 +70,8 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
         //
         // Match token with info
-        boolean credentialMatch = false;
         if (jwt.equals(infoCredential.getCredentialKey())) {
             try {
-
                 URI jwksUri = resolveJwksUri(jwt);
                 HttpsJwks httpsJkws = new HttpsJwks(jwksUri.toString());
                 HttpsJwksVerificationKeyResolver httpsJwksKeyResolver = new HttpsJwksVerificationKeyResolver(httpsJkws);
@@ -88,7 +81,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
                 List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
                 List<String> expectedIssuers = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED);
-                
+
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                         .setVerificationKeyResolver(httpsJwksKeyResolver) // Set resolver key
                         .setRequireIssuedAt() // Set require reserved claim: iat
@@ -102,7 +95,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
                 // This validates JWT
                 jwtConsumer.processToClaims(jwt);
 
-                credentialMatch = true;
+                return true;
 
                 // FIXME: if true cache token password for authentication performance improvement
             } catch (InvalidJwtException e) {
@@ -110,23 +103,21 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
             }
         }
 
-        return credentialMatch;
+        return false;
     }
 
-    private URI resolveJwksUri(String jwt) {
+    private static URI resolveJwksUri(final String jwt) {
 
-        URI uri;
-        URLConnection urlConnection = null;
-        BufferedReader inputReader = null;
         try {
             //
             // Parse JWT without validation
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+            final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                     .setSkipAllValidators()
                     .setDisableRequireSignature()
                     .setSkipSignatureVerification()
                     .build();
-            JwtContext jwtContext = jwtConsumer.process(jwt);
+
+            final JwtContext jwtContext = jwtConsumer.process(jwt);
 
             //
             // Resolve Json Web Key Set URI by the issuer
@@ -134,44 +125,40 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
             if (issuer.endsWith("/")) {
                 issuer = issuer.substring(0, issuer.length() - 1);
             }
-            
+
             // Check against cache
-            if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
-                uri = ISSUER_JWKSURI_CACHE.get(issuer);
-            } else {
-                // Read .well-known file
-                URL url = new URL(issuer + OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH);
-                urlConnection = url.openConnection();
-                inputReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                JsonReader jsonReader = Json.createReader(inputReader);
-
-                // Parse json response
-                JsonObject jsonObject = jsonReader.readObject();
-                inputReader.close();
-
-                // Get and clean jwks_uri property
-                JsonValue jwksUriJsonValue = jsonObject.get(JWKS_URI_WELL_KNOWN_KEY);
-
-                if (jwksUriJsonValue != null) {
-                    String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
-                    uri = new URI(jwksUriString);
-                    ISSUER_JWKSURI_CACHE.put(issuer, uri);
-                } else {
-                    throw KapuaException.internalError("Cannot get the 'jwks_key' property from the .well-known file:" + jsonObject.toString());
+            synchronized (ISSUER_JWKSURI_CACHE) {
+                if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
+                    return ISSUER_JWKSURI_CACHE.get(issuer);
                 }
+            }
+
+            // Read .well-known file
+            final JsonObject jsonObject;
+            try (final InputStream stream = new URL(issuer + OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH).openStream()) {
+                // Parse json response
+                jsonObject = Json.createReader(stream).readObject();
+            }
+
+            // Get and clean jwks_uri property
+            final JsonValue jwksUriJsonValue = jsonObject.get(JWKS_URI_WELL_KNOWN_KEY);
+
+            if (jwksUriJsonValue != null) {
+                String jwksUriString = jwksUriJsonValue.toString().replaceAll("\"", "");
+                final URI uri = new URI(jwksUriString);
+                synchronized (ISSUER_JWKSURI_CACHE) {
+                    if (ISSUER_JWKSURI_CACHE.containsKey(issuer)) {
+                        // re-check
+                        return ISSUER_JWKSURI_CACHE.get(issuer);
+                    }
+                    ISSUER_JWKSURI_CACHE.put(issuer, uri);
+                }
+                return uri;
+            } else {
+                throw KapuaException.internalError(String.format("Cannot get the 'jwks_key' property from the .well-known file: %s", jsonObject));
             }
         } catch (Exception e) {
-            throw KapuaRuntimeException.internalError(e, "Cannot het Json Web Key Set URI");
-        } finally {
-            if (inputReader != null) {
-                try {
-                    inputReader.close();
-                } catch (IOException e) {
-                    logger.error("Cannot close inputReader", e);
-                }
-            }
+            throw KapuaRuntimeException.internalError(e, "Cannot get Json Web Key Set URI");
         }
-
-        return uri;
     }
 }
