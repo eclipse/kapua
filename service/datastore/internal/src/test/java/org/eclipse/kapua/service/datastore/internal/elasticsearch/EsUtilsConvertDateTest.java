@@ -26,14 +26,28 @@ public class EsUtilsConvertDateTest {
     }
 
     @Test
-    public void convertWithMillis() {
+    public void convertWithMillis1() {
+        Assertions.assertThat(EsUtils.convertToKapuaObject("date", "2017-01-02T12:34:56.123Z"))
+                .isInstanceOf(Date.class)
+                .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 12, 34, 56, 123_000_000, ZoneOffset.UTC).toInstant()));
+    }
+    
+    @Test
+    public void convertWithMillis2() {
         Assertions.assertThat(EsUtils.convertToKapuaObject("date", "2017-01-02T12:34:56.123"))
                 .isInstanceOf(Date.class)
                 .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 12, 34, 56, 123_000_000, ZoneOffset.UTC).toInstant()));
     }
 
     @Test
-    public void convertNoMillis() {
+    public void convertNoMillis1() {
+        Assertions.assertThat(EsUtils.convertToKapuaObject("date", "2017-01-02T13:34:56Z"))
+                .isInstanceOf(Date.class)
+                .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 13, 34, 56, 0, ZoneOffset.UTC).toInstant()));
+    }
+    
+    @Test
+    public void convertNoMillis2() {
         Assertions.assertThat(EsUtils.convertToKapuaObject("date", "2017-01-02T13:34:56"))
                 .isInstanceOf(Date.class)
                 .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 13, 34, 56, 0, ZoneOffset.UTC).toInstant()));
