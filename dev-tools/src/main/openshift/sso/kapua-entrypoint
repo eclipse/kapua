@@ -46,7 +46,8 @@ EOF
     -f - << EOF
     {
         "clientId": "console",
-        "name": "Web Console"
+        "name": "Web Console",
+        "publicClient": true
     }
 EOF
 
