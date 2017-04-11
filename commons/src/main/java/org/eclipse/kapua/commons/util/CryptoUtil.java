@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,13 +25,13 @@ import javax.xml.bind.DatatypeConverter;
  *
  */
 public class CryptoUtil {
+
     /**
      * Evaluate the sha1 hash for the provided String
      * 
      * @param s
      * @return
      * @throws NoSuchAlgorithmException
-     * @throws UnsupportedEncodingException
      */
     public static String sha1Hash(String s) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -45,15 +44,10 @@ public class CryptoUtil {
      * 
      * @param stringValue
      * @return
-     * @throws NoSuchAlgorithmException
-     * @throws UnsupportedEncodingException
      */
-    public static String encodeBase64(String stringValue)
-            throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        byte[] bytesValue = stringValue.getBytes("UTF-8");
-        String encodedValue = DatatypeConverter.printBase64Binary(bytesValue);
-        return encodedValue;
-
+    public static String encodeBase64(String stringValue) {
+        byte[] bytesValue = stringValue.getBytes(StandardCharsets.UTF_8);
+        return DatatypeConverter.printBase64Binary(bytesValue);
     }
 
     /**
@@ -61,13 +55,9 @@ public class CryptoUtil {
      * 
      * @param encodedValue
      * @return
-     * @throws NoSuchAlgorithmException
-     * @throws UnsupportedEncodingException
      */
-    public static String decodeBase64(String encodedValue)
-            throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String decodeBase64(String encodedValue) {
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(encodedValue);
-        String decodedValue = new String(decodedBytes, "UTF-8");
-        return decodedValue;
+        return new String(decodedBytes, StandardCharsets.UTF_8);
     }
 }
