@@ -100,4 +100,8 @@ public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
      * Refresh error
      */
     REFRESH_ERROR,
+    /** 
+     * JWK generation error
+     */
+    JWK_GENERATION_ERROR
 }
