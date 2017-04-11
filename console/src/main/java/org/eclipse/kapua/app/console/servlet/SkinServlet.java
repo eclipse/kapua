@@ -27,14 +27,14 @@ import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SkinServlet extends HttpServlet
-{
-    private static final long serialVersionUID = -5374075152873372059L;
-    private static Logger     s_logger         = LoggerFactory.getLogger(SkinServlet.class);
+public class SkinServlet extends HttpServlet {
 
+    private static final long serialVersionUID = -5374075152873372059L;
+    private static Logger s_logger = LoggerFactory.getLogger(SkinServlet.class);
+
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         FileReader fr = null;
         PrintWriter w = response.getWriter();
         String resourceName = request.getPathInfo();
@@ -66,15 +66,15 @@ public class SkinServlet extends HttpServlet
                     iRead = fr.read(buffer);
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             s_logger.error("Error loading skin resource", e);
-        }
-        finally {
-            if (fr != null)
+        } finally {
+            if (fr != null) {
                 fr.close();
-            if (w != null)
+            }
+            if (w != null) {
                 w.close();
+            }
         }
     }
 }
