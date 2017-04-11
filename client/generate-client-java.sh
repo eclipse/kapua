@@ -10,12 +10,7 @@
 #
 ###############################################################################
 
-export OPENSHIFT_PROJECT_NAME="eclipse-kapua"
-export OPENSHIFT_DIR=/tmp/openshift
-
-if which oc &>/dev/null; then
-  echo Using "oc" from path
-  export OC=oc
-else
-  export OC=${OPENSHIFT_DIR}/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/oc
-fi
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+API_ADDRESS=`oc get service | grep api | awk '{print $2}'`
+docker run -it --net=host -v $SCRIPT_DIR/kapua-java:/local swaggerapi/swagger-codegen-cli generate  -i http://${API_ADDRESS}:8080/v1/swagger.json -l java -o /local --api-package=org.eclipse.kapua.client.java --artifact-id=kapua-client-java --group-id=org.eclipse.kapua
+sudo chown $USER kapua-java -R

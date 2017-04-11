@@ -57,18 +57,12 @@ public class Devices extends AbstractKapuaResource {
     /**
      * Gets the {@link Device} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param clientId
-     *            The id of the {@link Device} in which to search results
-     * @param connectionStatus
-     *            The {@link DeviceConnectionStatus} in which to search results
-     * @param fetchAttributes
-     *            Additional attributes to be returned. Allowed values: connection, lastEvent
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId          The {@link ScopeId} in which to search results.
+     * @param clientId         The id of the {@link Device} in which to search results
+     * @param connectionStatus The {@link DeviceConnectionStatus} in which to search results
+     * @param fetchAttributes  Additional attributes to be returned. Allowed values: connection, lastEvent
+     * @param offset           The result set offset.
+     * @param limit            The result set limit.
      * @return The {@link DeviceListResult} of all the devices associated to the current selected scope.
      * @since 1.0.0
      */
@@ -81,11 +75,10 @@ public class Devices extends AbstractKapuaResource {
     public DeviceListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The client id to filter results.") @QueryParam("clientId") String clientId,
-            @ApiParam(value = "The connection status to filter results.")@QueryParam("status") DeviceConnectionStatus connectionStatus,
+            @ApiParam(value = "The connection status to filter results.") @QueryParam("status") DeviceConnectionStatus connectionStatus,
             @ApiParam(value = "Additional attributes to be returned. Allowed values: connection, lastEvent", allowableValues = "connection, lastEvent", allowMultiple = true) @QueryParam("fetchAttributes") List<String> fetchAttributes,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         DeviceListResult deviceListResult = deviceFactory.newListResult();
         try {
             DeviceQuery query = deviceFactory.newQuery(scopeId);
@@ -111,11 +104,9 @@ public class Devices extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link DeviceQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link DeviceQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link DeviceQuery} to use to filter results.
      * @return The {@link DeviceListResult} of all the result matching the given {@link DeviceQuery} parameter.
      * @since 1.0.0
      */
@@ -142,11 +133,9 @@ public class Devices extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link DeviceQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link DeviceQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link DeviceQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DeviceQuery} parameter.
      * @since 1.0.0
      */
@@ -174,10 +163,8 @@ public class Devices extends AbstractKapuaResource {
      * Creates a new Device based on the information provided in DeviceCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link Device}
-     * @param deviceCreator
-     *            Provides the information for the new Device to be created.
+     * @param scopeId       The {@link ScopeId} in which to create the {@link Device}
+     * @param deviceCreator Provides the information for the new Device to be created.
      * @return The newly created Device object.
      */
     @ApiOperation(value = "Create an Device", notes = "Creates a new Device based on the information provided in DeviceCreator parameter.", response = Device.class)
@@ -200,10 +187,8 @@ public class Devices extends AbstractKapuaResource {
     /**
      * Returns the Device specified by the "deviceId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Device}.
-     * @param deviceId
-     *            The id of the requested Device.
+     * @param scopeId  The {@link ScopeId} of the requested {@link Device}.
+     * @param deviceId The id of the requested Device.
      * @return The requested Device object.
      */
     @ApiOperation(value = "Get a Device", notes = "Returns the Device specified by the \"deviceId\" path parameter.", response = Device.class)
@@ -225,12 +210,9 @@ public class Devices extends AbstractKapuaResource {
     /**
      * Updates the Device based on the information provided in the Device parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested Device.
-     * @param deviceId
-     *            The id of the requested {@link Device}
-     * @param device
-     *            The modified Device whose attributed need to be updated.
+     * @param scopeId  The ScopeId of the requested Device.
+     * @param deviceId The id of the requested {@link Device}
+     * @param device   The modified Device whose attributed need to be updated.
      * @return The updated device.
      */
     @ApiOperation(value = "Update a Device", notes = "Updates a new Device based on the information provided in the Device parameter.", response = Device.class)
@@ -257,10 +239,8 @@ public class Devices extends AbstractKapuaResource {
     /**
      * Deletes the Device specified by the "deviceId" path parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Device}.
-     * @param deviceId
-     *            The id of the Device to be deleted.
+     * @param scopeId  The ScopeId of the requested {@link Device}.
+     * @param deviceId The id of the Device to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete a Device", notes = "Deletes the Device specified by the \"deviceId\" path parameter.")

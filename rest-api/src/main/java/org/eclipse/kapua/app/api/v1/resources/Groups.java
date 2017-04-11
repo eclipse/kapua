@@ -55,9 +55,9 @@ public class Groups extends AbstractKapuaResource {
      * Gets the {@link Group} list in the scope.
      *
      * @param scopeId The {@link ScopeId} in which to search results.
-     * @param name The {@link Group} name to filter results
-     * @param offset The result set offset.
-     * @param limit The result set limit.
+     * @param name    The {@link Group} name to filter results
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link GroupListResult} of all the groups associated to the current selected scope.
      * @since 1.0.0
      */
@@ -71,33 +71,32 @@ public class Groups extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The group name to filter results.") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         GroupListResult groupListResult = groupFactory.newListResult();
         try {
             GroupQuery query = groupFactory.newQuery(scopeId);
-            
+
             AndPredicate andPredicate = new AndPredicate();
             if (!Strings.isNullOrEmpty(name)) {
                 andPredicate.and(new AttributePredicate<>(GroupPredicates.NAME, name));
             }
             query.setPredicate(andPredicate);
-            
+
             query.setOffset(offset);
             query.setLimit(limit);
-            
+
             groupListResult = query(scopeId, query);
         } catch (Throwable t) {
             handleException(t);
         }
         return groupListResult;
     }
-    
+
     /**
      * Queries the results with the given {@link GroupQuery} parameter.
-     * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link GroupQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link GroupQuery} to use to filter results.
      * @return The {@link GroupListResult} of all the result matching the given {@link GroupQuery} parameter.
      * @since 1.0.0
      */
@@ -121,12 +120,12 @@ public class Groups extends AbstractKapuaResource {
         }
         return returnNotNullEntity(groupListResult);
     }
-    
+
     /**
      * Counts the results with the given {@link GroupQuery} parameter.
-     * 
-     * @param scopeId The {@link ScopeId} in which to search results. 
-     * @param query The {@link GroupQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link GroupQuery} to use to filter results.
      * @return The count of all the result matching the given {@link GroupQuery} parameter.
      * @since 1.0.0
      */
@@ -149,14 +148,13 @@ public class Groups extends AbstractKapuaResource {
         }
         return returnNotNullEntity(countResult);
     }
-    
+
     /**
      * Creates a new Group based on the information provided in GroupCreator
      * parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to create the {@link Group}
-     * @param groupCreator
-     *            Provides the information for the new {@link Group} to be created.
+     * @param scopeId      The {@link ScopeId} in which to create the {@link Group}
+     * @param groupCreator Provides the information for the new {@link Group} to be created.
      * @return The newly created {@link Group} object.
      */
     @ApiOperation(value = "Create a Group", notes = "Creates a new Group based on the information provided in GroupCreator parameter.", response = Group.class)
@@ -179,10 +177,8 @@ public class Groups extends AbstractKapuaResource {
     /**
      * Returns the Group specified by the "groupId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Group}.
-     * @param groupId
-     *            The id of the requested Group.
+     * @param scopeId The {@link ScopeId} of the requested {@link Group}.
+     * @param groupId The id of the requested Group.
      * @return The requested Group object.
      */
     @ApiOperation(value = "Get an Group", notes = "Returns the Group specified by the \"groupId\" path parameter.", response = Group.class)
@@ -200,16 +196,13 @@ public class Groups extends AbstractKapuaResource {
         }
         return returnNotNullEntity(group);
     }
-    
+
     /**
      * Updates the Group based on the information provided in the Group parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Group}.
-     * @param groupId
-     *            The id of the requested {@link Group}
-     * @param group
-     *            The modified Group whose attributed need to be updated.
+     * @param scopeId The ScopeId of the requested {@link Group}.
+     * @param groupId The id of the requested {@link Group}
+     * @param group   The modified Group whose attributed need to be updated.
      * @return The updated group.
      */
     @ApiOperation(value = "Update an Group", notes = "Updates a new Group based on the information provided in the Group parameter.", response = Group.class)
@@ -225,7 +218,7 @@ public class Groups extends AbstractKapuaResource {
         try {
             ((GroupImpl) group).setScopeId(scopeId);
             group.setId(groupId);
-            
+
             groupUpdated = groupService.update(group);
         } catch (Throwable t) {
             handleException(t);
@@ -236,10 +229,8 @@ public class Groups extends AbstractKapuaResource {
     /**
      * Deletes the Group specified by the "groupId" path parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Group}.
-     * @param groupId
-     *            The id of the Group to be deleted.
+     * @param scopeId The ScopeId of the requested {@link Group}.
+     * @param groupId The id of the Group to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an Group", notes = "Deletes the Group specified by the \"groupId\" path parameter.")

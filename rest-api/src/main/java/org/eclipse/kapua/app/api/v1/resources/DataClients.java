@@ -52,14 +52,10 @@ public class DataClients extends AbstractKapuaResource {
     /**
      * Gets the {@link ClientInfo} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param clientId
-     *            The client id to filter results
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param clientId The client id to filter results
+     * @param offset   The result set offset.
+     * @param limit    The result set limit.
      * @return The {@link ClientInfoListResult} of all the clientInfos associated to the current selected scope.
      * @since 1.0.0
      */
@@ -97,11 +93,9 @@ public class DataClients extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link ClientInfoQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link ClientInfoQuery} to used to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link ClientInfoQuery} to used to filter results.
      * @return The {@link ClientInfoListResult} of all the result matching the given {@link ClientInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -128,11 +122,9 @@ public class DataClients extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link ClientInfoQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link ClientInfoQuery} to used to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link ClientInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ClientInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -159,8 +151,7 @@ public class DataClients extends AbstractKapuaResource {
     /**
      * Returns the ClientInfo specified by the "clientInfoId" path parameter.
      *
-     * @param clientInfoId
-     *            The id of the requested ClientInfo.
+     * @param clientInfoId The id of the requested ClientInfo.
      * @return The requested ClientInfo object.
      */
     @GET

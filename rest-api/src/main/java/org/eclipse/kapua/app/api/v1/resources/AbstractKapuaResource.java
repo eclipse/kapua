@@ -35,28 +35,17 @@ public abstract class AbstractKapuaResource {
     }
 
     protected void handleException(Throwable t) {
-
-        WebApplicationException wae = null;
         if (t instanceof KapuaAuthenticationException) {
             KapuaErrorCode kapuaErrorCode = ((KapuaAuthenticationException) t).getCode();
 
             if (KapuaErrorCodes.INTERNAL_ERROR.equals(kapuaErrorCode)) {
-                wae = new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
             } else {
-                wae = new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
         } else {
             s_logger.error("Internal Error", t);
-            wae = newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-        // TODO manage exceptions
-        // ...
-        ///////
-
-        s_logger.debug("Error Processing Request", t);
-
-        if (wae != null) {
-            throw wae;
+            throw newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 

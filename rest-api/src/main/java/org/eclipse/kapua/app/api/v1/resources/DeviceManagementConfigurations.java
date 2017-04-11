@@ -43,13 +43,9 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     /**
      * Returns the current configuration of the device.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The id of the device
-     * @param timeout
-     *            The timeout of the operation in milliseconds
-     *
+     * @param scopeId  The {@link ScopeId} of the {@link Device}.
+     * @param deviceId The id of the device
+     * @param timeout  The timeout of the operation in milliseconds
      * @return The requested configurations
      * @since 1.0.0
      */
@@ -73,14 +69,10 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     /**
      * Updates the configuration of a {@link Device}
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The id of the device
-     * @param timeout
-     *            The timeout of the operation in milliseconds
-     * @param deviceConfiguration
-     *            The configuration to send to the {@link Device}
+     * @param scopeId             The {@link ScopeId} of the {@link Device}.
+     * @param deviceId            The id of the device
+     * @param timeout             The timeout of the operation in milliseconds
+     * @param deviceConfiguration The configuration to send to the {@link Device}
      * @return The {@link Response} of the operation
      */
     @PUT
@@ -107,14 +99,10 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      * Component Descriptor XML file; at runtime, the same value is also available
      * in the component.name and in the service.pid attributes of the Component Configuration.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The id of the device
-     * @param componentId
-     *            An optional id of the component to get the configuration for
-     * @param timeout
-     *            The timeout of the operation in milliseconds
+     * @param scopeId     The {@link ScopeId} of the {@link Device}.
+     * @param deviceId    The id of the device
+     * @param componentId An optional id of the component to get the configuration for
+     * @param timeout     The timeout of the operation in milliseconds
      * @return The requested configurations
      */
     @GET
@@ -147,16 +135,11 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      * Component Descriptor XML file; at runtime, the same value is also available
      * in the component.name and in the service.pid attributes of the Component Configuration.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the {@link Device}.
-     * @param deviceId
-     *            The id of the device
-     * @param componentId
-     *            An optional id of the component to get the configuration for
-     * @param timeout
-     *            The timeout of the operation in milliseconds
-     * @param deviceComponentConfiguration
-     *            The component configuration to send to the {@link Device}
+     * @param scopeId                      The {@link ScopeId} of the {@link Device}.
+     * @param deviceId                     The id of the device
+     * @param componentId                  An optional id of the component to get the configuration for
+     * @param timeout                      The timeout of the operation in milliseconds
+     * @param deviceComponentConfiguration The component configuration to send to the {@link Device}
      * @return The requested configurations
      */
     @PUT

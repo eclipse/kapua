@@ -56,14 +56,10 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Gets the {@link Account} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param name
-     *            The {@link Account} name in which to search results.
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param name    The {@link Account} name in which to search results.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link AccountListResult} of all the accounts associated to the current selected scope.
      * @since 1.0.0
      */
@@ -100,11 +96,9 @@ public class Accounts extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link AccountQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link AccountQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link AccountQuery} to use to filter results.
      * @return The {@link AccountListResult} of all the result matching the given {@link AccountQuery} parameter.
      * @since 1.0.0
      */
@@ -131,11 +125,9 @@ public class Accounts extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link AccountQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to count results.
-     * @param query
-     *            The {@link AccountQuery} to use to filter results.
+     *
+     * @param scopeId The {@link ScopeId} in which to count results.
+     * @param query   The {@link AccountQuery} to use to filter results.
      * @return The count of all the result matching the given {@link AccountQuery} parameter.
      * @since 1.0.0
      */
@@ -162,11 +154,9 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Creates a new Account based on the information provided in AccountCreator
      * parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link Account}
-     * @param accountCreator
-     *            Provides the information for the new {@link Account} to be created.
+     *
+     * @param scopeId        The {@link ScopeId} in which to create the {@link Account}
+     * @param accountCreator Provides the information for the new {@link Account} to be created.
      * @return The newly created {@link Account} object.
      */
     @ApiOperation(value = "Create an Account",  //
@@ -191,10 +181,8 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Returns the Account specified by the "accountId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Account}.
-     * @param accountId
-     *            The id of the requested Account.
+     * @param scopeId   The {@link ScopeId} of the requested {@link Account}.
+     * @param accountId The id of the requested Account.
      * @return The requested Account object.
      */
     @ApiOperation(value = "Get an Account",  //
@@ -218,13 +206,9 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Updates the Account based on the information provided in the Account parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Account}.
-     * @param accountId
-     *            The id of the requested {@link Account}
-     * @param account
-     *            The modified Account whose attributed need to be updated.
-     *
+     * @param scopeId   The ScopeId of the requested {@link Account}.
+     * @param accountId The id of the requested {@link Account}
+     * @param account   The modified Account whose attributed need to be updated.
      * @return The updated account.
      */
     @ApiOperation(value = "Update an Account",  //
@@ -253,10 +237,8 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Deletes the Account specified by the "accountId" path parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Account}.
-     * @param accountId
-     *            The id of the Account to be deleted.
+     * @param scopeId   The ScopeId of the requested {@link Account}.
+     * @param accountId The id of the Account to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete an Account",  //

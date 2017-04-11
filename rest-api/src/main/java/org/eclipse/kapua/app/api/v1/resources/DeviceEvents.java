@@ -43,16 +43,11 @@ public class DeviceEvents extends AbstractKapuaResource {
     /**
      * Gets the {@link DeviceEvent} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param deviceId
-     *            The id of the {@link Device} in which to search results
-     * @param resource
-     *            The resource of the {@link DeviceEvent} in which to search results
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param deviceId The id of the {@link Device} in which to search results
+     * @param resource The resource of the {@link DeviceEvent} in which to search results
+     * @param offset   The result set offset.
+     * @param limit    The result set limit.
      * @return The {@link DeviceEventListResult} of all the deviceEvents associated to the current selected scope.
      * @since 1.0.0
      */
@@ -67,8 +62,7 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The client id to filter results.") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The resource of the DeviceEvent in which to search results") @QueryParam("resource") String resource,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit)
-    {
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         DeviceEventListResult deviceEventListResult = deviceEventFactory.newListResult();
         try {
             DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
@@ -92,13 +86,10 @@ public class DeviceEvents extends AbstractKapuaResource {
 
     /**
      * Queries the results with the given {@link DeviceEventQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param deviceId
-     *            The id of the {@link Device} in which to search results
-     * @param query
-     *            The {@link DeviceEventQuery} to use to filter results.
+     *
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param deviceId The id of the {@link Device} in which to search results
+     * @param query    The {@link DeviceEventQuery} to use to filter results.
      * @return The {@link DeviceEventListResult} of all the result matching the given {@link DeviceEventQuery} parameter.
      * @since 1.0.0
      */
@@ -132,13 +123,10 @@ public class DeviceEvents extends AbstractKapuaResource {
 
     /**
      * Counts the results with the given {@link DeviceEventQuery} parameter.
-     * 
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param deviceId
-     *            The id of the {@link Device} in which to search results
-     * @param query
-     *            The {@link DeviceEventQuery} to use to filter results.
+     *
+     * @param scopeId  The {@link ScopeId} in which to search results.
+     * @param deviceId The id of the {@link Device} in which to search results
+     * @param query    The {@link DeviceEventQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DeviceEventQuery} parameter.
      * @since 1.0.0
      */
@@ -167,12 +155,9 @@ public class DeviceEvents extends AbstractKapuaResource {
     /**
      * Returns the DeviceEvent specified by the "deviceEventId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link DeviceEvent}.
-     * @param deviceId
-     *            The {@link Device} id of the request {@link DeviceEvent}.
-     * @param deviceEventId
-     *            The id of the requested DeviceEvent.
+     * @param scopeId       The {@link ScopeId} of the requested {@link DeviceEvent}.
+     * @param deviceId      The {@link Device} id of the request {@link DeviceEvent}.
+     * @param deviceEventId The id of the requested DeviceEvent.
      * @return The requested DeviceEvent object.
      */
     @ApiOperation(value = "Get an DeviceEvent", notes = "Returns the DeviceEvent specified by the \"deviceEventId\" path parameter.", response = DeviceEvent.class)
@@ -208,10 +193,9 @@ public class DeviceEvents extends AbstractKapuaResource {
 
     /**
      * Deletes the DeviceEvent specified by the "deviceEventId" path parameter.
-     * @param deviceId
-     *            The id of the Device in which to delete the event
-     * @param deviceEventId
-     *            The id of the DeviceEvent to be deleted.
+     *
+     * @param deviceId      The id of the Device in which to delete the event
+     * @param deviceEventId The id of the DeviceEvent to be deleted.
      * @return HTTP 200 if operation has completed successfully.
      */
     @ApiOperation(value = "Delete a DeviceEvent", notes = "Deletes the DeviceEvent specified by the \"deviceEventId\" path parameter.")
