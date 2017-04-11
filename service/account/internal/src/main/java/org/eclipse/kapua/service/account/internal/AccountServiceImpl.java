@@ -72,12 +72,11 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Validation of the fields
         ArgumentValidator.notNull(accountCreator, "accountCreator");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "name");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "organizationName");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "organizationEmail");
-        ArgumentValidator.notNull(accountCreator.getScopeId(), "scopeId");
-        ArgumentValidator.notNull(accountCreator.getScopeId().getId(), "scopeId.id");
-        ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
+        ArgumentValidator.notNull(accountCreator.getScopeId(), "accountCreator.scopeId");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "accountCreator.name");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "accountCreator.organizationName");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "accountCreator.organizationEmail");
+        ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "accountCreator.organizationEmail");
 
         //
         // Check Access
@@ -110,10 +109,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(account.getId(), "id");
-        ArgumentValidator.notEmptyOrNull(account.getName(), "accountName");
-        ArgumentValidator.notNull(account.getOrganization(), "organization");
-        ArgumentValidator.match(account.getOrganization().getEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
+        ArgumentValidator.notNull(account.getId(), "account.id");
+        ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
+        ArgumentValidator.notNull(account.getOrganization(), "account.organization");
+        ArgumentValidator.match(account.getOrganization().getEmail(), ArgumentValidator.EMAIL_REGEXP, "account.organization.email");
 
         //
         // Check Access
@@ -130,13 +129,13 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             //
             // Verify unchanged parent account ID and parent account path
             if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "scopeId");
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.scopeId");
             }
             if (!oldAccount.getParentAccountPath().equals(account.getParentAccountPath())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "parentAccountPath");
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.parentAccountPath");
             }
             if (!oldAccount.getName().equals(account.getName())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "accountName");
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.name");
             }
 
             // Update
@@ -191,7 +190,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accountId, "id");
+        ArgumentValidator.notNull(accountId, "accountId");
 
         //
         // Check Access
@@ -207,7 +206,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(accountId, "id");
+        ArgumentValidator.notNull(accountId, "accountId");
 
         //
         // Check Access
@@ -243,7 +242,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Validation of the fields
         ArgumentValidator.notNull(id, "scopeId");
-        ArgumentValidator.notNull(id.getId(), "scopeId.id");
 
         //
         // Make sure account exists
