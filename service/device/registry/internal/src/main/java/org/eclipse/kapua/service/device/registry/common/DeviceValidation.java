@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.registry.common;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -46,20 +47,44 @@ public final class DeviceValidation {
 
     private static final Domain deviceDomain = new DeviceDomain();
 
-    private static final AuthorizationService authorizationService;
-    private static final GroupService groupService;
-    private static final PermissionFactory permissionFactory;
+    private static AuthorizationService authorizationService;
+    private static GroupService groupService;
+    private static PermissionFactory permissionFactory;
 
-    private static final DeviceRegistryService deviceRegistryService;
-    private static final DeviceFactory deviceFactory;
+    private static DeviceRegistryService deviceRegistryService;
+    private static DeviceFactory deviceFactory;
 
     static {
-        authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        groupService = KapuaLocator.getInstance().getService(GroupService.class);
-        permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        try {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+            groupService = KapuaLocator.getInstance().getService(GroupService.class);
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
 
-        deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-        deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+            deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+            deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+        } catch (ExceptionInInitializerError e) {
+
+        }
+    }
+
+    public static void authorizationService(AuthorizationService authorizationService) {
+        DeviceValidation.authorizationService = authorizationService;
+    }
+
+    public static void groupService(GroupService groupService) {
+        DeviceValidation.groupService = groupService;
+    }
+
+    public static void permissionFactory(PermissionFactory permissionFactory) {
+        DeviceValidation.permissionFactory = permissionFactory;
+    }
+
+    public static void deviceRegistryService(DeviceRegistryService deviceRegistryService) {
+        DeviceValidation.deviceRegistryService = deviceRegistryService;
+    }
+
+    public static void deviceFactory(DeviceFactory deviceFactory) {
+        DeviceValidation.deviceFactory = deviceFactory;
     }
 
     private DeviceValidation() {
