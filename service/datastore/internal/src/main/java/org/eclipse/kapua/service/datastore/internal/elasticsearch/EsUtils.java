@@ -8,16 +8,18 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,11 @@ public class EsUtils {
     public static final String ES_TYPE_SHORT_BOOL = "bln";
     public static final String ES_TYPE_SHORT_BINARY = "bin";
 
+
+    private static final DateTimeFormatter DATA_INDEX_FORMATTER = DateTimeFormatter.ofPattern("yyyy-ww");
+    private static final DateTimeFormatter FORMAT_1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
+
+    
     private static String normalizeIndexName(String name) {
         String normName = null;
         try {
@@ -181,13 +188,11 @@ public class EsUtils {
      * @return
      */
     public static String getDataIndexName(KapuaId scopeId, long timestamp) {
-        String actualName = EsUtils.normalizedIndexName(scopeId.toStringId());
-        Calendar cal = KapuaDateUtils.getKapuaCalendar();
-        cal.setTimeInMillis(timestamp);
-        int year = cal.get(Calendar.YEAR);
-        int weekOfTheYear = cal.get(Calendar.WEEK_OF_YEAR);
-        actualName = String.format("%s-%04d-%02d", actualName, year, weekOfTheYear);
-        return actualName;
+        final String actualName = EsUtils.normalizedIndexName(scopeId.toStringId());
+        
+        final StringBuilder sb = new StringBuilder(actualName).append('-');
+        DATA_INDEX_FORMATTER.formatTo(Instant.ofEpochMilli(timestamp).atOffset(ZoneOffset.UTC), sb);
+        return sb.toString();
     }
 
     /**
@@ -451,16 +456,16 @@ public class EsUtils {
             return value == null ? null : Boolean.parseBoolean(value);
 
         if ("date".equals(type)) {
+            if ( value== null)
+                return null;
+            
             try {
-                SimpleDateFormat simplWithMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                simplWithMillis.setTimeZone(KapuaDateUtils.getKapuaTimeZone());
-                return value == null ? null : simplWithMillis.parse(value);
-            } catch (ParseException exc) {
+                return Date.from(Instant.from(FORMAT_1.parse(value)));
+            } catch (DateTimeParseException exc) {
                 try {
-                    SimpleDateFormat simpleWithoutMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    simpleWithoutMillis.setTimeZone(KapuaDateUtils.getKapuaTimeZone());
-                    return value == null ? null : simpleWithoutMillis.parse(value);
-                } catch (ParseException e) {
+                    LocalDateTime ldt = LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(value));
+                    return Date.from(ldt.atZone(ZoneOffset.UTC).toInstant());
+                } catch (DateTimeParseException e) {
                     throw new IllegalArgumentException(String.format("Unknown data format [%s]", value));
                 }
             }

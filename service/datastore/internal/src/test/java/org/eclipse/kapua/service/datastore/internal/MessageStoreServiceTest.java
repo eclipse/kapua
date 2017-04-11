@@ -8,12 +8,14 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,7 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -109,7 +110,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final MetricInfoRegistryService metricInfoRegistryService = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService clientInfoRegistryService = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
 
-    private long elasticsearchRefreshTime = (DatastoreSettings.getInstance().getLong(DatastoreSettingKey.ELASTICSEARCH_IDX_REFRESH_INTERVAL) + INDEX_TIME_ESTIMATE_SECONDS) * KapuaDateUtils.SEC_MILLIS;
+    private Duration elasticsearchRefreshTime = Duration.ofSeconds((DatastoreSettings.getInstance().getLong(DatastoreSettingKey.ELASTICSEARCH_IDX_REFRESH_INTERVAL) + INDEX_TIME_ESTIMATE_SECONDS) );
 
     @Test
     /**
@@ -1047,7 +1048,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private void waitEsRefresh() throws InterruptedException {
         // Wait ES indexes to be refreshed
-        Thread.sleep(elasticsearchRefreshTime);
+        Thread.sleep(elasticsearchRefreshTime.toMillis());
     }
 
     /**
@@ -2012,7 +2013,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         //
         // Wait ES indexes to be refreshed
-        Thread.sleep(elasticsearchRefreshTime);
+        Thread.sleep(elasticsearchRefreshTime.toMillis());
 
         //
         // Retrieve the message from its id
