@@ -33,12 +33,32 @@ export default class DevicesService implements IDevicesService {
 
     startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
         return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_start", {});
-
     };
 
     stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
         return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_stop", {});
-
     };
+
+    downloadPackage(deviceID: string, devicePackage: DevicePackage): any {
+        let requestModel = {
+            version: devicePackage.version,
+            uri: "", // what is "uri"? 
+            rebootDelay: 0,
+            reboot: false,
+            install: true,
+            name: devicePackage.name
+        };
+        return this.$http.post("/api/_/devices/" + deviceID + "/packages/_download", requestModel);
+    };
+
+    uninstallPackage(deviceID: string, devicePackage: DevicePackage): any {
+        let requestModel = {
+            version: devicePackage.version,
+            rebootDelay: 0,
+            reboot: false,
+            name: devicePackage.name
+        };
+        return this.$http.post("/api/_/devices/" + deviceID + "/packages/_uninstall", requestModel);
+    }
 
 }

@@ -45,20 +45,27 @@ tr {
     }
 }
 
-bundles {
+bundles, packages {
+    .header {
+        overflow: hidden;
+        padding-bottom: 10px;
+    }
     .headerTitle {
-        margin-top: 10px;
-        margin-bottom: 0px;
+        font-size: 20px;
         font-weight: bold;
-        padding-left: 15px;
-    }
-    .refreshWrapper {
+        padding-top: 3px;
+    }    
+    .headerActions {
         text-align: right;
+        padding-top: 5px;
+        padding-right: 16px;
     }
-    .refreshButton {
-        margin-top: 10px;
-        margin-bottom: 10px;
-        margin-right: 16px;
-        width: 92px;
+    .list-group-item-heading {
+        padding-top: 6px;
+    }
+
+    .list-group-item-container {
+        background: none;
+        border-top: none;
     }
 }
