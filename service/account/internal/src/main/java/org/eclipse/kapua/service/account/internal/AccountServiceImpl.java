@@ -40,9 +40,9 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 /**
- * Account service implementation.
+ * {@link AccountService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<
@@ -60,7 +60,9 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private static final PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
     
     /**
-     * Constructor
+     * Constructor.
+     * 
+     * @since 1.0.0
      */
     public AccountServiceImpl() {
         super(AccountService.class.getName(), accountDomain, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
@@ -293,15 +295,16 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     /**
-     * Find an account without authorization.
+     * Find an {@link Account} without authorization checks.
      *
      * @param accountId
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
     private Account findById(KapuaId accountId)
             throws KapuaException {
-
         //
         // Argument Validation
         ArgumentValidator.notNull(accountId, "accountId");
