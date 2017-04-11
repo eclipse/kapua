@@ -4,7 +4,7 @@ To leverage JWT security features, a pair of RSA keys (a public one and a privat
 
 ## Use random generated keys
 
-By default Kapua will look for keys in the path specified by `authentication.session.jwt.private.key` and `authentication.session.jwt.public.key` system properties at startup (see below). If such properties are not set, or if Kapua can't find those files, it will automatically generate new random private and public keys.
+By default Kapua will look for keys in the path specified by `authentication.session.jwt.private.key` and `authentication.session.jwt.public.key` system properties at startup (see below). If such properties are not set Kapua will automatically generate new random private and public keys, while an error will be thrown if such files could not be found.
 
 ## Use custom keys
 

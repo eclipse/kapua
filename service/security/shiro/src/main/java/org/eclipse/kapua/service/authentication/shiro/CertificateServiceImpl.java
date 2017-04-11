@@ -46,19 +46,23 @@ public class CertificateServiceImpl implements CertificateService {
      */
     public CertificateServiceImpl() throws KapuaAuthenticationException {
         KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        File privateKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PRIVATE_KEY, ""));
-        File publicKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PUBLIC_KEY, ""));
-        if (!privateKeyFile.exists() || !publicKeyFile.exists()) {
+        
+        String privateKeyPath = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PRIVATE_KEY, "");
+        String publicKeyPath = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PUBLIC_KEY, "");
+        
+        if (privateKeyPath.isEmpty() && publicKeyPath.isEmpty()) {
             // Fallback to generated
-            logger.warn("Unable to read specified private and/or public key. Using random generated keys.");
+            logger.warn("No private and public key path specified. Using random generated keys.");
             RsaJsonWebKey rsaJsonWebKey = null;
             try {
                 rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
                 keyPair = new KeyPair(rsaJsonWebKey.getPublicKey(), rsaJsonWebKey.getPrivateKey());
             } catch (JoseException e) {
-                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR);
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_GENERATION_ERROR);
             }
         } else {
+            File privateKeyFile = new File(privateKeyPath);
+            File publicKeyFile = new File(publicKeyPath);
             keyPair = new KeyPair(readPublicKey(publicKeyFile), readPrivateKey(privateKeyFile));
         }
     }
@@ -80,7 +84,7 @@ public class CertificateServiceImpl implements CertificateService {
             KeyFactory kf = KeyFactory.getInstance("RSA");
             privateKey = kf.generatePrivate(keySpec);
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR);
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR, e);
         }
         return privateKey;
     }
@@ -97,7 +101,7 @@ public class CertificateServiceImpl implements CertificateService {
             KeyFactory kf = KeyFactory.getInstance("RSA");
             publicKey = kf.generatePublic(spec);
         } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR);
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR, e);
         }
         return publicKey;
     }
