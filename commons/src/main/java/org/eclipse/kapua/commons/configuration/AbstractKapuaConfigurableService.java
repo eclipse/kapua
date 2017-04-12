@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,19 +8,28 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
+
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
-import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -35,16 +44,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 /**
  * Configurable service definition abstract reference implementation.
  *
@@ -54,6 +53,19 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     private Domain domain = null;
     private String pid = null;
+
+    /**
+     * Constructor
+     *
+     * @param pid
+     * @param domain
+     * @param entityManagerFactory
+     */
+    protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
+        super(entityManagerFactory);
+        this.pid = pid;
+        this.domain = domain;
+    }
 
     /**
      * Reads metadata for the service pid
@@ -86,14 +98,17 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      *
      * @param ocd
      * @param updatedProps
+     * @param scopeId
+     * @param parentId
+     * 
      * @throws KapuaException
      */
-    private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId)
+    private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
             throws KapuaException {
         if (ocd != null) {
 
             // build a map of all the attribute definitions
-            Map<String, KapuaTad> attrDefs = new HashMap<String, KapuaTad>();
+            Map<String, KapuaTad> attrDefs = new HashMap<>();
             List<KapuaTad> defs = ocd.getAD();
             for (KapuaTad def : defs) {
                 attrDefs.put(def.getId(), def);
@@ -129,11 +144,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
 
-            String logicValidationResult = validateNewConfigValuesCoherence(ocd, updatedProps, scopeId);
-            if (logicValidationResult != null && !logicValidationResult.isEmpty()) {
-                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.OPERATION_NOT_ALLOWED, logicValidationResult);
-            }
-
             // make sure all required properties are set
             for (KapuaTad attrDef : ocd.getAD()) {
                 // to the required attributes make sure a value is defined.
@@ -145,11 +155,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                     }
                 }
             }
+
+            validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         }
     }
 
-    protected String validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId) throws KapuaException {
-        return "";
+    protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
+        return true;
     }
 
     /**
@@ -176,7 +188,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private static Map<String, Object> toValues(KapuaTocd ocd, Properties props) throws KapuaException {
         List<KapuaTad> ads = ocd.getAD();
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         for (KapuaTad ad : ads) {
             String valueStr = props == null ? ad.getDefault() : props.getProperty(ad.getId(), ad.getDefault());
             Object value = StringUtil.stringToValue(ad.getType().value(), valueStr);
@@ -194,23 +206,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return
      * @throws KapuaException
      */
-    private ServiceConfig create(EntityManager em, ServiceConfig serviceConfig)
+    private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        try {
 
-            em.beginTransaction();
-
-            ServiceConfig newServiceConfig = ServiceConfigDAO.create(em, serviceConfig);
-            newServiceConfig = ServiceConfigDAO.find(em, newServiceConfig.getId());
-            em.commit();
-            return newServiceConfig;
-        } catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        } finally {
-            em.close();
-        }
-
+        return entityManagerSession.onTransactedInsert(em -> ServiceConfigDAO.create(em, serviceConfig));
     }
 
     /**
@@ -221,40 +220,24 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return
      * @throws KapuaException
      */
-    private ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
+    private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        try {
-
-            ServiceConfig theServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
-            if (theServiceConfig == null) {
+        return entityManagerSession.onTransactedResult(em -> {
+            ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
+            if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
             }
 
-            em.beginTransaction();
-            ServiceConfigDAO.update(em, serviceConfig);
-            em.commit();
+            if (!Objects.equals(oldServiceConfig.getScopeId(), serviceConfig.getScopeId())) {
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ILLEGAL_ARGUMENT, null, "scopeId");
+            }
+            if (!oldServiceConfig.getPid().equals(serviceConfig.getPid())) {
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ILLEGAL_ARGUMENT, null, "pid");
+            }
 
-            ServiceConfig updServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
-            return updServiceConfig;
-        } catch (Exception pe) {
-            em.rollback();
-            throw KapuaExceptionUtils.convertPersistenceException(pe);
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
-     * Constructor
-     *
-     * @param pid
-     * @param domain
-     * @param entityManagerFactory
-     */
-    protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
-        super(entityManagerFactory);
-        this.pid = pid;
-        this.domain = domain;
+            // Update
+            return ServiceConfigDAO.update(em, serviceConfig);
+        });
     }
 
     @Override
@@ -269,7 +252,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         try {
             KapuaTmetadata metadata = readMetadata(this.pid);
-            if (metadata != null && metadata.getOCD() != null && metadata.getOCD().size() > 0) {
+            if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
                 for (KapuaTocd ocd : metadata.getOCD()) {
                     if (ocd.getId() != null && ocd.getId().equals(pid)) {
                         return ocd;
@@ -297,18 +280,19 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
 
-        Properties properties = null;
-        EntityManager em = this.entityManagerFactory.createEntityManager();
-        ServiceConfigListResult result = ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query);
-        if (result != null && result.getSize() > 0)
-            properties = result.getItem(0).getConfigurations();
+        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
+        Properties properties = null;
+        if (result != null && !result.isEmpty()) {
+            properties = result.getFirstItem().getConfigurations();
+        }
+            
         KapuaTocd ocd = this.getConfigMetadata();
         return toValues(ocd, properties);
     }
 
     @Override
-    public void setConfigValues(KapuaId scopeId, Map<String, Object> values)
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values)
             throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
@@ -316,7 +300,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         KapuaTocd ocd = this.getConfigMetadata();
-        validateConfigurations(this.pid, ocd, values, scopeId);
+        validateConfigurations(this.pid, ocd, values, scopeId, parentId);
 
         Properties props = toProperties(values);
 
@@ -327,23 +311,21 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
 
-        ServiceConfig serviceConfig = null;
-        EntityManager em = this.entityManagerFactory.createEntityManager();
-        ServiceConfigListResultImpl result = ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query);
+        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
-        // In not exists create then return
         if (result == null || result.getSize() == 0) {
-            ServiceConfigImpl serviceConfigNew = new ServiceConfigImpl(scopeId);
+            // In not exists create then return
+            ServiceConfig serviceConfigNew = new ServiceConfigImpl(scopeId);
             serviceConfigNew.setPid(this.pid);
             serviceConfigNew.setConfigurations(props);
-            serviceConfig = this.create(em, serviceConfigNew);
-            return;
-        }
 
-        // If exists update it
-        serviceConfig = result.getItem(0);
-        serviceConfig.setConfigurations(props);
-        this.update(em, serviceConfig);
-        return;
+            createConfig(serviceConfigNew);
+        } else {
+            // If exists update it
+            ServiceConfig serviceConfig = result.getFirstItem();
+            serviceConfig.setConfigurations(props);
+
+            updateConfig(serviceConfig);
+        }
     }
 }

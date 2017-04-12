@@ -20,6 +20,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -37,7 +38,9 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleCreatorImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.ResourceLimitsConfig;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -59,6 +62,12 @@ public class RoleServiceTest extends KapuaTest {
     @AfterClass
     public static void afterClass() throws KapuaException {
         // scriptSession(AuthorizationEntityManagerFactory.getInstance(), DROP_FILTER);
+    }
+
+    @Before
+    public void before() {
+        // Setup JAXB context
+        XmlUtil.setContextProvider(new ShiroJAXBContextProvider());
     }
 
     // Tests
@@ -84,6 +93,10 @@ public class RoleServiceTest extends KapuaTest {
             //
             // Create
             RoleService roleService = locator.getService(RoleService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             //
@@ -138,6 +151,10 @@ public class RoleServiceTest extends KapuaTest {
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
@@ -188,6 +205,10 @@ public class RoleServiceTest extends KapuaTest {
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             assertNotNull(role);
@@ -232,6 +253,10 @@ public class RoleServiceTest extends KapuaTest {
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             assertNotNull(role);
@@ -290,6 +315,10 @@ public class RoleServiceTest extends KapuaTest {
             roleCreator.setPermissions(permissions);
 
             RoleService roleService = locator.getService(RoleService.class);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             assertNotNull(role);

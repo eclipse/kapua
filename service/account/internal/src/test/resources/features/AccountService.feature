@@ -158,8 +158,8 @@ Scenario: It is possible to change the configuration items
 	Values of the supported configurationm items must be modifiable.
  
 	Given An existing account with the name "test_acc_11"
-	When I configure "integer" item "maxNumberChildAccounts" to "5"
-	Then The config item "maxNumberChildAccounts" is set to "5"
+	When I configure "integer" item "maxNumberChildEntities" to "5"
+	Then The config item "maxNumberChildEntities" is set to "5"
 	
 Scenario: Unknown configuiration items are silently ignored
 	Unknown items must be ignored. No exception or error must be raised.

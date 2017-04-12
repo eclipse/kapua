@@ -155,9 +155,10 @@ public interface GwtAccountService extends RemoteService {
      * Updates the configuration of the provided component.
      *
      * @param scopeId
+     * @param parentScopeId
      * @param configComponent
      */
-    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, GwtConfigComponent configComponent)
+    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, String parentScopeId, GwtConfigComponent configComponent)
             throws GwtKapuaException;
 
     /**

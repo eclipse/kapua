@@ -122,7 +122,19 @@ Scenario: Count roles in specific scopes
 	It must be possible to count all the roles defined for specific scopes. If
 	there is no role for a specific domain a 0 should be returned. No error or 
 	exception is expected.
-	
+
+	When I configure role
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    2    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    2    |       1       |
+	When I configure role
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    3    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    3    |       1       |
+	When I configure role
+	| type    | name                       | value | scopeId | parentScopeId |
+	| boolean | infiniteChildEntities      | true  |    4    |       1       |
+	| integer | maxNumberChildEntities     | 5     |    4    |       1       |
 	Given I create the following roles
 	|scopeId |name        |actions              |
 	|4       |test_role_1 |write, read, connect |

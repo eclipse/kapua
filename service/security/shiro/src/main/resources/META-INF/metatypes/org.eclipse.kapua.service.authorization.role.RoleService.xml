@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
 
      All rights reserved. This program and the accompanying materials
      are made available under the terms of the Eclipse Public License v1.0
@@ -13,9 +13,9 @@
 
 -->
 <MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
-    <OCD id="org.eclipse.kapua.service.account.AccountService"
-         name="AccountService" 
-         description="This is the configuration for the kapua AccountService. ">
+    <OCD id="org.eclipse.kapua.service.authorization.role.RoleService"
+         name="RoleService" 
+         description="This is the configuration for the kapua RoleService ">
         
         <Icon resource="OSGI-INF/account-service.png" size="32"/>
 
@@ -25,7 +25,7 @@
             cardinality="0"
             required="true"
             default="false"
-            description="Whether to allow infinite child accounts for this account.">
+            description="Whether to allow infinite roles for this account.">
         </AD>
 
         <AD id="maxNumberChildEntities"  
@@ -35,12 +35,12 @@
             required="true"
             default="0" 
             min="0"
-            description="Maximum number of child accounts that are allowed to be created for this account.">
+            description="Maximum number of roles that are allowed to be created for this account.">
         </AD>
 
     </OCD>
     
-    <Designate pid="org.eclipse.kapua.service.account.AccountService">
-        <Object ocdref="org.eclipse.kapua.service.account.AccountService"/>
+    <Designate pid="org.eclipse.kapua.service.authorization.role.RoleService">
+        <Object ocdref="org.eclipse.kapua.service.authorization.role.RoleService"/>
     </Designate>
 </MetaData>

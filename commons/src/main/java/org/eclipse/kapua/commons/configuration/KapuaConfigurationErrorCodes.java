@@ -39,5 +39,13 @@ public enum KapuaConfigurationErrorCodes implements KapuaErrorCode {
     /**
      * missing required attribute
      */
-    REQUIRED_ATTRIBUTE_MISSING;
+    REQUIRED_ATTRIBUTE_MISSING,
+    /**
+     * Self limit exceeded in config
+     */
+    SELF_LIMIT_EXCEEDED_IN_CONFIG,
+    /**
+     * Parent limit exceeded in config
+     */
+    PARENT_LIMIT_EXCEEDED_IN_CONFIG
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -41,6 +42,8 @@ import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.ResourceLimitsConfig;
+import org.junit.Before;
 import org.junit.Test;
 
 public class AccessInfoServiceTest extends KapuaTest {
@@ -48,6 +51,12 @@ public class AccessInfoServiceTest extends KapuaTest {
     private static final Domain testDomain = new TestDomain();
 
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
+
+    @Before
+    public void before() {
+        // Setup JAXB context
+        XmlUtil.setContextProvider(new ShiroJAXBContextProvider());
+    }
 
     // Tests
 
@@ -145,6 +154,10 @@ public class AccessInfoServiceTest extends KapuaTest {
             RoleCreator roleCreator = roleFactory.newCreator(scope);
             roleCreator.setName("testRole-" + random.nextLong());
             roleCreator.setPermissions(permissions);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             Set<KapuaId> roleIds = new HashSet<>();
@@ -203,6 +216,10 @@ public class AccessInfoServiceTest extends KapuaTest {
             RoleCreator roleCreator = roleFactory.newCreator(scope);
             roleCreator.setName("testRole-" + random.nextLong());
             roleCreator.setPermissions(permissionsRole);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             Set<KapuaId> roleIds = new HashSet<>();
@@ -268,6 +285,10 @@ public class AccessInfoServiceTest extends KapuaTest {
             RoleCreator roleCreator = roleFactory.newCreator(scope);
             roleCreator.setName("testRole-" + random.nextLong());
             roleCreator.setPermissions(permissions);
+            ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
+            resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
+            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
             Set<KapuaId> roleIds = new HashSet<>();
