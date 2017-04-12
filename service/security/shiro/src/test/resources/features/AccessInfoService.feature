@@ -17,7 +17,7 @@ Scenario: Simple create
     Create a simple access info entry. Only a user is supplied. The entry must 
     match the creator parameters.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -30,7 +30,7 @@ Scenario: Create with permissions
     Create an access info entry. In addition to a user a list of permissions is 
     supplied too. The entry must match the creator parameters.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -46,7 +46,7 @@ Scenario: Create with permissions and a role
     Create a full access info entry. A user,  a list of permissions and
     an access role are supplied. The entry must match the creator parameters.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -65,7 +65,7 @@ Scenario: Try to create an access into entity with an invalid role id
     It must not be possible to create an access info entity if the given role is invalid.
     Such an attempt must result in an exception.
     
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -78,7 +78,7 @@ Scenario: Find an access info entity
     It must be possible to find an existing access info entity in the database 
     based on its ID.
     
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -92,7 +92,7 @@ Scenario: Find an access info entity by user ID
     It must be possible to find an existing access info entity in the database 
     based on the entity user ID. 
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -105,7 +105,7 @@ Scenario: Search for an access info entity by an incorrect user ID
     If the user ID supplied for a search is invalid, only a null result 
     must be returned. No exception must be thrown.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -120,7 +120,7 @@ Scenario: Search for an access info entity by an incorrect user ID
 Scenario: Delete an existing access info entity
     It must be possible to delete an existing entity from the database.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -134,7 +134,7 @@ Scenario: Delete an existing access info entity
 Scenario: Delete a access info entity with permissions and roles
     It must be possible to delete an existing entity from the database.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -149,7 +149,7 @@ Scenario: Delete an access info entity twice
     An attempt to delete the same entity multiple times should result 
     in an exception.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -162,7 +162,7 @@ Scenario: Delete an access info entity using the wrong scope ID
     An attempt to delete an entity using the wrong scope ID must result 
     in an exception.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -200,7 +200,7 @@ Scenario: Query for all the access info entities of a specific user
     It must be possible to find all the access info entities that belong 
     to a specific user.
 
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
@@ -223,7 +223,7 @@ Scenario: Query for all the access info entities of an invalid user
     If an invalid user is supplied for an entity count, the result list must be empty.
     No exceptions should be thrown.
  
-    Given A scope with ID 10
+    Given A scope with ID 1
     And A user such as
         | name     | displayName     | email              | phoneNumber     |
         | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
