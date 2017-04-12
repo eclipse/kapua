@@ -33,8 +33,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     private final Class<S> serviceClass;
     private final Class<F> factoryClass;
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,
@@ -78,6 +76,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @throws KapuaException
      */
     protected int allowedChildEntities(KapuaId scopeId, Map<String, Object> configuration) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
         S service = locator.getService(serviceClass);
         F factory = locator.getFactory(factoryClass);
         if (configuration == null) {
