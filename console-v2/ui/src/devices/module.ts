@@ -117,5 +117,5 @@ angular.module("app.devices", [])
     .controller("DeviceDetailEventsCtrl", ["$stateParams", "$http", DeviceDetailEventsCtrl])
     .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", "$scope", "devicesService", DeviceDetailBundlesCtrl])
     .controller("DeviceDetailConfigurationsCtrl", ["$stateParams", "$http", DeviceDetailConfigurationsCtrl])
-    .controller("DeviceDetailCommandsCtrl", ["$stateParams", "$http", DeviceDetailCommandsCtrl])
+    .controller("DeviceDetailCommandsCtrl", ["$scope","$stateParams", "devicesService", DeviceDetailCommandsCtrl])
     .controller("DeviceDetailGroupsCtrl", ["$stateParams", "$http", DeviceDetailGroupsCtrl]);

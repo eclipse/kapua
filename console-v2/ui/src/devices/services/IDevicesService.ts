@@ -19,4 +19,5 @@ interface IDevicesService {
     stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
     downloadPackage(deviceID: string, devicePackage: DevicePackage): any;
     uninstallPackage(deviceID: string, devicePackage: DevicePackage): any;
+    executeCommand(deviceID: string): any;
 }

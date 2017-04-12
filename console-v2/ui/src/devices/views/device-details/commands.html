@@ -12,6 +12,52 @@
 *                                                                               
 *******************************************************************************/
 -->
-<div>
-  Device commands list. id: {{ vm.deviceId }}
-</div>
+<commands>
+  <div class="displayDetailsContent">
+
+    <div class="card-pf card-pf-accented card-pf-utilization">
+      <div class="row example-container">
+        <div class="header">
+          <div class="col-xs-12 headerTitle"><span class="fa fa-cube" style="padding-right: 16px;"></span>Device Command</div>
+        </div>
+        <div class="col-md-12">
+
+          <div class="form-horizontal" ng-form="vm.editorForm">
+            <div class="form-group" ng-class="{'has-error' : (vm.editorForm.executeInput.$error.required && vm.editorForm.executeInput.$touched)}">
+              <label class="col-md-2 control-label" for="textInput-markup"><span style="color: #FF0000">*</span> Execute:</label>
+              <div class="col-md-10">
+                <input type="text" id="textInput-markup" name="executeInput" class="form-control" ng-model="vm.execute" ng-required="true">
+                <span ng-if="vm.editorForm.executeInput.$error.required && vm.editorForm.executeInput.$touched" class="help-block">
+                  <span class="fa fa-exclamation-triangle"></span> This field is required</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="textInput-markup">File:</label>
+              <div class="col-md-10">
+                <div class="col-md-10 col-sm-9 col-xs-9" style="padding-left: 0; padding-right: 8px;"><input type="text" id="textInput-markup" class="form-control" ng-model="filePath" readonly></div>
+                <label for="upload" class="col-md-2 col-sm-3 col-xs-3 btn btn-default"><span class="fa fa-folder-open"></span> Browse ...
+                <input type="file" id="upload" style="display:none" onchange="angular.element(this).scope().fileUpload(this)">
+                </label>                 
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="textInput-markup">Device Service Password:</label>
+              <div class="col-md-10">
+                <input type="password" id="textInput-markup" class="form-control" ng-model="vm.servicePassword">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-12" style="text-align: right;">
+                <button class="btn btn-primary" ng-click="vm.resetForm()">Reset</button>
+                <button class="btn btn-success" ng-click="vm.executeCommand(vm.deviceId)" ng-disabled="vm.editorForm.$invalid" style="margin-left: 8px;">Execute</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-horizontal" style="padding-top: 20px;">
+            <textarea class="form-control" style="margin-bottom: 20px;" id="exampleTextarea" rows="20" placeholder="No Output" readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</commands>

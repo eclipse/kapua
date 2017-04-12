@@ -12,9 +12,30 @@
 *******************************************************************************/
 export default class DeviceDetailCommandsCtrl {
     private deviceId: string;
+    private execute: string;
+    private servicePassword: string;
 
-    constructor(private $stateParams: angular.ui.IStateParamsService,
-        private $http: angular.IHttpService) {
+    constructor(private $scope: any,
+        private $stateParams: angular.ui.IStateParamsService,
+        private deviceService: IDevicesService) {
         this.deviceId = $stateParams["id"];
+
+        $scope.fileUpload = function (element) {
+            $scope.file = element.files[0];
+            $scope.filePath = element.value;
+            $scope.$apply();
+        }
+    }
+
+    resetForm(): void {
+        this.execute = "";
+        this.servicePassword = "";
+        this.$scope.file = null;
+        this.$scope.filePath = "";
+    }
+
+    executeCommand(deviceID: string): void {
+        alert("Command executed ... ");
+        // this.deviceService.executeCommand(deviceID);
     }
 }

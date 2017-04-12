@@ -61,4 +61,11 @@ export default class DevicesService implements IDevicesService {
         return this.$http.post("/api/_/devices/" + deviceID + "/packages/_uninstall", requestModel);
     }
 
+    executeCommand(deviceID: string): any {
+        let requestModel = {
+            // TO BE defined            
+        };
+        return this.$http.post("/api/_/devices/" + deviceID + "/commands/_execute", requestModel);
+    }
+
 }
