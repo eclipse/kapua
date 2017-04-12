@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model.authentication;
 
-import org.eclipse.kapua.app.console.shared.model.GwtEntityCreator;
-
 import java.io.Serializable;
+
+import org.eclipse.kapua.app.console.shared.model.GwtEntityCreator;
 
 public class GwtCredentialCreator extends GwtEntityCreator implements Serializable {
 
