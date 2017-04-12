@@ -27,7 +27,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+        <webappDirectory>${project.build.directory}/Kapua</webappDirectory>
         <site.basedir>${project.parent.basedir}</site.basedir>
 
         <!-- Convenience property to set the GWT version -->
@@ -225,10 +225,6 @@
     <build>
         <finalName>console</finalName>
 
-        <!--
-        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
-        -->
-
         <plugins>
             <plugin>
                 <!-- GWT Maven Plugin -->
@@ -247,9 +243,10 @@
                 </executions>
 
                 <configuration>
-                    <module>org.eclipse.kapua.app.console.console</module>
+                    <module>org.eclipse.kapua.app.console.Kapua</module>
 
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
+                    <webappDirectory>${project.build.directory}</webappDirectory>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
 
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
@@ -260,13 +257,12 @@
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
-                    	<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
-                    	<i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
 
                     <optimizationLevel>9</optimizationLevel>
                     <runTarget>console.jsp</runTarget>
-                    <webappDirectory>${project.build.directory}</webappDirectory>
                 </configuration>
             </plugin>
 
@@ -297,7 +293,7 @@
                                     <artifactId>gxt-ui</artifactId>
                                     <version>${gxt.version}</version>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/${project.build.finalName}/</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/Kapua/</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -339,7 +335,7 @@
                             <target>
                                 <echo>Openlayers: copy resources to webapp output folder</echo>
                                 <copy
-                                        todir="${project.build.directory}/${project.build.finalName}">
+                                        todir="${project.build.directory}/Kapua">
                                     <fileset
                                             dir="${project.build.directory}/tmp/openlayers-${openlayers.version}/META-INF/resources/webjars/">
                                         <exclude name="**/OpenLayers.*.js"/>
@@ -358,7 +354,7 @@
                             <target>
                                 <echo>Openlayers: customize openlayers 'ImgPath' variable</echo>
                                 <replaceregexp byline="true"
-                                               file="${project.build.directory}/${project.build.finalName}/openlayers/${openlayers.version}/OpenLayers.js"
+                                               file="${project.build.directory}/Kapua/openlayers/${openlayers.version}/OpenLayers.js"
                                                match="ImgPath:&quot;&quot;"
                                                replace="ImgPath:&quot;openlayers/${openlayers.version}/img/&quot;"/>
                             </target>
@@ -433,7 +429,7 @@
                     <configuration>
                         <webResources>
                             <resource>
-                                <directory>${project.build.directory}/${project.build.finalName}</directory>
+                                <directory>${project.build.directory}/Kapua</directory>
                             </resource>
                         </webResources>
                         <!-- exclude slf4j-api as the web container has to provide this -->
@@ -463,7 +459,7 @@
                             <!-- we can always enable draft compile -->
                             <draftCompile>true</draftCompile>
                             <!-- use "dev" profile, limiting permutations -->
-                            <module>org.eclipse.kapua.app.console.ConsoleDev</module>
+                            <module>org.eclipse.kapua.app.console.KapuaDev</module>
                             <!-- don't optimize -->
                             <optimizationLevel>0</optimizationLevel>
                             <!-- enable details -->
