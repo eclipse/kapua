@@ -29,6 +29,8 @@ import org.eclipse.kapua.message.KapuaPosition;
 @Embeddable
 public class KapuaPositionImpl implements KapuaPosition {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Longitude of this position in degrees. This is a mandatory field.
      */
