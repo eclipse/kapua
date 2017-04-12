@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.client;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
@@ -131,9 +133,9 @@ public class NorthView extends LayoutContainer {
 
         //
         // Logout menu item
-        MenuItem userLogoutMenuItem = new MenuItem();
+        KapuaMenuItem userLogoutMenuItem = new KapuaMenuItem();
         userLogoutMenuItem.setText(MSGS.consoleHeaderUserActionLogout());
-        userLogoutMenuItem.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.userLogout16()));
+        userLogoutMenuItem.setIcon(IconSet.SIGN_OUT);
         userLogoutMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
 
             @Override
