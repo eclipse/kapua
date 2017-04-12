@@ -2,13 +2,13 @@
 
 To leverage JWT security features, a pair of RSA keys (a public one and a private one) must be loaded in Kapua.
 
-## Use default Kapua keys
+## Use random generated keys
 
-A pair of RSA keys is already shipped within Kapua, and can be used **ONLY FOR DEVELOPMENT PURPOSES SINCE THEY ARE PUBLICLY AVAILABLE IN THE KAPUA REPOSITORY**. These keys will be automatically loaded when the system properties `authentication.session.jwt.private.key` and `authentication.session.jwt.public.key` are not set, or if the file entered in said properties cannot be read.
+By default Kapua will look for keys in the path specified by `authentication.session.jwt.private.key` and `authentication.session.jwt.public.key` system properties at startup (see below). If such properties are not set Kapua will automatically generate new random private and public keys, while an error will be thrown if such files could not be found.
 
 ## Use custom keys
 
-If you want to use custom keys you can generate an RSA key paid with [OpenSSL](https://www.openssl.org/), and from that generate both the private and the public key. In order to create those files you can use the following commands:
+If you want to use custom keys you can generate an RSA key pair with [OpenSSL](https://www.openssl.org/), and from that generate both the private and the public key. In order to create those files you can use the following commands:
 
 ```bash
 openssl genrsa -out rsa-2048bit-key-pair.pem 2048
