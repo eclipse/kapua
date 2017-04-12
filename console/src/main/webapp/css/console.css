@@ -206,6 +206,7 @@ table#header-button td, table#header-button button{
 }
 
 .x-menu-item-icon.fa {
-	font-size: 1.5em;
+	font-size: 14px;
 	left: 1px;
+	top: 4px;
 }
