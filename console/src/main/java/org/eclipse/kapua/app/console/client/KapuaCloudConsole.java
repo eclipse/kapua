@@ -13,12 +13,14 @@
 package org.eclipse.kapua.app.console.client;
 
 import java.util.Date;
+import java.util.logging.Logger;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
@@ -32,6 +34,7 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -62,6 +65,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class KapuaCloudConsole implements EntryPoint {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
+
     private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
     private GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
@@ -288,35 +293,26 @@ public class KapuaCloudConsole implements EntryPoint {
 
         loadFooterData(lcFooter, genericNote, creditLabel);
 
+        // Check if coming from SSO login
+        final String accessToken = Window.Location.getParameter("access_token");
+
+        if (accessToken != null && !accessToken.isEmpty()) {
+            logger.info("Performing SSO login");
+            performSsoLogin(viewport, accessToken);
+        } else {
+            showLoginDialog(viewport);
+        }
+    }
+
+    private void showLoginDialog(final Viewport viewport) {
         // Dialog window
         final LoginDialog loginDialog = new LoginDialog();
-
-        // Check if coming from SSO login
-        String accessToken = Window.Location.getParameter("access_token");
 
         loginDialog.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
                 if (loginDialog.isAllowMainScreen()) {
-                    currentSession = loginDialog.getCurrentSession();
-
-                    if (currentSession != null) {
-                        String username = currentSession.getGwtUser().getUsername();
-                        if (username != null) {
-
-                            //
-                            // Enter into the normal viewport
-                            RootPanel.get().remove(viewport);
-                            render(currentSession);
-
-                        } else {
-                            ConsoleInfo.display(MSGS.error(), MSGS.loginError());
-                            loginDialog.show();
-                        }
-                    } else {
-                        ConsoleInfo.display(MSGS.error(), MSGS.loginError());
-                        loginDialog.show();
-                    }
+                    renderMainScreen(viewport, loginDialog.getCurrentSession());
                 }
             }
         });
@@ -331,10 +327,44 @@ public class KapuaCloudConsole implements EntryPoint {
         }
 
         loginDialog.show();
+    }
 
-        if (accessToken != null && !accessToken.isEmpty()) {
-            loginDialog.performSsoLogin(accessToken);
-        }
+    private void performSsoLogin(final Viewport viewport, String authToken) {
+        
+        // show wait dialog
+        
+        final Dialog dlg = new Dialog();
+        dlg.setHeading(MSGS.ssoWaitDialog_title());
+        dlg.setButtons("");
+        dlg.setClosable(false);
+        dlg.setResizable(false);
+        dlg.setModal(true);
+
+        final Label label = new Label(MSGS.ssoWaitDialog_text());
+        dlg.add(label);
+
+        dlg.show();
+        dlg.center();
+        
+        // start login process
+
+        final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
+        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                dlg.hide();
+                ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
+                showLoginDialog(viewport);
+            }
+
+            @Override
+            public void onSuccess(final GwtSession gwtSession) {
+                logger.fine("User: " + gwtSession.getGwtUser());
+                dlg.hide();
+                renderMainScreen(viewport, gwtSession);
+            }
+        });
     }
 
     private void loadFooterData(final LayoutContainer container, final Html genericNote, final Label creditLabel) {
@@ -381,5 +411,27 @@ public class KapuaCloudConsole implements EntryPoint {
 
     public HorizontalPanel getSouthView() {
         return southView;
+    }
+
+    private void renderMainScreen(final Viewport viewport, GwtSession session) {
+        currentSession = session;
+
+        if (currentSession != null) {
+            String username = currentSession.getGwtUser().getUsername();
+            if (username != null) {
+
+                //
+                // Enter into the normal viewport
+                RootPanel.get().remove(viewport);
+                render(currentSession);
+
+                return;
+            }
+        }
+
+        // or else
+
+        ConsoleInfo.display(MSGS.error(), MSGS.loginError());
+        showLoginDialog(viewport);
     }
 }

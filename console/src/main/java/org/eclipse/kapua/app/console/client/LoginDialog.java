@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,16 +8,14 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.FailureHandler;
-
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
@@ -214,9 +212,6 @@ public class LoginDialog extends Dialog {
         });
     }
 
-    // Window references
-    final LoginDialog loginDialog = this;
-
     /**
      *
      * Login submit
@@ -226,39 +221,13 @@ public class LoginDialog extends Dialog {
         status.show();
         getButtonBar().disable();
 
-        loginDialog.performLogin();
+        performLogin();
     }
 
     // Login
     public void performLogin() {
 
         final GwtLoginCredential credentials = new GwtLoginCredential(username.getValue(), password.getValue());
-
-        // FIXME: use some Credentials object instead of using GwtUser!
-        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
-                reset();
-            }
-
-            @Override
-            public void onSuccess(final GwtSession gwtSession) {
-                currentSession = gwtSession;
-                callMainScreen();
-            }
-        });
-    }
-
-    public void performSsoLogin(String authToken) {
-        username.setEnabled(false);
-        password.setEnabled(false);
-        reset.setEnabled(false);
-        login.setEnabled(false);
-        ssoLogin.setEnabled(false);
-
-        final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
 
         // FIXME: use some Credentials object instead of using GwtUser!
         gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
