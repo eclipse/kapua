@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.data;
 
@@ -17,10 +17,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
+import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
+import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
@@ -52,7 +53,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -62,7 +62,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class ResultsTable extends LayoutContainer {
 
@@ -171,7 +170,7 @@ public class ResultsTable extends LayoutContainer {
 
         resultsToolBar = new ToolBar();
         Menu menu = new Menu();
-        menu.add(new MenuItem(MSGS.resultsTableExportToExcel(), AbstractImagePrototype.create(Resources.INSTANCE.exportExcel()),
+        menu.add(new KapuaMenuItem(MSGS.resultsTableExportToExcel(), IconSet.FILE_EXCEL_O,
                 new SelectionListener<MenuEvent>() {
 
                     @Override
@@ -179,7 +178,7 @@ public class ResultsTable extends LayoutContainer {
                         export("xls");
                     }
                 }));
-        menu.add(new MenuItem(MSGS.resultsTableExportToCSV(), AbstractImagePrototype.create(Resources.INSTANCE.exportCSV()),
+        menu.add(new KapuaMenuItem(MSGS.resultsTableExportToCSV(), IconSet.FILE_TEXT_O,
                 new SelectionListener<MenuEvent>() {
 
                     @Override

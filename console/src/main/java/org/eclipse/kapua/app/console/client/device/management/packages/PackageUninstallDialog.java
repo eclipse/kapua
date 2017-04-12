@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device.management.packages;
 
-import org.eclipse.kapua.app.console.client.resources.Resources;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.dialog.SimpleDialog;
@@ -32,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class PackageUninstallDialog extends SimpleDialog {
 
@@ -140,11 +138,6 @@ public class PackageUninstallDialog extends SimpleDialog {
 
     @Override
     protected void addListeners() {
-    }
-
-    @Override
-    public AbstractImagePrototype getHeaderIcon() {
-        return AbstractImagePrototype.create(Resources.INSTANCE.help16());
     }
 
     @Override

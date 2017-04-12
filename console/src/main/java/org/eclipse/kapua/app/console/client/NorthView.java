@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.resources.Resources;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
@@ -44,7 +43,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -189,10 +187,10 @@ public class NorthView extends LayoutContainer {
      * @return the MenuItem
      */
     public MenuItem createAccountNavigationMenuItem() {
-        MenuItem rootAccountMenuItem = new MenuItem();
-        rootAccountMenuItem.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.administrator()));
+        KapuaMenuItem rootAccountMenuItem = new KapuaMenuItem();
         rootAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(rootAccount.getName()));
         rootAccountMenuItem.setToolTip(MSGS.accountSelectorTooltipYourAccount());
+        rootAccountMenuItem.setIcon(IconSet.USER_MD);
         rootAccountMenuItem.setId(rootAccount.getId().toString());
         rootAccountMenuItem.addSelectionListener(switchToAccountListener);
 
@@ -203,9 +201,9 @@ public class NorthView extends LayoutContainer {
 
         populateNavigatorMenu(subAccountMenu, rootAccount.getId());
 
-        MenuItem switchToAccountMenuItem = new MenuItem();
+        KapuaMenuItem switchToAccountMenuItem = new KapuaMenuItem();
         switchToAccountMenuItem.setText(MSGS.consoleHeaderUserActionSwitchToAccount());
-        switchToAccountMenuItem.setIcon(AbstractImagePrototype.create(Resources.INSTANCE.switchToAccount16()));
+        switchToAccountMenuItem.setIcon(IconSet.USERS);
         switchToAccountMenuItem.setSubMenu(subAccountMenu);
 
         return switchToAccountMenuItem;
@@ -242,7 +240,8 @@ public class NorthView extends LayoutContainer {
                             // For each child found create a item menu and search for its children
                             for (GwtAccountStringListItem item : result.getData()) {
                                 // Add item menu entry
-                                MenuItem childAccountMenuItem = new MenuItem();
+                                KapuaMenuItem childAccountMenuItem = new KapuaMenuItem();
+                                childAccountMenuItem.setIcon(IconSet.USER);
                                 childAccountMenuItem.setText(item.getValue());
                                 childAccountMenuItem.setTitle(item.getValue());
                                 childAccountMenuItem.setId(String.valueOf(item.getId()));

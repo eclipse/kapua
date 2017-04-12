@@ -13,6 +13,8 @@ package org.eclipse.kapua.app.console.client.ui.widget;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 
 import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -21,6 +23,27 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 public class KapuaMenuItem extends MenuItem {
 
     private IconSet iconSetIcon;
+
+    public KapuaMenuItem() {
+    }
+
+    public KapuaMenuItem(String text, IconSet icon, SelectionListener<? extends MenuEvent> listener) {
+        super(text, listener);
+        setIcon(icon);
+    }
+
+    public KapuaMenuItem(String text, IconSet icon) {
+        super(text);
+        setIcon(icon);
+    }
+
+    public KapuaMenuItem(String text, SelectionListener<? extends MenuEvent> listener) {
+        super(text, listener);
+    }
+
+    public KapuaMenuItem(String text) {
+        super(text);
+    }
 
     public void setIcon(IconSet icon) {
         this.iconSetIcon = icon;

@@ -16,8 +16,6 @@ import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-
 public abstract class EntityAddEditDialog extends SimpleDialog {
 
     protected GwtSession currentSession;
@@ -28,11 +26,6 @@ public abstract class EntityAddEditDialog extends SimpleDialog {
 
     @Override
     protected void addListeners() {
-    }
-
-    @Override
-    public AbstractImagePrototype getHeaderIcon() {
-        return null;
     }
 
     @Override
