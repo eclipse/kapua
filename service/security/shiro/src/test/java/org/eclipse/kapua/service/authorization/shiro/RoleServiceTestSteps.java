@@ -13,8 +13,10 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -115,6 +117,31 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     // *************************************
     // Definition of Cucumber scenario steps
     // *************************************
+    @When("^I configure role$")
+    public void setConfigurationValue(List<TestConfig> testConfigs)
+            throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Map<String, Object> valueMap = new HashMap<>();
+            KapuaEid scopeId = null;
+            KapuaEid parentScopeId = null;
+
+            for (TestConfig config : testConfigs) {
+                config.addConfigToMap(valueMap);
+                scopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getScopeId())));
+                parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));
+            }
+            try {
+                commonData.exceptionCaught = false;
+                roleService.setConfigValues(scopeId, parentScopeId, valueMap);
+            } catch (KapuaException ex) {
+                commonData.exceptionCaught = true;
+            }
+
+            return null;
+        });
+    }
+
     @Given("^I create the following role(?:|s)$")
     public void createAListOfRoles(List<CucRole> roles)
             throws KapuaException {

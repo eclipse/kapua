@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -24,7 +26,9 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
+import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
+import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -37,12 +41,12 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
  *
  */
 @KapuaProvider
-public class GroupServiceImpl extends AbstractKapuaService implements GroupService {
+public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Group, GroupCreator, GroupService, GroupListResult, GroupQuery, GroupFactory> implements GroupService {
 
     private static final Domain groupDomain = new GroupDomain();
 
     public GroupServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+        super(GroupService.class.getName(), groupDomain, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
     }
 
     @Override
@@ -58,7 +62,11 @@ public class GroupServiceImpl extends AbstractKapuaService implements GroupServi
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.write, groupCreator.getScopeId()));
-
+        
+        if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
+            throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
+        }
+        
         return entityManagerSession.onTransactedInsert(em -> GroupDAO.create(em, groupCreator));
     }
 

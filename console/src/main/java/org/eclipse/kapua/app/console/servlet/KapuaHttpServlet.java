@@ -32,59 +32,54 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KapuaHttpServlet extends HttpServlet
-{
-    private static final long     serialVersionUID = 8120495078076069807L;
-    private static Logger         s_logger         = LoggerFactory.getLogger(KapuaHttpServlet.class);
+public class KapuaHttpServlet extends HttpServlet {
 
-    protected DiskFileItemFactory m_diskFileItemFactory;
-    protected FileCleaningTracker m_fileCleaningTracker;
+    private static final long serialVersionUID = 8120495078076069807L;
+    private static final Logger logger = LoggerFactory.getLogger(KapuaHttpServlet.class);
+
+    protected DiskFileItemFactory diskFileItemFactory;
+    protected FileCleaningTracker fileCleaningTracker;
 
     @Override
-    public void init()
-        throws ServletException
-    {
+    public void init() throws ServletException {
         super.init();
 
-        s_logger.info("Servlet {} initialized", getServletName());
+        logger.info("Servlet {} initialized", getServletName());
 
         ServletContext ctx = getServletContext();
-        m_fileCleaningTracker = FileCleanerCleanup.getFileCleaningTracker(ctx);
+        fileCleaningTracker = FileCleanerCleanup.getFileCleaningTracker(ctx);
 
         int sizeThreshold = ConsoleSetting.getInstance().getInt(ConsoleSettingKeys.FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD);
         File repository = new File(System.getProperty("java.io.tmpdir"));
 
-        s_logger.info("DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD: {}", DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD);
-        s_logger.info("DiskFileItemFactory: using size threshold of: {}", sizeThreshold);
+        logger.info("DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD: {}", DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD);
+        logger.info("DiskFileItemFactory: using size threshold of: {}", sizeThreshold);
 
-        m_diskFileItemFactory = new DiskFileItemFactory(sizeThreshold, repository);
-        m_diskFileItemFactory.setFileCleaningTracker(m_fileCleaningTracker);
+        diskFileItemFactory = new DiskFileItemFactory(sizeThreshold, repository);
+        diskFileItemFactory.setFileCleaningTracker(fileCleaningTracker);
 
         JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
         XmlUtil.setContextProvider(consoleProvider);
     }
 
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         super.destroy();
-        s_logger.info("Servlet {} destroyed", getServletName());
+        logger.info("Servlet {} destroyed", getServletName());
 
-        if (m_fileCleaningTracker != null) {
-            s_logger.info("Number of temporary files tracked: " + m_fileCleaningTracker.getTrackCount());
+        if (fileCleaningTracker != null) {
+            logger.info("Number of temporary files tracked: " + fileCleaningTracker.getTrackCount());
         }
     }
 
     public KapuaFormFields getFormFields(HttpServletRequest req)
-        throws ServletException
-    {
-        UploadRequest upload = new UploadRequest(m_diskFileItemFactory);
+            throws ServletException {
+        UploadRequest upload = new UploadRequest(diskFileItemFactory);
 
         try {
             upload.parse(req);
-        }
-        catch (FileUploadException e) {
-            s_logger.error("Error parsing the provision request", e);
+        } catch (FileUploadException e) {
+            logger.error("Error parsing the provision request", e);
             throw new ServletException("Error parsing the provision request", e);
         }
 

@@ -16,23 +16,21 @@ import java.util.List;
 
 /**
  * Kapua message channel object definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public interface KapuaChannel extends Channel
-{
+public interface KapuaChannel extends Channel {
 
     /**
      * Get the channel destination semantic part
-     * 
+     *
      * @return
      */
     public List<String> getSemanticParts();
 
     /**
      * Set the channel destination semantic part
-     * 
+     *
      * @param semanticParts
      */
     public void setSemanticParts(List<String> semanticParts);

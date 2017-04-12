@@ -8,10 +8,12 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import java.text.ParseException;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 
@@ -76,11 +78,11 @@ public class MessageStoreConfiguration {
      */
     public static final int DISABLED = 0;
 
-    private static final long TTL_DEFAULT_DAYS = 30;                                         // TODO define as a default configuration
+    private static final Duration TTL_DEFAULT_DAYS = Duration.ofDays(30);                                         // TODO define as a default configuration
 
     private Date expirationDate = null;
     private boolean dataStorageEnabled = true;
-    private long dataTimeToLive = 90;
+    private Duration dataTimeToLive = Duration.ofDays(90);
     private long rxByteLimit = 1000000;
     private DataIndexBy dataIndexBy = DataIndexBy.SERVER_TIMESTAMP;
     private MetricsIndexBy metricsIndexBy = MetricsIndexBy.TIMESTAMP;
@@ -97,7 +99,7 @@ public class MessageStoreConfiguration {
         if (this.values != null) {
             if (this.values.get(CONFIGURATION_EXPIRATION_DATE_KEY) != null) {
                 try {
-                    setExpirationDate(KapuaDateUtils.parseDate((String) this.values.get(CONFIGURATION_EXPIRATION_DATE_KEY)));
+                    setExpirationDate(Date.from(KapuaDateUtils.parseDate((String) this.values.get(CONFIGURATION_EXPIRATION_DATE_KEY))));
                 } catch (ParseException e) {
                     logger.error("Cannot parse the expiration date parameter: {}", e.getMessage(), e);
                 }
@@ -158,7 +160,7 @@ public class MessageStoreConfiguration {
      * @return
      */
     public long getDataTimeToLiveMilliseconds() {
-        return dataTimeToLive * KapuaDateUtils.DAY_MILLIS;// * KapuaDateUtils.DAY_SECS????
+        return dataTimeToLive.toMillis();
     }
 
     /**
@@ -167,7 +169,7 @@ public class MessageStoreConfiguration {
      * @return
      */
     public long getDataTimeToLive() {
-        return dataTimeToLive;
+        return dataTimeToLive.toDays();
     }
 
     /**
@@ -177,7 +179,7 @@ public class MessageStoreConfiguration {
         if (dataTimeToLive < 0) {
             this.dataTimeToLive = TTL_DEFAULT_DAYS;
         } else {
-            this.dataTimeToLive = dataTimeToLive;
+            this.dataTimeToLive = Duration.ofDays(dataTimeToLive);
         }
     }
 

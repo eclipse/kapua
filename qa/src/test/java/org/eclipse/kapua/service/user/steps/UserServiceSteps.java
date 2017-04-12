@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.user.steps;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -213,8 +214,8 @@ public class UserServiceSteps extends KapuaTest {
         }
     }
 
-    @When("^I configure$")
-    public void setConfigurationValue(List<TestConfig> testConfigs)
+    @When("^I configure account service$")
+    public void setAccountServiceConfig(List<TestConfig> testConfigs)
             throws KapuaException {
         Map<String, Object> valueMap = new HashMap<>();
 
@@ -223,7 +224,32 @@ public class UserServiceSteps extends KapuaTest {
         }
         try {
             isException = false;
-            accountService.setConfigValues(lastAccount.getId(), valueMap);
+            accountService.setConfigValues(lastAccount.getId(), lastAccount.getScopeId(), valueMap);
+        } catch (KapuaException ex) {
+            isException = true;
+        }
+    }
+
+    @When("^I configure user service$")
+    public void setUserServiceConfig(List<TestConfig> testConfigs)
+            throws KapuaException {
+        Map<String, Object> valueMap = new HashMap<>();
+        KapuaId accId = null;
+        KapuaId scopeId = null;
+        if (lastAccount != null) {
+            accId = lastAccount.getId();
+            scopeId = lastAccount.getScopeId();
+        } else {
+            accId = new KapuaEid(BigInteger.ONE);
+            scopeId = new KapuaEid(BigInteger.ONE);
+        }
+
+        for (TestConfig config: testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            isException = false;
+            userService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
             isException = true;
         }
@@ -248,6 +274,11 @@ public class UserServiceSteps extends KapuaTest {
         authenticationService.logout();
     }
 
+    @And("^Using kapua-sys account$")
+    public void usingSysAccount() {
+        lastAccount = null;
+    }
+
     /**
      * Extract list of users form step parameter table and create those users in
      * kapua.
@@ -267,7 +298,7 @@ public class UserServiceSteps extends KapuaTest {
                     String displayName = userItem.getDisplayName();
                     String email = userItem.getEmail();
                     String phone = userItem.getPhoneNumber();
-                    KapuaEid scopeId = (KapuaEid) account.getScopeId();
+                    KapuaEid scopeId = (KapuaEid) account.getId();
 
                     UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId);
                     User user = userService.create(userCreator);

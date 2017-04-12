@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
@@ -64,8 +65,12 @@ public class GroupAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable arg0) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(arg0.getLocalizedMessage());
+                FailureHandler.handleFormException(m_formPanel, arg0);
+                m_status.hide();
+                m_formPanel.getButtonBar().enable();
+                unmask();
+                m_submitButton.enable();
+                m_cancelButton.enable();
             }
         });
 

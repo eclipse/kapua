@@ -29,6 +29,7 @@
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+		<class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
 		<properties>
 			<!-- <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" /> -->
@@ -61,6 +62,7 @@
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
 		<class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+		<class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
 		<properties>
 			<property name="javax.persistence.lock.timeout" value="1000" />

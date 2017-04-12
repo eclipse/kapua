@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -28,38 +26,58 @@ import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
-import org.eclipse.kapua.service.device.registry.DeviceQuery;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.*;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
+
+import java.util.List;
 
 /**
  * Provides logic used to validate preconditions required to execute the device service operation.
- * 
+ *
  * @since 1.0.0
  */
 public final class DeviceValidation {
 
     private static final Domain deviceDomain = new DeviceDomain();
 
-    private static final AuthorizationService authorizationService;
-    private static final GroupService groupService;
-    private static final PermissionFactory permissionFactory;
+    private static AuthorizationService authorizationService;
+    private static GroupService groupService;
+    private static PermissionFactory permissionFactory;
 
-    private static final DeviceRegistryService deviceRegistryService;
-    private static final DeviceFactory deviceFactory;
+    private static DeviceRegistryService deviceRegistryService;
+    private static DeviceFactory deviceFactory;
 
     static {
-        authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        groupService = KapuaLocator.getInstance().getService(GroupService.class);
-        permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        try {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+            groupService = KapuaLocator.getInstance().getService(GroupService.class);
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
 
-        deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-        deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+            deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
+            deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
+        } catch (ExceptionInInitializerError e) {
+
+        }
+    }
+
+    public static void authorizationService(AuthorizationService authorizationService) {
+        DeviceValidation.authorizationService = authorizationService;
+    }
+
+    public static void groupService(GroupService groupService) {
+        DeviceValidation.groupService = groupService;
+    }
+
+    public static void permissionFactory(PermissionFactory permissionFactory) {
+        DeviceValidation.permissionFactory = permissionFactory;
+    }
+
+    public static void deviceRegistryService(DeviceRegistryService deviceRegistryService) {
+        DeviceValidation.deviceRegistryService = deviceRegistryService;
+    }
+
+    public static void deviceFactory(DeviceFactory deviceFactory) {
+        DeviceValidation.deviceFactory = deviceFactory;
     }
 
     private DeviceValidation() {
@@ -67,7 +85,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the device creates precondition
-     * 
+     *
      * @param deviceCreator
      * @return
      * @throws KapuaException
@@ -88,7 +106,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the device updates precondition
-     * 
+     *
      * @param device
      * @return
      * @throws KapuaException
@@ -113,7 +131,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the find device precondition
-     * 
+     *
      * @param scopeId
      * @param entityId
      * @throws KapuaException
@@ -128,7 +146,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the device query precondition
-     * 
+     *
      * @param query
      * @throws KapuaException
      */
@@ -147,7 +165,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the device count precondition
-     * 
+     *
      * @param query
      * @throws KapuaException
      */
@@ -160,7 +178,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the device delete precondition
-     * 
+     *
      * @param scopeId
      * @param deviceId
      * @throws KapuaException
@@ -175,7 +193,7 @@ public final class DeviceValidation {
 
     /**
      * Validates the device find by identifier precondition
-     * 
+     *
      * @param scopeId
      * @param clientId
      * @throws KapuaException
@@ -190,11 +208,9 @@ public final class DeviceValidation {
 
     /**
      * Finds the current {@link Group} id assigned to the given {@link Device} id.
-     * 
-     * @param scopeId
-     *            The scope {@link KapuaId} of the {@link Device}
-     * @param entityId
-     *            The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
+     *
+     * @param scopeId  The scope {@link KapuaId} of the {@link Device}
+     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
      * @return The {@link Group} id found.
      * @throws KapuaException
      * @since 1.0.0
@@ -209,7 +225,7 @@ public final class DeviceValidation {
 
         DeviceListResult results = null;
         try {
-            results = KapuaSecurityUtils.doPrivileged(() -> (DeviceListResult) deviceRegistryService.query(query));
+            results = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.query(query));
         } catch (Exception e) {
             throw KapuaException.internalError(e, "Error while searching groupId");
         }

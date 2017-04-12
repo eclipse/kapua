@@ -25,27 +25,46 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.CertificateService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.jose4j.jwk.RsaJsonWebKey;
+import org.jose4j.jwk.RsaJwkGenerator;
+import org.jose4j.lang.JoseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
 
     private final KeyPair keyPair;
-    private static final String PRIVATE_KEY_LOCAL_FILENAME = "jwt_private.key";
-    private static final String PUBLIC_KEY_LOCAL_FILENAME = "jwt_public.key";
+    public static final Logger logger = LoggerFactory.getLogger(CertificateServiceImpl.class);
 
     /**
      * Constructor
      */
     public CertificateServiceImpl() throws KapuaAuthenticationException {
         KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        File privateKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PRIVATE_KEY, ""));
-        File publicKeyFile = new File(setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PUBLIC_KEY, ""));
-        keyPair = new KeyPair(getPublicKey(publicKeyFile), getPrivateKey(privateKeyFile));
+        
+        String privateKeyPath = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PRIVATE_KEY, "");
+        String publicKeyPath = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_PUBLIC_KEY, "");
+        
+        if (privateKeyPath.isEmpty() && publicKeyPath.isEmpty()) {
+            // Fallback to generated
+            logger.warn("No private and public key path specified. Using random generated keys.");
+            RsaJsonWebKey rsaJsonWebKey = null;
+            try {
+                rsaJsonWebKey = RsaJwkGenerator.generateJwk(2048);
+                keyPair = new KeyPair(rsaJsonWebKey.getPublicKey(), rsaJsonWebKey.getPrivateKey());
+            } catch (JoseException e) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_GENERATION_ERROR);
+            }
+        } else {
+            File privateKeyFile = new File(privateKeyPath);
+            File publicKeyFile = new File(publicKeyPath);
+            keyPair = new KeyPair(readPublicKey(publicKeyFile), readPrivateKey(privateKeyFile));
+        }
     }
 
     @Override
@@ -53,16 +72,10 @@ public class CertificateServiceImpl implements CertificateService {
         return keyPair;
     }
 
-    private PrivateKey getPrivateKey(File file) throws KapuaAuthenticationException {
+    private PrivateKey readPrivateKey(File file) throws KapuaAuthenticationException {
         PrivateKey privateKey = null;
         try {
-            String keyFromFile = null;
-            if (file.exists()) {
-                keyFromFile = FileUtils.readFileToString(file);
-            } else {
-                keyFromFile = ResourceUtils.readResource(ResourceUtils.getResource(PRIVATE_KEY_LOCAL_FILENAME));
-            }
-            keyFromFile = keyFromFile
+            String keyFromFile = FileUtils.readFileToString(file)
                     .replaceAll("(\r)?\n", "")
                     .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "");
@@ -71,21 +84,15 @@ public class CertificateServiceImpl implements CertificateService {
             KeyFactory kf = KeyFactory.getInstance("RSA");
             privateKey = kf.generatePrivate(keySpec);
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR);
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR, e);
         }
         return privateKey;
     }
 
-    private PublicKey getPublicKey(File file) throws KapuaAuthenticationException {
+    private PublicKey readPublicKey(File file) throws KapuaAuthenticationException {
         PublicKey publicKey = null;
         try {
-            String keyFromFile = null;
-            if (file.exists()) {
-                keyFromFile = FileUtils.readFileToString(file);
-            } else {
-                keyFromFile = ResourceUtils.readResource(ResourceUtils.getResource(PUBLIC_KEY_LOCAL_FILENAME));
-            }
-            keyFromFile = keyFromFile
+            String keyFromFile = FileUtils.readFileToString(file)
                     .replaceAll("(\r)?\n", "")
                     .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "");
@@ -94,7 +101,7 @@ public class CertificateServiceImpl implements CertificateService {
             KeyFactory kf = KeyFactory.getInstance("RSA");
             publicKey = kf.generatePublic(spec);
         } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR);
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWK_FILE_ERROR, e);
         }
         return publicKey;
     }

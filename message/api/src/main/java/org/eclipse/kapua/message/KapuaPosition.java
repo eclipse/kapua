@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,11 +41,11 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
         "satellites", //
         "status", //
 })
-public interface KapuaPosition extends Position {
+public interface KapuaPosition extends Position, Serializable {
 
     /**
      * Get the device position longitude
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -53,7 +54,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device position longitude
-     * 
+     *
      * @param longitude
      * @since 1.0.0
      */
@@ -61,7 +62,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the device position latitude
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -70,7 +71,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device position latitude
-     * 
+     *
      * @param latitude
      * @since 1.0.0
      */
@@ -78,7 +79,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the device position altitude
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -87,7 +88,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device position altitude
-     * 
+     *
      * @param altitude
      * @since 1.0.0
      */
@@ -95,7 +96,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the device precision
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -104,7 +105,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device precision
-     * 
+     *
      * @param precision
      * @since 1.0.0
      */
@@ -112,7 +113,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the device heading
-     * 
+     *
      * @return
      */
     @XmlElement(name = "heading")
@@ -120,7 +121,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device heading
-     * 
+     *
      * @param heading
      * @since 1.0.0
      */
@@ -128,7 +129,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the device speed
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -137,7 +138,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device speed
-     * 
+     *
      * @param speed
      * @since 1.0.0
      */
@@ -145,7 +146,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the timestamp
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -155,7 +156,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the timestamp
-     * 
+     *
      * @param timestamp
      * @since 1.0.0
      */
@@ -163,7 +164,7 @@ public interface KapuaPosition extends Position {
 
     /**
      * Get the satellites count
-     * 
+     *
      * @return
      */
     @XmlElement(name = "satellites")
@@ -171,14 +172,14 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the satellites count
-     * 
+     *
      * @param satellites
      */
     public void setSatellites(Integer satellites);
 
     /**
      * Get the device status
-     * 
+     *
      * @return
      */
     @XmlElement(name = "status")
@@ -186,14 +187,14 @@ public interface KapuaPosition extends Position {
 
     /**
      * Set the device status
-     * 
+     *
      * @param status
      */
     public void setStatus(Integer status);
 
     /**
      * Convert the position to a displayable String
-     * 
+     *
      * @return
      */
     public String toDisplayString();

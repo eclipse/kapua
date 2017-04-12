@@ -28,7 +28,6 @@ import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
  * Kapua message payload object definition.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -37,7 +36,7 @@ public interface KapuaPayload extends Payload {
 
     /**
      * Get the metrics map
-     * 
+     *
      * @return
      */
     @XmlElement(name = "metrics")
@@ -46,14 +45,14 @@ public interface KapuaPayload extends Payload {
 
     /**
      * Set the metrics map
-     * 
+     *
      * @param metrics
      */
     public void setProperties(Map<String, Object> metrics);
 
     /**
      * Get the message body
-     * 
+     *
      * @return
      */
     @XmlElement(name = "body")
@@ -62,14 +61,14 @@ public interface KapuaPayload extends Payload {
 
     /**
      * Set the message body
-     * 
+     *
      * @param body
      */
     public void setBody(byte[] body);
 
     /**
      * Convert the message to a displayable String
-     * 
+     *
      * @return
      */
     public String toDisplayString();

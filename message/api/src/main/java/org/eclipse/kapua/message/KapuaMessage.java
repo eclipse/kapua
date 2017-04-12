@@ -27,13 +27,9 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 /**
  * Kapua message object definition.
  *
- * @param <C>
- *            channel type
- * @param <P>
- *            payload type
- *
+ * @param <C> channel type
+ * @param <P> payload type
  * @since 1.0
- *
  */
 @XmlRootElement(name = "message")
 @XmlAccessorType(XmlAccessType.PROPERTY)

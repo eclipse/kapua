@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -93,4 +94,18 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
         throw KapuaException.internalError("Device not found");
 	}
 
+	@Override
+	public KapuaTocd getConfigMetadata() throws KapuaException {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+		return null;
+	}
+
+	@Override
+	public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+
+	}
 }

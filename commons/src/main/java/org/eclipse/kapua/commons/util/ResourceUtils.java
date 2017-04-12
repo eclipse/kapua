@@ -75,8 +75,8 @@ public class ResourceUtils {
             return CharStreams.toString(resourceBr);
         }
     }
-    
-    public static byte[] readResourceAsByteArray(URL resourceUrl)throws IOException {
+
+    public static byte[] readResourceAsByteArray(URL resourceUrl) throws IOException {
         try (BufferedReader resourceBr = new BufferedReader(new InputStreamReader(resourceUrl.openStream()))) {
             return IOUtils.toByteArray(resourceBr);
         }

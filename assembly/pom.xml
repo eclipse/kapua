@@ -750,12 +750,17 @@
 								<from>${docker.account}/jetty-base</from>
 								<assembly>
 									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
-									<basedir>/var/lib/jetty</basedir>
+									<basedir>/</basedir>
 								</assembly>
 								<env>
 									<JAVA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} -Ddatastore.elasticsearch.nodes=\${ES_PORT_9300_TCP_ADDR} -Ddatastore.elasticsearch.port=\${ES_PORT_9300_TCP_PORT}</JAVA_OPTS>
 								</env>
 								<user>kapua</user>
+								<entryPoint>
+									<exec>
+										<arg>/home/kapua/run-console</arg>
+									</exec>
+								</entryPoint>
 							</build>
 						</image>
 						<image>

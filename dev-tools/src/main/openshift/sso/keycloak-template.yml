@@ -1,0 +1,190 @@
+apiVersion: v1
+id: eclipse-kapua-keycloak
+kind: Template
+name: eclipse-kapua-keycloak
+metadata:
+  name: eclipse-kapua-keycloak
+
+parameters:
+- name:         GIT_REPO
+  description:     GitHub repository
+  value:           https://github.com/eclipse/kapua
+- name:         GIT_REF
+  description:     GitHub branch/tag/revision
+  value:           develop
+- name:         KAPUA_CONSOLE_URL
+  description:     The URL to the Kapua Console
+  required:        true
+- name:         KEYCLOAK_ADMIN_USER
+  description:     The admin user name
+  value:           admin
+- name:         KEYCLOAK_ADMIN_PASSWORD
+  description:     The password of the Keycloak admin user
+  generate:         expression
+  from:             '[a-zA-Z0-9]{15}'
+  required:         true
+
+- name:         SMTP_HOST
+  description:     The hostname of the SMTP server to use
+  required:        true
+- name:         SMTP_PORT
+  description:     The port number of the SMTP server to use
+- name:         SMTP_USER
+  description:     The name of the user name to use for authenticating with the SMTP server
+  required:        true
+- name:         SMTP_PASSWORD
+  description:     The password of the user to use for authenticating with the SMTP server
+  required:        true
+- name:         SMTP_ENABLE_SSL
+  description:     "Whether SSL (in addition to TLS) should be enabled (true, false)"
+- name:         SMTP_FROM
+  description:     The "from" use which will be used for outgoing e-mails
+  required:        true
+
+objects:
+
+# Config map
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: keycloak-config
+  data:
+    keycloak.admin.user: ${KEYCLOAK_ADMIN_USER}
+    keycloak.admin.password: ${KEYCLOAK_ADMIN_PASSWORD}
+
+# Image stream
+
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: keycloak
+
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: keycloak-build
+  spec:
+    triggers: 
+      - type: ImageChange
+      - type: ConfigChange
+    source: 
+      type: Git
+      git:
+        uri: ${GIT_REPO}
+        ref: ${GIT_REF}
+      contextDir: dev-tools/src/main/openshift/sso
+    strategy: 
+      type: Docker
+      dockerStrategy:
+    postCommit:
+    output: 
+      to:
+        kind: ImageStreamTag
+        name: keycloak:latest
+
+# DC, Service & route
+
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: keycloak
+  spec:
+    replicas: 1
+    selector:
+      app: keycloak
+      deploymentconfig: keycloak
+    strategy:
+      type: Recreate
+    triggers:
+      - type: ConfigChange 
+      - type: ImageChange 
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - keycloak
+          from:
+            kind: ImageStreamTag
+            name: keycloak:latest
+    template:
+      metadata:
+        labels:
+          app: keycloak
+          deploymentconfig: keycloak
+      spec:
+        containers:
+        - image: keycloak
+          imagePullPolicy: Always
+          name: keycloak
+          ports:
+          - containerPort: 8080 
+            name: http
+          env:
+          - name: KEYCLOAK_USER
+            valueFrom:
+              configMapKeyRef:
+                name: keycloak-config
+                key: keycloak.admin.user
+          - name: KEYCLOAK_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: keycloak-config
+                key: keycloak.admin.password
+          - name: KAPUA_CONSOLE_URL
+            value: ${KAPUA_CONSOLE_URL}
+          - name: SMTP_HOST
+            value: ${SMTP_HOST}
+          - name: SMTP_PORT
+            value: ${SMTP_PORT}
+          - name: SMTP_FROM
+            value: ${SMTP_FROM}
+          - name: SMTP_USER
+            value: ${SMTP_USER}
+          - name: SMTP_PASSWORD
+            value: ${SMTP_PASSWORD}
+          - name: SMTP_ENABLE_SSL
+            value: ${SMTP_ENABLE_SSL}
+          volumeMounts:
+          - mountPath: /opt/jboss/keycloak/standalone/data
+            name: keycloak-data
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            failureThreshold: 5
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+        volumes:
+        - name: keycloak-data
+          emptyDir: {}
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: keycloak
+    labels:
+      app: keycloak
+  spec:
+    ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: keycloak
+      deploymentconfig: keycloak
+
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: web # Must not contain "console" - Also see: KEYCLOAK-4737
+    labels:
+      app: keycloak
+  spec:
+    to:
+      kind: Service
+      name: keycloak
+    port:
+      targetPort: http

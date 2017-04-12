@@ -19,7 +19,7 @@ Feature: Device Broker Integration
   Scenario: Send BIRTH message and then DC message. Effectively this is connect and
     disconnect of Kura device.
     When Device birth message is sent
-    And I wait 1 second for system to receive and process that message
+    And I wait 5 second for system to receive and process that message
     And I login as user with name "kapua-sys" and password "kapua-password"
     And Packages are requested
     Then Packages are received

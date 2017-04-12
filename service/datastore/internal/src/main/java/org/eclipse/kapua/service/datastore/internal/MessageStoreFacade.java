@@ -117,7 +117,7 @@ public final class MessageStoreFacade {
         }
 
         Date capturedOn = message.getCapturedOn();
-        long currentDate = KapuaDateUtils.getKapuaSysDate().getTime();
+        long currentDate = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
 
         // Overwrite timestamp if necessary
         // Use the account service plan to determine whether we will give
@@ -353,6 +353,7 @@ public final class MessageStoreFacade {
 
     // TODO cache will not be reset from the client code it should be automatically reset
     // after some time.
+    @SuppressWarnings("unused")
     private void resetCache(KapuaId scopeId, KapuaId deviceId, String channel, String clientId)
             throws Exception {
 

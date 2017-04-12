@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+###############################################################################
+# Copyright (c) 2017 Red Hat Inc and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+###############################################################################
+
+#
+# This script deploys Keycloak and activates it in Kapua
+#
+
+set -e
+
+# Check for mail server configuration
+
+test -n "$SMTP_HOST" || die "'SMTP_HOST' not set"
+test -n "$SMTP_USER" || die "'SMTP_USER' not set"
+test -n "$SMTP_PASSWORD" || die "'SMTP_PASSWORD' not set"
+test -n "$SMTP_FROM" || die "'SMTP_FROM' not set"
+
+# Commons
+
+. "${BASH_SOURCE%/*}/env"
+. "${BASH_SOURCE%/*}/functions"
+
+# Create
+
+$OC process -n "$KEYCLOAK_PROJECT_NAME" -f "${BASH_SOURCE%/*}/keycloak-template.yml" \
+    "GIT_REPO=${GIT_REPO:-https://github.com/eclipse/kapua}" \
+    "GIT_REF=${GIT_REF:-develop}" \
+    "KAPUA_CONSOLE_URL=$(kapua_url)" \
+    "SMTP_HOST=$SMTP_HOST" \
+    ${KEYCLOAK_ADMIN_PASSWORD:+KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}} \
+    "SMTP_PORT=$SMTP_PORT" \
+    "SMTP_USER=$SMTP_USER" \
+    "SMTP_PASSWORD=$SMTP_PASSWORD" \
+    "SMTP_FROM=$SMTP_FROM" \
+    "SMTP_ENABLE_SSL=$SMTP_ENABLE_SSL" \
+    $@ | $OC create -n "$KEYCLOAK_PROJECT_NAME" -f -
+
+exec ${BASH_SOURCE%/*}/activate

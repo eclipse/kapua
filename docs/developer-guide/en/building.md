@@ -42,7 +42,7 @@ This is what you should do if you are using Fedora 24+.
 
 The easiest way would be through brew [brew]
 
-You first install brew using the instructions on the [brew] website.
+You first install brew using the instructions on the [Brew][brew] website.
 
 After you installed brew you can install npm by:
 

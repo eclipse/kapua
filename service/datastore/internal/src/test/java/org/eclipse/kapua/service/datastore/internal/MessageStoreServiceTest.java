@@ -8,12 +8,14 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,7 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -109,7 +110,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final MetricInfoRegistryService metricInfoRegistryService = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService clientInfoRegistryService = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
 
-    private long elasticsearchRefreshTime = (DatastoreSettings.getInstance().getLong(DatastoreSettingKey.ELASTICSEARCH_IDX_REFRESH_INTERVAL) + INDEX_TIME_ESTIMATE_SECONDS) * KapuaDateUtils.SEC_MILLIS;
+    private Duration elasticsearchRefreshTime = Duration.ofSeconds((DatastoreSettings.getInstance().getLong(DatastoreSettingKey.ELASTICSEARCH_IDX_REFRESH_INTERVAL) + INDEX_TIME_ESTIMATE_SECONDS) );
 
     @Test
     /**
@@ -137,7 +138,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Device device = deviceRegistryService.create(deviceCreator);
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
 
         for (int i = 0; i < 12; i++) {
             byte[] randomPayload = new byte[128];
@@ -223,7 +224,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Device device = null;
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
 
         for (int i = 0; i < messagesCount; i++) {
             clientId = clientId1;
@@ -303,7 +304,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message.setReceivedOn(messageTime);
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         List<StorableId> messageStoredIds = insertMessages(true, message);
 
         MessageQuery messageQuery = getBaseMessageQuery(account.getId());
@@ -342,7 +343,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         updatePayload(message, null);
         message.setReceivedOn(messageTime);
 
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.SERVER_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.SERVER_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         messageTime = new Date();
         message.setReceivedOn(messageTime);
         List<StorableId> messageStoredIds = insertMessages(true, message);
@@ -402,7 +403,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message6 = getMessage(clientIds[3], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message6, semanticTopic[0]);
         message6.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4, message5, message6);
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
@@ -447,7 +448,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message4 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
         updateChannel(message4, semanticTopic[0]);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
@@ -504,7 +505,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message6 = getMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message6, semanticTopic[1]);
         message6.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4, message5, message6);
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
@@ -551,7 +552,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message6 = getMessage(clientIds[0] + "_NO", account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         updateChannel(message6, semanticTopic[3]);
         message6.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4, message5, message6);
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
@@ -593,7 +594,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message2.getPayload().getProperties().put(metrics[2], new String("123"));
         message2.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message2.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2);
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
@@ -652,7 +653,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message4.getPayload().getProperties().put(metrics[3], new Boolean(true));
         message4.setReceivedOn(messageTime);
 
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         // Store messages
         insertMessages(true, message1, message2, message3, message4);
 
@@ -719,7 +720,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message3.getPayload().getProperties().put(metrics[2], new Double(123));
         message3.getPayload().getProperties().put(metrics[3], new Integer(123));
         message3.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3);
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
@@ -774,7 +775,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Device device = null;
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
 
         for (int i = 0; i < messagesCount; i++) {
             clientId = clientIds[0];
@@ -870,7 +871,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         updateChannel(message4, semanticTopic[3]);
         initMetrics(message4);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
@@ -917,7 +918,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         updateChannel(message4, semanticTopic[0]);
         initMetrics(message4);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
@@ -970,7 +971,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         updateChannel(message4, semanticTopic[1]);
         initMetrics(message4);
         message4.setReceivedOn(messageTime);
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(true, message1, message2, message3, message4);
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
@@ -997,7 +998,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
-        updateConfiguration(messageStoreService, account.getId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         for (String semanticTopicTmp : semanticTopic) {
             KapuaDataMessage message1 = getMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
             updateChannel(message1, semanticTopicTmp);
@@ -1047,7 +1048,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private void waitEsRefresh() throws InterruptedException {
         // Wait ES indexes to be refreshed
-        Thread.sleep(elasticsearchRefreshTime);
+        Thread.sleep(elasticsearchRefreshTime.toMillis());
     }
 
     /**
@@ -1887,7 +1888,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param storageEnabled
      * @throws KapuaException
      */
-    private void updateConfiguration(MessageStoreService messageStoreService, KapuaId scopeId, DataIndexBy dataIndexBy, MetricsIndexBy metricsIndexBy, int dataTTL, boolean storageEnabled)
+    private void updateConfiguration(MessageStoreService messageStoreService, KapuaId scopeId, KapuaId parentId, DataIndexBy dataIndexBy, MetricsIndexBy metricsIndexBy, int dataTTL, boolean storageEnabled)
             throws KapuaException {
         Map<String, Object> config = messageStoreService.getConfigValues(scopeId);
         if (config == null) {
@@ -1901,7 +1902,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         }
         config.put(MessageStoreConfiguration.CONFIGURATION_DATA_TTL_KEY, dataTTL);
         config.put(MessageStoreConfiguration.CONFIGURATION_DATA_STORAGE_ENABLED_KEY, storageEnabled);
-        messageStoreService.setConfigValues(scopeId, config);
+        messageStoreService.setConfigValues(scopeId, parentId, config);
     }
 
     /**
@@ -2012,7 +2013,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         //
         // Wait ES indexes to be refreshed
-        Thread.sleep(elasticsearchRefreshTime);
+        Thread.sleep(elasticsearchRefreshTime.toMillis());
 
         //
         // Retrieve the message from its id
