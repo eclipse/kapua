@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.credential;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
@@ -19,9 +22,6 @@ import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.client.user.tabs.credentials.CredentialGrid;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CredentialView extends EntityView<GwtCredential> {
 

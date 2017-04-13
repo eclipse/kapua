@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
+import java.util.Arrays;
+
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.credential.CredentialView;
@@ -29,14 +31,16 @@ import org.eclipse.kapua.app.console.client.welcome.WelcomeView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 
-import java.util.Arrays;
-
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.Label;

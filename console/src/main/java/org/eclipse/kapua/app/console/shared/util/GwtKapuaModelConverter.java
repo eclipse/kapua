@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
@@ -25,8 +23,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
-import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
@@ -98,6 +96,9 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
+
+import com.extjs.gxt.ui.client.data.BaseModel;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 /**
  * Utility class for convert {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models

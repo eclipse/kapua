@@ -13,14 +13,11 @@
 package org.eclipse.kapua.app.console.client.user;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
-import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 

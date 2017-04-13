@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
@@ -21,9 +24,6 @@ import org.eclipse.kapua.app.console.client.user.tabs.permission.UserTabItemPerm
 import org.eclipse.kapua.app.console.client.user.tabs.role.UserTabItemAccessRole;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserView extends EntityView<GwtUser> {
 

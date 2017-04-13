@@ -53,7 +53,7 @@ public class SsoCallbackServlet extends HttpServlet {
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
 
-        final List<NameValuePair> parameters = new ArrayList<>(4);
+        final List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
         parameters.add(new BasicNameValuePair("code", authCode));
         parameters.add(new BasicNameValuePair("client_id", settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID)));

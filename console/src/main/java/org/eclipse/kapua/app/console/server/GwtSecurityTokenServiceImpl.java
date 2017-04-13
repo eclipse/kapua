@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -22,8 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
-import java.util.UUID;
 
 /**
  * This is the security token service, a concrete implementation to fix the XSFR security problem.

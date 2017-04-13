@@ -10,12 +10,12 @@
    
     Contributors:
         Red Hat Inc - initial API and implementation
-   
  -->
 
-<module rename-to="console">
-  <inherits name="org.eclipse.kapua.app.console.console" />
-  
+<module rename-to="Kapua">
+  <inherits name="org.eclipse.kapua.app.console.Kapua" />
+  <inherits name="com.google.gwt.logging.Logging"/>
+
   <!-- The 'user.agent' property can be changed to the developer's
        favorite browser engine for local testing. Just don't check
        it in every time -->

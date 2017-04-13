@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client.group;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;

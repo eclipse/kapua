@@ -12,28 +12,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.group.GwtGroupCreator;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.group.*;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupCreator;
+import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupListResult;
+import org.eclipse.kapua.service.authorization.group.GroupQuery;
+import org.eclipse.kapua.service.authorization.group.GroupService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.data.*;
-import com.google.gwt.core.client.GWT;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements GwtGroupService {
 

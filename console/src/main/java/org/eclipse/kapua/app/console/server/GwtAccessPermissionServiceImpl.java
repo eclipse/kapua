@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
@@ -22,10 +25,12 @@ import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;

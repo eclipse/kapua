@@ -27,7 +27,6 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public abstract class KapuaDialog extends Dialog {
 
@@ -68,12 +67,6 @@ public abstract class KapuaDialog extends Dialog {
         infoPanel.setBodyStyle("background-color:transparent");
         add(infoPanel);
 
-        // Heading Icon (if implementation needs one)
-        AbstractImagePrototype headerIcon = getHeaderIcon();
-        if (headerIcon != null) {
-            getHeader().setIcon(headerIcon);
-        }
-
         // Heading Message (if implementation needs one)
         String headingMessage = getHeaderMessage();
         if (headingMessage == null) {
@@ -113,8 +106,6 @@ public abstract class KapuaDialog extends Dialog {
         // Buttons setup
         createButtons();
     }
-
-    public abstract AbstractImagePrototype getHeaderIcon();
 
     public abstract String getHeaderMessage();
 

@@ -205,3 +205,8 @@ table#header-button td, table#header-button button{
 	font-weight: bold !important;
 }
 
+.x-menu-item-icon.fa {
+	font-size: 14px;
+	left: 1px;
+	top: 4px;
+}

@@ -9,8 +9,8 @@
 -->
   
 <!-- 
-    -- READ ME -- 
-    -------------
+    ** READ ME ** 
+    *************
     
 	This is the original console.jsp index file.
     
@@ -54,7 +54,7 @@
         <!-- 
             JS resources
          -->
-        <script type="text/javascript" src="console.nocache.js"></script>
+        <script type="text/javascript" src="Kapua.nocache.js"></script>
         
         <!-- This script manage all JS/CSS deferred loading -->
         <script type="text/javascript" src="js/kapuaconsole/console.js" defer></script>

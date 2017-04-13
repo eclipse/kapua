@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
@@ -22,13 +26,13 @@ import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.domain.*;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.domain.DomainFactory;
+import org.eclipse.kapua.service.authorization.domain.DomainListResult;
+import org.eclipse.kapua.service.authorization.domain.DomainQuery;
+import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
 import org.eclipse.kapua.service.authorization.permission.Action;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements GwtDomainService {
 

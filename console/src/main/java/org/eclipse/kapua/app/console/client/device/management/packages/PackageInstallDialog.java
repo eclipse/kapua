@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 public class PackageInstallDialog extends TabbedDialog {
 
@@ -228,11 +227,6 @@ public class PackageInstallDialog extends TabbedDialog {
     protected void addListeners() {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public AbstractImagePrototype getHeaderIcon() {
-        return null;
     }
 
     @Override

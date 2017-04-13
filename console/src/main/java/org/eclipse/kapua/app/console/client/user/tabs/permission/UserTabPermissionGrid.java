@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.permission;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
@@ -21,9 +24,6 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermiss
 import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAsync;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;

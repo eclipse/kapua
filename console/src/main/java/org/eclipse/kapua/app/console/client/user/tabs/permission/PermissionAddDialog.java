@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.permission;
 
+import java.util.List;
+
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
@@ -24,9 +26,14 @@ import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfo;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
-import org.eclipse.kapua.app.console.shared.service.*;
-
-import java.util.List;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessInfoServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionService;
+import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtDomainService;
+import org.eclipse.kapua.app.console.shared.service.GwtDomainServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
 
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
