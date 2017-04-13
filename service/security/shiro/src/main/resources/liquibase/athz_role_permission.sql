@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+-- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -58,4 +58,12 @@ INSERT INTO athz_role_permission
 
 		(1, 14, NOW(), 1, 1, 'domain',				null, null, null),
 
-		(1, 15, NOW(), 1, 1, 'group',       null, null, null),
+		(1, 15, NOW(), 1, 1, 'group',       null, null, null);
+
+--changeset role_permission:2
+
+ALTER TABLE athz_role_permission MODIFY COLUMN domain VARCHAR(64) NULL;
+
+DELETE FROM athz_role_permission WHERE scope_id = 1;
+
+INSERT INTO athz_role_permission VALUES (1,  1, NOW(), 1, 1, null, null, null, null); -- kapua-sys assigned of permission: *:*:*:*

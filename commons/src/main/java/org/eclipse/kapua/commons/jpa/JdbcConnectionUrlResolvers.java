@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 public final class JdbcConnectionUrlResolvers {
 

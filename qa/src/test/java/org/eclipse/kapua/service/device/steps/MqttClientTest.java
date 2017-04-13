@@ -12,14 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import org.eclipse.paho.client.mqttv3.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Topic listener class that implements implementation of mqtt listener that listens on

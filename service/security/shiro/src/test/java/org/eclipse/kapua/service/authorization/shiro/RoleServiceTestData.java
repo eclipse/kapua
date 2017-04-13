@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.util.Set;
+
 import javax.inject.Singleton;
 
 import org.eclipse.kapua.service.authorization.permission.Permission;

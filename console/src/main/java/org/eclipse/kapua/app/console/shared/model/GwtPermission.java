@@ -37,7 +37,8 @@ public class GwtPermission extends KapuaBaseModel {
         group, //
         role, //
         user, //
-
+        
+        ALL; //
     }
 
     /**
@@ -48,7 +49,9 @@ public class GwtPermission extends KapuaBaseModel {
         write, //
         delete, //
         connect, //
-        execute;
+        execute,
+        
+        ALL;
 
         @Override
         public String toString() {
@@ -104,8 +107,13 @@ public class GwtPermission extends KapuaBaseModel {
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append(getDomainEnum().name());
-
+        
+        if (getAction() != null) {
+            sb.append(getDomainEnum().name());
+        } else {
+            sb.append("*");
+        }
+        
         sb.append(":");
         if (getAction() != null) {
             sb.append(getActionEnum().name());

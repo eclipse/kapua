@@ -18,8 +18,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
-import org.eclipse.kapua.KapuaErrorCode;
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -62,6 +62,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private ComboBox<GwtGroup> groupsCombo;
 
     private final GwtGroup allGroup;
+    private final GwtDomain allDomain = GwtDomain.ALL;
+    private final GwtAction allAction = GwtAction.ALL;
     
     private String accessInfoId;
 
@@ -159,7 +161,9 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
                     @Override
                     public void onSuccess(List<GwtDomain> result) {
+                        domainsCombo.add(allDomain);
                         domainsCombo.add(result);
+                        domainsCombo.setSimpleValue(allDomain);
                         actionsCombo.enable();
                     }
                 });
@@ -180,7 +184,9 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                     @Override
                     public void onSuccess(List<GwtAction> result) {
                         actionsCombo.removeAll();
+                        actionsCombo.add(allAction);
                         actionsCombo.add(result);
+                        actionsCombo.setSimpleValue(allAction);
                     }
                 });
                 
@@ -230,6 +236,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 groupsCombo.getStore().removeAll();
                 groupsCombo.getStore().add(allGroup);
                 groupsCombo.getStore().add(result);
+                groupsCombo.setValue(allGroup);
             }
         });
         permissionFormPanel.add(groupsCombo);

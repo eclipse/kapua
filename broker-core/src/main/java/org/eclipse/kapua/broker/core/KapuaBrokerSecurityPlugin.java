@@ -12,6 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
+
+import java.net.URL;
+import java.util.Optional;
+
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.shiro.SecurityUtils;
@@ -24,13 +34,6 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.Optional;
-
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.*;
 
 /**
  * Install {@link KapuaSecurityBrokerFilter} into activeMQ filter chain plugin.<BR>

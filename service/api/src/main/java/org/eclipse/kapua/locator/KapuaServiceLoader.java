@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
-
-import java.util.List;
 
 /**
  * Kapua service loader definition.<br>

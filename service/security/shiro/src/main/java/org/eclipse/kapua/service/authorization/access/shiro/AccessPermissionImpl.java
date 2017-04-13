@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
@@ -76,12 +75,8 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     }
 
     @Override
-    public void setAccessInfoId(KapuaId userId) {
-        if (userId != null) {
-            this.accessInfoId = new KapuaEid(userId);
-        } else {
-            this.accessInfoId = null;
-        }
+    public void setAccessInfoId(KapuaId accessInfo) {
+        this.accessInfoId = accessInfo != null ? (accessInfo instanceof KapuaEid ? (KapuaEid) accessInfo : new KapuaEid(accessInfo)) : null;
     }
 
     @Override
@@ -91,17 +86,13 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     @Override
     public void setPermission(Permission permission) {
-        if (permission != null) {
-            this.permission = new PermissionImpl(permission);
-        } else {
-            this.permission = null;
-        }
+        this.permission = permission != null ? (permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission)) : null;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Permission getPermission() {
-        return permission;
+        return permission != null ? permission : new PermissionImpl(null, null, null, null);
     }
 
     @Override
@@ -127,10 +118,10 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
                 return false;
         } else if (!accessInfoId.equals(other.accessInfoId))
             return false;
-        if (permission == null) {
-            if (other.permission != null)
+        if (getPermission() == null) {
+            if (other.getPermission() != null)
                 return false;
-        } else if (!permission.equals(other.permission))
+        } else if (!getPermission().equals(other.getPermission()))
             return false;
         return true;
     }

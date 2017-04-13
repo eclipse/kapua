@@ -40,9 +40,9 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 /**
- * Account service implementation.
+ * {@link AccountService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<
@@ -55,10 +55,14 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 > implements AccountService {
 
     private static final Domain accountDomain = new AccountDomain();
-    private KapuaLocator locator = KapuaLocator.getInstance();
-
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+    private static final PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+    
     /**
-     * Constructor
+     * Constructor.
+     * 
+     * @since 1.0.0
      */
     public AccountServiceImpl() {
         super(AccountService.class.getName(), accountDomain, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
@@ -70,18 +74,14 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Validation of the fields
         ArgumentValidator.notNull(accountCreator, "accountCreator");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "name");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "organizationName");
-        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "organizationEmail");
-        ArgumentValidator.notNull(accountCreator.getScopeId(), "scopeId");
-        ArgumentValidator.notNull(accountCreator.getScopeId().getId(), "scopeId.id");
-        ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
+        ArgumentValidator.notNull(accountCreator.getScopeId(), "accountCreator.scopeId");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "accountCreator.name");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "accountCreator.organizationName");
+        ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "accountCreator.organizationEmail");
+        ArgumentValidator.match(accountCreator.getOrganizationEmail(), ArgumentValidator.EMAIL_REGEXP, "accountCreator.organizationEmail");
 
         //
         // Check Access
-
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.write, accountCreator.getScopeId()));
 
         // Check if the parent account exists
@@ -94,25 +94,15 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
         }
 
-        return entityManagerSession.onInsert(em -> {
-            try {
-                Account account = null;
-                em.beginTransaction();
-                account = AccountDAO.create(em, accountCreator);
-                em.persist(account);
+        return entityManagerSession.onTransactedInsert(em -> {
+            Account account = null;
+            account = AccountDAO.create(em, accountCreator);
+            em.persist(account);
 
-                // Set the parent account path
-                String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
-                account.setParentAccountPath(parentAccountPath);
-                account = AccountDAO.update(em, account);
-                em.commit();
-                return account;
-            } catch (Exception e) {
-                if (em != null) {
-                    em.rollback();
-                }
-                throw e;
-            }
+            // Set the parent account path
+            String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
+            account.setParentAccountPath(parentAccountPath);
+            return AccountDAO.update(em, account);
         });
     }
 
@@ -121,19 +111,17 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(account.getId(), "id");
-        ArgumentValidator.notNull(account.getId().getId(), "id.id");
-        ArgumentValidator.notEmptyOrNull(account.getName(), "accountName");
-        ArgumentValidator.notNull(account.getOrganization(), "organization");
-        ArgumentValidator.match(account.getOrganization().getEmail(), ArgumentValidator.EMAIL_REGEXP, "organizationEmail");
+        ArgumentValidator.notNull(account.getId(), "account.id");
+        ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
+        ArgumentValidator.notNull(account.getOrganization(), "account.organization");
+        ArgumentValidator.match(account.getOrganization().getEmail(), ArgumentValidator.EMAIL_REGEXP, "account.organization.email");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.write, account.getScopeId()));
 
+        //
+        // Do update
         return entityManagerSession.onTransactedResult(em -> {
             Account oldAccount = AccountDAO.find(em, account.getId());
             if (oldAccount == null) {
@@ -143,13 +131,13 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             //
             // Verify unchanged parent account ID and parent account path
             if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "scopeId");
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.scopeId");
             }
             if (!oldAccount.getParentAccountPath().equals(account.getParentAccountPath())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "parentAccountPath");
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.parentAccountPath");
             }
             if (!oldAccount.getName().equals(account.getName())) {
-                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "accountName");
+                throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.name");
             }
 
             // Update
@@ -163,15 +151,12 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Validation of the fields
-        ArgumentValidator.notNull(accountId, "id");
-        ArgumentValidator.notNull(scopeId, "id.id");
+        ArgumentValidator.notNull(accountId, "scopeId");
+        ArgumentValidator.notNull(scopeId, "accountId");
 
         //
         // Check Access
         Actions action = Actions.write;
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, action, scopeId));
 
         //
@@ -202,45 +187,36 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public Account find(KapuaId scopeId, KapuaId id)
+    public Account find(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
         //
         // Validation of the fields
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(scopeId.getId(), "scopeId.id");
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(id.getId(), "id.id");
+        ArgumentValidator.notNull(accountId, "accountId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, scopeId));
 
         //
         // Make sure account exists
-        return findById(id);
+        return findById(accountId);
     }
 
     @Override
-    public Account find(KapuaId id)
+    public Account find(KapuaId accountId)
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(id, "id");
-        ArgumentValidator.notNull(id.getId(), "id.id");
+        ArgumentValidator.notNull(accountId, "accountId");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, id));
+        authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, accountId));
 
         //
         // Make sure account exists
-        return findById(id);
+        return findById(accountId);
     }
 
     @Override
@@ -254,9 +230,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             Account account = AccountDAO.findByName(em, name);
             // Check Access
             if (account != null) {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-                PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
                 authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, account.getId()));
             }
 
@@ -271,7 +244,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Validation of the fields
         ArgumentValidator.notNull(id, "scopeId");
-        ArgumentValidator.notNull(id.getId(), "scopeId.id");
 
         //
         // Make sure account exists
@@ -282,9 +254,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, account.getId()));
 
         return entityManagerSession.onResult(em -> {
@@ -307,9 +276,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> AccountDAO.query(em, query));
@@ -323,24 +289,22 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accountDomain, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> AccountDAO.count(em, query));
     }
 
     /**
-     * Find an account without authorization.
+     * Find an {@link Account} without authorization checks.
      *
      * @param accountId
      * @return
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
     private Account findById(KapuaId accountId)
             throws KapuaException {
-
         //
         // Argument Validation
         ArgumentValidator.notNull(accountId, "accountId");

@@ -19,8 +19,8 @@ import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.message.JmsUtil;
+import org.eclipse.kapua.broker.core.message.MessageConstants;
 
 /**
  * Broker assistant ({@link JmsProducerWrapper}) implementation.<BR>

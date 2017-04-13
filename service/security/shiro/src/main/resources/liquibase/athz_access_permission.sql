@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+-- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -36,4 +36,8 @@ CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId_groupId ON athz_ac
 
 INSERT INTO athz_access_permission
 	VALUES
-		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1
+		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1:*
+
+--changeset access_permission:2
+
+ALTER TABLE athz_access_permission MODIFY COLUMN domain VARCHAR(64) NULL;

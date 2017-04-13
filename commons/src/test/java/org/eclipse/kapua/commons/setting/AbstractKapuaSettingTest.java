@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
 
 public class AbstractKapuaSettingTest {
 

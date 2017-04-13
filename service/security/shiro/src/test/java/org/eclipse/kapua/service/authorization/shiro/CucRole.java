@@ -29,31 +29,31 @@ public class CucRole {
     private Set<Actions> actionSet = null;
 
     public void doParse() {
-        if (this.scopeId != null) {
-            this.id = new KapuaEid(BigInteger.valueOf(scopeId));
+        if (scopeId != null) {
+            id = new KapuaEid(BigInteger.valueOf(scopeId));
         }
-        if (this.actions != null) {
-            String tmpAct = this.actions.trim().toLowerCase();
+        if (actions != null) {
+            String tmpAct = actions.trim().toLowerCase();
             if (tmpAct.length() != 0) {
-                this.actionSet = new HashSet<>();
-                String[] tmpList = this.actions.split(",");
+                actionSet = new HashSet<>();
+                String[] tmpList = actions.split(",");
 
                 for (String tmpS : tmpList) {
                     switch (tmpS.trim().toLowerCase()) {
                     case "read":
-                        this.actionSet.add(Actions.read);
+                        actionSet.add(Actions.read);
                         break;
                     case "write":
-                        this.actionSet.add(Actions.write);
+                        actionSet.add(Actions.write);
                         break;
                     case "delete":
-                        this.actionSet.add(Actions.delete);
+                        actionSet.add(Actions.delete);
                         break;
                     case "connect":
-                        this.actionSet.add(Actions.connect);
+                        actionSet.add(Actions.connect);
                         break;
                     case "execute":
-                        this.actionSet.add(Actions.execute);
+                        actionSet.add(Actions.execute);
                         break;
                     }
                 }
@@ -74,7 +74,7 @@ public class CucRole {
     }
 
     public KapuaId getScopeId() {
-        return this.id;
+        return id;
     }
 
     public Set<Actions> getActions() {
@@ -82,6 +82,6 @@ public class CucRole {
     }
 
     public void setActions(Set<Actions> actions) {
-        this.actionSet = actions;
+        actionSet = actions;
     }
 }

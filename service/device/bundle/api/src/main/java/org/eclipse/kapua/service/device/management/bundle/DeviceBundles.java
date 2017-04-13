@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 20176 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.kapua.KapuaSerializable;
+
 /**
  * Device bundles list entity definition.
  *
@@ -26,13 +28,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(propOrder = { "bundles" }, factoryClass = DeviceBundleXmlRegistry.class, factoryMethod = "newBundleListResult")
 @XmlRootElement(name = "bundles")
-public interface DeviceBundles {
+public interface DeviceBundles extends KapuaSerializable {
 
     /**
      * Get the device bundles list
      *
      * @return
      */
-    @XmlElement(name = "bundle", namespace = "http://eurotech.com/esf/2.0")
+    @XmlElement(name = "bundle")
     public List<DeviceBundle> getBundles();
 }

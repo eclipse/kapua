@@ -128,7 +128,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     @Override
     public void death(KapuaId connectionId, KapuaDisconnectMessage message)
             throws KapuaException {
-        KapuaPayload payload = message.getPayload();
         KapuaId scopeId = message.getScopeId();
         KapuaId deviceId = message.getDeviceId();
 
@@ -136,7 +135,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         // Device update
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.find(scopeId, deviceId);
 
         //
         // Event create

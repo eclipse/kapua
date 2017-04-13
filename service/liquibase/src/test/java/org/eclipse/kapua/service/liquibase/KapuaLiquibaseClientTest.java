@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.liquibase;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 public class KapuaLiquibaseClientTest {
 

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
+import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -43,8 +45,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import static org.apache.commons.lang.SystemUtils.LINE_SEPARATOR;
 
 /**
  * Xml utilities

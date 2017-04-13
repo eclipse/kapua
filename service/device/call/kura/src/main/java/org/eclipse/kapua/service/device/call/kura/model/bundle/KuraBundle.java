@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.bundle;
 
@@ -24,19 +23,18 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  *
  */
-@XmlRootElement(name="bundle")
+@XmlRootElement(name = "bundle")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder= {"name","version","id","state"})
-public class KuraBundle
-{
+@XmlType(propOrder = { "name", "version", "id", "state" })
+public class KuraBundle {
 
-    @XmlElement(name="name")
+    @XmlElement(name = "name")
     public String name;
 
-    @XmlElement(name="version")
+    @XmlElement(name = "version")
     public String version;
 
-    @XmlElement(name="id")
+    @XmlElement(name = "id")
     public long id;
 
     @XmlElement(name = "state")
@@ -45,8 +43,7 @@ public class KuraBundle
     /**
      * Get bundle name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -55,8 +52,7 @@ public class KuraBundle
      * 
      * @param name
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -65,8 +61,7 @@ public class KuraBundle
      * 
      * @return
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
@@ -75,8 +70,7 @@ public class KuraBundle
      * 
      * @param version
      */
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -85,8 +79,7 @@ public class KuraBundle
      * 
      * @return
      */
-    public long getId()
-    {
+    public long getId() {
         return id;
     }
 
@@ -95,8 +88,7 @@ public class KuraBundle
      * 
      * @param id
      */
-    public void setId(long id)
-    {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -105,8 +97,7 @@ public class KuraBundle
      * 
      * @return
      */
-    public String getState()
-    {
+    public String getState() {
         return state;
     }
 
@@ -115,8 +106,7 @@ public class KuraBundle
      * 
      * @param state
      */
-    public void setState(String state)
-    {
+    public void setState(String state) {
         this.state = state;
     }
 }

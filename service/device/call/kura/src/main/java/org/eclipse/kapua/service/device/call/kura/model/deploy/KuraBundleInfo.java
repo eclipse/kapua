@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.deploy;
 
@@ -24,15 +23,15 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  *
  */
-@XmlRootElement(name="bundleInfo")
+@XmlRootElement(name = "bundleInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder= {"name","version"})
-public class KuraBundleInfo
-{
-    @XmlElement(name="name")
+@XmlType(propOrder = { "name", "version" })
+public class KuraBundleInfo {
+
+    @XmlElement(name = "name")
     public String name;
 
-    @XmlElement(name="version")
+    @XmlElement(name = "version")
     public String version;
 
     /**
@@ -40,8 +39,7 @@ public class KuraBundleInfo
      * 
      * @return
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -50,8 +48,7 @@ public class KuraBundleInfo
      * 
      * @param name
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -60,8 +57,7 @@ public class KuraBundleInfo
      * 
      * @return
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
@@ -70,8 +66,7 @@ public class KuraBundleInfo
      * 
      * @param version
      */
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 }

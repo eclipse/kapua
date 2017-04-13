@@ -32,7 +32,7 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
     }
 
     public void setPermissionDomain(String permissionDomain) {
-        set("permissionDomain", permissionDomain);
+        set("permissionDomain", permissionDomain == null ? "ALL" : permissionDomain);
     }
 
     public String getPermissionAction() {
@@ -40,7 +40,7 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
     }
 
     public void setPermissionAction(String permissionAction) {
-        set("permissionAction", permissionAction);
+        set("permissionAction", permissionAction == null ? "ALL" : permissionAction);
     }
 
     public String getPermissionTargetScopeId() {
@@ -48,7 +48,7 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
     }
 
     public void setPermissionTargetScopeId(String permissionTargetScopeId) {
-        set("permissionTargetScopeId", permissionTargetScopeId);
+        set("permissionTargetScopeId", permissionTargetScopeId == null ? "ALL" : permissionTargetScopeId);
     }
 
     public String getPermissionGroupId() {
@@ -56,7 +56,7 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
     }
 
     public void setPermissionGroupId(String permissionGroupId) {
-        set("permissionGroupId", permissionGroupId);
+        set("permissionGroupId", permissionGroupId == null ? "ALL" : permissionGroupId);
     }
 
     /**

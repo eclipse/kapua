@@ -57,7 +57,7 @@ public class GwtRolePermission extends GwtEntityModel {
     }
 
     public void setDomain(String domain) {
-        set("domain", domain);
+        set("domain", domain == null ? "ALL" : domain);
     }
 
     /**
@@ -73,7 +73,7 @@ public class GwtRolePermission extends GwtEntityModel {
     }
 
     public void setAction(String action) {
-        set("action", action);
+        set("action", action == null ? "ALL" : action);
     }
 
     /**
@@ -85,7 +85,7 @@ public class GwtRolePermission extends GwtEntityModel {
     }
 
     public void setTargetScopeId(String targetScopeId) {
-        set("targetScopeId", targetScopeId);
+        set("targetScopeId", targetScopeId == null ? "ALL" : targetScopeId);
     }
     
     /**
@@ -97,6 +97,6 @@ public class GwtRolePermission extends GwtEntityModel {
     }
 
     public void setGroupId(String groupId) {
-        set("groupId", groupId);
+        set("groupId", groupId == null ? "ALL" : groupId);
     }
 }

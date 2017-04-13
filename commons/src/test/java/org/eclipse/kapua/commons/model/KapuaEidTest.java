@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
-
-import static org.junit.Assert.*;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.junit.Test;

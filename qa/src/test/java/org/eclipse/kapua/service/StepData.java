@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service;
 
-import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Singleton;
 
 /**
  * Simple container for between step data that is persisted between steps and

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,23 +22,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @XmlRootElement(name = "snapshot-ids")
-public class KuraSnapshotIds
-{
+public class KuraSnapshotIds {
+
     private List<Long> snapshotIds;
 
     /**
      * Constructor
      */
-    public KuraSnapshotIds()
-    {}
+    public KuraSnapshotIds() {
+    }
 
     /**
      * Get the snapshot identifiers list
      * 
      * @return
      */
-    public List<Long> getSnapshotIds()
-    {
+    public List<Long> getSnapshotIds() {
         return snapshotIds;
     }
 
@@ -47,8 +46,7 @@ public class KuraSnapshotIds
      * 
      * @param snapshotIds
      */
-    public void setSnapshotIds(List<Long> snapshotIds)
-    {
+    public void setSnapshotIds(List<Long> snapshotIds) {
         this.snapshotIds = snapshotIds;
     }
 }
