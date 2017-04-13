@@ -1,8 +1,3 @@
-package org.eclipse.kapua.app.console.shared.model.account;
-
-import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
-
-
 /*******************************************************************************
  * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
@@ -13,8 +8,11 @@ import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
+package org.eclipse.kapua.app.console.shared.model.account;
+
+import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
+
 public class GwtAccountQuery extends GwtQuery {
 
     /**

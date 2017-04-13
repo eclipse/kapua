@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
@@ -91,10 +90,6 @@ public class XmlNamespaceFilter extends XMLFilterImpl
         if (addNamespace) {
             startControlledPrefixMapping();
         }
-        else {
-            // Remove the namespace, i.e. don´t call startPrefixMapping for parent!
-        }
-
     }
 
     private void startControlledPrefixMapping()

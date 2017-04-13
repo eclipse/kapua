@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 

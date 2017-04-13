@@ -105,9 +105,6 @@ public class EsTransportClientProvider implements ElasticsearchClientProvider {
     static Client createClient(final AbstractBaseKapuaSetting<DatastoreSettingKey> settings) throws EsClientUnavailableException {
         try {
             final List<InetSocketAddress> addresses = parseAddresses(settings);
-            if (addresses.isEmpty()) {
-
-            }
             return getEsClient(addresses, settings.getString(DatastoreSettingKey.ELASTICSEARCH_CLUSTER));
         } catch (final EsClientUnavailableException e) {
             throw e;

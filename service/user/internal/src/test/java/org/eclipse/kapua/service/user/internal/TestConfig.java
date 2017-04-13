@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 

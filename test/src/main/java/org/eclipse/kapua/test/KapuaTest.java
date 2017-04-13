@@ -1,4 +1,3 @@
-package org.eclipse.kapua.test;
 /*******************************************************************************
  * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
@@ -8,9 +7,9 @@ package org.eclipse.kapua.test;
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
-
+package org.eclipse.kapua.test;
 
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
 

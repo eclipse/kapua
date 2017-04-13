@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Red Hat
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
