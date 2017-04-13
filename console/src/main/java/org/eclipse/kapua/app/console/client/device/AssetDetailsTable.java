@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
 import java.util.ArrayList;
@@ -34,7 +46,7 @@ public class AssetDetailsTable extends LayoutContainer{
    
     private GwtSession currentSession;
     private ContentPanel tableContainer;
-    private ToolBar m_toolBar;
+    private ToolBar toolBar;
     private ExportButton readAll, writeAll;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     
@@ -51,7 +63,7 @@ public class AssetDetailsTable extends LayoutContainer{
         tableContainer.setScrollMode(Scroll.AUTOY);
         tableContainer.setLayout(new FitLayout());
         initDetailsGrid();
-        tableContainer.setTopComponent(m_toolBar);
+        tableContainer.setTopComponent(toolBar);
     }
     
     private void initDetailsGrid(){
@@ -80,17 +92,17 @@ public class AssetDetailsTable extends LayoutContainer{
             SwappableListStore<GwtChannel> store = new SwappableListStore<GwtChannel>(loader);
             Grid<GwtChannel> grid = new Grid<GwtChannel>(store, new ColumnModel(configs));
             tableContainer.add(grid);
-            m_toolBar = new ToolBar();
+            toolBar = new ToolBar();
             Label label = new Label(MSGS.assetLabel());
-            m_toolBar.add(label);
-            m_toolBar.add(new SeparatorToolItem());
-            m_toolBar.add(new FillToolItem());      
+            toolBar.add(label);
+            toolBar.add(new SeparatorToolItem());
+            toolBar.add(new FillToolItem());       
             readAll = new ExportButton();
             readAll.setText(MSGS.assetReadAll());
-            m_toolBar.add(readAll);
+            toolBar.add(readAll);
             writeAll = new ExportButton();
             writeAll.setText(MSGS.assetWriteAll());
-            m_toolBar.add(writeAll);
+            toolBar.add(writeAll);
     }
     
     @Override
@@ -100,9 +112,6 @@ public class AssetDetailsTable extends LayoutContainer{
         setBorders(false);
         initDetailsTable();
         add(tableContainer);
-    }
-    public void onUnload() {
-        super.onUnload();
     }
     
    

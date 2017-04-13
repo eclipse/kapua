@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
 import java.util.ArrayList;
@@ -40,7 +52,7 @@ public class AssetTable extends LayoutContainer{
     
     private GwtSession currentSession;
     private ContentPanel tableContainer;
-    private ToolBar m_toolBar;
+    private ToolBar toolBar;
     private ExportButton assetsButton, channelsButton;
     private SplitButton addAssets;
     private Button deleteAsset, writeAsset, readAsset, addChannel, deleteChannel, readChannel, writeChannel;
@@ -49,7 +61,7 @@ public class AssetTable extends LayoutContainer{
     
     public AssetTable(GwtSession currentSession){
         this.currentSession = currentSession;
-        m_toolBar = new ToolBar();
+        toolBar = new ToolBar();
     }
     
     private void initAssetTable(){
@@ -61,7 +73,7 @@ public class AssetTable extends LayoutContainer{
         tableContainer.setHeaderVisible(false);
         tableContainer.setLayout(new FitLayout());
         initAssetGrid();
-        tableContainer.setTopComponent(m_toolBar);
+        tableContainer.setTopComponent(toolBar);
     }
     
     private void initAssetGrid(){
@@ -122,7 +134,7 @@ public class AssetTable extends LayoutContainer{
                 
             }
         });
-        m_toolBar.add(assetsButton);
+        toolBar.add(assetsButton);
         channelsButton = new ExportButton();
         channelsButton.setText(MSGS.channelButton());
         addChannel = new Button("Add Channel");
@@ -148,7 +160,7 @@ public class AssetTable extends LayoutContainer{
                 
             }
         });
-        m_toolBar.add(channelsButton);
+        toolBar.add(channelsButton);
     }
     
     @Override
@@ -160,15 +172,11 @@ public class AssetTable extends LayoutContainer{
         add(tableContainer);
     }
     
-    public void onUnload() {
-        super.onUnload();
-    }
-    
     public void showToolbar(boolean show){
         if (show == true) {
-            m_toolBar.show();
+        	  toolBar.show();
         } else {
-            m_toolBar.hide();
+        	 toolBar.hide();
         }
         
     }

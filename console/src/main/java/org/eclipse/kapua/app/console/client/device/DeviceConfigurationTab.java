@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
@@ -16,10 +28,10 @@ import com.google.gwt.user.client.Element;
 
 public class DeviceConfigurationTab extends TabItem{
     
-    private GwtSession m_currentSession;
-    private GwtDevice m_selectedDevice;
-    private boolean m_dirty;
-    private boolean m_initialized;
+	private GwtSession currentSession;
+	private GwtDevice selectedDevice;
+	private boolean dirty;
+	private boolean initialized;
     private AssetTable table;
     private ConfigurationPanelTable configTable;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
@@ -29,25 +41,14 @@ public class DeviceConfigurationTab extends TabItem{
         super(MSGS.configurationTabItemTitle(), null);
         this.setBorders(false);
         this.setLayout(new FitLayout());
-        m_currentSession = currentSession;
-        m_dirty = true;
-        m_initialized = false;
+        this.currentSession = currentSession;
+        dirty = true;
+        initialized = false;
     }
     
     public void setDevice(GwtDevice selectedDevice){
-        m_dirty = true;
-        m_selectedDevice = selectedDevice;
-    }
-    
-    public void refresh(){
-        if (m_dirty && m_initialized) {
-            m_dirty = false;
-            if (m_selectedDevice == null) {
-                
-            } else {
-
-            }
-        }
+    	dirty = true;
+        this.selectedDevice = selectedDevice;
     }
     
     @Override
@@ -57,7 +58,7 @@ public class DeviceConfigurationTab extends TabItem{
         LayoutContainer tables = new LayoutContainer(new BorderLayout());
         add(tables);
         BorderLayoutData assetLayout = new BorderLayoutData(LayoutRegion.WEST, 0.3f);
-        table = new AssetTable(m_currentSession);
+        table = new AssetTable(currentSession);
         table.showToolbar(true);
         assetLayout.setMargins(new Margins(0, 5, 0, 0));
         assetLayout.setSplit(true);
@@ -66,7 +67,7 @@ public class DeviceConfigurationTab extends TabItem{
         BorderLayoutData configurationPanelTableBorder = new BorderLayoutData(LayoutRegion.CENTER, 0.7f);
         tables.add(configurationPanelTableContainer, configurationPanelTableBorder);
         BorderLayoutData detailsBorder = new BorderLayoutData(LayoutRegion.CENTER, 0.6f);
-        configTable = new ConfigurationPanelTable(m_currentSession);
+        configTable = new ConfigurationPanelTable(currentSession);
         detailsBorder.setMargins(new Margins(0, 5, 0, 0));
         detailsBorder.setSplit(true);
         configurationPanelTableContainer.add(configTable, detailsBorder);

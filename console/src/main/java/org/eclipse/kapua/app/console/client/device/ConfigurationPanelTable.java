@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
 import java.util.ArrayList;
@@ -32,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ConfigurationPanelTable extends LayoutContainer{
     private GwtSession currentSession;
     private ContentPanel tableContainer;
-    private ToolBar m_toolBar;
+    private ToolBar toolBar;
     private ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
    
     
@@ -48,7 +60,7 @@ public class ConfigurationPanelTable extends LayoutContainer{
         tableContainer.setScrollMode(Scroll.AUTOY);
         tableContainer.setLayout(new FitLayout());
         initConfigurationPanelTableGrid();
-        tableContainer.setTopComponent(m_toolBar);
+        tableContainer.setTopComponent(toolBar);
     }
     
     private void initConfigurationPanelTableGrid(){
@@ -88,11 +100,11 @@ public class ConfigurationPanelTable extends LayoutContainer{
         SwappableListStore<GwtChannel> store = new SwappableListStore<GwtChannel>(loader);
         Grid<GwtChannel> grid = new Grid<GwtChannel>(store, new ColumnModel(configs));
         tableContainer.add(grid);
-        m_toolBar = new ToolBar();
+        toolBar = new ToolBar();
         Label label = new Label("Asset 1(Driver)");
-        m_toolBar.add(label);
-        m_toolBar.add(new SeparatorToolItem());
-        m_toolBar.add(new FillToolItem());      
+        toolBar.add(label);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(new FillToolItem());        
        
     }
     
@@ -103,10 +115,6 @@ public class ConfigurationPanelTable extends LayoutContainer{
         setBorders(false);
         initConfigurationPanelTable();
         add(tableContainer);
-    }
-    
-    public void onUnload() {
-        super.onUnload();
     }
     
 }

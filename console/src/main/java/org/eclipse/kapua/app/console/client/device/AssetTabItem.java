@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *
+ *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
@@ -13,20 +25,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
 public class AssetTabItem extends TabItem{
-    private GwtSession m_currentSession;
-    private TabPanel m_tabsPanel;
+	private GwtSession currentSession;
+	private TabPanel tabsPanel;
     private DeviceValuesTab valuesTab;
     private DeviceConfigurationTab configurationsTab;
-    private TabItem m_tabValue;
-    private TabItem m_tabConfiguration;
+    private TabItem tabValue;
+    private TabItem tabConfiguration;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     
     public AssetTabItem(GwtSession currentSession){
         super(MSGS.assetTabItemTitle(), null);
-        m_currentSession = currentSession;
-        valuesTab = new DeviceValuesTab(m_currentSession);
-        configurationsTab = new DeviceConfigurationTab(m_currentSession);
+        this.currentSession = currentSession;
+        valuesTab = new DeviceValuesTab(currentSession);
+        configurationsTab = new DeviceConfigurationTab(currentSession);
     }
     
     @Override
@@ -34,21 +46,21 @@ public class AssetTabItem extends TabItem{
         
         super.onRender(parent, index);
         setLayout(new FitLayout());
-        m_tabsPanel = new TabPanel();
-        m_tabsPanel.setPlain(true);
-        m_tabsPanel.setBorders(false);
-        m_tabsPanel.setBodyBorder(false);
-        m_tabValue = new TabItem(MSGS.valueTabItem(), new KapuaIcon(IconSet.INFO));
-        m_tabValue.setBorders(true);
-        m_tabValue.setLayout(new FitLayout());
-        m_tabValue.add(valuesTab);
-        m_tabsPanel.add(m_tabValue);
-        m_tabConfiguration = new TabItem(MSGS.configurationTabItem(), new KapuaIcon(IconSet.CODE));
-        m_tabConfiguration.setBorders(true);
-        m_tabConfiguration.setLayout(new FitLayout());
-        m_tabConfiguration.add(configurationsTab);
-        m_tabsPanel.add(m_tabConfiguration);
-        m_tabsPanel.setTabPosition(TabPosition.BOTTOM);
-        add(m_tabsPanel);
+        tabsPanel = new TabPanel();
+        tabsPanel.setPlain(true);
+        tabsPanel.setBorders(false);
+        tabsPanel.setBodyBorder(false);
+        tabValue = new TabItem(MSGS.valueTabItem(), new KapuaIcon(IconSet.INFO));
+        tabValue.setBorders(true);
+        tabValue.setLayout(new FitLayout());
+        tabValue.add(valuesTab);
+        tabsPanel.add(tabValue);
+        tabConfiguration = new TabItem(MSGS.configurationTabItem(), new KapuaIcon(IconSet.CODE));
+        tabConfiguration.setBorders(true);
+        tabConfiguration.setLayout(new FitLayout());
+        tabConfiguration.add(configurationsTab);
+        tabsPanel.add(tabConfiguration);
+        tabsPanel.setTabPosition(TabPosition.BOTTOM);
+        add(tabsPanel);
     }
 }
