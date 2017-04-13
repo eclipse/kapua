@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.datastore.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
 /**
  * Datastore entity manager factory implementation

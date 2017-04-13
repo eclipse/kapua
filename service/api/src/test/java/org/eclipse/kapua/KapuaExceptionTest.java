@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 

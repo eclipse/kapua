@@ -9,13 +9,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
-import org.elasticsearch.client.transport.TransportClient;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.UnknownHostException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.elasticsearch.client.transport.TransportClient;
+import org.junit.Ignore;
+import org.junit.Test;
 
 @Ignore
 public class EsClientTest

@@ -1,11 +1,11 @@
 package org.eclipse.kapua.test.account;
 
+import java.util.List;
+
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.account.AccountQuery;
-
-import java.util.List;
 
 /*******************************************************************************
  * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others

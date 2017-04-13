@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
-import org.eclipse.kapua.KapuaSerializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-import javax.xml.bind.annotation.*;
+import org.eclipse.kapua.KapuaSerializable;
 
 /**
  * Device connection summary definition.

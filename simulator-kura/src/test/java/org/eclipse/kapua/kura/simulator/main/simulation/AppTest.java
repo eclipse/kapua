@@ -20,10 +20,10 @@ import org.eclipse.kapua.kura.simulator.app.ApplicationContext;
 import org.eclipse.kapua.kura.simulator.app.Handler;
 import org.eclipse.kapua.kura.simulator.app.Sender;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration;
-import org.eclipse.kapua.kura.simulator.simulation.Configurations;
-import org.eclipse.kapua.kura.simulator.simulation.Simulation;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Topic;
+import org.eclipse.kapua.kura.simulator.simulation.Configurations;
+import org.eclipse.kapua.kura.simulator.simulation.Simulation;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
 import org.junit.Test;
 

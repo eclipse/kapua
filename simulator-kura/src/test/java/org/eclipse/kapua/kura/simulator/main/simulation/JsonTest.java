@@ -20,9 +20,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.eclipse.kapua.kura.simulator.simulation.Configuration;
-import org.eclipse.kapua.kura.simulator.simulation.JsonReader;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Topic;
+import org.eclipse.kapua.kura.simulator.simulation.JsonReader;
 import org.junit.Test;
 
 public class JsonTest {

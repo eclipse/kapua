@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedPayload;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class KapuaUnmatchedMessageTest extends Assert {
 

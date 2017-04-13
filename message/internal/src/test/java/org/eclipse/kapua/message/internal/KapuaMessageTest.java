@@ -12,6 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populateChannel;
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populateKapuaMessage;
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayload;
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePosition;
+
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.UUID;
+
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -22,15 +34,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.UUID;
-
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.*;
 
 public class KapuaMessageTest extends Assert {
 

@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class StringUtilTest {
 

@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 /**
  * Configurable JDBC connection URL resolver implementation. Can be configured using Kubernetes service discovery or

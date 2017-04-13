@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
-
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * Usage of this class instances is mainly in test cases that have to configure

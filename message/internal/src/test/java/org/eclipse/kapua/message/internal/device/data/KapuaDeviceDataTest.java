@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class KapuaDeviceDataTest extends Assert {
 

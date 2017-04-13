@@ -12,7 +12,15 @@
 package org.eclipse.kapua.commons.configuration.metatype;
 
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.config.metatype.*;
+import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
+import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
+import org.eclipse.kapua.model.config.metatype.KapuaTicon;
+import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
+import org.eclipse.kapua.model.config.metatype.KapuaTobject;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.model.config.metatype.KapuaToption;
+import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
 
 /**
  * Kapua metatype objects factory service implementation.

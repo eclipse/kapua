@@ -12,19 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service;
 
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
-
-import javax.inject.Singleton;
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
 import java.util.Optional;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.*;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
+import javax.inject.Singleton;
+
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 
 /**
  * Singleton for managing database creation and deletion inside Gherkin scenarios.

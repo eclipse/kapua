@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
-import org.eclipse.kapua.service.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayload;
+import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayloadWithAllTypesOfMetrics;
+
+import java.io.StringWriter;
+import java.util.Map;
+
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.io.StringWriter;
-import java.util.Map;
-
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayload;
-import static org.eclipse.kapua.message.internal.KapuaMessageUtil.populatePayloadWithAllTypesOfMetrics;
 
 public class KapuaPayloadTest extends Assert {
 

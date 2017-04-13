@@ -9,14 +9,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.configuration.CompositeConfiguration;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import org.apache.commons.configuration.CompositeConfiguration;
+
+import com.google.common.collect.ImmutableList;
 
 public class EnvFriendlyConfiguration extends CompositeConfiguration {
 

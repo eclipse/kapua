@@ -13,7 +13,11 @@
 package org.eclipse.kapua.message.internal;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.message.*;
+import org.eclipse.kapua.message.KapuaChannel;
+import org.eclipse.kapua.message.KapuaMessage;
+import org.eclipse.kapua.message.KapuaMessageFactory;
+import org.eclipse.kapua.message.KapuaPayload;
+import org.eclipse.kapua.message.KapuaPosition;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
