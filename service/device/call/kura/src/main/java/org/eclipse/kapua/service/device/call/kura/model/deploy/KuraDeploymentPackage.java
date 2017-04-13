@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.deploy;
 
@@ -28,8 +27,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "package")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "name", "version", "bundleInfos" })
-public class KuraDeploymentPackage
-{
+public class KuraDeploymentPackage {
+
     @XmlElement(name = "name")
     public String name;
 
@@ -45,8 +44,7 @@ public class KuraDeploymentPackage
      * 
      * @return
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -55,8 +53,7 @@ public class KuraDeploymentPackage
      * 
      * @param name
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -65,8 +62,7 @@ public class KuraDeploymentPackage
      * 
      * @return
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
@@ -75,8 +71,7 @@ public class KuraDeploymentPackage
      * 
      * @param version
      */
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
@@ -85,8 +80,7 @@ public class KuraDeploymentPackage
      * 
      * @return
      */
-    public KuraBundleInfo[] getBundleInfos()
-    {
+    public KuraBundleInfo[] getBundleInfos() {
         return bundleInfos;
     }
 
@@ -95,8 +89,7 @@ public class KuraDeploymentPackage
      * 
      * @param bundleInfos
      */
-    public void setBundleInfos(KuraBundleInfo[] bundleInfos)
-    {
+    public void setBundleInfos(KuraBundleInfo[] bundleInfos) {
         this.bundleInfos = bundleInfos;
     }
 }

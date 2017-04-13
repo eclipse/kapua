@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,8 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "configurations")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KuraDeviceConfiguration
-{
+public class KuraDeviceConfiguration {
+
     @XmlElement(name = "configuration")
     private List<KuraDeviceComponentConfiguration> configurations;
 
@@ -36,8 +36,8 @@ public class KuraDeviceConfiguration
     /**
      * Constructor
      */
-    public KuraDeviceConfiguration()
-    {}
+    public KuraDeviceConfiguration() {
+    }
 
     /**
      * Constructor
@@ -45,8 +45,7 @@ public class KuraDeviceConfiguration
      * @param accountName
      * @param clientId
      */
-    public KuraDeviceConfiguration(String accountName, String clientId)
-    {
+    public KuraDeviceConfiguration(String accountName, String clientId) {
         this();
         configurations = new ArrayList<>();
     }
@@ -56,8 +55,7 @@ public class KuraDeviceConfiguration
      * 
      * @return
      */
-    public List<KuraDeviceComponentConfiguration> getConfigurations()
-    {
+    public List<KuraDeviceComponentConfiguration> getConfigurations() {
         if (configurations == null) {
             configurations = new ArrayList<>();
         }
@@ -70,8 +68,7 @@ public class KuraDeviceConfiguration
      * 
      * @param configurations
      */
-    public void setConfigurations(List<KuraDeviceComponentConfiguration> configurations)
-    {
+    public void setConfigurations(List<KuraDeviceComponentConfiguration> configurations) {
         this.configurations = configurations;
     }
 }

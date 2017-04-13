@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -36,8 +36,8 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KuraDeviceComponentConfiguration
-{
+public class KuraDeviceComponentConfiguration {
+
     /**
      * The PID (service's persistent identity) of the OSGi Component
      * associated to this configuration.<br>
@@ -63,8 +63,8 @@ public class KuraDeviceComponentConfiguration
     private Map<String, Object> properties;
 
     // Required by JAXB
-    public KuraDeviceComponentConfiguration()
-    {}
+    public KuraDeviceComponentConfiguration() {
+    }
 
     /**
      * Get the component identifier.<br>
@@ -76,8 +76,7 @@ public class KuraDeviceComponentConfiguration
      * 
      * @return
      */
-    public String getComponentId()
-    {
+    public String getComponentId() {
         return componentId;
     }
 
@@ -86,8 +85,7 @@ public class KuraDeviceComponentConfiguration
      * 
      * @param componentId
      */
-    public void setComponentId(String componentId)
-    {
+    public void setComponentId(String componentId) {
         this.componentId = componentId;
     }
 
@@ -98,8 +96,7 @@ public class KuraDeviceComponentConfiguration
      * 
      * @return
      */
-    public KapuaTocd getDefinition()
-    {
+    public KapuaTocd getDefinition() {
         return definition;
     }
 
@@ -108,8 +105,7 @@ public class KuraDeviceComponentConfiguration
      * 
      * @param definition
      */
-    public void setDefinition(KapuaTocd definition)
-    {
+    public void setDefinition(KapuaTocd definition) {
         this.definition = (TocdImpl) definition;
     }
 
@@ -119,8 +115,7 @@ public class KuraDeviceComponentConfiguration
      * 
      * @return
      */
-    public Map<String, Object> getProperties()
-    {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
@@ -129,8 +124,7 @@ public class KuraDeviceComponentConfiguration
      * 
      * @param properties
      */
-    public void setProperties(Map<String, Object> properties)
-    {
+    public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
 }
