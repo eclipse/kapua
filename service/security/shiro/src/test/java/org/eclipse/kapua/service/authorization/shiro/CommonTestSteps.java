@@ -52,7 +52,7 @@ public class CommonTestSteps extends KapuaTest {
     }
 
     @Given("^A null scope$")
-    public void setNullScopId() {
+    public void setNullScopeId() {
         commonData.scopeId = null;
     }
     
