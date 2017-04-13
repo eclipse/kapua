@@ -8,9 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
-
 package org.eclipse.kapua.service.device.management.snapshot.internal;
 
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;

@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2017 Red Hat Inc and others
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,7 +140,7 @@ public final class Metrics {
         b.setName(key);
 
         if (value == null) {
-            // ignore
+            return;
         } else if (value instanceof Boolean) {
             b.setType(ValueType.BOOL);
             b.setBoolValue((boolean) value);
@@ -165,9 +166,7 @@ public final class Metrics {
             throw new IllegalArgumentException(String.format("Illegal metric data type: %s", value.getClass()));
         }
 
-        if (value != null) {
-            builder.addMetric(b);
-        }
+        builder.addMetric(b);
     }
 
     public static Map<String, Object> extractMetrics(final KuraPayload payload) {

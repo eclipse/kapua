@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.device.integration;
 

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Red Hat - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
