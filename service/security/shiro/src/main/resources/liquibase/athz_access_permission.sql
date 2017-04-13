@@ -22,7 +22,7 @@ CREATE TABLE athz_access_permission (
   
   access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
   
-  domain					VARCHAR(64),
+  domain					VARCHAR(64)	  NOT NULL,
   action					VARCHAR(64),
   target_scope_id			BIGINT(21)	  UNSIGNED,
   group_id             	    BIGINT(21) 	  UNSIGNED,
@@ -37,3 +37,7 @@ CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId_groupId ON athz_ac
 INSERT INTO athz_access_permission
 	VALUES
 		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1:*
+
+--changeset access_permission:2
+
+ALTER TABLE athz_access_permission MODIFY COLUMN domain VARCHAR(64) NULL;
