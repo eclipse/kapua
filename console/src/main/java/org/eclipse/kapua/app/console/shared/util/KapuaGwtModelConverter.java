@@ -172,16 +172,23 @@ public class KapuaGwtModelConverter {
 
         gwtAccessPermission.setAccessInfoId(accessPermission.getAccessInfoId().toCompactId());
         gwtAccessPermission.setPermissionDomain(accessPermission.getPermission().getDomain());
-        gwtAccessPermission.setPermissionAction(accessPermission.getPermission().getAction().toString());
+
+        if (accessPermission.getPermission().getAction() != null) {
+            gwtAccessPermission.setPermissionAction(accessPermission.getPermission().getAction().toString());
+        } else {
+            gwtAccessPermission.setPermissionAction("ALL");
+        }
+        
         if (accessPermission.getPermission().getTargetScopeId() != null) {
             gwtAccessPermission.setPermissionTargetScopeId(accessPermission.getPermission().getTargetScopeId().toCompactId());
         } else {
-            gwtAccessPermission.setPermissionTargetScopeId("*");
+            gwtAccessPermission.setPermissionTargetScopeId("ALL");
         }
+        
         if (accessPermission.getPermission().getGroupId() != null) {
             gwtAccessPermission.setPermissionGroupId(accessPermission.getPermission().getGroupId().toCompactId());
         } else {
-            gwtAccessPermission.setPermissionGroupId("*");
+            gwtAccessPermission.setPermissionGroupId("ALL");
         }
 
         //

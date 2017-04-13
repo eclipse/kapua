@@ -522,6 +522,9 @@ public class GwtKapuaModelConverter {
             case write:
                 action = Actions.write;
                 break;
+            case ALL:
+                action = null;
+                break;
             }
         }
         return action;
@@ -585,6 +588,9 @@ public class GwtKapuaModelConverter {
                 break;
             case user:
                 domain = new UserDomain();
+                break;
+            case ALL:
+                domain = null;
                 break;
             }
         }

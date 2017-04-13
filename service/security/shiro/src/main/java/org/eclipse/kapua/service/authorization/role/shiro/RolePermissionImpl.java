@@ -90,7 +90,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setRoleId(KapuaId roleId) {
-        this.roleId = roleId != null ? new KapuaEid(roleId.getId()) : null;
+        this.roleId = roleId != null ? (roleId instanceof KapuaEid ? (KapuaEid) roleId : new KapuaEid(roleId)) : null;
     }
 
     @Override
@@ -100,18 +100,18 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setPermission(Permission permission) {
-        this.permission = permission != null ? new PermissionImpl(permission) : null;
+        this.permission = permission != null ? (permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission)) : null;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public Permission getPermission() {
-        return permission;
+        return permission != null ? permission : new PermissionImpl(null, null, null, null);
     }
 
     @Override
     public String toString() {
-        return permission.toString();
+        return getPermission().toString();
     }
 
     @PreUpdate
@@ -144,15 +144,15 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
         if (getClass() != obj.getClass())
             return false;
         RolePermissionImpl other = (RolePermissionImpl) obj;
-        if (permission == null) {
-            if (other.permission != null)
-                return false;
-        } else if (!permission.equals(other.permission))
-            return false;
         if (roleId == null) {
             if (other.roleId != null)
                 return false;
         } else if (!roleId.equals(other.roleId))
+            return false;
+        if (getPermission() == null) {
+            if (other.getPermission() != null)
+                return false;
+        } else if (!getPermission().equals(other.getPermission()))
             return false;
         return true;
     }

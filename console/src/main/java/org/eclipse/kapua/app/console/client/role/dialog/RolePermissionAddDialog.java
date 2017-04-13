@@ -55,6 +55,8 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     protected GwtRole selectedRole;
     
     private final GwtGroup allGroup;
+    private final GwtDomain allDomain = GwtDomain.ALL;
+    private final GwtAction allAction = GwtAction.ALL;
 
     public RolePermissionAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -77,10 +79,10 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(List<GwtDomain> domainslist) {
+                domainCombo.getStore().removeAll();
+                domainCombo.add(allDomain);
                 domainCombo.add(domainslist);
-                if (!domainslist.isEmpty()) {
-                    domainCombo.setSimpleValue(domainslist.get(0));
-                }
+                domainCombo.setSimpleValue(allDomain);
                 refreshActions();
             }
 
@@ -147,10 +149,9 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
             @Override
             public void onSuccess(List<GwtAction> actionslist) {
                 actionCombo.getStore().removeAll();
+                actionCombo.add(allAction);
                 actionCombo.add(actionslist);
-                if (!actionslist.isEmpty()) {
-                    actionCombo.setSimpleValue(actionslist.get(0));
-                }
+                actionCombo.setSimpleValue(allAction);
             }
 
             @Override
