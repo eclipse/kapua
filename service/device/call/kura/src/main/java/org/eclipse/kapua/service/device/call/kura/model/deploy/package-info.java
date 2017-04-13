@@ -21,6 +21,6 @@
                                                                                           @XmlNs(namespaceURI = "http://eurotech.com/esf/2.0", prefix = "esf"),
                                                                                           @XmlNs(namespaceURI = "http://www.osgi.org/xmlns/metatype/v1.2.0", prefix = "ocd")
 }, elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED, attributeFormDefault = javax.xml.bind.annotation.XmlNsForm.UNQUALIFIED)
-package org.eclipse.kapua.service.device.call.kura.model.bundle;
+package org.eclipse.kapua.service.device.call.kura.model.deploy;
 
 import javax.xml.bind.annotation.XmlNs;
