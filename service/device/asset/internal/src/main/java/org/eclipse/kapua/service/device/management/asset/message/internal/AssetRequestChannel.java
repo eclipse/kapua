@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
 import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
 
 /**
- * Device bundle information request channel.
+ * Device asset information request channel.
  * 
  * @since 1.0
  * 
@@ -25,8 +25,6 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
 public class AssetRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
 {
     private KapuaMethod method;
-    private String      assetId;
-    private boolean start;
 
     @Override
     public KapuaMethod getMethod()
@@ -38,45 +36,5 @@ public class AssetRequestChannel extends KapuaAppChannelImpl implements KapuaReq
     public void setMethod(KapuaMethod method)
     {
         this.method = method;
-    }
-
-    /**
-     * Get the asset identifier
-     * 
-     * @return
-     */
-    public String getAssetId()
-    {
-        return assetId;
-    }
-
-    /**
-     * Set the asset identifier
-     * 
-     * @param assetId
-     */
-    public void setAssetId(String assetId)
-    {
-        this.assetId = assetId;
-    }
-
-    /**
-     * Check if the bundle is started
-     * 
-     * @return
-     */
-    public boolean isStart()
-    {
-        return start;
-    }
-
-    /**
-     * Set the bundle start flag
-     * 
-     * @param start
-     */
-    public void setStart(boolean start)
-    {
-        this.start = start;
     }
 }
