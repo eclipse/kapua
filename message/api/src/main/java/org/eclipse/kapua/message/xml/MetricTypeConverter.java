@@ -19,11 +19,13 @@ public class MetricTypeConverter extends ObjectTypeConverter {
     }
 
     public static Class<?> fromString(String value) throws ClassNotFoundException {
+        String lowerCaseValue = value.toLowerCase();
+        
         Class<?> clazz;
-        if (TYPE_BASE_64_BINARY.equals(value)) {
+        if (TYPE_BASE_64_BINARY.equals(lowerCaseValue)) {
             clazz = byte[].class;
         } else {
-            clazz = ObjectTypeConverter.fromString(value);
+            clazz = ObjectTypeConverter.fromString(lowerCaseValue);
         }
         return clazz;
     }
