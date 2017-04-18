@@ -4,7 +4,6 @@
   "description": "Kapua admin console written in HTML and AngularJS",
   "main": "index.js",
   "dependencies": {
-    "@types/jasmine": "~2.5.37",
     "angular-local-storage": "^0.5.0",
     "angular-patternfly": "^3.15.0",
     "angular-ui-router": "^0.3.2",
