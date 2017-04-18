@@ -13,9 +13,13 @@ package org.eclipse.kapua.service.device.management.asset;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.KapuaSerializable;
 
 /**
  * Device assets list entity definition.
@@ -23,15 +27,16 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  *
  */
-@XmlType(propOrder = { "assets" }, factoryClass = DeviceAssetXmlRegistry.class, factoryMethod = "newAssetListResult")
-@XmlRootElement(name = "assets")
-public interface DeviceAssets {
+@XmlRootElement(name = "deviceAssets")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DeviceAssetXmlRegistry.class, factoryMethod = "newAssetListResult")
+public interface DeviceAssets extends KapuaSerializable {
 
     /**
      * Get the device assets list
      *
      * @return
      */
-    @XmlElement(name = "asset", namespace = "http://eurotech.com/esf/2.0")
+    @XmlElement(name = "deviceAsset")
     public List<DeviceAsset> getAssets();
 }

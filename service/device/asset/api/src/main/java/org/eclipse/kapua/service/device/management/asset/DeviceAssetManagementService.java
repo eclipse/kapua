@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.channel.DeviceChannels;
 
 /**
  * Device asset service definition.
@@ -34,5 +37,21 @@ public interface DeviceAssetManagementService extends KapuaService {
      * @throws KapuaException
      */
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, Long timeout)
+            throws KapuaException;
+    
+    
+    /**
+     * Get the device asset channel list for the given asset name.
+     *
+     * @param scopeId
+     * @param deviceId
+     * @param assetName
+     * @param channelNames
+     * @param timeout
+     *            timeout waiting for the device response
+     * @return
+     * @throws KapuaException
+     */
+    public DeviceChannels getChannels(KapuaId scopeId, KapuaId deviceId, String assetName, List<String> channelNames, Long timeout)
             throws KapuaException;
 }
