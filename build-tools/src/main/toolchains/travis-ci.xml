@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF8"?>
+<!DOCTYPE xml>
+<!-- Travis CI based toolchain file -->
+<toolchains>
+	<toolchain>
+		<type>jdk</type>
+		<provides>
+			<version>6</version>
+		</provides>
+		<configuration>
+			<jdkHome>/usr/lib/jvm/java-6-openjdk-amd64/jre</jdkHome>
+		</configuration>
+	</toolchain>
+	<toolchain>
+		<type>jdk</type>
+		<provides>
+			<version>7</version>
+		</provides>
+		<configuration>
+			<jdkHome>/usr/lib/jvm/java-7-openjdk-amd64/jre</jdkHome>
+		</configuration>
+	</toolchain>
+	<toolchain>
+		<type>jdk</type>
+		<provides>
+			<version>8</version>
+		</provides>
+		<configuration>
+			<jdkHome>/usr/lib/jvm/java-8-oracle/jre</jdkHome>
+		</configuration>
+	</toolchain>
+</toolchains>
