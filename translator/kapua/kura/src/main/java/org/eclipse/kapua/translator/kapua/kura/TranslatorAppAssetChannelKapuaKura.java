@@ -8,8 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
- *
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
