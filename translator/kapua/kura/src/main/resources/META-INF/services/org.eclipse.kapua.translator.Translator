@@ -1,5 +1,6 @@
 #from kapua to kura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura
+org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetChannelKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppBundleKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppCommandKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppConfigurationKapuaKura
@@ -9,6 +10,7 @@ org.eclipse.kapua.translator.kapua.kura.TranslatorDataKapuaKura
 
 #from kura to kapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppAssetKuraKapua
+org.eclipse.kapua.translator.kura.kapua.TranslatorAppAssetChannelKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppBundleKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppCommandKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppConfigurationKuraKapua
