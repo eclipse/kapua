@@ -807,6 +807,37 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>eclipse-hudson</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- this is a workaround for a bug in Hudson breaking SLF4J with checkstyle -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-checkstyle-plugin</artifactId>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>jcl-over-slf4j</artifactId>
+                                    <version>1.7.21</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-jdk14</artifactId>
+                                    <version>1.7.21</version>
+                                </dependency>
+                                </dependencies>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
     </profiles>
 
     <licenses>
