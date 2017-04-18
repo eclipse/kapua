@@ -193,13 +193,6 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         assertNotNull(accessData.user.getId());
     }
 
-    @Given("^An invalid user$")
-    public void provideInvalidUserObject() {
-        accessData.user = new UserImpl(generateId(), generateId().toString());
-        accessData.user.setId(generateId());
-        assertNotNull(accessData.user);
-    }
-
     @Given("^The permission(?:|s) \"(.+)\"$")
     public void createPermissionsForDomain(String permList) {
         // Sanity checks
@@ -279,6 +272,36 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         assertEquals(1, accessData.roleIds.size());
     }
 
+    @Given("^An invalid user$")
+    public void provideInvalidUserObject() {
+        accessData.user = new UserImpl(generateId(), generateId().toString());
+        accessData.user.setId(generateId());
+        assertNotNull(accessData.user);
+    }
+
+    @When("^I create the access role$")
+    public void createAccessRole()
+            throws KapuaException {
+
+        assertNotNull(commonData.scopeId);
+
+        AccessRoleCreator tmpCreator = accessRoleFactory.newCreator(commonData.scopeId);
+        assertNotNull(tmpCreator);
+
+        tmpCreator.setAccessInfoId(generateId());
+        tmpCreator.setRoleId(generateId());
+
+        try {
+            commonData.exceptionCaught = false;
+            KapuaSecurityUtils.doPrivileged(() -> {
+                accessData.accessRole = accessRoleService.create(tmpCreator);
+                return null;
+            });
+        } catch (KapuaException e) {
+            commonData.exceptionCaught = true;
+        }
+    }
+
     @When("^I create the access info entity$")
     public void createAccessInfoEntity() {
 
@@ -355,7 +378,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             return null;
         });
     }
-    
+
     @When("^I search for an access info entity by user ID$")
     public void findTheAccessInfoEntityByUserId()
             throws KapuaException {
@@ -367,6 +390,49 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             accessData.accessInfoFound = accessInfoService.findByUserId(commonData.scopeId, accessData.user.getId());
             return null;
         });
+    }
+
+    @When("^I search for the last created access role entity$")
+    public void findLastCreatedAccessRole()
+            throws KapuaException {
+        assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessRole);
+        assertNotNull(accessData.accessRole.getId());
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            accessData.accessRoleFound = accessRoleService.find(commonData.scopeId, accessData.accessRole.getId());
+            return null;
+        });
+    }
+
+    @When("^I count the access roles in scope (\\d+)$")
+    public void countAccesRolesInScope(Integer scope)
+            throws KapuaException {
+        assertNotNull(scope);
+        AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(new KapuaEid(BigInteger.valueOf(scope)));
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            commonData.count = accessRoleService.count(tmpQuery);
+            return null;
+        });
+    }
+
+    @When("^I delete the last created access role entry$")
+    public void deleteLastCreatedAccessRoleEntry()
+            throws KapuaException {
+        assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessRole);
+        assertNotNull(accessData.accessRole.getId());
+
+        try {
+            commonData.exceptionCaught = false;
+            KapuaSecurityUtils.doPrivileged(() -> {
+                accessRoleService.delete(commonData.scopeId, accessData.accessRole.getId());
+                return null;
+            });
+        } catch (KapuaException e) {
+            commonData.exceptionCaught = true;
+        }
     }
 
     @When("^I delete the existing access info entity$")
@@ -421,6 +487,186 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         }
     }
 
+    @When("^I create the permission(?:|s)$")
+    public void createPermissionEntries()
+            throws KapuaException {
+        assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.permissions);
+        assertFalse(accessData.permissions.isEmpty());
+
+        accessData.accessPermissionCreator = accessPermissionFactory.newCreator(commonData.scopeId);
+        accessData.accessPermissionCreator.setAccessInfoId(generateId());
+
+        try {
+            commonData.exceptionCaught = false;
+            for (Permission tmpPerm : accessData.permissions) {
+                accessData.accessPermissionCreator.setPermission(tmpPerm);
+                KapuaSecurityUtils.doPrivileged(() -> {
+                    accessData.accessPermission = accessPermissionService.create(accessData.accessPermissionCreator);
+                    return null;
+                });
+            }
+        } catch (KapuaException ex) {
+            commonData.exceptionCaught = true;
+        }
+    }
+
+    @When("^I search for the last created permission$")
+    public void findTheLastCreatedAccessPermission()
+            throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            accessData.accessPermissionFound = accessPermissionService.find(commonData.scopeId, accessData.accessPermission.getId());
+            return null;
+        });
+    }
+
+    @When("^I delete the last created access permission$")
+    public void deleteLastCreatedPermission()
+            throws KapuaException {
+
+        assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessPermission);
+
+        try {
+            commonData.exceptionCaught = false;
+            KapuaSecurityUtils.doPrivileged(() -> {
+                accessPermissionService.delete(commonData.scopeId, accessData.accessPermission.getId());
+                return null;
+            });
+        } catch (KapuaException ex) {
+            commonData.exceptionCaught = true;
+        }
+    }
+
+    @When("^I count the permissions in scope (\\d+)$")
+    public void countPermissionsForScope(Integer scope)
+            throws KapuaException {
+        assertNotNull(scope);
+        KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
+        assertNotNull(tmpId);
+
+        AccessPermissionQuery tmpQuery = accessPermissionFactory.newQuery(tmpId);
+        KapuaSecurityUtils.doPrivileged(() -> {
+            commonData.count = accessPermissionService.count(tmpQuery);
+            return null;
+        });
+    }
+
+    @When("^I check the sanity of the access info factory$")
+    public void accessInfoServiceSanityCheck() {
+        try {
+            commonData.exceptionCaught = false;
+
+            assertNotNull(accessInfoFactory.newCreator(generateId()));
+            assertNotNull(accessInfoFactory.newEntity(null));
+            assertNotNull(accessInfoFactory.newQuery(generateId()));
+            assertNotNull(accessInfoFactory.newListResult());
+
+            AccessInfoCreator tmpCreator = new AccessInfoCreatorImpl(generateId());
+            assertNotNull(tmpCreator);
+            tmpCreator.setUserId(generateId());
+            AccessInfoCreator tmpCreator_2 = new AccessInfoCreatorImpl(tmpCreator);
+            assertNotNull(tmpCreator_2);
+            assertEquals(tmpCreator.getUserId(), tmpCreator_2.getUserId());
+
+            AccessInfo tmpAccInfo = new AccessInfoImpl(generateId());
+            assertNotNull(tmpAccInfo);
+            tmpAccInfo.setUserId(generateId());
+
+            AccessInfo tmpAccInfo_2 = new AccessInfoImpl(tmpAccInfo);
+            assertNotNull(tmpAccInfo_2);
+            assertNotNull(tmpAccInfo_2.getUserId());
+
+            tmpAccInfo_2.setUserId(null);
+            assertNull(tmpAccInfo_2.getUserId());
+        } catch (KapuaException ex) {
+            commonData.exceptionCaught = true;
+        }
+    }
+
+    @When("^I check the sanity of the access permission factory$")
+    public void accessPermissionFactorySanityCheck() {
+        assertNotNull(accessPermissionFactory.newCreator(generateId()));
+        assertNotNull(accessPermissionFactory.newEntity(null));
+        assertNotNull(accessPermissionFactory.newEntity(generateId()));
+        assertNotNull(accessPermissionFactory.newQuery(generateId()));
+        assertNotNull(accessPermissionFactory.newListResult());
+
+        KapuaId tmpId = generateId();
+        AccessPermissionCreator tmpCreator = new AccessPermissionCreatorImpl(tmpId);
+        assertNotNull(tmpCreator);
+        assertNotNull(tmpCreator.getScopeId());
+        assertEquals(tmpId, tmpCreator.getScopeId());
+
+        AccessPermission tmpAccPerm = new AccessPermissionImpl(generateId());
+        assertNotNull(tmpAccPerm);
+        tmpAccPerm.setAccessInfoId(generateId());
+        tmpAccPerm.setPermission(new PermissionImpl("test_domain", Actions.read, generateId(), generateId()));
+
+        AccessPermission tmpAccPerm_2 = new AccessPermissionImpl(tmpAccPerm);
+        assertNotNull(tmpAccPerm_2);
+        assertEquals(tmpAccPerm.getAccessInfoId(), tmpAccPerm_2.getAccessInfoId());
+        assertEquals(tmpAccPerm.getPermission(), tmpAccPerm_2.getPermission());
+
+        tmpAccPerm.setAccessInfoId(null);
+        assertNull(tmpAccPerm.getAccessInfoId());
+
+        // No typo. This is by design. When an object permissions are null, when asked for them, a 
+        // new set of empty permissions is returned instead. 
+        tmpAccPerm.setPermission(null);
+        assertNotNull(tmpAccPerm.getPermission());
+    }
+
+    @When("^I check the sanity of the access role factory$")
+    public void accessRoleFactorySanityCheck() {
+        try {
+            commonData.exceptionCaught = false;
+            assertNotNull(accessRoleFactory.newCreator(generateId()));
+            assertNotNull(accessRoleFactory.newEntity(generateId()));
+            assertNotNull(accessRoleFactory.newQuery(generateId()));
+            assertNotNull(accessRoleFactory.newListResult());
+
+            KapuaId tmpId = generateId();
+            AccessRoleCreator tmpCreator = new AccessRoleCreatorImpl(tmpId);
+            assertNotNull(tmpCreator);
+            assertNotNull(tmpCreator.getScopeId());
+            assertEquals(tmpId, tmpCreator.getScopeId());
+
+            AccessRole tmpRole = new AccessRoleImpl(generateId());
+            assertNotNull(tmpRole);
+            tmpRole.setAccessInfoId(generateId());
+            tmpRole.setRoleId(generateId());
+            AccessRole tmpRole_2 = new AccessRoleImpl(tmpRole);
+            assertNotNull(tmpRole_2);
+            assertEquals(tmpRole.getRoleId(), tmpRole_2.getRoleId());
+            assertEquals(tmpRole.getAccessInfoId(), tmpRole_2.getAccessInfoId());
+
+            tmpRole.setAccessInfoId(null);
+            assertNull(tmpRole.getAccessInfoId());
+
+            tmpRole.setRoleId(null);
+            assertNull(tmpRole.getRoleId());
+        } catch (KapuaException ex) {
+            commonData.exceptionCaught = true;
+        }
+    }
+
+    @Then("^A role entity was created$")
+    public void checkThatRoleWasCreated() {
+        assertNotNull(accessData.role);
+    }
+
+    @Then("^An access role entity was created$")
+    public void checkThatAccessRoleWasCreated() {
+        assertNotNull(accessData.accessRole);
+    }
+
+    @Then("^I find an access role entity$")
+    public void checkThatAnAccessRoleEntityWasFound() {
+        assertNotNull(accessData.accessRoleFound);
+    }
+
     @Then("^An access info entity was created$")
     public void checkThatAccessInfoEntityExists() {
         assertNotNull(accessData.accessInfo);
@@ -430,12 +676,17 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     public void checkThatAnAccessInfoEntityWasFound() {
         assertNotNull(accessData.accessInfoFound);
     }
-    
+
     @Then("^I find no access info entity$")
-    public void checkThatNoAccessInfoEntityWasFound() {
+    public void checkThatAnAccessInfoEntityWasNotFound() {
         assertNull(accessData.accessInfoFound);
     }
-    
+
+    @Then("^I find an access permission entity$")
+    public void checkThatAnAccessPermissionWasFound() {
+        assertNotNull(accessData.accessPermissionFound);
+    }
+
     @Then("^The entity matches the creator$")
     public void checkEntityAgainstCreator() {
         assertNotNull(accessData.accessInfoCreator);
@@ -463,5 +714,91 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         for (int i = 0; i < accessData.accessRoles.getSize(); i++) {
             assertTrue(accessData.accessInfoCreator.getRoleIds().contains(accessData.accessRoles.getItem(i).getRoleId()));
         }
+    }
+
+    // The following test step is more of a filler. The only purpose is to achieve some coverage
+    // of the Access Role object equals function.
+    // As such this step is of limited usefulness and should be taken with a grain of salt.
+    @Then("^I can compare access role objects$")
+    public void checkAccessRoleComparison()
+            throws KapuaException {
+
+        AccessRoleImpl accRole_1 = new AccessRoleImpl(generateId());
+        AccessRoleImpl accRole_2 = new AccessRoleImpl(generateId());
+
+        assertTrue(accRole_1.equals(accRole_1));
+        assertFalse(accRole_1.equals(null));
+        assertFalse(accRole_1.equals(new Integer(15)));
+
+        assertTrue(accRole_1.equals(accRole_2));
+
+        accRole_2.setAccessInfoId(generateId());
+        assertFalse(accRole_1.equals(accRole_2));
+
+        accRole_1.setAccessInfoId(generateId());
+        accRole_2.setAccessInfoId(null);
+        assertFalse(accRole_1.equals(accRole_2));
+
+        accRole_2.setAccessInfoId(accRole_1.getAccessInfoId());
+        assertTrue(accRole_1.equals(accRole_2));
+
+        accRole_2.setRoleId(generateId());
+        assertFalse(accRole_1.equals(accRole_2));
+
+        accRole_1.setRoleId(generateId());
+        accRole_2.setRoleId(null);
+        assertFalse(accRole_1.equals(accRole_2));
+
+        accRole_2.setRoleId(accRole_1.getRoleId());
+        assertTrue(accRole_1.equals(accRole_2));
+    }
+
+    // The following test step is more of a filler. The only purpose is to achieve some coverage
+    // of the Access Role object equals function.
+    // As such this step is of limited usefulness and should be taken with a grain of salt.
+    @Then("^I can compare access permission objects$")
+    public void checkAccessPermissionComparison()
+            throws KapuaException {
+
+        AccessPermissionImpl accPerm_1 = new AccessPermissionImpl(generateId());
+        AccessPermissionImpl accPerm_2 = new AccessPermissionImpl(generateId());
+        Permission tmpPerm_1 = new PermissionImpl("test_domain", Actions.read, rootScopeId, generateId());
+        Permission tmpPerm_2 = new PermissionImpl("test_domain", Actions.write, rootScopeId, generateId());
+
+        assertTrue(accPerm_1.equals(accPerm_1));
+        assertFalse(accPerm_1.equals(null));
+        assertFalse(accPerm_1.equals(new Integer(15)));
+
+        assertTrue(accPerm_1.equals(accPerm_2));
+
+        accPerm_1.setAccessInfoId(null);
+        accPerm_2.setAccessInfoId(generateId());
+        assertFalse(accPerm_1.equals(accPerm_2));
+
+        accPerm_1.setAccessInfoId(generateId());
+        accPerm_2.setAccessInfoId(null);
+        assertFalse(accPerm_1.equals(accPerm_2));
+
+        accPerm_1.setAccessInfoId(generateId());
+        accPerm_2.setAccessInfoId(generateId());
+        assertFalse(accPerm_1.equals(accPerm_2));
+
+        accPerm_2.setAccessInfoId(accPerm_1.getAccessInfoId());
+        assertTrue(accPerm_1.equals(accPerm_2));
+
+        accPerm_1.setPermission(null);
+        accPerm_2.setPermission(tmpPerm_2);
+        assertFalse(accPerm_1.equals(accPerm_2));
+
+        accPerm_1.setPermission(tmpPerm_1);
+        accPerm_2.setPermission(null);
+        assertFalse(accPerm_1.equals(accPerm_2));
+
+        accPerm_1.setPermission(tmpPerm_1);
+        accPerm_2.setPermission(tmpPerm_2);
+        assertFalse(accPerm_1.equals(accPerm_2));
+
+        accPerm_2.setPermission(accPerm_1.getPermission());
+        assertTrue(accPerm_1.equals(accPerm_2));
     }
 }
