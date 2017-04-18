@@ -30,6 +30,8 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
 
+import com.google.common.base.Strings;
+
 /**
  * Messages translator implementation from {@link AssetRequestMessage} to {@link KuraRequestMessage}
  * 
@@ -61,33 +63,7 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
 
         // Build resources
-        List<String> resources = new ArrayList<>();
-        switch (kapuaChannel.getMethod()) {
-        case READ:
-            resources.add("assets");
-            break;
-        case EXECUTE: {
-            if (kapuaChannel.isStart()) {
-                resources.add("start");
-            } else {
-                resources.add("stop");
-            }
-
-            String assetId = kapuaChannel.getAssetId();
-            if (assetId != null) {
-                resources.add(assetId);
-            }
-        }
-            break;
-        case CREATE:
-        case DELETE:
-        case OPTIONS:
-        case WRITE:
-        default:
-            break;
-
-        }
-        kuraRequestChannel.setResources(resources.toArray(new String[resources.size()]));
+        kuraRequestChannel.setResources(new String[]{"assets"});
 
         //
         // Return Kura Channel
@@ -95,13 +71,7 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
     }
 
     protected KuraRequestPayload translatePayload(AssetRequestPayload kapuaPayload) throws KapuaException {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-
-        if (kapuaPayload.getBody() != null) {
-            kuraRequestPayload.setBody(kapuaPayload.getBody());
-        }
-
-        return kuraRequestPayload;
+        return new KuraRequestPayload();
     }
 
     @Override
