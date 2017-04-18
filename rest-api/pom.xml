@@ -26,7 +26,7 @@
 
 	<properties>
 		<jersey.version>2.23.2</jersey.version>
-		<swagger.version>1.5.10</swagger.version>
+		<swagger.version>1.5.12</swagger.version>
 		<swagger-ui.version>2.1.4</swagger-ui.version>
 	</properties>
 
