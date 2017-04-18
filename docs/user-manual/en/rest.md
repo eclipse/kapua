@@ -60,25 +60,19 @@ You can use default Kapua admin username/password pair i.e. `kapua-sys/kapua-pas
 The CURL command above should generate response similar to the snippet below:
 
     {
-      "type": "accessTokenImpl",
-      "createdBy": {},
-      "createdOn": "2017-03-24T15:02:20.736Z",
-      "id": {},
-      "scopeId": {},
-      "entityAttributes": {
-        "entry": []
-      },
-      "entityProperties": {
-        "entry": []
-      },
-      "modifiedBy": {},
-      "modifiedOn": "2017-03-24T15:02:20.736Z",
+      "type": "accessToken",
+      "id": "l5_1yIHD3Ao",
+      "scopeId": "AQ",
+      "createdOn": "2017-03-27T17:00:37.22Z",
+      "createdBy": "AQ",
+      "modifiedOn": "2017-03-27T17:00:37.22Z",
+      "modifiedBy": "AQ",
       "optlock": 1,
-      "expiresOn": "2017-03-24T15:32:20.728Z",
-      "refreshExpiresOn": "2017-03-24T20:02:20.728Z",
-      "refreshToken": "07194658-db17-4314-ab58-49ddbf259f44",
-      "tokenId": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5lY2xpcHNlLm9yZy9rYXB1YSIsImlhdCI6MTQ5MDM2Nzc0MCwiZXhwIjoxNDkwMzY5NTQwLCJzdWIiOiJBUSIsInNJZCI6IkFRIn0.HA3cgNUPK3LJbziP7ZVjke8dLS5xVKj3RuhjFPoJYUNVyo7MxH-1Wiuls7X4LV-PZWjR_Y3wjuwiVopED22FGNUc_fzXhZIb69Ifod6lE0lTCYABDMc7RwQOEdqTlqUv2NiprZ3-VAMYYlvjEJQD_s2EN2vyikXCPXc9MIU8pDVKOwhu1EjZC9X7vTUyMnwbNcoAKp0uI5-rdDuyTZDoS6r82gp69wJ5HIwxa8r1MZxbmTCP-HaaZ29J7YfI-RYGoVzbUOsOQV725xUKhzVJEhtyFlt38-Xuevac6JayyErd06lWR1wLgHwjAQWLuy-G2tuq10lEzj3GuDhnyIihlg",
-      "userId": {}
+      "tokenId": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5lY2xpcHNlLm9yZy9rYXB1YSIsImlhdCI6MTQ5MDYyNjgzNywiZXhwIjoxNDkwNjI4NjM3LCJzdWIiOiJBUSIsInNJZCI6IkFRIn0.koYBckEw84Mfe-zgfJ7LOcWSGdMiK0bhYoNNYWJNY8e7qdA4cbFwxpivr64sS6xVXY-M7KvACwCVjmnrImUITSKLL1i76cnZAVb9wIoi1fQy3DcYBFJ-4YNdDqrLtzTUTbroqIN6p9NIszl2coV4Ev-jaFGb_5Bl8hmhSktlHTVZTBw4w5iLG_nQhUm_ShOAeeaUiJ_2dYG0l6xngKzyRKMhoUIPK6msolG0PZSvsTct1pR8CQY-BytiVOE8EP-uSJmvn96PMXuquSrrOV1Mg82EoMgWjWC6wxUdeE0nZi0epHTVKfgmQzeZhlWtcyz5BG9Rr3E3jmh6RlKRTcHGZg",
+      "userId": "AQ",
+      "expiresOn": "2017-03-27T17:30:37.108Z",
+      "refreshToken": "4d97e180-4665-4fb5-be32-c8fa88711606",
+      "refreshExpiresOn": "2017-03-27T22:00:37.108Z"
     }
 
 The token itself is located under `tokenId` key. You can use your token by adding `Authorization: Bearer YOUR_TOKEN` HTTP header to the API call. For
