@@ -16,7 +16,8 @@ import java.util.Date;
 public class ObjectTypeConverter {
 
     private static final String TYPE_STRING = "string";
-    private static final String TYPE_INTEGER = "int";
+    private static final String TYPE_INTEGER = "integer";
+    private static final String TYPE_INT = "int";
     private static final String TYPE_LONG = "long";
     private static final String TYPE_FLOAT = "float";
     private static final String TYPE_DOUBLE = "double";
@@ -52,7 +53,7 @@ public class ObjectTypeConverter {
         Class<?> clazz;
         if (TYPE_STRING.equals(value)) {
             clazz = String.class;
-        } else if (TYPE_INTEGER.equals(value)) {
+        } else if (TYPE_INTEGER.equals(value) || TYPE_INT.equals(value)) {
             clazz = Integer.class;
         } else if (TYPE_LONG.equals(value)) {
             clazz = Long.class;
