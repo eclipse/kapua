@@ -23,12 +23,10 @@ import org.eclipse.kapua.service.account.Organization;
 
 @TestService
 @KapuaProvider
-public class AccountFactoryMock implements AccountFactory
-{
+public class AccountFactoryMock implements AccountFactory {
 
     @Override
-    public AccountCreator newCreator(KapuaId scopeId, String name)
-    {
+    public AccountCreator newCreator(KapuaId scopeId, String name) {
         AccountCreatorMock accountCreatorMock = new AccountCreatorMock();
         accountCreatorMock.setScopeId(scopeId);
         accountCreatorMock.setName(name);
@@ -36,16 +34,15 @@ public class AccountFactoryMock implements AccountFactory
     }
 
     @Override
-    public AccountQuery newQuery(KapuaId scopeId)
-    {
+    public AccountQuery newQuery(KapuaId scopeId) {
         return new AccountQueryMock();
     }
 
-	@Override
-	public Organization newOrganization() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Organization newOrganization() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public AccountCreator newCreator(KapuaId scopeId) {

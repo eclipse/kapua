@@ -19,15 +19,14 @@ import org.eclipse.kapua.message.KapuaChannel;
  * @since 1.0
  *
  */
-public interface KapuaMissingChannel extends KapuaChannel
-{
-	
+public interface KapuaMissingChannel extends KapuaChannel {
+
     /**
      * Get the client identifier
      * 
      * @return
      */
-	public String getClientId();
+    public String getClientId();
 
     /**
      * Set the client identifier

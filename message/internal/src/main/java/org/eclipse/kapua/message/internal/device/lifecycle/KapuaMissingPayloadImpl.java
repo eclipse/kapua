@@ -21,6 +21,5 @@ import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
  *
  */
 public class KapuaMissingPayloadImpl extends KapuaPayloadImpl implements KapuaMissingPayload {
-	
 
 }

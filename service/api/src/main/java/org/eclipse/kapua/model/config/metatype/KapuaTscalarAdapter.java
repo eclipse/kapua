@@ -15,18 +15,19 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 
-public class KapuaTscalarAdapter extends XmlAdapter<String, KapuaTscalar>{
+public class KapuaTscalarAdapter extends XmlAdapter<String, KapuaTscalar> {
 
-	private final KapuaLocator locator = KapuaLocator.getInstance();
-	private final KapuaMetatypeFactory metatypeFactory = locator.getFactory(KapuaMetatypeFactory.class);
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final KapuaMetatypeFactory metatypeFactory = locator.getFactory(KapuaMetatypeFactory.class);
 
-	@Override
-	public KapuaTscalar unmarshal(String v) throws Exception {
+    @Override
+    public KapuaTscalar unmarshal(String v) throws Exception {
         return metatypeFactory.newKapuaTscalar(v);
-	}
+    }
 
-	@Override public String marshal(KapuaTscalar v) throws Exception {
-		return v.value();
-	}
+    @Override
+    public String marshal(KapuaTscalar v) throws Exception {
+        return v.value();
+    }
 
 }

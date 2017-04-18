@@ -20,7 +20,6 @@ import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
  * @since 1.0
  *
  */
-public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNotifyPayload
-{
-	
+public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNotifyPayload {
+
 }

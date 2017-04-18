@@ -19,12 +19,11 @@ import org.eclipse.kapua.service.device.management.KapuaAppProperties;
  * @since 1.0
  *
  */
-public enum DeviceSnapshotAppProperties implements KapuaAppProperties
-{
+public enum DeviceSnapshotAppProperties implements KapuaAppProperties {
     /**
      * Application name
      */
-	APP_NAME("SNAPSHOT"),
+    APP_NAME("SNAPSHOT"),
     /**
      * Application version
      */
@@ -33,15 +32,13 @@ public enum DeviceSnapshotAppProperties implements KapuaAppProperties
 
     private String value;
 
-    DeviceSnapshotAppProperties(String value)
-    {
+    DeviceSnapshotAppProperties(String value) {
         this.value = value;
     }
 
     @Override
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
-	
+
 }

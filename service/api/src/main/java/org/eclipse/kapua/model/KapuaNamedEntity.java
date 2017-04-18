@@ -20,16 +20,15 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  * 
  */
-@XmlType(propOrder = {"name" })
-public interface KapuaNamedEntity extends KapuaUpdatableEntity 
-{
+@XmlType(propOrder = { "name" })
+public interface KapuaNamedEntity extends KapuaUpdatableEntity {
 
     /**
      * Get the entity name
      * 
      * @return
      */
-	@XmlElement(name="name")
+    @XmlElement(name = "name")
     public String getName();
 
     /**

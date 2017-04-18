@@ -30,82 +30,80 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
 
     private Map<KapuaId, DeviceMock> deviceRegistry;
 
-    public DeviceRegistryServiceMock()
-    {
-    	deviceRegistry = new HashMap<KapuaId, DeviceMock>();
+    public DeviceRegistryServiceMock() {
+        deviceRegistry = new HashMap<KapuaId, DeviceMock>();
     }
 
-	@Override
-	public Device create(DeviceCreator creator) throws KapuaException {
-		DeviceMock device = new DeviceMock(creator.getScopeId(), creator.getClientId());
-		deviceRegistry.put(device.getId(), device);
+    @Override
+    public Device create(DeviceCreator creator) throws KapuaException {
+        DeviceMock device = new DeviceMock(creator.getScopeId(), creator.getClientId());
+        deviceRegistry.put(device.getId(), device);
         return device;
-	}
+    }
 
-	@Override
-	public Device find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+    @Override
+    public Device find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         if (!deviceRegistry.containsKey(entityId))
             throw KapuaException.internalError("Device not found");
 
         return deviceRegistry.get(entityId);
-	}
+    }
 
-	@Override
-	public DeviceListResult query(KapuaQuery<Device> query) throws KapuaException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public DeviceListResult query(KapuaQuery<Device> query) throws KapuaException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public long count(KapuaQuery<Device> query) throws KapuaException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public long count(KapuaQuery<Device> query) throws KapuaException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+    @Override
+    public void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         if (!deviceRegistry.containsKey(entityId))
             throw KapuaException.internalError("Device not found");
-        
+
         @SuppressWarnings("unused")
         DeviceMock device = deviceRegistry.remove(entityId);
-	}
+    }
 
-	@Override
-	public Device update(Device entity) throws KapuaException {
+    @Override
+    public Device update(Device entity) throws KapuaException {
         if (!deviceRegistry.containsKey(entity.getId()))
             throw KapuaException.internalError("Device not found");
 
         Device device = deviceRegistry.get(entity.getId());
         device.setDisplayName(entity.getDisplayName());
         return device;
-	}
+    }
 
-	@Override
-	public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
+    @Override
+    public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
         Iterator<DeviceMock> devices = deviceRegistry.values().iterator();
-        while(devices.hasNext())
-        {
-        	DeviceMock device = devices.next();
+        while (devices.hasNext()) {
+            DeviceMock device = devices.next();
             if (device.getScopeId().equals(scopeId) &&
-            	device.getClientId() != null && device.getClientId().equals(clientId))
+                    device.getClientId() != null && device.getClientId().equals(clientId))
                 return device;
         }
         throw KapuaException.internalError("Device not found");
-	}
+    }
 
-	@Override
-	public KapuaTocd getConfigMetadata() throws KapuaException {
-		return null;
-	}
+    @Override
+    public KapuaTocd getConfigMetadata() throws KapuaException {
+        return null;
+    }
 
-	@Override
-	public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-		return null;
-	}
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return null;
+    }
 
-	@Override
-	public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
 
-	}
+    }
 }

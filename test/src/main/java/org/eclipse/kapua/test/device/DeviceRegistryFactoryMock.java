@@ -22,16 +22,16 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 @KapuaProvider
 public class DeviceRegistryFactoryMock implements DeviceFactory {
 
-	@Override
-	public DeviceCreator newCreator(KapuaId scopeId, String clientId) {
-		return new DeviceCreatorMock(scopeId, clientId);
-	}
+    @Override
+    public DeviceCreator newCreator(KapuaId scopeId, String clientId) {
+        return new DeviceCreatorMock(scopeId, clientId);
+    }
 
-	@Override
-	public DeviceQuery newQuery(KapuaId scopeId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public DeviceQuery newQuery(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public Device newEntity(KapuaId scopeId) {
