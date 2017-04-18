@@ -100,7 +100,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final Logger s_logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
     private static final long QUERY_TIME_WINDOW = 2000l;
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
-    private static final long INDEX_TIME_ESTIMATE_SECONDS = 2; // Trail and error value depends on system where tests are run
+    private static final long INDEX_TIME_ESTIMATE_SECONDS = 10; // Trail and error value depends on system where tests are run
 
     private static final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
     private static final DeviceFactory deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
