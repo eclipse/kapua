@@ -13,7 +13,7 @@
         Red Hat Inc
  -->
 
-<module>
+<module rename-to="Kapua">
 
     <!-- Inherit the core Web Toolkit stuff.                            -->
     <inherits name='com.google.gwt.user.User' />
