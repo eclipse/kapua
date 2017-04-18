@@ -90,6 +90,10 @@
         <db.driver>org.h2.Driver</db.driver>
     </properties>
 
+    <prerequisites>
+        <maven>3.3.0</maven>
+    </prerequisites>
+
     <build>
         <defaultGoal>clean install</defaultGoal>
         <pluginManagement>
