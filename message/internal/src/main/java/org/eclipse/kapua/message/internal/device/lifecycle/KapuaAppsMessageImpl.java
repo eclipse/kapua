@@ -23,5 +23,5 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
  *
  */
 public class KapuaAppsMessageImpl extends KapuaMessageImpl<KapuaAppsChannel, KapuaAppsPayload> implements KapuaAppsMessage {
-	
+
 }

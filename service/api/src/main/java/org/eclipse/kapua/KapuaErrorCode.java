@@ -17,13 +17,12 @@ package org.eclipse.kapua;
  * @since 1.0
  *
  */
-public interface KapuaErrorCode 
-{
+public interface KapuaErrorCode {
 
     /**
      * Get the error code name
      * 
      * @return
      */
-	public String name();
+    public String name();
 }

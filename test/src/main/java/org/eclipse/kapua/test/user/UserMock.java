@@ -22,8 +22,8 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
 
-public class UserMock implements User
-{
+public class UserMock implements User {
+
     private static long longId = 1;
     private KapuaEid id;
     private KapuaId scopeId;
@@ -31,174 +31,151 @@ public class UserMock implements User
     private UserType userType;
     private String externalId;
 
-    public UserMock(KapuaId scopeId, String name)
-    {
+    public UserMock(KapuaId scopeId, String name) {
         this.id = new KapuaEid(BigInteger.valueOf(longId++));
         this.scopeId = scopeId;
         this.name = name;
     }
-    
+
     @Override
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public Date getModifiedOn()
-    {
+    public Date getModifiedOn() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public KapuaId getModifiedBy()
-    {
+    public KapuaId getModifiedBy() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public int getOptlock()
-    {
+    public int getOptlock() {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public void setOptlock(int optlock)
-    {
+    public void setOptlock(int optlock) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public Properties getEntityAttributes()
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setEntityAttributes(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public Properties getEntityProperties()
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setEntityProperties(Properties props)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public KapuaId getId()
-    {
+    public KapuaId getId() {
         return this.id;
     }
 
     @Override
-    public KapuaId getScopeId()
-    {
+    public KapuaId getScopeId() {
         return this.scopeId;
     }
 
     @Override
-    public Date getCreatedOn()
-    {
+    public Date getCreatedOn() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public KapuaId getCreatedBy()
-    {
+    public KapuaId getCreatedBy() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public UserStatus getStatus()
-    {
+    public UserStatus getStatus() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setStatus(UserStatus status)
-    {
+    public void setStatus(UserStatus status) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setDisplayName(String displayName)
-    {
+    public void setDisplayName(String displayName) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getEmail()
-    {
+    public String getEmail() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getPhoneNumber()
-    {
+    public String getPhoneNumber() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setPhoneNumber(String phoneNumber)
-    {
+    public void setPhoneNumber(String phoneNumber) {
         // TODO Auto-generated method stub
 
     }
 
-	@Override
-	public void setId(KapuaId id) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
+    @Override
+    public void setId(KapuaId id) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public UserType getUserType() {
         return userType;
     }

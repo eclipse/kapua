@@ -21,8 +21,8 @@ import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
  *
  */
 public class KapuaDisconnectPayloadImpl extends KapuaPayloadImpl implements KapuaDisconnectPayload {
-	
-	private String uptime;
+
+    private String uptime;
     private String displayName;
 
     /**
@@ -32,28 +32,27 @@ public class KapuaDisconnectPayloadImpl extends KapuaPayloadImpl implements Kapu
      * @param displayName
      */
     public KapuaDisconnectPayloadImpl(String uptime,
-    		String displayName) {
-    	this.uptime = uptime;
-    	this.displayName = displayName;
+            String displayName) {
+        this.uptime = uptime;
+        this.displayName = displayName;
     }
-    
+
     @Override
-    public String toDisplayString()
-    {
+    public String toDisplayString() {
         return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                                  .append(", getDisplayName()=").append(getDisplayName())
-                                  .append("]")
-                                  .toString();
+                .append(", getDisplayName()=").append(getDisplayName())
+                .append("]")
+                .toString();
     }
 
     @Override
-	public String getUptime() {
-		return uptime;
-	}
+    public String getUptime() {
+        return uptime;
+    }
 
     @Override
-	public String getDisplayName() {
-		return displayName;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
 }

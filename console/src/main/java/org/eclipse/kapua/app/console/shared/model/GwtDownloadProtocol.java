@@ -13,37 +13,35 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-
 public class GwtDownloadProtocol extends KapuaBaseModel implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2477264640452966413L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2477264640452966413L;
 
-	
-	public GwtDownloadProtocol() {		
-	}	
-	
-	public GwtDownloadProtocol(String protocol, String protocolName) {
-		setProtocol(protocol);
-		setProtocolName(protocolName);
-	}
+    public GwtDownloadProtocol() {
+    }
 
-	public String getProtocol() {
-		return get("protocol");
-	}
+    public GwtDownloadProtocol(String protocol, String protocolName) {
+        setProtocol(protocol);
+        setProtocolName(protocolName);
+    }
 
-	public void setProtocol(String protocol) {
-		set("protocol", protocol);
-	}
+    public String getProtocol() {
+        return get("protocol");
+    }
 
-	public String getProtocolName() {
-		return get("protocolName");
-	}
+    public void setProtocol(String protocol) {
+        set("protocol", protocol);
+    }
 
-	public void setProtocolName(String protocolName) {
-		set("protocolName", protocolName);
-	}
-	
+    public String getProtocolName() {
+        return get("protocolName");
+    }
+
+    public void setProtocolName(String protocolName) {
+        set("protocolName", protocolName);
+    }
+
 }

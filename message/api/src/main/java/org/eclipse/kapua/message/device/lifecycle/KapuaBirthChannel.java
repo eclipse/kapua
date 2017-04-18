@@ -19,9 +19,8 @@ import org.eclipse.kapua.message.KapuaChannel;
  * @since 1.0
  *
  */
-public interface KapuaBirthChannel extends KapuaChannel
-{
-	
+public interface KapuaBirthChannel extends KapuaChannel {
+
     /**
      * Get the client identifier
      * 

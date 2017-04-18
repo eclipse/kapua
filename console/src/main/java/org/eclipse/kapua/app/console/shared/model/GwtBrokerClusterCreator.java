@@ -16,81 +16,79 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class GwtBrokerClusterCreator implements Serializable
-{
-	private static final long serialVersionUID = 8077100502549884186L;
+public class GwtBrokerClusterCreator implements Serializable {
 
-	private String name;
-	private String description;
-	private String dnsSubdomain;
-	private List<String> dnsAliases;
-	private Integer autoscaleCooldown;
-	private Integer autoscaleMaxInstances;
-	private Integer autoscaleMinInstances;
-	private GwtBrokerType brokerType;
-	private Collection<String> iaasAvailabilityZones;
-	private String iaasKeyName;
-	private String iaasMachineImage;
-	private String userData;
-	private String iaasInstanceType;
-	private String iptablesRules;
-	private Integer idleTimeout;
-	private boolean enableMqtt;
-	private boolean enableMqtts;
-	private boolean enableWebSocket;
-	private String sslCertificateId;
-	
-	
-	public GwtBrokerClusterCreator(){
-		super();
-	}
+    private static final long serialVersionUID = 8077100502549884186L;
 
-	public GwtBrokerClusterCreator(String name, String dnsSubdomain, GwtBrokerType type) 
-	{
-		this.name = name;
-		this.description = "";
-		this.dnsAliases = new ArrayList<String>();
-		this.dnsSubdomain = dnsSubdomain;
-		this.brokerType = type;
-		this.iaasKeyName = "";
-		this.iaasMachineImage = "";
-		this.iptablesRules = "";
-		this.enableMqtt = true;
-		this.enableMqtts = true;
-		this.enableWebSocket = true;
-	}
+    private String name;
+    private String description;
+    private String dnsSubdomain;
+    private List<String> dnsAliases;
+    private Integer autoscaleCooldown;
+    private Integer autoscaleMaxInstances;
+    private Integer autoscaleMinInstances;
+    private GwtBrokerType brokerType;
+    private Collection<String> iaasAvailabilityZones;
+    private String iaasKeyName;
+    private String iaasMachineImage;
+    private String userData;
+    private String iaasInstanceType;
+    private String iptablesRules;
+    private Integer idleTimeout;
+    private boolean enableMqtt;
+    private boolean enableMqtts;
+    private boolean enableWebSocket;
+    private String sslCertificateId;
 
-	public String getName() {
-		return name;
-	}
+    public GwtBrokerClusterCreator() {
+        super();
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public GwtBrokerClusterCreator(String name, String dnsSubdomain, GwtBrokerType type) {
+        this.name = name;
+        this.description = "";
+        this.dnsAliases = new ArrayList<String>();
+        this.dnsSubdomain = dnsSubdomain;
+        this.brokerType = type;
+        this.iaasKeyName = "";
+        this.iaasMachineImage = "";
+        this.iptablesRules = "";
+        this.enableMqtt = true;
+        this.enableMqtts = true;
+        this.enableWebSocket = true;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDnsSubdomain() {
-		return dnsSubdomain;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDnsSubdomain(String dnsSubdomain) {
-		this.dnsSubdomain = dnsSubdomain;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public List<String> getDnsAliases() {
-		return dnsAliases;
-	}
+    public String getDnsSubdomain() {
+        return dnsSubdomain;
+    }
 
-	public void setDnsAliases(List<String> dnsAliases) {
-		this.dnsAliases = new ArrayList<String>(dnsAliases);
-	}
+    public void setDnsSubdomain(String dnsSubdomain) {
+        this.dnsSubdomain = dnsSubdomain;
+    }
+
+    public List<String> getDnsAliases() {
+        return dnsAliases;
+    }
+
+    public void setDnsAliases(List<String> dnsAliases) {
+        this.dnsAliases = new ArrayList<String>(dnsAliases);
+    }
 
     public Integer getAutoscaleCooldown() {
         return autoscaleCooldown;
@@ -123,54 +121,54 @@ public class GwtBrokerClusterCreator implements Serializable
     public void setIaasAvailabilityZones(Collection<String> iaasAvailabilityZones) {
         this.iaasAvailabilityZones = iaasAvailabilityZones;
     }
-    
-	public GwtBrokerType getBrokerType() {
-		return brokerType;
-	}
 
-	public void setBrokerType(GwtBrokerType brokerType) {
-		this.brokerType = brokerType;
-	}
+    public GwtBrokerType getBrokerType() {
+        return brokerType;
+    }
 
-	public String getIaasKeyName() {
-		return iaasKeyName;
-	}
+    public void setBrokerType(GwtBrokerType brokerType) {
+        this.brokerType = brokerType;
+    }
 
-	public void setIaasKeyName(String iaasKeyName) {
-		this.iaasKeyName = iaasKeyName;
-	}
+    public String getIaasKeyName() {
+        return iaasKeyName;
+    }
 
-	public String getIaasMachineImage() {
-		return iaasMachineImage;
-	}
+    public void setIaasKeyName(String iaasKeyName) {
+        this.iaasKeyName = iaasKeyName;
+    }
 
-	public void setIaasMachineImage(String iaasMachineImage) {
-		this.iaasMachineImage = iaasMachineImage;
-	}
+    public String getIaasMachineImage() {
+        return iaasMachineImage;
+    }
 
-	public String getIaasInstanceType() {
-		return iaasInstanceType;
-	}
+    public void setIaasMachineImage(String iaasMachineImage) {
+        this.iaasMachineImage = iaasMachineImage;
+    }
 
-	public void setIaasInstanceType(String iaasInstanceType) {
-		this.iaasInstanceType = iaasInstanceType;
-	}
+    public String getIaasInstanceType() {
+        return iaasInstanceType;
+    }
 
-	public String getIptablesRules() {
-		return iptablesRules;
-	}
+    public void setIaasInstanceType(String iaasInstanceType) {
+        this.iaasInstanceType = iaasInstanceType;
+    }
 
-	public void setIptablesRules(String iptablesRules) {
-		this.iptablesRules = iptablesRules;
-	}
-	
-	public String getUserData() {
-		return userData;
-	}
-	
-	public void setUserData(String userData) {
-		this.userData = userData;
-	}
+    public String getIptablesRules() {
+        return iptablesRules;
+    }
+
+    public void setIptablesRules(String iptablesRules) {
+        this.iptablesRules = iptablesRules;
+    }
+
+    public String getUserData() {
+        return userData;
+    }
+
+    public void setUserData(String userData) {
+        this.userData = userData;
+    }
 
     public Integer getIdleTimeout() {
         return idleTimeout;
@@ -180,36 +178,36 @@ public class GwtBrokerClusterCreator implements Serializable
         this.idleTimeout = idleTimeout;
     }
 
-	public boolean getEnableMqtt() {
-		return this.enableMqtt;
-	}
-	
-	public void setEnableMqtt(boolean enableMqtt) {
-		this.enableMqtt = enableMqtt;
-	}
-	
-	public boolean getEnableMqtts() {
-		return this.enableMqtts;
-	}
-	
-	public void setEnableMqtts(boolean enableMqtts) {
-		this.enableMqtts = enableMqtts;
-	}
-	
-	public void setEnableWebSocket(boolean enableWebSocket) {
-		this.enableWebSocket = enableWebSocket;
-	}
-	
-	public boolean getEnableWebSocket() {
-		return this.enableWebSocket;
-	}
+    public boolean getEnableMqtt() {
+        return this.enableMqtt;
+    }
 
-	public String getSslCertificateId() {
-		return sslCertificateId;
-	}
-	
-	public void setSslCertificateId(String sslCertificateId) {
-		this.sslCertificateId = sslCertificateId;
-	}
+    public void setEnableMqtt(boolean enableMqtt) {
+        this.enableMqtt = enableMqtt;
+    }
+
+    public boolean getEnableMqtts() {
+        return this.enableMqtts;
+    }
+
+    public void setEnableMqtts(boolean enableMqtts) {
+        this.enableMqtts = enableMqtts;
+    }
+
+    public void setEnableWebSocket(boolean enableWebSocket) {
+        this.enableWebSocket = enableWebSocket;
+    }
+
+    public boolean getEnableWebSocket() {
+        return this.enableWebSocket;
+    }
+
+    public String getSslCertificateId() {
+        return sslCertificateId;
+    }
+
+    public void setSslCertificateId(String sslCertificateId) {
+        this.sslCertificateId = sslCertificateId;
+    }
 
 }

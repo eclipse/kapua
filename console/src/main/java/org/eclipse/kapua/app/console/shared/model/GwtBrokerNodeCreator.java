@@ -13,93 +13,93 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-public class GwtBrokerNodeCreator implements Serializable
-{
-	private static final long serialVersionUID = -3488683047161167451L;
+public class GwtBrokerNodeCreator implements Serializable {
+
+    private static final long serialVersionUID = -3488683047161167451L;
 
     private long brokerClusterId;
     private long brokerNodeId;
-	private String iaasMachineImage;
-	private String iaasKeyName;
-	private String iaasInstanceType;
-	private String iaasAvailabilityZone;
-	private int numInstances = 1;
-		
-	public GwtBrokerNodeCreator() {
-		super();
-	}
+    private String iaasMachineImage;
+    private String iaasKeyName;
+    private String iaasInstanceType;
+    private String iaasAvailabilityZone;
+    private int numInstances = 1;
 
-	public GwtBrokerNodeCreator(long brokerClusterId) {
-		this.brokerClusterId = brokerClusterId;
-		this.brokerNodeId = -1;
-		this.iaasKeyName = "";
-		this.iaasInstanceType = "";
-		this.iaasAvailabilityZone = "";
-	}
-	
-//	// Constructor for reprovisioning
-//	public GwtBrokerNodeCreator(BrokerNode node) {
-//		this.brokerClusterId = node.getBrokerCluster().getId();
-//		this.brokerNodeId = node.getId();
-//		this.iaasAvailabilityZone = node.getIaasAvailabilityZone();
-//		this.iaasInstanceType = node.getIaasInstanceType();
-//		this.iaasKeyName = node.getIaasKeyName();
-//		this.iaasMachineImage = node.getIaasMachineImage();
-//	}
+    public GwtBrokerNodeCreator() {
+        super();
+    }
 
-	public long getBrokerClusterId() {
-		return brokerClusterId;
-	}
+    public GwtBrokerNodeCreator(long brokerClusterId) {
+        this.brokerClusterId = brokerClusterId;
+        this.brokerNodeId = -1;
+        this.iaasKeyName = "";
+        this.iaasInstanceType = "";
+        this.iaasAvailabilityZone = "";
+    }
 
-	public void setBrokerClusterId(long brokerClusterId) {
-		this.brokerClusterId = brokerClusterId;
-	}
+    // // Constructor for reprovisioning
+    // public GwtBrokerNodeCreator(BrokerNode node) {
+    // this.brokerClusterId = node.getBrokerCluster().getId();
+    // this.brokerNodeId = node.getId();
+    // this.iaasAvailabilityZone = node.getIaasAvailabilityZone();
+    // this.iaasInstanceType = node.getIaasInstanceType();
+    // this.iaasKeyName = node.getIaasKeyName();
+    // this.iaasMachineImage = node.getIaasMachineImage();
+    // }
 
-	public long getBrokerNodeId() {
-		return brokerNodeId;
-	}
+    public long getBrokerClusterId() {
+        return brokerClusterId;
+    }
 
-	public void setBrokerNodeId(long brokerNodeId) {
-		this.brokerNodeId = brokerNodeId;
-	}
+    public void setBrokerClusterId(long brokerClusterId) {
+        this.brokerClusterId = brokerClusterId;
+    }
 
-	public long getNumInstances() {
-		return numInstances;
-	}
+    public long getBrokerNodeId() {
+        return brokerNodeId;
+    }
 
-	public void setNumInstances(int numInstances) {
-		this.numInstances = numInstances;
-	}
+    public void setBrokerNodeId(long brokerNodeId) {
+        this.brokerNodeId = brokerNodeId;
+    }
 
-	public String getIaasMachineImage() {
-		return iaasMachineImage;
-	}
+    public long getNumInstances() {
+        return numInstances;
+    }
 
-	public void setIaasMachineImage(String iaasMachineImage) {
-		this.iaasMachineImage = iaasMachineImage;
-	}
+    public void setNumInstances(int numInstances) {
+        this.numInstances = numInstances;
+    }
 
-	public String getIaasKeyName() {
-		return iaasKeyName;
-	}
+    public String getIaasMachineImage() {
+        return iaasMachineImage;
+    }
 
-	public void setIaasKeyName(String iaasKeyName) {
-		this.iaasKeyName = iaasKeyName;
-	}
+    public void setIaasMachineImage(String iaasMachineImage) {
+        this.iaasMachineImage = iaasMachineImage;
+    }
 
-	public String getIaasInstanceType() {
-		return iaasInstanceType;
-	}
+    public String getIaasKeyName() {
+        return iaasKeyName;
+    }
 
-	public void setIaasInstanceType(String iaasInstanceType) {
-		this.iaasInstanceType = iaasInstanceType;
-	}
+    public void setIaasKeyName(String iaasKeyName) {
+        this.iaasKeyName = iaasKeyName;
+    }
 
-	public String getIaasAvailabilityZone() {
-		return iaasAvailabilityZone;
-	}
+    public String getIaasInstanceType() {
+        return iaasInstanceType;
+    }
 
-	public void setIaasAvailabilityZone(String iaasAvailabilityZone) {
-		this.iaasAvailabilityZone = iaasAvailabilityZone;
-	}
+    public void setIaasInstanceType(String iaasInstanceType) {
+        this.iaasInstanceType = iaasInstanceType;
+    }
+
+    public String getIaasAvailabilityZone() {
+        return iaasAvailabilityZone;
+    }
+
+    public void setIaasAvailabilityZone(String iaasAvailabilityZone) {
+        this.iaasAvailabilityZone = iaasAvailabilityZone;
+    }
 }

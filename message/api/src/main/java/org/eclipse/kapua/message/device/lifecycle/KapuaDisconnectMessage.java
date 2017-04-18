@@ -19,21 +19,20 @@ import org.eclipse.kapua.message.KapuaMessage;
  * @since 1.0
  *
  */
-public interface KapuaDisconnectMessage extends KapuaMessage<KapuaDisconnectChannel, KapuaDisconnectPayload>
-{
-	
+public interface KapuaDisconnectMessage extends KapuaMessage<KapuaDisconnectChannel, KapuaDisconnectPayload> {
+
     /**
      * Set the client identifier
      * 
      * @param clientId
      */
-	public void setClientId(String clientId);
-	
+    public void setClientId(String clientId);
+
     /**
      * Get the client identifier
      * 
      * @return
      */
-	public String getClientId();
+    public String getClientId();
 
 }

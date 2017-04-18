@@ -22,7 +22,6 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
  * @since 1.0
  *
  */
-public class KapuaNotifyMessageImpl extends KapuaMessageImpl<KapuaNotifyChannel, KapuaNotifyPayload> implements KapuaNotifyMessage
-{
-	
+public class KapuaNotifyMessageImpl extends KapuaMessageImpl<KapuaNotifyChannel, KapuaNotifyPayload> implements KapuaNotifyMessage {
+
 }

@@ -29,22 +29,21 @@ import org.eclipse.kapua.commons.security.KapuaSession;
  *
  */
 public class KapuaWebFilter extends ShiroFilter {
-	
-	protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain)
+
+    protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain)
             throws IOException, ServletException {
-		//bind kapua session
-		
-		//TODO workaround to fix the null kapua session on webconsole requests. to be removed and substitute with getToken or another solution?
-		Subject shiroSubject = SecurityUtils.getSubject();
-        KapuaSession kapuaSession = (KapuaSession)shiroSubject.getSession().getAttribute(KapuaSession.KAPUA_SESSION_KEY);
+        // bind kapua session
+
+        // TODO workaround to fix the null kapua session on webconsole requests. to be removed and substitute with getToken or another solution?
+        Subject shiroSubject = SecurityUtils.getSubject();
+        KapuaSession kapuaSession = (KapuaSession) shiroSubject.getSession().getAttribute(KapuaSession.KAPUA_SESSION_KEY);
         try {
-        	KapuaSecurityUtils.setSession(kapuaSession);
-		
-        	super.executeChain(request, response, origChain);
-        }
-        finally {
-        	//unbind kapua session
-        	KapuaSecurityUtils.clearSession();
+            KapuaSecurityUtils.setSession(kapuaSession);
+
+            super.executeChain(request, response, origChain);
+        } finally {
+            // unbind kapua session
+            KapuaSecurityUtils.clearSession();
         }
     }
 

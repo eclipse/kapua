@@ -21,30 +21,29 @@ import org.eclipse.kapua.message.internal.KapuaChannelImpl;
  *
  */
 public class KapuaDataChannelImpl extends KapuaChannelImpl implements KapuaDataChannel {
-	
-	private String clientId;
-	
+
+    private String clientId;
+
     /**
      * Get the client identifier
      * 
      * @return
      */
-	public String getClientId() {
-		return clientId;
-	}
-	
+    public String getClientId() {
+        return clientId;
+    }
+
     /**
      * Set the client identifier
      * 
      * @param clientId
      */
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-	
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("semantic topic '");
         strBuilder.append(super.toString());

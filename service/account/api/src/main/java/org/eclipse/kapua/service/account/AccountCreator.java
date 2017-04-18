@@ -26,29 +26,26 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
  * @since 1.0
  *
  */
-@XmlRootElement(name="accountCreator")
+@XmlRootElement(name = "accountCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"organizationName",
-                      "organizationPersonName",
-                      "organizationEmail",
-                      "organizationPhoneNumber",
-                      "organizationAddressLine1",
-                      "organizationAddressLine2",
-                      "organizationCity",
-                      "organizationZipPostCode",
-                      "organizationStateProvinceCounty",
-                      "organizationCountry"},
-		 factoryClass = AccountXmlRegistry.class,
-		 factoryMethod = "newAccountCreator")
-public interface AccountCreator extends KapuaNamedEntityCreator<Account>
-{
+@XmlType(propOrder = { "organizationName",
+        "organizationPersonName",
+        "organizationEmail",
+        "organizationPhoneNumber",
+        "organizationAddressLine1",
+        "organizationAddressLine2",
+        "organizationCity",
+        "organizationZipPostCode",
+        "organizationStateProvinceCounty",
+        "organizationCountry" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
+public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
 
     /**
      * Get the organization name
      * 
      * @return
      */
-	@XmlElement(name = "organizationName")
+    @XmlElement(name = "organizationName")
     public String getOrganizationName();
 
     /**
@@ -63,7 +60,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationPersonName")
+    @XmlElement(name = "organizationPersonName")
     public String getOrganizationPersonName();
 
     /**
@@ -78,7 +75,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationEmail")
+    @XmlElement(name = "organizationEmail")
     public String getOrganizationEmail();
 
     /**
@@ -93,7 +90,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationPhoneNumber")
+    @XmlElement(name = "organizationPhoneNumber")
     public String getOrganizationPhoneNumber();
 
     /**
@@ -108,7 +105,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationAddressLine1")
+    @XmlElement(name = "organizationAddressLine1")
     public String getOrganizationAddressLine1();
 
     /**
@@ -123,7 +120,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationAddressLine2")
+    @XmlElement(name = "organizationAddressLine2")
     public String getOrganizationAddressLine2();
 
     /**
@@ -138,7 +135,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationCity")
+    @XmlElement(name = "organizationCity")
     public String getOrganizationCity();
 
     /**
@@ -153,7 +150,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationZipPostCode")
+    @XmlElement(name = "organizationZipPostCode")
     public String getOrganizationZipPostCode();
 
     /**
@@ -168,7 +165,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationStateProvinceCounty")
+    @XmlElement(name = "organizationStateProvinceCounty")
     public String getOrganizationStateProvinceCounty();
 
     /**
@@ -183,7 +180,7 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-	@XmlElement(name = "organizationCountry")
+    @XmlElement(name = "organizationCountry")
     public String getOrganizationCountry();
 
     /**

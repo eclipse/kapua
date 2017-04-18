@@ -19,19 +19,18 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  *
  */
-public class KapuaEntityNotFoundException extends KapuaException
-{
-	private static final long serialVersionUID = -4903038247732490215L;
+public class KapuaEntityNotFoundException extends KapuaException {
 
-	/**
+    private static final long serialVersionUID = -4903038247732490215L;
+
+    /**
      * Constructor with entity name not found
      * 
      * @param entityType
      * @param entityName
      */
-    public KapuaEntityNotFoundException(String entityType, String entityName)
-    {
-    	super(KapuaErrorCodes.ENTITY_NOT_FOUND, new Object[] { entityType, entityName });
+    public KapuaEntityNotFoundException(String entityType, String entityName) {
+        super(KapuaErrorCodes.ENTITY_NOT_FOUND, new Object[] { entityType, entityName });
     }
 
     /**
@@ -40,8 +39,7 @@ public class KapuaEntityNotFoundException extends KapuaException
      * @param entityType
      * @param entityId
      */
-    public KapuaEntityNotFoundException(String entityType, KapuaId entityId)
-    {
+    public KapuaEntityNotFoundException(String entityType, KapuaId entityId) {
         super(KapuaErrorCodes.ENTITY_NOT_FOUND, new Object[] { entityType, entityId.getId() });
     }
 }

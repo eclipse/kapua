@@ -28,25 +28,25 @@ import org.eclipse.kapua.service.authentication.KapuaPrincipal;
  * @since 1.0
  */
 public class KapuaSecurityContext extends SecurityContext {
-	
-    private KapuaPrincipal   principal;
-    private KapuaSession        kapuaSession;
-    private KapuaId          connectionId;
-    private Set<Principal>   principals;
+
+    private KapuaPrincipal principal;
+    private KapuaSession kapuaSession;
+    private KapuaId connectionId;
+    private Set<Principal> principals;
     private ConnectorDescriptor connectorDescriptor;
-    private ConnectionId        brokerConnectionId;
+    private ConnectionId brokerConnectionId;
 
     private AuthorizationMap authMap;
-    private boolean          hasDataView;
-    private boolean          hasDataManage;
-    private boolean          hasDeviceView;
-    private boolean          hasDeviceManage;
+    private boolean hasDataView;
+    private boolean hasDataManage;
+    private boolean hasDeviceView;
+    private boolean hasDeviceManage;
 
-    public KapuaSecurityContext(KapuaPrincipal     principal,
-                              AuthorizationMap authMap,
-                              KapuaId connectionId,
-                              ConnectionId brokerConnectionId,
-                              ConnectorDescriptor connectorDescriptor) {
+    public KapuaSecurityContext(KapuaPrincipal principal,
+            AuthorizationMap authMap,
+            KapuaId connectionId,
+            ConnectionId brokerConnectionId,
+            ConnectorDescriptor connectorDescriptor) {
         super(principal.getName());
 
         this.principal = principal;
@@ -60,58 +60,47 @@ public class KapuaSecurityContext extends SecurityContext {
         this.brokerConnectionId = brokerConnectionId;
     }
 
-    public Principal getMainPrincipal()
-    {
+    public Principal getMainPrincipal() {
         return principal;
     }
 
-    public Set<Principal> getPrincipals()
-    {
+    public Set<Principal> getPrincipals() {
         return principals;
     }
 
-    public AuthorizationMap getAuthorizationMap()
-    {
+    public AuthorizationMap getAuthorizationMap() {
         return authMap;
     }
 
-    public KapuaId getConnectionId()
-    {
+    public KapuaId getConnectionId() {
         return connectionId;
     }
 
-    public ConnectionId getBrokerConnectionId()
-    {
+    public ConnectionId getBrokerConnectionId() {
         return brokerConnectionId;
     }
 
-    public ConnectorDescriptor getConnectorDescriptor()
-    {
+    public ConnectorDescriptor getConnectorDescriptor() {
         return connectorDescriptor;
     }
 
-    public boolean hasDataView()
-    {
+    public boolean hasDataView() {
         return hasDataView;
     }
 
-    public boolean hasDataManage()
-    {
+    public boolean hasDataManage() {
         return hasDataManage;
     }
 
-    public boolean hasDeviceView()
-    {
+    public boolean hasDeviceView() {
         return hasDeviceView;
     }
 
-    public boolean hasDeviceManage()
-    {
+    public boolean hasDeviceManage() {
         return hasDeviceManage;
     }
 
-    public KapuaSession getKapuaSession()
-    {
+    public KapuaSession getKapuaSession() {
         return kapuaSession;
     }
 }

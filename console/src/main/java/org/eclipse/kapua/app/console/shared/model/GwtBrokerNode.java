@@ -20,116 +20,117 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 
 public class GwtBrokerNode extends BaseModel implements Serializable {
 
-	private static final long serialVersionUID = -921367833245581297L;
+    private static final long serialVersionUID = -921367833245581297L;
 
-	public GwtBrokerNode() {}
-	
-	public String getId() {
+    public GwtBrokerNode() {
+    }
+
+    public String getId() {
         return (String) get("id");
     }
 
     public void setId(String id) {
         set("id", id);
     }
-    
+
     public Long getBrokerClusterId() {
-    	return (Long) get("brokerClusterId");
+        return (Long) get("brokerClusterId");
     }
-    
+
     public void setBrokerClusterId(Long brokerClusterId) {
-    	set("brokerClusterId", brokerClusterId);
+        set("brokerClusterId", brokerClusterId);
     }
 
     public String getStatus() {
-    	return (String) get("status");
+        return (String) get("status");
     }
 
     public void setStatus(String status) {
-    	set("status", status);
+        set("status", status);
     }
-    
+
     public String getBrokerVersion() {
-    	return (String) get("brokerVersion");
+        return (String) get("brokerVersion");
     }
-    
+
     public void setBrokerVersion(String brokerVersion) {
-    	set("brokerVersion", brokerVersion);
+        set("brokerVersion", brokerVersion);
     }
 
     public String getMachineImage() {
-    	return (String) get("machineImage");
+        return (String) get("machineImage");
     }
-    
+
     public void setMachineImage(String machineImage) {
-    	set("machineImage", machineImage);
+        set("machineImage", machineImage);
     }
 
     public String getKeyName() {
-    	return (String) get("keyName");
+        return (String) get("keyName");
     }
-    
+
     public void setKeyName(String keyName) {
-    	set("keyName", keyName);
+        set("keyName", keyName);
     }
 
     public String getInstanceType() {
-    	return (String) get("instanceType");
+        return (String) get("instanceType");
     }
-    
+
     public void setInstanceType(String instanceType) {
-    	set("instanceType", instanceType);
+        set("instanceType", instanceType);
     }
 
     public String getAvailabilityZone() {
-    	return (String) get("availabilityZone");
+        return (String) get("availabilityZone");
     }
-    
+
     public void setAvailabilityZone(String availabilityZone) {
-    	set("availabilityZone", availabilityZone);
+        set("availabilityZone", availabilityZone);
     }
 
     public String getInstanceId() {
-    	return (String) get("instanceId");
+        return (String) get("instanceId");
     }
-    
+
     public void setInstanceId(String instanceId) {
-    	set("instanceId", instanceId);
+        set("instanceId", instanceId);
     }
 
     public String getDnsName() {
-    	return (String) get("dnsName");
+        return (String) get("dnsName");
     }
-    
+
     public void setDnsName(String dnsName) {
-    	set("dnsName", dnsName);
+        set("dnsName", dnsName);
     }
 
     public String getPublicIp() {
-    	return (String) get("publicIp");
+        return (String) get("publicIp");
     }
-    
+
     public void setPublicIp(String publicIp) {
-    	set("publicIp", publicIp);
+        set("publicIp", publicIp);
     }
 
     public String getPrivateIp() {
-    	return (String) get("privateIp");
+        return (String) get("privateIp");
     }
-    
+
     public void setPrivateIp(String privateIp) {
-    	set("privateIp", privateIp);
+        set("privateIp", privateIp);
     }
-    
+
     @Override
-	@SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
-    	if ("modifiedOnFormatted".equals(property)) {
-    		return (X) (DateUtils.formatDateTime((Date) get("modifiedOn")));
-		} else if ("createdOnFormatted".equals(property)) {
-			return (X) (DateUtils.formatDateTime((Date) get("createdOn")));
-		} else {
-    		return super.get(property);
-    	}
+        if ("modifiedOnFormatted".equals(property)) {
+            return (X) (DateUtils.formatDateTime((Date) get("modifiedOn")));
+        } else if ("createdOnFormatted".equals(property)) {
+            return (X) (DateUtils.formatDateTime((Date) get("createdOn")));
+        } else {
+            return super.get(property);
+        }
     }
 
 }

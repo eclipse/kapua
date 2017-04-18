@@ -21,8 +21,7 @@ import org.eclipse.kapua.KapuaException;
  * @since 1.0
  *
  */
-public interface JAXBContextProvider
-{
+public interface JAXBContextProvider {
 
     /**
      * Get the jaxb context
@@ -30,5 +29,5 @@ public interface JAXBContextProvider
      * @return
      * @throws KapuaException
      */
-	public JAXBContext getJAXBContext() throws KapuaException ;
+    public JAXBContext getJAXBContext() throws KapuaException;
 }
