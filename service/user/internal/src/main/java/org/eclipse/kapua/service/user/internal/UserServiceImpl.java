@@ -9,7 +9,6 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
- *
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 

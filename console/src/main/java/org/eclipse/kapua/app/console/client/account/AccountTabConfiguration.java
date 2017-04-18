@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
@@ -9,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account;
 

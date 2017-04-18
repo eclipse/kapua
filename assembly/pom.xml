@@ -685,9 +685,10 @@
 									<ACTIVEMQ_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Ddatastore.elasticsearch.nodes=\${ES_PORT_9300_TCP_ADDR} -Ddatastore.elasticsearch.port=\${ES_PORT_9300_TCP_PORT}</ACTIVEMQ_OPTS>
 								</env>
 								<ports>
-									<port>1883</port>
+									<port>1883</port><!-- MQTT -->
+									<port>8883</port><!-- MQTTS -->
 									<port>8778</port><!-- Jolokia -->
-									<port>61614</port>
+									<port>61614</port><!-- MQTT-WS -->
 								</ports>
 								<user>kapua</user>
 								<runCmds>

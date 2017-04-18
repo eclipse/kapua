@@ -9,7 +9,6 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.kapua.model.config.metatype;
 
 import org.eclipse.kapua.locator.KapuaLocator;

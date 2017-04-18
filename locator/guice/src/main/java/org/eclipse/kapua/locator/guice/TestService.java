@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Red Hat - loading test services
- *
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 

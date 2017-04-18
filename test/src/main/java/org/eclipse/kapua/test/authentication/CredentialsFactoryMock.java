@@ -8,9 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
-
 package org.eclipse.kapua.test.authentication;
 
 import org.eclipse.kapua.locator.KapuaProvider;

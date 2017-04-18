@@ -9,7 +9,6 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *     Red Hat - improved tests coverage
- *
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal;
 
