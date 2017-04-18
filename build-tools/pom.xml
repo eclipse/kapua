@@ -14,6 +14,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+      This module must not have the main Kapua project as its
+      parent, as the parent has a dependency on this bundle and
+      thus it would create a circular dependency. It still is a
+      sub-module of the project.
+      -->
+
     <groupId>org.eclipse.kapua.build</groupId>
     <artifactId>kapua-build-tools</artifactId>
     <version>0.2.0-SNAPSHOT</version>
@@ -21,4 +28,24 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <!--
+      As this content in injected into the classpath of the
+      checkstyle plugin we do need to use "jar" packaging for
+      this project. And thus want to avoid warnings about
+      a missing JRE 1.5.
+      -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
