@@ -54,6 +54,7 @@
 
         <api>org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService</api>
         <api>org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory</api>
+        <api>org.eclipse.kapua.service.device.management.channel.DeviceChannelFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
