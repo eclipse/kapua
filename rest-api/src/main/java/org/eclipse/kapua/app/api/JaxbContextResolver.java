@@ -106,6 +106,9 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleXmlRegistry;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
+import org.eclipse.kapua.service.device.management.channel.DeviceChannel;
+import org.eclipse.kapua.service.device.management.channel.DeviceChannelXmlRegistry;
+import org.eclipse.kapua.service.device.management.channel.DeviceChannels;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegistry;
@@ -224,6 +227,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceAsset.class,
                     DeviceAssets.class,
                     DeviceAssetXmlRegistry.class,
+                    DeviceChannel.class,
+                    DeviceChannels.class,
+                    DeviceChannelXmlRegistry.class,
                     
                     // Device Management Bundles
                     KuraBundles.class,
