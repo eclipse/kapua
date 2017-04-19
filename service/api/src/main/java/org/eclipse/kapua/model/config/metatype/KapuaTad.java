@@ -63,11 +63,8 @@ import javax.xml.namespace.QName;
 @XmlType(name = "Tad", propOrder = {
         "option",
         "any"
-},
-        factoryClass = MetatypeXmlRegistry.class,
-        factoryMethod = "newKapuaTad")
-public interface KapuaTad
-{
+}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTad")
+public interface KapuaTad {
 
     /**
      * Gets the value of the option property.
@@ -95,6 +92,8 @@ public interface KapuaTad
     @XmlElement(name = "Option", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
     public List<KapuaToption> getOption();
 
+    public void setOption(List<KapuaToption> option);
+
     /**
      * Gets the value of the any property.
      *
@@ -120,6 +119,8 @@ public interface KapuaTad
      */
     @XmlAnyElement(lax = true)
     public List<Object> getAny();
+
+    public void setAny(List<Object> any);
 
     /**
      * Gets the value of the name property.
