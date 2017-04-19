@@ -22,41 +22,41 @@ import org.eclipse.kapua.service.account.AccountCreator;
  * @since 1.0
  * 
  */
-public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account> implements AccountCreator
-{
-	private static final long serialVersionUID = -2460883485294616032L;
+public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account> implements AccountCreator {
 
-	private String accountName;
+    private static final long serialVersionUID = -2460883485294616032L;
 
-	private String organizationName;
+    private String accountName;
 
-	private String organizationPersonName;
-	
-	private String organizationEmail;
+    private String organizationName;
 
-	private String organizationPhoneNumber;
+    private String organizationPersonName;
 
-	private String organizationAddressLine1;
+    private String organizationEmail;
 
-	private String organizationAddressLine2;
+    private String organizationPhoneNumber;
 
-	private String organizationCity;
+    private String organizationAddressLine1;
 
-	private String organizationZipPostCode;
+    private String organizationAddressLine2;
 
-	private String organizationStateProvinceCounty;
+    private String organizationCity;
 
-	private String organizationCountry;
+    private String organizationZipPostCode;
+
+    private String organizationStateProvinceCounty;
+
+    private String organizationCountry;
 
     /**
      * Constructor
      * 
      * @param scopeId
-     * @param name account name
+     * @param name
+     *            account name
      */
-    public AccountCreatorImpl(KapuaId scopeId, String name)
-    {
-    	super(scopeId, name);
+    public AccountCreatorImpl(KapuaId scopeId, String name) {
+        super(scopeId, name);
     }
 
     /**
@@ -64,8 +64,7 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
      * 
      * @return
      */
-    public String getAccountName()
-    {
+    public String getAccountName() {
         return accountName;
     }
 
@@ -74,128 +73,107 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
      * 
      * @param accountName
      */
-    public void setAccountName(String accountName)
-    {
+    public void setAccountName(String accountName) {
         this.accountName = accountName;
     }
 
     @Override
-    public String getOrganizationName()
-    {
+    public String getOrganizationName() {
         return organizationName;
     }
 
     @Override
-    public void setOrganizationName(String organizationName)
-    {
+    public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
     }
 
     @Override
-    public String getOrganizationPersonName()
-    {
+    public String getOrganizationPersonName() {
         return organizationPersonName;
     }
 
     @Override
-    public void setOrganizationPersonName(String organizationPersonName)
-    {
+    public void setOrganizationPersonName(String organizationPersonName) {
         this.organizationPersonName = organizationPersonName;
     }
 
     @Override
-    public String getOrganizationEmail()
-    {
+    public String getOrganizationEmail() {
         return organizationEmail;
     }
 
     @Override
-    public void setOrganizationEmail(String organizationEmail)
-    {
+    public void setOrganizationEmail(String organizationEmail) {
         this.organizationEmail = organizationEmail;
     }
 
     @Override
-    public String getOrganizationPhoneNumber()
-    {
+    public String getOrganizationPhoneNumber() {
         return organizationPhoneNumber;
     }
 
     @Override
-    public void setOrganizationPhoneNumber(String organizationPhoneNumber)
-    {
+    public void setOrganizationPhoneNumber(String organizationPhoneNumber) {
         this.organizationPhoneNumber = organizationPhoneNumber;
     }
 
     @Override
-    public String getOrganizationAddressLine1()
-    {
+    public String getOrganizationAddressLine1() {
         return organizationAddressLine1;
     }
 
     @Override
-    public void setOrganizationAddressLine1(String organizationAddressLine1)
-    {
+    public void setOrganizationAddressLine1(String organizationAddressLine1) {
         this.organizationAddressLine1 = organizationAddressLine1;
     }
 
     @Override
-    public String getOrganizationAddressLine2()
-    {
+    public String getOrganizationAddressLine2() {
         return organizationAddressLine2;
     }
 
     @Override
-    public void setOrganizationAddressLine2(String organizationAddressLine2)
-    {
+    public void setOrganizationAddressLine2(String organizationAddressLine2) {
         this.organizationAddressLine2 = organizationAddressLine2;
     }
 
     @Override
-    public String getOrganizationCity()
-    {
+    public String getOrganizationCity() {
         return organizationCity;
     }
 
     @Override
-    public void setOrganizationCity(String organizationCity)
-    {
+    public void setOrganizationCity(String organizationCity) {
         this.organizationCity = organizationCity;
     }
 
     @Override
-    public String getOrganizationZipPostCode()
-    {
+    public String getOrganizationZipPostCode() {
         return organizationZipPostCode;
     }
 
     @Override
-    public void setOrganizationZipPostCode(String organizationZipPostCode)
-    {
+    public void setOrganizationZipPostCode(String organizationZipPostCode) {
         this.organizationZipPostCode = organizationZipPostCode;
     }
 
     @Override
-    public String getOrganizationStateProvinceCounty()
-    {
+    public String getOrganizationStateProvinceCounty() {
         return organizationStateProvinceCounty;
     }
 
     @Override
-    public void setOrganizationStateProvinceCounty(String organizationStateProvinceCounty)
-    {
+    public void setOrganizationStateProvinceCounty(String organizationStateProvinceCounty) {
         this.organizationStateProvinceCounty = organizationStateProvinceCounty;
     }
 
     @Override
-    public String getOrganizationCountry()
-    {
+    public String getOrganizationCountry() {
         return organizationCountry;
     }
 
     @Override
-    public void setOrganizationCountry(String organizationCountry)
-    {
+    public void setOrganizationCountry(String organizationCountry) {
         this.organizationCountry = organizationCountry;
     }
 }

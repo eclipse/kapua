@@ -22,7 +22,6 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
  * @since 1.0
  *
  */
-public class KapuaUnmatchedMessageImpl extends KapuaMessageImpl<KapuaUnmatchedChannel, KapuaUnmatchedPayload> implements KapuaUnmatchedMessage
-{
-	
+public class KapuaUnmatchedMessageImpl extends KapuaMessageImpl<KapuaUnmatchedChannel, KapuaUnmatchedPayload> implements KapuaUnmatchedMessage {
+
 }

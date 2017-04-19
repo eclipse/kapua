@@ -15,6 +15,8 @@ import org.eclipse.kapua.app.console.shared.model.KapuaBaseModel;
 
 public class GwtPackageInstallRequest extends KapuaBaseModel {
 
+    private static final long serialVersionUID = 1L;
+
     public void setScopeId(String scopeId) {
         set("scopeId", scopeId);
     }

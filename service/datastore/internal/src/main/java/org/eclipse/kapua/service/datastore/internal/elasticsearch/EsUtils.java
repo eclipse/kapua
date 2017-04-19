@@ -545,7 +545,7 @@ public class EsUtils {
      * @since 1.0.0
      */
     public static long getQueryTimeout() {
-        return 15000;
+        return 60000;
     }
 
     /**
@@ -555,6 +555,6 @@ public class EsUtils {
      * @since 1.0.0
      */
     public static long getScrollTimeout() {
-        return 60000;
+        return 90000;
     }
 }

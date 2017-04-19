@@ -27,16 +27,13 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
  */
 @XmlRootElement(name = "account")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "organization", 
-					  "parentAccountPath" },
-		factoryClass = AccountXmlRegistry.class, 
-		factoryMethod = "newAccount")
-public interface Account extends KapuaNamedEntity
-{
+@XmlType(propOrder = { "organization",
+        "parentAccountPath" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccount")
+public interface Account extends KapuaNamedEntity {
+
     public static final String TYPE = "acct";
 
-    default public String getType()
-    {
+    default public String getType() {
         return TYPE;
     }
 

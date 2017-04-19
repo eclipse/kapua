@@ -20,7 +20,6 @@ import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
  * @since 1.0
  *
  */
-public class KapuaUnmatchedPayloadImpl extends KapuaPayloadImpl implements KapuaUnmatchedPayload
-{
-	
+public class KapuaUnmatchedPayloadImpl extends KapuaPayloadImpl implements KapuaUnmatchedPayload {
+
 }

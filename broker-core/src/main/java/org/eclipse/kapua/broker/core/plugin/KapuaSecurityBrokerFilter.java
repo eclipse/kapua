@@ -97,7 +97,7 @@ import com.codahale.metrics.Timer.Context;
  */
 public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
-    private static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
+    private final static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
     private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<>();
 

@@ -21,39 +21,36 @@ import com.extjs.gxt.ui.client.data.BaseModel;
  * This is a generic key, value object to use with the combo box control.
  *
  */
-public class GwtComboItem extends BaseModel implements Serializable
-{
+public class GwtComboItem extends BaseModel implements Serializable {
 
-	private static final long serialVersionUID = 2179331098490277748L;
+    private static final long serialVersionUID = 2179331098490277748L;
 
-	
-	public void setComboId(String id) {
-		set("ComboId", id);
-	}	
-	
-	public String getComboId() {
-		return (String)get("ComboId");
-	}
-	
-	public void setComboValue(String value) {
-		set("ComboValue", value);
-	}	
-	
-	public String getComboValue() {
-		return (String)get("ComboValue");
-	}	
-	
-	public void setDisabled(boolean disabled) {
-		set("ComboDisabled", disabled);
-	}	
-	
-	public boolean isDisable() {
-		return (Boolean)get("ComboDisabled");
-	}    
-		
-    @SuppressWarnings("unchecked")
-    public <X> X get(String property){
+    public void setComboId(String id) {
+        set("ComboId", id);
+    }
+
+    public String getComboId() {
+        return (String) get("ComboId");
+    }
+
+    public void setComboValue(String value) {
+        set("ComboValue", value);
+    }
+
+    public String getComboValue() {
+        return (String) get("ComboValue");
+    }
+
+    public void setDisabled(boolean disabled) {
+        set("ComboDisabled", disabled);
+    }
+
+    public boolean isDisable() {
+        return (Boolean) get("ComboDisabled");
+    }
+
+    public <X> X get(String property) {
         return super.get(property);
-    }	
-	
+    }
+
 }

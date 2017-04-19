@@ -23,16 +23,16 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
-public interface KapuaConfigurableService
-{
+public interface KapuaConfigurableService {
+
     /**
      * Return the service configuration metadata
      * 
      * @return
      * @throws KapuaException
      */
-	public KapuaTocd getConfigMetadata() throws KapuaException;
-	
+    public KapuaTocd getConfigMetadata() throws KapuaException;
+
     /**
      * Return a map of configuration values associated with the provided scope id
      * 
@@ -40,8 +40,8 @@ public interface KapuaConfigurableService
      * @return
      * @throws KapuaException
      */
-	public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException;
-	
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException;
+
     /**
      * Set the configuration values for the specified scope id
      * 
@@ -49,6 +49,6 @@ public interface KapuaConfigurableService
      * @param values
      * @throws KapuaException
      */
-	public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException;
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException;
 
 }

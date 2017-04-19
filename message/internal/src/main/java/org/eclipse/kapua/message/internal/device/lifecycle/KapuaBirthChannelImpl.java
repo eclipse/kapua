@@ -22,16 +22,16 @@ import org.eclipse.kapua.message.internal.KapuaChannelImpl;
  */
 public class KapuaBirthChannelImpl extends KapuaChannelImpl implements KapuaBirthChannel {
 
-	private String clientId;
+    private String clientId;
 
     @Override
-	public String getClientId() {
-		return clientId;
-	}
+    public String getClientId() {
+        return clientId;
+    }
 
     @Override
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-	  
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
 }

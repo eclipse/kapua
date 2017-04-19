@@ -23,5 +23,5 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
  *
  */
 public class KapuaMissingMessageImpl extends KapuaMessageImpl<KapuaMissingChannel, KapuaMissingPayload> implements KapuaMissingMessage {
-	
+
 }

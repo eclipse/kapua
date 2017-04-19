@@ -45,6 +45,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
 
     @Override
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
+        @SuppressWarnings("unused")
         boolean parentValidation = super.validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, updatedProps);
         if (availableChildEntitiesWithNewConfig < 0) {

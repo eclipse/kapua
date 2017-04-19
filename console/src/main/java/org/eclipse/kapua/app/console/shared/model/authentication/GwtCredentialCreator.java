@@ -17,6 +17,8 @@ import org.eclipse.kapua.app.console.shared.model.GwtEntityCreator;
 
 public class GwtCredentialCreator extends GwtEntityCreator implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private String userId;
     private GwtCredentialType credentialType;
     private String credentialPlainKey;
