@@ -1,6 +1,8 @@
 # Summary
 
 * [Building](building.md)
+  * [Kapua](building.md#kapua)
+  * [Documentation](building.md#documentation)
 * [Running](running.md)
   * [Docker](running.md#docker-containers)
   * [OpenShift](running.md#openshift)
