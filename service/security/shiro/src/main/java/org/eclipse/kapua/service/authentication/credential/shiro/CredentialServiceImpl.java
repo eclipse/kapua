@@ -341,6 +341,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         return credential;
     }
 
+    @SuppressWarnings("unused")
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);

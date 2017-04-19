@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
 // Implementation of Gherkin steps used to test miscellaneous Shiro 
@@ -45,6 +43,7 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
     private MiscAuthorizationTestData miscData = null;
 
     // Currently executing scenario.
+    @SuppressWarnings("unused")
     private Scenario scenario;
     
     // Various Shiro Authorization related service references

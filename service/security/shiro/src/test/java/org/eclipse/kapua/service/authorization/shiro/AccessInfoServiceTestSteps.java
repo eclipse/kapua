@@ -103,6 +103,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     private RoleFactory roleFactory = null;
 
     // Currently executing scenario.
+    @SuppressWarnings("unused")
     private Scenario scenario;
 
     @Inject
