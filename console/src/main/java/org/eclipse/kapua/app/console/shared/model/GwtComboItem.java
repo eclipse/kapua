@@ -49,7 +49,6 @@ public class GwtComboItem extends BaseModel implements Serializable {
         return (Boolean) get("ComboDisabled");
     }
 
-    @SuppressWarnings("unchecked")
     public <X> X get(String property) {
         return super.get(property);
     }
