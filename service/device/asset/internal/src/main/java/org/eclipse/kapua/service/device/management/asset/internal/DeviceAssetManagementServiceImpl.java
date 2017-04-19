@@ -142,6 +142,7 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(deviceId, "assetName");
 
         //
         // Check Access
