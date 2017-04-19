@@ -46,6 +46,8 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implements GwtCredentialService {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public PagingLoadResult<GwtCredential> query(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) throws GwtKapuaException {
         //
