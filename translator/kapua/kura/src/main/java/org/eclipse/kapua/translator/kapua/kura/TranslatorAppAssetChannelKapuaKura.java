@@ -74,8 +74,16 @@ public class TranslatorAppAssetChannelKapuaKura extends AbstractTranslatorKapuaK
     protected KuraRequestPayload translatePayload(ChannelRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.getBody() != null) {
-            kuraRequestPayload.setBody(kapuaPayload.getBody());
+        if (!kapuaPayload.getChannelNames().isEmpty()) {
+            StringBuilder channelNamesSb = new StringBuilder();
+            
+            for (String channelName : kapuaPayload.getChannelNames()) {
+                channelNamesSb.append(channelName).append(",");
+            }
+            
+            channelNamesSb.deleteCharAt(channelNamesSb.length() - 1);
+            
+            kuraRequestPayload.getMetrics().put("channel.name", channelNamesSb.toString());
         }
 
         return kuraRequestPayload;
