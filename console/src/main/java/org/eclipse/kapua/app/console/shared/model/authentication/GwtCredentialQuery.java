@@ -15,6 +15,8 @@ import org.eclipse.kapua.app.console.shared.model.query.GwtQuery;
 
 public class GwtCredentialQuery extends GwtQuery {
 
+    private static final long serialVersionUID = 1L;
+
     private String username;
     private GwtCredentialType type;
     private String userId;
