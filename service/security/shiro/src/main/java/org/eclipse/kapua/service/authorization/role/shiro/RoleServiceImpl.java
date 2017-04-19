@@ -69,7 +69,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
         
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
-            throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
+            throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
         }
         return entityManagerSession.onTransactedInsert(em -> {
             Role role = RoleDAO.create(em, roleCreator);
