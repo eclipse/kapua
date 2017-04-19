@@ -15,22 +15,24 @@ import org.eclipse.kapua.service.device.management.channel.ChannelMode;
 import org.eclipse.kapua.service.device.management.channel.DeviceChannel;
 
 /**
- * Device channel entity implementation.
+ * {@link DeviceChannel} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DeviceChannelImpl<T> implements DeviceChannel<T> {
 
-    public String name;
-    public Class<T> clazz;
-    public ChannelMode mode;
-    public T value;
+    private String name;
+    private Class<T> clazz;
+    private ChannelMode mode;
+    private T value;
+    private String error;
+    private Long timestamp;
 
     /**
      * Constructor
      */
     public DeviceChannelImpl() {
+        // Required by JAXB
     }
 
     @Override
@@ -51,19 +53,20 @@ public class DeviceChannelImpl<T> implements DeviceChannel<T> {
     @Override
     public void setType(Class<T> clazz) {
         this.clazz = clazz;
-        
+
         try {
             clazz.cast(getValue());
-        }
-        catch (ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new IllegalArgumentException(cce);
         }
     }
 
+    @Override
     public ChannelMode getMode() {
         return mode;
     }
-    
+
+    @Override
     public void setMode(ChannelMode mode) {
         this.mode = mode;
     }
@@ -77,9 +80,31 @@ public class DeviceChannelImpl<T> implements DeviceChannel<T> {
     @SuppressWarnings("unchecked")
     public void setValue(T value) {
         this.value = value;
-        
+
         if (value != null) {
             setType((Class<T>) value.getClass());
+        }
+    }
+
+    @Override
+    public String getError() {
+        return error;
+    }
+
+    @Override
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    @Override
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    @Override
+    public void setTimestamp(Long timestamp) {
+        if (timestamp != null && timestamp > 0) {
+            this.timestamp = timestamp;
         }
     }
 }
