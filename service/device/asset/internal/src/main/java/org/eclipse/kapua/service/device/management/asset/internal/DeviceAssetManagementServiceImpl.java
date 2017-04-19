@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -157,13 +158,14 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         channelRequestChannel.setMethod(KapuaMethod.READ);
         channelRequestChannel.setAssetName(assetName);
 
-        ChannelRequestPayload assetRequestPayload = new ChannelRequestPayload();
-
+        ChannelRequestPayload channelRequestPayload = new ChannelRequestPayload();
+        channelRequestPayload.setChannelNames(channelNames);
+        
         ChannelRequestMessage channelRequestMessage = new ChannelRequestMessage();
         channelRequestMessage.setScopeId(scopeId);
         channelRequestMessage.setDeviceId(deviceId);
         channelRequestMessage.setCapturedOn(new Date());
-        channelRequestMessage.setPayload(assetRequestPayload);
+        channelRequestMessage.setPayload(channelRequestPayload);
         channelRequestMessage.setChannel(channelRequestChannel);
 
         //
@@ -173,42 +175,11 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
 
         //
         // Parse the response
-        ChannelResponsePayload responsePayload = responseMessage.getPayload();
-
-        Map<String, DeviceChannel<?>> deviceChannelsMap = new HashMap<>();
         DeviceChannelFactory deviceChannelFactory = KapuaLocator.getInstance().getFactory(DeviceChannelFactory.class);
-        
-        try {
-            for (Entry<String, Object> entry : responsePayload.getProperties().entrySet()){
-                if (entry.getValue() != null) {
-
-                    String[] tokens = entry.getKey().split("_");
-                    String channelName = tokens[0];
-
-                    DeviceChannel deviceChannel = deviceChannelsMap.get(channelName); 
-                    if(deviceChannel == null) {                    
-                        deviceChannel = deviceChannelFactory.newDeviceChannel();
-                    }
-
-
-                    deviceChannel.setName(channelName);
-                    if ("type".equals(tokens[1])) {
-                            deviceChannel.setType(MetricTypeConverter.fromString((String) entry.getValue()));
-                    }
-                    else if ("mode".equals(tokens[1])) {
-                        deviceChannel.setMode(ChannelMode.valueOf((String) entry.getValue()));
-                    }
-
-                    deviceChannelsMap.put(channelName, deviceChannel);
-                }
-            }
-        }
-        catch (Exception e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
-        }
-        
         DeviceChannels deviceChannelList = deviceChannelFactory.newChannelListResult();
-        deviceChannelList.getChannels().addAll(deviceChannelsMap.values());
+
+        ChannelResponsePayload responsePayload = responseMessage.getPayload();
+        deviceChannelList.getChannels().addAll(convertAssetChannelMetric(responsePayload));
 
         //
         // Create event
@@ -225,5 +196,53 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         deviceEventService.create(deviceEventCreator);
 
         return deviceChannelList;
+    }
+    
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private Collection<DeviceChannel<?>> convertAssetChannelMetric(ChannelResponsePayload responsePayload) throws DeviceManagementException {
+        Map<String, DeviceChannel<?>> deviceChannelsMap = new HashMap<>();
+        DeviceChannelFactory deviceChannelFactory = KapuaLocator.getInstance().getFactory(DeviceChannelFactory.class);
+        
+        try {
+            for (Entry<String, Object> entry : responsePayload.getProperties().entrySet()){
+                if (entry.getValue() != null) {
+
+                    int underscoreSeparatorIndex = entry.getKey().lastIndexOf('_');
+                    
+                    String channelName = entry.getKey().substring(0, underscoreSeparatorIndex);
+                    String channelProperty = entry.getKey().substring(underscoreSeparatorIndex + 1);
+
+                    DeviceChannel deviceChannel = deviceChannelsMap.get(channelName); 
+                    if(deviceChannel == null) {                    
+                        deviceChannel = deviceChannelFactory.newDeviceChannel();
+                    }
+
+                    deviceChannel.setName(channelName);
+                    if ("type".equals(channelProperty)) {
+                            deviceChannel.setType(MetricTypeConverter.fromString((String) entry.getValue()));
+                    }
+                    else if ("mode".equals(channelProperty)) {
+                        deviceChannel.setMode(ChannelMode.valueOf((String) entry.getValue()));
+                    }
+                    else if ("value".equals(channelProperty)) {
+                        deviceChannel.setValue(entry.getValue());
+                    }
+                    else if ("error".equals(channelProperty)) {
+                        deviceChannel.setError((String) entry.getValue());
+                    }
+                    else if ("timestamp".equals(channelProperty)) {
+                        deviceChannel.setTimestamp((Long) entry.getValue());
+                    }
+                    
+                    deviceChannelsMap.put(channelName, deviceChannel);
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
+        }
+        
+        return deviceChannelsMap.values();
     }
 }
