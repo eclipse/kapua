@@ -1,4 +1,4 @@
-![Kapua logo](docs/user-manual/en/images/kapua-logo.png)
+![Eclipse Kapua™ logo](docs/user-manual/en/images/kapua-logo.png)
 
 # Eclipse Kapua&trade;
 
@@ -13,5 +13,5 @@ To install Kapua on your local machine please refer to the following quickstart 
 
 For more information, refer to:
 
-* [User Manual](docs/user-manual/en)
-* [Developer Guide](docs/developer-guide/en)
+* [User Manual](http://download.eclipse.org/kapua/docs/develop/user-manual/en)
+* [Developer Guide](http://download.eclipse.org/kapua/docs/develop/developer-guide/en)
