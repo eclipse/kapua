@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.management.channel;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -37,6 +38,7 @@ public interface DeviceChannel<T> {
      * Get the channel name
      *
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     public String getName();
@@ -45,22 +47,49 @@ public interface DeviceChannel<T> {
      * Set the channel name
      *
      * @param name
+     * @since 1.0.0
      */
     public void setName(String name);
     
+    /**
+     * Gets the type of the channel value.
+     * 
+     * @return The type of the channel value.
+     * @since 1.0.0
+     */
     @XmlElement(name = "type")
     @XmlJavaTypeAdapter(ObjectTypeXmlAdapter.class)
     public Class<T> getType();
     
+    /**
+     * Sets the type of the channel value.
+     * @param type The type og the channel value.
+     * @since 1.0.0
+     */
     public void setType(Class<T> type);
     
+    /**
+     * Gets the mode of the channel.
+     * @return The model of the channel.
+     */
     @XmlElement(name = "mode")
     public ChannelMode getMode();
     
     public void setMode(ChannelMode channelMode);
     
     @XmlElement(name = "value")
+    @XmlAnyElement
     public T getValue();
     
-    public void setValue(T value);    
+    public void setValue(T value);
+    
+    @XmlElement(name = "error")
+    public String getError();
+    
+    public void setError(String error);
+        
+    @XmlElement(name = "timestamp")
+    public Long getTimestamp();
+    
+    public void setTimestamp(Long timestamp);
 }
