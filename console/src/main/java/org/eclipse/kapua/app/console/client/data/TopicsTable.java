@@ -36,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TopicsTable extends LayoutContainer {
@@ -112,6 +113,8 @@ public class TopicsTable extends LayoutContainer {
             @Override
             public void onFailure(Throwable t) {
                 FailureHandler.handle(t);
+                topicInfoGrid.unmask();
+                Window.alert((String)MSGS.noDataMessage());
             }
         };
         dataService.findTopicsTree(currentSession.getSelectedAccount().getId(), topicsCallback);
