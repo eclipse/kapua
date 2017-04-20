@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.simulator.steps;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class Starting implements AutoCloseable {
     public List<AutoCloseable> started() {
         final List<AutoCloseable> result = this.closeables;
         this.closeables = null;
-        return result;
+        return result != null ? result : Collections.emptyList();
     }
 
 }
