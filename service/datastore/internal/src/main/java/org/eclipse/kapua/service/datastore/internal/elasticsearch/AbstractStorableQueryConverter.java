@@ -25,7 +25,8 @@ import org.elasticsearch.search.sort.SortOrder;
  * Abstract storable query converter implementation.<br>
  * This object defines common method to all the query converter used by Kapua.
  *
- * @param <S> persisted object type (such as messages, channeles information...)
+ * @param <S>
+ *            persisted object type (such as messages, channeles information...)
  * @param <Q>
  * @since 1.0.0
  */
@@ -80,7 +81,7 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
                 if (sf.getSortDirection() == null) {
                     throw new NullPointerException(String.format("The order for the field [%s] is undefined!", sf.getField()));
                 }
-                FieldSortBuilder fsb = SortBuilders.fieldSort(sf.getField());
+                FieldSortBuilder fsb = SortBuilders.fieldSort(sf.getField().equals("clientId") ? "client_id" : sf.getField());
                 if (SortDirection.ASC.equals(sf.getSortDirection())) {
                     fsb.order(SortOrder.ASC);
                 } else {
