@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.simulator.steps;
 
 import static java.time.Duration.ofSeconds;
 import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
+import static org.eclipse.kapua.service.simulator.steps.Suppressed.withException;
 
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -99,7 +100,7 @@ public class SimulatorSteps {
     @After
     public void afterScenario() throws Exception {
 
-        try (Suppressed<Exception> s = new Suppressed<>(Exception.class)) {
+        try (final Suppressed<Exception> s = withException()) {
 
             // close all resources
 
@@ -152,15 +153,13 @@ public class SimulatorSteps {
             final User account = userService.findByName(accountName);
             if (account == null) {
                 Assert.fail("Unable to find account: " + accountName);
-                return null;
+                return;
             }
 
             final DeviceConnection result = service.findByClientId(account.getId(), clientId);
 
             Assert.assertNotNull(result);
             Assert.assertEquals(clientId, result.getClientId());
-
-            return null;
         });
 
     }

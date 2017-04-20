@@ -15,18 +15,14 @@ import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.concurrent.Callable;
 
+import org.eclipse.kapua.commons.util.ThrowingRunnable;
+
 public class Suppressed<X extends Exception> implements AutoCloseable {
 
     @FunctionalInterface
     public static interface ExceptionSupplier<X> {
 
         public X createNew(Throwable cause) throws Exception;
-    }
-
-    @FunctionalInterface
-    public static interface ThrowingRunnable {
-
-        public void run() throws Exception;
     }
 
     private final Class<X> clazz;
@@ -116,6 +112,14 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
         } catch (Exception e) {
             throw new Error("Unable to create instance of Exception class", e);
         }
+    }
+
+    public static Suppressed<Exception> withException() {
+        return new Suppressed<>(Exception.class, Exception::new);
+    }
+
+    public static Suppressed<RuntimeException> withRuntimeException() {
+        return new Suppressed<>(Exception.class, RuntimeException::new);
     }
 
 }
