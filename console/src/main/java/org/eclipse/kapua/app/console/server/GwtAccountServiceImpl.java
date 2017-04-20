@@ -127,7 +127,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
             Permission adminPermission = permissionFactory.newPermission(null, null, account.getId());
             RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
-            Set<Permission> adminPermissions = new HashSet<>();
+            Set<Permission> adminPermissions = new HashSet<Permission>();
             adminPermissions.add(adminPermission);
             adminRoleCreator.setName("admin");
             adminRoleCreator.setScopeId(account.getId());
@@ -136,7 +136,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
             Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId());
-            Set<Permission> thingPermissions = new HashSet<>();
+            Set<Permission> thingPermissions = new HashSet<Permission>();
             thingPermissions.add(thingPermission);
             thingRoleCreator.setName("thing");
             thingRoleCreator.setScopeId(account.getId());
@@ -173,7 +173,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
 
-        List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<>();
+        List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
             Account account = accountService.find(accountId);
 
@@ -199,7 +199,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<>(accountPropertiesPairs);
+        return new BaseListLoadResult<GwtGroupedNVPair>(accountPropertiesPairs);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     public ListLoadResult<GwtAccount> findAll(String scopeIdString)
             throws GwtKapuaException {
 
-        List<GwtAccount> gwtAccountList = new ArrayList<>();
+        List<GwtAccount> gwtAccountList = new ArrayList<GwtAccount>();
         KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
@@ -310,7 +310,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<>(gwtAccountList);
+        return new BaseListLoadResult<GwtAccount>(gwtAccountList);
     }
 
     @Override
@@ -322,7 +322,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         AccountService accountService = locator.getService(AccountService.class);
         AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
 
-        List<GwtAccount> gwtAccountList = new ArrayList<>();
+        List<GwtAccount> gwtAccountList = new ArrayList<GwtAccount>();
         try {
             AccountQuery query = accountFactory.newQuery(scopeId);
 
@@ -334,7 +334,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<>(gwtAccountList);
+        return new BaseListLoadResult<GwtAccount>(gwtAccountList);
     }
 
     @Override
@@ -342,7 +342,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
 
-        List<GwtAccountStringListItem> gwtAccountStrings = new ArrayList<>();
+        List<GwtAccountStringListItem> gwtAccountStrings = new ArrayList<GwtAccountStringListItem>();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
@@ -361,7 +361,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<>(gwtAccountStrings);
+        return new BaseListLoadResult<GwtAccountStringListItem>(gwtAccountStrings);
     }
 
     @Override
@@ -642,7 +642,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     @Override
     public PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) throws GwtKapuaException {
         KapuaListResult<Account> accounts;
-        List<GwtAccount> gwtAccounts = new ArrayList<>();
+        List<GwtAccount> gwtAccounts = new ArrayList<GwtAccount>();
         int totalLength = 0;
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
@@ -664,7 +664,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BasePagingLoadResult<>(gwtAccounts, loadConfig.getOffset(), totalLength);
+        return new BasePagingLoadResult<GwtAccount>(gwtAccounts, loadConfig.getOffset(), totalLength);
     }
 
 }
