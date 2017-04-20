@@ -97,47 +97,47 @@ public class DeviceExporterServlet extends HttpServlet {
 
             String clientId = request.getParameter("clientId");
             if (clientId != null && !clientId.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CLIENT_ID, clientId, Operator.STARTS_WITH));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CLIENT_ID, clientId, Operator.STARTS_WITH));
             }
 
             String displayName = request.getParameter("displayName");
             if (displayName != null && !displayName.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.DISPLAY_NAME, displayName, Operator.STARTS_WITH));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.DISPLAY_NAME, displayName, Operator.STARTS_WITH));
             }
 
             String serialNumber = request.getParameter("serialNumber");
             if (serialNumber != null && !serialNumber.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.SERIAL_NUMBER, serialNumber));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.SERIAL_NUMBER, serialNumber));
             }
 
             String deviceStatus = request.getParameter("deviceStatus");
             if (deviceStatus != null && !deviceStatus.isEmpty()) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.STATUS, DeviceStatus.valueOf(deviceStatus)));
+                andPred = andPred.and(new AttributePredicate<DeviceStatus>(DevicePredicates.STATUS, DeviceStatus.valueOf(deviceStatus)));
             }
 
             String iotFrameworkVersion = request.getParameter("esfVersion");
             if (iotFrameworkVersion != null) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_FRAMEWORK_VERSION, iotFrameworkVersion));
             }
 
             String applicationIdentifiers = request.getParameter("applicationIdentifiers");
             if (applicationIdentifiers != null) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.APPLICATION_IDENTIFIERS, applicationIdentifiers, Operator.LIKE));
             }
 
             String customAttribute1 = request.getParameter("customAttribute1");
             if (customAttribute1 != null) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_1, customAttribute1));
             }
 
             String customAttribute2 = request.getParameter("customAttribute2");
             if (customAttribute2 != null) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
+                andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, customAttribute2));
             }
 
             String deviceConnectionStatus = request.getParameter("deviceConnectionStatus");
             if (deviceConnectionStatus != null) {
-                andPred = andPred.and(new AttributePredicate<>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
+                andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(deviceConnectionStatus)));
             }
 
             String sortAttribute = request.getParameter("sortAttribute");

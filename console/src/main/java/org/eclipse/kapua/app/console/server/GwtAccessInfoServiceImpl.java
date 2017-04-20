@@ -174,6 +174,6 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
         }
-        return new BasePagingLoadResult<>(list, pagingLoadConfig.getOffset(), totalLength);
+        return new BasePagingLoadResult<GwtUser>(list, pagingLoadConfig.getOffset(), totalLength);
     }
 }

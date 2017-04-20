@@ -657,7 +657,7 @@ public class GwtKapuaModelConverter {
     }
 
     public static Map<String, Object> convert(GwtConfigComponent configComponent) {
-        Map<String, Object> parameters = new HashMap<>();
+        Map<String, Object> parameters = new HashMap<String, Object>();
         for (GwtConfigParameter gwtConfigParameter : configComponent.getParameters()) {
             switch(gwtConfigParameter.getType()) {
             case BOOLEAN:

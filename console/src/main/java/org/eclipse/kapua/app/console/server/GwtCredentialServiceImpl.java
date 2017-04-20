@@ -53,9 +53,9 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         //
         // Do query
         int totalLength = 0;
-        List<GwtCredential> gwtCredentials = new ArrayList<>();
+        List<GwtCredential> gwtCredentials = new ArrayList<GwtCredential>();
 
-        Map<KapuaId, User> usersCache = new HashMap<>();
+        Map<KapuaId, User> usersCache = new HashMap<KapuaId, User>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
@@ -93,7 +93,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BasePagingLoadResult<>(gwtCredentials, loadConfig.getOffset(), totalLength);
+        return new BasePagingLoadResult<GwtCredential>(gwtCredentials, loadConfig.getOffset(), totalLength);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
     public ListLoadResult<GwtGroupedNVPair> getCredentialDescription(String scopeShortId, String credentialShortId) throws GwtKapuaException {
         //
         // Do get
-        List<GwtGroupedNVPair> gwtCredentialDescription = new ArrayList<>();
+        List<GwtGroupedNVPair> gwtCredentialDescription = new ArrayList<GwtGroupedNVPair>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             CredentialService credentialService = locator.getService(CredentialService.class);
@@ -210,6 +210,6 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BaseListLoadResult<>(gwtCredentialDescription);
+        return new BaseListLoadResult<GwtGroupedNVPair>(gwtCredentialDescription);
     }
 }

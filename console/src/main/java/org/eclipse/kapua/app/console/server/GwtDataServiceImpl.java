@@ -77,8 +77,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException {
-        List<GwtTopic> channelInfoList = new ArrayList<>();
-        HashMap<String, GwtTopic> topicMap = new HashMap<>();
+        List<GwtTopic> channelInfoList = new ArrayList<GwtTopic>();
+        HashMap<String, GwtTopic> topicMap = new HashMap<String, GwtTopic>();
         ChannelInfoRegistryService channelInfoService = locator.getService(ChannelInfoRegistryService.class);
         ChannelInfoQuery query = new ChannelInfoQueryImpl(GwtKapuaModelConverter.convert(scopeId));
         int offset = 0;
@@ -145,7 +145,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public PagingLoadResult<GwtTopic> findTopicsList(PagingLoadConfig config, GwtDataChannelInfoQuery query) throws GwtKapuaException {
-        List<GwtTopic> channelInfoList = new ArrayList<>();
+        List<GwtTopic> channelInfoList = new ArrayList<GwtTopic>();
         int totalLength = 0;
 
         ChannelInfoRegistryService channelInfoService = locator.getService(ChannelInfoRegistryService.class);
@@ -171,7 +171,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String scopeId) throws GwtKapuaException {
         ClientInfoRegistryService clientInfoService = locator.getService(ClientInfoRegistryService.class);
-        List<GwtDatastoreDevice> devices = new ArrayList<>();
+        List<GwtDatastoreDevice> devices = new ArrayList<GwtDatastoreDevice>();
         KapuaId convertedScopeId = GwtKapuaModelConverter.convert(scopeId);
         ClientInfoQuery query = new ClientInfoQueryImpl(convertedScopeId);
         try {
@@ -295,7 +295,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     private List<GwtMessage> getMessagesList(MessageQuery query, List<GwtHeader> headers) throws GwtKapuaException {
         MessageStoreService messageService = locator.getService(MessageStoreService.class);
-        List<GwtMessage> messages = new ArrayList<>();
+        List<GwtMessage> messages = new ArrayList<GwtMessage>();
         try {
             MessageListResult result = messageService.query(query);
             if (result != null && !result.isEmpty()) {

@@ -147,7 +147,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             errorMessage = "Internal Server Error";
         }
 
-        final Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> data = new HashMap<String, Object>();
         data.put("statusCode", statusCode);
         data.put("requestUri", requestUri);
         data.put("errorMessage", errorMessage);
@@ -184,7 +184,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             errorMessage = "Internal Server Error";
         }
 
-        final Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> data = new HashMap<String, Object>();
         data.put("statusCode", statusCode);
         data.put("requestUri", requestUri);
         data.put("errorMessage", errorMessage);

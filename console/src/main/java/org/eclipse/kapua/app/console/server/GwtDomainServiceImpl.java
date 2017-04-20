@@ -42,7 +42,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
 
     @Override
     public List<GwtDomain> findAll() throws GwtKapuaException {
-        List<GwtDomain> gwtDomainList = new ArrayList<>();
+        List<GwtDomain> gwtDomainList = new ArrayList<GwtDomain>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainService domainService = locator.getService(DomainService.class);
@@ -62,13 +62,13 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
 
     @Override
     public List<GwtAction> findActionsByDomainName(String domainName) throws GwtKapuaException {
-        List<GwtAction> gwtActionList = new ArrayList<>();
+        List<GwtAction> gwtActionList = new ArrayList<GwtAction>();
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainService domainService = locator.getService(DomainService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, domainName));
+            query.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
             DomainListResult queryResult = domainService.query(query);
             if (!queryResult.isEmpty()) {
                 for (Action action : queryResult.getFirstItem().getActions()) {
@@ -90,7 +90,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
         DomainQuery domainQuery = domainFactory.newQuery(null);
         domainQuery.setScopeId(scopeId);
-        domainQuery.setPredicate(new AttributePredicate<>(DomainPredicates.NAME, domainName));
+        domainQuery.setPredicate(new AttributePredicate<String>(DomainPredicates.NAME, domainName));
         try {
             DomainListResult result = domainService.query(domainQuery);
             if (!result.isEmpty()) {
