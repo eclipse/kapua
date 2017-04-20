@@ -26,10 +26,10 @@ import org.junit.Test;
 public class ConnectorDescriptorTest {
 
     @Before
-    public void resetSettings () {
+    public void resetSettings() {
         BrokerSetting.resetInstance();
     }
-    
+
     /**
      * A simple test to get a default descriptor
      */
@@ -48,7 +48,7 @@ public class ConnectorDescriptorTest {
         ConnectorDescriptor descriptor = provider.getDescriptor("foo");
         Assert.assertNotNull(descriptor);
     }
-    
+
     /**
      * A simple test to get a descriptor
      */
@@ -78,14 +78,14 @@ public class ConnectorDescriptorTest {
     /**
      * Use a default provider, configuring a file which does not exist
      */
-    @Test(expected=Exception.class)
+    @Test(expected = Exception.class)
     public void testDefault3() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/does-not-exist.properties");
 
         runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
-    
+
     /**
      * Use a default provider, configuring a file which does exist, but allow default fallback
      */
@@ -100,7 +100,7 @@ public class ConnectorDescriptorTest {
             Assert.assertNotNull(descriptor);
         });
     }
-    
+
     /**
      * Use a default provider, configuring an empty file, disabling default
      */
@@ -116,7 +116,7 @@ public class ConnectorDescriptorTest {
             Assert.assertNull(descriptor);
         });
     }
-    
+
     /**
      * Use a default provider, configuring a non-empty configuration
      */
@@ -129,38 +129,38 @@ public class ConnectorDescriptorTest {
         runWithProperties(properties, () -> {
             DefaultConnectorDescriptionProvider provider = new DefaultConnectorDescriptionProvider();
             Assert.assertNull(provider.getDescriptor("foo"));
-            
+
             ConnectorDescriptor descriptor = provider.getDescriptor("mqtt");
             Assert.assertNotNull(descriptor);
-            
+
             Assert.assertEquals(org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class, descriptor.getDeviceClass(MessageType.APP));
             Assert.assertEquals(org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class, descriptor.getKapuaClass(MessageType.APP));
-            
+
             Assert.assertNull(descriptor.getDeviceClass(MessageType.DATA));
             Assert.assertNull(descriptor.getKapuaClass(MessageType.DATA));
         });
     }
-    
+
     /**
      * Use a default provider, configuring a non-empty, invalid configuration
      */
-    @Test(expected=Exception.class)
+    @Test(expected = Exception.class)
     public void testDefault7() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/3.properties");
 
-        runWithProperties(properties, DefaultConnectorDescriptionProvider::new );
+        runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
-    
+
     /**
-     * Empty configuration URL 
+     * Empty configuration URL
      */
     @Test
     public void testConfig1() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "");
 
-        runWithProperties(properties, DefaultConnectorDescriptionProvider::new );
+        runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
 }
