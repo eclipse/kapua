@@ -27,7 +27,7 @@ public class JmsConnectionFactory {
     /**
      * ActiveMQ vm connection factory instance
      */
-    public static ActiveMQConnectionFactory vmConnFactory;
+    public static final ActiveMQConnectionFactory vmConnFactory;
 
     // the workers used the same string connection without asynch=true
     static {
