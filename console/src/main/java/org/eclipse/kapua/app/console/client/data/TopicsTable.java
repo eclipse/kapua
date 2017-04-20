@@ -114,7 +114,7 @@ public class TopicsTable extends LayoutContainer {
             public void onFailure(Throwable t) {
                 FailureHandler.handle(t);
                 topicInfoGrid.unmask();
-                Window.alert(MSGS.noDataMessage());
+                Window.alert((String)MSGS.noDataMessage());
             }
         };
         dataService.findTopicsTree(currentSession.getSelectedAccount().getId(), topicsCallback);
