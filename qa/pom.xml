@@ -114,6 +114,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-simulator-kura</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-api</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -238,7 +242,6 @@
             <plugin>
                 <groupId>com.github.os72</groupId>
                 <artifactId>protoc-jar-maven-plugin</artifactId>
-                <version>3.1.0.5</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
