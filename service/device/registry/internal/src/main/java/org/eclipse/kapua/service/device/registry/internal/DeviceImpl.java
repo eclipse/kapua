@@ -11,6 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -24,17 +36,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
-import org.eclipse.kapua.service.device.registry.DeviceStatus;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
+import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToString;
 
 /**
  * {@link Device} implementation.
@@ -462,6 +464,10 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     @Override
     public void setPreferredUserId(KapuaId preferredUserId) {
         this.preferredUserId = preferredUserId != null ? new KapuaEid(preferredUserId) : null;
+    }
+
+    @Override public String toString() {
+        return reflectionToString(this);
     }
 
 }
