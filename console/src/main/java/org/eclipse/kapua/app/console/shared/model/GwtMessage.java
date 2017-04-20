@@ -12,12 +12,37 @@
 package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class GwtMessage extends KapuaBaseModel implements Serializable {
+
     private static final long serialVersionUID = 5344433827767946887L;
 
     public GwtMessage() {
         setAllowNestedValues(false);
     }
-}
 
+    public Date getTimestamp() {
+        return get("timestamp");
+    }
+
+    public void setTimestamp(Date timestamp) {
+        set("timestamp", timestamp);
+    }
+
+    public String getChannel() {
+        return get("channel");
+    }
+
+    public void setChannel(String channel) {
+        set("channel", channel);
+    }
+
+    public String getClientId() {
+        return get("clientId");
+    }
+
+    public void setClientId(String clientId) {
+        set("clientId", clientId);
+    }
+}

@@ -35,6 +35,7 @@ import org.eclipse.kapua.app.console.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.Loader;
@@ -45,6 +46,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -124,9 +126,9 @@ public class ResultsTable extends LayoutContainer {
 
         timestampColumn = new ColumnConfig("timestamp", MSGS.resultsTableTimestampHeader(), 140);
         columnConfigs.add(timestampColumn);
-        deviceColumn = new ColumnConfig("device", MSGS.resultsTableDeviceHeader(), 90);
-        topicColumn = new ColumnConfig("topic", MSGS.resultsTableTopicHeader(), 140);
-        
+        deviceColumn = new ColumnConfig("clientId", MSGS.resultsTableDeviceHeader(), 90);
+        topicColumn = new ColumnConfig("channel", MSGS.resultsTableTopicHeader(), 140);
+
         RpcProxy<PagingLoadResult<GwtMessage>> proxy = new RpcProxy<PagingLoadResult<GwtMessage>>() {
 
             @Override
@@ -150,15 +152,19 @@ public class ResultsTable extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                if(loader.getTotalCount() == 0){
+                if (loader.getTotalCount() == 0) {
                     exportButton.disable();
                 } else {
                     exportButton.enable();
                 }
             }
         });
+        loader.setSortField("timestamp");
+        loader.setSortDir(SortDir.DESC);
+        loader.setRemoteSort(true);
 
         SwappableListStore<GwtMessage> store = new SwappableListStore<GwtMessage>(loader);
+        store.setStoreSorter(new StoreSorter<GwtMessage>());
         resultsGrid = new Grid<GwtMessage>(store, new ColumnModel(columnConfigs));
         resultsGrid.setBorders(false);
         resultsGrid.setStateful(false);
@@ -200,7 +206,7 @@ public class ResultsTable extends LayoutContainer {
 
         dateRangeSelector = new DateRangeSelector();
         dateRangeSelector.setListener(new DateRangeSelectorListener() {
-            
+
             @Override
             public void onUpdate() {
                 refresh(selectedMetrics);
@@ -221,7 +227,9 @@ public class ResultsTable extends LayoutContainer {
             resultsGrid.getColumnModel().getColumns().add(deviceColumn);
             resultsGrid.getColumnModel().getColumns().add(topicColumn);
             for (GwtHeader header : headers) {
-                resultsGrid.getColumnModel().getColumns().add(new ColumnConfig(header.getName(), header.getName(), 100));
+                ColumnConfig headerColumn = new ColumnConfig(header.getName(), header.getName(), 100);
+                headerColumn.setSortable(false);
+                resultsGrid.getColumnModel().getColumns().add(headerColumn);
             }
             resultsGrid.getView().refresh(true);
             startDate = dateRangeSelector.getStartDate();
@@ -234,7 +242,7 @@ public class ResultsTable extends LayoutContainer {
         this.selectedTopic = topic;
         refresh(headers);
     }
-    
+
     public void refresh(GwtDatastoreDevice device, List<GwtHeader> headers) {
         this.selectedDevice = device;
         refresh(headers);
@@ -276,7 +284,7 @@ public class ResultsTable extends LayoutContainer {
         }
 
         if (selectedChannels != null && !selectedChannels.isEmpty()) {
-            for (GwtDatastoreChannel channel : selectedChannels){
+            for (GwtDatastoreChannel channel : selectedChannels) {
                 sbUrl.append("&channels=").append(channel.getChannel());
             }
         }
@@ -290,7 +298,7 @@ public class ResultsTable extends LayoutContainer {
         if (startDate != null) {
             sbUrl.append("&startDate=").append(URL.encodeQueryString(startDate.toString()));
         }
-        
+
         if (endDate != null) {
             sbUrl.append("&endDate=").append(URL.encodeQueryString(endDate.toString()));
         }

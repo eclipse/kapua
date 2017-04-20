@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
@@ -46,6 +47,7 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -60,6 +62,8 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
+import org.eclipse.kapua.service.datastore.model.query.SortDirection;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
@@ -69,6 +73,7 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.LoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.common.collect.Lists;
 
 public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements GwtDataService {
 
@@ -135,7 +140,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 topicName = topicParts[i];
                 baseTopic += "/" + topicName;
                 semanticTopic = baseTopic;
-                if (i < (topicParts.length -1)) {
+                if (i < (topicParts.length - 1)) {
                     semanticTopic += "/#";
                 }
             }
@@ -239,7 +244,8 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public GwtKapuaChartResult findMessagesByDevice(String accountName, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit,
+    public GwtKapuaChartResult findMessagesByDevice(String accountName, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors,
+            int limit,
             int lastOffset, Integer indexOffset) throws GwtKapuaException {
         // TODO Auto-generated method stub
         return null;
@@ -266,11 +272,11 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         return new BaseListLoadResult<GwtHeader>(metrics);
     }
-    
+
     private PagingLoadResult<GwtMessage> findMessages(PagingLoadConfig loadConfig, String scopeId, List<GwtHeader> headers, Date startDate, Date endDate, StorablePredicate predicate)
             throws GwtKapuaException {
         MessageStoreService messageService = locator.getService(MessageStoreService.class);
-        List<GwtMessage> messages; 
+        List<GwtMessage> messages;
         int totalLength = 0;
         MessageQuery query = new MessageQueryImpl(GwtKapuaModelConverter.convert(scopeId));
         query.setLimit(loadConfig.getLimit());
@@ -282,9 +288,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         RangePredicate dateRangePredicate = new RangePredicateImpl(MessageField.TIMESTAMP, startDate, endDate);
         andPredicate.getPredicates().add(dateRangePredicate);
         query.setPredicate(andPredicate);
+        if (!StringUtils.isEmpty(loadConfig.getSortField())) {
+            SortField sortField = new SortFieldImpl();
+            sortField.setField(loadConfig.getSortField());
+            sortField.setSortDirection(SortDirection.valueOf(loadConfig.getSortDir().toString()));
+            query.setSortFields(Lists.newArrayList(sortField));
+        }
         messages = getMessagesList(query, headers);
-        query.setLimit(-1);
-        query.setOffset(0);
         try {
             totalLength = new Long(messageService.count(query)).intValue();
         } catch (KapuaException e) {
@@ -308,4 +318,5 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         return messages;
     }
+
 }

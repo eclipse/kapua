@@ -177,13 +177,13 @@ public class KapuaGwtModelConverter {
         } else {
             gwtAccessPermission.setPermissionAction("ALL");
         }
-        
+
         if (accessPermission.getPermission().getTargetScopeId() != null) {
             gwtAccessPermission.setPermissionTargetScopeId(accessPermission.getPermission().getTargetScopeId().toCompactId());
         } else {
             gwtAccessPermission.setPermissionTargetScopeId("ALL");
         }
-        
+
         if (accessPermission.getPermission().getGroupId() != null) {
             gwtAccessPermission.setPermissionGroupId(accessPermission.getPermission().getGroupId().toCompactId());
         } else {
@@ -575,18 +575,18 @@ public class KapuaGwtModelConverter {
         gwtCredential.setSubjectType(GwtSubjectType.USER.toString());
         return gwtCredential;
     }
-    
-    public static GwtTopic convertToTopic(ChannelInfo channelInfo){
-        return new GwtTopic(channelInfo.getName(), channelInfo.getName(),channelInfo.getName() , channelInfo.getLastMessageOn());
+
+    public static GwtTopic convertToTopic(ChannelInfo channelInfo) {
+        return new GwtTopic(channelInfo.getName(), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
     }
-    
-    public static GwtHeader convertToHeader(MetricInfo metric){
+
+    public static GwtHeader convertToHeader(MetricInfo metric) {
         GwtHeader header = new GwtHeader();
         header.setName(metric.getName());
         header.setType(metric.getMetricType().getSimpleName());
         return header;
     }
-    
+
     /**
      * Utility method to convert commons properties of {@link KapuaUpdatableEntity} object to the GWT matching {@link GwtUpdatableEntityModel} object
      *
@@ -645,15 +645,15 @@ public class KapuaGwtModelConverter {
         GwtMessage gwtMessage = new GwtMessage();
         List<String> semanticParts = message.getChannel().getSemanticParts();
         StringBuilder semanticTopic = new StringBuilder();
-        for(int i=0;i<semanticParts.size()-1;i++){
+        for (int i = 0; i < semanticParts.size() - 1; i++) {
             semanticTopic.append(semanticParts.get(i));
             semanticTopic.append("/");
         }
-        semanticTopic.append(semanticParts.get(semanticParts.size()-1));
-        gwtMessage.set("topic", semanticTopic.toString());
-        gwtMessage.set("device", message.getClientId());
-        gwtMessage.set("timestamp", message.getTimestamp());
-        for(GwtHeader header : headers){
+        semanticTopic.append(semanticParts.get(semanticParts.size() - 1));
+        gwtMessage.setChannel(semanticTopic.toString());
+        gwtMessage.setClientId(message.getClientId());
+        gwtMessage.setTimestamp(message.getTimestamp());
+        for (GwtHeader header : headers) {
             gwtMessage.set(header.getName(), message.getPayload().getProperties().get(header.getName()));
         }
         return gwtMessage;
