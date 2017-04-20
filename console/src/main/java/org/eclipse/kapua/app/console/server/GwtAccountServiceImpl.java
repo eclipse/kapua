@@ -23,9 +23,11 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
@@ -45,6 +47,7 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListIt
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
 import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
+import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -61,6 +64,12 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
+import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +88,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     private static final Logger logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
     private static final long serialVersionUID = 3314502846487119577L;
 
+    @Override
     public GwtAccount create(GwtXSRFToken xsrfToken, GwtAccountCreator gwtAccountCreator)
             throws GwtKapuaException {
         //
@@ -90,7 +100,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
-
             AccountCreator accountCreator = accountFactory.newCreator(parentAccountId,
                     gwtAccountCreator.getAccountName());
 
@@ -111,12 +120,35 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
             // convert to GwtAccount and return
             gwtAccount = KapuaGwtModelConverter.convert(account);
+
+            // Create roles
+            RoleService roleService = locator.getService(RoleService.class);
+            RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+            Permission adminPermission = permissionFactory.newPermission(null, null, account.getId());
+            RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
+            Set<Permission> adminPermissions = new HashSet<Permission>();
+            adminPermissions.add(adminPermission);
+            adminRoleCreator.setName("admin");
+            adminRoleCreator.setScopeId(account.getId());
+            adminRoleCreator.setPermissions(adminPermissions);
+            roleService.create(adminRoleCreator);
+
+            RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
+            Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId());
+            Set<Permission> thingPermissions = new HashSet<Permission>();
+            thingPermissions.add(thingPermission);
+            thingRoleCreator.setName("thing");
+            thingRoleCreator.setScopeId(account.getId());
+            thingRoleCreator.setPermissions(thingPermissions);
+            roleService.create(thingRoleCreator);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
         return gwtAccount;
     }
 
+    @Override
     public GwtAccount find(String accountIdString)
             throws GwtKapuaException {
         KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
@@ -133,6 +165,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return gwtAccount;
     }
 
+    @Override
     public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String accountIdString)
             throws GwtKapuaException {
         KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
@@ -169,6 +202,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return new BaseListLoadResult<GwtGroupedNVPair>(accountPropertiesPairs);
     }
 
+    @Override
     public GwtAccount updateAccountProperties(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
             throws GwtKapuaException {
         //
@@ -199,6 +233,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return gwtAccountUpdated;
     }
 
+    @Override
     public GwtAccount update(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
             throws GwtKapuaException {
         //
@@ -234,6 +269,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return gwtAccountUpdated;
     }
 
+    @Override
     public void delete(GwtXSRFToken xsrfToken, GwtAccount gwtAccount)
             throws GwtKapuaException {
         //
@@ -254,6 +290,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         }
     }
 
+    @Override
     public ListLoadResult<GwtAccount> findAll(String scopeIdString)
             throws GwtKapuaException {
 
@@ -276,6 +313,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return new BaseListLoadResult<GwtAccount>(gwtAccountList);
     }
 
+    @Override
     public ListLoadResult<GwtAccount> findChildren(String parentAccountId, boolean recoursive)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
@@ -299,6 +337,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return new BaseListLoadResult<GwtAccount>(gwtAccountList);
     }
 
+    @Override
     public ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String parentAccountId, boolean recoursive)
             throws GwtKapuaException {
         KapuaId scopeId = KapuaEid.parseCompactId(parentAccountId);
@@ -343,7 +382,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         return gwtAccount;
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
     public List<GwtConfigComponent> findServiceConfigurations(String scopeId) throws GwtKapuaException {
         List<GwtConfigComponent> gwtConfigs = new ArrayList<GwtConfigComponent>();
@@ -446,7 +484,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
     }
 
-    @SuppressWarnings("Duplicates")
     private void checkIconResource(KapuaTicon icon) {
         ConsoleSetting config = ConsoleSetting.getInstance();
 

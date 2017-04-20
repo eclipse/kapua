@@ -24,7 +24,7 @@
             type="Boolean"
             cardinality="0"
             required="true"
-            default="false"
+            default="true"
             description="Whether to allow infinite roles for this account.">
         </AD>
 
