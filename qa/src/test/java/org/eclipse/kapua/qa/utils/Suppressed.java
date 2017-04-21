@@ -9,12 +9,13 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.simulator.steps;
+package org.eclipse.kapua.qa.utils;
 
 import java.lang.reflect.Constructor;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 
@@ -147,8 +148,16 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
         return new Suppressed<>(RuntimeException.class, RuntimeException::new);
     }
 
-    public static void closeAll(List<? extends AutoCloseable> list) {
+    public static void closeAll(Collection<? extends AutoCloseable> list) {
         if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        closeAll(list.stream());
+    }
+    
+    public static void closeAll(Stream<? extends AutoCloseable> list) {
+        if (list == null) {
             return;
         }
 

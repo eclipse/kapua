@@ -8,8 +8,9 @@
  *
  * Contributors:
  *     Eurotech
+ *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.qa.steps;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
@@ -21,17 +22,22 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERN
 
 import java.util.Optional;
 
-import javax.inject.Singleton;
-
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cucumber.api.java.After;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Singleton for managing database creation and deletion inside Gherkin scenarios.
  */
-@Singleton
+@ScenarioScoped
 public class DBHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
     /**
      * Path to root of full DB scripts.
@@ -43,7 +49,16 @@ public class DBHelper {
      */
     public static final String DELETE_FILTER = "all_delete.sql";
 
-    public DBHelper() {
+    private boolean setup;
+
+    public void setup() {
+        if ( this.setup )  {
+            return;
+        }
+        
+        this.setup = true;
+        
+        logger.info("Setting up mock database");
 
         System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
         SystemSetting config = SystemSetting.getInstance();
@@ -51,8 +66,10 @@ public class DBHelper {
         String dbPassword = config.getString(DB_PASSWORD);
         String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
         new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+
     }
 
+    @After
     public void deleteAll() {
         KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DELETE_FILTER);
     }

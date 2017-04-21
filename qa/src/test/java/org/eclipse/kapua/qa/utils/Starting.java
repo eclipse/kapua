@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.simulator.steps;
+package org.eclipse.kapua.qa.utils;
 
 import java.util.Collections;
 import java.util.LinkedList;
