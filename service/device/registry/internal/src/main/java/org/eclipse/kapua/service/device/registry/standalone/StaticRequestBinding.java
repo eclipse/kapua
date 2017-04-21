@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 RedHat and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ *     RedHat
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.standalone;
 
@@ -15,22 +15,21 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
-public class MessageHandler {
+public class StaticRequestBinding {
 
     private final DeviceRegistryService deviceRegistry;
 
-    public MessageHandler(DeviceRegistryService deviceRegistry) {
+    public StaticRequestBinding(DeviceRegistryService deviceRegistry) {
         this.deviceRegistry = deviceRegistry;
     }
 
-    Object onMessage(Message message) {
+    void onMessage(Request request) {
         try {
-            if (message.getOperation().equals("create")) {
-                return deviceRegistry.create((DeviceCreator) message.getArguments().get(0));
-            } else if (message.getOperation().equals("findByClientId")) {
-                return deviceRegistry.findByClientId(message.getTenant(), (String) message.getArguments().get(0));
+            if (request.getOperation().equals("create")) {
+                request.response(deviceRegistry.create((DeviceCreator) request.getArguments().get(0)));
+            } else if (request.getOperation().equals("findByClientId")) {
+                request.response(deviceRegistry.findByClientId(request.getTenant(), (String) request.getArguments().get(0)));
             }
-            return null;
         } catch (KapuaException e) {
             throw new RuntimeException(e);
         }

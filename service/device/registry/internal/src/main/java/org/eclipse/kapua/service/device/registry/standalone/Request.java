@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 RedHat and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ *     RedHat
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.standalone;
 
@@ -15,18 +15,27 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 import java.util.List;
 
-public class Message {
+/**
+ * Represents request message passed to the service. Also allows to send response to the caller.
+ */
+public class Request {
 
-    KapuaId tenant;
+    private final KapuaId tenant;
 
-    String operation;
+    private final String operation;
 
-    List<Object> arguments;
+    private final List<Object> arguments;
 
-    public Message(KapuaId tenant, String operation, List<Object> arguments) {
+    private Object response;
+
+    public Request(KapuaId tenant, String operation, List<Object> arguments) {
         this.tenant = tenant;
         this.operation = operation;
         this.arguments = arguments;
+    }
+
+    void response(Object response) {
+        this.response = response;
     }
 
     public KapuaId getTenant() {
@@ -40,4 +49,9 @@ public class Message {
     public List<Object> getArguments() {
         return arguments;
     }
+
+    public Object getResponse() {
+        return response;
+    }
+
 }
