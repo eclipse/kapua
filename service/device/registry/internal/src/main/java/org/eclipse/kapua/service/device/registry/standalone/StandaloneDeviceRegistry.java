@@ -24,7 +24,7 @@ import static java.util.Collections.singletonList;
 public class StandaloneDeviceRegistry {
 
     public static void main(String... args) {
-        if(args.length == 0) {
+        if (args.length == 0) {
             main("1", "create", "foo");
             main("1", "findByClientId", "foo");
             return;
@@ -37,9 +37,9 @@ public class StandaloneDeviceRegistry {
         MessageHandler messageHandler = new MessageHandler(new StandaloneDeviceRegistryFactory().create());
 
         Object result = null;
-        if(operation.equals("create")) {
+        if (operation.equals("create")) {
             result = messageHandler.onMessage(new Message(tenant, operation, singletonList(new DeviceFactoryImpl().newCreator(tenant, clientId))));
-        } else if(operation.equals("findByClientId")) {
+        } else if (operation.equals("findByClientId")) {
             result = messageHandler.onMessage(new Message(tenant, operation, Collections.singletonList(clientId)));
         }
         System.out.println(result);

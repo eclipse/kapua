@@ -17,11 +17,10 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 
 /**
  * Device list result implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceListResultImpl extends KapuaListResultImpl<Device> implements DeviceListResult
-{
+public class DeviceListResultImpl extends KapuaListResultImpl<Device> implements DeviceListResult {
+
     private static final long serialVersionUID = -3870951363076544938L;
 }

@@ -36,9 +36,8 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
 
 /**
  * {@link DeviceLifeCycleService} implementation.
- * 
+ *
  * @since 1.0.0
- * 
  */
 @KapuaProvider
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {

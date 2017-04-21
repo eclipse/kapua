@@ -40,9 +40,8 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 /**
  * {@link Device} implementation.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @Entity(name = "Device")
 @Table(name = "dvc_device")
@@ -179,7 +178,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public DeviceImpl(KapuaId scopeId) {

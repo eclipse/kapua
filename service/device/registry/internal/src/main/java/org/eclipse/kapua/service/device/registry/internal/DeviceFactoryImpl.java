@@ -21,25 +21,21 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
  * Device service factory implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
-public class DeviceFactoryImpl implements DeviceFactory
-{
+public class DeviceFactoryImpl implements DeviceFactory {
 
     @Override
-    public DeviceCreator newCreator(KapuaId scopeId, String clientId)
-    {
+    public DeviceCreator newCreator(KapuaId scopeId, String clientId) {
         DeviceCreator deviceCreator = newCreator(scopeId);
         deviceCreator.setClientId(clientId);
         return deviceCreator;
     }
 
     @Override
-    public DeviceQuery newQuery(KapuaId scopeId)
-    {
+    public DeviceQuery newQuery(KapuaId scopeId) {
         return new DeviceQueryImpl(scopeId);
     }
 

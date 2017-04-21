@@ -21,9 +21,8 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
  * {@link DeviceQuery} implementation.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements DeviceQuery {
 
@@ -38,7 +37,7 @@ public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements Devic
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public DeviceQueryImpl(KapuaId scopeId) {
