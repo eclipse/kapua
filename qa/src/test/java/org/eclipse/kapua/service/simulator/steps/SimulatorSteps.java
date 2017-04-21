@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.simulator.steps;
 
 import static java.time.Duration.ofSeconds;
 import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
-import static org.eclipse.kapua.service.simulator.steps.Suppressed.withException;
+import static org.eclipse.kapua.service.simulator.steps.Suppressed.*;
 
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.DBHelper;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
@@ -114,7 +115,7 @@ public class SimulatorSteps {
             }
 
             // clear database
-            
+
             dbHelper.deleteAll();
             KapuaSecurityUtils.clearSession();
         }
@@ -138,13 +139,32 @@ public class SimulatorSteps {
 
     }
 
+    @When("^I stop the simulator named (.*)$")
+    public void stopSimulator(String clientId) {
+        List<AutoCloseable> list = closables.remove("simulator/" + clientId);
+        if (list != null) {
+            try (Suppressed<RuntimeException> s = withRuntimeException()) {
+                list.forEach(s::closeSuppressed);
+            }
+        }
+    }
+
     @When("^I wait (\\d+) seconds?$")
     public void waitSeconds(int seconds) throws InterruptedException {
         Thread.sleep(ofSeconds(seconds).toMillis());
     }
 
-    @Then("Device (.*) for account (.*) is registered$")
+    @Then("^Device (.*) for account (.*) is registered$")
     public void deviceIsRegistered(String clientId, String accountName) throws KapuaException {
+        assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.CONNECTED);
+    }
+
+    @Then("^Device (.*) for account (.*) is not registered$")
+    public void deviceIsNotRegistered(String clientId, String accountName) throws KapuaException {
+        assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
+    }
+
+    private void assertConnectionStatus(String clientId, String accountName, DeviceConnectionStatus expectedState) throws KapuaException {
         final DeviceConnectionService service = getInstance().getService(DeviceConnectionService.class);
         final UserService userService = getInstance().getService(UserService.class);
 
@@ -160,8 +180,7 @@ public class SimulatorSteps {
 
             Assert.assertNotNull(result);
             Assert.assertEquals(clientId, result.getClientId());
+            Assert.assertEquals(expectedState, result.getStatus());
         });
-
     }
-
 }
