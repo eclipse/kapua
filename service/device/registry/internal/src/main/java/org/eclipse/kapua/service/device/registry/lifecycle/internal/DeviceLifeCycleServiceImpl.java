@@ -133,7 +133,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         //
         // Device update
         KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
 
         //
         // Event create
