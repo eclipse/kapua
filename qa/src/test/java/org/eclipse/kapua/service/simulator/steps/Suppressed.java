@@ -18,6 +18,30 @@ import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 
+/**
+ * Helper class for working with suppressed {@link Exception}s
+ * <p>
+ * This class should be used in a try-with-resources block, adding
+ * exceptions using the {@link #add(Throwable)} method, or exceptions
+ * while running code with {@link #run(ThrowingRunnable)} or {@link #run(Callable)} or
+ * a failing close with {@link #closeSuppressed(AutoCloseable)} will add those
+ * exceptions to the internal list
+ * </p>
+ * <p>
+ * When the instance is closed by the try-with-resources {@link #close()} call and
+ * there are recorded exceptions, then the close call will throw an exception as well.
+ * </p>
+ * <p>
+ * The thrown exception is of type {@code <X>}. When throwing an exception it tries
+ * not to pollute the exception stack with unnecessary wrapper exceptions. In case multiple
+ * exceptions where added, then they will be added as suppressed exceptions to the first one.
+ * If the first one is not of type {@code <X>}, then it will be wrapped in a new instance
+ * of type {@code <X>} and suppressed exceptions will be added to this new instance instead.
+ * </p>
+ * 
+ * @param <X>
+ *            The exception class this instance will throw
+ */
 public class Suppressed<X extends Exception> implements AutoCloseable {
 
     @FunctionalInterface

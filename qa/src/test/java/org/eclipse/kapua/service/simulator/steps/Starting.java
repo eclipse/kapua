@@ -15,6 +15,58 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Help tracking {@link AutoCloseable}s during initialization phases
+ * <p>
+ * The idea of {@link Starting} is to provide a tracker which will free
+ * resources if the startup fails. And let go of them once the method
+ * {@link #started()} got called.
+ * </p>
+ * <p>
+ * Assume the following code:
+ * </p>
+ * 
+ * <pre>
+ * {@code
+class MyClass {
+
+public MyClass () {
+   this.resource1 = new Resource1();
+   this.resource2 = new Resource2(resource1);
+}
+
+public void close () {
+  try ( Suppressed<Exception> s = Suppressed.withException() ) {
+    s.closeSuppressed(resource2);
+    s.closeSuppressed(resource1);
+  }
+}}
+ * </pre>
+ * <p>
+ * If something fails during initialization of MyClass then {@code resource1} would not get
+ * closed properly. This class can help in solving this scenario by using:
+ * </p>
+ * 
+ * <pre>
+ * {@code
+public MyClass ()  {
+  try ( Starting s = new Starting() )  {
+    this.resource1 = new Resource1();
+    s.add ( this.resource1 );
+    this.resource2 = new Resource2(resource1);
+    s.add ( this.resource2 );
+
+    s.started(); // from now on this class takes on control
+  }
+}}
+ * </pre>
+ * <p>
+ * If something happens during the initialization of resource2, then the try-with-resource construct
+ * call {@link Starting#close()} which will close all added closables up to this point. Once the
+ * {@link #started()} method was called, this will be reset and the caller takes over responsiblity
+ * of closing this.
+ * </p>
+ */
 public class Starting implements AutoCloseable {
 
     private List<AutoCloseable> closeables;
@@ -34,6 +86,8 @@ public class Starting implements AutoCloseable {
         if (closeables == null) {
             return;
         }
+
+        // when we get closed but the started() method was not called
 
         final LinkedList<Exception> exceptions = new LinkedList<>();
 
