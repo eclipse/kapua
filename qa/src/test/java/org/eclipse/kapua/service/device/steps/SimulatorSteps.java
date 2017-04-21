@@ -27,7 +27,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 import org.eclipse.kapua.kura.simulator.MqttAsyncTransport;
@@ -132,17 +131,17 @@ public class SimulatorSteps {
     }
 
     @Then("Device (.*) for account (.*) is registered")
-    public void deviceIsRegistered(final String clientId, final String accountName) throws KapuaException {
+    public void deviceIsRegistered(final String clientId, final String accountName) throws Exception {
         assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.CONNECTED);
     }
 
     @Then("Device (.*) for account (.*) is not registered")
-    public void deviceIsNotRegistered(final String clientId, final String accountName) throws KapuaException {
+    public void deviceIsNotRegistered(final String clientId, final String accountName) throws Exception {
         assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
     }
 
     @Then("Device (.*) for account (.*) should report simulator device information")
-    public void checkApplication(String clientId, String accountName) throws KapuaException {
+    public void checkApplication(String clientId, String accountName) throws Exception {
         withUserAccount(accountName, account -> {
             DeviceRegistryService service = getInstance().getService(DeviceRegistryService.class);
             Device device = service.findByClientId(account.getId(), clientId);
@@ -174,7 +173,7 @@ public class SimulatorSteps {
     }
 
     @When("I start the bundle (.*) with version (.*)")
-    public void startBundle(String bundleSymbolicName, String version) throws KapuaException {
+    public void startBundle(String bundleSymbolicName, String version) throws Exception {
         withUserAccount(accountName, account -> {
             withDevice(account, clientId, device -> {
                 DeviceBundle bundle = findBundle(bundleSymbolicName, version);
@@ -185,18 +184,18 @@ public class SimulatorSteps {
     }
 
     @When("I stop the bundle (.*) with version (.*)")
-    public void stopBundle(String bundleSymbolicName, String version) throws KapuaException {
+    public void stopBundle(String bundleSymbolicName, String version) throws Exception {
         withUserAccount(accountName, account -> {
             withDevice(account, clientId, device -> {
                 DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                service.stop(account.getId(), device.getId(),  Long.toString(bundle.getId()), BUNDLE_TIMEOUT);
+                service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), BUNDLE_TIMEOUT);
             });
         });
     }
 
     @When("I fetch the bundle states")
-    public void fetchBundlesState() throws KapuaException {
+    public void fetchBundlesState() throws Exception {
         withUserAccount(accountName, account -> {
             withDevice(account, clientId, device -> {
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
@@ -229,7 +228,7 @@ public class SimulatorSteps {
         return bundles.get(0);
     }
 
-    private void assertConnectionStatus(final String clientId, final String accountName, final DeviceConnectionStatus expectedState) throws KapuaException {
+    private void assertConnectionStatus(final String clientId, final String accountName, final DeviceConnectionStatus expectedState) throws Exception {
         final DeviceConnectionService service = getInstance().getService(DeviceConnectionService.class);
 
         withUserAccount(accountName, account -> {
@@ -241,20 +240,16 @@ public class SimulatorSteps {
         });
     }
 
-    private void withUserAccount(final String accountName, final ThrowingConsumer<User> consumer) throws KapuaException {
+    private void withUserAccount(final String accountName, final ThrowingConsumer<User> consumer) throws Exception {
         final UserService userService = getInstance().getService(UserService.class);
+        final User account = userService.findByName(accountName);
 
-        KapuaSecurityUtils.doPrivileged(() -> {
+        if (account == null) {
+            Assert.fail("Unable to find account: " + accountName);
+            return;
+        }
 
-            final User account = userService.findByName(accountName);
-
-            if (account == null) {
-                Assert.fail("Unable to find account: " + accountName);
-                return;
-            }
-
-            consumer.consume(account);
-        });
+        consumer.consume(account);
     }
 
     private void withDevice(User account, String clientId, ThrowingConsumer<Device> consumer) throws Exception {

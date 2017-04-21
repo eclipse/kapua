@@ -5,6 +5,8 @@ Scenario: Starting and stopping the simulator should create a device entry and p
   is recorded properly.
 
   Given The account name is kapua-sys and the client ID is sim-1
+  
+  When I login as user with name "kapua-sys" and password "kapua-password"
 
   When I start the simulator connecting to: tcp://kapua-broker:kapua-password@localhost:1883
   And I wait 5 seconds
