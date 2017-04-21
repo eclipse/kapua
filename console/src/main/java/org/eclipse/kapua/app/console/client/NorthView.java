@@ -26,6 +26,8 @@ import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.shared.service.GwtSettingsServiceAsync;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
@@ -49,6 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class NorthView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
@@ -145,9 +148,21 @@ public class NorthView extends LayoutContainer {
                     }
 
                     public void onSuccess(Void arg0) {
-                        ConsoleInfo.display("Info", "Logged out!");
+                        gwtSettingService.getHomeUri(new AsyncCallback<String>() {
 
-                        Window.Location.reload();
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                FailureHandler.handle(caught);
+                            }
+
+                            @Override
+                            public void onSuccess(String result) {
+                                ConsoleInfo.display("Info", "Logged out!");
+                                Window.Location.assign(result);
+                            }
+
+                        });
+
                     }
 
                 });

@@ -31,7 +31,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
         GwtSettingsService {
 
     private static final Logger logger = LoggerFactory.getLogger(GwtSettingsServiceImpl.class);
-    
+
     private static final long serialVersionUID = -6876999298300071273L;
     private static final ConsoleSetting settings = ConsoleSetting.getInstance();
 
@@ -56,7 +56,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
 
             return uri.toString();
         } catch (Exception e) {
-            logger.warn("Failed to construct SSO URI", e );
+            logger.warn("Failed to construct SSO URI", e);
         }
         return null;
     }
@@ -64,5 +64,10 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
     @Override
     public boolean getSsoEnabled() {
         return settings.getBoolean(ConsoleSettingKeys.SSO_ENABLE);
+    }
+
+    @Override
+    public String getHomeUri() {
+        return settings.getString(ConsoleSettingKeys.SITE_HOME_URI);
     }
 }
