@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.simulator.steps;
 
 import java.lang.reflect.Constructor;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
@@ -119,7 +120,7 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
     }
 
     public static Suppressed<RuntimeException> withRuntimeException() {
-        return new Suppressed<>(Exception.class, RuntimeException::new);
+        return new Suppressed<>(RuntimeException.class, RuntimeException::new);
     }
 
 }
