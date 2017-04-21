@@ -206,6 +206,7 @@ public class BrokerSteps extends Assert {
     public void requestBundles() throws Exception {
 
         Device device = deviceRegistryService.findByClientId(new KapuaEid(BigInteger.valueOf(1l)), "rpione3");
+        Assert.assertNotNull(device);
         DeviceBundles deviceBundles = deviceBundleManagementService.get(device.getScopeId(), device.getId(), null);
         List<DeviceBundle> bundles = deviceBundles.getBundles();
         stepData.put("bundles", bundles);
