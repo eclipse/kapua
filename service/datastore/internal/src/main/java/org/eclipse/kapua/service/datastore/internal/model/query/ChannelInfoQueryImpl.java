@@ -37,7 +37,7 @@ public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> imp
         super(scopeId);
     }
 
-	@Override
+    @Override
     public String[] getIncludes(StorableFetchStyle fetchStyle) {
         return new String[] { "*" };
     }

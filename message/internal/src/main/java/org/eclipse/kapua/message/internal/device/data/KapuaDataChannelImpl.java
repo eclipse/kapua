@@ -38,8 +38,8 @@ public class KapuaDataChannelImpl extends KapuaChannelImpl implements KapuaDataC
      * 
      * @param clientId
      */
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-	
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
 }
