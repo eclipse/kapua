@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.KuraXmlConfigPropertiesAdapter;
 
 /**
  * Describes the configuration of an OSGi Component.<br>
