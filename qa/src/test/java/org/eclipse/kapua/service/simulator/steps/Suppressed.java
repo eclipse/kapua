@@ -147,4 +147,14 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
         return new Suppressed<>(RuntimeException.class, RuntimeException::new);
     }
 
+    public static void closeAll(List<? extends AutoCloseable> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        try (final Suppressed<RuntimeException> s = withRuntimeException()) {
+            list.forEach(s::closeSuppressed);
+        }
+    }
+
 }

@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.simulator.steps;
 
 import static java.time.Duration.ofSeconds;
 import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
-import static org.eclipse.kapua.service.simulator.steps.Suppressed.*;
+import static org.eclipse.kapua.service.simulator.steps.Suppressed.withException;
 
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -69,6 +69,12 @@ public class SimulatorSteps {
 
     private BrokerService broker;
 
+    @FunctionalInterface
+    public interface ThrowingConsumer<T> {
+
+        public void consume(T t) throws Exception;
+    }
+
     @Inject
     public SimulatorSteps(final DBHelper dbHelper) {
         this.dbHelper = dbHelper;
@@ -122,7 +128,7 @@ public class SimulatorSteps {
     }
 
     @When("^I start the simulator named (.*) for account (.*) connecting to: (.*)$")
-    public void startSimulator(String clientId, String accountName, String url) throws Exception {
+    public void startSimulator(final String clientId, final String accountName, final String url) throws Exception {
         final GatewayConfiguration configuration = new GatewayConfiguration(url, accountName, clientId);
 
         final Set<Application> apps = new HashSet<>();
@@ -140,13 +146,9 @@ public class SimulatorSteps {
     }
 
     @When("^I stop the simulator named (.*)$")
-    public void stopSimulator(String clientId) {
-        List<AutoCloseable> list = closables.remove("simulator/" + clientId);
-        if (list != null) {
-            try (Suppressed<RuntimeException> s = withRuntimeException()) {
-                list.forEach(s::closeSuppressed);
-            }
-        }
+    public void stopSimulator(final String clientId) {
+        final List<AutoCloseable> list = closables.remove("simulator/" + clientId);
+        Suppressed.closeAll(list);
     }
 
     @When("^I wait (\\d+) seconds?$")
@@ -155,32 +157,41 @@ public class SimulatorSteps {
     }
 
     @Then("^Device (.*) for account (.*) is registered$")
-    public void deviceIsRegistered(String clientId, String accountName) throws KapuaException {
+    public void deviceIsRegistered(final String clientId, final String accountName) throws KapuaException {
         assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.CONNECTED);
     }
 
     @Then("^Device (.*) for account (.*) is not registered$")
-    public void deviceIsNotRegistered(String clientId, String accountName) throws KapuaException {
+    public void deviceIsNotRegistered(final String clientId, final String accountName) throws KapuaException {
         assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
     }
 
-    private void assertConnectionStatus(String clientId, String accountName, DeviceConnectionStatus expectedState) throws KapuaException {
+    private void assertConnectionStatus(final String clientId, final String accountName, final DeviceConnectionStatus expectedState) throws KapuaException {
         final DeviceConnectionService service = getInstance().getService(DeviceConnectionService.class);
-        final UserService userService = getInstance().getService(UserService.class);
 
-        KapuaSecurityUtils.doPrivileged(() -> {
-
-            final User account = userService.findByName(accountName);
-            if (account == null) {
-                Assert.fail("Unable to find account: " + accountName);
-                return;
-            }
+        withUserAccount(accountName, account -> {
 
             final DeviceConnection result = service.findByClientId(account.getId(), clientId);
 
             Assert.assertNotNull(result);
             Assert.assertEquals(clientId, result.getClientId());
             Assert.assertEquals(expectedState, result.getStatus());
+        });
+    }
+
+    private void withUserAccount(final String accountName, final ThrowingConsumer<User> consumer) throws KapuaException {
+        final UserService userService = getInstance().getService(UserService.class);
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+
+            final User account = userService.findByName(accountName);
+
+            if (account == null) {
+                Assert.fail("Unable to find account: " + accountName);
+                return;
+            }
+
+            consumer.consume(account);
         });
     }
 }
