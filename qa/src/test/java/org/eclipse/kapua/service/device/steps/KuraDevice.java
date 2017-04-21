@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import static java.nio.file.Files.readAllBytes;
+import static java.nio.file.Paths.get;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -174,35 +174,12 @@ public class KuraDevice implements MqttCallback {
      * @param retained is message retained (mqtt specific)
      * @param fileName name of file and path with pre-recorded response
      * @throws MqttException
+     * @throws IOException 
      */
-    public void sendMessageFromFile(String topic, int qos, boolean retained, String fileName) throws MqttException {
-
-        byte[] payload = readPayloadFromFile(fileName);
+    public void sendMessageFromFile(String topic, int qos, boolean retained, String fileName) throws MqttException, IOException {
+        byte[] payload = readAllBytes(get(fileName));
 
         mqttClient.publish(topic, payload, qos, retained);
-    }
-
-    /**
-     * Reading response data form pre-recorded response of Kura device.
-     *
-     * @param fileName file name and location of recorded response
-     * @return raw data form file
-     */
-    private byte[] readPayloadFromFile(String fileName) {
-        byte[] payload = null;
-
-        try {
-            File msgFile = new File(fileName);
-            FileInputStream fileIs = new FileInputStream(msgFile);
-
-            payload = new byte[(int) msgFile.length()];
-            DataInputStream dataIs = new DataInputStream(fileIs);
-            dataIs.readFully(payload);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return payload;
     }
 
     /**
@@ -272,7 +249,7 @@ public class KuraDevice implements MqttCallback {
                 callbackParam = extractCallback(payload);
 
                 responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-                responsePayload = readPayloadFromFile("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages.mqtt");
+                responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages.mqtt")));
 
                 mqttClient.publish(responseTopic, responsePayload, 0, false);
                 break;
@@ -280,7 +257,7 @@ public class KuraDevice implements MqttCallback {
                 callbackParam = extractCallback(payload);
 
                 responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-                responsePayload = readPayloadFromFile("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles.mqtt");
+                responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles.mqtt")));
 
                 mqttClient.publish(responseTopic, responsePayload, 0, false);
                 break;
@@ -288,7 +265,7 @@ public class KuraDevice implements MqttCallback {
                 callbackParam = extractCallback(payload);
 
                 responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
-                responsePayload = readPayloadFromFile("src/test/resources/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_configurations.mqtt");
+                responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_configurations.mqtt")));
 
                 mqttClient.publish(responseTopic, responsePayload, 0, false);
                 break;
@@ -296,7 +273,7 @@ public class KuraDevice implements MqttCallback {
                 callbackParam = extractCallback(payload);
 
                 responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
-                responsePayload = readPayloadFromFile("src/test/resources/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt");
+                responsePayload = readAllBytes(get(("src/test/resources/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt")));
 
                 mqttClient.publish(responseTopic, responsePayload, 0, false);
                 break;
