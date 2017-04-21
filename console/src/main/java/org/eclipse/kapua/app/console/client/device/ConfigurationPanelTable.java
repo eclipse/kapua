@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
@@ -41,18 +40,18 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class ConfigurationPanelTable extends LayoutContainer{
+public class ConfigurationPanelTable extends LayoutContainer {
+
     private GwtSession currentSession;
     private ContentPanel tableContainer;
     private ToolBar toolBar;
     private ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-   
-    
-    public ConfigurationPanelTable(GwtSession currentSession){
+
+    public ConfigurationPanelTable(GwtSession currentSession) {
         this.currentSession = currentSession;
     }
-    
-    private void initConfigurationPanelTable(){
+
+    private void initConfigurationPanelTable() {
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
         tableContainer.setBodyBorder(false);
@@ -62,8 +61,8 @@ public class ConfigurationPanelTable extends LayoutContainer{
         initConfigurationPanelTableGrid();
         tableContainer.setTopComponent(toolBar);
     }
-    
-    private void initConfigurationPanelTableGrid(){
+
+    private void initConfigurationPanelTableGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig id = new ColumnConfig("id", "ID", 150);
         id.setAlignment(HorizontalAlignment.CENTER);
@@ -86,14 +85,14 @@ public class ConfigurationPanelTable extends LayoutContainer{
         ColumnConfig memoryAddress = new ColumnConfig("memoryAddress", "memmory_address", 150);
         memoryAddress.setAlignment(HorizontalAlignment.CENTER);
         configs.add(memoryAddress);
-        
+
         RpcProxy<PagingLoadResult<GwtChannel>> proxy = new RpcProxy<PagingLoadResult<GwtChannel>>() {
 
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtChannel>> callback) {
                 // TODO Auto-generated method stub
-                
+
             }
         };
         ListLoader<ListLoadResult<GwtChannel>> loader = new BaseListLoader<ListLoadResult<GwtChannel>>(proxy);
@@ -104,10 +103,10 @@ public class ConfigurationPanelTable extends LayoutContainer{
         Label label = new Label("Asset 1(Driver)");
         toolBar.add(label);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(new FillToolItem());        
-       
+        toolBar.add(new FillToolItem());
+
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
@@ -116,5 +115,5 @@ public class ConfigurationPanelTable extends LayoutContainer{
         initConfigurationPanelTable();
         add(tableContainer);
     }
-    
+
 }

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
@@ -48,8 +47,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AssetTable extends LayoutContainer{
-    
+public class AssetTable extends LayoutContainer {
+
     private GwtSession currentSession;
     private ContentPanel tableContainer;
     private ToolBar toolBar;
@@ -58,14 +57,13 @@ public class AssetTable extends LayoutContainer{
     private Button deleteAsset, writeAsset, readAsset, addChannel, deleteChannel, readChannel, writeChannel;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    
-    public AssetTable(GwtSession currentSession){
+    public AssetTable(GwtSession currentSession) {
         this.currentSession = currentSession;
         toolBar = new ToolBar();
     }
-    
-    private void initAssetTable(){
-        
+
+    private void initAssetTable() {
+
         tableContainer = new ContentPanel();
         tableContainer.setBorders(false);
         tableContainer.setBodyBorder(false);
@@ -75,8 +73,8 @@ public class AssetTable extends LayoutContainer{
         initAssetGrid();
         tableContainer.setTopComponent(toolBar);
     }
-    
-    private void initAssetGrid(){
+
+    private void initAssetGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
         ColumnConfig column = new ColumnConfig("Assets", MSGS.assetName(), 275);
         column.setAlignment(HorizontalAlignment.CENTER);
@@ -87,14 +85,14 @@ public class AssetTable extends LayoutContainer{
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtChannel>> callback) {
                 // TODO Auto-generated method stub
-                
+
             }
         };
         ListLoader<ListLoadResult<GwtChannel>> loader = new BaseListLoader<ListLoadResult<GwtChannel>>(proxy);
         SwappableListStore<GwtChannel> store = new SwappableListStore<GwtChannel>(loader);
         Grid<GwtChannel> grid = new Grid<GwtChannel>(store, new ColumnModel(configs));
         tableContainer.add(grid);
-       
+
         assetsButton = new ExportButton();
         assetsButton.setText(MSGS.assetButton());
         addAssets = new SplitButton("New Asset");
@@ -115,14 +113,14 @@ public class AssetTable extends LayoutContainer{
         menuNewAssetButton.add(new Label("Modbus"));
         menuNewAssetButton.add(new Label("OPC-UA"));
         menuNewAssetButton.add(new Label("Others"));
-       
+
         addAssets.setMenu(menuNewAssetButton);
         addAssets.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 addAssets.showMenu();
-                
+
             }
         });
         assetsButton.setMenu(menuAsset);
@@ -130,8 +128,8 @@ public class AssetTable extends LayoutContainer{
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-               assetsButton.showMenu();
-                
+                assetsButton.showMenu();
+
             }
         });
         toolBar.add(assetsButton);
@@ -157,12 +155,12 @@ public class AssetTable extends LayoutContainer{
             @Override
             public void componentSelected(ButtonEvent ce) {
                 channelsButton.showMenu();
-                
+
             }
         });
         toolBar.add(channelsButton);
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
@@ -171,13 +169,13 @@ public class AssetTable extends LayoutContainer{
         initAssetTable();
         add(tableContainer);
     }
-    
-    public void showToolbar(boolean show){
+
+    public void showToolbar(boolean show) {
         if (show == true) {
-        	  toolBar.show();
+            toolBar.show();
         } else {
-        	 toolBar.hide();
+            toolBar.hide();
         }
-        
+
     }
 }

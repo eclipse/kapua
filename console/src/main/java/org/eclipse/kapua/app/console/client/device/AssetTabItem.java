@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
@@ -24,26 +23,26 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class AssetTabItem extends TabItem{
-	private GwtSession currentSession;
-	private TabPanel tabsPanel;
+public class AssetTabItem extends TabItem {
+
+    private GwtSession currentSession;
+    private TabPanel tabsPanel;
     private DeviceValuesTab valuesTab;
     private DeviceConfigurationTab configurationsTab;
     private TabItem tabValue;
     private TabItem tabConfiguration;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    
-    public AssetTabItem(GwtSession currentSession){
+    public AssetTabItem(GwtSession currentSession) {
         super(MSGS.assetTabItemTitle(), null);
         this.currentSession = currentSession;
         valuesTab = new DeviceValuesTab(currentSession);
         configurationsTab = new DeviceConfigurationTab(currentSession);
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
-        
+
         super.onRender(parent, index);
         setLayout(new FitLayout());
         tabsPanel = new TabPanel();

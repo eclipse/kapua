@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
@@ -26,17 +25,16 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class DeviceConfigurationTab extends TabItem{
-    
-	private GwtSession currentSession;
-	private GwtDevice selectedDevice;
-	private boolean dirty;
-	private boolean initialized;
+public class DeviceConfigurationTab extends TabItem {
+
+    private GwtSession currentSession;
+    private GwtDevice selectedDevice;
+    private boolean dirty;
+    private boolean initialized;
     private AssetTable table;
     private ConfigurationPanelTable configTable;
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    
     public DeviceConfigurationTab(GwtSession currentSession) {
         super(MSGS.configurationTabItemTitle(), null);
         this.setBorders(false);
@@ -45,12 +43,12 @@ public class DeviceConfigurationTab extends TabItem{
         dirty = true;
         initialized = false;
     }
-    
-    public void setDevice(GwtDevice selectedDevice){
-    	dirty = true;
+
+    public void setDevice(GwtDevice selectedDevice) {
+        dirty = true;
         this.selectedDevice = selectedDevice;
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
@@ -72,6 +70,5 @@ public class DeviceConfigurationTab extends TabItem{
         detailsBorder.setSplit(true);
         configurationPanelTableContainer.add(configTable, detailsBorder);
     }
-   
 
 }
