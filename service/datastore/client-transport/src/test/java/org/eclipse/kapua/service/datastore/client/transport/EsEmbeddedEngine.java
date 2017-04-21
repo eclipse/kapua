@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.Settings.Builder;
+//import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
 //import org.elasticsearch.node.NodeBuilder;
 
@@ -26,7 +26,7 @@ public class EsEmbeddedEngine {
     private Node node;
 
     public EsEmbeddedEngine() {
-        // ES 5.2 FIX
+        // ES 5.3 FIX
 //        Builder elasticsearchSettings = Settings.settingsBuilder()
 //                .put("http.enabled", "false")
 //                .put("path.data", DEFAULT_DATA_DIRECTORY)
@@ -35,7 +35,7 @@ public class EsEmbeddedEngine {
                 .put("http.enabled", "false")
                 .put("path.data", DEFAULT_DATA_DIRECTORY)
                 .put("path.home", ".").build();
-        // ES 5.2 FIX
+        // ES 5.3 FIX
 //        node = NodeBuilder.nodeBuilder()
 //                .local(true)
 //                .settings(elasticsearchSettings.build())
