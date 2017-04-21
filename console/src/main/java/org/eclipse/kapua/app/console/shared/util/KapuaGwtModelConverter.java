@@ -37,6 +37,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermiss
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
+import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.util.SystemUtils;
@@ -70,6 +71,7 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
@@ -561,6 +563,32 @@ public class KapuaGwtModelConverter {
         gwtDeviceEvent.setEventMessage(escapedMessage);
 
         return gwtDeviceEvent;
+    }
+    
+    public static GwtDeviceConnection convert(DeviceConnection deviceConnection) {
+        GwtDeviceConnection gwtDeviceConnection = new GwtDeviceConnection();
+
+        //
+        // Convert commons attributes
+        convertEntity(deviceConnection, gwtDeviceConnection);
+
+        //
+        // Convert other attributes
+        gwtDeviceConnection.setClientId(deviceConnection.getClientId());
+        gwtDeviceConnection.setUserId(convert(deviceConnection.getUserId()));
+        gwtDeviceConnection.setClientIp(deviceConnection.getClientIp());
+        gwtDeviceConnection.setServerIp(deviceConnection.getServerIp());
+        gwtDeviceConnection.setProtocol(deviceConnection.getProtocol());
+        gwtDeviceConnection.setConnectionStatus(convert(deviceConnection.getStatus()));
+        gwtDeviceConnection.setOptlock(deviceConnection.getOptlock());
+        
+        //
+        // Return converted entity
+        return gwtDeviceConnection;
+    }
+
+    private static String convert(DeviceConnectionStatus status) {
+        return status.toString();
     }
 
     public static GwtCredential convert(Credential credential, User user) {

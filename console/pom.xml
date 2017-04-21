@@ -263,6 +263,7 @@
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleWelcomeMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAccountMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleConnectionMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
 
                     <optimizationLevel>9</optimizationLevel>

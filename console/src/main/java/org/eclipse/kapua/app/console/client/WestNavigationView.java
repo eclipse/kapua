@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
+import org.eclipse.kapua.app.console.client.connection.ConnectionView;
 import org.eclipse.kapua.app.console.client.credential.CredentialView;
 import org.eclipse.kapua.app.console.client.data.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
@@ -193,6 +194,15 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("connection".equals(selectedId)) {
+                    ConnectionView connectionView = new ConnectionView(m_currentSession);
+
+                    panel.setHeaderVisible(false);
+                    panel.add(connectionView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("data".equals(selectedId)) {
                     DataView dataView = new DataView(m_currentSession);
                     panel.setHeaderVisible(false);
@@ -339,22 +349,22 @@ public class WestNavigationView extends LayoutContainer {
             if (m_currentSession.hasDeviceReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
             }
-
-            cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
-            
+            if (m_currentSession.hasConnectionReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("connection", MSGS.connections(), IconSet.PLUG), false);
+            }
+            if (m_currentSession.hasDataReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
+            }
             if (m_currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
             }
-            if (m_currentSession.hasUserReadPermission()) {
+            if (m_currentSession.hasRoleReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
-            }
-            if (m_currentSession.hasCredentialReadPermission()) {
-                //cloudResourcesTreeStore.add(newItem("credential", MSGS.credentials(), IconSet.KEY), false);
             }
             if (m_currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
             }
-            if (m_currentSession.hasUserReadPermission()){
+            if (m_currentSession.hasGroupReadPermission()){
                 cloudResourcesTreeStore.add(newItem("groups", MSGS.groups(), IconSet.OBJECT_GROUP), false);
             }
 

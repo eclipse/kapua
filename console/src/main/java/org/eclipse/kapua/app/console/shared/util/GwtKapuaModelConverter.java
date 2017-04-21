@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
 import org.eclipse.kapua.app.console.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
@@ -37,6 +38,7 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
+import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.shared.model.data.GwtDataChannelInfoQuery;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
@@ -88,6 +90,9 @@ import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
@@ -218,6 +223,29 @@ public class GwtKapuaModelConverter {
         query.setPredicate(predicate);
         
         return query;
+    }
+    
+    public static DeviceConnectionQuery convertConnectionQuery(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery){
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
+        DeviceConnectionQuery query = factory.newQuery(convert(gwtDeviceConnectionQuery.getScopeId()));
+        AndPredicate predicate = new AndPredicate();
+        
+        if(gwtDeviceConnectionQuery.getClientId() != null && !gwtDeviceConnectionQuery.getClientId().trim().isEmpty()){
+            predicate.and(new AttributePredicate<String>("clientId", gwtDeviceConnectionQuery.getClientId(), Operator.LIKE));
+        }
+        
+        if(gwtDeviceConnectionQuery.getConnectionStatus() != null && !gwtDeviceConnectionQuery.getConnectionStatus().equals(GwtDeviceConnectionStatus.ANY.toString())){
+            predicate.and(new AttributePredicate<DeviceConnectionStatus>("status", convertConnectionStatus(gwtDeviceConnectionQuery.getConnectionStatus()), Operator.EQUAL));
+        }
+        
+        query.setPredicate(predicate);
+        
+        return query;
+    }
+    
+    public static DeviceConnectionStatus convertConnectionStatus(String connectionStatus) {
+        return DeviceConnectionStatus.valueOf(connectionStatus);
     }
 
     /**
