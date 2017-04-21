@@ -19,9 +19,12 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class BasicSteps {
 
+    private static final double WAIT_MULTIPLIER = Double.parseDouble(System.getProperty("org.eclipse.kapua.qa.waitMultiplier", "1.0"));
+
     @When("I wait (\\d+) seconds?.*")
     public void waitSeconds(int seconds) throws InterruptedException {
-        Thread.sleep(ofSeconds(seconds).toMillis());
+        double effectiveSeconds = ((double) seconds) * WAIT_MULTIPLIER;
+        Thread.sleep(ofSeconds((long) Math.ceil(effectiveSeconds)).toMillis());
     }
 
 }
