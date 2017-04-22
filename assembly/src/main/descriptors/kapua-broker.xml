@@ -62,7 +62,6 @@
                 <exclude>lib/optional/activemq-partition*</exclude>
                 <exclude>lib/optional/activemq-pool*</exclude>
                 <exclude>lib/optional/activemq-runtime-config*</exclude>
-                <exclude>lib/optional/activemq-stomp*</exclude>
                 <exclude>lib/optional/commons-codec-*</exclude>
                 <exclude>lib/optional/commons-collections-*</exclude>
                 <exclude>lib/optional/commons-dbcp*</exclude>
