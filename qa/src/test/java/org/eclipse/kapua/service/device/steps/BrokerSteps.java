@@ -91,6 +91,7 @@ public class BrokerSteps extends Assert {
     /**
      * Kura snapshot management service.
      */
+    @SuppressWarnings("unused")
     private DeviceSnapshotManagementService deviceSnapshotManagementService;
 
     /**
@@ -196,6 +197,7 @@ public class BrokerSteps extends Assert {
     @Then("^Packages are received$")
     public void packagesReceived() {
 
+        @SuppressWarnings("unchecked")
         List<DevicePackage> packages = (List<DevicePackage>) stepData.get("packages");
         if (packages != null) {
             assertEquals(1, packages.size());
@@ -214,7 +216,7 @@ public class BrokerSteps extends Assert {
 
     @Then("^Bundles are received$")
     public void bundlesReceived() {
-
+        @SuppressWarnings("unchecked")
         List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get("bundles");
         assertEquals(80, bundles.size());
     }
@@ -231,7 +233,7 @@ public class BrokerSteps extends Assert {
 
     @Then("^Configuration is received$")
     public void configurationReceived() {
-
+        @SuppressWarnings("unchecked")
         List<DeviceComponentConfiguration> configurations = (List<DeviceComponentConfiguration>) stepData.get("configurations");
         assertEquals(11, configurations.size());
     }
