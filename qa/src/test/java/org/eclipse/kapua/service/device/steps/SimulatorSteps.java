@@ -13,6 +13,8 @@ package org.eclipse.kapua.service.device.steps;
 
 import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
 import static org.eclipse.kapua.qa.utils.Suppressed.closeAll;
+import static org.eclipse.kapua.service.device.steps.With.withDevice;
+import static org.eclipse.kapua.service.device.steps.With.withUserAccount;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -37,18 +39,15 @@ import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.qa.steps.EmbeddedBroker;
+import org.eclipse.kapua.qa.steps.EmbeddedElasticsearch;
 import org.eclipse.kapua.qa.utils.Starting;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.junit.Assert;
 
@@ -68,21 +67,23 @@ public class SimulatorSteps {
     private static final long BUNDLE_TIMEOUT = Duration.ofSeconds(Integer.getInteger("org.eclipse.kapua.service.device.steps.timeoutBundleOperation", 5)).toMillis();
 
     private Map<String, List<AutoCloseable>> closables = new HashMap<>();
-    private String clientId;
-    private String accountName;
 
     private List<DeviceBundle> bundles;
 
     private ScheduledExecutorService downloadExecutor;
 
-    @FunctionalInterface
-    public interface ThrowingConsumer<T> {
+    private SimulatorDevice currentDevice;
 
-        public void consume(T t) throws Exception;
-    }
+    private String brokerUri;
 
     @Inject
-    public SimulatorSteps(/* dependency */ final EmbeddedBroker broker, /* dependency */ final DBHelper dbHelper) {
+    public SimulatorSteps(
+            /* dependency */ final EmbeddedBroker broker,
+            /* dependency */ final EmbeddedElasticsearch elasticsearch,
+            /* dependency */ final DBHelper dbHelper,
+            SimulatorDevice currentDevice) {
+
+        this.currentDevice = currentDevice;
     }
 
     @Before
@@ -102,17 +103,26 @@ public class SimulatorSteps {
 
     @Given("The account name is (.*) and the client ID is (.*)")
     public void setClientId(final String accountName, final String clientId) {
-        this.clientId = clientId;
-        this.accountName = accountName;
+        this.currentDevice.setAccountName(accountName);
+        this.currentDevice.setClientId(clientId);
     }
 
-    @When("I start the simulator connecting to: (.*)")
-    public void startSimulator(final String url) throws Exception {
-        final GatewayConfiguration configuration = new GatewayConfiguration(url, accountName, clientId);
+    @Given("The broker URI is (.*)")
+    public void setBrokerUri(final String brokerUri) {
+        this.brokerUri = brokerUri;
+    }
+
+    @When("I start the simulator")
+    public void startSimulator() throws Exception {
+
+        currentDevice.started();
+
+        final GatewayConfiguration configuration = new GatewayConfiguration(brokerUri, currentDevice.getAccountName(), currentDevice.getClientId());
 
         final Set<Application> apps = new HashSet<>();
         apps.add(new SimpleCommandApplication(s -> String.format("Command '%s' not found", s)));
         apps.add(AnnotatedApplication.build(new SimpleDeployApplication(downloadExecutor)));
+        apps.addAll(currentDevice.getMockApplications().values());
 
         try (Starting starting = new Starting()) {
             final MqttAsyncTransport transport = new MqttAsyncTransport(configuration);
@@ -120,14 +130,16 @@ public class SimulatorSteps {
             final Simulator simulator = new Simulator(configuration, transport, apps);
             starting.add(simulator);
 
-            this.closables.put("simulator/" + clientId, starting.started());
+            this.closables.put("simulator/" + currentDevice.getClientId(), starting.started());
         }
 
     }
 
     @When("I stop the simulator")
     public void stopSimulator() {
-        closeAll(closables.remove("simulator/" + clientId));
+        closeAll(closables.remove("simulator/" + currentDevice.getClientId()));
+
+        currentDevice.stopped();
     }
 
     @Then("Device (.*) for account (.*) is registered")
@@ -140,42 +152,50 @@ public class SimulatorSteps {
         assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
     }
 
-    @Then("Device (.*) for account (.*) should report simulator device information")
-    public void checkApplication(String clientId, String accountName) throws Exception {
-        withUserAccount(accountName, account -> {
-            DeviceRegistryService service = getInstance().getService(DeviceRegistryService.class);
-            Device device = service.findByClientId(account.getId(), clientId);
+    @Then("I expect the device to report the applications")
+    public void checkApplications(final List<String> applications) throws Exception {
+        withUserAccount(currentDevice.getAccountName(), account -> {
+            withDevice(account, currentDevice.getClientId(), device -> {
+                final Set<String> apps = new HashSet<>(Arrays.asList(device.getApplicationIdentifiers().split(",")));
+                Assert.assertEquals(new HashSet<>(applications), apps);
+            });
+        });
+    }
 
-            Assert.assertNotNull(device);
+    @Then("The device should report simulator device information")
+    public void checkDeviceInformation() throws Exception {
+        final String clientId = currentDevice.getClientId();
+        withUserAccount(currentDevice.getAccountName(), account -> {
+            withDevice(account, clientId, device -> {
 
-            Assert.assertEquals("Kura Simulator (Display Name)", device.getDisplayName());
-            // Assert.assertEquals("Kura Simulator (Model Name)", device.getModelName());
-            Assert.assertEquals("kura-simulator-" + clientId, device.getModelId());
-            // Assert.assertEquals("ksim-part-123456-" + clientId, device.getPartNumber());
-            Assert.assertEquals("ksim-serial-123456-" + clientId, device.getSerialNumber());
-            // Assert.assertEquals( "1", device.getAvailableProcessors () );
-            // Assert.assertEquals( "640", device.getTotalMemory());
-            Assert.assertEquals("fw.v42", device.getFirmwareVersion());
-            Assert.assertEquals("bios.v42", device.getBiosVersion());
-            // Assert.assertEquals( "Kura Simulator (OS)", device.getOperatingSystem());
-            // Assert.assertEquals("ksim-os-v42", device.getOperatingSystemVersion());
-            // Assert.assertEquals("ksim-arch", device.getOperatingSystemArchitecture());
-            // Assert.assertEquals("Kura Simulator (Java)", device.getJvmName());
-            Assert.assertEquals("ksim-java-v42", device.getJvmVersion());
-            // Assert.assertEquals( "Kura Simulator (Java Profile)", device.getJvmProfile());
-            Assert.assertEquals("ksim-kura-v42", device.getApplicationFrameworkVersion());
-            // Assert.assertEquals("Kura Simulator (OSGi version)", device.getOsgiFrameworkName());
-            Assert.assertEquals("ksim-osgi-v42", device.getOsgiFrameworkVersion());
+                Assert.assertNotNull(device);
 
-            Set<String> apps = new HashSet<>(Arrays.asList(device.getApplicationIdentifiers().split(",")));
-            Assert.assertEquals(new HashSet<>(Arrays.asList("CMD-V1", "DEPLOY-V2")), apps);
+                Assert.assertEquals("Kura Simulator (Display Name)", device.getDisplayName());
+                // Assert.assertEquals("Kura Simulator (Model Name)", device.getModelName());
+                Assert.assertEquals("kura-simulator-" + clientId, device.getModelId());
+                // Assert.assertEquals("ksim-part-123456-" + clientId, device.getPartNumber());
+                Assert.assertEquals("ksim-serial-123456-" + clientId, device.getSerialNumber());
+                // Assert.assertEquals( "1", device.getAvailableProcessors () );
+                // Assert.assertEquals( "640", device.getTotalMemory());
+                Assert.assertEquals("fw.v42", device.getFirmwareVersion());
+                Assert.assertEquals("bios.v42", device.getBiosVersion());
+                // Assert.assertEquals( "Kura Simulator (OS)", device.getOperatingSystem());
+                // Assert.assertEquals("ksim-os-v42", device.getOperatingSystemVersion());
+                // Assert.assertEquals("ksim-arch", device.getOperatingSystemArchitecture());
+                // Assert.assertEquals("Kura Simulator (Java)", device.getJvmName());
+                Assert.assertEquals("ksim-java-v42", device.getJvmVersion());
+                // Assert.assertEquals( "Kura Simulator (Java Profile)", device.getJvmProfile());
+                Assert.assertEquals("ksim-kura-v42", device.getApplicationFrameworkVersion());
+                // Assert.assertEquals("Kura Simulator (OSGi version)", device.getOsgiFrameworkName());
+                Assert.assertEquals("ksim-osgi-v42", device.getOsgiFrameworkVersion());
+            });
         });
     }
 
     @When("I start the bundle (.*) with version (.*)")
-    public void startBundle(String bundleSymbolicName, String version) throws Exception {
-        withUserAccount(accountName, account -> {
-            withDevice(account, clientId, device -> {
+    public void startBundle(final String bundleSymbolicName, final String version) throws Exception {
+        withUserAccount(currentDevice.getAccountName(), account -> {
+            withDevice(account, currentDevice.getClientId(), device -> {
                 DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
                 service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), BUNDLE_TIMEOUT);
@@ -184,9 +204,9 @@ public class SimulatorSteps {
     }
 
     @When("I stop the bundle (.*) with version (.*)")
-    public void stopBundle(String bundleSymbolicName, String version) throws Exception {
-        withUserAccount(accountName, account -> {
-            withDevice(account, clientId, device -> {
+    public void stopBundle(final String bundleSymbolicName, final String version) throws Exception {
+        withUserAccount(currentDevice.getAccountName(), account -> {
+            withDevice(account, currentDevice.getClientId(), device -> {
                 DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
                 service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), BUNDLE_TIMEOUT);
@@ -196,8 +216,8 @@ public class SimulatorSteps {
 
     @When("I fetch the bundle states")
     public void fetchBundlesState() throws Exception {
-        withUserAccount(accountName, account -> {
-            withDevice(account, clientId, device -> {
+        withUserAccount(currentDevice.getAccountName(), account -> {
+            withDevice(account, currentDevice.getClientId(), device -> {
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
                 DeviceBundles bundles = service.get(account.getId(), device.getId(), BUNDLE_TIMEOUT);
 
@@ -213,7 +233,7 @@ public class SimulatorSteps {
         Assert.assertEquals(state, bundle.getState());
     }
 
-    private DeviceBundle findBundle(String bundleSymbolicName, String version) {
+    private DeviceBundle findBundle(final String bundleSymbolicName, final String version) {
         List<DeviceBundle> bundles = this.bundles.stream()
                 .filter(bundle -> bundle.getName().equals(bundleSymbolicName))
                 .filter(bundle -> bundle.getVersion().equals(version))
@@ -240,25 +260,4 @@ public class SimulatorSteps {
         });
     }
 
-    private void withUserAccount(final String accountName, final ThrowingConsumer<User> consumer) throws Exception {
-        final UserService userService = getInstance().getService(UserService.class);
-        final User account = userService.findByName(accountName);
-
-        if (account == null) {
-            Assert.fail("Unable to find account: " + accountName);
-            return;
-        }
-
-        consumer.consume(account);
-    }
-
-    private void withDevice(User account, String clientId, ThrowingConsumer<Device> consumer) throws Exception {
-        DeviceRegistryService service = getInstance().getService(DeviceRegistryService.class);
-        Device device = service.findByClientId(account.getId(), clientId);
-        if (device == null) {
-            throw new IllegalStateException(String.format("Unable to find device '%s' for account '%s'", clientId, account.getId()));
-        }
-
-        consumer.consume(device);
-    }
 }
