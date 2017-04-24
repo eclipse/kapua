@@ -12,7 +12,6 @@
 package org.eclipse.kapua.broker.core.converter;
 
 import org.apache.camel.Exchange;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.listener.AbstractListener;

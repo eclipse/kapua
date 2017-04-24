@@ -29,11 +29,11 @@ public class SchemaKeys {
     /**
      * Include fields key
      */
-    public final static String KEY_INCLUDE = "include";
+    public final static String KEY_INCLUDES = "includes";
     /**
      * Exclude fields key
      */
-    public final static String KEY_EXCLUDE = "exclude";
+    public final static String KEY_EXCLUDES = "excludes";
     /**
      * From key (used by queries for paginating the result set)
      */

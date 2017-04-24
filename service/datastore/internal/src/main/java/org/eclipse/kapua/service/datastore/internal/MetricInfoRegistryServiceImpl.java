@@ -122,7 +122,10 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         try {
             // populate the lastMessageTimestamp
             MetricInfo metricInfo = metricInfoStoreFacade.find(scopeId, id);
-            updateLastPublishedFields(metricInfo);
+            if (metricInfo != null) {
+
+                updateLastPublishedFields(metricInfo);
+            }
             return metricInfo;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
@@ -138,9 +141,11 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
             MetricInfoListResult result = metricInfoStoreFacade.query(query);
-            // populate the lastMessageTimestamp
-            for (MetricInfo metricInfo : result.getItems()) {
-                updateLastPublishedFields(metricInfo);
+            if (result != null) {
+                // populate the lastMessageTimestamp
+                for (MetricInfo metricInfo : result.getItems()) {
+                    updateLastPublishedFields(metricInfo);
+                }
             }
             return result;
         } catch (Exception e) {
