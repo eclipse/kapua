@@ -19,6 +19,6 @@ import java.io.Serializable;
  * @since 1.0
  * 
  */
-public interface KapuaSerializable extends Serializable {
+public interface KapuaSerializable {
 
 }

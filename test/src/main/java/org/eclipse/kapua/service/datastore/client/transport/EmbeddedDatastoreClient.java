@@ -70,37 +70,37 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDES
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 
 /**
- * Client implementation based on Elasticsearch transport client
+ * Client implementation based on embedded Elasticsearch client
  *
  * @since 1.0
  */
-public class TransportDatastoreClient implements org.eclipse.kapua.service.datastore.client.DatastoreClient {
+public class EmbeddedDatastoreClient implements org.eclipse.kapua.service.datastore.client.DatastoreClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(TransportDatastoreClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmbeddedDatastoreClient.class);
 
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
 
-    private EsTransportClientProvider esTransportClientProvider;
+    private EsEmbeddedClientProvider esEmbeddedClientProvider;
     private ModelContext modelContext;
     private QueryConverter queryConverter;
 
     /**
      * Default constructor
-     * 
+     *
      * @throws ClientUnavailableException
      */
-    public TransportDatastoreClient() throws ClientUnavailableException {
-        esTransportClientProvider = new EsTransportClientProvider();
+    public EmbeddedDatastoreClient() throws ClientUnavailableException {
+        esEmbeddedClientProvider = new EsEmbeddedClientProvider();
     }
 
     /**
      * Constructs the client with the provided model context and query converter
-     * 
+     *
      * @param modelContext
      * @param queryConverter
      * @throws ClientUnavailableException
      */
-    public TransportDatastoreClient(ModelContext modelContext, QueryConverter queryConverter) throws ClientUnavailableException {
+    public EmbeddedDatastoreClient(ModelContext modelContext, QueryConverter queryConverter) throws ClientUnavailableException {
         this();
         this.modelContext = modelContext;
         this.queryConverter = queryConverter;
@@ -122,7 +122,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
         logger.debug("Insert - converted object: '{}'", storableMap.toString());
         IndexRequest idxRequest = new IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
-        IndexResponse response = esTransportClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
+        IndexResponse response = esEmbeddedClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
     }
 
@@ -133,7 +133,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         IndexRequest idxRequest = new IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
         org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(upsertRequest.getTypeDescriptor().getIndex(),
                 upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).doc(storableMap);
-        org.elasticsearch.action.update.UpdateResponse response = esTransportClientProvider.getClient().update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
+        org.elasticsearch.action.update.UpdateResponse response = esEmbeddedClientProvider.getClient().update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
         return new UpdateResponse(response.getId(), upsertRequest.getTypeDescriptor());
     }
 
@@ -151,8 +151,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             updateRequest.upsert(idxRequest);
             bulkRequest.add(updateRequest);
         }
-        
-        BulkResponse bulkResponse = esTransportClientProvider.getClient().bulk(bulkRequest).actionGet(getQueryTimeout());
+
+        BulkResponse bulkResponse = esEmbeddedClientProvider.getClient().bulk(bulkRequest).actionGet(getQueryTimeout());
 
         BulkUpdateResponse response = new BulkUpdateResponse();
         BulkItemResponse[] itemResponses = bulkResponse.getItems();
@@ -194,7 +194,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(KEY_SOURCE);
         String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_INCLUDES));
         String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_EXCLUDES));
-        SearchRequestBuilder searchReqBuilder = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
+        SearchRequestBuilder searchReqBuilder = esEmbeddedClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
         searchReqBuilder.setTypes(typeDescriptor.getType())
                 .setSource(toSearchSourceBuilder(queryMap))
                 .setFetchSource(includesFields, excludesFields);
@@ -232,7 +232,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         checkClient();
         // TODO check for fetch none
         JsonNode queryMap = queryConverter.convertQuery(query);
-        SearchRequestBuilder searchReqBuilder = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
+        SearchRequestBuilder searchReqBuilder = esEmbeddedClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
         SearchHits searchHits = null;
         try {
             SearchResponse response = searchReqBuilder.setTypes(typeDescriptor.getType())
@@ -253,7 +253,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
         checkClient();
         try {
-            esTransportClientProvider.getClient().prepareDelete()
+            esEmbeddedClientProvider.getClient().prepareDelete()
                     .setIndex(typeDescriptor.getIndex())
                     .setType(typeDescriptor.getType())
                     .setId(id)
@@ -275,7 +275,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         SearchResponse scrollResponse = null;
         try {
             // delete by query API is deprecated, scroll with bulk delete must be used
-             scrollResponse = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
+            scrollResponse = esEmbeddedClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
                     .setTypes(typeDescriptor.getType())
                     .setFetchSource(false)
                     .addSort("_doc", SortOrder.ASC)
@@ -305,9 +305,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     bulkRequest.add(delete);
                 }
 
-                esTransportClientProvider.getClient().bulk(bulkRequest).actionGet(queryTimeout);
+                esEmbeddedClientProvider.getClient().bulk(bulkRequest).actionGet(queryTimeout);
 
-                scrollResponse = esTransportClientProvider.getClient().prepareSearchScroll(scrollResponse.getScrollId())
+                scrollResponse = esEmbeddedClientProvider.getClient().prepareSearchScroll(scrollResponse.getScrollId())
                         .setScroll(scrollTimeout)
                         .execute()
                         .actionGet(queryTimeout);
@@ -318,7 +318,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     @Override
     public IndexExistsResponse isIndexExists(IndexExistsRequest indexExistsRequest) throws ClientException {
         checkClient();
-        IndicesExistsResponse response = esTransportClientProvider.getClient().admin().indices()
+        IndicesExistsResponse response = esEmbeddedClientProvider.getClient().admin().indices()
                 .exists(new IndicesExistsRequest(indexExistsRequest.getIndex()))
                 .actionGet();
         return new IndexExistsResponse(response.isExists());
@@ -327,7 +327,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     @Override
     public void createIndex(String indexName, ObjectNode indexSettings) throws ClientException {
         checkClient();
-        esTransportClientProvider.getClient().admin()
+        esEmbeddedClientProvider.getClient().admin()
                 .indices()
                 .prepareCreate(indexName)
                 .setSettings(indexSettings.toString(), XContentType.JSON)
@@ -339,7 +339,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
         checkClient();
         GetMappingsRequest mappingsRequest = new GetMappingsRequest().indices(typeDescriptor.getIndex());
-        GetMappingsResponse mappingsResponse = esTransportClientProvider.getClient().admin().indices().getMappings(mappingsRequest).actionGet();
+        GetMappingsResponse mappingsResponse = esEmbeddedClientProvider.getClient().admin().indices().getMappings(mappingsRequest).actionGet();
         ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
@@ -351,13 +351,13 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         checkClient();
         // Check message type mapping
         GetMappingsRequest mappingsRequest = new GetMappingsRequest().indices(typeDescriptor.getIndex());
-        GetMappingsResponse mappingsResponse = esTransportClientProvider.getClient().admin().indices().getMappings(mappingsRequest).actionGet();
+        GetMappingsResponse mappingsResponse = esEmbeddedClientProvider.getClient().admin().indices().getMappings(mappingsRequest).actionGet();
         ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
         if (metadata == null) {
             logger.debug("Put mapping: '{}'", mapping.toString());
-            esTransportClientProvider.getClient().admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
+            esEmbeddedClientProvider.getClient().admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
                     .execute().actionGet();
             logger.trace("Put mapping - mapping {} created! ", typeDescriptor.getType());
         }
@@ -397,18 +397,19 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     }
 
     private void checkClient() throws ClientUndefinedException {
-        if (esTransportClientProvider.getClient() == null) {
+        if (esEmbeddedClientProvider.getClient() == null) {
             throw new ClientUndefinedException(CLIENT_UNDEFINED_MSG);
         }
     }
 
     /**
      * Get the scroll timeout (default value)
-     * 
+     *
      * @return
      */
     public TimeValue getScrollTimeout() {
-        return TimeValue.timeValueMillis(ClientSettings.getInstance().getLong(ClientSettingsKey.SCROLL_TIMEOUT, 60000));
+        //FIXME Client settings should be moved to API not to transport client
+        return TimeValue.timeValueMillis(60000);
     }
 
     /**
@@ -417,7 +418,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
      * @return
      */
     public TimeValue getQueryTimeout() {
-        return TimeValue.timeValueMillis(ClientSettings.getInstance().getLong(ClientSettingsKey.QUERY_TIMEOUT, 15000));
+        //FIXME Client settings should be moved to API not to transport client
+        return TimeValue.timeValueMillis(60000);
     }
 
 }

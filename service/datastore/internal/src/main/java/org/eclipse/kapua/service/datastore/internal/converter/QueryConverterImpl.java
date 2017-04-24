@@ -24,9 +24,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_EXCLUDE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_EXCLUDES;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FROM;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDES;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_QUERY;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SIZE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
@@ -48,8 +48,8 @@ public class QueryConverterImpl implements QueryConverter {
         AbstractStorableQuery<?> storableQuery = (AbstractStorableQuery<?>) query;
         // includes/excludes
         ObjectNode includesFields = SchemaUtil.getObjectNode();
-        includesFields.set(KEY_INCLUDE, SchemaUtil.getAsArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
-        includesFields.set(KEY_EXCLUDE, SchemaUtil.getAsArrayNode(storableQuery.getExcludes(storableQuery.getFetchStyle())));
+        includesFields.set(KEY_INCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
+        includesFields.set(KEY_EXCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getExcludes(storableQuery.getFetchStyle())));
         rootNode.set(KEY_SOURCE, includesFields);
         // query
         if (storableQuery.getPredicate() != null) {

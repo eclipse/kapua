@@ -120,8 +120,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
         checkDataAccess(scopeId, Actions.read);
         try {
             ChannelInfo channelInfo = channelInfoStoreFacade.find(scopeId, id);
-            // populate the lastMessageTimestamp
-            updateLastPublishedFields(channelInfo);
+            if (channelInfo != null) {
+                // populate the lastMessageTimestamp
+                updateLastPublishedFields(channelInfo);
+            }
             return channelInfo;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
@@ -137,9 +139,11 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
             ChannelInfoListResult result = channelInfoStoreFacade.query(query);
-            // populate the lastMessageTimestamp
-            for (ChannelInfo channelInfo : result.getItems()) {
-                updateLastPublishedFields(channelInfo);
+            if (result != null) {
+                // populate the lastMessageTimestamp
+                for (ChannelInfo channelInfo : result.getItems()) {
+                    updateLastPublishedFields(channelInfo);
+                }
             }
             return result;
         } catch (Exception e) {
