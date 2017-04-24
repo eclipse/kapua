@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -154,6 +156,7 @@ public class UserServiceSteps extends KapuaTest {
 
         dbHelper.deleteAll();
         KapuaSecurityUtils.clearSession();
+        SecurityUtils.getSubject().logout();
     }
 
     @Given("^Account$")
