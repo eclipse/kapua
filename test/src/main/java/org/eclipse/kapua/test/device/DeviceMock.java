@@ -26,6 +26,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 public class DeviceMock implements Device {
 
+    private static final long serialVersionUID = -7521204246371846263L;
     private static long longId = 1;
     private KapuaEid id;
     private KapuaId scopeId;

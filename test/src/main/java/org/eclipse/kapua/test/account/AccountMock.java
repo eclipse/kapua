@@ -23,6 +23,8 @@ import org.eclipse.kapua.service.account.Organization;
 
 public class AccountMock implements Account {
 
+    private static final long serialVersionUID = 2950823934061491685L;
+
     private static long longId = 1;
     private KapuaId id;
     private KapuaId scopeId;

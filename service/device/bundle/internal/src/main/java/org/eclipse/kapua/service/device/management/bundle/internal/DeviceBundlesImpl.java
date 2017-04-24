@@ -26,6 +26,8 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
  */
 public class DeviceBundlesImpl implements DeviceBundles {
 
+    private static final long serialVersionUID = 734716753080998855L;
+
     private List<DeviceBundle> bundles;
 
     @Override

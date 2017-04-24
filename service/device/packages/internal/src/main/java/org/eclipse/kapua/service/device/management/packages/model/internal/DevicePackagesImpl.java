@@ -24,13 +24,14 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackages
  * @since 1.0
  *
  */
-public class DevicePackagesImpl implements DevicePackages
-{
+public class DevicePackagesImpl implements DevicePackages {
+
+    private static final long serialVersionUID = 2450088980495469562L;
+
     public List<DevicePackage> deploymentPackages;
 
     @Override
-    public List<DevicePackage> getPackages()
-    {
+    public List<DevicePackage> getPackages() {
         if (deploymentPackages == null) {
             deploymentPackages = new ArrayList<>();
         }

@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSumm
  */
 public class DeviceConnectionSummaryImpl implements DeviceConnectionSummary {
 
+    private static final long serialVersionUID = -2023478156840328259L;
+    
     private long connected;
     private long disconnected;
     private long missing;

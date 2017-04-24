@@ -21,6 +21,8 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
  */
 public class DeviceCommandOutputImpl implements DeviceCommandOutput {
 
+    private static final long serialVersionUID = -3987291078035621467L;
+
     private String stdErr;
     private String stdOut;
     private String exceptionMessage;

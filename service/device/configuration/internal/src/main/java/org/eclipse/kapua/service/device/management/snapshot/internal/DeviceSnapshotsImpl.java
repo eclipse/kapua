@@ -27,22 +27,15 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
  *
  */
 @XmlRootElement(name = "snapshotIds")
-public class DeviceSnapshotsImpl implements DeviceSnapshots
-{
-    @XmlElement(name = "snapshotId")
-    List<DeviceSnapshot> snapshotIds;
+public class DeviceSnapshotsImpl implements DeviceSnapshots {
 
-    /**
-     * Constructor
-     */
-    public DeviceSnapshotsImpl()
-    {
-        super();
-    }
+    private static final long serialVersionUID = -7831418953347834946L;
+    
+    @XmlElement(name = "snapshotId")
+    private List<DeviceSnapshot> snapshotIds;
 
     @Override
-    public List<DeviceSnapshot> getSnapshots()
-    {
+    public List<DeviceSnapshot> getSnapshots() {
         if (snapshotIds == null) {
             snapshotIds = new ArrayList<>();
         }

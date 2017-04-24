@@ -22,4 +22,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
  * 
  */
 public class AccessPermissionListResultImpl extends KapuaListResultImpl<AccessPermission> implements AccessPermissionListResult {
+
+    private static final long serialVersionUID = -7673771564266332772L;
 }

@@ -24,6 +24,8 @@ import org.eclipse.kapua.service.user.UserType;
 
 public class UserMock implements User {
 
+    private static final long serialVersionUID = -5488783213170204341L;
+
     private static long longId = 1;
     private KapuaEid id;
     private KapuaId scopeId;
