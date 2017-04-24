@@ -50,7 +50,9 @@ import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryParseContext;
+import org.elasticsearch.indices.InvalidIndexNameException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.SearchModule;
@@ -63,8 +65,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_EXCLUDE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_EXCLUDES;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INCLUDES;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 
 /**
@@ -190,25 +192,28 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         logger.debug("Query - converted query: '{}'", queryMap.toString());
         SearchResponse response = null;
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(KEY_SOURCE);
-        String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_INCLUDE));
-        String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_EXCLUDE));
+        String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_INCLUDES));
+        String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(KEY_EXCLUDES));
         SearchRequestBuilder searchReqBuilder = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
         searchReqBuilder.setTypes(typeDescriptor.getType())
                 .setSource(toSearchSourceBuilder(queryMap))
                 .setFetchSource(includesFields, excludesFields);
         // unused since sort fields are already included in the search query mapping
         // ArrayNode sortFields = (ArrayNode) queryMap.path(QueryConverter.SORT_KEY);
-        response = searchReqBuilder
-                .execute()
-                .actionGet(getQueryTimeout());
-        SearchHit[] searchHits = response.getHits().getHits();
-        // TODO verify total count
-        long totalCount = response.getHits().getTotalHits();
-
-        if (totalCount > Integer.MAX_VALUE) {
-            throw new RuntimeException("Total hits exceeds integer max value");
+        SearchHit[] searchHits = null;
+        long totalCount = 0;
+        try {
+            response = searchReqBuilder
+                    .execute()
+                    .actionGet(getQueryTimeout());
+            searchHits = response.getHits().getHits();
+            totalCount = response.getHits().getTotalHits();
+            if (totalCount > Integer.MAX_VALUE) {
+                throw new RuntimeException("Total hits exceeds integer max value");
+            }
+        } catch (IndexNotFoundException infe) {
+            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
         }
-
         ResultList<T> result = new ResultList<T>(totalCount);
         if (searchHits != null) {
             for (SearchHit searchHit : searchHits) {
@@ -228,26 +233,36 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         // TODO check for fetch none
         JsonNode queryMap = queryConverter.convertQuery(query);
         SearchRequestBuilder searchReqBuilder = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
-        SearchResponse response = searchReqBuilder.setTypes(typeDescriptor.getType())
-                .setSource(toSearchSourceBuilder(queryMap))
-                .execute()
-                .actionGet(getQueryTimeout());
-        SearchHits searchHits = response.getHits();
-
-        if (searchHits == null)
+        SearchHits searchHits = null;
+        try {
+            SearchResponse response = searchReqBuilder.setTypes(typeDescriptor.getType())
+                    .setSource(toSearchSourceBuilder(queryMap))
+                    .execute()
+                    .actionGet(getQueryTimeout());
+            searchHits = response.getHits();
+        } catch (IndexNotFoundException infe) {
+            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+        }
+        if (searchHits == null) {
             return 0;
-
+        }
         return searchHits.getTotalHits();
     }
 
     @Override
     public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
         checkClient();
-        esTransportClientProvider.getClient().prepareDelete()
-                .setIndex(typeDescriptor.getIndex())
-                .setType(typeDescriptor.getType())
-                .setId(id)
-                .get(getQueryTimeout());
+        try {
+            esTransportClientProvider.getClient().prepareDelete()
+                    .setIndex(typeDescriptor.getIndex())
+                    .setType(typeDescriptor.getType())
+                    .setId(id)
+                    .get(getQueryTimeout());
+        } catch (InvalidIndexNameException iine) {
+            logger.warn("Index '{}' not valid", typeDescriptor.getIndex(), iine);
+        } catch (IndexNotFoundException infe) {
+            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex(), infe);
+        }
     }
 
     @Override
@@ -257,39 +272,46 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         TimeValue queryTimeout = getQueryTimeout();
         TimeValue scrollTimeout = getScrollTimeout();
 
-        // delete by query API is deprecated, scroll with bulk delete must be used
-        SearchResponse scrollResponse = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
-                .setTypes(typeDescriptor.getType())
-                .setFetchSource(false)
-                .addSort("_doc", SortOrder.ASC)
-                .setVersion(true)
-                .setScroll(scrollTimeout)
-                .setSource(toSearchSourceBuilder(queryMap))
-                .setSize(100)
-                .get(queryTimeout);
-
-        // Scroll until no hits are returned
-        while (true) {
-
-            // Break condition: No hits are returned
-            if (scrollResponse.getHits().getHits().length == 0)
-                break;
-
-            BulkRequest bulkRequest = new BulkRequest();
-            for (SearchHit hit : scrollResponse.getHits().hits()) {
-                DeleteRequest delete = new DeleteRequest().index(hit.index())
-                        .type(hit.type())
-                        .id(hit.id())
-                        .version(hit.version());
-                bulkRequest.add(delete);
-            }
-
-            esTransportClientProvider.getClient().bulk(bulkRequest).actionGet(queryTimeout);
-
-            scrollResponse = esTransportClientProvider.getClient().prepareSearchScroll(scrollResponse.getScrollId())
+        SearchResponse scrollResponse = null;
+        try {
+            // delete by query API is deprecated, scroll with bulk delete must be used
+             scrollResponse = esTransportClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
+                    .setTypes(typeDescriptor.getType())
+                    .setFetchSource(false)
+                    .addSort("_doc", SortOrder.ASC)
+                    .setVersion(true)
                     .setScroll(scrollTimeout)
-                    .execute()
-                    .actionGet(queryTimeout);
+                    .setSource(toSearchSourceBuilder(queryMap))
+                    .setSize(100)
+                    .get(queryTimeout);
+        } catch (IndexNotFoundException infe) {
+            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+        }
+
+        if (scrollResponse != null) {
+            // Scroll until no hits are returned
+            while (true) {
+
+                // Break condition: No hits are returned
+                if (scrollResponse.getHits().getHits().length == 0)
+                    break;
+
+                BulkRequest bulkRequest = new BulkRequest();
+                for (SearchHit hit : scrollResponse.getHits().hits()) {
+                    DeleteRequest delete = new DeleteRequest().index(hit.index())
+                            .type(hit.type())
+                            .id(hit.id())
+                            .version(hit.version());
+                    bulkRequest.add(delete);
+                }
+
+                esTransportClientProvider.getClient().bulk(bulkRequest).actionGet(queryTimeout);
+
+                scrollResponse = esTransportClientProvider.getClient().prepareSearchScroll(scrollResponse.getScrollId())
+                        .setScroll(scrollTimeout)
+                        .execute()
+                        .actionGet(queryTimeout);
+            }
         }
     }
 

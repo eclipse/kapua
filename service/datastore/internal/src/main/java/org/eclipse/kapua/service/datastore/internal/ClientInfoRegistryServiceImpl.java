@@ -119,8 +119,10 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkAccess(scopeId, Actions.read);
         try {
             ClientInfo clientInfo = clientInfoFacade.find(scopeId, id);
-            // populate the lastMessageTimestamp
-            updateLastPublishedFields(clientInfo);
+            if (clientInfo != null) {
+                // populate the lastMessageTimestamp
+                updateLastPublishedFields(clientInfo);
+            }
             return clientInfo;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
@@ -136,9 +138,11 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkAccess(query.getScopeId(), Actions.read);
         try {
             ClientInfoListResult result = clientInfoFacade.query(query);
-            // populate the lastMessageTimestamp
-            for (ClientInfo clientInfo : result.getItems()) {
-                updateLastPublishedFields(clientInfo);
+            if (result != null) {
+                // populate the lastMessageTimestamp
+                for (ClientInfo clientInfo : result.getItems()) {
+                    updateLastPublishedFields(clientInfo);
+                }
             }
             return result;
         } catch (Exception e) {

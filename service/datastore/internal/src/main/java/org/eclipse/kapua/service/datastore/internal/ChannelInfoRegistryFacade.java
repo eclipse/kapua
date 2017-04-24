@@ -150,9 +150,11 @@ public class ChannelInfoRegistryFacade {
         }
         String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         ChannelInfo channelInfo = find(scopeId, id);
-        mediator.onBeforeChannelInfoDelete(channelInfo);
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        client.delete(typeDescriptor, id.toString());
+        if (channelInfo != null) {
+            mediator.onBeforeChannelInfoDelete(channelInfo);
+            TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
+            client.delete(typeDescriptor, id.toString());
+        }
     }
 
     /**

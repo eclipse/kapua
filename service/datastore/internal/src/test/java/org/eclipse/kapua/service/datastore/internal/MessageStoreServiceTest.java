@@ -118,6 +118,39 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private Duration clientRefreshTime = Duration.ofSeconds((DatastoreSettings.getInstance().getLong(DatastoreSettingKey.INDEX_REFRESH_INTERVAL) + INDEX_TIME_ESTIMATE_SECONDS));
 
+    // @Test
+    // public void queryBeforeSchema() throws KapuaException {
+    // Account account = getTestAccountCreator(adminScopeId);
+    // assertNull(messageStoreService.find(account.getId(), new StorableIdImpl("fake-id"), StorableFetchStyle.SOURCE_FULL));
+    // assertNull(channelInfoRegistryService.find(account.getId(), new StorableIdImpl("fake-id")));
+    // assertNull(metricInfoRegistryService.find(account.getId(), new StorableIdImpl("fake-id")));
+    // assertNull(clientInfoRegistryService.find(account.getId(), new StorableIdImpl("fake-id")));
+    //
+    // MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), 1000, null);
+    // assertTrue(messageStoreService.query(messageQuery).isEmpty());
+    // assertEquals(messageStoreService.count(messageQuery), 0);
+    // messageStoreService.delete(messageQuery);
+    // messageStoreService.delete(account.getId(), new StorableIdImpl("fake-id"));
+    //
+    // ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+    // assertTrue(channelInfoRegistryService.query(channelInfoQuery).isEmpty());
+    // assertEquals(channelInfoRegistryService.count(channelInfoQuery), 0);
+    // channelInfoRegistryService.delete(channelInfoQuery);
+    // channelInfoRegistryService.delete(account.getId(), new StorableIdImpl("fake-id"));
+    //
+    // MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+    // assertTrue(metricInfoRegistryService.query(metricInfoQuery).isEmpty());
+    // assertEquals(metricInfoRegistryService.count(metricInfoQuery), 0);
+    // metricInfoRegistryService.delete(metricInfoQuery);
+    // metricInfoRegistryService.delete(account.getId(), new StorableIdImpl("fake-id"));
+    //
+    // ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+    // assertTrue(clientInfoRegistryService.query(clientInfoQuery).isEmpty());
+    // assertEquals(clientInfoRegistryService.count(clientInfoQuery), 0);
+    // clientInfoRegistryService.delete(clientInfoQuery);
+    // clientInfoRegistryService.delete(account.getId(), new StorableIdImpl("fake-id"));
+    // }
+
     @Test
     /**
      * Store few messages with few metrics, position and body (partially randomly generated) and check if the stored message (retrieved by id) has all the fields correctly set
