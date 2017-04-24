@@ -71,7 +71,7 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
             metricStorageDataSaveTimeContext.stop();
         } catch (KapuaException e) {
             metricStorageDataErrorMessage.inc();
-            logger.error("An error occurred while storing message: {}", e);
+            logger.error("An error occurred while storing message", e);
         }
     }
 
