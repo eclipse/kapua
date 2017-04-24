@@ -53,10 +53,25 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasUserUpdatePermission;
     private boolean hasUserDeletePermission;
 
+    private boolean hasRoleCreatePermission;
+    private boolean hasRoleReadPermission;
+    private boolean hasRoleUpdatePermission;
+    private boolean hasRoleDeletePermission;
+    
+    private boolean hasGroupCreatePermission;
+    private boolean hasGroupReadPermission;
+    private boolean hasGroupUpdatePermission;
+    private boolean hasGroupDeletePermission;
+
     private boolean hasCredentialCreatePermission;
     private boolean hasCredentialReadPermission;
     private boolean hasCredentialUpdatePermission;
     private boolean hasCredentialDeletePermission;
+    
+    private boolean hasConnectionCreatePermission;
+    private boolean hasConnectionReadPermission;
+    private boolean hasConnectionUpdatePermission;
+    private boolean hasConnectionDeletePermission;
 
     public GwtSession() {
     }
@@ -204,6 +219,70 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setUserDeletePermission(boolean hasUserDeletePermission) {
         this.hasUserDeletePermission = hasUserDeletePermission;
     }
+    
+    public boolean hasRoleReadPermission() {
+        return hasRoleReadPermission;
+    }
+
+    public void setRoleReadPermission(boolean value) {
+        this.hasRoleReadPermission = value;
+    }
+
+    public boolean hasRoleCreatePermission() {
+        return hasRoleCreatePermission;
+    }
+
+    public void setRoleCreatePermission(boolean hasRoleCreatePermission) {
+        this.hasRoleCreatePermission = hasRoleCreatePermission;
+    }
+
+    public boolean hasRoleUpdatePermission() {
+        return hasRoleUpdatePermission;
+    }
+
+    public void setRoleUpdatePermission(boolean hasRoleUpdatePermission) {
+        this.hasRoleUpdatePermission = hasRoleUpdatePermission;
+    }
+
+    public boolean hasRoleDeletePermission() {
+        return hasRoleDeletePermission;
+    }
+
+    public void setRoleDeletePermission(boolean hasRoleDeletePermission) {
+        this.hasRoleDeletePermission = hasRoleDeletePermission;
+    }
+    
+    public boolean hasGroupReadPermission() {
+        return hasGroupReadPermission;
+    }
+
+    public void setGroupReadPermission(boolean value) {
+        this.hasGroupReadPermission = value;
+    }
+
+    public boolean hasGroupCreatePermission() {
+        return hasGroupCreatePermission;
+    }
+
+    public void setGroupCreatePermission(boolean hasGroupCreatePermission) {
+        this.hasGroupCreatePermission = hasGroupCreatePermission;
+    }
+
+    public boolean hasGroupUpdatePermission() {
+        return hasGroupUpdatePermission;
+    }
+
+    public void setGroupUpdatePermission(boolean hasGroupUpdatePermission) {
+        this.hasGroupUpdatePermission = hasGroupUpdatePermission;
+    }
+
+    public boolean hasGroupDeletePermission() {
+        return hasGroupDeletePermission;
+    }
+
+    public void setGroupDeletePermission(boolean hasGroupDeletePermission) {
+        this.hasGroupDeletePermission = hasGroupDeletePermission;
+    }
 
     public boolean hasDeviceCreatePermission() {
         return hasDeviceCreatePermission;
@@ -275,5 +354,37 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setCredentialDeletePermission(boolean hasCredentialDeletePermission) {
         this.hasCredentialDeletePermission = hasCredentialDeletePermission;
+    }
+    
+    public boolean hasConnectionCreatePermission() {
+        return hasConnectionCreatePermission;
+    }
+
+    public void setConnectionCreatePermission(boolean hasConnectionCreatePermission) {
+        this.hasConnectionCreatePermission = hasConnectionCreatePermission;
+    }
+
+    public boolean hasConnectionReadPermission() {
+        return hasConnectionReadPermission;
+    }
+
+    public void setConnectionReadPermission(boolean hasConnectionReadPermission) {
+        this.hasConnectionReadPermission = hasConnectionReadPermission;
+    }
+
+    public boolean hasConnectionUpdatePermission() {
+        return hasConnectionUpdatePermission;
+    }
+
+    public void setConnectionUpdatePermission(boolean hasConnectionUpdatePermission) {
+        this.hasConnectionUpdatePermission = hasConnectionUpdatePermission;
+    }
+
+    public boolean hasConnectionDeletePermission() {
+        return hasConnectionDeletePermission;
+    }
+
+    public void setConnectionDeletePermission(boolean hasConnectionDeletePermission) {
+        this.hasConnectionDeletePermission = hasConnectionDeletePermission;
     }
 }

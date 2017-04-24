@@ -41,10 +41,13 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -62,7 +65,10 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     private static final Domain deviceDomain = new DeviceDomain();
     private static final Domain datastoreDomain = new DatastoreDomain();
     private static final Domain userDomain = new UserDomain();
+    private static final Domain roleDomain = new RoleDomain();
+    private static final Domain groupDomain = new GroupDomain();
     private static final Domain credentialDomain = new CredentialDomain();
+    private static final Domain connectionDomain = new DeviceConnectionDomain();
 
     public static final String SESSION_CURRENT = "console.current.session";
     public static final String SESSION_CURRENT_USER = "console.current.user";
@@ -199,11 +205,26 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.read, kapuaSession.getScopeId()));
         boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.delete, kapuaSession.getScopeId()));
+        
+        boolean hasRoleCreate = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasRoleRead = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasRoleUpdate = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasRoleDelete = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.delete, kapuaSession.getScopeId()));
+        
+        boolean hasGroupCreate = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasGroupRead = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasGroupUpdate = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasGroupDelete = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.delete, kapuaSession.getScopeId()));
 
         boolean hasCredentialCreate = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasCredentialRead = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.read, kapuaSession.getScopeId()));
         boolean hasCredentialUpdate = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasCredentialDelete = authorizationService.isPermitted(permissionFactory.newPermission(credentialDomain, Actions.delete, kapuaSession.getScopeId()));
+
+        boolean hasConnectionCreate = authorizationService.isPermitted(permissionFactory.newPermission(connectionDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasConnectionRead = authorizationService.isPermitted(permissionFactory.newPermission(connectionDomain, Actions.read, kapuaSession.getScopeId()));
+        boolean hasConnectionUpdate = authorizationService.isPermitted(permissionFactory.newPermission(connectionDomain, Actions.write, kapuaSession.getScopeId()));
+        boolean hasConnectionDelete = authorizationService.isPermitted(permissionFactory.newPermission(connectionDomain, Actions.delete, kapuaSession.getScopeId()));
 
         //
         // Get account info
@@ -250,11 +271,26 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setUserReadPermission(hasUserRead);
         gwtSession.setUserUpdatePermission(hasUserUpdate);
         gwtSession.setUserDeletePermission(hasUserDelete);
+        
+        gwtSession.setRoleCreatePermission(hasRoleCreate);
+        gwtSession.setRoleReadPermission(hasRoleRead);
+        gwtSession.setRoleUpdatePermission(hasRoleUpdate);
+        gwtSession.setRoleDeletePermission(hasRoleDelete);
+        
+        gwtSession.setGroupCreatePermission(hasGroupCreate);
+        gwtSession.setGroupReadPermission(hasGroupRead);
+        gwtSession.setGroupUpdatePermission(hasGroupUpdate);
+        gwtSession.setGroupDeletePermission(hasGroupDelete);
 
         gwtSession.setCredentialCreatePermission(hasCredentialCreate);
         gwtSession.setCredentialReadPermission(hasCredentialRead);
         gwtSession.setCredentialUpdatePermission(hasCredentialUpdate);
         gwtSession.setCredentialDeletePermission(hasCredentialDelete);
+        
+        gwtSession.setConnectionCreatePermission(hasConnectionCreate);
+        gwtSession.setConnectionReadPermission(hasConnectionRead);
+        gwtSession.setConnectionUpdatePermission(hasConnectionUpdate);
+        gwtSession.setConnectionDeletePermission(hasConnectionDelete);
 
         //
         // Saving session data in session
