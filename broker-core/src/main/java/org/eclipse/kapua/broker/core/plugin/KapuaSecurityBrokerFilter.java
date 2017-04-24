@@ -38,8 +38,6 @@ import org.apache.activemq.filter.DestinationMapEntry;
 import org.apache.activemq.security.AuthorizationEntry;
 import org.apache.activemq.security.DefaultAuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.util.ThreadContext;
@@ -599,11 +597,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private void _send(ProducerBrokerExchange producerExchange, Message messageSend)
             throws Exception {
         if (!isBrokerContext(producerExchange.getConnectionContext())) {
-            if (!StringUtils.containsNone(messageSend.getDestination().getPhysicalName(), new char[] { '+', '#' })) {
-                String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {}",
-                        messageSend.getDestination());
-                throw new SecurityException(message);
-            }
             KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(producerExchange.getConnectionContext());
             // if (!kapuaSecurityContext.getAuthorizedWriteDests().contains(messageSend.getDestination()))
             // {
@@ -626,10 +619,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 // kapuaSecurityContext.getAuthorizedWriteDests().put(messageSend.getDestination(), messageSend.getDestination());
             }
             // }
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, SerializationUtils.serialize(kapuaSecurityContext.getConnectionId()));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, kapuaSecurityContext.getConnectionId());
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, SerializationUtils.serialize(kapuaSecurityContext.getConnectorDescriptor()));
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession()));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, kapuaSecurityContext.getConnectorDescriptor());
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, kapuaSecurityContext.getKapuaSession());
         }
         if (messageSend.getContent() != null) {
             metricPublishMessageSizeAllowed.update(messageSend.getContent().length);

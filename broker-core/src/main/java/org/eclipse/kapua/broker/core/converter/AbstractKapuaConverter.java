@@ -34,7 +34,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.SerializationUtils;
 
 import com.codahale.metrics.Counter;
 
@@ -81,10 +80,9 @@ public abstract class AbstractKapuaConverter {
         if (message.getJmsMessage() instanceof BytesMessage) {
             try {
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                KapuaId connectionId = (KapuaId)SerializationUtils.deserialize(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, byte[].class));
+                KapuaId connectionId = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, KapuaId.class);
                 String clientId = (String) message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID);
-                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
-                        .deserialize(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, byte[].class));
+                ConnectorDescriptor connectorDescriptor = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, ConnectorDescriptor.class);
                 return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
             } catch (JMSException e) {
                 metricConverterErrorMessage.inc();
