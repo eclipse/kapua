@@ -117,6 +117,15 @@
         <servlet-name>deviceExporterServlet</servlet-name>
         <url-pattern>/exporter_device/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>deviceEventExporterServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.servlet.DeviceEventExporterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deviceEventExporterServlet</servlet-name>
+        <url-pattern>/exporter_device_event/*</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>deviceSnapshotsServlet</servlet-name>
