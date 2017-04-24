@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
@@ -252,17 +253,8 @@ public class DatastoreChannel {
      * @return
      * @since 1.0.0
      */
-    public static String getChannel(List<String> parts) {
-        StringBuilder channelBuilder = new StringBuilder();
-        for (String part : parts) {
-            channelBuilder.append(part);
-            channelBuilder.append(DatastoreChannel.TOPIC_SEPARATOR);
-        }
-        if (channelBuilder.length() > 0) {
-            return channelBuilder.substring(0, channelBuilder.length() - 1).toString();
-        } else {
-            return "";
-        }
+    public static String getChannel(final List<String> parts) {
+        return String.join(DatastoreChannel.TOPIC_SEPARATOR, parts);
     }
 
     /**
