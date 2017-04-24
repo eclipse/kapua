@@ -47,10 +47,10 @@ public abstract class DeviceEventExporter {
             "Event Message"
     };
 
-    protected HttpServletResponse m_response;
+    protected HttpServletResponse response;
 
     protected DeviceEventExporter(HttpServletResponse response) {
-        m_response = response;
+        this.response = response;
     }
 
     public abstract void init(String account)

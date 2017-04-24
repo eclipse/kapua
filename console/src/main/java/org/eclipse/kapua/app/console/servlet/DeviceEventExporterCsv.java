@@ -61,7 +61,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
         
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
-        OutputStreamWriter osw = new OutputStreamWriter(m_response.getOutputStream(), Charset.forName("UTF-8"));
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
         writer = new CSVWriter(osw);
 
         List<String> cols = new ArrayList<String>();
@@ -163,10 +163,10 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
     @Override
     public void close()
             throws ServletException, IOException {
-        m_response.setContentType("text/csv");
-        m_response.setCharacterEncoding("UTF-8");
-        m_response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_devices.csv");
-        m_response.setHeader("Cache-Control", "no-transform, max-age=0");
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_devices.csv");
+        response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         writer.flush();
 

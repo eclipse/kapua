@@ -202,11 +202,11 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
     public void close()
             throws ServletException, IOException {
         // Write the output
-        m_response.setContentType("application/vnd.ms-excel");
-        m_response.setHeader("Content-Disposition", "attachment; filename=" + accountName + "_devices.xls");
-        m_response.setHeader("Cache-Control", "no-transform, max-age=0");
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition", "attachment; filename=" + accountName + "_devices.xls");
+        response.setHeader("Cache-Control", "no-transform, max-age=0");
 
-        workbook.write(m_response.getOutputStream());
+        workbook.write(response.getOutputStream());
     }
 
     private String truncate(String cellValue) {
