@@ -50,6 +50,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -63,6 +65,8 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
 public class SimulatorSteps {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimulatorSteps.class);
 
     private static final long BUNDLE_TIMEOUT = Duration.ofSeconds(Integer.getInteger("org.eclipse.kapua.service.device.steps.timeoutBundleOperation", 5)).toMillis();
 
@@ -95,7 +99,11 @@ public class SimulatorSteps {
 
     @After
     public void cleanup() {
-        closeAll(closables.values().stream().flatMap(Collection::stream));
+        try {
+            closeAll(closables.values().stream().flatMap(Collection::stream));
+        } catch (final Exception e) {
+            logger.warn("Error during closing of resources. This may probably be Paho complaining about already closed connections", e);
+        }
         closables.clear();
 
         this.downloadExecutor.shutdown();
