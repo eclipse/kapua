@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -128,7 +129,7 @@ public class UserServiceSteps extends KapuaTest {
     private ComparableUser lastUser;
 
     @Inject
-    public UserServiceSteps(/* dependency*/ final DBHelper dbHelper) {
+    public UserServiceSteps(/* dependency */ final DBHelper dbHelper) {
     }
 
     @Before
@@ -151,12 +152,11 @@ public class UserServiceSteps extends KapuaTest {
     public void afterScenario() throws KapuaException {
         try {
             logger.info("Logging out in cleanup");
-            authenticationService.logout();
+            SecurityUtils.getSubject().logout();
+            KapuaSecurityUtils.clearSession();
         } catch (Exception e) {
             logger.error("Failed to log out in @After", e);
         }
-
-        KapuaSecurityUtils.clearSession();
     }
 
     @Given("^Account$")
