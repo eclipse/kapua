@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
@@ -43,7 +44,7 @@ public class EsSchema {
 
     // TODO move builder methods in a new class to reduce number of lines
     //
-    private static final Logger s_logger = LoggerFactory.getLogger(EsSchema.class);
+    private static final Logger logger = LoggerFactory.getLogger(EsSchema.class);
 
     /**
      * Message schema name
@@ -273,15 +274,15 @@ public class EsSchema {
      */
     public static final String CLIENT_MESSAGE_ID = "message_id";
 
-    private Map<String, Metadata> schemaCache;
-    private Object schemaCacheSync;
-    private Object mappingsSync;
+    private final Map<String, Metadata> schemaCache;
+    private final Object schemaCacheSync;
+    private final Object mappingsSync;
 
     /**
      * Construct the Elasticsearch schema
      */
     public EsSchema() {
-        schemaCache = new HashMap<String, Metadata>();
+        schemaCache = new HashMap<>();
         schemaCacheSync = new Object();
         mappingsSync = new Object();
     }
@@ -326,11 +327,11 @@ public class EsSchema {
             }
         }
 
-        s_logger.info("Before entering updating metadata");
+        logger.info("Before entering updating metadata");
 
         Metadata currentMetadata = null;
         synchronized (mappingsSync) {
-            s_logger.info("Entered updating metadata");
+            logger.info("Entered updating metadata");
             currentMetadata = new Metadata();
 
             IndicesExistsResponse existsResponse = null;
@@ -345,17 +346,17 @@ public class EsSchema {
             if (!indexExists) {
                 esClient.admin().indices()
                         .prepareCreate(newIndex)
-                        .setSettings(this.getIndexSettings())
+                        .setSettings(getIndexSettings())
                         .execute()
                         .actionGet();
 
-                s_logger.info("Data index created: " + newIndex);
+                logger.info("Data index created: {}", newIndex);
             }
 
             boolean enableAllField = false;
             boolean enableSourceField = true;
 
-            this.initMessageMappings(newIndex, enableAllField, enableSourceField);
+            initMessageMappings(newIndex, enableAllField, enableSourceField);
 
             // Check existence of the kapua internal index
             String newKapuaMetadataIdx = EsUtils.getKapuaIndexName(scopeId);
@@ -368,20 +369,20 @@ public class EsSchema {
                 esClient.admin()
                         .indices()
                         .prepareCreate(newKapuaMetadataIdx)
-                        .setSettings(this.getIndexSettings())
+                        .setSettings(getIndexSettings())
                         .execute()
                         .actionGet();
 
-                s_logger.info("Metadata index created: " + newKapuaMetadataIdx);
+                logger.info("Metadata index created: {}", newKapuaMetadataIdx);
 
-                this.initTopicMappings(newKapuaMetadataIdx, enableAllField, enableSourceField);
-                this.initMetricMappings(newKapuaMetadataIdx, enableAllField, enableSourceField);
-                this.initClientMappings(newKapuaMetadataIdx, enableAllField, enableSourceField);
+                initTopicMappings(newKapuaMetadataIdx, enableAllField, enableSourceField);
+                initMetricMappings(newKapuaMetadataIdx, enableAllField, enableSourceField);
+                initClientMappings(newKapuaMetadataIdx, enableAllField, enableSourceField);
             }
 
             currentMetadata.dataIndexName = newIndex;
             currentMetadata.kapuaIndexName = newKapuaMetadataIdx;
-            s_logger.info("Leaving updating metadata");
+            logger.info("Leaving updating metadata");
         }
 
         synchronized (schemaCacheSync) {
@@ -406,8 +407,9 @@ public class EsSchema {
      */
     public void updateMessageMappings(KapuaId scopeId, long time, Map<String, EsMetric> esMetrics)
             throws EsDocumentBuilderException, EsClientUnavailableException {
-        if (esMetrics == null || esMetrics.size() == 0)
+        if (esMetrics == null || esMetrics.size() == 0) {
             return;
+        }
 
         Metadata currentMetadata = null;
         synchronized (schemaCacheSync) {
@@ -421,15 +423,16 @@ public class EsSchema {
         synchronized (mappingsSync) {
 
             // Update mappings only if a metric is new (not in cache)
-            diffs = this.getMessageMappingDiffs(currentMetadata, esMetrics);
-            if (diffs == null || diffs.size() == 0)
+            diffs = getMessageMappingDiffs(currentMetadata, esMetrics);
+            if (diffs == null || diffs.size() == 0) {
                 return;
+            }
 
-            builder = this.getNewMessageMappingsBuilder(diffs);
+            builder = getNewMessageMappingsBuilder(diffs);
         }
 
         try {
-            s_logger.trace("Sending dynamic message mappings: " + builder.string());
+            logger.trace("Sending dynamic message mappings: {}", builder.string());
         } catch (IOException e) {
         }
 
@@ -453,7 +456,7 @@ public class EsSchema {
                     .endObject()
                     .endObject();
         } catch (IOException e) {
-            throw new EsDocumentBuilderException(String.format("Unable to build settings for index"), e);
+            throw new EsDocumentBuilderException("Unable to build settings for index", e);
         }
     }
 
@@ -700,8 +703,9 @@ public class EsSchema {
         final int METRIC_TERM = 0;
         // final int TYPE_TERM = 1;
 
-        if (esMetrics == null)
+        if (esMetrics == null) {
             return null;
+        }
 
         try {
             // It is assumed the mappings (key values) are all of the type
@@ -736,8 +740,9 @@ public class EsSchema {
 
                     builder.startObject(EsUtils.getEsTypeAcronym(metric.getType()));
                     builder.field("type", metric.getType());
-                    if (metric.getType().equals("string"))
+                    if (metric.getType().equals("string")) {
                         builder.field("index", "not_analyzed");
+                    }
                     builder.endObject();
                 }
 
@@ -775,13 +780,13 @@ public class EsSchema {
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(indexName);
         MappingMetaData metadata = map.get(MESSAGE_TYPE_NAME);
         if (metadata == null) {
-            XContentBuilder builder = this.getMessageTypeBuilder(allEnable, sourceEnable);
+            XContentBuilder builder = getMessageTypeBuilder(allEnable, sourceEnable);
             esClient.admin().indices().preparePutMapping(indexName).setType(MESSAGE_TYPE_NAME).setSource(builder).execute().actionGet();
 
             try {
-                s_logger.trace("Message mapping created: " + builder.string());
+                logger.trace("Message mapping created: {}",  builder.string());
             } catch (IOException e) {
-                s_logger.trace("Message mapping created: (content unavailable)");
+                logger.trace("Message mapping created: (content unavailable)");
             }
         }
     }
@@ -798,13 +803,13 @@ public class EsSchema {
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(indexName);
         MappingMetaData metadata = map.get(CHANNEL_TYPE_NAME);
         if (metadata == null) {
-            XContentBuilder builder = this.getChannelTypeBuilder(allEnable, sourceEnable);
+            XContentBuilder builder = getChannelTypeBuilder(allEnable, sourceEnable);
             esClient.admin().indices().preparePutMapping(indexName).setType(CHANNEL_TYPE_NAME).setSource(builder).execute().actionGet();
 
             try {
-                s_logger.trace("Topic mapping created: " + builder.string());
+                logger.trace("Topic mapping created: {}", builder.string());
             } catch (IOException e) {
-                s_logger.trace("Topic mapping created: (content unavailable)");
+                logger.trace("Topic mapping created: (content unavailable)");
             }
         }
     }
@@ -821,13 +826,13 @@ public class EsSchema {
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(indexName);
         MappingMetaData metadata = map.get(METRIC_TYPE_NAME);
         if (metadata == null) {
-            XContentBuilder builder = this.getMetricTypeBuilder(allEnable, sourceEnable);
+            XContentBuilder builder = getMetricTypeBuilder(allEnable, sourceEnable);
             esClient.admin().indices().preparePutMapping(indexName).setType(METRIC_TYPE_NAME).setSource(builder).execute().actionGet();
 
             try {
-                s_logger.trace("Topic_metric mapping created: " + builder.string());
+                logger.trace("Topic_metric mapping created: {}", builder.string());
             } catch (IOException e) {
-                s_logger.trace("Topic_metric mapping created: (content unavailable)");
+                logger.trace("Topic_metric mapping created: (content unavailable)");
             }
         }
     }
@@ -844,21 +849,22 @@ public class EsSchema {
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(indexName);
         MappingMetaData metadata = map.get(CLIENT_TYPE_NAME);
         if (metadata == null) {
-            XContentBuilder builder = this.getClientTypeBuilder(allEnable, sourceEnable);
+            XContentBuilder builder = getClientTypeBuilder(allEnable, sourceEnable);
             esClient.admin().indices().preparePutMapping(indexName).setType(CLIENT_TYPE_NAME).setSource(builder).execute().actionGet();
 
             try {
-                s_logger.trace("Asset mapping created: " + builder.string());
+                logger.trace("Asset mapping created: {}", builder.string());
             } catch (IOException e) {
-                s_logger.trace("Asset mapping created: (content unavailable)");
+                logger.trace("Asset mapping created: (content unavailable)");
             }
         }
     }
 
     private Map<String, EsMetric> getMessageMappingDiffs(Metadata currentMetadata, Map<String, EsMetric> esMetrics) {
 
-        if (esMetrics == null || esMetrics.size() == 0)
+        if (esMetrics == null || esMetrics.size() == 0) {
             return null;
+        }
 
         Entry<String, EsMetric> el;
         Map<String, EsMetric> diffs = null;
@@ -868,8 +874,9 @@ public class EsSchema {
             el = iter.next();
             if (!currentMetadata.getMessageMappingsCache().containsKey(el.getKey())) {
 
-                if (diffs == null)
-                    diffs = new HashMap<String, EsMetric>(100);
+                if (diffs == null) {
+                    diffs = new HashMap<>(100);
+                }
 
                 currentMetadata.getMessageMappingsCache().put(el.getKey(), el.getValue());
                 diffs.put(el.getKey(), el.getValue());
@@ -894,7 +901,7 @@ public class EsSchema {
         // Custom mappings can only increase within the same account
         // No removal of existing cached mappings or changes in the
         // existing mappings.
-        private Map<String, EsMetric> messageMappingsCache;
+        private final Map<String, EsMetric> messageMappingsCache;
         //
 
         private Map<String, EsMetric> getMessageMappingsCache() {
@@ -905,7 +912,7 @@ public class EsSchema {
          * Contruct metadata
          */
         public Metadata() {
-            messageMappingsCache = new HashMap<String, EsMetric>(100);
+            messageMappingsCache = new HashMap<>(100);
         }
 
         /**
@@ -914,7 +921,7 @@ public class EsSchema {
          * @return
          */
         public String getDataIndexName() {
-            return this.dataIndexName;
+            return dataIndexName;
         }
 
         /**
@@ -923,7 +930,7 @@ public class EsSchema {
          * @return
          */
         public String getKapuaIndexName() {
-            return this.kapuaIndexName;
+            return kapuaIndexName;
         }
     }
 
