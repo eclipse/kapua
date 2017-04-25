@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
               <div class="col-md-12" style="text-align: right;">
-                <button class="btn btn-primary" ng-click="vm.resetForm()">Reset</button>
+                <button class="btn btn-primary" ng-click="vm.resetForm()" ng-disabled="!vm.editorForm.$dirty">Reset</button>
                 <button class="btn btn-success" ng-click="vm.executeCommand(vm.deviceId)" ng-disabled="vm.editorForm.$invalid" style="margin-left: 8px;">Execute</button>
               </div>
             </div>

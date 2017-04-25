@@ -15,9 +15,11 @@ interface IDevicesService {
     getDeviceById(deviceID: string): ng.IHttpPromise<Device>;
     getBundlesByDeviceId(deviceID: string): ng.IHttpPromise<DeviceBundles>;
     getPackagesByDeviceId(deviceID: string): ng.IHttpPromise<DevicePackages>;
+    getConfigsByDeviceId(deviceID: string): ng.IHttpPromise<DeviceConfigurations>;
     startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
     stopDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles>;
     downloadPackage(deviceID: string, devicePackage: DevicePackage): any;
     uninstallPackage(deviceID: string, devicePackage: DevicePackage): any;
-    executeCommand(deviceID: string): any;
+    executeCommand(deviceID: string): any;    
+    applyConfig(config: DeviceConfiguration, deviceID: string): ng.IHttpPromise<DeviceConfigurations>
 }

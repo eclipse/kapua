@@ -11,5 +11,47 @@
 *                                                                               
 *******************************************************************************/
 interface DeviceConfiguration {
+  definition: Definition;
+  id: string;
+  properties: Properties;
+}
+
+interface Definition {
+  AD: AD[];
+  Icon: Icon[];
+  description: string;
+  id: string;
   name: string;
+}
+
+interface Icon {
+  resource: string;
+  size: number;
+}
+
+interface AD {
+  Option: Option[];
+  cardinality: number;
+  description: string;
+  id: string;
+  name: string;
+  required: Boolean;
+  type: string;
+  inputName: string;
+}
+
+interface Option {
+
+}
+
+interface Properties {
+  property: Property[];
+}
+
+interface Property {
+  array: Boolean;
+  encrypted: Boolean;
+  name: string;
+  type: string;
+  value: any[];
 }

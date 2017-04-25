@@ -31,6 +31,10 @@ export default class DevicesService implements IDevicesService {
         return this.$http.get("/api/_/devices/" + deviceID + "/packages");
     };
 
+    getConfigsByDeviceId(deviceID: string): ng.IHttpPromise<DeviceConfigurations> {
+        return this.$http.get("/api/_/devices/" + deviceID + "/configurations");
+    };
+
     startDeviceBundle(deviceID: string, bundleID: number): ng.IHttpPromise<DeviceBundles> {
         return this.$http.post("/api/_/devices/" + deviceID + "/bundles/" + bundleID + "/_start", {});
     };
@@ -66,6 +70,10 @@ export default class DevicesService implements IDevicesService {
             // TO BE defined            
         };
         return this.$http.post("/api/_/devices/" + deviceID + "/commands/_execute", requestModel);
+    }
+
+    applyConfig(config: DeviceConfiguration, deviceID: string): ng.IHttpPromise<DeviceConfigurations> {
+        return this.$http.post("/api/_/devices/" + deviceID + "/configurations", config);
     }
 
 }

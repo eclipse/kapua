@@ -11,6 +11,6 @@
 *                                                                               
 *******************************************************************************/
 interface DeviceConfigurations {
-  deviceConfiguration: DeviceConfiguration[];
+  configuration: DeviceConfiguration[];
   type: string;
 }

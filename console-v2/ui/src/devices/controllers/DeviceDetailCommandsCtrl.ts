@@ -14,6 +14,7 @@ export default class DeviceDetailCommandsCtrl {
     private deviceId: string;
     private execute: string;
     private servicePassword: string;
+    private editorForm: any;
 
     constructor(private $scope: any,
         private $stateParams: angular.ui.IStateParamsService,
@@ -25,13 +26,23 @@ export default class DeviceDetailCommandsCtrl {
             $scope.filePath = element.value;
             $scope.$apply();
         }
+        // File input validation
+        $scope.$watch(
+            () => { return $scope.filePath; },
+            () => {
+                if ($scope.filePath != undefined)
+                    this.editorForm.$dirty = true;
+            }
+        );
     }
 
     resetForm(): void {
         this.execute = "";
         this.servicePassword = "";
         this.$scope.file = null;
-        this.$scope.filePath = "";
+        this.$scope.filePath = undefined;
+        this.editorForm.$setUntouched();
+        this.editorForm.$setPristine();
     }
 
     executeCommand(deviceID: string): void {

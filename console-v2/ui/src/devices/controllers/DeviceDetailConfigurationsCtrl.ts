@@ -12,9 +12,29 @@
 *******************************************************************************/
 export default class DeviceDetailConfigurationsCtrl {
     private deviceId: string;
+    private configs: DeviceConfiguration[];
 
     constructor(private $stateParams: angular.ui.IStateParamsService,
-        private $http: angular.IHttpService) {
+        private $http: angular.IHttpService,
+        private devicesService: IDevicesService) {
         this.deviceId = $stateParams["id"];
+
+        this.services.href = `devices/${$stateParams["id"]}/configurations/services`;
+        this.snapshots.href = `devices/${$stateParams["id"]}/configurations/snapshots`;
     }
+
+    private services = {
+        "title": "Services",
+        "count": null,
+        "href": null,
+        "iconClass": "fa fa-puzzle-piece"
+    };
+    private snapshots = {
+        "title": "Snapshots",
+        "count": null,
+        "href": null,
+        "iconClass": "fa fa-file-image-o"
+    };
+
+
 }
