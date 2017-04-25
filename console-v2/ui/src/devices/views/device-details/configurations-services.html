@@ -46,6 +46,7 @@
                                             <span ng-show="vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$error.required && vm.form{{config.definition.name}}.{{config.definition.name}}{{vm.removeCharacters(AD.name)}}.$touched" class="help-block">
                                                 <span class="fa fa-exclamation-triangle"></span> This field is required
                                             </span>
+                                            <div class="fieldDescription">{{AD.description}}</div>
                                         </div>
                                     </div>
                                     <div ng-if="AD.Option.length">
