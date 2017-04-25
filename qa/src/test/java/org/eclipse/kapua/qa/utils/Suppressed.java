@@ -24,7 +24,7 @@ import org.eclipse.kapua.commons.util.ThrowingRunnable;
  * <p>
  * This class should be used in a try-with-resources block, adding
  * exceptions using the {@link #add(Throwable)} method, or exceptions
- * while running code with {@link #run(ThrowingRunnable)} or {@link #run(Callable)} or
+ * while running code with {@link #run(ThrowingRunnable)} or {@link #call(Callable)} or
  * a failing close with {@link #closeSuppressed(AutoCloseable)} will add those
  * exceptions to the internal list
  * </p>
@@ -88,7 +88,7 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
         }
     }
 
-    public void run(final Callable<?> callable) {
+    public void call(final Callable<?> callable) {
         if (callable == null)
             return;
 
