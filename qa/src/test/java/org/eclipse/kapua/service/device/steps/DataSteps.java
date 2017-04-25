@@ -160,6 +160,10 @@ public class DataSteps {
 
             // eval just the size
 
+            Assert.assertEquals(numberOfMessages, result.getSize());
+
+            // eval the total count
+
             Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
 
             // different approach -> same result
