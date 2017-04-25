@@ -150,9 +150,10 @@ public class UserServiceSteps extends KapuaTest {
     @After
     public void afterScenario() throws KapuaException {
         try {
+            logger.info("Logging out in cleanup");
             authenticationService.logout();
         } catch (Exception e) {
-            logger.error("Failed to log out in @After");
+            logger.error("Failed to log out in @After", e);
         }
 
         KapuaSecurityUtils.clearSession();

@@ -52,12 +52,12 @@ public class DBHelper {
     private boolean setup;
 
     public void setup() {
-        if ( this.setup )  {
+        if (this.setup) {
             return;
         }
-        
+
         this.setup = true;
-        
+
         logger.info("Setting up mock database");
 
         System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
@@ -69,7 +69,7 @@ public class DBHelper {
 
     }
 
-    @After
+    @After(order = HookPriorities.DATABASE)
     public void deleteAll() {
         KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DELETE_FILTER);
     }
