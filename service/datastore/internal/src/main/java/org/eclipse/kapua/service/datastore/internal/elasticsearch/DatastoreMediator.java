@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
@@ -47,9 +48,9 @@ public class DatastoreMediator implements MessageStoreMediator,
         ChannelInfoRegistryMediator,
         MetricInfoRegistryMediator {
 
-    private static DatastoreMediator instance;
+    private final static DatastoreMediator instance;
 
-    private final EsSchema esSchema;
+    private volatile EsSchema esSchema;
 
     private MessageStoreFacade messageStoreFacade;
     private ClientInfoRegistryFacade clientInfoStoreFacade;
@@ -66,6 +67,18 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     private DatastoreMediator() {
+        clearCache();
+    }
+
+    /**
+     * Clear internal caching states
+     * <p>
+     * Internally the {@link DatastoreMediator} caches a copy of {@link EsSchema}. However, as {@link DatastoreMediator} is
+     * singleton and does not provide lifecycle handling it is not possible to properly invalidate the cache state. This
+     * method is considered a workaround for this situation (e.g. unit tests).
+     * </p>
+     */
+    public void clearCache() {
         this.esSchema = new EsSchema();
     }
 
