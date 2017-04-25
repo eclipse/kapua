@@ -263,7 +263,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                     AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
                     KapuaSecurityUtils.doPrivileged(() -> {
                         accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId());
-                        return null;
                     });
                 }
             }
