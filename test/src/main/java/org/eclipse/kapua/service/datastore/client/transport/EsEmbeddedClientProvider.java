@@ -19,7 +19,7 @@ import org.elasticsearch.client.Client;
  * Client provider for embedded ES node.
  * Used for unit / integration tests that include live ES node.
  */
-public class EsEmbeddedClientProvider implements EsClientProvider {
+public class EsEmbeddedClientProvider {
 
     /**
      * Embedded ES node.
@@ -31,18 +31,15 @@ public class EsEmbeddedClientProvider implements EsClientProvider {
         embeddedEngine = new EsEmbeddedEngine();
     }
 
-    @Override
     public Client getClient() {
 
         return embeddedEngine.getClient();
     }
 
-    @Override
     public void close() throws IOException {
         embeddedEngine.close();
     }
 
-    @Override
     public boolean isAlive() {
         // TODO Auto-generated method stub
         return false;
