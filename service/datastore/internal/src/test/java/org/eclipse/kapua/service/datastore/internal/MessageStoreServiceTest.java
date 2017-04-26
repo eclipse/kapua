@@ -52,6 +52,7 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoField;
+import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
@@ -92,6 +93,9 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,6 +113,26 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final ChannelInfoRegistryService channelInfoRegistryService = KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
     private static final MetricInfoRegistryService metricInfoRegistryService = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService clientInfoRegistryService = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
+
+    /**
+     * This method deletes all indices of the current ES instance
+     * <p>
+     * The method deletes all indices and resets the Kapua internal singleton state.
+     * This is required to ensure that each unit test, as it currently expects, starts with an empty ES setup
+     * </p>
+     * 
+     * @throws Exception
+     *             any case anything goes wrong
+     */
+    @Before
+    public void deleteAllIndices() throws Exception {
+        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(ElasticsearchClient.getInstance()).request();
+        request.indices("_all");
+
+        ElasticsearchClient.getInstance().admin().indices().delete(request);
+
+        DatastoreMediator.getInstance().clearCache();
+    }
 
     @Test
     /**
