@@ -32,7 +32,7 @@ public class EsUtilsConvertDateTest {
                 .isInstanceOf(Date.class)
                 .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 12, 34, 56, 123_000_000, ZoneOffset.UTC).toInstant()));
     }
-    
+
     @Test
     public void convertWithMillis2() {
         Assertions.assertThat(EsUtils.convertToKapuaObject("date", "2017-01-02T12:34:56.123"))
@@ -46,7 +46,7 @@ public class EsUtilsConvertDateTest {
                 .isInstanceOf(Date.class)
                 .isEqualTo(Date.from(ZonedDateTime.of(2017, 1, 2, 13, 34, 56, 0, ZoneOffset.UTC).toInstant()));
     }
-    
+
     @Test
     public void convertNoMillis2() {
         Assertions.assertThat(EsUtils.convertToKapuaObject("date", "2017-01-02T13:34:56"))

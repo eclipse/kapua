@@ -22,21 +22,21 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MessageStoraConfigurationTest {
-    
+
     @Test
-    public void test1 () {
+    public void test1() {
         Map<String, Object> values = new HashMap<>();
-        
+
         values.put(MessageStoreConfiguration.CONFIGURATION_EXPIRATION_DATE_KEY, "02/24/2017 4:21 PM");
         values.put(MessageStoreConfiguration.CONFIGURATION_DATA_TTL_KEY, 42);
-        
-        MessageStoreConfiguration cfg = new MessageStoreConfiguration (values);
-        
+
+        MessageStoreConfiguration cfg = new MessageStoreConfiguration(values);
+
         Assert.assertNotNull(cfg);
-        
+
         Assert.assertEquals(42, cfg.getDataTimeToLive());
         Assert.assertEquals(Duration.ofDays(42).toMillis(), cfg.getDataTimeToLiveMilliseconds());
-        
+
         Assert.assertEquals(Date.from(ZonedDateTime.of(2017, 2, 24, 16, 21, 0, 0, ZoneOffset.UTC).toInstant()), cfg.getExpirationDate());
     }
 }
