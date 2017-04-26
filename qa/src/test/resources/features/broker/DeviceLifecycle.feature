@@ -47,13 +47,10 @@ Scenario: Installing a package
   Then There must be no installed packages
   
   When I start to download package "foo.bar" with version 1.2.3 from http://127.0.0.1/foo.dp
-   And I wait 2 seconds for the download to start
-  Then The download is in status IN_PROGRESS
   
-  When I wait 10 seconds more for the download to complete
-  Then The download is in status COMPLETED
+  Then The download state changes to IN_PROGRESS in the next 5 seconds
+   And The download state changes to COMPLETED in the next 15 seconds
   
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
-  
-  
+

@@ -13,14 +13,14 @@ package org.eclipse.kapua.qa.steps;
 
 import java.time.Duration;
 
-public class WaitTimeoutException extends RuntimeException {
+public class WaitTimeoutException extends AssertionError {
 
     private static final long serialVersionUID = 1L;
 
     public WaitTimeoutException(final Duration period) {
         super(makeMessage("Waiting for condition", period));
     }
-    
+
     public WaitTimeoutException(final String action, final Duration period) {
         super(makeMessage(action, period));
     }
