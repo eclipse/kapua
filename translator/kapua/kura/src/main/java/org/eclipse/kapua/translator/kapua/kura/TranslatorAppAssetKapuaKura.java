@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kapua.kura;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -114,7 +115,9 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
                 kuraAssetChannel.setName(deviceAssetChannel.getName());
                 kuraAssetChannel.setType(deviceAssetChannel.getType());
                 kuraAssetChannel.setValue(deviceAssetChannel.getValue());
-                kuraAssetChannel.setTimestamp(deviceAssetChannel.getTimestamp().getTime());
+
+                Date timestamp = deviceAssetChannel.getTimestamp();
+                kuraAssetChannel.setTimestamp(timestamp != null ? timestamp.getTime() : null);
 
                 kuraAsset.getChannels().add(kuraAssetChannel);
             }
