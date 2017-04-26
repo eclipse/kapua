@@ -94,6 +94,7 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannel;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
@@ -101,14 +102,12 @@ import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPac
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleXmlRegistry;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannel;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannelXmlRegistry;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannels;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegistry;
@@ -224,19 +223,18 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Device Management Assets
                     KuraAssets.class,
+                    KuraAssetChannel.class,
                     DeviceAsset.class,
                     DeviceAssets.class,
                     DeviceAssetXmlRegistry.class,
-                    DeviceChannel.class,
-                    DeviceChannels.class,
-                    DeviceChannelXmlRegistry.class,
-                    
+                    DeviceAssetChannel.class,
+
                     // Device Management Bundles
                     KuraBundles.class,
                     DeviceBundle.class,
                     DeviceBundles.class,
                     DeviceBundleXmlRegistry.class,
-                    
+
                     // Device Management Command
                     DeviceCommandInput.class,
                     DeviceCommandOutput.class,
