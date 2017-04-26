@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,31 +11,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.asset;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.eclipse.kapua.KapuaException;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Kura assets list definition.
+ * {@link KuraAssets} list definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-@XmlRootElement(name="assets")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class KuraAssets
-{
-    @XmlElement(name="asset")
-    public KuraAsset[] assets;
+public class KuraAssets {
+
+    private List<KuraAsset> assets;
 
     /**
      * Get the assets list
      * 
      * @return
+     * 
+     * @since 1.0.0
      */
-    public KuraAsset[] getAssets()
-    {
+    public List<KuraAsset> getAssets() {
+        if (assets == null) {
+            assets = new ArrayList<>();
+        }
+
         return assets;
     }
 
@@ -43,9 +49,44 @@ public class KuraAssets
      * Set the assets list
      * 
      * @param assets
+     * 
+     * @since 1.0.0
      */
-    public void setAssets(KuraAsset[] assets)
-    {
+    public void setAssets(List<KuraAsset> assets) {
         this.assets = assets;
+    }
+
+    /**
+     * Parse a {@link JsonNode} that represent the {@link KuraAssets} object.
+     * 
+     * @param jsonKuraAssets
+     *            The {@link JsonNode} to parse
+     * @return The parsed {@link KuraAssets} result.
+     * 
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    public static KuraAssets readJsonNode(JsonNode jsonKuraAssets) throws KapuaException {
+
+        KuraAssets kuraAssets = new KuraAssets();
+
+        Iterator<JsonNode> jsonNodeIterator = jsonKuraAssets.elements();
+        while (jsonNodeIterator.hasNext()) {
+            JsonNode jsonNode = jsonNodeIterator.next();
+            kuraAssets.getAssets().add(KuraAsset.readJsonNode(jsonNode));
+        }
+
+        return kuraAssets;
+    }
+
+    public void writeJsonNode(JsonGenerator jsonGenerator) throws IOException {
+
+        jsonGenerator.writeStartArray();
+        for (KuraAsset kuraAsset : getAssets()) {
+            kuraAsset.writeJsonNode(jsonGenerator);
+        }
+        jsonGenerator.writeEndArray();
+
     }
 }

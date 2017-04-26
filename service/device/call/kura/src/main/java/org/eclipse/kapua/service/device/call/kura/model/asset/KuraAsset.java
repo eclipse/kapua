@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,61 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.asset;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.eclipse.kapua.KapuaException;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Kura asset definition.
+ * {@link KuraAsset} definition.
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-//@XmlRootElement(name="asset")
-//@XmlAccessorType(XmlAccessType.FIELD)
-//@XmlType(propOrder= {"name","version","id","state"})
-public class KuraAsset
-{
-//    @XmlElement(name="id")
-//    public long id;
+public class KuraAsset {
 
-//    @XmlElement(name="name")
-    public String name;
-
-//    @XmlElement(name="version")
-//    public String version;
-//
-//
-//    @XmlElement(name = "state")
-//    public String state;
-    
-//    /**
-//     * Get asset identifier
-//     * 
-//     * @return
-//     */
-//    public long getId()
-//    {
-//        return id;
-//    }
-//    
-//    /**
-//     * Set asset identifier
-//     * 
-//     * @param id
-//     */
-//    public void setId(long id)
-//    {
-//        this.id = id;
-//    }
+    private String name;
+    private List<KuraAssetChannel> channels;
 
     /**
      * Get asset name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -74,49 +43,50 @@ public class KuraAsset
      * 
      * @param name
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-//    /**
-//     * Get asset version
-//     * 
-//     * @return
-//     */
-//    public String getVersion()
-//    {
-//        return version;
-//    }
-//
-//    /**
-//     * Set asset version
-//     * 
-//     * @param version
-//     */
-//    public void setVersion(String version)
-//    {
-//        this.version = version;
-//    }
-//
-//
-//    /**
-//     * Get asset state
-//     * 
-//     * @return
-//     */
-//    public String getState()
-//    {
-//        return state;
-//    }
-//
-//    /**
-//     * Set asset state
-//     * 
-//     * @param state
-//     */
-//    public void setState(String state)
-//    {
-//        this.state = state;
-//    }
+    public List<KuraAssetChannel> getChannels() {
+        if (channels == null) {
+            channels = new ArrayList<>();
+        }
+
+        return channels;
+    }
+
+    public void setChannels(List<KuraAssetChannel> channels) {
+        this.channels = channels;
+    }
+
+    public static KuraAsset readJsonNode(JsonNode jsonKuraAsset) throws KapuaException {
+
+        KuraAsset kuraAsset = new KuraAsset();
+        kuraAsset.setName(jsonKuraAsset.get("name").asText());
+
+        JsonNode jsonKuraAssetChannels = jsonKuraAsset.get("channels");
+        Iterator<JsonNode> jsonNodeIterator = jsonKuraAssetChannels.elements();
+        while (jsonNodeIterator.hasNext()) {
+            JsonNode jsonNode = jsonNodeIterator.next();
+            kuraAsset.getChannels().add(KuraAssetChannel.readJsonNode(jsonNode));
+        }
+
+        return kuraAsset;
+    }
+
+    public void writeJsonNode(JsonGenerator jsonGenerator) throws IOException {
+
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStringField("name", getName());
+
+        if (!getChannels().isEmpty()) {
+            jsonGenerator.writeArrayFieldStart("channels");
+            for (KuraAssetChannel kuraAssetChannel : getChannels()) {
+                kuraAssetChannel.writeJsonNode(jsonGenerator);
+            }
+            jsonGenerator.writeEndArray();
+        }
+
+        jsonGenerator.writeEndObject();
+    }
 }
