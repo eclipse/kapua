@@ -1838,13 +1838,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             return field;
         }
 
-        public void validate(final Object previousItem, final Object currentItem) {
+        public boolean validate(final Object previousItem, final Object currentItem) {
             final T v1 = valueFunction.apply(previousItem);
             final T v2 = valueFunction.apply(currentItem);
 
             if (!v2.equals(v1)) {
                 checkNextValueCoherence(field, v2, v1);
+                return true;
             }
+            return false;
         }
     }
 
@@ -1869,7 +1871,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         for (Object item : result.getItems()) {
             for (OrderConstraint<?> field : sortFieldList) {
                 if (previousItem != null) {
-                    field.validate(previousItem, item);
+                    if (field.validate(previousItem, item)) {
+                        break;
+                    }
+                } else {
+                    break;
                 }
             }
             previousItem = item;
@@ -1885,9 +1891,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     private static <T extends Comparable<T>> void checkNextValueCoherence(final SortField field, final T currentValue, final T previousValue) {
         if (SortDirection.ASC.equals(field.getSortDirection())) {
-            assertTrue(String.format("The field [%s] is not correctly ordered as [%s]!", field.getField(), field.getSortDirection()), currentValue.compareTo(previousValue) > 0);
+            assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
+                    currentValue.compareTo(previousValue) > 0);
         } else {
-            assertTrue(String.format("The field [%s] is not correctly ordered as [%s]!", field.getField(), field.getSortDirection()), currentValue.compareTo(previousValue) < 0);
+            assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
+                    currentValue.compareTo(previousValue) < 0);
         }
     }
 
