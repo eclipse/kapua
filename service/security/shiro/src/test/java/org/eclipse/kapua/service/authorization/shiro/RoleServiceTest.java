@@ -95,7 +95,7 @@ public class RoleServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
@@ -153,7 +153,7 @@ public class RoleServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
@@ -207,7 +207,7 @@ public class RoleServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
@@ -255,7 +255,7 @@ public class RoleServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 
@@ -317,7 +317,7 @@ public class RoleServiceTest extends KapuaTest {
             RoleService roleService = locator.getService(RoleService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(roleService);
             Role role = roleService.create(roleCreator);
 

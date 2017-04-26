@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,12 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +52,7 @@ public class KapuaFormFields {
         String value = formFields.get(key);
 
         if (value != null) {
-            value = new String(value.getBytes("iso-8859-1"), "UTF-8");
+            value = new String(value.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         }
 
         return value;

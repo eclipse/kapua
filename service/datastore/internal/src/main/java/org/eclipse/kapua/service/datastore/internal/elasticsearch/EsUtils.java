@@ -501,7 +501,7 @@ public class EsUtils {
         Object convertedValue = null;
         if (ES_TYPE_SHORT_DOUBLE.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Double(((Number) value).doubleValue());
+                convertedValue = Double.valueOf(((Number) value).doubleValue());
             } else if (value instanceof String) {
                 convertedValue = Double.parseDouble((String) value);
             } else {
@@ -509,7 +509,7 @@ public class EsUtils {
             }
         } else if (ES_TYPE_SHORT_FLOAT.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Float(((Number) value).floatValue());
+                convertedValue = Float.valueOf(((Number) value).floatValue());
             } else if (value instanceof String) {
                 convertedValue = Float.parseFloat((String) value);
             } else {
@@ -517,7 +517,7 @@ public class EsUtils {
             }
         } else if (ES_TYPE_SHORT_INTEGER.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Integer(((Number) value).intValue());
+                convertedValue = Integer.valueOf(((Number) value).intValue());
             } else if (value instanceof String) {
                 convertedValue = Integer.parseInt((String) value);
             } else {
@@ -525,7 +525,7 @@ public class EsUtils {
             }
         } else if (ES_TYPE_SHORT_LONG.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Long(((Number) value).longValue());
+                convertedValue = Long.valueOf(((Number) value).longValue());
             } else if (value instanceof String) {
                 convertedValue = Long.parseLong((String) value);
             } else {

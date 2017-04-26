@@ -651,7 +651,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             accounts = accountService.query(query);
             if (accounts.getSize() >= loadConfig.getLimit()) {
-                totalLength = new Long(accountService.count(query)).intValue();
+                totalLength = Long.valueOf(accountService.count(query)).intValue();
             } else {
                 totalLength = accounts.getSize();
             }

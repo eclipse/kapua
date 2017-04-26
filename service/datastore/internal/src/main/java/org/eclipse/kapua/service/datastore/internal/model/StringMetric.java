@@ -18,7 +18,7 @@ public class StringMetric extends MetricImpl<String> implements Metric<String> {
     public StringMetric(String name, Object value) {
         setName(name);
         setType(String.class);
-        setValue(new String((String) value));
+        setValue(String.valueOf((String) value));
     }
 
     @Override

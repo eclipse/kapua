@@ -161,7 +161,7 @@ public class KapuaDoPrivilegeTest {
                 long wait = (long) (Math.random() * maxRandomWait);
                 logger.debug(callableName + " Wait: ", new Object[] { wait });
                 Thread.sleep(wait);
-                KapuaSecurityUtils.doPrivileged(() -> doPrivilegeCode(new Integer(executionProgress.intValue() + 1)));
+                KapuaSecurityUtils.doPrivileged(() -> doPrivilegeCode(Integer.valueOf(executionProgress.intValue() + 1)));
             }
 
             String kapuaSessionId = getKapuaSessionId();

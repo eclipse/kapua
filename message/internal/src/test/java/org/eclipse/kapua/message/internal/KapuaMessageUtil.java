@@ -57,10 +57,10 @@ public class KapuaMessageUtil {
      */
     public static void populatePayloadWithAllTypesOfMetrics(KapuaPayload kapuaPayload) {
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("Float", new Float(42.42f));
-        metrics.put("Double", new Double(42.42d));
-        metrics.put("Integer", new Integer(42));
-        metrics.put("Long", new Long(43l));
+        metrics.put("Float", Float.valueOf(42.42f));
+        metrics.put("Double", Double.valueOf(42.42d));
+        metrics.put("Integer", Integer.valueOf(42));
+        metrics.put("Long", Long.valueOf(43l));
         metrics.put("Boolean", Boolean.TRUE);
         metrics.put("String", "Big brown fox");
         metrics.put("byte", new byte[] { 'b', 'o', 'd', 'y', 0 });

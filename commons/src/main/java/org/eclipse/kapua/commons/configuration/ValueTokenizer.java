@@ -216,8 +216,8 @@ public class ValueTokenizer {
                 switch (adScalarType) {
                 case PASSWORD:
                 case STRING:
-                    minVal = ad.getMin() == null ? null : new Integer(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Integer(ad.getMax());
+                    minVal = ad.getMin() == null ? null : Integer.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Integer.valueOf(ad.getMax());
                     if (minVal != null && s.length() < (Integer) maxVal) {
                         rangeError = true;
                     } else if (maxVal != null && s.length() > (Integer) maxVal) {
@@ -225,9 +225,9 @@ public class ValueTokenizer {
                     }
                     break;
                 case INTEGER:
-                    minVal = ad.getMin() == null ? null : new Integer(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Integer(ad.getMax());
-                    Integer intVal = new Integer(s);
+                    minVal = ad.getMin() == null ? null : Integer.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Integer.valueOf(ad.getMax());
+                    Integer intVal = Integer.valueOf(s);
                     if (minVal != null && intVal.compareTo((Integer) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && intVal.compareTo((Integer) maxVal) > 0) {
@@ -235,9 +235,9 @@ public class ValueTokenizer {
                     }
                     break;
                 case LONG:
-                    minVal = ad.getMin() == null ? null : new Long(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Long(ad.getMax());
-                    Long longVal = new Long(s);
+                    minVal = ad.getMin() == null ? null : Long.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Long.valueOf(ad.getMax());
+                    Long longVal = Long.valueOf(s);
                     if (ad.getMin() != null && longVal.compareTo((Long) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && longVal.compareTo((Long) maxVal) > 0) {
@@ -245,9 +245,9 @@ public class ValueTokenizer {
                     }
                     break;
                 case DOUBLE:
-                    minVal = ad.getMin() == null ? null : new Double(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Double(ad.getMax());
-                    Double doubleVal = new Double(s);
+                    minVal = ad.getMin() == null ? null : Double.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Double.valueOf(ad.getMax());
+                    Double doubleVal = Double.valueOf(s);
                     if (minVal != null && doubleVal.compareTo((Double) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && doubleVal.compareTo((Double) maxVal) > 0) {
@@ -259,9 +259,9 @@ public class ValueTokenizer {
                     // Seems unnecessary to impose any further restrictions.
                     break;
                 case CHAR:
-                    minVal = ad.getMin() == null ? null : new Character(ad.getMin().charAt(0));
-                    maxVal = ad.getMax() == null ? null : new Character(ad.getMax().charAt(0));
-                    Character charVal = new Character(s.charAt(0));
+                    minVal = ad.getMin() == null ? null : Character.valueOf(ad.getMin().charAt(0));
+                    maxVal = ad.getMax() == null ? null : Character.valueOf(ad.getMax().charAt(0));
+                    Character charVal = Character.valueOf(s.charAt(0));
                     if (minVal != null && charVal.compareTo((Character) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && charVal.compareTo((Character) maxVal) > 0) {
@@ -269,9 +269,9 @@ public class ValueTokenizer {
                     }
                     break;
                 case FLOAT:
-                    minVal = ad.getMin() == null ? null : new Float(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Float(ad.getMax());
-                    Float floatVal = new Float(s);
+                    minVal = ad.getMin() == null ? null : Float.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Float.valueOf(ad.getMax());
+                    Float floatVal = Float.valueOf(s);
                     if (minVal != null && floatVal.compareTo((Float) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && floatVal.compareTo((Float) maxVal) > 0) {
@@ -279,9 +279,9 @@ public class ValueTokenizer {
                     }
                     break;
                 case SHORT:
-                    minVal = ad.getMin() == null ? null : new Short(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Short(ad.getMax());
-                    Short shortVal = new Short(s);
+                    minVal = ad.getMin() == null ? null : Short.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Short.valueOf(ad.getMax());
+                    Short shortVal = Short.valueOf(s);
                     if (minVal != null && shortVal.compareTo((Short) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && shortVal.compareTo((Short) maxVal) > 0) {
@@ -289,9 +289,9 @@ public class ValueTokenizer {
                     }
                     break;
                 case BYTE:
-                    minVal = ad.getMin() == null ? null : new Byte(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : new Byte(ad.getMax());
-                    Byte byteVal = new Byte(s);
+                    minVal = ad.getMin() == null ? null : Byte.valueOf(ad.getMin());
+                    maxVal = ad.getMax() == null ? null : Byte.valueOf(ad.getMax());
+                    Byte byteVal = Byte.valueOf(s);
                     if (minVal != null && byteVal.compareTo((Byte) minVal) < 0) {
                         rangeError = true;
                     } else if (maxVal != null && byteVal.compareTo((Byte) maxVal) > 0) {

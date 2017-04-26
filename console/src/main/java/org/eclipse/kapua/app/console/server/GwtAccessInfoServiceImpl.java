@@ -157,7 +157,7 @@ public class GwtAccessInfoServiceImpl extends KapuaRemoteServiceServlet implemen
             AccessRoleListResult accessRoleList = accessRoleService.query(accessRoleQuery);
             if (!accessRoleList.isEmpty()) {
                 if (accessRoleList.getSize() >= pagingLoadConfig.getLimit()) {
-                    totalLength = new Long(accessRoleService.count(accessRoleQuery)).intValue();
+                    totalLength = Long.valueOf(accessRoleService.count(accessRoleQuery)).intValue();
 
                 } else {
                     totalLength = accessRoleList.getSize();

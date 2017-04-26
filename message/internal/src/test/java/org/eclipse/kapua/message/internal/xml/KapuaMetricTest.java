@@ -71,7 +71,7 @@ public class KapuaMetricTest extends Assert {
         kapuaMetric.setValue("42.42");
 
         assertEquals("name", kapuaMetric.getName());
-        assertEquals(new Double("42.42"), kapuaMetric.getCastedValue());
+        assertEquals(Double.valueOf("42.42"), kapuaMetric.getCastedValue());
         assertEquals(kapuaMetric.getType(), Double.class);
     }
 
@@ -84,7 +84,7 @@ public class KapuaMetricTest extends Assert {
         kapuaMetric.setValue("42");
 
         assertEquals("name", kapuaMetric.getName());
-        assertEquals(new Integer(42), kapuaMetric.getCastedValue());
+        assertEquals(Integer.valueOf(42), kapuaMetric.getCastedValue());
         assertEquals(kapuaMetric.getType(), Integer.class);
     }
 
@@ -97,7 +97,7 @@ public class KapuaMetricTest extends Assert {
         kapuaMetric.setValue("42.42");
 
         assertEquals("name", kapuaMetric.getName());
-        assertEquals(new Float("42.42"), kapuaMetric.getCastedValue());
+        assertEquals(Float.valueOf("42.42"), kapuaMetric.getCastedValue());
         assertEquals(kapuaMetric.getType(), Float.class);
     }
 
@@ -110,7 +110,7 @@ public class KapuaMetricTest extends Assert {
         kapuaMetric.setValue("42");
 
         assertEquals("name", kapuaMetric.getName());
-        assertEquals(new Long("42"), kapuaMetric.getCastedValue());
+        assertEquals(Long.valueOf("42"), kapuaMetric.getCastedValue());
         assertEquals(kapuaMetric.getType(), Long.class);
     }
 

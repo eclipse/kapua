@@ -48,7 +48,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
     public void marshalWithAdapter() throws Exception {
         KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put(new String("key1"), new String("value1"));
+        metrics.put(String.valueOf("key1"), String.valueOf("value1"));
         metricsMap.setProperties(metrics);
 
         StringWriter strWriter = new StringWriter();
@@ -60,7 +60,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
     public void unmarshalWithAdapter() throws Exception {
         KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put(new String("key1"), new String("value1"));
+        metrics.put(String.valueOf("key1"), String.valueOf("value1"));
         metricsMap.setProperties(metrics);
 
         KapuaPayload metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);

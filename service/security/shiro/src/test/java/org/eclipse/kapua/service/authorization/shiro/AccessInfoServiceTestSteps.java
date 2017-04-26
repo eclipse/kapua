@@ -729,7 +729,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
         assertTrue(accRole_1.equals(accRole_1));
         assertFalse(accRole_1.equals(null));
-        assertFalse(accRole_1.equals(new Integer(15)));
+        assertFalse(accRole_1.equals(Integer.valueOf(15)));
 
         assertTrue(accRole_1.equals(accRole_2));
 
@@ -768,7 +768,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
         assertTrue(accPerm_1.equals(accPerm_1));
         assertFalse(accPerm_1.equals(null));
-        assertFalse(accPerm_1.equals(new Integer(15)));
+        assertFalse(accPerm_1.equals(Integer.valueOf(15)));
 
         assertTrue(accPerm_1.equals(accPerm_2));
 

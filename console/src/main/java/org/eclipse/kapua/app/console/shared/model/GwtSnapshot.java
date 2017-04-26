@@ -33,7 +33,7 @@ public class GwtSnapshot extends KapuaBaseModel implements Serializable {
             }
             return (X) (DateUtils.formatDateTime((Date) get("createdOn")));
         } else if ("snapshotId".equals(property)) {
-            return (X) new Long(((Date) get("createdOn")).getTime());
+            return (X) Long.valueOf(((Date) get("createdOn")).getTime());
         } else {
             return super.get(property);
         }

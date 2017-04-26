@@ -185,7 +185,7 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
         
         assertTrue(perm_1.equals(perm_1));
         assertFalse(perm_1.equals(null));
-        assertFalse(perm_1.equals(new Integer(10)));
+        assertFalse(perm_1.equals(Integer.valueOf(10)));
         
         assertTrue(perm_1.equals(perm_2));
         

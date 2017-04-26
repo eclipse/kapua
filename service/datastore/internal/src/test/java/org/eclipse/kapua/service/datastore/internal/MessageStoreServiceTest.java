@@ -172,9 +172,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
 
             Map<String, Object> metrics = new HashMap<>();
-            metrics.put("float_int", new Float(i + 1));
-            metrics.put("float_float", new Float((i + 1) * 0.01));
-            metrics.put("integer_value", new Integer(i + 1));
+            metrics.put("float_int", Float.valueOf(i + 1));
+            metrics.put("float_float", Float.valueOf((i + 1) * 0.01f));
+            metrics.put("integer_value", Integer.valueOf(i + 1));
             metrics.put("double_int", (double) (i + 1));
             metrics.put("double_float", (i + 1) * 0.01);
             metrics.put("long_long", 10000000000000l * (i + 1));
@@ -655,14 +655,14 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message1 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message1, semanticTopic[0]);
         initMetrics(message1);
-        message1.getPayload().getProperties().put(metrics[0], new Double(123));
-        message1.getPayload().getProperties().put(metrics[1], new Integer(123));
+        message1.getPayload().getProperties().put(metrics[0], Double.valueOf(123));
+        message1.getPayload().getProperties().put(metrics[1], Integer.valueOf(123));
         message1.setReceivedOn(messageTime);
         KapuaDataMessage message2 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message2, semanticTopic[0]);
         initMetrics(message2);
-        message2.getPayload().getProperties().put(metrics[2], new String("123"));
-        message2.getPayload().getProperties().put(metrics[3], new Boolean(true));
+        message2.getPayload().getProperties().put(metrics[2], String.valueOf("123"));
+        message2.getPayload().getProperties().put(metrics[3], Boolean.valueOf(true));
         message2.setReceivedOn(messageTime);
         updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(message1, message2);

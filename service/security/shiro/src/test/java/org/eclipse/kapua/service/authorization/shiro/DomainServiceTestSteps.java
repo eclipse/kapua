@@ -244,7 +244,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
             assertTrue(tmpDom1.equals(tmpDom1));
             assertFalse(tmpDom1.equals(null));
-            assertFalse(tmpDom1.equals(new String("")));
+            assertFalse(tmpDom1.equals(String.valueOf("")));
 
             Domain tmpDom2 = null;
             tmpDom2 = domainService.find(null, tmpDom1.getId());

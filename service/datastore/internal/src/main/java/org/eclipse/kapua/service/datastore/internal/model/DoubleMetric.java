@@ -18,7 +18,7 @@ public class DoubleMetric extends MetricImpl<Double> implements Metric<Double> {
     public DoubleMetric(String name, Object value) {
         setName(name);
         setType(Double.class);
-        setValue(new Double((Double) value).doubleValue());
+        setValue(Double.valueOf((Double) value).doubleValue());
     }
 
     @Override

@@ -71,7 +71,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             if (!credentials.isEmpty()) {
                 // count
                 if (credentials.getSize() >= loadConfig.getLimit()) {
-                    totalLength = new Long(credentialService.count(credentialQuery)).intValue();
+                    totalLength = Long.valueOf(credentialService.count(credentialQuery)).intValue();
                 } else {
                     totalLength = credentials.getSize();
                 }

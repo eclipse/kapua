@@ -18,7 +18,7 @@ public class LongMetric extends MetricImpl<Long> implements Metric<Long> {
     public LongMetric(String name, Object value) {
         setName(name);
         setType(Long.class);
-        setValue(new Long((Long) value).longValue());
+        setValue(Long.valueOf((Long) value).longValue());
     }
 
     @Override

@@ -158,7 +158,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             if (!roles.isEmpty()) {
                 // count
                 if (roles.getSize() >= loadConfig.getLimit()) {
-                    totalLength = new Long(roleService.count(roleQuery)).intValue();
+                    totalLength = Long.valueOf(roleService.count(roleQuery)).intValue();
                 } else {
                     totalLength = roles.getSize();
                 }

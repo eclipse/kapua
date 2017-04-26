@@ -108,7 +108,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
         if (kapuaPayload.getBody() != null) {
             DeviceConfiguration kapuaDeviceConfiguration;
             try {
-                kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()),
+                kapuaDeviceConfiguration = XmlUtil.unmarshal(String.valueOf(kapuaPayload.getBody()),
                         DeviceConfigurationImpl.class);
             } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
