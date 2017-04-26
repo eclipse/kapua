@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
@@ -22,13 +23,14 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.DBHelper;
+import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountService;
@@ -56,6 +58,8 @@ import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
 import org.eclipse.kapua.test.KapuaTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -71,6 +75,8 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class UserServiceSteps extends KapuaTest {
+
+    private static Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
     /**
      * User service by locator.
@@ -122,15 +128,8 @@ public class UserServiceSteps extends KapuaTest {
      */
     private ComparableUser lastUser;
 
-    /**
-     * Single point to database access.
-     */
-    private DBHelper dbHelper;
-
     @Inject
-    public UserServiceSteps(DBHelper dbHelper) {
-
-        this.dbHelper = dbHelper;
+    public UserServiceSteps(/* dependency */ final DBHelper dbHelper) {
     }
 
     @Before
@@ -151,9 +150,13 @@ public class UserServiceSteps extends KapuaTest {
 
     @After
     public void afterScenario() throws KapuaException {
-
-        dbHelper.deleteAll();
-        KapuaSecurityUtils.clearSession();
+        try {
+            logger.info("Logging out in cleanup");
+            SecurityUtils.getSubject().logout();
+            KapuaSecurityUtils.clearSession();
+        } catch (Exception e) {
+            logger.error("Failed to log out in @After", e);
+        }
     }
 
     @Given("^Account$")
@@ -226,7 +229,7 @@ public class UserServiceSteps extends KapuaTest {
             throws KapuaException {
         Map<String, Object> valueMap = new HashMap<>();
 
-        for (TestConfig config: testConfigs) {
+        for (TestConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {
@@ -251,7 +254,7 @@ public class UserServiceSteps extends KapuaTest {
             scopeId = new KapuaEid(BigInteger.ONE);
         }
 
-        for (TestConfig config: testConfigs) {
+        for (TestConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {
@@ -291,8 +294,10 @@ public class UserServiceSteps extends KapuaTest {
      * kapua.
      * Operation is performed in privileged mode, without access and authorization checks.
      *
-     * @param userList list of users in step
-     * @param account  account in which users are created
+     * @param userList
+     *            list of users in step
+     * @param account
+     *            account in which users are created
      * @return Set of created users as ComparableUser Set
      * @throws Exception
      */
@@ -327,7 +332,8 @@ public class UserServiceSteps extends KapuaTest {
      * This is not accountId, but account under which it is created. AccountId itself
      * is created automatically.
      *
-     * @param testAccount basic data about account
+     * @param testAccount
+     *            basic data about account
      * @return Kapua Account object
      */
     private Account createAccount(TestAccount testAccount) throws Exception {
@@ -351,7 +357,8 @@ public class UserServiceSteps extends KapuaTest {
      * Create credentials for specific user, set users password.
      * It finds user by name and sets its password.
      *
-     * @param testCredentials username and open password
+     * @param testCredentials
+     *            username and open password
      * @return created credential
      */
     private Credential createCredentials(TestCredentials testCredentials) throws Exception {
@@ -377,10 +384,13 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * Creates permissions for user with specified account. Permissions are created in priveledged mode.
      *
-     * @param permissionList list of permissions for user, if targetScopeId is not set user scope that is
-     *                       specifed as account
-     * @param user           user for whom permissions are set
-     * @param account        account in which user is defined
+     * @param permissionList
+     *            list of permissions for user, if targetScopeId is not set user scope that is
+     *            specifed as account
+     * @param user
+     *            user for whom permissions are set
+     * @param account
+     *            account in which user is defined
      * @throws Exception
      */
     private void createPermissions(List<TestPermission> permissionList, ComparableUser user, Account account)
@@ -402,8 +412,10 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * Create account creator.
      *
-     * @param name    account name
-     * @param scopeId acount scope id
+     * @param name
+     *            account name
+     * @param scopeId
+     *            acount scope id
      * @return
      */
     private AccountCreator accountCreatorCreator(String name, BigInteger scopeId) {
@@ -419,9 +431,12 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * Create credential creator for user with password.
      *
-     * @param scopeId  scopeId in which user is
-     * @param userId   userId for which credetntials are set
-     * @param password open password as credetntials
+     * @param scopeId
+     *            scopeId in which user is
+     * @param userId
+     *            userId for which credetntials are set
+     * @param password
+     *            open password as credetntials
      * @return credential creator used for creating credentials
      */
     private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password) {
@@ -452,13 +467,16 @@ public class UserServiceSteps extends KapuaTest {
      * Create accessInfoCreator instance with data about user permissions.
      * If target scope is not defined in permission list use account scope.
      *
-     * @param permissionList list of all permissions
-     * @param user           user for which permissions are set
-     * @param account        that user belongs to
+     * @param permissionList
+     *            list of all permissions
+     * @param user
+     *            user for which permissions are set
+     * @param account
+     *            that user belongs to
      * @return AccessInfoCreator instance for creating user permissions
      */
     private AccessInfoCreator accessInfoCreatorCreator(List<TestPermission> permissionList,
-                                                       ComparableUser user, Account account) {
+            ComparableUser user, Account account) {
 
         PermissionFactory permissionFactory = new PermissionFactoryImpl();
         AccessInfoCreator accessInfoCreator = new AccessInfoFactoryImpl().newCreator(account.getId());

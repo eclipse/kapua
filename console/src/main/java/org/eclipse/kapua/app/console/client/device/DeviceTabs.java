@@ -43,6 +43,7 @@ public class DeviceTabs extends LayoutContainer {
     private TabItem m_tabPackages;
     private TabItem m_tabBundles;
     private TabItem m_tabConfiguration;
+    private TabItem m_tabAssets;
 
     private TabItem m_tabCommand;
 
@@ -52,6 +53,7 @@ public class DeviceTabs extends LayoutContainer {
     private DeviceTabBundles m_deviceBundlesTab;
     private DeviceTabConfiguration m_deviceConfigTab;
     private DeviceTabCommand m_deviceCommandTab;
+    private AssetTabItem m_deviceAssetsTab;
 
     public DeviceTabs(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
         m_devicesTable = devicesTable;
@@ -63,6 +65,7 @@ public class DeviceTabs extends LayoutContainer {
         m_devicePackagesTab = new DeviceTabPackages(m_currentSession, this);
         m_deviceBundlesTab = new DeviceTabBundles(m_currentSession, this);
         m_deviceConfigTab = new DeviceTabConfiguration(m_currentSession);
+        m_deviceAssetsTab = new AssetTabItem(m_currentSession);
 
         m_deviceCommandTab = new DeviceTabCommand(m_currentSession);
     }
@@ -232,6 +235,18 @@ public class DeviceTabs extends LayoutContainer {
             }
         });
         m_tabsPanel.add(m_tabCommand);
+        
+        m_tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.AMAZON));
+        m_tabAssets.setBorders(false);
+        m_tabAssets.setLayout(new FitLayout());
+        m_tabAssets.add(m_deviceAssetsTab);
+        m_tabAssets.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            public void handleEvent(ComponentEvent be) {
+          //      m_deviceAssetsTab.refresh();
+            }
+        });
+        m_tabsPanel.add(m_tabAssets);
 
         add(m_tabsPanel);
     }

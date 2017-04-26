@@ -22,5 +22,6 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
  * 
  */
 public class AccessTokenListResultImpl extends KapuaListResultImpl<AccessToken> implements AccessTokenListResult {
+    private static final long serialVersionUID = -2596004122285166444L;
 
 }

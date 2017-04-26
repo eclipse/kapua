@@ -56,7 +56,7 @@ public class DataExporterCsv extends DataExporter {
     public void append(List<DatastoreMessage> messages) throws ServletException, IOException {
         for (DatastoreMessage message : messages) {
             String topic = BLANK;
-            List<String> columns = new ArrayList<>();
+            List<String> columns = new ArrayList<String>();
             columns.add(valueOf(message.getTimestamp()));
             columns.add(valueOf(message.getClientId()));
             if (message.getChannel() != null) {

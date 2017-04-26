@@ -75,33 +75,33 @@ public class DeviceTabHistory extends LayoutContainer {
 
     private static final int DEVICE_PAGE_SIZE = 250;
 
-    private GwtSession m_currentSession;
+    private GwtSession currentSession;
 
-    private boolean m_dirty;
-    private boolean m_initialized;
-    private GwtDevice m_selectedDevice;
+    private boolean dirty;
+    private boolean initialized;
+    private GwtDevice selectedDevice;
 
-    private ToolBar m_toolBar;
+    private ToolBar toolBar;
 
-    private Button m_refreshButton;
-    private Button m_export;
+    private Button refreshButton;
+    private Button export;
 
-    private DateRangeSelector m_dateRangeSelector;
-    private Grid<GwtDeviceEvent> m_grid;
-    private PagingToolBar m_pagingToolBar;
-    private BasePagingLoader<PagingLoadResult<GwtDeviceEvent>> m_loader;
+    private DateRangeSelector dateRangeSelector;
+    private Grid<GwtDeviceEvent> grid;
+    private PagingToolBar pagingToolBar;
+    private BasePagingLoader<PagingLoadResult<GwtDeviceEvent>> loader;
 
     protected boolean refreshProcess;
 
     public DeviceTabHistory(GwtSession currentSession) {
-        m_currentSession = currentSession;
-        m_dirty = false;
-        m_initialized = false;
+        this.currentSession = currentSession;
+        dirty = false;
+        initialized = false;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        m_dirty = true;
-        m_selectedDevice = selectedDevice;
+        dirty = true;
+        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -120,37 +120,37 @@ public class DeviceTabHistory extends LayoutContainer {
         devicesHistoryPanel.setHeaderVisible(false);
         devicesHistoryPanel.setLayout(new FitLayout());
         devicesHistoryPanel.setScrollMode(Scroll.AUTO);
-        devicesHistoryPanel.setTopComponent(m_toolBar);
-        devicesHistoryPanel.add(m_grid);
-        devicesHistoryPanel.setBottomComponent(m_pagingToolBar);
+        devicesHistoryPanel.setTopComponent(toolBar);
+        devicesHistoryPanel.add(grid);
+        devicesHistoryPanel.setBottomComponent(pagingToolBar);
 
         add(devicesHistoryPanel);
-        m_initialized = true;
+        initialized = true;
     }
 
     private void initToolBar() {
-        m_toolBar = new ToolBar();
+        toolBar = new ToolBar();
 
         //
         // Refresh Button
-        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
-                    m_refreshButton.setEnabled(false);
+                    refreshButton.setEnabled(false);
                     refreshProcess = true;
 
                     reload();
 
                     refreshProcess = false;
-                    m_refreshButton.setEnabled(true);
+                    refreshButton.setEnabled(true);
                 }
             }
         });
-        m_refreshButton.setEnabled(true);
-        m_toolBar.add(m_refreshButton);
-        m_toolBar.add(new SeparatorToolItem());
+        refreshButton.setEnabled(true);
+        toolBar.add(refreshButton);
+        toolBar.add(new SeparatorToolItem());
 
         Menu menu = new Menu();
         menu.add(new KapuaMenuItem(MSGS.exportToExcel(), IconSet.FILE_EXCEL_O,
@@ -169,25 +169,25 @@ public class DeviceTabHistory extends LayoutContainer {
                         export("csv");
                     }
                 }));
-        m_export = new ExportButton();
-        m_export.setMenu(menu);
+        export = new ExportButton();
+        export.setMenu(menu);
 
-        m_toolBar.add(m_export);
-        m_toolBar.add(new SeparatorToolItem());
+        toolBar.add(export);
+        toolBar.add(new SeparatorToolItem());
 
-        m_dateRangeSelector = new DateRangeSelector();
-        m_dateRangeSelector.setListener(new DateRangeSelectorListener() {
+        dateRangeSelector = new DateRangeSelector();
+        dateRangeSelector.setListener(new DateRangeSelectorListener() {
 
             public void onUpdate() {
-                m_dirty = true;
+                dirty = true;
                 refresh();
             }
         });
 
-        m_toolBar.add(new FillToolItem());
-        m_toolBar.add(new LabelToolItem(MSGS.dataDateRange()));
-        m_toolBar.add(m_dateRangeSelector);
-        m_toolBar.disable();
+        toolBar.add(new FillToolItem());
+        toolBar.add(new LabelToolItem(MSGS.dataDateRange()));
+        toolBar.add(dateRangeSelector);
+        toolBar.disable();
     }
 
     private void initGrid() {
@@ -241,42 +241,42 @@ public class DeviceTabHistory extends LayoutContainer {
 
             @Override
             public void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDeviceEvent>> callback) {
-                if (m_selectedDevice != null) {
+                if (selectedDevice != null) {
                     PagingLoadConfig pagingConfig = (BasePagingLoadConfig) loadConfig;
                     ((BasePagingLoadConfig) pagingConfig).setLimit(DEVICE_PAGE_SIZE);
                     gwtDeviceService.findDeviceEvents(pagingConfig,
-                            m_selectedDevice,
-                            m_dateRangeSelector.getStartDate(),
-                            m_dateRangeSelector.getEndDate(),
+                            selectedDevice,
+                            dateRangeSelector.getStartDate(),
+                            dateRangeSelector.getEndDate(),
                             callback);
                 }
             }
         };
-        m_loader = new BasePagingLoader<PagingLoadResult<GwtDeviceEvent>>(proxy);
-        m_loader.setSortDir(SortDir.DESC);
-        m_loader.setSortField("receivedOnFormatted");
-        m_loader.setRemoteSort(true);
-        m_loader.addLoadListener(new DataLoadListener());
+        loader = new BasePagingLoader<PagingLoadResult<GwtDeviceEvent>>(proxy);
+        loader.setSortDir(SortDir.DESC);
+        loader.setSortField("receivedOnFormatted");
+        loader.setRemoteSort(true);
+        loader.addLoadListener(new DataLoadListener());
 
-        ListStore<GwtDeviceEvent> store = new ListStore<GwtDeviceEvent>(m_loader);
+        ListStore<GwtDeviceEvent> store = new ListStore<GwtDeviceEvent>(loader);
 
-        m_grid = new Grid<GwtDeviceEvent>(store, new ColumnModel(columns));
-        m_grid.setBorders(false);
-        m_grid.setStateful(false);
-        m_grid.setLoadMask(true);
-        m_grid.setStripeRows(true);
-        m_grid.setTrackMouseOver(false);
-        m_grid.setAutoExpandColumn("eventMessage");
-        m_grid.disableTextSelection(false);
-        m_grid.getView().setAutoFill(true);
-        m_grid.getView().setEmptyText(MSGS.deviceHistoryTableNoHistory());
+        grid = new Grid<GwtDeviceEvent>(store, new ColumnModel(columns));
+        grid.setBorders(false);
+        grid.setStateful(false);
+        grid.setLoadMask(true);
+        grid.setStripeRows(true);
+        grid.setTrackMouseOver(false);
+        grid.setAutoExpandColumn("eventMessage");
+        grid.disableTextSelection(false);
+        grid.getView().setAutoFill(true);
+        grid.getView().setEmptyText(MSGS.deviceHistoryTableNoHistory());
 
-        m_pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
-        m_pagingToolBar.bind(m_loader);
+        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
+        pagingToolBar.bind(loader);
 
         GridSelectionModel<GwtDeviceEvent> selectionModel = new GridSelectionModel<GwtDeviceEvent>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
-        m_grid.setSelectionModel(selectionModel);
+        grid.setSelectionModel(selectionModel);
     }
 
     // --------------------------------------------------------------------------------------
@@ -286,19 +286,19 @@ public class DeviceTabHistory extends LayoutContainer {
     // --------------------------------------------------------------------------------------
 
     public void refresh() {
-        if (m_dirty && m_initialized) {
-            m_dirty = false;
-            if (m_selectedDevice == null) {
+        if (dirty && initialized) {
+            dirty = false;
+            if (selectedDevice == null) {
                 // clear the table
-                m_grid.getStore().removeAll();
+                grid.getStore().removeAll();
             } else {
-                m_loader.load();
+                loader.load();
             }
         }
     }
 
     public void reload() {
-        m_loader.load();
+        loader.load();
     }
 
     private void export(String format) {
@@ -311,14 +311,14 @@ public class DeviceTabHistory extends LayoutContainer {
 
         sbUrl.append("format=")
                 .append(format)
-                .append("&account=")
-                .append(URL.encodeQueryString(m_currentSession.getSelectedAccount().getName()))
-                .append("&clientId=")
-                .append(URL.encodeQueryString(m_selectedDevice.getClientId()))
+                .append("&scopeId=")
+                .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()))
+                .append("&deviceId=")
+                .append(URL.encodeQueryString(selectedDevice.getId()))
                 .append("&startDate=")
-                .append(m_dateRangeSelector.getStartDate().getTime())
+                .append(dateRangeSelector.getStartDate().getTime())
                 .append("&endDate=")
-                .append(m_dateRangeSelector.getEndDate().getTime());
+                .append(dateRangeSelector.getEndDate().getTime());
         Window.open(sbUrl.toString(), "_blank", "location=no");
     }
 
@@ -338,7 +338,7 @@ public class DeviceTabHistory extends LayoutContainer {
                 FailureHandler.handle(le.exception);
             }
 
-            m_toolBar.enable();
+            toolBar.enable();
         }
     }
 }

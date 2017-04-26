@@ -15,6 +15,7 @@ package org.eclipse.kapua.commons.security;
 import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class KapuaSecurityUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(KapuaSecurityUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaSecurityUtils.class);
 
     public static final String MDC_USER_ID = "userId";
 
@@ -57,6 +58,27 @@ public class KapuaSecurityUtils {
     }
 
     /**
+     * Execute the {@link Runnable} in a privileged context.<br>
+     * Trusted mode means that checks for permissions and role will pass.
+     *
+     * @param privilegedAction
+     *            The {@link Runnable} action to be executed.
+     * @return The result of the {@link Runnable} action.
+     * @throws KapuaException
+     */
+    public static void doPrivileged(final ThrowingRunnable runnable) throws KapuaException {
+        doPrivileged(new Callable<Void>() {
+
+            @Override
+            public Void call() throws Exception {
+                runnable.run();
+                return null;
+            }
+
+        });
+    }
+
+    /**
      * Execute the {@link Callable} in a privileged context.<br>
      * Trusted mode means that checks for permissions and role will pass.
      *
@@ -66,8 +88,7 @@ public class KapuaSecurityUtils {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static <T> T doPrivileged(Callable<T> privilegedAction)
-            throws KapuaException {
+    public static <T> T doPrivileged(Callable<T> privilegedAction) throws KapuaException {
         T result = null;
 
         // get (and keep) the current session

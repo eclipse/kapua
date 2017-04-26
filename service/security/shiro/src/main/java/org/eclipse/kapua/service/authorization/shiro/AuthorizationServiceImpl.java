@@ -15,7 +15,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalStateException;
+import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -49,9 +49,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throws KapuaException {
         KapuaSession session = KapuaSecurityUtils.getSession();
 
-        // FIXME: this should throw something like unauthenticated exception
         if (session == null) {
-            throw new KapuaIllegalStateException("null KapuaSession");
+            throw new KapuaUnauthenticatedException();
         }
 
         if (!session.isTrustedMode()) {

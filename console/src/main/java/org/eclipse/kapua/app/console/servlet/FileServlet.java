@@ -294,8 +294,8 @@ class UploadRequest extends ServletFileUpload {
     public UploadRequest(DiskFileItemFactory diskFileItemFactory) {
         super(diskFileItemFactory);
         setSizeMax(ConsoleSetting.getInstance().getLong(ConsoleSettingKeys.FILE_UPLOAD_SIZE_MAX));
-        formFields = new HashMap<>();
-        fileItems = new ArrayList<>();
+        formFields = new HashMap<String, String>();
+        fileItems = new ArrayList<FileItem>();
     }
 
     public void parse(HttpServletRequest req) throws FileUploadException {

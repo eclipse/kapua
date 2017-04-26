@@ -3,6 +3,12 @@ jdk:
   - oraclejdk8
 script: ./travis.sh
 
-sudo: required
-services:
-  - docker
+# The following upgrades Java during the build in
+# order to work around an older Java 8 compiler issue
+# which has problems infering types. Travis ships a
+# rather old Java 8 version in its images.
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer 

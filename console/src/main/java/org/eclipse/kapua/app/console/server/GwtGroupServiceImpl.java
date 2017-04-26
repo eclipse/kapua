@@ -180,7 +180,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
     @Override
     public List<GwtGroup> findAll(String scopeId) {
-        List<GwtGroup> groupList = new ArrayList<>();
+        List<GwtGroup> groupList = new ArrayList<GwtGroup>();
         KapuaLocator locator = KapuaLocator.getInstance();
         GroupService groupService = locator.getService(GroupService.class);
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);

@@ -53,7 +53,7 @@ public class SsoCallbackServlet extends HttpServlet {
         urlConnection.setRequestMethod("POST");
         urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
 
-        final List<NameValuePair> parameters = new ArrayList<>();
+        final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
         parameters.add(new BasicNameValuePair("code", authCode));
         parameters.add(new BasicNameValuePair("client_id", settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID)));
@@ -67,16 +67,24 @@ public class SsoCallbackServlet extends HttpServlet {
         final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 
         // Send post request
+        
         urlConnection.setDoOutput(true);
 
-        try (final OutputStream outputStream = urlConnection.getOutputStream()) {
+        final OutputStream outputStream = urlConnection.getOutputStream();
+        try {
             entity.writeTo(outputStream);
+        } finally {
+            outputStream.close();
         }
 
+        // parse result
+        
         final JsonObject jsonObject;
-        try (final InputStream stream = urlConnection.getInputStream()) {
-            // parse result
+        final InputStream stream = urlConnection.getInputStream();
+        try {
             jsonObject = Json.createReader(stream).readObject();
+        } finally {
+            stream.close();
         }
 
         // Get and clean jwks_uri property

@@ -64,18 +64,26 @@
         <!-- Internal test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-test</artifactId>
+            <artifactId>kapua-user-internal</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Standalone dependencies -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
-            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-internal</artifactId>
-            <scope>test</scope>
+            <artifactId>kapua-test</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- External testing dependencies. -->

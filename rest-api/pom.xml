@@ -83,6 +83,20 @@
 			<version>${shiro.version}</version>
 		</dependency>
 
+        <!-- Jackson -->
+        <!-- Needed to specify 2.8.x version, otherwise Datastore would 
+             bring in 2.6.x that is not compatible with Jersey 1.5.12 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 		<!-- -->
         <!-- Same version of the Servlet APIs supported in Apache Tomcat 
             8.0.x -->

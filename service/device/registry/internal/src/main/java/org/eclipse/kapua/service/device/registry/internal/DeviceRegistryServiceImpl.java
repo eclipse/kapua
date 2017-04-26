@@ -32,17 +32,19 @@ import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 
 /**
  * {@link DeviceRegistryService} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
-public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Device, DeviceCreator, DeviceRegistryService, DeviceListResult, DeviceQuery, DeviceFactory> implements DeviceRegistryService {
+public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Device, DeviceCreator, DeviceRegistryService, DeviceListResult, DeviceQuery, DeviceFactory>
+        implements DeviceRegistryService {
 
     private static final Domain deviceDomain = new DeviceDomain();
     // Constructors
+
     /**
      * Constructor
-     * 
+     *
      * @param deviceEntityManagerFactory
      */
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {

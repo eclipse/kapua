@@ -28,7 +28,7 @@ HEARTBEAT_PROCESS_PID=$!
 
 ### Build itself
 
-mvn >> $OUTPUT 2>&1
+mvn -Dorg.eclipse.kapua.qa.waitMultiplier=2.0 >> $OUTPUT 2>&1
 tail_log
 
 ### Cleaning up heartbeat process

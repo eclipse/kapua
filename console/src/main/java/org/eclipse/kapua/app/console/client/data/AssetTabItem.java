@@ -40,10 +40,10 @@ import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class AssetTabItem extends  TabItem{
+public class AssetTabItem extends TabItem {
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
-    
+
     private GwtSession currentSession;
     private DeviceTable deviceTable;
     private Button queryButton;
@@ -59,7 +59,7 @@ public class AssetTabItem extends  TabItem{
         this.setBorders(false);
         this.setLayout(new BorderLayout());
     }
-    
+
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
@@ -69,31 +69,31 @@ public class AssetTabItem extends  TabItem{
         Text welcomeMessage = new Text();
         welcomeMessage.setText(MSGS.assetTabItemMessage());
         add(welcomeMessage, messageLayout);
-        
+
         LayoutContainer tables = new LayoutContainer(new BorderLayout());
         BorderLayoutData tablesLayout = new BorderLayoutData(LayoutRegion.CENTER);
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
-        
+
         BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.3f);
         deviceTable = new DeviceTable(currentSession);
         deviceLayout.setMargins(new Margins(0, 5, 0, 0));
         deviceLayout.setSplit(true);
         deviceTable.addSelectionChangedListener(new SelectionChangedListener<GwtDatastoreDevice>() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDatastoreDevice> se) {
                 assetTable.refresh(se.getSelectedItem());
             }
         });
         tables.add(deviceTable, deviceLayout);
-        
+
         BorderLayoutData assetLayout = new BorderLayoutData(LayoutRegion.CENTER, 0.3f);
         assetLayout.setMargins(new Margins(0, 5, 0, 5));
         assetLayout.setSplit(true);
         assetTable = new AssetTable(currentSession);
         assetTable.addSelectionChangedListener(new SelectionChangedListener<GwtDatastoreAsset>() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDatastoreAsset> se) {
                 GwtDatastoreDevice selectedDevice = deviceTable.getSelectedDevice();
@@ -107,18 +107,18 @@ public class AssetTabItem extends  TabItem{
         channelLayout.setSplit(true);
         channelTable = new ChannelTable(currentSession);
         channelTable.addSelectionListener(new SelectionChangedListener<GwtDatastoreChannel>() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDatastoreChannel> se) {
                 queryButton.setEnabled(!se.getSelection().isEmpty());
             }
         });
-        tables.add(channelTable,channelLayout);
-        
+        tables.add(channelTable, channelLayout);
+
         BorderLayoutData queryButtonLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.1f);
         queryButtonLayout.setMargins(new Margins(5));
         queryButton = new Button(MSGS.assetTabItemQueryButtonText(), new KapuaIcon(IconSet.SEARCH), new SelectionListener<ButtonEvent>() {
-            
+
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GwtDatastoreDevice gwtDevice = deviceTable.getSelectedDevice();
@@ -138,14 +138,13 @@ public class AssetTabItem extends  TabItem{
         resultsLayout.setSplit(true);
         resultsLayout.setMargins(new Margins(5, 0, 0, 0));
 
-        
         TabPanel resultsTabPanel = new TabPanel();
         resultsTable = new ResultsTable(currentSession);
         TabItem resultsTableTabItem = new TabItem(MSGS.resultsTableTabItemTitle(), new KapuaIcon(IconSet.TABLE));
         resultsTableTabItem.setLayout(new FitLayout());
         resultsTableTabItem.add(resultsTable);
         resultsTabPanel.add(resultsTableTabItem);
-        
+
         add(resultsTabPanel, resultsLayout);
     }
 }

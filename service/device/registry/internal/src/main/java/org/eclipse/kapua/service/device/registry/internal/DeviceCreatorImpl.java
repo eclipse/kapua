@@ -20,7 +20,7 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
 /**
  * {@link DeviceCreator} implementation.
- * 
+ *
  * @since 1.0.0
  */
 public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implements DeviceCreator {
@@ -58,7 +58,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
 
     /**
      * Constructor.
-     * 
+     *
      * @param scopeId
      * @since 1.0.0
      */
@@ -256,7 +256,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
 
     /**
      * Get the gps longitude
-     * 
+     *
      * @return
      */
     public Double getGpsLongitude() {
@@ -265,7 +265,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
 
     /**
      * Set the gps longitude
-     * 
+     *
      * @param gpsLongitude
      */
     public void setGpsLongitude(Double gpsLongitude) {
@@ -274,7 +274,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
 
     /**
      * Get the gps latitude
-     * 
+     *
      * @return
      */
     public Double getGpsLatitude() {
@@ -283,7 +283,7 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
 
     /**
      * Set the gps latitude
-     * 
+     *
      * @param gpsLatitude
      */
     public void setGpsLatitude(Double gpsLatitude) {

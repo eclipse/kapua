@@ -24,6 +24,8 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
  */
 public class DeviceCommandInputImpl implements DeviceCommandInput {
 
+    private static final long serialVersionUID = -2141178091281947848L;
+
     private String command;
     private String password;
     private String[] arguments;

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.kura.simulator.app.deploy;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
         }
 
         public int getState() {
-            return state;
+            return this.state;
         }
 
         public void setState(final int state) {
@@ -51,11 +52,11 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
         }
 
         public String getSymbolicName() {
-            return symbolicName;
+            return this.symbolicName;
         }
 
         public String getVersion() {
-            return version;
+            return this.version;
         }
     }
 
@@ -65,19 +66,19 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
     private long nextFreeBundleId = 0;
 
     public SimpleDeployApplication(final ScheduledExecutorService downloadExecutor) {
-        downloadSimulator = new DownloadSimulator(downloadExecutor, 10 * 1024);
+        this.downloadSimulator = new DownloadSimulator(downloadExecutor, 10 * 1024);
 
-        bundles.put(nextFreeBundleId++, new BundleState("org.osgi", "6.0.0", Bundle.ACTIVE));
-        bundles.put(nextFreeBundleId++, new BundleState("org.eclipse.kura.api", "2.1.0", Bundle.ACTIVE));
-        bundles.put(nextFreeBundleId++, new BundleState("org.eclipse.kura.core", "2.1.1", Bundle.ACTIVE));
-        bundles.put(nextFreeBundleId++,
+        this.bundles.put(this.nextFreeBundleId++, new BundleState("org.osgi", "6.0.0", Bundle.ACTIVE));
+        this.bundles.put(this.nextFreeBundleId++, new BundleState("org.eclipse.kura.api", "2.1.0", Bundle.ACTIVE));
+        this.bundles.put(this.nextFreeBundleId++, new BundleState("org.eclipse.kura.core", "2.1.1", Bundle.ACTIVE));
+        this.bundles.put(this.nextFreeBundleId++,
                 new BundleState("org.eclipse.kura.unresolved", "2.1.2", Bundle.INSTALLED));
-        bundles.put(nextFreeBundleId++,
+        this.bundles.put(this.nextFreeBundleId++,
                 new BundleState("org.eclipse.kura.unstarted", "2.1.1", Bundle.RESOLVED));
     }
 
     public SimpleDeployApplication(final ScheduledExecutorService downloadExecutor, final List<BundleState> bundles) {
-        downloadSimulator = new DownloadSimulator(downloadExecutor, 10 * 1024);
+        this.downloadSimulator = new DownloadSimulator(downloadExecutor, 10 * 1024);
 
         if (bundles != null) {
             for (final BundleState bundle : bundles) {
@@ -88,14 +89,14 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
 
     @Override
     public void close() {
-        downloadSimulator.close();
+        this.downloadSimulator.close();
     }
 
     @Override
     protected void executeDownload(final Request request, final DeploymentDownloadPackageRequest downloadRequest) {
         request.replySuccess().send();
 
-        final boolean started = downloadSimulator.startDownload(downloadRequest.getJobId(), 128 * 1024, state -> {
+        final boolean started = this.downloadSimulator.startDownload(downloadRequest.getJobId(), 128 * 1024, state -> {
             request.notification("download").send(toMetrics(state));
         }, () -> {
             internalInstallPackage(downloadRequest.getName(), downloadRequest.getVersion(),
@@ -130,7 +131,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
 
     @Override
     protected void cancelDownload(final Request request) {
-        if (downloadSimulator.cancelDownload()) {
+        if (this.downloadSimulator.cancelDownload()) {
             request.replySuccess().send();
         }
     }
@@ -161,7 +162,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
             final List<DeploymentPackageInformation.BundleInformation> bundles) {
         internalUninstallPackage(name, version);
 
-        packages.add(new DeploymentPackageInformation(name, version, bundles));
+        this.packages.add(new DeploymentPackageInformation(name, version, Instant.now(), bundles));
 
         for (final DeploymentPackageInformation.BundleInformation bi : bundles) {
             internalInstallBundle(new BundleState(bi.getSymbolicName(), bi.getVersion(), Bundle.ACTIVE));
@@ -169,7 +170,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
     }
 
     protected void internalUninstallPackage(final String name, final String version) {
-        final Iterator<DeploymentPackageInformation> i = packages.iterator();
+        final Iterator<DeploymentPackageInformation> i = this.packages.iterator();
         while (i.hasNext()) {
             final DeploymentPackageInformation p = i.next();
 
@@ -184,11 +185,11 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
     }
 
     protected void internalInstallBundle(final BundleState bundle) {
-        bundles.put(nextFreeBundleId++, bundle);
+        this.bundles.put(this.nextFreeBundleId++, bundle);
     }
 
     protected void internallUninstallBundle(final String symbolicName, final String version) {
-        final Iterator<Entry<Long, BundleState>> i = bundles.entrySet().iterator();
+        final Iterator<Entry<Long, BundleState>> i = this.bundles.entrySet().iterator();
         while (i.hasNext()) {
             final Entry<Long, BundleState> e = i.next();
             final BundleState b = e.getValue();
@@ -202,12 +203,12 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
 
     @Override
     protected List<DeploymentPackageInformation> getPackages() {
-        return Collections.unmodifiableList(packages);
+        return Collections.unmodifiableList(this.packages);
     }
 
     @Override
     protected Optional<DownloadState> getDownloadState() {
-        return Optional.ofNullable(downloadSimulator.getState());
+        return Optional.ofNullable(this.downloadSimulator.getState());
     }
 
     @Override
@@ -217,7 +218,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
 
     @Override
     protected List<BundleInformation> getBundles() {
-        return bundles.entrySet()
+        return this.bundles.entrySet()
                 .stream().map(entry -> new BundleInformation(entry.getValue().getSymbolicName(),
                         entry.getValue().getVersion(), entry.getKey(), entry.getValue().getState()))
                 .collect(Collectors.toList());
@@ -225,7 +226,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
 
     @Override
     protected boolean startBundle(final long bundleId) {
-        final BundleState bundle = bundles.get(bundleId);
+        final BundleState bundle = this.bundles.get(bundleId);
         if (bundle == null) {
             return false;
         }
@@ -239,7 +240,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
 
     @Override
     protected boolean stopBundle(final long bundleId) {
-        final BundleState bundle = bundles.get(bundleId);
+        final BundleState bundle = this.bundles.get(bundleId);
         if (bundle == null) {
             return false;
         }

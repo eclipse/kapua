@@ -21,6 +21,7 @@ import javax.jms.Message;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
+import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
@@ -79,10 +80,12 @@ public abstract class AbstractKapuaConverter {
         JmsMessage message = exchange.getIn(JmsMessage.class);
         if (message.getJmsMessage() instanceof BytesMessage) {
             try {
+                // FIX #164
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                KapuaId connectionId = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, KapuaId.class);
+                KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, byte[].class));
                 String clientId = (String) message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID);
-                ConnectorDescriptor connectorDescriptor = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, ConnectorDescriptor.class);
+                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
+                        .deserialize(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, byte[].class));
                 return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
             } catch (JMSException e) {
                 metricConverterErrorMessage.inc();

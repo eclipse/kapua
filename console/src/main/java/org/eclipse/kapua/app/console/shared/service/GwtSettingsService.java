@@ -27,5 +27,7 @@ public interface GwtSettingsService extends RemoteService {
 
     public String getSsoLoginUri();
 
+    public String getHomeUri();
+
     public boolean getSsoEnabled();
 }

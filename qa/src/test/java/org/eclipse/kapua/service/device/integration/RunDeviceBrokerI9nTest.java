@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.integration;
 
@@ -19,7 +20,8 @@ import cucumber.api.junit.Cucumber;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/broker",
-        glue = {"org.eclipse.kapua.service.user.steps",
+        glue = {"org.eclipse.kapua.qa.steps",
+                "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"},
         plugin = {"pretty", "html:target/cucumber/DeviceBrokerI9n",
                 "json:target/DeviceBrokerI9n_cucumber.json"},

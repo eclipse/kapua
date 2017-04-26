@@ -42,6 +42,7 @@
         <url-pattern>/auth/*</url-pattern>
         <url-pattern>/device/*</url-pattern>
         <url-pattern>/deviceManagement/*</url-pattern>
+        <url-pattern>/deviceConnection/*</url-pattern>
         <url-pattern>/device_snapshots/*</url-pattern>
         <url-pattern>/user/*</url-pattern>
         <url-pattern>/data/*</url-pattern>
@@ -116,6 +117,15 @@
         <servlet-name>deviceExporterServlet</servlet-name>
         <url-pattern>/exporter_device/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>deviceEventExporterServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.servlet.DeviceEventExporterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deviceEventExporterServlet</servlet-name>
+        <url-pattern>/exporter_device_event/*</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>deviceSnapshotsServlet</servlet-name>
@@ -160,6 +170,15 @@
     <servlet-mapping>
         <servlet-name>deviceManagementServlet</servlet-name>
         <url-pattern>/deviceManagement</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>deviceConnectionServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtDeviceConnectionServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deviceConnectionServlet</servlet-name>
+        <url-pattern>/deviceConnection</url-pattern>
     </servlet-mapping>
 
     <servlet>

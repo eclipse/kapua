@@ -26,15 +26,14 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 
 /**
  * {@link Device} DAO
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class DeviceDAO extends ServiceDAO {
 
     /**
      * Creates a new Device
-     * 
+     *
      * @param em
      * @param deviceCreator
      * @return
@@ -75,12 +74,11 @@ public class DeviceDAO extends ServiceDAO {
 
     /**
      * Updates the provided device
-     * 
+     *
      * @param em
      * @param device
      * @return
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Device} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
     public static Device update(EntityManager em, Device device) throws KapuaEntityNotFoundException {
         DeviceImpl deviceImpl = (DeviceImpl) device;
@@ -89,7 +87,7 @@ public class DeviceDAO extends ServiceDAO {
 
     /**
      * Finds the device by device identifier
-     * 
+     *
      * @param em
      * @param deviceId
      * @return
@@ -100,7 +98,7 @@ public class DeviceDAO extends ServiceDAO {
 
     /**
      * Returns the device list matching the provided query
-     * 
+     *
      * @param em
      * @param query
      * @return
@@ -150,7 +148,7 @@ public class DeviceDAO extends ServiceDAO {
 
     /**
      * Returns the device count matching the provided query
-     * 
+     *
      * @param em
      * @param query
      * @return
@@ -165,11 +163,10 @@ public class DeviceDAO extends ServiceDAO {
 
     /**
      * Deletes the device by device identifier
-     * 
+     *
      * @param em
      * @param deviceId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Device} is not found.
+     * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceImpl.class, deviceId);

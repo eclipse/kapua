@@ -20,42 +20,39 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 
 /**
  * Entity manager factory for the device module.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
-public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory
-{
-    private static final String               PERSISTENCE_UNIT_NAME = "kapua-device";
-    private static final String               DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String>  s_uniqueConstraints   = new HashMap<>();
+public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory {
 
-    private static DeviceEntityManagerFactory instance              = new DeviceEntityManagerFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-device";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+
+    private static DeviceEntityManagerFactory instance = new DeviceEntityManagerFactory();
 
     /**
      * Constructs a new entity manager factory and configure it to use the device persistence unit.
      */
-    private DeviceEntityManagerFactory()
-    {
+    private DeviceEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
-              DATASOURCE_NAME,
-              s_uniqueConstraints);
+                DATASOURCE_NAME,
+                s_uniqueConstraints);
     }
 
     /**
      * Return a new {@link EntityManager} instance
-     * 
+     *
      * @return
      */
     public static EntityManager getEntityManager()
-        throws KapuaException
-    {
+            throws KapuaException {
         return instance.createEntityManager();
     }
 
     /**
      * Return the {@link EntityManager} singleton instance
-     * 
+     *
      * @return
      */
     public static DeviceEntityManagerFactory instance() {

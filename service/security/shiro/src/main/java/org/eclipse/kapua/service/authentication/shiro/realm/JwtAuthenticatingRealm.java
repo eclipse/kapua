@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,9 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
-
-import java.math.BigInteger;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
@@ -26,7 +25,6 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
@@ -39,6 +37,9 @@ import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,11 +92,23 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
             throw new ShiroException("Error while getting services!", kre);
         }
 
+        final String name;
+        try {
+            JwtContext ctx = JwtHelper.processJwt(jwt);
+            name = ctx.getJwtClaims().getClaimValue("preferred_username", String.class);
+        } catch (MalformedClaimException | InvalidJwtException e) {
+            throw new ShiroException("Failed to parse JWT", e);
+        }
+
+        if (name == null || name.isEmpty()) {
+            throw new ShiroException("'preferred_username' missing on JWT");
+        }
+
         //
         // Get the associated user by name
         final User user;
         try {
-            user = KapuaSecurityUtils.doPrivileged(() -> userService.find(new KapuaEid(new BigInteger("1")), new KapuaEid(new BigInteger("1"))));
+            user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(name));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {

@@ -18,7 +18,6 @@ public final class Tests {
 
     private Tests() {
     }
-    
 
     public static <X extends Throwable> void runWithProperties(Map<String, String> properties, TestFragment<X> fragment) throws X {
         final Map<String, String> old = new HashMap<>(properties.size());

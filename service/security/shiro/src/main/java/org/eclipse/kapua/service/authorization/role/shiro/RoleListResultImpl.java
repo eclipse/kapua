@@ -22,4 +22,6 @@ import org.eclipse.kapua.service.authorization.role.RoleListResult;
  * 
  */
 public class RoleListResultImpl extends KapuaListResultImpl<Role> implements RoleListResult {
+
+    private static final long serialVersionUID = -5902522234186399802L;
 }

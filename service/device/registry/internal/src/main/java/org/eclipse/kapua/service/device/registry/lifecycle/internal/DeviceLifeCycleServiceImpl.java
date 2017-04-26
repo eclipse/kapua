@@ -36,9 +36,8 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
 
 /**
  * {@link DeviceLifeCycleService} implementation.
- * 
+ *
  * @since 1.0.0
- * 
  */
 @KapuaProvider
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
@@ -133,7 +132,6 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         //
         // Device update
         KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
 
         //
         // Event create

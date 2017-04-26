@@ -330,9 +330,9 @@ public class KapuaCloudConsole implements EntryPoint {
     }
 
     private void performSsoLogin(final Viewport viewport, String authToken) {
-        
+
         // show wait dialog
-        
+
         final Dialog dlg = new Dialog();
         dlg.setHeading(MSGS.ssoWaitDialog_title());
         dlg.setButtons("");
@@ -345,7 +345,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
         dlg.show();
         dlg.center();
-        
+
         // start login process
 
         final GwtJwtCredential credentials = new GwtJwtCredential(authToken);

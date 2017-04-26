@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
@@ -19,8 +20,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.DBHelper;
-import org.eclipse.kapua.service.MQBrokerRunner;
+import org.eclipse.kapua.qa.steps.EmbeddedBroker;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
@@ -40,8 +40,6 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManage
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -64,22 +62,6 @@ public class BrokerSteps extends Assert {
      * Embedded broker configuration file from classpath resources.
      */
     public static final String ACTIVEMQ_XML = "xbean:activemq.xml";
-
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(BrokerSteps.class);
-
-    /**
-     * Max timeout at embedded broker startup.
-     */
-    private static final long BROKER_STARTUP_WAIT_MILIS = 10_000;
-
-    /**
-     * Timeout for complete broker with channels and rules to start.
-     * Might vary depending on system.
-     */
-    private static final long BROKER_RULES_WAIT_MILIS = 60_000;
 
     /**
      * Device birth topic.
@@ -109,6 +91,7 @@ public class BrokerSteps extends Assert {
     /**
      * Kura snapshot management service.
      */
+    @SuppressWarnings("unused")
     private DeviceSnapshotManagementService deviceSnapshotManagementService;
 
     /**
@@ -136,18 +119,9 @@ public class BrokerSteps extends Assert {
      */
     private StepData stepData;
 
-    /**
-     * Single point to database access.
-     */
-    private DBHelper dbHelper;
-
-    private MQBrokerRunner broker;
-
     @Inject
-    public BrokerSteps(StepData stepData, DBHelper dbHelper) {
-
+    public BrokerSteps(/* dependency */ EmbeddedBroker broker, StepData stepData) {
         this.stepData = stepData;
-        this.dbHelper = dbHelper;
     }
 
     @Before
@@ -162,22 +136,6 @@ public class BrokerSteps extends Assert {
         deviceCommandManagementService = locator.getService(DeviceCommandManagementService.class);
         deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
 
-        /*
-         * Initialize broker from MQ configuration file ad start it.
-         * After issuing start wait a moment to start completely.
-         */
-        logger.info("******* Broker will start ********");
-        broker = new MQBrokerRunner(BROKER_STARTUP_WAIT_MILIS, ACTIVEMQ_XML);
-        new Thread(broker).start();
-        // FIXME Issue with broker startup, not listening on topics and missing client connect messages.
-        // This could be moved to Gherkin as first step.
-        logger.info("******* Wait for Broker ********");
-        Thread.sleep(BROKER_RULES_WAIT_MILIS);
-        logger.info("******* Wait Broker Finished ********");
-
-        kuraDevice = new KuraDevice();
-        kuraDevice.mqttClientConnect();
-
         JAXBContextProvider consoleProvider = new TestJAXBContextProvider();
         XmlUtil.setContextProvider(consoleProvider);
     }
@@ -185,13 +143,19 @@ public class BrokerSteps extends Assert {
     @After
     public void afterScenario() throws Exception {
 
-        kuraDevice.mqttClientDisconnect();
-        broker.stopBroker();
+        if (kuraDevice != null) {
+            this.kuraDevice.mqttClientDisconnect();
+        }
 
-        dbHelper.deleteAll();
         KapuaSecurityUtils.clearSession();
 
         this.stepData = null;
+    }
+
+    @When("^I start the Kura Mock")
+    public void startKuraMock() {
+        kuraDevice = new KuraDevice();
+        kuraDevice.mqttClientConnect();
     }
 
     @When("^Device birth message is sent$")
@@ -233,6 +197,7 @@ public class BrokerSteps extends Assert {
     @Then("^Packages are received$")
     public void packagesReceived() {
 
+        @SuppressWarnings("unchecked")
         List<DevicePackage> packages = (List<DevicePackage>) stepData.get("packages");
         if (packages != null) {
             assertEquals(1, packages.size());
@@ -243,6 +208,7 @@ public class BrokerSteps extends Assert {
     public void requestBundles() throws Exception {
 
         Device device = deviceRegistryService.findByClientId(new KapuaEid(BigInteger.valueOf(1l)), "rpione3");
+        Assert.assertNotNull(device);
         DeviceBundles deviceBundles = deviceBundleManagementService.get(device.getScopeId(), device.getId(), null);
         List<DeviceBundle> bundles = deviceBundles.getBundles();
         stepData.put("bundles", bundles);
@@ -250,7 +216,7 @@ public class BrokerSteps extends Assert {
 
     @Then("^Bundles are received$")
     public void bundlesReceived() {
-
+        @SuppressWarnings("unchecked")
         List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get("bundles");
         assertEquals(80, bundles.size());
     }
@@ -267,7 +233,7 @@ public class BrokerSteps extends Assert {
 
     @Then("^Configuration is received$")
     public void configurationReceived() {
-
+        @SuppressWarnings("unchecked")
         List<DeviceComponentConfiguration> configurations = (List<DeviceComponentConfiguration>) stepData.get("configurations");
         assertEquals(11, configurations.size());
     }
@@ -291,13 +257,6 @@ public class BrokerSteps extends Assert {
 
         Integer commandExitCode = (Integer) stepData.get("commandExitCode");
         assertEquals(expectedExitCode, commandExitCode.intValue());
-    }
-
-    @When("^I wait (\\d+) second")
-    public void iWait(int waitInSeconds) throws Exception {
-        logger.info("***** Start wait step ******");
-        Thread.sleep(1000L * waitInSeconds);
-        logger.info("***** End wait step ******");
     }
 
 }

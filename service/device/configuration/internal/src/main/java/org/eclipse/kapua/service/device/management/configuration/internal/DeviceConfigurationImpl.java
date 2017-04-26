@@ -25,6 +25,8 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
  */
 public class DeviceConfigurationImpl implements DeviceConfiguration {
 
+    private static final long serialVersionUID = -2167999497954676423L;
+
     private List<DeviceComponentConfiguration> configurations;
 
     public DeviceConfigurationImpl() {

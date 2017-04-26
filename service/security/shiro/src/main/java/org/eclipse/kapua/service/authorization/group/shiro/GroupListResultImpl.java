@@ -21,4 +21,6 @@ import org.eclipse.kapua.service.authorization.group.GroupListResult;
  * @since 1.0.0
  */
 public class GroupListResultImpl extends KapuaListResultImpl<Group> implements GroupListResult {
+
+    private static final long serialVersionUID = 791258978210911362L;
 }

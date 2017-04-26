@@ -21,4 +21,6 @@ import org.eclipse.kapua.service.authorization.domain.DomainListResult;
  * @since 1.0.0
  */
 public class DomainListResultImpl extends KapuaListResultImpl<Domain> implements DomainListResult {
+
+    private static final long serialVersionUID = -5086830452591857912L;
 }

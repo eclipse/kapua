@@ -40,6 +40,21 @@ Navigate your browser to http://localhost:8080 and log in using the following cr
 
 You can access the API using: http://localhost:8081
 
+### SSO testing
+
+**Note:** This is only a setup for testing SSO support.
+
+You can also start a Keycloak instance in addition:
+
+    docker run -td --name sso -p 8082:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=secret jboss/keycloak
+
+Starting the `kapua-console` image with the following command line instead:
+
+    docker run -td --name kapua-console --link sso --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 -e KEYCLOAK_URL=http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sso):8080 -e KAPUA_URL=http://localhost:8080 kapua/kapua-console-jetty
+
+You will also need to create a new realm named `kapua` in the Keycloak web UI and create a new client called `console`.
+Assigning `http://localhost:8080/sso/callback` as a valid redirect URI.
+
 ### Tomcat images
 
 It is also possible to use Tomcat as a web container. For this use the following run commands instead:
@@ -48,5 +63,4 @@ It is also possible to use Tomcat as a web container. For this use the following
     docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api
 
 Please note that in this case you also have to append `/console` and `/api` to the URL.
-
 

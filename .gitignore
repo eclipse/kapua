@@ -115,3 +115,6 @@ Vagrantfile
 
 # Temporarly hide consoleV2 folder until it's merged from its branch
 console-v2/
+
+# Visual Studio Code project settings
+.vscode

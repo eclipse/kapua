@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.user.integration;
 
@@ -19,7 +20,9 @@ import cucumber.api.junit.Cucumber;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/user",
-        glue = "org.eclipse.kapua.service.user.steps",
+        glue = {
+                "org.eclipse.kapua.qa.steps",
+                "org.eclipse.kapua.service.user.steps" },
         plugin = {"pretty", "html:target/cucumber/UserServiceI9n",
                   "json:target/UserServiceI9n_cucumber.json"},
         monochrome=true)
