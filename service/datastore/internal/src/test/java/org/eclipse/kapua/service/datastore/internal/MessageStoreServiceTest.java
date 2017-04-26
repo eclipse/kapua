@@ -97,7 +97,7 @@ import org.slf4j.LoggerFactory;
 
 public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
     private static final long QUERY_TIME_WINDOW = 2000l;
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
     private static final long INDEX_TIME_ESTIMATE_SECONDS = 10; // Trail and error value depends on system where tests are run
@@ -183,7 +183,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
                 checkMessageDate(messageQueried, new Range<Date>("timestamp", capturedOn), new Range<Date>("sentOn", sentOn), new Range<Date>("capturedOn", capturedOn),
                         new Range<Date>("receivedOn", receivedOn));
             } catch (KapuaException e) {
-                s_logger.error("Exception: ", e.getMessage(), e);
+                logger.error("Exception: ", e.getMessage(), e);
             }
         }
     }
@@ -275,7 +275,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMessagesCount(messageList, messagesCount);
         checkMessagesDateBound(messageList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
         for (DatastoreMessage messageStored : messageList.getItems()) {
-            s_logger.debug("message sentOn: '" + messageStored.getSentOn() + "' - capturedOn: '" + messageStored.getCapturedOn() + "' clientId: '" + messageStored.getClientId() + "'");
+            logger.debug("message sentOn: '" + messageStored.getSentOn() + "' - capturedOn: '" + messageStored.getCapturedOn() + "' clientId: '" + messageStored.getClientId() + "'");
         }
         checkListOrder(messageList, sort);
     }
@@ -830,7 +830,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMetricDateBound(metricList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
 
         for (MetricInfo metricInfo : metricList.getItems()) {
-            s_logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getName()
+            logger.debug("metric client id: '" + metricInfo.getClientId() + "' - channel: '" + metricInfo.getChannel() + "' metric name: '" + metricInfo.getName()
                     + "' metric type: '" + metricInfo.getMetricType() + "'");
         }
         checkListOrder(metricList, sort);
@@ -1036,7 +1036,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             try {
                 storableIds.add(messageStoreService.store(message));
             } catch (Exception e) {
-                s_logger.error("Message insert exception!", e);
+                logger.error("Message insert exception!", e);
                 fail("Store messages should have succeded");
             }
         }
