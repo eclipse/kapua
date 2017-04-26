@@ -13,25 +13,12 @@ package org.eclipse.kapua.service.device.management.asset;
 
 import java.util.Date;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.model.xml.ObjectTypeXmlAdapter;
-
 /**
  * Device channel entity definition.<br>
  * This entity is used to get information about channels installed in the device.
  *
  * @since 1.0.0
  */
-@XmlRootElement(name = "deviceChannel")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceAssetXmlRegistry.class, factoryMethod = "newDeviceAssetChannel")
 public interface DeviceAssetChannel {
 
     /**
@@ -41,7 +28,6 @@ public interface DeviceAssetChannel {
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "name")
     public String getName();
 
     /**
@@ -61,8 +47,6 @@ public interface DeviceAssetChannel {
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "type")
-    @XmlJavaTypeAdapter(ObjectTypeXmlAdapter.class)
     public Class<?> getType();
 
     /**
@@ -84,7 +68,6 @@ public interface DeviceAssetChannel {
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "mode")
     public DeviceAssetChannelMode getMode();
 
     /**
@@ -108,7 +91,6 @@ public interface DeviceAssetChannel {
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "value")
     public Object getValue();
 
     /**
@@ -132,7 +114,6 @@ public interface DeviceAssetChannel {
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "error")
     public String getError();
 
     /**
@@ -151,8 +132,6 @@ public interface DeviceAssetChannel {
      * 
      * @since 1.0.0
      */
-    @XmlElement(name = "timestamp")
-    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getTimestamp();
 
     /**
