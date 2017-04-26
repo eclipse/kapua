@@ -103,7 +103,6 @@ import org.slf4j.LoggerFactory;
 public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
-    private static final long QUERY_TIME_WINDOW = 2000l;
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
 
     private static final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
@@ -348,7 +347,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         MessageQuery messageQuery = getBaseMessageQuery(account.getId());
-        setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn));
+        setMessageQueryBaseCriteria(messageQuery, null);
 
         MessageListResult result = messageStoreService.query(messageQuery);
         DatastoreMessage messageQueried = checkMessagesCount(result, 1);
@@ -394,11 +393,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // start queries
 
-        Date timestampLowerBound = new Date(messageTime.getTime() - QUERY_TIME_WINDOW);
-        Date timestampUpperBound = new Date(messageTime.getTime() + QUERY_TIME_WINDOW);
-        DateRange dateRange = new DateRange(timestampLowerBound, timestampUpperBound);
         MessageQuery messageQuery = getBaseMessageQuery(account.getId());
-        setMessageQueryBaseCriteria(messageQuery, dateRange);
+        setMessageQueryBaseCriteria(messageQuery, null);
 
         MessageListResult result = messageStoreService.query(messageQuery);
         DatastoreMessage messageQueried = checkMessagesCount(result, 1);
@@ -407,7 +403,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMessageBody(messageQueried, null);
         checkMetricsSize(messageQueried, 0);
         checkPosition(messageQueried, null);
-        checkMessageDate(messageQueried, new Range<>("timestamp", dateRange.getLowerBound(), dateRange.getUpperBound()), new Range<>("sentOn", sentOn),
+        checkMessageDate(messageQueried,
+                new Range<>("timestamp", messageTime, new Date(messageTime.getTime()+10_000) ),
+                new Range<>("sentOn", sentOn),
                 new Range<>("capturedOn", capturedOn),
                 new Range<>("receivedOn", messageTime));
     }
@@ -459,7 +457,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime));
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, null);
 
         ChannelInfoListResult channelList = channelInfoRegistryService.query(channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 4, clientIds, semanticTopic);
@@ -573,7 +571,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, new DateRange(messageTime));
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, null);
 
         ChannelInfoListResult channelList = channelInfoRegistryService.query(channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 6, clientIds, semanticTopic);
@@ -626,7 +624,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
-        setChannelInfoQueryBaseCriteria(channelInfoQuery, clientIds[0], new DateRange(messageTime));
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, clientIds[0], null);
 
         ChannelInfoListResult channelList = channelInfoRegistryService.query(channelInfoQuery);
         checkChannelInfoClientIdsAndTopics(channelList, 4, clientIds, semanticTopic);
@@ -674,7 +672,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn));
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, null);
 
         MetricInfoListResult metricList = metricInfoRegistryService.query(metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, clientIds, metrics);
@@ -812,7 +810,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], new DateRange(capturedOn));
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], null);
 
         MetricInfoListResult metricList = metricInfoRegistryService.query(metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[] { clientIds[0] }, metrics);
@@ -974,7 +972,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
-        setClientInfoQueryBaseCriteria(clientInfoQuery, new DateRange(capturedOn));
+        setClientInfoQueryBaseCriteria(clientInfoQuery, null);
 
         ClientInfoListResult clientList = clientInfoRegistryService.query(clientInfoQuery);
         checkClientInfo(clientList, 2, clientIds);
@@ -1086,7 +1084,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
-        setClientInfoQueryBaseCriteria(clientInfoQuery, clientIds[0], new DateRange(capturedOn));
+        setClientInfoQueryBaseCriteria(clientInfoQuery, clientIds[0], null);
 
         ClientInfoListResult clientList = clientInfoRegistryService.query(clientInfoQuery);
         checkClientInfo(clientList, 1, new String[] { clientIds[0] });
@@ -1301,7 +1299,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private ChannelInfoListResult doChannelInfoQuery(Account account, String clientId, String channelFilter, Date queryDate) throws KapuaException {
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
         channelInfoQuery.setLimit(100);
-        setChannelInfoQueryChannelPredicateCriteria(channelInfoQuery, clientId, channelFilter, new DateRange(queryDate));
+        setChannelInfoQueryChannelPredicateCriteria(channelInfoQuery, clientId, channelFilter, null);
         return channelInfoRegistryService.query(channelInfoQuery);
     }
 
@@ -2056,13 +2054,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         private final Date lowerBound;
         private final Date upperBound;
 
-        public DateRange(Date bound) {
-            this(bound, bound);
-        }
-
         public DateRange(Date lowerBound, Date upperBound) {
-            this.lowerBound = new Date(lowerBound.getTime() - QUERY_TIME_WINDOW);
-            this.upperBound = new Date(upperBound.getTime() + QUERY_TIME_WINDOW);
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
         }
 
         public Date getLowerBound() {
