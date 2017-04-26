@@ -11,11 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.eclipse.kapua.service.device.management.asset.xml.DeviceAssetChannelXmlAdapter;
 
 /**
  * Device asset entity definition.<br>
@@ -26,9 +32,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "deviceAsset")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceAssetXmlRegistry.class, factoryMethod = "newDeviceAsset")
+@XmlType(propOrder = {//
+        "name", //
+        "channels" //
+}, //
+        factoryClass = DeviceAssetXmlRegistry.class, //
+        factoryMethod = "newDeviceAsset")
 public interface DeviceAsset {
-    
+
     /**
      * Get the asset name
      *
@@ -43,4 +54,11 @@ public interface DeviceAsset {
      * @param name
      */
     public void setName(String name);
+
+    @XmlElementWrapper(name = "channels")
+    @XmlElement(name = "channel")
+    @XmlJavaTypeAdapter(DeviceAssetChannelXmlAdapter.class)
+    public List<DeviceAssetChannel> getChannels();
+
+    public void setChannels(List<DeviceAssetChannel> channels);
 }

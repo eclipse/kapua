@@ -11,12 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannels;
 
 /**
  * Device asset service definition.
@@ -27,31 +24,60 @@ import org.eclipse.kapua.service.device.management.channel.DeviceChannels;
 public interface DeviceAssetManagementService extends KapuaService {
 
     /**
-     * Get the device assets list for the given device identifier
+     * Get the device assets list for the given device.
      *
      * @param scopeId
+     *            The target scope id
      * @param deviceId
+     *            The target device id
+     * @param deviceAssets
+     *            The {@link DeviceAssets} to filter read channel meta-meta
      * @param timeout
      *            timeout waiting for the device response
-     * @return
+     * @return The {@link DeviceAssets} meta-data read
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, Long timeout)
+    public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
             throws KapuaException;
-    
-    
+
     /**
-     * Get the device asset channel list for the given asset name.
+     * Reads current values from the device channels
      *
      * @param scopeId
+     *            The target scope id
      * @param deviceId
-     * @param assetName
-     * @param channelNames
+     *            The target device id
+     * @param deviceAssets
+     *            The {@link DeviceAssets} to filter read channel values
      * @param timeout
      *            timeout waiting for the device response
-     * @return
+     * @return The {@link DeviceAssets} read from the device.
      * @throws KapuaException
+     * 
+     * @since 1.0.0
      */
-    public DeviceChannels getChannels(KapuaId scopeId, KapuaId deviceId, String assetName, List<String> channelNames, Long timeout)
+    public DeviceAssets read(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
             throws KapuaException;
+
+    /**
+     * Writes values to the device channels
+     *
+     * @param scopeId
+     *            The target scope id
+     * @param deviceId
+     *            The target device id
+     * @param deviceAssets
+     *            The {@link DeviceAssets} to write
+     * @param timeout
+     *            timeout waiting for the device response
+     * @return The {@link DeviceAssets} read after the write.
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    public DeviceAssets write(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
+            throws KapuaException;
+
 }
