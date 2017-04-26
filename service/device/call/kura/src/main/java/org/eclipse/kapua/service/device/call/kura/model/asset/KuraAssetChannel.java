@@ -36,9 +36,9 @@ public class KuraAssetChannel {
     private String error;
 
     /**
-     * Gets the name of the asset.
+     * Gets the name of the channel.
      * 
-     * @return The name of the asset.
+     * @return The name of the channel.
      * 
      * @since 1.0.0
      */
@@ -47,7 +47,7 @@ public class KuraAssetChannel {
     }
 
     /**
-     * Sets the name of the asset.
+     * Sets the name of the channel.
      * 
      * @param name
      * 
@@ -151,6 +151,8 @@ public class KuraAssetChannel {
      * 
      * @param timestamp
      *            The timestamp in millisecond of the time when the value was read from the channel.
+     * 
+     * @since 1.0.0
      */
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
