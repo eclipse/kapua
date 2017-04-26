@@ -18,6 +18,9 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.elasticsearch.action.admin.indices.refresh.RefreshAction;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequestBuilder;
+import org.elasticsearch.client.Client;
 
 public final class Elasticsearch {
 
@@ -38,5 +41,16 @@ public final class Elasticsearch {
                 }
             }
         }
+    }
+
+    /**
+     * Refresh all Elasticsearch indices
+     * 
+     * @param client
+     *            the client to use
+     */
+    public static void refreshAllIndices(final Client client) {
+        final RefreshRequestBuilder request = RefreshAction.INSTANCE.newRequestBuilder(client);
+        request.execute().actionGet();
     }
 }
