@@ -49,7 +49,7 @@ Scenario: Installing a package
   When I start to download package "foo.bar" with version 1.2.3 from http://127.0.0.1/foo.dp
   
   Then The download state changes to IN_PROGRESS in the next 5 seconds
-   And The download state changes to COMPLETED in the next 15 seconds
+   And The download state changes to COMPLETED in the next 30 seconds
   
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
