@@ -75,7 +75,7 @@ public class EmbeddedElasticsearch {
 
     public void refresh() throws IOException {
         logger.info("Starting index refresh");
-        Elasticsearch.refreshAllIndices(new URL("http://localhost:9200"));
+        Elasticsearch.refreshAllIndices(node.client());
         logger.info("Index refresh call done");
     }
 }
