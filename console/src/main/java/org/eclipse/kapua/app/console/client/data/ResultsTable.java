@@ -261,12 +261,7 @@ public class ResultsTable extends LayoutContainer {
 
     private void export(String format) {
         StringBuilder sbUrl = new StringBuilder();
-        if (UserAgentUtils.isSafari() || UserAgentUtils.isChrome()) {
-            sbUrl.append("console/exporter_data?");
-        } else {
-            sbUrl.append("exporter_data?");
-        }
-
+        sbUrl.append("exporter_data?");
         sbUrl.append("format=")
                 .append(format).append("&scopeIdString=")
                 .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()));
