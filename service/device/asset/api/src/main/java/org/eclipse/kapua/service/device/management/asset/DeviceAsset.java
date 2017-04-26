@@ -24,11 +24,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.service.device.management.asset.xml.DeviceAssetChannelXmlAdapter;
 
 /**
- * Device asset entity definition.<br>
+ * {@link DeviceAsset} entity definition.<br>
  * This entity is used to get information about assets installed in the device.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "deviceAsset")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -43,7 +42,9 @@ public interface DeviceAsset {
     /**
      * Get the asset name
      *
-     * @return
+     * @return The asset name
+     * 
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     public String getName();
@@ -52,13 +53,31 @@ public interface DeviceAsset {
      * Set the asset name
      *
      * @param name
+     *            The name to set
+     * 
+     * @since 1.0.0
      */
     public void setName(String name);
 
+    /**
+     * Gets the channels available for this {@link DeviceAsset}
+     * 
+     * @return The channels available for this {@link DeviceAsset}
+     * 
+     * @since 1.0.0
+     */
     @XmlElementWrapper(name = "channels")
     @XmlElement(name = "channel")
     @XmlJavaTypeAdapter(DeviceAssetChannelXmlAdapter.class)
     public List<DeviceAssetChannel> getChannels();
 
+    /**
+     * Sets the channels for this {@link DeviceAsset}.
+     * 
+     * @param channels
+     *            The channels to set for this {@link DeviceAsset}.
+     * 
+     * @since 1.0.0
+     */
     public void setChannels(List<DeviceAssetChannel> channels);
 }

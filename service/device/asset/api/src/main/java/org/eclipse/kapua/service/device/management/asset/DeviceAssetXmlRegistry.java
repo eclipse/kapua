@@ -28,18 +28,22 @@ public class DeviceAssetXmlRegistry {
     private final DeviceAssetFactory factory = locator.getFactory(DeviceAssetFactory.class);
 
     /**
-     * Creates a new device assets list
+     * Instantiate a new {@link DeviceAssets}.
      *
-     * @return
+     * @return The newly instantiate {@link DeviceAssets}.
+     * 
+     * @since 1.0.0
      */
     public DeviceAssets newAssetListResult() {
         return factory.newAssetListResult();
     }
 
     /**
-     * Instantiate a new device asset
+     * Instantiate a new {@link DeviceAsset}.
      *
-     * @return
+     * @return The newly instantiated {@link DeviceAsset}.
+     * 
+     * @since 1.0.0
      */
     public DeviceAsset newDeviceAsset() {
         return factory.newDeviceAsset();

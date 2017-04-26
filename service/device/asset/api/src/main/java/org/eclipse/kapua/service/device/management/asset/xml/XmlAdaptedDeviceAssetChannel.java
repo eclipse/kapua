@@ -20,8 +20,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.model.xml.XmlAdaptedNameTypeValueObject;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 
+/**
+ * XML friendly {@link DeviceAssetChannel}.
+ * 
+ * @since 1.0.0
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlAdaptedDeviceAssetChannel extends XmlAdaptedNameTypeValueObject {
 

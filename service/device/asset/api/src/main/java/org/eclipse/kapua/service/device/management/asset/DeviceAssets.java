@@ -22,10 +22,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * Device assets list entity definition.
+ * {@link DeviceAsset}s list entity definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRootElement(name = "deviceAssets")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -33,10 +32,22 @@ import org.eclipse.kapua.KapuaSerializable;
 public interface DeviceAssets extends KapuaSerializable {
 
     /**
-     * Get the device assets list
+     * Get the {@link DeviceAsset} {@link List}
      *
-     * @return
+     * @return The {@link DeviceAsset} {@link List}.
+     * 
+     * @since 1.0.0
      */
     @XmlElement(name = "deviceAsset")
     public List<DeviceAsset> getAssets();
+
+    /**
+     * Sets the {@link DeviceAsset} {@link List}.
+     * 
+     * @param assets
+     *            The {@link DeviceAsset} {@link List}.
+     * 
+     * @since 1.0.0
+     */
+    public void setAssets(List<DeviceAsset> assets);
 }

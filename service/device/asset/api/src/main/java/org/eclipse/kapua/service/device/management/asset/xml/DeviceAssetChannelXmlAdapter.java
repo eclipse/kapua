@@ -18,6 +18,11 @@ import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 
+/**
+ * XML adapter for {@link DeviceAssetChannel}.
+ * 
+ * @since 1.0.0
+ */
 public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAssetChannel, DeviceAssetChannel> {
 
     DeviceAssetFactory factory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
