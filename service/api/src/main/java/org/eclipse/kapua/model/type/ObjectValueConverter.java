@@ -36,7 +36,7 @@ public class ObjectValueConverter {
         return stringValue;
     }
 
-    public static Object fromString(String stringValue, Class<?> type) throws ClassNotFoundException {
+    public static Object fromString(String stringValue, Class<?> type) {
 
         Object value = null;
         if (stringValue != null) {

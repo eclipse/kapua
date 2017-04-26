@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.kapua.model.type.ObjectValueConverter;
+
 @XmlRootElement(name = "metric")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class XmlAdaptedMetric {
@@ -54,5 +56,9 @@ public class XmlAdaptedMetric {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Object getCastedValue() {
+        return ObjectValueConverter.fromString(getValue(), getType());
     }
 }
