@@ -35,4 +35,9 @@ public class DeviceAssetsImpl implements DeviceAssets {
 
         return assets;
     }
+
+    @Override
+    public void setAssets(List<DeviceAsset> assets) {
+        this.assets = assets;
+    }
 }
