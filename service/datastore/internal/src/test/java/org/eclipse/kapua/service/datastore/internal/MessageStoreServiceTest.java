@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -288,19 +290,19 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // start queries
 
-        List<SortField> sort = new ArrayList<>();
+        List<OrderConstraint<?>> sort = new ArrayList<>();
         SortField sortSentOn = new SortFieldImpl();
         sortSentOn.setField(EsSchema.MESSAGE_SENT_ON);
         sortSentOn.setSortDirection(SortDirection.DESC);
-        sort.add(sortSentOn);
+        sort.add(orderConstraint(sortSentOn, Date.class));
         SortField sortTimestamp = new SortFieldImpl();
         sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
         sortTimestamp.setSortDirection(SortDirection.ASC);
-        sort.add(sortTimestamp);
+        sort.add(orderConstraint(sortTimestamp, Date.class));
         SortField sortClientId = new SortFieldImpl();
         sortClientId.setField(EsSchema.MESSAGE_CLIENT_ID);
         sortClientId.setSortDirection(SortDirection.DESC);
-        sort.add(sortClientId);
+        sort.add(orderConstraint(sortClientId, String.class));
         MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), messagesCount + 1, sort);
         setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn1, capturedOn2));
 
@@ -404,7 +406,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMetricsSize(messageQueried, 0);
         checkPosition(messageQueried, null);
         checkMessageDate(messageQueried,
-                new Range<>("timestamp", messageTime, new Date(messageTime.getTime()+10_000) ),
+                new Range<>("timestamp", messageTime, new Date(messageTime.getTime() + 10_000)),
                 new Range<>("sentOn", sentOn),
                 new Range<>("capturedOn", capturedOn),
                 new Range<>("receivedOn", messageTime));
@@ -785,20 +787,20 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message1 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message1, semanticTopic[0]);
         initMetrics(message1);
-        message1.getPayload().getProperties().put(metrics[0], new Double(123));
-        message1.getPayload().getProperties().put(metrics[1], new Integer(123));
+        message1.getPayload().getProperties().put(metrics[0], Double.valueOf(123));
+        message1.getPayload().getProperties().put(metrics[1], Integer.valueOf(123));
         message1.setReceivedOn(messageTime);
         KapuaDataMessage message2 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message2, semanticTopic[0]);
         initMetrics(message2);
-        message2.getPayload().getProperties().put(metrics[2], new String("123"));
-        message2.getPayload().getProperties().put(metrics[3], new Boolean(true));
+        message2.getPayload().getProperties().put(metrics[2], "123");
+        message2.getPayload().getProperties().put(metrics[3], Boolean.TRUE);
         message2.setReceivedOn(messageTime);
         KapuaDataMessage message3 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message3, semanticTopic[0]);
         initMetrics(message3);
-        message3.getPayload().getProperties().put(metrics[2], new Double(123));
-        message3.getPayload().getProperties().put(metrics[3], new Integer(123));
+        message3.getPayload().getProperties().put(metrics[2], Double.valueOf(123));
+        message3.getPayload().getProperties().put(metrics[3], Integer.valueOf(123));
         message3.setReceivedOn(messageTime);
         updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(message1, message2, message3);
@@ -906,11 +908,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // start queries
 
-        List<SortField> sort = new ArrayList<>();
+        List<OrderConstraint<?>> sort = new ArrayList<>();
         SortField sortMetricName = new SortFieldImpl();
         sortMetricName.setField(EsSchema.METRIC_MTR_NAME_FULL);
         sortMetricName.setSortDirection(SortDirection.ASC);
-        sort.add(sortMetricName);
+        sort.add(orderConstraint(sortMetricName, String.class));
 
         MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
@@ -1350,13 +1352,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param order
      * @return
      */
-    private MessageQuery getMessageOrderedQuery(KapuaId scopeId, int limit, List<SortField> order) {
+    private MessageQuery getMessageOrderedQuery(KapuaId scopeId, int limit, List<OrderConstraint<?>> order) {
         MessageQuery query = new MessageQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
         query.setOffset(0);
-        query.setSortFields(order);
+        query.setSortFields(order.stream().map(OrderConstraint::getField).collect(Collectors.toList()));
         return query;
     }
 
@@ -1453,13 +1455,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param order
      * @return
      */
-    private MetricInfoQuery getMetricInfoOrderedQuery(KapuaId scopeId, int limit, List<SortField> order) {
+    private MetricInfoQuery getMetricInfoOrderedQuery(KapuaId scopeId, int limit, List<OrderConstraint<?>> order) {
         MetricInfoQuery query = new MetricInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
         query.setOffset(0);
-        query.setSortFields(order);
+        query.setSortFields(order.stream().map(OrderConstraint::getField).collect(Collectors.toList()));
         return query;
     }
 
@@ -1822,6 +1824,38 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // TODO
     }
 
+    private static class OrderConstraint<T extends Comparable<T>> {
+
+        private final SortField field;
+        private final Function<Object, T> valueFunction;
+
+        public OrderConstraint(final SortField field, final Function<Object, T> valueFunction) {
+            this.field = field;
+            this.valueFunction = valueFunction;
+        }
+
+        public SortField getField() {
+            return field;
+        }
+
+        public void validate(final Object previousItem, final Object currentItem) {
+            final T v1 = valueFunction.apply(previousItem);
+            final T v2 = valueFunction.apply(currentItem);
+
+            if (!v2.equals(v1)) {
+                checkNextValueCoherence(field, v2, v1);
+            }
+        }
+    }
+
+    private static <T extends Comparable<T>> OrderConstraint<T> orderConstraint(SortField field, Class<T> clazz) {
+        return new OrderConstraint<>(field, fieldFunction(field, clazz));
+    }
+
+    private static <T extends Comparable<T>> Function<Object, T> fieldFunction(SortField field, Class<T> clazz) {
+        return item -> getValue(item, field.getField(), clazz);
+    }
+
     /**
      * Check if the message result list is correctly ordered by the provided criteria (list of fields and ordering)
      *
@@ -1830,23 +1864,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param cleanComposedFieldName
      *            takes only the field part after the last dot (useful for clean up the composed field name)
      */
-    @SuppressWarnings("rawtypes")
-    private void checkListOrder(StorableListResult<?> result, List<SortField> sortFieldList) {
+    private static void checkListOrder(StorableListResult<?> result, List<OrderConstraint<?>> sortFieldList) {
         Object previousItem = null;
         for (Object item : result.getItems()) {
-            for (SortField field : sortFieldList) {
+            for (OrderConstraint<?> field : sortFieldList) {
                 if (previousItem != null) {
-
-                    Comparable currentValue = getValue(item, field.getField());
-                    Comparable previousValue = getValue(previousItem, field.getField());
-
-                    if (!currentValue.equals(previousValue)) {
-                        checkNextValueCoherence(field, currentValue, previousValue);
-                        // proceed with next message
-                        break;
-                    }
-                } else {
-                    break;
+                    field.validate(previousItem, item);
                 }
             }
             previousItem = item;
@@ -1860,8 +1883,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param currentValue
      * @param previousValue
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void checkNextValueCoherence(SortField field, Comparable currentValue, Comparable previousValue) {
+    private static <T extends Comparable<T>> void checkNextValueCoherence(final SortField field, final T currentValue, final T previousValue) {
         if (SortDirection.ASC.equals(field.getSortDirection())) {
             assertTrue(String.format("The field [%s] is not correctly ordered as [%s]!", field.getField(), field.getSortDirection()), currentValue.compareTo(previousValue) > 0);
         } else {
@@ -1877,24 +1899,23 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param cleanComposedFieldName
      * @return
      */
-    @SuppressWarnings("rawtypes")
-    private Comparable getValue(Object object, String field) {
+    private static <T> T getValue(Object object, String field, Class<T> clazz) {
         try {
-            Class objetcClass = object.getClass();
+            Class<?> objetcClass = object.getClass();
             String getterFieldName = getFieldName(field, true);
             Method getMethod = getMethod(objetcClass, getterFieldName, "get");
             if (getMethod != null) {
-                return (Comparable) getMethod.invoke(object, new Object[0]);
+                return clazz.cast(getMethod.invoke(object, new Object[0]));
             }
             getMethod = getMethod(objetcClass, getterFieldName, "is");
             if (getMethod != null) {
-                return (Comparable) getMethod.invoke(object, new Object[0]);
+                return clazz.cast(getMethod.invoke(object, new Object[0]));
             }
             // else try by field access
             String fieldName = getFieldName(field, false);
             Field objField = getField(objetcClass, fieldName);
             if (objField != null) {
-                return (Comparable) objField.get(object);
+                return clazz.cast(objField.get(object));
             } else {
                 throw new IllegalArgumentException(String.format("Cannot find getter for field [%s] or field [%s] or the field value is not a Comparable value!", field, field));
             }
@@ -1911,7 +1932,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param cleanComposedFieldName
      * @return
      */
-    private String getFieldName(String field, boolean capitalizeFirstLetter) {
+    private static String getFieldName(String field, boolean capitalizeFirstLetter) {
         String str[] = cleanupFieldName(field);
         String fieldName = null;
         if (capitalizeFirstLetter) {
@@ -1925,7 +1946,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         return fieldName;
     }
 
-    private String[] cleanupFieldName(String field) {
+    private static String[] cleanupFieldName(String field) {
         int lastDot = field.lastIndexOf('.');
         if (lastDot > -1) {
             field = field.substring(lastDot + 1, field.length());
@@ -1945,8 +1966,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param prefix
      * @return
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Method getMethod(Class objetcClass, String field, String prefix) {
+    private static Method getMethod(Class<?> objetcClass, String field, String prefix) {
         String fieldName = prefix + field.substring(0, 1).toUpperCase() + field.substring(1);
 
         Method objMethod = null;
@@ -1964,22 +1984,21 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     /**
      * Return the field combining the prefix and the field name provided
      *
-     * @param objetcClass
+     * @param objectClass
      * @param field
      * @param prefix
      * @return
      */
-    @SuppressWarnings({ "rawtypes" })
-    private Field getField(Class objetcClass, String field) {
+    private static Field getField(Class<?> objectClass, final String field) {
         Field objField = null;
         do {
             try {
-                objField = objetcClass.getDeclaredField(field);
+                objField = objectClass.getDeclaredField(field);
                 objField.setAccessible(true);
             } catch (NoSuchFieldException e) {
-                objetcClass = objetcClass.getSuperclass();
+                objectClass = objectClass.getSuperclass();
             }
-        } while (objField == null && objetcClass != null);
+        } while (objField == null && objectClass != null);
 
         return objField;
     }
