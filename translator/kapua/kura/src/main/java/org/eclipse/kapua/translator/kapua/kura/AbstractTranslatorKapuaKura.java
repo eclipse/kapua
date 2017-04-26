@@ -30,10 +30,10 @@ import org.eclipse.kapua.translator.Translator;
 /**
  * Messages translator implementation from {@link BundleRequestMessage} to {@link KuraRequestMessage}
  * 
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, FROM_P extends KapuaPayload, FROM_M extends KapuaMessage<FROM_C,FROM_P>> extends Translator<FROM_M, KuraRequestMessage> {
+public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, FROM_P extends KapuaPayload, FROM_M extends KapuaMessage<FROM_C, FROM_P>>
+        extends Translator<FROM_M, KuraRequestMessage> {
 
     @Override
     public KuraRequestMessage translate(FROM_M kapuaMessage) throws KapuaException {
@@ -44,8 +44,7 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
         Account account = accountService.find(kapuaMessage.getScopeId());
 
         DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceService.find(kapuaMessage.getScopeId(),
-                kapuaMessage.getDeviceId());
+        Device device = deviceService.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
 
         KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
         kuraRequestChannel.setScope(account.getName());
@@ -57,10 +56,7 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
 
         //
         // Return Kura Message
-        return new KuraRequestMessage(kuraRequestChannel,
-                kapuaMessage.getReceivedOn(),
-                kuraPayload);
-
+        return new KuraRequestMessage(kuraRequestChannel, kapuaMessage.getReceivedOn(), kuraPayload);
     }
 
     protected abstract KuraRequestChannel translateChannel(FROM_C kapuaChannel) throws KapuaException;
