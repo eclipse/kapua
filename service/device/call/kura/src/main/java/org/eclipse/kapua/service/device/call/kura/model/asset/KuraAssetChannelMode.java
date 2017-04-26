@@ -11,17 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.asset;
 
+/**
+ * {@link KuraAssetChannel} mode definition
+ * 
+ * @since 1.0.0
+ */
 public enum KuraAssetChannelMode {
     /**
-     * 
+     * A channel that is read only.
+     * Writing to this channel will result in a error.
      */
     READ,
     /**
-     * 
+     * A channel that is write only.
+     * Reading from this channel will result in a error.
      */
     WRITE,
     /**
-     * 
+     * A channel that can be read and written.
      */
     READ_WRITE
 }

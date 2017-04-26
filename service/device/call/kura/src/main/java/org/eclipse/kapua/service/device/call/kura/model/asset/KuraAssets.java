@@ -80,6 +80,14 @@ public class KuraAssets {
         return kuraAssets;
     }
 
+    /**
+     * Serialize {@code  this} {@link KuraAssets} into json using the given {@link JsonGenerator}.
+     * 
+     * @param jsonGenerator
+     *            The {@link JsonGenerator} to put serialized {@link KuraAssets}.
+     * @throws IOException
+     * @since 1.0.0
+     */
     public void writeJsonNode(JsonGenerator jsonGenerator) throws IOException {
 
         jsonGenerator.writeStartArray();

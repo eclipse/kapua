@@ -32,7 +32,11 @@ public class KuraAsset {
     private List<KuraAssetChannel> channels;
 
     /**
-     * Get asset name
+     * Gets name.
+     * 
+     * @return The name.
+     * 
+     * @since 1.0.0
      */
     public String getName() {
         return name;
@@ -42,11 +46,21 @@ public class KuraAsset {
      * Set asset name
      * 
      * @param name
+     *            The name to set.
+     * 
+     * @since 1.0.0
      */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the channels available for this {@link KuraAsset}
+     * 
+     * @return The channels available for this {@link KuraAsset}
+     * 
+     * @since 1.0.0
+     */
     public List<KuraAssetChannel> getChannels() {
         if (channels == null) {
             channels = new ArrayList<>();
@@ -55,10 +69,29 @@ public class KuraAsset {
         return channels;
     }
 
+    /**
+     * Sets the channels for this {@link KuraAsset}.
+     * 
+     * @param channels
+     *            The channels to set for this {@link KuraAsset}.
+     * 
+     * @since 1.0.0
+     */
     public void setChannels(List<KuraAssetChannel> channels) {
         this.channels = channels;
     }
 
+    /**
+     * Parse a {@link JsonNode} that represent the {@link KuraAsset} object.
+     * 
+     * @param jsonKuraAsset
+     *            The {@link JsonNode} to parse
+     * @return The parsed {@link KuraAsset} result.
+     * 
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
     public static KuraAsset readJsonNode(JsonNode jsonKuraAsset) throws KapuaException {
 
         KuraAsset kuraAsset = new KuraAsset();
@@ -74,6 +107,14 @@ public class KuraAsset {
         return kuraAsset;
     }
 
+    /**
+     * Serialize {@code  this} {@link KuraAsset} into json using the given {@link JsonGenerator}.
+     * 
+     * @param jsonGenerator
+     *            The {@link JsonGenerator} to put serialized {@link KuraAsset}.
+     * @throws IOException
+     * @since 1.0.0
+     */
     public void writeJsonNode(JsonGenerator jsonGenerator) throws IOException {
 
         jsonGenerator.writeStartObject();
