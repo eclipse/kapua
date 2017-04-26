@@ -21,19 +21,37 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class AssetRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
-{
+public class AssetRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
+
     private KapuaMethod method;
+    private boolean read = false;
+    private boolean write = false;
 
     @Override
-    public KapuaMethod getMethod()
-    {
+    public KapuaMethod getMethod() {
         return method;
     }
 
     @Override
-    public void setMethod(KapuaMethod method)
-    {
+    public void setMethod(KapuaMethod method) {
         this.method = method;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+        this.write = !read;
+    }
+
+    public boolean isWrite() {
+        return write;
+    }
+
+    public void setWrite(boolean write) {
+        this.write = write;
+        this.read = !write;
     }
 }

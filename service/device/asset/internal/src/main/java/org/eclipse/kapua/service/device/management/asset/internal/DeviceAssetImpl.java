@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,20 +11,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 
 /**
- * Device asset entity implementation.
+ * {@link DeviceAsset} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DeviceAssetImpl implements DeviceAsset {
 
-    public String name;
+    private String name;
+
+    private List<DeviceAssetChannel> channels;
 
     /**
-     * Constructor
+     * Constructor.
+     * 
+     * @since 1.0.0
      */
     public DeviceAssetImpl() {
     }
@@ -37,5 +44,19 @@ public class DeviceAssetImpl implements DeviceAsset {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public List<DeviceAssetChannel> getChannels() {
+        if (channels == null) {
+            channels = new ArrayList<>();
+        }
+
+        return channels;
+    }
+
+    @Override
+    public void setChannels(List<DeviceAssetChannel> channels) {
+        this.channels = channels;
     }
 }

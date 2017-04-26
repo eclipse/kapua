@@ -11,26 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
-import java.util.Collection;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.message.xml.MetricTypeConverter;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestChannel;
@@ -38,15 +35,6 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
-import org.eclipse.kapua.service.device.management.channel.ChannelMode;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannel;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannelFactory;
-import org.eclipse.kapua.service.device.management.channel.DeviceChannels;
-import org.eclipse.kapua.service.device.management.channel.message.internal.ChannelRequestChannel;
-import org.eclipse.kapua.service.device.management.channel.message.internal.ChannelRequestMessage;
-import org.eclipse.kapua.service.device.management.channel.message.internal.ChannelRequestPayload;
-import org.eclipse.kapua.service.device.management.channel.message.internal.ChannelResponseMessage;
-import org.eclipse.kapua.service.device.management.channel.message.internal.ChannelResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
@@ -54,6 +42,7 @@ import org.eclipse.kapua.service.device.management.commons.exception.DeviceManag
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.xml.sax.SAXException;
 
 /**
  * Device asset service implementation.
@@ -68,12 +57,13 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, Long timeout)
+    public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
             throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(deviceAssets, "deviceAssets");
 
         //
         // Check Access
@@ -90,6 +80,11 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         assetRequestChannel.setMethod(KapuaMethod.READ);
 
         AssetRequestPayload assetRequestPayload = new AssetRequestPayload();
+        try {
+            assetRequestPayload.setDeviceAssets(deviceAssets);
+        } catch (JAXBException | UnsupportedEncodingException e) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceAssets);
+        }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
         assetRequestMessage.setScopeId(scopeId);
@@ -105,18 +100,14 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
 
         //
         // Parse the response
+        DeviceAssets deviceAssetsResponse;
         AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-        DeviceAssetFactory deviceAssetFactory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
-        DeviceAssets deviceAssetList = deviceAssetFactory.newAssetListResult();
-        for (Object entry : responsePayload.getProperties().values()){
-            if (entry != null) {
-                DeviceAsset deviceAsset = deviceAssetFactory.newDeviceAsset();
-                deviceAsset.setName((String) entry);
-                deviceAssetList.getAssets().add(deviceAsset);
-            }
+        try {
+            deviceAssetsResponse = responsePayload.getDeviceAssets();
+        } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
         }
-        
+
         //
         // Create event
         DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
@@ -131,18 +122,17 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
 
         deviceEventService.create(deviceEventCreator);
 
-        return deviceAssetList;
+        return deviceAssetsResponse;
     }
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public DeviceChannels getChannels(KapuaId scopeId, KapuaId deviceId, String assetName, List<String> channelNames, Long timeout)
-            throws KapuaException {
+    public DeviceAssets read(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(deviceId, "assetName");
+        ArgumentValidator.notNull(deviceAssets, "deviceAssets");
 
         //
         // Check Access
@@ -153,34 +143,40 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
 
         //
         // Prepare the request
-        ChannelRequestChannel channelRequestChannel = new ChannelRequestChannel();
-        channelRequestChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
-        channelRequestChannel.setVersion(DeviceAssetAppProperties.APP_VERSION);
-        channelRequestChannel.setMethod(KapuaMethod.READ);
-        channelRequestChannel.setAssetName(assetName);
+        AssetRequestChannel assetRequestChannel = new AssetRequestChannel();
+        assetRequestChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
+        assetRequestChannel.setVersion(DeviceAssetAppProperties.APP_VERSION);
+        assetRequestChannel.setMethod(KapuaMethod.EXECUTE);
+        assetRequestChannel.setRead(true);
 
-        ChannelRequestPayload channelRequestPayload = new ChannelRequestPayload();
-        channelRequestPayload.setChannelNames(channelNames);
-        
-        ChannelRequestMessage channelRequestMessage = new ChannelRequestMessage();
-        channelRequestMessage.setScopeId(scopeId);
-        channelRequestMessage.setDeviceId(deviceId);
-        channelRequestMessage.setCapturedOn(new Date());
-        channelRequestMessage.setPayload(channelRequestPayload);
-        channelRequestMessage.setChannel(channelRequestChannel);
+        AssetRequestPayload assetRequestPayload = new AssetRequestPayload();
+        try {
+            assetRequestPayload.setDeviceAssets(deviceAssets);
+        } catch (JAXBException | UnsupportedEncodingException e) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceAssets);
+        }
+
+        AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
+        assetRequestMessage.setScopeId(scopeId);
+        assetRequestMessage.setDeviceId(deviceId);
+        assetRequestMessage.setCapturedOn(new Date());
+        assetRequestMessage.setPayload(assetRequestPayload);
+        assetRequestMessage.setChannel(assetRequestChannel);
 
         //
         // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(channelRequestMessage, timeout);
-        ChannelResponseMessage responseMessage = (ChannelResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(assetRequestMessage, timeout);
+        AssetResponseMessage responseMessage = (AssetResponseMessage) deviceApplicationCall.send();
 
         //
         // Parse the response
-        DeviceChannelFactory deviceChannelFactory = KapuaLocator.getInstance().getFactory(DeviceChannelFactory.class);
-        DeviceChannels deviceChannelList = deviceChannelFactory.newChannelListResult();
-
-        ChannelResponsePayload responsePayload = responseMessage.getPayload();
-        deviceChannelList.getChannels().addAll(convertAssetChannelMetric(responsePayload));
+        DeviceAssets deviceAssetsResponse;
+        AssetResponsePayload responsePayload = responseMessage.getPayload();
+        try {
+            deviceAssetsResponse = responsePayload.getDeviceAssets();
+        } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
+        }
 
         //
         // Create event
@@ -190,60 +186,82 @@ public class DeviceAssetManagementServiceImpl implements DeviceAssetManagementSe
         DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceAssetAppProperties.APP_NAME.getValue());
         deviceEventCreator.setPosition(responseMessage.getPosition());
         deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(KapuaMethod.READ);
+        deviceEventCreator.setAction(KapuaMethod.EXECUTE);
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
         deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
         deviceEventService.create(deviceEventCreator);
 
-        return deviceChannelList;
+        return deviceAssetsResponse;
     }
-    
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Collection<DeviceChannel<?>> convertAssetChannelMetric(ChannelResponsePayload responsePayload) throws DeviceManagementException {
-        Map<String, DeviceChannel<?>> deviceChannelsMap = new HashMap<>();
-        DeviceChannelFactory deviceChannelFactory = KapuaLocator.getInstance().getFactory(DeviceChannelFactory.class);
-        
+    @Override
+    public DeviceAssets write(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(deviceAssets, "deviceAssets");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
+
+        //
+        // Prepare the request
+        AssetRequestChannel assetRequestChannel = new AssetRequestChannel();
+        assetRequestChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
+        assetRequestChannel.setVersion(DeviceAssetAppProperties.APP_VERSION);
+        assetRequestChannel.setMethod(KapuaMethod.EXECUTE);
+        assetRequestChannel.setWrite(true);
+
+        AssetRequestPayload assetRequestPayload = new AssetRequestPayload();
         try {
-            for (Entry<String, Object> entry : responsePayload.getProperties().entrySet()){
-                if (entry.getValue() != null) {
-
-                    int underscoreSeparatorIndex = entry.getKey().lastIndexOf('_');
-                    
-                    String channelName = entry.getKey().substring(0, underscoreSeparatorIndex);
-                    String channelProperty = entry.getKey().substring(underscoreSeparatorIndex + 1);
-
-                    DeviceChannel deviceChannel = deviceChannelsMap.get(channelName); 
-                    if(deviceChannel == null) {                    
-                        deviceChannel = deviceChannelFactory.newDeviceChannel();
-                    }
-
-                    deviceChannel.setName(channelName);
-                    if ("type".equals(channelProperty)) {
-                            deviceChannel.setType(MetricTypeConverter.fromString((String) entry.getValue()));
-                    }
-                    else if ("mode".equals(channelProperty)) {
-                        deviceChannel.setMode(ChannelMode.valueOf((String) entry.getValue()));
-                    }
-                    else if ("value".equals(channelProperty)) {
-                        deviceChannel.setValue(entry.getValue());
-                    }
-                    else if ("error".equals(channelProperty)) {
-                        deviceChannel.setError((String) entry.getValue());
-                    }
-                    else if ("timestamp".equals(channelProperty)) {
-                        deviceChannel.setTimestamp((Long) entry.getValue());
-                    }
-                    
-                    deviceChannelsMap.put(channelName, deviceChannel);
-                }
-            }
+            assetRequestPayload.setDeviceAssets(deviceAssets);
+        } catch (JAXBException | UnsupportedEncodingException e) {
+            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceAssets);
         }
-        catch (Exception e) {
+
+        AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
+        assetRequestMessage.setScopeId(scopeId);
+        assetRequestMessage.setDeviceId(deviceId);
+        assetRequestMessage.setCapturedOn(new Date());
+        assetRequestMessage.setPayload(assetRequestPayload);
+        assetRequestMessage.setChannel(assetRequestChannel);
+
+        //
+        // Do get
+        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(assetRequestMessage, timeout);
+        AssetResponseMessage responseMessage = (AssetResponseMessage) deviceApplicationCall.send();
+
+        //
+        // Parse the response
+        DeviceAssets deviceAssetsResponse;
+        AssetResponsePayload responsePayload = responseMessage.getPayload();
+        try {
+            deviceAssetsResponse = responsePayload.getDeviceAssets();
+        } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
             throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
         }
-        
-        return deviceChannelsMap.values();
+
+        //
+        // Create event
+        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
+        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+
+        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), DeviceAssetAppProperties.APP_NAME.getValue());
+        deviceEventCreator.setPosition(responseMessage.getPosition());
+        deviceEventCreator.setSentOn(responseMessage.getSentOn());
+        deviceEventCreator.setAction(KapuaMethod.EXECUTE);
+        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
+        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+
+        deviceEventService.create(deviceEventCreator);
+
+        return deviceAssetsResponse;
     }
 }
