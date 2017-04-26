@@ -9,7 +9,7 @@
 
     Contributors:
         Eurotech - initial API and implementation
-
+        Red Hat Inc
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -22,7 +22,6 @@
     </parent>
 
     <artifactId>kapua-datastore-internal</artifactId>
-    <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Implemented service interfaces -->
@@ -71,6 +70,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
         <!-- jna is required to run a elasticsearch instance in embedded mode -->
         <dependency>
