@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
@@ -52,7 +53,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class XmlUtil {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(XmlUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlUtil.class);
 
     private static JAXBContextProvider jaxbContextProvider;
 
@@ -81,10 +82,9 @@ public class XmlUtil {
      * @param w
      * @throws JAXBException
      */
-    @SuppressWarnings("rawtypes")
     public static void marshal(Object object, Writer w)
             throws JAXBException {
-        Class clazz = object.getClass();
+        Class<?> clazz = object.getClass();
         JAXBContext context = get(clazz);
 
         ValidationEventCollector valEventHndlr = new ValidationEventCollector();
@@ -253,8 +253,7 @@ public class XmlUtil {
      * @return
      * @throws JAXBException
      */
-    @SuppressWarnings("rawtypes")
-    private static JAXBContext get(Class clazz) throws JAXBException {
+    private static JAXBContext get(Class<?> clazz) throws JAXBException {
         //        JAXBContext context = contexts.get(clazz);
         //        if (context == null) {
         //            context = JAXBContext.newInstance(clazz);
@@ -264,12 +263,12 @@ public class XmlUtil {
         try {
             context = jaxbContextProvider.getJAXBContext();
             if (context == null) {
-                s_logger.warn("No JAXBContext found; using ");
+                logger.warn("No JAXBContext found; using ");
                 context = JAXBContextFactory.createContext(new Class[] {}, null);
             }
         } catch (KapuaException | NullPointerException ex) {
             context = JAXBContextFactory.createContext(new Class[] {}, null);
-            s_logger.warn("No JAXBContextProvider provided or error while getting one; using default JAXBContext");
+            logger.warn("No JAXBContextProvider provided or error while getting one; using default JAXBContext");
         }
         return context;
     }

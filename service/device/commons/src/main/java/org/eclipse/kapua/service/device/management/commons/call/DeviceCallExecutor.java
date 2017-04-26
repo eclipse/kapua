@@ -30,104 +30,99 @@ import org.eclipse.kapua.translator.Translator;
 /**
  * Device call executor definition.<br>
  * This object executes call, collecting the response from the device.
- * 
- * @param <C> request channel type
- * @param <P> request payload type
- * @param <RQ> request message type
- * @param <RS> response message type
- * 
+ *
+ * @param <C>
+ *            request channel type
+ * @param <P>
+ *            request payload type
+ * @param <RQ>
+ *            request message type
+ * @param <RS>
+ *            response message type
+ *
  * @since 1.0
- * 
+ *
  */
 @SuppressWarnings("rawtypes")
-public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage>
-{
-    private RQ   requestMessage;
+public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage> {
+
+    private RQ requestMessage;
     private Long timeout;
 
     /**
      * Constructor
-     * 
+     *
      * @param requestMessage
      */
-    public DeviceCallExecutor(RQ requestMessage)
-    {
+    public DeviceCallExecutor(RQ requestMessage) {
         this(requestMessage, null);
     }
 
     /**
      * Constructor
-     * 
+     *
      * @param requestMessage
      * @param timeout
      */
-    public DeviceCallExecutor(RQ requestMessage, Long timeout)
-    {
+    public DeviceCallExecutor(RQ requestMessage, Long timeout) {
         this.requestMessage = requestMessage;
         this.timeout = timeout;
     }
 
     /**
      * Performs the device call
-     * 
+     *
      * @return
      * @throws KapuaException
      */
     @SuppressWarnings({ "unchecked" })
     public RS send()
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Get the correct device call
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceCallFactory kapuaDeviceCallFactory = locator.getFactory(DeviceCallFactory.class);
         DeviceCall<DeviceRequestMessage, DeviceResponseMessage> deviceCall = kapuaDeviceCallFactory.newDeviceCall();
         Translator tKapuaToClient = Translator.getTranslatorFor(requestMessage.getRequestClass(),
-                                                                deviceCall.getBaseMessageClass());
+                deviceCall.getBaseMessageClass());
 
         DeviceResponseMessage responseMessage;
         timeout = timeout == null ? DeviceManagementSetting.getInstance().getLong(DeviceManagementSettingKey.REQUEST_TIMEOUT) : timeout;
 
         DeviceRequestMessage deviceRequestMessage = (DeviceRequestMessage) tKapuaToClient.translate(requestMessage);
         switch (requestMessage.getChannel().getMethod()) {
-            case CREATE:
-            {
-                responseMessage = deviceCall.create(deviceRequestMessage, timeout);
-            }
-                break;
-            case READ:
-            {
-                responseMessage = deviceCall.read(deviceRequestMessage, timeout);
-            }
-                break;
-            case OPTIONS:
-            {
-                responseMessage = deviceCall.options(deviceRequestMessage, timeout);
-            }
-                break;
-            case DELETE:
-            {
-                responseMessage = deviceCall.delete(deviceRequestMessage, timeout);
-            }
-                break;
-            case EXECUTE:
-            {
-                responseMessage = deviceCall.execute(deviceRequestMessage, timeout);
-            }
-                break;
-            case WRITE:
-            {
-                responseMessage = deviceCall.write(deviceRequestMessage, timeout);
-            }
-                break;
-            default:
-                throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_BAD_METHOD,
-                                                    null,
-                                                    requestMessage.getChannel().getMethod());
+        case CREATE: {
+            responseMessage = deviceCall.create(deviceRequestMessage, timeout);
+        }
+            break;
+        case READ: {
+            responseMessage = deviceCall.read(deviceRequestMessage, timeout);
+        }
+            break;
+        case OPTIONS: {
+            responseMessage = deviceCall.options(deviceRequestMessage, timeout);
+        }
+            break;
+        case DELETE: {
+            responseMessage = deviceCall.delete(deviceRequestMessage, timeout);
+        }
+            break;
+        case EXECUTE: {
+            responseMessage = deviceCall.execute(deviceRequestMessage, timeout);
+        }
+            break;
+        case WRITE: {
+            responseMessage = deviceCall.write(deviceRequestMessage, timeout);
+        }
+            break;
+        default:
+            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_BAD_METHOD,
+                    null,
+                    requestMessage.getChannel().getMethod());
         }
 
         Translator tClientToKapua = Translator.getTranslatorFor(deviceCall.getBaseMessageClass(),
-                                                                requestMessage.getResponseClass());
+                requestMessage.getResponseClass());
 
         return (RS) tClientToKapua.translate(responseMessage);
     }

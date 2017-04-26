@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
@@ -25,8 +26,7 @@ public interface KapuaMessageFactory extends KapuaObjectFactory {
      *
      * @return
      */
-    @SuppressWarnings("rawtypes")
-    public KapuaMessage newMessage();
+    public KapuaMessage<?,?> newMessage();
 
     /**
      * Creates and returns a new {@link KapuaChannel}
