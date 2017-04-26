@@ -42,7 +42,7 @@ public class SimpleSqlScriptExecutor {
 
     // Members
 
-    private List<String> queryStrings = new ArrayList<>();
+    private final List<String> queryStrings = new ArrayList<>();
 
     // Operations
 
@@ -65,8 +65,10 @@ public class SimpleSqlScriptExecutor {
     /**
      * Creates and configure a {@link SimpleSqlScriptExecutor} adding all the sql scripts matching the filter in the specified path
      *
-     * @param scanPath       path to be scanned
-     * @param filenameFilter name filter matching <b>(must be not null!)</b>
+     * @param scanPath
+     *            path to be scanned
+     * @param filenameFilter
+     *            name filter matching <b>(must be not null!)</b>
      * @return
      */
     public SimpleSqlScriptExecutor scanScripts(String scanPath, String filenameFilter) {
@@ -83,14 +85,17 @@ public class SimpleSqlScriptExecutor {
         final String finalSuffix = suffix;
 
         FilenameFilter sqlfilter = (dir, name) -> {
-            if (finalPrefix.isEmpty() && finalSuffix.isEmpty())
+            if (finalPrefix.isEmpty() && finalSuffix.isEmpty()) {
                 return filenameFilter.equals(name);
+            }
 
-            if (!finalPrefix.isEmpty() && !name.startsWith(finalPrefix))
+            if (!finalPrefix.isEmpty() && !name.startsWith(finalPrefix)) {
                 return false;
+            }
 
-            if (!finalSuffix.isEmpty() && !name.endsWith(finalSuffix))
+            if (!finalSuffix.isEmpty() && !name.endsWith(finalSuffix)) {
                 return false;
+            }
 
             return true;
         };
@@ -101,29 +106,33 @@ public class SimpleSqlScriptExecutor {
             dirContents = sqlDir.list(sqlfilter);
         }
 
-        List<String> dropScripts = new ArrayList<String>();
-        List<String> createScripts = new ArrayList<String>();
-        List<String> seedScripts = new ArrayList<String>();
-        List<String> deleteScripts = new ArrayList<String>();
+        List<String> dropScripts = new ArrayList<>();
+        List<String> createScripts = new ArrayList<>();
+        List<String> seedScripts = new ArrayList<>();
+        List<String> deleteScripts = new ArrayList<>();
 
         String sep = String.valueOf(File.separatorChar);
         for (String sqlItem : dirContents) {
             String sqlFileName = scanPath + (scanPath.endsWith(sep) ? "" : sep) + sqlItem;
             File sqlFile = new File(sqlFileName);
-            if (sqlFile.isFile() && sqlItem.endsWith("_drop.sql"))
+            if (sqlFile.isFile() && sqlItem.endsWith("_drop.sql")) {
                 dropScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
-            if (sqlFile.isFile() && sqlItem.endsWith("_create.sql"))
+            }
+            if (sqlFile.isFile() && sqlItem.endsWith("_create.sql")) {
                 createScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
-            if (sqlFile.isFile() && sqlItem.endsWith("_seed.sql"))
+            }
+            if (sqlFile.isFile() && sqlItem.endsWith("_seed.sql")) {
                 seedScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
-            if (sqlFile.isFile() && sqlItem.endsWith("_delete.sql"))
+            }
+            if (sqlFile.isFile() && sqlItem.endsWith("_delete.sql")) {
                 deleteScripts.add(String.format(RUN_SCRIPT_CMD, sqlFileName));
+            }
         }
 
-        this.addQueries(dropScripts);
-        this.addQueries(createScripts);
-        this.addQueries(seedScripts);
-        this.addQueries(deleteScripts);
+        addQueries(dropScripts);
+        addQueries(createScripts);
+        addQueries(seedScripts);
+        addQueries(deleteScripts);
         return this;
     }
 
@@ -144,7 +153,7 @@ public class SimpleSqlScriptExecutor {
      * @return
      */
     public SimpleSqlScriptExecutor addQuery(String sqlString) {
-        this.queryStrings.add(sqlString);
+        queryStrings.add(sqlString);
         return this;
     }
 
@@ -155,10 +164,11 @@ public class SimpleSqlScriptExecutor {
      * @return
      */
     public SimpleSqlScriptExecutor addQueries(List<String> sqlStrings) {
-        if (sqlStrings == null)
+        if (sqlStrings == null) {
             return this;
+        }
 
-        this.queryStrings.addAll(sqlStrings);
+        queryStrings.addAll(sqlStrings);
 
         return this;
     }

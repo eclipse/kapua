@@ -16,7 +16,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
@@ -53,11 +52,12 @@ public class ValueTokenizer {
      */
     public ValueTokenizer(String values_str) {
 
-        if (values_str == null)
+        if (values_str == null) {
             return;
+        }
         // The trick is to strip out unescaped whitespace characters before and
-        // after the input string as well as before and after each 
-        // individual token within the input string without losing any escaped 
+        // after the input string as well as before and after each
+        // individual token within the input string without losing any escaped
         // whitespace characters. Whitespace between two non-whitespace
         // characters may or may not be escaped. Also, any character may be
         // escaped. The escape character is '\'. The delimiter is ','.
@@ -202,8 +202,7 @@ public class ValueTokenizer {
                 return MessageFormat.format(CARDINALITY_VIOLATION, new Object[] { getValuesAsString(), values.size(), 0, cardinality });
             }
             // Now inspect each token.
-            for (Iterator<String> i = values.iterator(); i.hasNext(); ) {
-                String s = i.next();
+            for (String s : values) {
                 // If options were declared and the value does not match one of them, the value is not valid.
                 if (!ad.getOption().isEmpty() && !ad.getOption().contains(s)) {
                     return MessageFormat.format(VALUE_OUT_OF_OPTION, s);
@@ -302,7 +301,7 @@ public class ValueTokenizer {
                     throw new IllegalStateException();
                 }
                 if (rangeError) {
-                    return (MessageFormat.format(VALUE_OUT_OF_RANGE, s));
+                    return MessageFormat.format(VALUE_OUT_OF_RANGE, s);
                 }
             }
             // No problems detected

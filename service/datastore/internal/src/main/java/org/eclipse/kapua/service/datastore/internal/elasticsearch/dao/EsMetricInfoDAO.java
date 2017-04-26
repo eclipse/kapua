@@ -52,7 +52,7 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsMetricInfoDAO {
 
-    private EsTypeDAO esTypeDAO;
+    private final EsTypeDAO esTypeDAO;
 
     /**
      * Default constructor
@@ -74,7 +74,7 @@ public class EsMetricInfoDAO {
      */
     public EsMetricInfoDAO setListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.setListener(daoListener);
+        esTypeDAO.setListener(daoListener);
         return this;
     }
 
@@ -88,7 +88,7 @@ public class EsMetricInfoDAO {
      */
     public EsMetricInfoDAO unsetListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.unsetListener(daoListener);
+        esTypeDAO.unsetListener(daoListener);
         return this;
     }
 
@@ -111,7 +111,7 @@ public class EsMetricInfoDAO {
      * @since 1.0.0
      */
     public EsMetricInfoDAO index(String indexName) {
-        this.esTypeDAO.type(indexName, EsSchema.METRIC_TYPE_NAME);
+        esTypeDAO.type(indexName, EsSchema.METRIC_TYPE_NAME);
         return this;
     }
 
@@ -151,7 +151,7 @@ public class EsMetricInfoDAO {
         MetricInfoXContentBuilder builder = new MetricInfoXContentBuilder();
         builder.build(metricInfo);
         List<MetricXContentBuilder> metricBuilders = builder.getBuilders();
-        return this.esTypeDAO.getUpsertRequest(metricBuilders.get(0).getId(), metricBuilders.get(0).getContent());
+        return esTypeDAO.getUpsertRequest(metricBuilders.get(0).getId(), metricBuilders.get(0).getContent());
     }
 
     /**
@@ -162,7 +162,7 @@ public class EsMetricInfoDAO {
      * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(MetricXContentBuilder esChannelMetric) {
-        return this.esTypeDAO.getUpsertRequest(esChannelMetric.getId(), esChannelMetric.getContent());
+        return esTypeDAO.getUpsertRequest(esChannelMetric.getId(), esChannelMetric.getContent());
     }
 
     /**
@@ -237,7 +237,7 @@ public class EsMetricInfoDAO {
      */
     public void deleteByQuery(MetricInfoQuery query)
             throws EsQueryConversionException {
-        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
+        esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
 
     /**
@@ -247,7 +247,7 @@ public class EsMetricInfoDAO {
      * @return
      */
     public BulkResponse bulk(BulkRequest aBulkRequest) {
-        return this.esTypeDAO.bulk(aBulkRequest);
+        return esTypeDAO.bulk(aBulkRequest);
     }
 
     /**
@@ -274,8 +274,9 @@ public class EsMetricInfoDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null || searchHits.getTotalHits() == 0)
+        if (searchHits == null || searchHits.getTotalHits() == 0) {
             return new MetricInfoListResultImpl();
+        }
 
         int i = 0;
         int searchHitsSize = searchHits.getHits().length;
@@ -320,8 +321,9 @@ public class EsMetricInfoDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null)
+        if (searchHits == null) {
             return 0;
+        }
 
         return searchHits.getTotalHits();
     }

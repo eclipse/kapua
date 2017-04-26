@@ -13,57 +13,54 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-public class GwtStringListItem extends KapuaBaseModel implements Serializable
-{
+public class GwtStringListItem extends KapuaBaseModel implements Serializable {
+
     private static final long serialVersionUID = -9095667239285215364L;
 
-    public GwtStringListItem()
-    {
+    public GwtStringListItem() {
     }
 
-    public GwtStringListItem(String value)
-    {
+    public GwtStringListItem(String value) {
         set("value", value);
     }
 
-    public void setId(String id)
-    {
+    public void setId(String id) {
         set("id", id);
     }
 
-    public String getId()
-    {
+    public String getId() {
         return (String) get("id");
     }
 
-    public void setValue(String value)
-    {
+    public void setValue(String value) {
         set("value", value);
     }
 
-    public String getValue()
-    {
+    public String getValue() {
         return (String) get("value");
     }
 
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         GwtStringListItem other = (GwtStringListItem) obj;
 
         return getValue().equals(other.getValue());
     }
 
-    public int hashCode()
-    {
+    @Override
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getValue() == null) ? 0 : getValue().hashCode());
+        result = prime * result + (getValue() == null ? 0 : getValue().hashCode());
         return result;
     }
 }

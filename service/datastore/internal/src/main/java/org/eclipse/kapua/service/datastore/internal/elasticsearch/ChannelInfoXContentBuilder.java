@@ -99,8 +99,9 @@ public class ChannelInfoXContentBuilder {
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel) {
         if (id == null) {
             return getChannelKey(scopeId, clientId, channel);
-        } else
+        } else {
             return id.toString();
+        }
     }
 
     /**
@@ -140,7 +141,7 @@ public class ChannelInfoXContentBuilder {
      * @since 1.0.0
      */
     public ChannelInfoXContentBuilder clear() {
-        this.init();
+        init();
         return this;
     }
 
@@ -189,11 +190,11 @@ public class ChannelInfoXContentBuilder {
         XContentBuilder channelBuilder;
         channelBuilder = this.build(channel, msgId.toString(), msgTimestamp, clientId, scopeId);
 
-        this.setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getScopeId(),
+        setChannelId(getOrDeriveId(channelInfo.getId(), channelInfo.getScopeId(),
                 channelInfo.getClientId(),
                 channelInfo.getName()));
 
-        this.setBuilder(channelBuilder);
+        setBuilder(channelBuilder);
         return this;
     }
 
@@ -214,7 +215,7 @@ public class ChannelInfoXContentBuilder {
      * @since 1.0.0
      */
     private void setChannelId(String esChannelId) {
-        this.channelId = esChannelId;
+        channelId = esChannelId;
     }
 
     /**
@@ -234,6 +235,6 @@ public class ChannelInfoXContentBuilder {
      * @since 1.0.0
      */
     private void setBuilder(XContentBuilder esChannel) {
-        this.channelBuilder = esChannel;
+        channelBuilder = esChannel;
     }
 }

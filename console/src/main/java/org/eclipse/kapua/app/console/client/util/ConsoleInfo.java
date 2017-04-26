@@ -31,8 +31,9 @@ public class ConsoleInfo extends Info {
                                boolean keepOnMouseOver) {
         //
         // XSS escaping
-        if (text != null)
+        if (text != null) {
             text = KapuaSafeHtmlUtils.htmlEscape(text);
+        }
 
         int infoHeight = 25 + STEP_HEIGHT * (1 + ((text != null ? text.length() : 0) / CHAR_STEP));
 

@@ -65,13 +65,13 @@ public class MessageObjectBuilder {
         SearchHitField timestampObj = searchHitFields.get(EsSchema.MESSAGE_TIMESTAMP);
         tmpMessage.setTimestamp((Date) (timestampObj == null ? null : EsUtils.convertToKapuaObject("date", (String) timestampObj.getValue())));
 
-        tmpMessage.setScopeId((accountId == null ? null : KapuaEid.parseCompactId(accountId)));
+        tmpMessage.setScopeId(accountId == null ? null : KapuaEid.parseCompactId(accountId));
         tmpMessage.setDeviceId(deviceId == null ? null : KapuaEid.parseCompactId(deviceId));
         tmpMessage.setClientId(clientId);
         tmpMessage.setDatastoreId(new StorableIdImpl(searchHit.getId()));
 
         if (fetchStyle.equals(StorableFetchStyle.FIELDS)) {
-            this.message = tmpMessage;
+            message = tmpMessage;
             return this;
         }
 
@@ -92,59 +92,71 @@ public class MessageObjectBuilder {
             Map<String, Object> locationMap = (Map<String, Object>) positionMap.get(EsSchema.MESSAGE_POS_LOCATION);
 
             position = new KapuaPositionImpl();
-            if (locationMap != null && locationMap.get("lat") != null)
+            if (locationMap != null && locationMap.get("lat") != null) {
                 position.setLatitude((double) locationMap.get("lat"));
+            }
 
-            if (locationMap != null && locationMap.get("lon") != null)
+            if (locationMap != null && locationMap.get("lon") != null) {
                 position.setLongitude((double) locationMap.get("lon"));
+            }
 
             Object obj = positionMap.get(EsSchema.MESSAGE_POS_ALT);
-            if (obj != null)
+            if (obj != null) {
                 position.setAltitude((double) obj);
+            }
 
             obj = positionMap.get(EsSchema.MESSAGE_POS_HEADING);
-            if (obj != null)
+            if (obj != null) {
                 position.setHeading((double) obj);
+            }
 
             obj = positionMap.get(EsSchema.MESSAGE_POS_PRECISION);
-            if (obj != null)
+            if (obj != null) {
                 position.setPrecision((double) obj);
+            }
 
             obj = positionMap.get(EsSchema.MESSAGE_POS_SATELLITES);
-            if (obj != null)
+            if (obj != null) {
                 position.setSatellites((int) obj);
+            }
 
             obj = positionMap.get(EsSchema.MESSAGE_POS_SPEED);
-            if (obj != null)
+            if (obj != null) {
                 position.setSpeed((double) obj);
+            }
 
             obj = positionMap.get(EsSchema.MESSAGE_POS_STATUS);
-            if (obj != null)
+            if (obj != null) {
                 position.setStatus((int) obj);
+            }
 
             obj = positionMap.get(EsSchema.MESSAGE_POS_TIMESTAMP);
-            if (obj != null)
+            if (obj != null) {
                 position.setTimestamp((Date) EsUtils.convertToKapuaObject("date", (String) obj));
+            }
 
             tmpMessage.setPosition(position);
         }
 
         Object capturedOnFld = source.get(EsSchema.MESSAGE_CAPTURED_ON);
-        if (capturedOnFld != null)
+        if (capturedOnFld != null) {
             tmpMessage.setCapturedOn((Date) (capturedOnFld == null ? null : EsUtils.convertToKapuaObject("date", (String) capturedOnFld)));
+        }
         Object sentOnFld = source.get(EsSchema.MESSAGE_SENT_ON);
-        if (sentOnFld != null)
+        if (sentOnFld != null) {
             tmpMessage.setSentOn((Date) (sentOnFld == null ? null : EsUtils.convertToKapuaObject("date", (String) sentOnFld)));
+        }
         Object receivedOnFld = source.get(EsSchema.MESSAGE_RECEIVED_ON);
-        if (receivedOnFld != null)
+        if (receivedOnFld != null) {
             tmpMessage.setReceivedOn((Date) (receivedOnFld == null ? null : EsUtils.convertToKapuaObject("date", (String) receivedOnFld)));
+        }
 
         if (source.get(EsSchema.MESSAGE_METRICS) != null) {
 
             @SuppressWarnings("unchecked")
             Map<String, Object> metrics = (Map<String, Object>) source.get(EsSchema.MESSAGE_METRICS);
 
-            Map<String, Object> payloadMetrics = new HashMap<String, Object>();
+            Map<String, Object> payloadMetrics = new HashMap<>();
 
             String[] metricNames = metrics.keySet().toArray(new String[] {});
             for (String metricsName : metricNames) {
@@ -164,7 +176,7 @@ public class MessageObjectBuilder {
         }
 
         if (fetchStyle.equals(StorableFetchStyle.SOURCE_SELECT)) {
-            this.message = tmpMessage;
+            message = tmpMessage;
         }
 
         if (source.get(EsSchema.MESSAGE_BODY) != null) {
@@ -172,10 +184,11 @@ public class MessageObjectBuilder {
             payload.setBody(body);
         }
 
-        if (payload != null)
+        if (payload != null) {
             tmpMessage.setPayload(payload);
+        }
 
-        this.message = tmpMessage;
+        message = tmpMessage;
         return this;
     }
 

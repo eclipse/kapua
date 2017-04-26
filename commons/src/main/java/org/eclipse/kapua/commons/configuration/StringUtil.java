@@ -35,24 +35,25 @@ public class StringUtil {
      * @return
      */
     public static String[] splitValues(String strValues) {
-        //      List<String> defaultValues = new ArrayList<String>();
-        //      String[] stringValues = defaultValue.split("(?<!\\\\)(?>\\\\\\\\)*,");
-        //      for (int i=0; i<stringValues.length; i++) {
-        //          if (stringValues[i] != null && stringValues[i].trim().length() > 0) {
-        //              defaultValues.add(unescapeString(stringValues[i]));
-        //          }
-        //      }
-        //      return defaultValues.toArray( new String[]{});
-        if (strValues == null)
+        // List<String> defaultValues = new ArrayList<String>();
+        // String[] stringValues = defaultValue.split("(?<!\\\\)(?>\\\\\\\\)*,");
+        // for (int i=0; i<stringValues.length; i++) {
+        // if (stringValues[i] != null && stringValues[i].trim().length() > 0) {
+        // defaultValues.add(unescapeString(stringValues[i]));
+        // }
+        // }
+        // return defaultValues.toArray( new String[]{});
+        if (strValues == null) {
             return null;
+        }
 
         // The trick is to strip out unescaped whitespace characters before and
-        // after the input string as well as before and after each 
-        // individual token within the input string without losing any escaped 
+        // after the input string as well as before and after each
+        // individual token within the input string without losing any escaped
         // whitespace characters. Whitespace between two non-whitespace
         // characters may or may not be escaped. Also, any character may be
         // escaped. The escape character is '\'. The delimiter is ','.
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         StringBuilder buffer = new StringBuilder();
         // Loop over the characters within the input string and extract each
         // value token.
@@ -130,49 +131,62 @@ public class StringUtil {
     /**
      * Convert the string to the appropriate Object based on type
      *
-     * @param type   allowed values are {@link TscalarImpl}
+     * @param type
+     *            allowed values are {@link TscalarImpl}
      * @param string
      * @return
      * @throws KapuaException
      */
     public static Object stringToValue(String type, String string) throws KapuaException {
-        if (string == null)
+        if (string == null) {
             return null;
+        }
 
-        if (type == null || type.isEmpty())
+        if (type == null || type.isEmpty()) {
             throw KapuaException.internalError("Invalid type");
+        }
 
         TscalarImpl scalarType = TscalarImpl.fromValue(type);
 
-        if (TscalarImpl.STRING.equals(scalarType))
+        if (TscalarImpl.STRING.equals(scalarType)) {
             return string;
+        }
 
-        if (TscalarImpl.BOOLEAN.equals(scalarType))
+        if (TscalarImpl.BOOLEAN.equals(scalarType)) {
             return Boolean.valueOf(string);
+        }
 
-        if (TscalarImpl.BYTE.equals(scalarType))
+        if (TscalarImpl.BYTE.equals(scalarType)) {
             return Byte.valueOf(string);
+        }
 
-        if (TscalarImpl.CHAR.equals(scalarType))
+        if (TscalarImpl.CHAR.equals(scalarType)) {
             return string.toCharArray()[0];
+        }
 
-        if (TscalarImpl.DOUBLE.equals(scalarType))
+        if (TscalarImpl.DOUBLE.equals(scalarType)) {
             return Double.valueOf(string);
+        }
 
-        if (TscalarImpl.FLOAT.equals(scalarType))
+        if (TscalarImpl.FLOAT.equals(scalarType)) {
             return Float.valueOf(string);
+        }
 
-        if (TscalarImpl.INTEGER.equals(scalarType))
+        if (TscalarImpl.INTEGER.equals(scalarType)) {
             return Integer.valueOf(string);
+        }
 
-        if (TscalarImpl.LONG.equals(scalarType))
+        if (TscalarImpl.LONG.equals(scalarType)) {
             return Long.valueOf(string);
+        }
 
-        if (TscalarImpl.SHORT.equals(scalarType))
+        if (TscalarImpl.SHORT.equals(scalarType)) {
             return Short.valueOf(string);
+        }
 
-        if (TscalarImpl.PASSWORD.equals(scalarType))
+        if (TscalarImpl.PASSWORD.equals(scalarType)) {
             return new Password(string);
+        }
 
         throw KapuaException.internalError("Unknown type");
     }

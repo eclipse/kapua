@@ -32,11 +32,11 @@ import org.eclipse.kapua.service.account.AccountService;
 @KapuaProvider
 public class AccountServiceMock implements AccountService {
 
-    private AccountMock kapuaRootAccount;
-    private Map<KapuaId, AccountMock> accounts;
+    private final AccountMock kapuaRootAccount;
+    private final Map<KapuaId, AccountMock> accounts;
 
     public AccountServiceMock() {
-        accounts = new HashMap<KapuaId, AccountMock>();
+        accounts = new HashMap<>();
         kapuaRootAccount = new AccountMock(new KapuaEid(BigInteger.valueOf(1)), "kapua-sys");
         accounts.put(kapuaRootAccount.getId(), kapuaRootAccount);
     }
@@ -52,8 +52,9 @@ public class AccountServiceMock implements AccountService {
     @Override
     public Account find(KapuaId scopeId, KapuaId entityId)
             throws KapuaException {
-        if (!accounts.containsKey(entityId))
+        if (!accounts.containsKey(entityId)) {
             throw KapuaException.internalError("User not found");
+        }
 
         return accounts.get(entityId);
     }
@@ -73,18 +74,19 @@ public class AccountServiceMock implements AccountService {
     @Override
     public void delete(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
-        if (!accounts.containsKey(accountId))
+        if (!accounts.containsKey(accountId)) {
             throw KapuaException.internalError("User not found");
+        }
 
-        @SuppressWarnings("unused")
-        AccountMock accountMock = accounts.remove(accountId);
+        accounts.remove(accountId);
     }
 
     @Override
     public Account update(Account account)
             throws KapuaException {
-        if (!accounts.containsKey(account.getId()))
+        if (!accounts.containsKey(account.getId())) {
             throw KapuaException.internalError("User not found");
+        }
 
         AccountMock accountMock = accounts.get(account.getId());
         return accountMock;
@@ -96,8 +98,9 @@ public class AccountServiceMock implements AccountService {
         Iterator<AccountMock> accountMocks = accounts.values().iterator();
         while (accountMocks.hasNext()) {
             AccountMock accountMock = accountMocks.next();
-            if (accountMock.getName() != null && accountMock.getName().equals(name))
+            if (accountMock.getName() != null && accountMock.getName().equals(name)) {
                 return accountMock;
+            }
         }
         throw KapuaException.internalError("User not found");
     }
@@ -123,8 +126,9 @@ public class AccountServiceMock implements AccountService {
     @Override
     public Account find(KapuaId id)
             throws KapuaException {
-        if (!accounts.containsKey(id))
+        if (!accounts.containsKey(id)) {
             throw KapuaException.internalError("User not found");
+        }
 
         return accounts.get(id);
     }

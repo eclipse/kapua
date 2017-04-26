@@ -26,7 +26,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRole;
 
 /**
  * {@link AccessRole} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @Entity(name = "AccessRole")
@@ -49,7 +49,7 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
 
     /**
      * Empty constructor required by JPA.
-     * 
+     *
      * @since 1.0.0
      */
     protected AccessRoleImpl() {
@@ -58,7 +58,7 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
 
     /**
      * Constructor.
-     * 
+     *
      * @param scopeId
      *            The scope id to set for this {@link AccessRole}.
      * @since 1.0.0
@@ -70,7 +70,7 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     /**
      * Constructor.<br>
      * Creates a clone of the given {@link AccessRole}.
-     * 
+     *
      * @param accessRole
      *            The {@link AccessRole} to clone.
      * @throws KapuaException
@@ -78,7 +78,7 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
      * @since 1.0.0
      */
     public AccessRoleImpl(AccessRole accessRole) throws KapuaException {
-        super((AbstractKapuaEntity) accessRole);
+        super(accessRole);
 
         setAccessInfoId(accessRole.getAccessInfoId());
         setRoleId(accessRole.getRoleId());
@@ -87,9 +87,9 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     @Override
     public void setAccessInfoId(KapuaId accessId) {
         if (accessId != null) {
-            this.accessInfoId = new KapuaEid(accessId);
+            accessInfoId = new KapuaEid(accessId);
         } else {
-            this.accessInfoId = null;
+            accessInfoId = null;
         }
     }
 
@@ -101,9 +101,9 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     @Override
     public void setRoleId(KapuaId accessId) {
         if (accessId != null) {
-            this.roleId = new KapuaEid(accessId);
+            roleId = new KapuaEid(accessId);
         } else {
-            this.roleId = null;
+            roleId = null;
         }
     }
 
@@ -116,30 +116,37 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((accessInfoId == null) ? 0 : accessInfoId.hashCode());
-        result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
+        result = prime * result + (accessInfoId == null ? 0 : accessInfoId.hashCode());
+        result = prime * result + (roleId == null ? 0 : roleId.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AccessRoleImpl other = (AccessRoleImpl) obj;
         if (accessInfoId == null) {
-            if (other.accessInfoId != null)
+            if (other.accessInfoId != null) {
                 return false;
-        } else if (!accessInfoId.equals(other.accessInfoId))
+            }
+        } else if (!accessInfoId.equals(other.accessInfoId)) {
             return false;
+        }
         if (roleId == null) {
-            if (other.roleId != null)
+            if (other.roleId != null) {
                 return false;
-        } else if (!roleId.equals(other.roleId))
+            }
+        } else if (!roleId.equals(other.roleId)) {
             return false;
+        }
         return true;
     }
 }

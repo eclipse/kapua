@@ -30,29 +30,26 @@ import org.eclipse.kapua.service.user.UserService;
 
 @TestService
 @KapuaProvider
-public class UserServiceMock implements UserService
-{
-    private UserMock kapuaSysUser;
-    private Map<KapuaId, UserMock> users;
-    
-    public UserServiceMock()
-    {
+public class UserServiceMock implements UserService {
+
+    private final UserMock kapuaSysUser;
+    private final Map<KapuaId, UserMock> users;
+
+    public UserServiceMock() {
         kapuaSysUser = new UserMock(new KapuaEid(BigInteger.valueOf(1)), "kapua-sys");
-        users = new HashMap<KapuaId, UserMock>();
+        users = new HashMap<>();
         users.put(kapuaSysUser.getId(), kapuaSysUser);
     }
-    
+
     @Override
     public long count(KapuaQuery<User> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public User create(UserCreator userCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         UserMock user = new UserMock(userCreator.getScopeId(), userCreator.getName());
         user.setDisplayName(userCreator.getDisplayName());
@@ -64,10 +61,10 @@ public class UserServiceMock implements UserService
 
     @Override
     public User update(User user)
-        throws KapuaException
-    {
-        if (!users.containsKey(user.getId()))
+            throws KapuaException {
+        if (!users.containsKey(user.getId())) {
             throw KapuaException.internalError("User not found");
+        }
 
         UserMock userMock = users.get(user.getId());
         user.setDisplayName(user.getDisplayName());
@@ -78,77 +75,71 @@ public class UserServiceMock implements UserService
 
     @Override
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        if (!users.containsKey(userId))
+        if (!users.containsKey(userId)) {
             throw KapuaException.internalError("User not found");
+        }
 
-        @SuppressWarnings("unused")
-        UserMock userMock = users.remove(userId);
+        users.remove(userId);
     }
 
     @Override
     public void delete(User user)
-        throws KapuaException
-    {
-        if (!users.containsKey(user.getId()))
+            throws KapuaException {
+        if (!users.containsKey(user.getId())) {
             throw KapuaException.internalError("User not found");
-        
-        @SuppressWarnings("unused")
-        UserMock userMock = users.remove(user.getId());
+        }
+
+        users.remove(user.getId());
     }
 
     @Override
     public User find(KapuaId accountId, KapuaId userId)
-        throws KapuaException
-    {
-        if (!users.containsKey(userId))
+            throws KapuaException {
+        if (!users.containsKey(userId)) {
             throw KapuaException.internalError("User not found");
-        
+        }
+
         return users.get(userId);
     }
 
     @Override
     public User findByName(String name)
-        throws KapuaException
-    {
+            throws KapuaException {
         Iterator<UserMock> userMocks = users.values().iterator();
-        while(userMocks.hasNext())
-        {
+        while (userMocks.hasNext()) {
             UserMock userMock = userMocks.next();
-            if (userMock.getName() != null && userMock.getName().equals(name))
+            if (userMock.getName() != null && userMock.getName().equals(name)) {
                 return userMock;
+            }
         }
         throw KapuaException.internalError("User not found");
     }
 
     @Override
     public UserListResult query(KapuaQuery<User> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
     public KapuaTocd getConfigMetadata()
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Map<String, Object> getConfigValues(KapuaId scopeId)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values)
-        throws KapuaException
-    {
+            throws KapuaException {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

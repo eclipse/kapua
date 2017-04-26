@@ -38,7 +38,7 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 
 /**
  * {@link Permission} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @Embeddable
@@ -75,7 +75,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     /**
      * Constructor.
-     * 
+     *
      * @param permission
      *            The {@link Permission} to parse.
      * @since 1.0.0
@@ -90,12 +90,12 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     /**
      * Constructor.
-     * 
+     *
      * @param domain
      * @param action
      * @param targetScopeId
      * @param groupId
-     * 
+     *
      * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
@@ -130,7 +130,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public void setTargetScopeId(KapuaId targetScopeId) {
-        this.targetScopeId = targetScopeId != null ? (targetScopeId instanceof KapuaEid ? (KapuaEid) targetScopeId : new KapuaEid(targetScopeId)) : null;
+        this.targetScopeId = targetScopeId != null ? targetScopeId instanceof KapuaEid ? (KapuaEid) targetScopeId : new KapuaEid(targetScopeId) : null;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public void setGroupId(KapuaId groupId) {
-        this.groupId = groupId != null ? (groupId instanceof KapuaEid ? (KapuaEid) groupId : new KapuaEid(groupId)) : null;
+        this.groupId = groupId != null ? groupId instanceof KapuaEid ? (KapuaEid) groupId : new KapuaEid(groupId) : null;
     }
 
     @Override
@@ -150,17 +150,17 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     /**
      * This methods needs to be overridden to support Access {@link Group} feature.<br>
-     * 
+     *
      * {@link KapuaEntityService}s that access a specific {@link KapuaEntity} (i.e. {@link KapuaEntityService#create(KapuaEntityCreator)}, {@link KapuaEntityService#delete(KapuaId, KapuaId)})
      * can make the control taking in consideration of the {@link Group#getId()} parameter as it is known.<br>
-     * 
+     *
      * Instead, methods that access multiple {@link KapuaEntity}s (i.e. {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)})
      * cannot make a direct control of the {@link Group#getId()} parameter as it is not known and they can be a lot.<br>
      * The access control then, is performed by hiding the data that a {@link Subject} cannot see instead of throwing {@link UnauthorizedException}.
-     * 
+     *
      * The access control for {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)}) must specify that {@link KapuaEid#ANY} group assigned to the permission is
      * enough to pass the {@link AuthorizationService#checkPermission(Permission)}.
-     * 
+     *
      */
     @Override
     public boolean implies(org.apache.shiro.authz.Permission p) {
@@ -194,39 +194,49 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((action == null) ? 0 : action.hashCode());
-        result = prime * result + ((domain == null) ? 0 : domain.hashCode());
-        result = prime * result + ((targetScopeId == null) ? 0 : targetScopeId.hashCode());
-        result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
+        result = prime * result + (action == null ? 0 : action.hashCode());
+        result = prime * result + (domain == null ? 0 : domain.hashCode());
+        result = prime * result + (targetScopeId == null ? 0 : targetScopeId.hashCode());
+        result = prime * result + (groupId == null ? 0 : groupId.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         PermissionImpl other = (PermissionImpl) obj;
-        if (action != other.action)
+        if (action != other.action) {
             return false;
+        }
         if (domain == null) {
-            if (other.domain != null)
+            if (other.domain != null) {
                 return false;
-        } else if (!domain.equals(other.domain))
+            }
+        } else if (!domain.equals(other.domain)) {
             return false;
+        }
         if (targetScopeId == null) {
-            if (other.targetScopeId != null)
+            if (other.targetScopeId != null) {
                 return false;
-        } else if (!targetScopeId.equals(other.targetScopeId))
+            }
+        } else if (!targetScopeId.equals(other.targetScopeId)) {
             return false;
+        }
         if (groupId == null) {
-            if (other.groupId != null)
+            if (other.groupId != null) {
                 return false;
-        } else if (!groupId.equals(other.groupId))
+            }
+        } else if (!groupId.equals(other.groupId)) {
             return false;
+        }
         return true;
     }
 }

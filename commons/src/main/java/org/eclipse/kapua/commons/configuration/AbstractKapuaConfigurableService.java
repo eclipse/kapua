@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -100,7 +101,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param updatedProps
      * @param scopeId
      * @param parentId
-     * 
+     *
      * @throws KapuaException
      */
     private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
@@ -172,8 +173,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private static Properties toProperties(Map<String, Object> values) {
         Properties props = new Properties();
-        for (Entry<String, Object> entry : values.entrySet())
+        for (Entry<String, Object> entry : values.entrySet()) {
             props.setProperty(entry.getKey(), StringUtil.valueToString(entry.getValue()));
+        }
 
         return props;
     }
@@ -209,7 +211,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
 
-        return entityManagerSession.onTransactedInsert(em -> ServiceConfigDAO.create(em, serviceConfig));
+        return entityManagerSession.onTransactedInsert(em -> ServiceDAO.create(em, serviceConfig));
     }
 
     /**
@@ -251,7 +253,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         try {
-            KapuaTmetadata metadata = readMetadata(this.pid);
+            KapuaTmetadata metadata = readMetadata(pid);
             if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
                 for (KapuaTocd ocd : metadata.getOCD()) {
                     if (ocd.getId() != null && ocd.getId().equals(pid)) {
@@ -261,7 +263,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             }
             return null;
         } catch (Exception e) {
-            throw KapuaConfigurationException.internalError(e);
+            throw KapuaException.internalError(e);
         }
     }
 
@@ -274,20 +276,20 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         AndPredicate predicate = new AndPredicate()
-                .and(new AttributePredicate<String>("pid", this.pid, Operator.EQUAL))
-                .and(new AttributePredicate<KapuaId>("scopeId", scopeId, Operator.EQUAL));
+                .and(new AttributePredicate<>("pid", pid, Operator.EQUAL))
+                .and(new AttributePredicate<>("scopeId", scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
 
-        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
+        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {
             properties = result.getFirstItem().getConfigurations();
         }
-            
-        KapuaTocd ocd = this.getConfigMetadata();
+
+        KapuaTocd ocd = getConfigMetadata();
         return toValues(ocd, properties);
     }
 
@@ -299,24 +301,24 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
-        KapuaTocd ocd = this.getConfigMetadata();
-        validateConfigurations(this.pid, ocd, values, scopeId, parentId);
+        KapuaTocd ocd = getConfigMetadata();
+        validateConfigurations(pid, ocd, values, scopeId, parentId);
 
         Properties props = toProperties(values);
 
         AndPredicate predicate = new AndPredicate()
-                .and(new AttributePredicate<String>("pid", this.pid, Operator.EQUAL))
-                .and(new AttributePredicate<KapuaId>("scopeId", scopeId, Operator.EQUAL));
+                .and(new AttributePredicate<>("pid", pid, Operator.EQUAL))
+                .and(new AttributePredicate<>("scopeId", scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
 
-        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceConfigDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
+        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         if (result == null || result.getSize() == 0) {
             // In not exists create then return
             ServiceConfig serviceConfigNew = new ServiceConfigImpl(scopeId);
-            serviceConfigNew.setPid(this.pid);
+            serviceConfigNew.setPid(pid);
             serviceConfigNew.setConfigurations(props);
 
             createConfig(serviceConfigNew);

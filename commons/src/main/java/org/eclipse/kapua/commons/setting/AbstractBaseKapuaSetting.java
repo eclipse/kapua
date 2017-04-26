@@ -24,7 +24,7 @@ import org.apache.commons.configuration.MapConfiguration;
 /**
  * An abstract base class which does not make any assumptions on where the
  * configuration comes from
- * 
+ *
  * @param <K>
  *            The settings key type
  */
@@ -35,12 +35,15 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * <p>
      * This is useful for testing when the configuration has to be provided
      * </p>
-     * @param map the map of values
+     * 
+     * @param map
+     *            the map of values
      * @return the configuration, may be {@code null} if the "map" parameter was null
      */
     public static <K extends SettingKey> AbstractBaseKapuaSetting<K> fromMap(Map<String, Object> map) {
-        if (map == null)
+        if (map == null) {
             return null;
+        }
         return new AbstractBaseKapuaSetting<>(new DataConfiguration(new MapConfiguration(map)));
     }
 

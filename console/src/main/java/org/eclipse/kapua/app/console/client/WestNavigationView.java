@@ -63,7 +63,7 @@ public class WestNavigationView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private LayoutContainer m_centerPanel;
+    private final LayoutContainer m_centerPanel;
     private ContentPanel cloudResourcesPanel;
     private ContentPanel m_accordionPanel;
     private ContentPanel accountManagementPanel;
@@ -77,7 +77,7 @@ public class WestNavigationView extends LayoutContainer {
     private KapuaIcon imgRefreshLabel;
     private WelcomeView m_welcomeView;
 
-    private GwtSession m_currentSession;
+    private final GwtSession m_currentSession;
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
         m_currentSession = currentSession;
@@ -98,6 +98,7 @@ public class WestNavigationView extends LayoutContainer {
         dashboardSelected = true;
     }
 
+    @Override
     protected void onRender(final Element parent, int index) {
         super.onRender(parent, index);
 
@@ -157,8 +158,9 @@ public class WestNavigationView extends LayoutContainer {
             @Override
             public void selectionChanged(SelectionChangedEvent<ModelData> se) {
                 ModelData selected = se.getSelectedItem();
-                if (selected == null)
+                if (selected == null) {
                     return;
+                }
 
                 if (dashboardSelected && ((String) selected.get("id")).equals("welcome")) {
                     return;
@@ -207,14 +209,14 @@ public class WestNavigationView extends LayoutContainer {
                     DataView dataView = new DataView(m_currentSession);
                     panel.setHeaderVisible(false);
                     panel.add(dataView);
-                    
+
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("user".equals(selectedId)) {
 
                     UserView userView = new UserView(m_currentSession);
-//                    userView.setAccount(m_currentSession.getSelectedAccount());
+                    // userView.setAccount(m_currentSession.getSelectedAccount());
 
                     panel.setIcon(new KapuaIcon(IconSet.USERS));
                     panel.setHeading(MSGS.users());
@@ -224,7 +226,7 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.layout();
                     dashboardSelected = false;
 
-//                    userView.refresh();
+                    // userView.refresh();
                 } else if ("role".equals(selectedId)) {
 
                     panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
@@ -247,7 +249,7 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
-                } else if("groups".equals(selectedId)){
+                } else if ("groups".equals(selectedId)) {
                     panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
                     panel.setHeading(MSGS.groups());
 
@@ -292,8 +294,9 @@ public class WestNavigationView extends LayoutContainer {
             public void selectionChanged(SelectionChangedEvent<ModelData> se) {
 
                 ModelData selected = se.getSelectedItem();
-                if (selected == null)
+                if (selected == null) {
                     return;
+                }
 
                 cloudResourcesTreeGrid.getSelectionModel().deselectAll();
 
@@ -364,7 +367,7 @@ public class WestNavigationView extends LayoutContainer {
             if (m_currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
             }
-            if (m_currentSession.hasGroupReadPermission()){
+            if (m_currentSession.hasGroupReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("groups", MSGS.groups(), IconSet.OBJECT_GROUP), false);
             }
 
@@ -399,7 +402,7 @@ public class WestNavigationView extends LayoutContainer {
     }
 
     public void setDashboardSelected(boolean isSelected) {
-        this.dashboardSelected = isSelected;
+        dashboardSelected = isSelected;
     }
 
     private ModelData newItem(String id, String text, IconSet icon) {
@@ -410,7 +413,7 @@ public class WestNavigationView extends LayoutContainer {
         return m;
     }
 
-    private WidgetTreeGridCellRenderer<ModelData> treeCellRenderer = new WidgetTreeGridCellRenderer<ModelData>() {
+    private final WidgetTreeGridCellRenderer<ModelData> treeCellRenderer = new WidgetTreeGridCellRenderer<ModelData>() {
 
         @Override
         public Widget getWidget(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {

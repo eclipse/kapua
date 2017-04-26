@@ -34,8 +34,9 @@ public class AuthenticationServiceMock implements AuthenticationService {
     @Override
     public AccessToken login(LoginCredentials authenticationToken)
             throws KapuaException {
-        if (!(authenticationToken instanceof UsernamePasswordCredentialsMock))
+        if (!(authenticationToken instanceof UsernamePasswordCredentialsMock)) {
             throw KapuaException.internalError("Unmanaged credentials type");
+        }
 
         UsernamePasswordCredentialsMock usrPwdCredentialsMock = (UsernamePasswordCredentialsMock) authenticationToken;
 

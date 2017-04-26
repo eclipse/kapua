@@ -38,7 +38,7 @@ public class EsTypeDAO {
     private static final String CLIENT_UNDEFINED_MSG = "ES client must be not null";
     private static final String INVALID_DOCUMENT_ID_MSG = "Document id must be not empty %s";
 
-    private Client client;
+    private final Client client;
 
     private String indexName;
     private String typeName;
@@ -69,8 +69,9 @@ public class EsTypeDAO {
      */
     public EsTypeDAO setListener(EsDaoListener eventListener)
             throws EsDatastoreException {
-        if (this.eventListener != null && this.eventListener != eventListener)
+        if (this.eventListener != null && this.eventListener != eventListener) {
             throw new EsDatastoreException("Listener already set. Use unset to uregister the previuos listener.");
+        }
 
         this.eventListener = eventListener;
         return this;
@@ -85,8 +86,9 @@ public class EsTypeDAO {
      */
     public EsTypeDAO unsetListener(EsDaoListener eventListener)
             throws EsDatastoreException {
-        if (this.eventListener != null && this.eventListener != eventListener)
+        if (this.eventListener != null && this.eventListener != eventListener) {
             throw new EsDatastoreException("Listener cannot be unset. The provided listener does not match.");
+        }
 
         this.eventListener = null;
         return this;
@@ -112,13 +114,14 @@ public class EsTypeDAO {
      * @return
      */
     public String insert(XContentBuilder esClient) {
-        if (this.client == null)
+        if (client == null) {
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
+        }
 
         long timeout = EsUtils.getQueryTimeout();
 
-        IndexRequest idxRequest = new IndexRequest(this.indexName, this.typeName).source(esClient);
-        IndexResponse response = this.client.index(idxRequest).actionGet(TimeValue.timeValueMillis(timeout));
+        IndexRequest idxRequest = new IndexRequest(indexName, typeName).source(esClient);
+        IndexResponse response = client.index(idxRequest).actionGet(TimeValue.timeValueMillis(timeout));
         return response.getId();
     }
 
@@ -130,13 +133,14 @@ public class EsTypeDAO {
      * @return
      */
     public UpdateResponse update(String id, XContentBuilder esClient) {
-        if (this.client == null)
+        if (client == null) {
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
+        }
 
         long timeout = EsUtils.getQueryTimeout();
 
-        UpdateRequest updRequest = new UpdateRequest(this.indexName, this.typeName, id).doc(esClient);
-        UpdateResponse response = this.client.update(updRequest)
+        UpdateRequest updRequest = new UpdateRequest(indexName, typeName, id).doc(esClient);
+        UpdateResponse response = client.update(updRequest)
                 .actionGet(TimeValue.timeValueMillis(timeout));
         return response;
     }
@@ -149,11 +153,12 @@ public class EsTypeDAO {
      * @return
      */
     public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient) {
-        if (this.client == null)
+        if (client == null) {
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
+        }
 
-        IndexRequest idxRequest = new IndexRequest(this.indexName, this.typeName, id).source(esClient);
-        UpdateRequest updRequest = new UpdateRequest(this.indexName, this.typeName, id).doc(esClient);
+        IndexRequest idxRequest = new IndexRequest(indexName, typeName, id).source(esClient);
+        UpdateRequest updRequest = new UpdateRequest(indexName, typeName, id).doc(esClient);
         updRequest.upsert(idxRequest);
         return updRequest;
     }
@@ -166,14 +171,15 @@ public class EsTypeDAO {
      * @return
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient) {
-        if (this.client == null)
+        if (client == null) {
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
+        }
 
         long timeout = EsUtils.getQueryTimeout();
 
-        IndexRequest idxRequest = new IndexRequest(this.indexName, this.typeName, id).source(esClient);
-        UpdateRequest updRequest = new UpdateRequest(this.indexName, this.typeName, id).doc(esClient);
-        UpdateResponse response = this.client.update(updRequest.upsert(idxRequest)).actionGet(TimeValue.timeValueMillis(timeout));
+        IndexRequest idxRequest = new IndexRequest(indexName, typeName, id).source(esClient);
+        UpdateRequest updRequest = new UpdateRequest(indexName, typeName, id).doc(esClient);
+        UpdateResponse response = client.update(updRequest.upsert(idxRequest)).actionGet(TimeValue.timeValueMillis(timeout));
         return response;
     }
 
@@ -187,8 +193,8 @@ public class EsTypeDAO {
         TimeValue scrollTimeout = TimeValue.timeValueMillis(EsUtils.getScrollTimeout());
 
         // delete by query API is deprecated, scroll with bulk delete must be used
-        SearchResponse scrollResponse = this.client.prepareSearch(this.getIndexName())
-                .setTypes(this.getTypeName())
+        SearchResponse scrollResponse = client.prepareSearch(getIndexName())
+                .setTypes(getTypeName())
                 .setFetchSource(false)
                 .addSort("_doc", SortOrder.ASC)
                 .setVersion(true)
@@ -201,8 +207,9 @@ public class EsTypeDAO {
         while (true) {
 
             // Break condition: No hits are returned
-            if (scrollResponse.getHits().getHits().length == 0)
+            if (scrollResponse.getHits().getHits().length == 0) {
                 break;
+            }
 
             BulkRequest bulkRequest = new BulkRequest();
             for (SearchHit hit : scrollResponse.getHits().hits()) {
@@ -213,13 +220,14 @@ public class EsTypeDAO {
                 bulkRequest.add(delete);
             }
 
-            this.getClient().bulk(bulkRequest).actionGet(queryTimeout);
+            getClient().bulk(bulkRequest).actionGet(queryTimeout);
 
             // TODO manage events
-            if (eventListener != null)
+            if (eventListener != null) {
                 eventListener.notify(new EsTypeCrudEvent());
+            }
 
-            scrollResponse = this.client.prepareSearchScroll(scrollResponse.getScrollId())
+            scrollResponse = client.prepareSearchScroll(scrollResponse.getScrollId())
                     .setScroll(scrollTimeout)
                     .execute()
                     .actionGet(queryTimeout);
@@ -233,12 +241,13 @@ public class EsTypeDAO {
      * @return
      */
     public BulkResponse bulk(BulkRequest bulkRequest) {
-        if (this.client == null)
+        if (client == null) {
             throw new IllegalStateException(CLIENT_UNDEFINED_MSG);
+        }
 
         long timeout = EsUtils.getQueryTimeout();
 
-        BulkResponse bulkResponse = this.getClient().bulk(bulkRequest).actionGet(timeout);
+        BulkResponse bulkResponse = getClient().bulk(bulkRequest).actionGet(timeout);
         return bulkResponse;
     }
 }

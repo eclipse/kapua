@@ -39,7 +39,7 @@ public class KapuaSerializableBodyWriter implements MessageBodyWriter<KapuaSeria
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        //TODO any ode here to do more significant check on the types ?
+        // TODO any ode here to do more significant check on the types ?
         return true;
     }
 
@@ -53,14 +53,16 @@ public class KapuaSerializableBodyWriter implements MessageBodyWriter<KapuaSeria
             MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
             throws IOException, WebApplicationException {
         try {
-            if (providers == null)
+            if (providers == null) {
                 throw new WebApplicationException("Unable to find any provider.");
+            }
 
             ContextResolver<JAXBContext> cr = providers.getContextResolver(JAXBContext.class,
                     MediaType.APPLICATION_XML_TYPE);
             JAXBContext jaxbContext = cr.getContext(JAXBContext.class);
-            if (jaxbContext == null)
+            if (jaxbContext == null) {
                 throw new WebApplicationException("Unable to get a JAXBContext.");
+            }
 
             // serialize the entity myBean to the entity output stream
             jaxbContext.createMarshaller().marshal(t, entityStream);

@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Message store facade
- * 
+ *
  * @since 1.0.0
  *
  */
@@ -70,27 +70,27 @@ public final class MessageStoreFacade {
 
     /**
      * Constructs the message store facade
-     * 
+     *
      * @param confProvider
      * @param mediator
-     * 
+     *
      * @since 1.0.0
      */
     public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) {
-        this.configProvider = confProvider;
+        configProvider = confProvider;
         this.mediator = mediator;
     }
 
     /**
      * Store a message
-     * 
+     *
      * @param message
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
      * @throws EsDocumentBuilderException
-     * 
+     *
      * @since 1.0.0
      */
     public StorableId store(KapuaMessage<?, ?> message)
@@ -105,8 +105,8 @@ public final class MessageStoreFacade {
         ArgumentValidator.notNull(message.getReceivedOn(), "receivedOn");
 
         // Collect context data
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(message.getScopeId());
-        MessageInfo accountInfo = this.configProvider.getInfo(message.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(message.getScopeId());
+        MessageInfo accountInfo = configProvider.getInfo(message.getScopeId());
 
         // Define data TTL
         long ttlSecs = accountServicePlan.getDataTimeToLiveMilliseconds();
@@ -160,13 +160,13 @@ public final class MessageStoreFacade {
 
     /**
      * Delete message by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
-     * 
+     *
      * @since 1.0.0
      */
     public void delete(KapuaId scopeId, StorableId id)
@@ -180,7 +180,7 @@ public final class MessageStoreFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -196,7 +196,7 @@ public final class MessageStoreFacade {
 
     /**
      * Find message by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @param fetchStyle
@@ -206,7 +206,7 @@ public final class MessageStoreFacade {
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
-     * 
+     *
      * @since 1.0.0
      */
     public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
@@ -236,7 +236,7 @@ public final class MessageStoreFacade {
 
     /**
      * Find messages matching the given query
-     * 
+     *
      * @param scopeId
      * @param query
      * @return
@@ -245,7 +245,7 @@ public final class MessageStoreFacade {
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
      * @throws EsObjectBuilderException
-     * 
+     *
      * @since 1.0.0
      */
     public MessageListResult query(MessageQuery query)
@@ -260,7 +260,7 @@ public final class MessageStoreFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -276,7 +276,7 @@ public final class MessageStoreFacade {
 
     /**
      * Get messages count matching the given query
-     * 
+     *
      * @param scopeId
      * @param query
      * @return
@@ -284,7 +284,7 @@ public final class MessageStoreFacade {
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
+     *
      * @since 1.0.0
      */
     public long count(MessageQuery query)
@@ -299,7 +299,7 @@ public final class MessageStoreFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -315,14 +315,14 @@ public final class MessageStoreFacade {
 
     /**
      * Delete messages count matching the given query
-     * 
+     *
      * @param scopeId
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * 
+     *
      * @since 1.0.0
      */
     public void delete(MessageQuery query)
@@ -337,7 +337,7 @@ public final class MessageStoreFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -367,8 +367,9 @@ public final class MessageStoreFacade {
             isAnyClientId = DatastoreChannel.isAnyClientId(clientId);
             semTopic = channel;
 
-            if (semTopic.isEmpty() && !isAnyClientId)
+            if (semTopic.isEmpty() && !isAnyClientId) {
                 isClientToDelete = true;
+            }
         } else {
             isClientToDelete = true;
         }
@@ -399,12 +400,14 @@ public final class MessageStoreFacade {
 
             for (int i = 0; i < toBeProcessed; i++) {
                 String id = metrics.getItem(i).getId().toString();
-                if (metricsCache.get(id))
+                if (metricsCache.get(id)) {
                     metricsCache.remove(id);
+                }
             }
 
-            if (totalHits > pageSize)
-                offset += (pageSize + 1);
+            if (totalHits > pageSize) {
+                offset += pageSize + 1;
+            }
         }
 
         logger.debug(String.format("Removed cached channel metrics for [%s]", channel));
@@ -436,11 +439,13 @@ public final class MessageStoreFacade {
 
             for (int i = 0; i < toBeProcessed; i++) {
                 String id = channels.getItem(0).getId().toString();
-                if (channelsCache.get(id))
+                if (channelsCache.get(id)) {
                     channelsCache.remove(id);
+                }
             }
-            if (totalHits > pageSize)
-                offset += (pageSize + 1);
+            if (totalHits > pageSize) {
+                offset += pageSize + 1;
+            }
         }
 
         logger.debug(String.format("Removed cached channels for [%s]", channel));
@@ -475,11 +480,13 @@ public final class MessageStoreFacade {
 
                 for (int i = 0; i < toBeProcessed; i++) {
                     String id = clients.getItem(i).getId().toString();
-                    if (clientsCache.get(id))
+                    if (clientsCache.get(id)) {
                         clientsCache.remove(id);
+                    }
                 }
-                if (totalHits > pageSize)
-                    offset += (pageSize + 1);
+                if (totalHits > pageSize) {
+                    offset += pageSize + 1;
+                }
             }
 
             logger.debug(String.format("Removed cached clients for [%s]", channel));

@@ -33,7 +33,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger     s_logger         = LoggerFactory.getLogger(KapuaGwtModelConverter.class);
+    private static final Logger s_logger = LoggerFactory.getLogger(KapuaGwtModelConverter.class);
 
     /**
      *
@@ -45,7 +45,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      */
     public void checkXSRFToken(GwtXSRFToken xsrfToken)
             throws GwtKapuaException {
-        HttpServletRequest req = this.perThreadRequest.get();
+        HttpServletRequest req = perThreadRequest.get();
         performXSRFTokenValidation(req, xsrfToken);
     }
 
@@ -68,8 +68,8 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
                 s_logger.debug("\tSender Host: {}", req.getRemoteHost());
                 s_logger.debug("\tSender Port: {}", req.getRemotePort());
                 s_logger.debug("\tFull Request URL\n {}?{}\n\n",
-                               req.getRequestURL().toString(),
-                               req.getQueryString());
+                        req.getRequestURL().toString(),
+                        req.getQueryString());
 
                 // forcing the console log out
                 session.invalidate();
@@ -138,8 +138,9 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      */
     static private boolean isValidStringToken(String token) {
         if (token != null) {
-            if (!token.isEmpty())
+            if (!token.isEmpty()) {
                 return true;
+            }
         }
         return false;
     }
@@ -165,7 +166,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
         // Process the uploaded items
         Iterator<FileItem> iter = items.iterator();
         while (iter.hasNext()) {
-            FileItem item = (FileItem) iter.next();
+            FileItem item = iter.next();
             if (item.isFormField()) {
                 String name = item.getFieldName();
 

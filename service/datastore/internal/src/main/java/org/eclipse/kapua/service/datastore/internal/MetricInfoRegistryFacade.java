@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Metric information registry facade
- * 
+ *
  * @since 1.0.0
  */
 public class MetricInfoRegistryFacade {
@@ -59,21 +59,21 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Constructs the metric info registry facade
-     * 
+     *
      * @param configProvider
      * @param mediator
-     * 
+     *
      * @since 1.0.0
      */
     public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        this.metadataUpdateSync = new Object();
+        metadataUpdateSync = new Object();
     }
 
     /**
      * Update the metric information after a message store operation (for a single metric)
-     * 
+     *
      * @param scopeId
      * @param metricInfo
      * @return
@@ -81,7 +81,7 @@ public class MetricInfoRegistryFacade {
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
-     * 
+     *
      * @since 1.0.0
      */
     public StorableId upstore(MetricInfo metricInfo)
@@ -105,11 +105,11 @@ public class MetricInfoRegistryFacade {
             // Synchronize in order to let the first thread complete its
             // update then the others of the same type will find the cache
             // updated and skip the update.
-            synchronized (this.metadataUpdateSync) {
+            synchronized (metadataUpdateSync) {
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(metricInfoId)) {
                     UpdateResponse response = null;
                     try {
-                        Metadata metadata = this.mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
+                        Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                         String kapuaIndexName = metadata.getKapuaIndexName();
 
                         response = EsMetricInfoDAO.getInstance()
@@ -135,7 +135,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Update the metrics informations after a message store operation (for few metrics)
-     * 
+     *
      * @param scopeId
      * @param metricInfos
      * @return
@@ -143,7 +143,7 @@ public class MetricInfoRegistryFacade {
      * @throws EsDocumentBuilderException
      * @throws EsClientUnavailableException
      * @throws EsConfigurationException
-     * 
+     *
      * @since 1.0.0
      */
     public StorableId[] upstore(MetricInfo[] metricInfos)
@@ -160,8 +160,9 @@ public class MetricInfoRegistryFacade {
         for (MetricInfo metricInfo : metricInfos) {
             String metricInfoId = MetricInfoXContentBuilder.getOrDeriveId(metricInfo.getId(), metricInfo);
 
-            if (DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId))
+            if (DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
                 continue;
+            }
 
             Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
             String kapuaIndexName = metadata.getKapuaIndexName();
@@ -175,14 +176,15 @@ public class MetricInfoRegistryFacade {
 
         StorableId[] idResults = null;
 
-        if (bulkRequest.numberOfActions() <= 0)
+        if (bulkRequest.numberOfActions() <= 0) {
             return idResults;
+        }
 
         // The code is safe even without the synchronized block
         // Synchronize in order to let the first thread complete its update
         // then the others of the same type will find the cache updated and
         // skip the update.
-        synchronized (this.metadataUpdateSync) {
+        synchronized (metadataUpdateSync) {
             BulkResponse response = EsMetricInfoDAO.getInstance().bulk(bulkRequest);
             BulkItemResponse[] itemResponses = response.getItems();
             idResults = new StorableId[itemResponses.length];
@@ -205,8 +207,9 @@ public class MetricInfoRegistryFacade {
                     logger.debug(String.format("Upsert on channel metric succesfully executed [%s.%s, %s]",
                             kapuaIndexName, channelTypeName, channelMetricId));
 
-                    if (DatastoreCacheManager.getInstance().getMetricsCache().get(channelMetricId))
+                    if (DatastoreCacheManager.getInstance().getMetricsCache().get(channelMetricId)) {
                         continue;
+                    }
 
                     // Update cache if channel metric update is completed
                     // successfully
@@ -219,13 +222,13 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Delete metric information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
-     * 
+     *
      * @since 1.0.0
      */
     public void delete(KapuaId scopeId, StorableId id)
@@ -239,7 +242,7 @@ public class MetricInfoRegistryFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -255,7 +258,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Find metric information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @return
@@ -264,7 +267,7 @@ public class MetricInfoRegistryFacade {
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
-     * 
+     *
      * @since 1.0.0
      */
     public MetricInfo find(KapuaId scopeId, StorableId id)
@@ -293,7 +296,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Find metrics informations matching the given query
-     * 
+     *
      * @param scopeId
      * @param query
      * @return
@@ -302,7 +305,7 @@ public class MetricInfoRegistryFacade {
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
      * @throws EsObjectBuilderException
-     * 
+     *
      * @since 1.0.0
      */
     public MetricInfoListResult query(MetricInfoQuery query)
@@ -318,7 +321,7 @@ public class MetricInfoRegistryFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -334,7 +337,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Get metrics informations count matching the given query
-     * 
+     *
      * @param scopeId
      * @param query
      * @return
@@ -342,7 +345,7 @@ public class MetricInfoRegistryFacade {
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
-     * 
+     *
      * @since 1.0.0
      */
     public long count(MetricInfoQuery query)
@@ -373,14 +376,14 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Delete metrics informations count matching the given query
-     * 
+     *
      * @param scopeId
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsClientUnavailableException
      * @throws EsQueryConversionException
-     * 
+     *
      * @since 1.0.0
      */
     public void delete(MetricInfoQuery query)
@@ -395,7 +398,7 @@ public class MetricInfoRegistryFacade {
 
         //
         // Do the find
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {

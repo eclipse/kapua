@@ -47,7 +47,7 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsChannelInfoDAO {
 
-    private EsTypeDAO esTypeDAO;
+    private final EsTypeDAO esTypeDAO;
 
     /**
      * Default constructor
@@ -69,7 +69,7 @@ public class EsChannelInfoDAO {
      */
     public EsChannelInfoDAO setListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.setListener(daoListener);
+        esTypeDAO.setListener(daoListener);
         return this;
     }
 
@@ -83,7 +83,7 @@ public class EsChannelInfoDAO {
      */
     public EsChannelInfoDAO unsetListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.unsetListener(daoListener);
+        esTypeDAO.unsetListener(daoListener);
         return this;
     }
 
@@ -106,7 +106,7 @@ public class EsChannelInfoDAO {
      * @since 1.0.0
      */
     public EsChannelInfoDAO index(String indexName) {
-        this.esTypeDAO.type(indexName, EsSchema.CHANNEL_TYPE_NAME);
+        esTypeDAO.type(indexName, EsSchema.CHANNEL_TYPE_NAME);
         return this;
     }
 
@@ -121,7 +121,7 @@ public class EsChannelInfoDAO {
     public UpdateResponse upsert(ChannelInfoCreator channelInfoCreator)
             throws EsDocumentBuilderException {
         ChannelInfoXContentBuilder documentBuilder = new ChannelInfoXContentBuilder().build(channelInfoCreator);
-        return this.esTypeDAO.upsert(documentBuilder.getChannelId(), documentBuilder.getBuilder());
+        return esTypeDAO.upsert(documentBuilder.getChannelId(), documentBuilder.getBuilder());
     }
 
     /**
@@ -135,7 +135,7 @@ public class EsChannelInfoDAO {
     public UpdateResponse upsert(ChannelInfo channelInfo)
             throws EsDocumentBuilderException {
         ChannelInfoXContentBuilder documentBuilder = new ChannelInfoXContentBuilder().build(channelInfo);
-        return this.esTypeDAO.upsert(documentBuilder.getChannelId(), documentBuilder.getBuilder());
+        return esTypeDAO.upsert(documentBuilder.getChannelId(), documentBuilder.getBuilder());
     }
 
     /**
@@ -147,7 +147,7 @@ public class EsChannelInfoDAO {
      * @since 1.0.0
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient) {
-        return this.esTypeDAO.upsert(id, esClient);
+        return esTypeDAO.upsert(id, esClient);
     }
 
     /**
@@ -161,7 +161,7 @@ public class EsChannelInfoDAO {
     public UpdateResponse update(ChannelInfo channelInfo)
             throws EsDocumentBuilderException {
         ChannelInfoXContentBuilder documentBuilder = new ChannelInfoXContentBuilder().build(channelInfo);
-        return this.esTypeDAO.update(documentBuilder.getChannelId(), documentBuilder.getBuilder());
+        return esTypeDAO.update(documentBuilder.getChannelId(), documentBuilder.getBuilder());
     }
 
     /**
@@ -173,7 +173,7 @@ public class EsChannelInfoDAO {
      * @since 1.0.0
      */
     public UpdateResponse update(String id, XContentBuilder esAsset) {
-        return this.esTypeDAO.update(id, esAsset);
+        return esTypeDAO.update(id, esAsset);
     }
 
     /**
@@ -200,7 +200,7 @@ public class EsChannelInfoDAO {
      */
     public void deleteByQuery(ChannelInfoQuery query)
             throws EsQueryConversionException {
-        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
+        esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
 
     /**
@@ -227,13 +227,14 @@ public class EsChannelInfoDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null || searchHits.getTotalHits() == 0)
+        if (searchHits == null || searchHits.getTotalHits() == 0) {
             return new ChannelInfoListResultImpl();
+        }
 
         int i = 0;
         long searchHitsSize = searchHits.getHits().length;
 
-        List<ChannelInfo> channelInfos = new ArrayList<ChannelInfo>();
+        List<ChannelInfo> channelInfos = new ArrayList<>();
         ChannelInfoObjectBuilder channelInfoBuilder = new ChannelInfoObjectBuilder();
         for (SearchHit searchHit : searchHits.getHits()) {
             if (i < query.getLimit()) {
@@ -274,8 +275,9 @@ public class EsChannelInfoDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null)
+        if (searchHits == null) {
             return 0;
+        }
 
         return searchHits.getTotalHits();
     }

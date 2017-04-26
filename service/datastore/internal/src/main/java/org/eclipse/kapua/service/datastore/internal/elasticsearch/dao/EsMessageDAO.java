@@ -45,7 +45,7 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsMessageDAO {
 
-    private EsTypeDAO esTypeDAO;
+    private final EsTypeDAO esTypeDAO;
 
     /**
      * Default constructor
@@ -67,7 +67,7 @@ public class EsMessageDAO {
      */
     public EsMessageDAO setListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.setListener(daoListener);
+        esTypeDAO.setListener(daoListener);
         return this;
     }
 
@@ -81,7 +81,7 @@ public class EsMessageDAO {
      */
     public EsMessageDAO unsetListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.unsetListener(daoListener);
+        esTypeDAO.unsetListener(daoListener);
         return this;
     }
 
@@ -104,7 +104,7 @@ public class EsMessageDAO {
      * @since 1.0.0
      */
     public EsMessageDAO index(String indexName) {
-        this.esTypeDAO.type(indexName, EsSchema.MESSAGE_TYPE_NAME);
+        esTypeDAO.type(indexName, EsSchema.MESSAGE_TYPE_NAME);
         return this;
     }
 
@@ -117,7 +117,7 @@ public class EsMessageDAO {
      * @since 1.0.0
      */
     public UpdateRequest getUpsertRequest(String id, XContentBuilder esClient) {
-        return this.esTypeDAO.getUpsertRequest(id, esClient);
+        return esTypeDAO.getUpsertRequest(id, esClient);
     }
 
     /**
@@ -129,7 +129,7 @@ public class EsMessageDAO {
      * @since 1.0.0
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient) {
-        return this.esTypeDAO.upsert(id, esClient);
+        return esTypeDAO.upsert(id, esClient);
     }
 
     /**
@@ -141,7 +141,7 @@ public class EsMessageDAO {
      */
     public void deleteByQuery(MessageQuery query)
             throws EsQueryConversionException {
-        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
+        esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
 
     /**
@@ -167,8 +167,9 @@ public class EsMessageDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null || searchHits.getTotalHits() == 0)
+        if (searchHits == null || searchHits.getTotalHits() == 0) {
             return new MessageListResultImpl();
+        }
 
         int i = 0;
         int searchHitsSize = searchHits.getHits().length;
@@ -197,8 +198,9 @@ public class EsMessageDAO {
             totalCount = searchHits.getTotalHits();
         }
 
-        if (totalCount != null && totalCount > Integer.MAX_VALUE)
+        if (totalCount != null && totalCount > Integer.MAX_VALUE) {
             throw new RuntimeException("Total hits exceeds integer max value");
+        }
 
         MessageListResult result = new MessageListResultImpl(nextKey, totalCount);
         result.addItems(messages);
@@ -222,8 +224,9 @@ public class EsMessageDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null)
+        if (searchHits == null) {
             return 0;
+        }
 
         return searchHits.getTotalHits();
     }

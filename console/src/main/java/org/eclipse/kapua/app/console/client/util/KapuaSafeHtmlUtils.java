@@ -16,14 +16,16 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 public class KapuaSafeHtmlUtils {
 
     public static String htmlEscape(String unsafeHtml) {
-        if (unsafeHtml == null)
+        if (unsafeHtml == null) {
             return null;
+        }
         return SafeHtmlUtils.htmlEscape(unsafeHtml);
     }
 
     public static String htmlUnescape(String safeHtml) {
-        if (safeHtml == null)
+        if (safeHtml == null) {
             return null;
+        }
 
         if (safeHtml.indexOf("&lt;") != -1) {
             safeHtml = safeHtml.replace("&lt;", "<");

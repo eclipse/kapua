@@ -79,7 +79,7 @@ public class DatastoreMediator implements MessageStoreMediator,
      * </p>
      */
     public void clearCache() {
-        this.esSchema = new EsSchema();
+        esSchema = new EsSchema();
     }
 
     /**
@@ -139,13 +139,13 @@ public class DatastoreMediator implements MessageStoreMediator,
     @Override
     public Metadata getMetadata(KapuaId scopeId, long indexedOn)
             throws EsDocumentBuilderException, EsClientUnavailableException {
-        return this.esSchema.synch(scopeId, indexedOn);
+        return esSchema.synch(scopeId, indexedOn);
     }
 
     @Override
     public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, EsMetric> esMetrics)
             throws EsDocumentBuilderException, EsClientUnavailableException {
-        this.esSchema.updateMessageMappings(scopeId, indexedOn, esMetrics);
+        esSchema.updateMessageMappings(scopeId, indexedOn, esMetrics);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class DatastoreMediator implements MessageStoreMediator,
         clientInfo.setFirstMessageOn(docBuilder.getTimestamp());
         String clientInfoId = ClientInfoXContentBuilder.getOrDeriveId(null, docBuilder.getScopeId(), docBuilder.getClientId());
         clientInfo.setId(new StorableIdImpl(clientInfoId));
-        this.clientInfoStoreFacade.upstore(clientInfo);
+        clientInfoStoreFacade.upstore(clientInfo);
 
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(docBuilder.getScopeId());
         channelInfo.setClientId(docBuilder.getClientId());
@@ -168,15 +168,17 @@ public class DatastoreMediator implements MessageStoreMediator,
         channelInfo.setFirstMessageId(docBuilder.getMessageId());
         channelInfo.setFirstMessageOn(docBuilder.getTimestamp());
         channelInfo.setId(new StorableIdImpl(ChannelInfoXContentBuilder.getOrDeriveId(null, channelInfo)));
-        this.channelInfoStoreFacade.upstore(channelInfo);
+        channelInfoStoreFacade.upstore(channelInfo);
 
         KapuaPayload payload = message.getPayload();
-        if (payload == null)
+        if (payload == null) {
             return;
+        }
 
         Map<String, Object> metrics = payload.getProperties();
-        if (metrics == null)
+        if (metrics == null) {
             return;
+        }
 
         int i = 0;
         MetricInfoImpl[] messageMetrics = new MetricInfoImpl[metrics.size()];
@@ -194,7 +196,7 @@ public class DatastoreMediator implements MessageStoreMediator,
             messageMetrics[i++] = metricInfo;
         }
 
-        this.metricInfoStoreFacade.upstore(messageMetrics);
+        metricInfoStoreFacade.upstore(messageMetrics);
     }
 
     /*
