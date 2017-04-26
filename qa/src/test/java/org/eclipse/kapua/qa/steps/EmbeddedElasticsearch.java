@@ -12,7 +12,6 @@
 package org.eclipse.kapua.qa.steps;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
