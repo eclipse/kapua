@@ -21,8 +21,7 @@ import org.eclipse.kapua.service.device.call.message.DeviceMessage;
  * @since 1.0
  * 
  */
-@SuppressWarnings("rawtypes")
-public interface DeviceCallback<RSM extends DeviceMessage>
+public interface DeviceCallback<RSM extends DeviceMessage<?,?>>
 {
 
     /**
