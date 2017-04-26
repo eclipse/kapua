@@ -16,6 +16,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
@@ -29,6 +30,7 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
  * @since 1.0.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
 public class XmlAdaptedDeviceAssetChannel extends XmlAdaptedNameTypeValueObject {
 
     @XmlElement(name = "mode")
