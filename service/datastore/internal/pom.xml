@@ -12,7 +12,8 @@
 
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -56,38 +57,39 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-shiro</artifactId>
+            <artifactId>kapua-datastore-client-api</artifactId>
         </dependency>
 
         <!-- External dependencies -->
-		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-core</artifactId>
-		    <version>${jackson.version}</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-databind</artifactId>
-		    <version>${jackson.version}</version>
-		</dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
         <!-- ATTENTION: A dependency must be declared exactly once either in regular dependencies
              			or in the test dependencies -->
-		<!-- Test dependencies -->
-       	<dependency>
-           	<groupId>org.eclipse.kapua</groupId>
-           	<artifactId>kapua-test</artifactId>
-           	<scope>test</scope>
-       	</dependency>
-       	<dependency>
-           	<groupId>org.eclipse.kapua</groupId>
-           	<artifactId>kapua-datastore-client-transport</artifactId>
-           	<scope>test</scope>
-       	</dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-client-transport</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -98,5 +100,23 @@
             <artifactId>kapua-device-registry-internal</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-shiro</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 </project>

@@ -97,6 +97,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -377,6 +378,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Test the correctness of the storage process with a basic message (no metrics, payload and position) indexing message date by server timestamp
      *
@@ -423,6 +425,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the client ids info stored in the channel info data by retrieving the channel info by account.
      *
@@ -470,6 +473,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the channel info last publish date stored by retrieving the channel info by client id.
      *
@@ -525,6 +529,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the topic info stored in the channel info data by retrieving the channel info by account.
      *
@@ -572,6 +577,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the topic info stored in the channel info data by retrieving the channel info by client id.
      *
@@ -619,6 +625,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the metric info data stored by retrieving the metrics information by account.
      *
@@ -661,6 +668,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the metric info last publish date stored by retrieving the metric info by account.
      *
@@ -739,6 +747,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the metric info data stored by retrieving the metrics information by client id.
      *
@@ -792,6 +801,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void testMetricOrderingMixedTest()
             throws Exception {
         Account account = getTestAccountCreator(adminScopeId);
@@ -892,6 +902,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the client info data stored by retrieving the client information by account.
      *
@@ -937,6 +948,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the client info data stored by retrieving the client information by account.
      *
@@ -992,6 +1004,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Check the correctness of the client info data stored by retrieving the client information by account.
      *
@@ -1037,6 +1050,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     public void testTopicsByAccount()
             throws Exception {
         Account account = createAccount(null, null);
@@ -2019,6 +2033,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    @Ignore
     /**
      * Base test, may be removed since we should already have tests that covers also this one (to be check!)
      *

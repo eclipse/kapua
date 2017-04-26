@@ -11,56 +11,64 @@
      *      Eurotech - initial API and implementation
      *******************************************************************************/
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.eclipse.kapua</groupId>
-    <artifactId>kapua-datastore</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>kapua-datastore-client-transport</artifactId>
-  
-  <dependencies>
-  	<dependency>
-  		<groupId>org.eclipse.kapua</groupId>
-  		<artifactId>kapua-commons</artifactId>
-  	</dependency>
-  	
-  	<dependency>
-  		<groupId>org.eclipse.kapua</groupId>
-  		<artifactId>kapua-datastore-client-api</artifactId>
-  	</dependency>
-  	
-  	<!-- External dependencies -->
-	<dependency>
-		<groupId>org.elasticsearch</groupId>
-		<artifactId>elasticsearch</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.elasticsearch.client</groupId>
-		<artifactId>transport</artifactId>
-		<version>${elasticsearch-client-transport.version}</version>
-	</dependency>
-	<!-- used by elasticsearch -->
-    <dependency>
-	    <groupId>org.apache.logging.log4j</groupId>
-	    <artifactId>log4j-to-slf4j</artifactId>
-	    <version>${log4j-to-slf4j.version}</version>
-	</dependency>
-	
-  	<!-- Test dependencies -->
-    <dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-test</artifactId>
-        <scope>test</scope>
-    </dependency>
-	<!-- jna is required to run a elasticsearch instance in embedded mode -->
-	<dependency>
-	    <groupId>net.java.dev.jna</groupId>
-	    <artifactId>jna</artifactId>
-	    <version>4.1.0</version>
-        <scope>test</scope>
-	</dependency>
-  </dependencies>
-  
+        <artifactId>kapua-datastore</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>kapua-datastore-client-transport</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-client-api</artifactId>
+        </dependency>
+
+        <!-- External dependencies -->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- jna is required to run a elasticsearch instance in embedded mode -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>

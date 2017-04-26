@@ -12,7 +12,8 @@
 
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
@@ -23,45 +24,45 @@
     <artifactId>kapua-test</artifactId>
     <name>${project.artifactId}</name>
 
-	<properties>
-		<maven.test.skip>true</maven.test.skip>
-	</properties>
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+    </properties>
 
     <build>
-	    <plugins>
-	    	<!-- TEST RUN -->
-	    	<plugin>
- 				<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
- 				<version>2.14.1</version>
- 				<configuration>
- 					<skip>${maven.test.skip}</skip>
- 					<excludes>
- 						<exclude>**/*IT.java</exclude>
- 					</excludes>
- 				</configuration>
-			</plugin>
-    		<plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-failsafe-plugin</artifactId>
-		        <version>2.14.1</version>
-		        <executions>
-		        	<execution>
-		            	<goals>
-		              		<goal>integration-test</goal>
-		              		<goal>verify</goal>
-		            	</goals>
-		            	<configuration>
-		            		<skip>${maven.test.skip}</skip>
-		                    <includes>
-		                    	<include>**/*IT.java</include>
-                     		</includes>
-                    	</configuration>
-		          	</execution>
-		        </executions>
-			</plugin>
-	    	 <!-- VAGRANT MACHINE UP /DOWN -->
-	    	<plugin>
+        <plugins>
+            <!-- TEST RUN -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.14.1</version>
+                <configuration>
+                    <skip>${maven.test.skip}</skip>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.14.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${maven.test.skip}</skip>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- VAGRANT MACHINE UP /DOWN -->
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.1</version>
@@ -73,92 +74,93 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                        	<skip>${maven.test.skip}</skip>
+                            <skip>${maven.test.skip}</skip>
                             <executable>./startup.sh</executable>
                             <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScript/</workingDirectory>
                         </configuration>
                     </execution>
                     <execution>
-	              		<id>vagrant-machine-down</id>
-	                    <phase>post-integration-test</phase>
-	                    <goals>
-	                    	<goal>exec</goal>
-	                    </goals>
-	                    <configuration>
-	                    	<skip>${maven.test.skip}</skip>
-	                    	<executable>./shutdown.sh</executable>
-	                        <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScript/</workingDirectory>
-	                    </configuration>
-                 	</execution>
+                        <id>vagrant-machine-down</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${maven.test.skip}</skip>
+                            <executable>./shutdown.sh</executable>
+                            <workingDirectory>${basedir}/../dev-tools/src/main/vagrant/integrationTestScript/</workingDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-	    	<!-- DATABASE SEED BEFORE TEST -->
-	    	<plugin>
-	            <groupId>org.codehaus.mojo</groupId>
-	            <artifactId>sql-maven-plugin</artifactId>
-	            <dependencies>
-	            	<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-					<dependency>
-					    <groupId>com.h2database</groupId>
-					    <artifactId>h2</artifactId>
-					    <version>${h2.version}</version>
-					</dependency>
-	            </dependencies>
-	            <configuration>
-	                <encoding>UTF-8</encoding>
-	                <driver>org.h2.Driver</driver>
-	                <url>${db.conn.url}</url>
-	                <username>${db.username}</username>
-	                <password>${db.password}</password>
-	                <autocommit>true</autocommit>
-	                <skip>${maven.test.skip}</skip>
-	            </configuration>
-	            <executions>
-	                <!-- Create test data before running the tests -->
-	                <execution>
-	                    <id>seed-db-pre-test</id>
-	                    <phase>pre-integration-test</phase>
-	                    <inherited>true</inherited>
-	                    <goals>
-	                        <goal>execute</goal>
-	                    </goals>
-	                    <configuration>
-	                        <url>${db.conn.url}</url>
-	                        <username>${db.username}</username>
-	                		<password>${db.password}</password>
-	                        <driver>org.h2.Driver</driver>
-	                        <detail>true</detail>
-							<srcFiles>
-	                        	<srcFile>../service/account/internal/src/main/sql/H2/act_account_drop.sql</srcFile>
-								<srcFile>../service/account/internal/src/main/resources/liquibase/account.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/sql/H2/atht_credential_drop.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/resource/liquibase/atht_credential_create.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/sql/H2/athz_role_drop.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/resource/liquibase/athz_role_create.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/sql/H2/athz_role_permission_drop.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/resource/liquibase/athz_role_permission_create.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/sql/H2/athz_user_permission_drop.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_permission_create.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/sql/H2/athz_user_role_drop.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_role_create.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/sql/H2/athz_user_role_roles_drop.sql</srcFile>
-								<srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_role_roles_create.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_connection_drop.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device_connection.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_drop.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_event_drop.sql</srcFile>
-								<srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device_event.sql</srcFile>
-								<srcFile>../service/user/internal/src/main/sql/H2/usr_user_drop.sql</srcFile>
-								<srcFile>../service/user/internal/src/main/resources/liquibase/user.sql</srcFile>
-				            </srcFiles>
-	                        <autocommit>true</autocommit>
-	                    </configuration>
-	                </execution>
-				</executions>
-	        </plugin>
-		</plugins>
-	</build>
+            <!-- DATABASE SEED BEFORE TEST -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <dependencies>
+                    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <driver>org.h2.Driver</driver>
+                    <url>${db.conn.url}</url>
+                    <username>${db.username}</username>
+                    <password>${db.password}</password>
+                    <autocommit>true</autocommit>
+                    <skip>${maven.test.skip}</skip>
+                </configuration>
+                <executions>
+                    <!-- Create test data before running the tests -->
+                    <execution>
+                        <id>seed-db-pre-test</id>
+                        <phase>pre-integration-test</phase>
+                        <inherited>true</inherited>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <url>${db.conn.url}</url>
+                            <username>${db.username}</username>
+                            <password>${db.password}</password>
+                            <driver>org.h2.Driver</driver>
+                            <detail>true</detail>
+                            <srcFiles>
+                                <srcFile>../service/account/internal/src/main/sql/H2/act_account_drop.sql</srcFile>
+                                <srcFile>../service/account/internal/src/main/resources/liquibase/account.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/sql/H2/atht_credential_drop.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/resource/liquibase/atht_credential_create.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/sql/H2/athz_role_drop.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/resource/liquibase/athz_role_create.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/sql/H2/athz_role_permission_drop.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/resource/liquibase/athz_role_permission_create.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/sql/H2/athz_user_permission_drop.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_permission_create.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/sql/H2/athz_user_role_drop.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_role_create.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/sql/H2/athz_user_role_roles_drop.sql</srcFile>
+                                <srcFile>../service/security/shiro/src/main/resource/liquibase/athz_user_role_roles_create.sql</srcFile>
+                                <srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_connection_drop.sql</srcFile>
+                                <srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device_connection.sql</srcFile>
+                                <srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_drop.sql</srcFile>
+                                <srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device.sql</srcFile>
+                                <srcFile>../service/device/registry/internal/src/main/sql/H2/dvc_device_event_drop.sql</srcFile>
+                                <srcFile>../service/device/registry/internal/src/main/resources/liquibase/dvc_device_event.sql
+                                </srcFile>
+                                <srcFile>../service/user/internal/src/main/sql/H2/usr_user_drop.sql</srcFile>
+                                <srcFile>../service/user/internal/src/main/resources/liquibase/user.sql</srcFile>
+                            </srcFiles>
+                            <autocommit>true</autocommit>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <!-- Required service interfaces -->
@@ -192,6 +194,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-client-api</artifactId>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
@@ -202,16 +208,29 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>transport</artifactId>
+            <version>${elasticsearch-client-transport.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty4-client</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
