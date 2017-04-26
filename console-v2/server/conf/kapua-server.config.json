@@ -4,6 +4,7 @@
         "clientId": "console"
     },
     "restApi": {
-        "baseUrl": "http://localhost:8090/api/v1"
+        "baseUrl": "http://localhost:8081/v1",
+        "publicKeyPath": "/Users/claudio.mezzasalma/Documents/Kapua/jwt_public.key"
     }
 }

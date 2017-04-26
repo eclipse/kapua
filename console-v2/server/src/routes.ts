@@ -22,7 +22,9 @@ import * as fs from "fs";
 import * as _ from "lodash";
 
 let kapuaServerConf = require("../conf/kapua-server.config.json");
-let publicKey = fs.readFileSync(path.resolve(__dirname, "../conf/public.key"));
+let publicKeyPath = path.resolve(kapuaServerConf.restApi.publicKeyPath);
+console.info(`Reading Public Key from: ${publicKeyPath}`);
+let publicKey = fs.readFileSync(path.resolve(kapuaServerConf.restApi.publicKeyPath));
 
 namespace Route {
     export class OAuthLogin {
