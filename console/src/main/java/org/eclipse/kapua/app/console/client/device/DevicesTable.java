@@ -647,12 +647,7 @@ public class DevicesTable extends LayoutContainer {
 
     private void export(String format) {
         StringBuilder sbUrl = new StringBuilder();
-        if (UserAgentUtils.isSafari() || UserAgentUtils.isChrome()) {
-            sbUrl.append("console/exporter_device?");
-        } else {
-            sbUrl.append("exporter_device?");
-        }
-
+        sbUrl.append("exporter_device?");
         sbUrl.append("format=")
                 .append(format)
                 .append("&scopeIdString=")
