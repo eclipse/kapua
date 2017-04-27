@@ -43,8 +43,8 @@ public class DataView extends LayoutContainer{
         tabsPanel.add(channelTabItem);
         DeviceTabItem deviceTabItem = new DeviceTabItem(currentSession);
         tabsPanel.add(deviceTabItem);
-        AssetTabItem assetTabItem = new AssetTabItem(currentSession);
-        tabsPanel.add(assetTabItem);
+//        AssetTabItem assetTabItem = new AssetTabItem(currentSession);
+//        tabsPanel.add(assetTabItem);
         
         add(tabsPanel);
     }

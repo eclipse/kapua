@@ -246,7 +246,7 @@ public class DeviceTabs extends LayoutContainer {
           //      m_deviceAssetsTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabAssets);
+//        m_tabsPanel.add(m_tabAssets);
 
         add(m_tabsPanel);
     }
