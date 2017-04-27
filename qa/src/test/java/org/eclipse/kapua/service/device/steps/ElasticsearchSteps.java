@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.steps;
 import java.io.IOException;
 
 import org.eclipse.kapua.qa.steps.EmbeddedElasticsearch;
+import org.eclipse.kapua.service.datastore.client.ClientException;
 
 import com.google.inject.Inject;
 
@@ -29,7 +30,7 @@ public class ElasticsearchSteps {
     }
 
     @When("I refresh all indices")
-    public void refreshAllIndices() throws IOException {
+    public void refreshAllIndices() throws IOException, ClientException {
         this.elasticsearch.refresh();
     }
 }

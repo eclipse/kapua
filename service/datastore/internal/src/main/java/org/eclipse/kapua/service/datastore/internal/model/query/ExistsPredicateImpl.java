@@ -62,7 +62,6 @@ public class ExistsPredicateImpl implements ExistsPredicate {
     @Override
     /**
      * <pre>
-     * GET /_search
      *  {
      *      "query": {
      *          "exists" : { "field" : "metric" }

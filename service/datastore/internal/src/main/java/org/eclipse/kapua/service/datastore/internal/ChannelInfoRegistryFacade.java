@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.datastore.client.QueryMappingException;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
-import org.eclipse.kapua.service.datastore.internal.client.ClientFactory;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
@@ -53,7 +53,7 @@ public class ChannelInfoRegistryFacade {
 
     private final ChannelInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
-    private final Object metadataUpdateSync;
+    private final Object metadataUpdateSync = new Object();
     private DatastoreClient client;
 
     /**
@@ -68,8 +68,7 @@ public class ChannelInfoRegistryFacade {
     public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator) throws ClientUnavailableException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        this.metadataUpdateSync = new Object();
-        client = ClientFactory.getInstance();
+        client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -84,11 +83,11 @@ public class ChannelInfoRegistryFacade {
     public StorableId upstore(ChannelInfo channelInfo)
             throws KapuaIllegalArgumentException,
             ConfigurationException, ClientException {
-        ArgumentValidator.notNull(channelInfo, "channelInfoCreator");
-        ArgumentValidator.notNull(channelInfo.getScopeId(), "channelInfoCreator.scopeId");
-        ArgumentValidator.notNull(channelInfo.getName(), "channelInfoCreator.name");
-        ArgumentValidator.notNull(channelInfo.getFirstMessageId(), "channelInfoCreator.messageId");
-        ArgumentValidator.notNull(channelInfo.getFirstMessageOn(), "channelInfoCreator.messageTimestamp");
+        ArgumentValidator.notNull(channelInfo, "channelInfo");
+        ArgumentValidator.notNull(channelInfo.getScopeId(), "channelInfo.scopeId");
+        ArgumentValidator.notNull(channelInfo.getName(), "channelInfo.name");
+        ArgumentValidator.notNull(channelInfo.getFirstMessageId(), "channelInfo.messageId");
+        ArgumentValidator.notNull(channelInfo.getFirstMessageOn(), "channelInfo.messageTimestamp");
 
         String channelInfoId = ChannelInfoField.getOrDeriveId(channelInfo.getId(), channelInfo);
         StorableId storableId = new StorableIdImpl(channelInfoId);
@@ -96,25 +95,29 @@ public class ChannelInfoRegistryFacade {
         UpdateResponse response = null;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
-
             // The code is safe even without the synchronized block
             // Synchronize in order to let the first thread complete its
             // update then the others of the same type will find the cache
             // updated and skip the update.
-            synchronized (this.metadataUpdateSync) {
+            synchronized (metadataUpdateSync) {
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
-                    Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
-                    String registryIndexName = metadata.getRegistryIndexName();
+                    // fix #REPLACE_ISSUE_NUMBER
+                    ChannelInfo storedField = find(channelInfo.getScopeId(), storableId);
+                    if (storedField == null) {
+                        Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
+                        String registryIndexName = metadata.getRegistryIndexName();
 
-                    UpdateRequest request = new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo.getId().toString(), channelInfo);
-                    response = client.upsert(request);
+                        UpdateRequest request = new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo.getId().toString(),
+                                channelInfo);
+                        response = client.upsert(request);
 
-                    if (!channelInfoId.equals(response.getId())) {
-                        // this condition shouldn't happens
-                        throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "ChannelInfoRegistry - upstore"));
+                        if (!channelInfoId.equals(response.getId())) {
+                            // this condition shouldn't happens
+                            throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "ChannelInfoRegistry - upstore"));
+                        }
+                        logger.debug(String.format("Upsert on channel succesfully executed [%s.%s, %s]",
+                                registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId));
                     }
-                    logger.debug(String.format("Upsert on channel succesfully executed [%s.%s, %s]",
-                            registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId));
                     // Update cache if channel update is completed successfully
                     DatastoreCacheManager.getInstance().getChannelsCache().put(channelInfoId, true);
                 }
@@ -266,7 +269,7 @@ public class ChannelInfoRegistryFacade {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {

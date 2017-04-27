@@ -72,7 +72,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final ClientInfoRegistryFacade clientInfoFacade;
+    private final ClientInfoRegistryFacade clientInfoRegistryFacade;
     private final MessageStoreService messageStoreService;
     private final StorablePredicateFactory storablePredicateFactory;
 
@@ -93,8 +93,8 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        clientInfoFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setClientInfoStoreFacade(clientInfoFacade);
+        clientInfoRegistryFacade = new ClientInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
+        DatastoreMediator.getInstance().setClientInfoStoreFacade(clientInfoRegistryFacade);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkAccess(scopeId, Actions.delete);
         try {
-            clientInfoFacade.delete(scopeId, id);
+            clientInfoRegistryFacade.delete(scopeId, id);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -119,7 +119,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkAccess(scopeId, Actions.read);
         try {
-            ClientInfo clientInfo = clientInfoFacade.find(scopeId, id);
+            ClientInfo clientInfo = clientInfoRegistryFacade.find(scopeId, id);
             if (clientInfo != null) {
                 // populate the lastMessageTimestamp
                 updateLastPublishedFields(clientInfo);
@@ -138,7 +138,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkAccess(query.getScopeId(), Actions.read);
         try {
-            ClientInfoListResult result = clientInfoFacade.query(query);
+            ClientInfoListResult result = clientInfoRegistryFacade.query(query);
             if (result != null) {
                 // populate the lastMessageTimestamp
                 for (ClientInfo clientInfo : result.getItems()) {
@@ -159,7 +159,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkAccess(query.getScopeId(), Actions.read);
         try {
-            return clientInfoFacade.count(query);
+            return clientInfoRegistryFacade.count(query);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -173,7 +173,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkAccess(query.getScopeId(), Actions.delete);
         try {
-            clientInfoFacade.delete(query);
+            clientInfoRegistryFacade.delete(query);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }

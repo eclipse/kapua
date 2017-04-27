@@ -35,6 +35,10 @@ public enum DatastoreSettingKey implements SettingKey {
      */
     CONFIG_CACHE_LOCAL_SIZE_MAXIMUM("datastore.cache.local.size.maximum"),
     /**
+     * Metadata cache maximum size
+     */
+    CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM("datastore.cache.metadata.local.size.maximum"),
+    /**
      * Enable datastore timing profile
      */
     CONFIG_DATA_STORAGE_ENABLE_TIMING_PROFILE("datastore.enableTimingProfile"),

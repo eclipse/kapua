@@ -147,6 +147,22 @@ public interface DatastoreClient {
      */
     public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException;
 
+    /**
+     * Force the datastore to refresh the indexes.
+     * 
+     * @throws ClientException
+     */
+    public void refreshAllIndexes() throws ClientException;
+
+    /**
+     * Delete all indexes.<br>
+     * <b>WARNING!<br>
+     * This call will erase the whole database!<br>
+     * Be careful using it! :)
+     * </b>
+     */
+    public void deleteAllIndexes() throws ClientException;
+
     // ModelContext
 
     /**

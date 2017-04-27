@@ -60,6 +60,7 @@ public class DatastoreChannel {
         // Must be not null and not single level wild card
         if (channel == null) {
             throw new InvalidChannelException("Invalid channel: " + channel);
+        }
 
         // Check if there is one single level wild card or if the multi level wild card is present more than once or not at the end of the topic
         if (channel.indexOf(SINGLE_LEVEL_WCARD) != -1) {

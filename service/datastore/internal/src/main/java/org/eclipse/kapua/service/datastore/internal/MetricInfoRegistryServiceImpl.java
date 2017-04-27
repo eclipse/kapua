@@ -74,7 +74,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final MetricInfoRegistryFacade metricInfoStoreFacade;
+    private final MetricInfoRegistryFacade metricInfoRegistryFacade;
     private final MessageStoreService messageStoreService;
     private final StorablePredicateFactory storablePredicateFactory;
 
@@ -95,8 +95,8 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        this.metricInfoStoreFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setMetricInfoStoreFacade(metricInfoStoreFacade);
+        metricInfoRegistryFacade = new MetricInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
+        DatastoreMediator.getInstance().setMetricInfoStoreFacade(metricInfoRegistryFacade);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkDataAccess(scopeId, Actions.delete);
         try {
-            metricInfoStoreFacade.delete(scopeId, id);
+            metricInfoRegistryFacade.delete(scopeId, id);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -122,7 +122,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkDataAccess(scopeId, Actions.read);
         try {
             // populate the lastMessageTimestamp
-            MetricInfo metricInfo = metricInfoStoreFacade.find(scopeId, id);
+            MetricInfo metricInfo = metricInfoRegistryFacade.find(scopeId, id);
             if (metricInfo != null) {
 
                 updateLastPublishedFields(metricInfo);
@@ -141,7 +141,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
-            MetricInfoListResult result = metricInfoStoreFacade.query(query);
+            MetricInfoListResult result = metricInfoRegistryFacade.query(query);
             if (result != null) {
                 // populate the lastMessageTimestamp
                 for (MetricInfo metricInfo : result.getItems()) {
@@ -162,7 +162,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
-            return metricInfoStoreFacade.count(query);
+            return metricInfoRegistryFacade.count(query);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -176,7 +176,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
-            metricInfoStoreFacade.delete(query);
+            metricInfoRegistryFacade.delete(query);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }

@@ -88,7 +88,6 @@ public class TermPredicateImpl implements TermPredicate {
     @Override
     /**
      * <pre>
-     * POST _search
      *  {
      *    "query": {
      *      "term" : { "user" : "kapua" } 

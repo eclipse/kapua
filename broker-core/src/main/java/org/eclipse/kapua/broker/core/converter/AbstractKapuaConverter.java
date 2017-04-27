@@ -83,8 +83,9 @@ public abstract class AbstractKapuaConverter {
                 // FIX #164
                 Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
                 KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, byte[].class));
-                String clientId = (String) message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID);
-                ConnectorDescriptor connectorDescriptor = message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, ConnectorDescriptor.class);
+                String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
+                ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
+                        .deserialize(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, byte[].class));
                 return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, (byte[]) value, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
             } catch (JMSException e) {
                 metricConverterErrorMessage.inc();
