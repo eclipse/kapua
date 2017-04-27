@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.datastore.client.model.ResultList;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
-import org.eclipse.kapua.service.datastore.internal.client.ClientFactory;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
@@ -71,7 +71,7 @@ public class MetricInfoRegistryFacade {
     public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) throws ClientUnavailableException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        client = ClientFactory.getInstance();
+        client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -86,7 +86,7 @@ public class MetricInfoRegistryFacade {
     public StorableId upstore(MetricInfo metricInfo)
             throws KapuaIllegalArgumentException,
             ConfigurationException, ClientException {
-        ArgumentValidator.notNull(metricInfo, "metricInfoCreator");
+        ArgumentValidator.notNull(metricInfo, "metricInfo");
         ArgumentValidator.notNull(metricInfo.getScopeId(), "metricInfo.scopeId");
         ArgumentValidator.notNull(metricInfo.getFirstMessageId(), "metricInfoCreator.firstPublishedMessageId");
         ArgumentValidator.notNull(metricInfo.getFirstMessageOn(), "metricInfoCreator.firstPublishedMessageTimestamp");
@@ -97,7 +97,9 @@ public class MetricInfoRegistryFacade {
         UpdateResponse response = null;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
-            if (!DatastoreCacheManager.getInstance().getChannelsCache().get(metricInfoId)) {
+            // fix #REPLACE_ISSUE_NUMBER
+            MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
+            if (storedField == null) {
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 String kapuaIndexName = metadata.getRegistryIndexName();
 
@@ -111,8 +113,8 @@ public class MetricInfoRegistryFacade {
                 logger.debug(String.format("Upsert on metric succesfully executed [%s.%s, %s]",
                         kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId));
                 // Update cache if channel update is completed successfully
-                DatastoreCacheManager.getInstance().getChannelsCache().put(metricInfoId, true);
             }
+            DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
         }
         return storableId;
     }
@@ -130,21 +132,26 @@ public class MetricInfoRegistryFacade {
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
-        ArgumentValidator.notNull(metricInfos, "metricInfoCreator");
+        ArgumentValidator.notNull(metricInfos, "metricInfos");
 
         BulkUpdateRequest bulkRequest = new BulkUpdateRequest();
         boolean performUpdate = false;
         // Create a bulk request
         for (MetricInfo metricInfo : metricInfos) {
             String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
-            if (DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
-                continue;
+            // fix #REPLACE_ISSUE_NUMBER
+            if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
+                StorableId storableId = new StorableIdImpl(metricInfoId);
+                MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
+                if (storedField != null) {
+                    DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
+                    continue;
+                }
+                performUpdate = true;
+                Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
+                bulkRequest.add(
+                        new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo.getId().toString(), metricInfo));
             }
-
-            performUpdate = true;
-            Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-            bulkRequest.add(
-                    new UpdateRequest(new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo.getId().toString(), metricInfo));
         }
 
         BulkUpdateResponse upsertResponse = null;
@@ -168,8 +175,9 @@ public class MetricInfoRegistryFacade {
                     logger.debug(String.format("Upsert on channel metric succesfully executed [%s.%s, %s]",
                             index, type, id));
                     
-                    if (DatastoreCacheManager.getInstance().getMetricsCache().get(id))
+                    if (DatastoreCacheManager.getInstance().getMetricsCache().get(id)) {
                         continue;
+                    }
                     
                     // Update cache if channel metric update is completed
                     // successfully

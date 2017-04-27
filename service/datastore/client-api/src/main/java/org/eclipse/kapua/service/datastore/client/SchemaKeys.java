@@ -120,8 +120,25 @@ public class SchemaKeys {
      */
     public final static String TYPE_STRING = "string";
     /**
+     * Not analyzed field value
+     */
+    public final static String VALUE_FIELD_INDEXING_NOT_ANALYZED = "not_analyzed";
+    /**
      * "No" field value
      */
     public final static String VALUE_NO = "no";
+
+    /**
+     * Refresh interval (for schema definition)
+     */
+    public final static String KEY_REFRESH_INTERVAL = "refresh_interval";
+    /**
+     * Position field
+     */
+    public final static String FIELD_NAME_POSITION = "position";
+    /**
+     * Properties field
+     */
+    public final static String FIELD_NAME_PROPERTIES = "properties";
 
 }

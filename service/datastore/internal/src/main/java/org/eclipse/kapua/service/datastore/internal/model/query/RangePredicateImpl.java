@@ -132,7 +132,6 @@ public class RangePredicateImpl implements RangePredicate {
 
     /**
      * <pre>
-     * GET _search
      *  {
      *      "query": {
      *          "range" : {

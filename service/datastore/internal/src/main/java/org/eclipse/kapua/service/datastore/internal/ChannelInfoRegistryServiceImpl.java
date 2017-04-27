@@ -71,7 +71,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
-    private final ChannelInfoRegistryFacade channelInfoStoreFacade;
+    private final ChannelInfoRegistryFacade channelInfoRegistryFacade;
     private final MessageStoreService messageStoreService;
     private final DatastoreObjectFactory datastoreObjectFactory;
 
@@ -92,8 +92,8 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
-        this.channelInfoStoreFacade = new ChannelInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
-        DatastoreMediator.getInstance().setChannelInfoStoreFacade(channelInfoStoreFacade);
+        channelInfoRegistryFacade = new ChannelInfoRegistryFacade(configurationProvider, DatastoreMediator.getInstance());
+        DatastoreMediator.getInstance().setChannelInfoStoreFacade(channelInfoRegistryFacade);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
         checkDataAccess(scopeId, Actions.delete);
         try {
-            channelInfoStoreFacade.delete(scopeId, id);
+            channelInfoRegistryFacade.delete(scopeId, id);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -118,7 +118,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
         checkDataAccess(scopeId, Actions.read);
         try {
-            ChannelInfo channelInfo = channelInfoStoreFacade.find(scopeId, id);
+            ChannelInfo channelInfo = channelInfoRegistryFacade.find(scopeId, id);
             if (channelInfo != null) {
                 // populate the lastMessageTimestamp
                 updateLastPublishedFields(channelInfo);
@@ -137,7 +137,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
-            ChannelInfoListResult result = channelInfoStoreFacade.query(query);
+            ChannelInfoListResult result = channelInfoRegistryFacade.query(query);
             if (result != null) {
                 // populate the lastMessageTimestamp
                 for (ChannelInfo channelInfo : result.getItems()) {
@@ -158,7 +158,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
         checkDataAccess(query.getScopeId(), Actions.read);
         try {
-            return channelInfoStoreFacade.count(query);
+            return channelInfoRegistryFacade.count(query);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -172,7 +172,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
-            channelInfoStoreFacade.delete(query);
+            channelInfoRegistryFacade.delete(query);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }

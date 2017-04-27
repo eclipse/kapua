@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.QueryMappingException;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryFacade;
+import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.MessageStoreFacade;
 import org.eclipse.kapua.service.datastore.internal.MetricInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
@@ -149,10 +150,9 @@ public class DatastoreMediator implements MessageStoreMediator,
 
         ClientInfoImpl clientInfo = new ClientInfoImpl(message.getScopeId());
         clientInfo.setClientId(message.getClientId());
+        clientInfo.setId(new StorableIdImpl(ClientInfoField.getOrDeriveId(null, message.getScopeId(), message.getClientId())));
         clientInfo.setFirstMessageId(message.getDatastoreId());
         clientInfo.setFirstMessageOn(message.getTimestamp());
-        String clientInfoId = ClientInfoField.getOrDeriveId(null, message.getScopeId(), message.getClientId());
-        clientInfo.setId(new StorableIdImpl(clientInfoId));
         clientInfoStoreFacade.upstore(clientInfo);
 
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(message.getScopeId());
@@ -161,18 +161,18 @@ public class DatastoreMediator implements MessageStoreMediator,
         channelInfo.setFirstMessageId(message.getDatastoreId());
         channelInfo.setFirstMessageOn(message.getTimestamp());
         channelInfo.setId(new StorableIdImpl(ChannelInfoField.getOrDeriveId(null, channelInfo)));
+        clientInfo.setFirstMessageId(message.getDatastoreId());
+        clientInfo.setFirstMessageOn(message.getTimestamp());
         channelInfoStoreFacade.upstore(channelInfo);
 
         KapuaPayload payload = message.getPayload();
         if (payload == null) {
             return;
-
         }
 
         Map<String, Object> metrics = payload.getProperties();
         if (metrics == null) {
             return;
-
         }
 
         int i = 0;
@@ -183,9 +183,9 @@ public class DatastoreMediator implements MessageStoreMediator,
             metricInfo.setChannel(semanticChannel);
             metricInfo.setName(entry.getKey());
             metricInfo.setMetricType(entry.getValue().getClass());
+            metricInfo.setId(new StorableIdImpl(MetricInfoField.getOrDeriveId(null, metricInfo)));
             metricInfo.setFirstMessageId(message.getDatastoreId());
             metricInfo.setFirstMessageOn(message.getTimestamp());
-            metricInfo.setId(new StorableIdImpl(MetricInfoField.getOrDeriveId(null, metricInfo)));
             messageMetrics[i++] = metricInfo;
         }
 
@@ -239,6 +239,22 @@ public class DatastoreMediator implements MessageStoreMediator,
     @Override
     public void onAfterMetricInfoDelete(KapuaId scopeId, MetricInfo metricInfo) {
      // to be implemented
+    }
+
+    public void refreshAllIndexes() throws ClientException {
+        messageStoreFacade.refreshAllIndexes();
+    }
+
+    public void deleteAllIndexes() throws ClientException {
+        messageStoreFacade.deleteAllIndexes();
+        clearCache();
+    }
+
+    public void clearCache() {
+        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
     }
 
 }

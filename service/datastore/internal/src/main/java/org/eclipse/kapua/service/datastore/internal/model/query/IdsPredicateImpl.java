@@ -120,7 +120,6 @@ public class IdsPredicateImpl implements IdsPredicate {
     @Override
     /**
      * <pre>
-     * GET /_search
      *  {
      *      "query": {
      *          "ids" : {

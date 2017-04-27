@@ -82,8 +82,9 @@ public enum MetricInfoField implements StorableField {
             String metricMappedName = DatastoreUtils.getMetricValueQualifier(metricName, DatastoreUtils.convertToClientMetricType(metricType));
 
             return DatastoreUtils.getHashCode(scopeId.toCompactId(), clientId, channel, metricMappedName);
-        } else
+        } else {
             return id.toString();
+        }
     }
 
     /**

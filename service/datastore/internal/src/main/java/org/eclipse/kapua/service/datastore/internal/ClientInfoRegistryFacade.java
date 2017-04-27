@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.datastore.client.QueryMappingException;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
-import org.eclipse.kapua.service.datastore.internal.client.ClientFactory;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
@@ -53,7 +53,7 @@ public class ClientInfoRegistryFacade {
 
     private final ClientInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
-    private final Object metadataUpdateSync;
+    private final Object metadataUpdateSync = new Object();
     private DatastoreClient client = null;
 
     /**
@@ -68,8 +68,7 @@ public class ClientInfoRegistryFacade {
     public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientUnavailableException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        this.metadataUpdateSync = new Object();
-        client = ClientFactory.getInstance();
+        client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -86,10 +85,10 @@ public class ClientInfoRegistryFacade {
     public StorableId upstore(ClientInfo clientInfo)
             throws KapuaIllegalArgumentException,
             ConfigurationException, ClientException {
-        ArgumentValidator.notNull(clientInfo, "clientInfoCreator");
-        ArgumentValidator.notNull(clientInfo.getScopeId(), "clientInfoCreator.scopeId");
-        ArgumentValidator.notNull(clientInfo.getFirstMessageId(), "clientInfoCreator.firstPublishedMessageId");
-        ArgumentValidator.notNull(clientInfo.getFirstMessageOn(), "clientInfoCreator.firstPublishedMessageTimestamp");
+        ArgumentValidator.notNull(clientInfo, "clientInfo");
+        ArgumentValidator.notNull(clientInfo.getScopeId(), "clientInfo.scopeId");
+        ArgumentValidator.notNull(clientInfo.getFirstMessageId(), "clientInfo.firstPublishedMessageId");
+        ArgumentValidator.notNull(clientInfo.getFirstMessageOn(), "clientInfo.firstPublishedMessageTimestamp");
 
         String clientInfoId = ClientInfoField.getOrDeriveId(clientInfo.getId(), clientInfo);
         StorableId storableId = new StorableIdImpl(clientInfoId);
@@ -97,26 +96,29 @@ public class ClientInfoRegistryFacade {
         UpdateResponse response = null;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getClientsCache().get(clientInfo.getClientId())) {
-
             // The code is safe even without the synchronized block
             // Synchronize in order to let the first thread complete its update
             // then the others of the same type will find the cache updated and
             // skip the update.
-            synchronized (this.metadataUpdateSync) {
+            synchronized (metadataUpdateSync) {
                 if (!DatastoreCacheManager.getInstance().getClientsCache().get(clientInfo.getClientId())) {
-                    Metadata metadata = this.mediator.getMetadata(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
-                    String kapuaIndexName = metadata.getRegistryIndexName();
+                    // fix #REPLACE_ISSUE_NUMBER
+                    ClientInfo storedField = find(clientInfo.getScopeId(), storableId);
+                    if (storedField == null) {
+                        Metadata metadata = mediator.getMetadata(clientInfo.getScopeId(), clientInfo.getFirstMessageOn().getTime());
+                        String kapuaIndexName = metadata.getRegistryIndexName();
 
-                    UpdateRequest request = new UpdateRequest(new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo.getId().toString(), clientInfo);
-                    response = client.upsert(request);
+                        UpdateRequest request = new UpdateRequest(new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo.getId().toString(), clientInfo);
+                        response = client.upsert(request);
 
-                    if (!clientInfoId.equals(response.getId())) {
-                        // this condition shouldn't happens
-                        throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "ClientInfoRegistry - upstore"));
+                        if (!clientInfoId.equals(response.getId())) {
+                            // this condition shouldn't happens
+                            throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "ClientInfoRegistry - upstore"));
+                        }
+                        logger.debug(String.format("Upsert on asset succesfully executed [%s.%s, %s]", kapuaIndexName,
+                                ClientInfoSchema.CLIENT_TYPE_NAME, response.getId()));
+                        // Update cache if asset update is completed successfully
                     }
-                    logger.debug(String.format("Upsert on asset succesfully executed [%s.%s, %s]", kapuaIndexName,
-                            ClientInfoSchema.CLIENT_TYPE_NAME, response.getId()));
-                    // Update cache if asset update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
                 }
             }
@@ -139,7 +141,7 @@ public class ClientInfoRegistryFacade {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(scopeId);
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
@@ -231,7 +233,7 @@ public class ClientInfoRegistryFacade {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        MessageStoreConfiguration accountServicePlan = this.configProvider.getConfiguration(query.getScopeId());
+        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {

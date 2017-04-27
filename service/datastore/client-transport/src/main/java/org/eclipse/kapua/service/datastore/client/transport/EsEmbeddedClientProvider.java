@@ -14,12 +14,19 @@ package org.eclipse.kapua.service.datastore.client.transport;
 import java.io.IOException;
 
 import org.elasticsearch.client.Client;
+import org.elasticsearch.node.NodeValidationException;
 
+/**
+ * Elasticsearch embedded client implementation.<br>
+ * Used for test scope
+ *
+ * @since 1.0
+ */
 public class EsEmbeddedClientProvider implements EsClientProvider {
 
     private final EsEmbeddedEngine embeddedEngine;
 
-    public EsEmbeddedClientProvider() {
+    public EsEmbeddedClientProvider() throws NodeValidationException {
         embeddedEngine = new EsEmbeddedEngine();
     }
 
@@ -31,12 +38,6 @@ public class EsEmbeddedClientProvider implements EsClientProvider {
     @Override
     public void close() throws IOException {
         embeddedEngine.close();
-    }
-
-    @Override
-    public boolean isAlive() {
-        // TODO Auto-generated method stub
-        return false;
     }
 
 }

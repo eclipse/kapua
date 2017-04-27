@@ -39,15 +39,36 @@ public class LocalCache<K, V> implements Cache<K, V>
     private V                                   defaultValue;
 
     /**
+     * Construct local cache setting the provided max size, expire time and default value
      * 
-     * @param sizeMax max cache size
-     * @param expireAfter values ttl
-     * @param defaultValue default value (if no value is found for a specific key)
+     * @param sizeMax
+     *            max cache size
+     * @param expireAfter
+     *            values ttl
+     * @param defaultValue
+     *            default value (if no value is found for a specific key)
      */
     public LocalCache(int sizeMax, int expireAfter, final V defaultValue)
     {
         this.defaultValue = defaultValue;
         cache = CacheBuilder.newBuilder().maximumSize(sizeMax).expireAfterWrite(expireAfter, TimeUnit.SECONDS).build();
+    }
+
+    /**
+     * Construct local cache setting the provided max size and default value. <b>ttl is disabled, so no time based eviction will be performed.</b>
+     * 
+     * @param sizeMax
+     *            max cache size
+     * @param defaultValue
+     *            default value (if no value is found for a specific key)
+     */
+    public LocalCache(int sizeMax, final V defaultValue)
+    {
+        this.defaultValue = defaultValue;
+        // from google javadoc ("https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilder.html")
+        // By default cache instances created by CacheBuilder will not perform any type of eviction.
+
+        cache = CacheBuilder.newBuilder().maximumSize(sizeMax).build();
     }
 
     @Override
@@ -103,5 +124,10 @@ public class LocalCache<K, V> implements Cache<K, V>
         if (cache != null) {
             cache.invalidate(k);
         }
+    }
+
+    @Override
+    public void invalidateAll() {
+        cache.invalidateAll();
     }
 }

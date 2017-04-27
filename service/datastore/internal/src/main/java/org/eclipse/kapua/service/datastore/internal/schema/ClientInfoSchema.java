@@ -24,11 +24,11 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
-import static org.eclipse.kapua.service.datastore.internal.schema.Schema.FIELD_NAME_PROPERTIES;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_FIELD_INDEXING_NOT_ANALYZED;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
 
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 
-import static org.eclipse.kapua.service.datastore.internal.schema.Schema.FIELD_INDEXING_NOT_ANALYZED;
 
 /**
  * Client info schema
@@ -77,13 +77,13 @@ public class ClientInfoSchema {
         clientNodeName.set(KEY_ALL, allClient);
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
-        ObjectNode clientId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, FIELD_INDEXING_NOT_ANALYZED)});
+        ObjectNode clientId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
         propertiesNode.set(CLIENT_ID, clientId);
         ObjectNode clientTimestamp = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         propertiesNode.set(CLIENT_TIMESTAMP, clientTimestamp);
-        ObjectNode clientScopeId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, FIELD_INDEXING_NOT_ANALYZED)});
+        ObjectNode clientScopeId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
         propertiesNode.set(CLIENT_SCOPE_ID, clientScopeId);
-        ObjectNode clientMessageId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, FIELD_INDEXING_NOT_ANALYZED) });
+        ObjectNode clientMessageId = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
         propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
         clientNodeName.set(FIELD_NAME_PROPERTIES, propertiesNode);
         rootNode.set(CLIENT_TYPE_NAME, clientNodeName);

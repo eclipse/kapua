@@ -34,11 +34,4 @@ public interface EsClientProvider {
      */
     public void close() throws IOException;
 
-    /**
-     * Check if the Elasticsearch client instance is alive
-     * 
-     * @return
-     */
-    public boolean isAlive();
-
 }

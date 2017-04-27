@@ -19,11 +19,12 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 
 /**
- * Datastore client factory. It returns the singleton client instance.
+ * Datastore client factory. It returns the singleton client instance.<br>
+ * The datastore client is instantiated by reflection using class implementation provided by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}
  *
  * @since 1.0
  */
-public class ClientFactory {
+public class DatastoreClientFactory {
 
     private final static String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private final static String CLIENT_CLASS_NAME;
@@ -55,10 +56,14 @@ public class ClientFactory {
             }
         }
         try {
-            DatastoreClient c = INSTANCE.newInstance();
-            c.setModelContext(new ModelContextImpl());
-            c.setQueryConverter(new QueryConverterImpl());
-            return c;
+            // this is a cleaner way to instatiate the client
+            // return INSTANCE.getConstructor(ModelContext.class, QueryConverter.class).newInstance(new ModelContextImpl(), new QueryConverterImpl());
+            // but in that way who implements the interface is not advised to expose a constructor with the 2 needed parameters
+            // so I prefer to instantiate the object using the empty constructor then setting the converter using the setters (provided by the interface)
+            DatastoreClient datastoreClient = INSTANCE.newInstance();
+            datastoreClient.setModelContext(new ModelContextImpl());
+            datastoreClient.setQueryConverter(new QueryConverterImpl());
+            return datastoreClient;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new ClientUnavailableException(String.format(CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
         }

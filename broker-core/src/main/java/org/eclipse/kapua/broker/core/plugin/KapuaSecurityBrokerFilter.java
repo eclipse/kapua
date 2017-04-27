@@ -38,6 +38,8 @@ import org.apache.activemq.filter.DestinationMapEntry;
 import org.apache.activemq.security.AuthorizationEntry;
 import org.apache.activemq.security.DefaultAuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.util.ThreadContext;
@@ -621,10 +623,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 }
             }
             // FIX #164
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, kapuaSecurityContext.getConnectionId());
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, SerializationUtils.serialize(kapuaSecurityContext.getConnectionId()));
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, kapuaSecurityContext.getConnectorDescriptor());
-            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, kapuaSecurityContext.getKapuaSession());
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, SerializationUtils.serialize(kapuaSecurityContext.getConnectorDescriptor()));
+            messageSend.setProperty(MessageConstants.HEADER_KAPUA_SESSION, SerializationUtils.serialize(kapuaSecurityContext.getKapuaSession()));
         }
         if (messageSend.getContent() != null) {
             metricPublishMessageSizeAllowed.update(messageSend.getContent().length);

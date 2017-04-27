@@ -52,11 +52,10 @@ public class StorableIdImpl implements StorableId {
         if (sid == null) {
             if (other.sid != null) {
                 return false;
-        } else if (!sid.equals(other.sid))
             }
         } else if (!sid.equals(other.sid)) {
             return false;
-
+        }
         return true;
     }
 

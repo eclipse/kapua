@@ -25,7 +25,8 @@ import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import org.eclipse.kapua.service.datastore.client.model.IndexExistsRequest;
 import org.eclipse.kapua.service.datastore.client.model.IndexExistsResponse;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.datastore.internal.client.ClientFactory;
+import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
@@ -39,6 +40,8 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_KEYWORD;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REFRESH_INTERVAL;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
 
 /**
  * Datastore schema creation/update
@@ -50,23 +53,11 @@ public class Schema {
 
     private static final Logger logger = LoggerFactory.getLogger(Schema.class);
 
-    private final static String REFRESH_INTERVAL = "refresh_interval";
-    public final static String FIELD_NAME_POSITION = "position";
-    public final static String FIELD_NAME_PROPERTIES = "properties";
-    public final static String FIELD_INDEXING_NOT_ANALYZED = "not_analyzed";
-
-    private Map<String, Metadata> schemaCache;
-    private Object schemaCacheSync;
-    private Object mappingsSync;
-
     /**
      * Construct the Elasticsearch schema
      * 
      */
     public Schema() {
-        schemaCache = new HashMap<String, Metadata>();
-        schemaCacheSync = new Object();
-        mappingsSync = new Object();
     }
 
     /**
@@ -80,20 +71,17 @@ public class Schema {
     public Metadata synch(KapuaId scopeId, long time)
             throws ClientException {
         String dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time);
-
-        synchronized (schemaCacheSync) {
-            if (schemaCache.containsKey(dataIndexName)) {
-                Metadata currentMetadata = schemaCache.get(dataIndexName);
-                return currentMetadata;
-            }
+        Metadata currentMetadata = DatastoreCacheManager.getInstance().getMetadataCache().get(dataIndexName);
+        if (currentMetadata != null) {
+            return currentMetadata;
         }
+
         logger.debug("Before entering updating metadata");
-        Metadata currentMetadata = null;
-        synchronized (mappingsSync) {
+        synchronized (Schema.class) {
             logger.debug("Entered updating metadata");
-            DatastoreClient datastoreClient = ClientFactory.getInstance();
+            DatastoreClient datastoreClient = DatastoreClientFactory.getInstance();
             // Check existence of the data index
-            IndexExistsResponse dataIndexExistsResponse = ClientFactory.getInstance().isIndexExists(new IndexExistsRequest(dataIndexName));
+            IndexExistsResponse dataIndexExistsResponse = DatastoreClientFactory.getInstance().isIndexExists(new IndexExistsRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(dataIndexName, getMappingSchema());
                 logger.info("Data index created: " + dataIndexName);
@@ -119,13 +107,11 @@ public class Schema {
             logger.debug("Leaving updating metadata");
         }
 
-        synchronized (schemaCacheSync) {
-            // Current metadata can only increase the custom mappings
-            // other fields does not change within the same account id
-            // and custom mappings are not and must not be exposed to
-            // outside this class to preserve thread safetyness
-            schemaCache.put(dataIndexName, currentMetadata);
-        }
+        // Current metadata can only increase the custom mappings
+        // other fields does not change within the same account id
+        // and custom mappings are not and must not be exposed to
+        // outside this class to preserve thread safetyness
+        DatastoreCacheManager.getInstance().getMetadataCache().put(dataIndexName, currentMetadata);
 
         return currentMetadata;
     }
@@ -143,16 +129,13 @@ public class Schema {
         if (metrics == null || metrics.size() == 0) {
             return;
         }
-        Metadata currentMetadata = null;
-        synchronized (schemaCacheSync) {
-            String newIndex = DatastoreUtils.getDataIndexName(scopeId, time);
-            currentMetadata = schemaCache.get(newIndex);
-        }
+        String newIndex = DatastoreUtils.getDataIndexName(scopeId, time);
+        Metadata currentMetadata = DatastoreCacheManager.getInstance().getMetadataCache().get(newIndex);
 
         ObjectNode metricsMapping = null;
         Map<String, Metric> diffs = null;
 
-        synchronized (mappingsSync) {
+        synchronized (Schema.class) {
             // Update mappings only if a metric is new (not in cache)
             diffs = getMessageMappingDiffs(currentMetadata, metrics);
             if (diffs == null || diffs.size() == 0) {
@@ -162,7 +145,7 @@ public class Schema {
         }
 
         logger.trace("Sending dynamic message mappings: " + metricsMapping);
-        ClientFactory.getInstance().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
+        DatastoreClientFactory.getInstance().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 
     private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws DatamodelMappingException {
@@ -223,8 +206,9 @@ public class Schema {
     }
 
     private Map<String, Metric> getMessageMappingDiffs(Metadata currentMetadata, Map<String, Metric> esMetrics) {
-        if (esMetrics == null || esMetrics.size() == 0)
+        if (esMetrics == null || esMetrics.size() == 0) {
             return null;
+        }
 
         Entry<String, Metric> el;
         Map<String, Metric> diffs = null;
@@ -232,9 +216,9 @@ public class Schema {
         while (iter.hasNext()) {
             el = iter.next();
             if (!currentMetadata.getMessageMappingsCache().containsKey(el.getKey())) {
-                if (diffs == null)
+                if (diffs == null) {
                     diffs = new HashMap<String, Metric>(100);
-
+                }
                 currentMetadata.getMessageMappingsCache().put(el.getKey(), el.getValue());
                 diffs.put(el.getKey(), el.getValue());
             }
@@ -245,7 +229,7 @@ public class Schema {
     private ObjectNode getMappingSchema() throws DatamodelMappingException {
         String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingKey.INDEX_REFRESH_INTERVAL));
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(REFRESH_INTERVAL, idxRefreshInterval) });
+        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_REFRESH_INTERVAL, idxRefreshInterval) });
         rootNode.set(KEY_INDEX, refreshIntervaleNode);
         return rootNode;
     }

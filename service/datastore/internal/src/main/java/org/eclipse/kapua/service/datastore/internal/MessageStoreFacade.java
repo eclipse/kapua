@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.client.model.ResultList;
 import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.datastore.internal.client.ClientFactory;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
@@ -93,7 +93,7 @@ public final class MessageStoreFacade {
     public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) throws ClientUnavailableException {
         configProvider = confProvider;
         this.mediator = mediator;
-        client = ClientFactory.getInstance();
+        client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -501,5 +501,13 @@ public final class MessageStoreFacade {
         datastoreMessage.setScopeId(message.getScopeId());
         datastoreMessage.setSentOn(message.getSentOn());
         return datastoreMessage;
+    }
+
+    public void refreshAllIndexes() throws ClientException {
+        client.refreshAllIndexes();
+    }
+
+    public void deleteAllIndexes() throws ClientException {
+        client.deleteAllIndexes();
     }
 }

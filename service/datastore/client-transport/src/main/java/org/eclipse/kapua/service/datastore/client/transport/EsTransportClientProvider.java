@@ -31,7 +31,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 /**
- * Elasticsearch transport client implementation.
+ * Elasticsearch transport client implementation.<br>
+ * Instantiate the Elasticsearch transport client. Provides also static methods to get customized client (configuration parameters override)
  *
  * @since 1.0
  */
@@ -46,7 +47,7 @@ public class EsTransportClientProvider implements EsClientProvider {
     }
 
     /**
-     * Create a new Elasticsearch transport client based on the configuration parameters ({@link ClientSettingsKey})
+     * Create the Elasticsearch transport client based on the configuration parameters ({@link ClientSettingsKey})
      *
      * @throws ClientUnavailableException
      */
@@ -63,12 +64,7 @@ public class EsTransportClientProvider implements EsClientProvider {
     public void close() throws IOException {
         client.close();
     }
-
-    @Override
-    public boolean isAlive() {
-        return client != null && client.connectedNodes().size() > 0;
-    }
-
+    
     static TransportClient getClient(List<InetSocketAddress> addresses, String clustername) throws ClientUnavailableException, UnknownHostException {
         if (addresses == null || addresses.isEmpty()) {
             throw new ClientUnavailableException("No ElasticSearch nodes are configured");
@@ -144,12 +140,6 @@ public class EsTransportClientProvider implements EsClientProvider {
             }
             return new InetSocketAddress(host, Integer.parseInt(port));
         }
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        close();
     }
 
 }

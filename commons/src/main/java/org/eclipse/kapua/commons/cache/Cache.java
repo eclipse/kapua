@@ -58,4 +58,10 @@ public interface Cache<K, V>
      * @param k
      */
     public void remove(K k);
+
+    /**
+     * Clear the cache
+     */
+    public void invalidateAll();
+
 }

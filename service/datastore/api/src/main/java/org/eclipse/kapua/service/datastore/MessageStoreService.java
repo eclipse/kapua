@@ -102,4 +102,5 @@ public interface MessageStoreService extends KapuaService, KapuaConfigurableServ
      */
     void delete(MessageQuery query)
             throws KapuaException;
+
 }
