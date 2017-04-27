@@ -78,7 +78,7 @@ INSERT INTO sys_configuration (
   PROPERTIES)
 VALUES (1,
         2,
-        'org.eclipse.kapua.service.account.UserService',
+        'org.eclipse.kapua.service.user.UserService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
         'maxNumberChildEntities=0', CHAR(13), CHAR(10),
         'infiniteChildEntities=true'),
