@@ -42,7 +42,7 @@ public class ObjectTypeConverter {
                 value = TYPE_BOOLEAN;
             } else if (clazz == Date.class) {
                 value = TYPE_DATE;
-            } else if (clazz == Byte[].class) {
+            } else if (clazz == byte[].class || clazz == Byte[].class) {
                 value = TYPE_BINARY;
             } else {
                 value = clazz.getName();
@@ -69,7 +69,7 @@ public class ObjectTypeConverter {
             } else if (TYPE_DATE.equals(value)) {
                 clazz = Date.class;
             } else if (TYPE_BINARY.equals(value)) {
-                clazz = Byte[].class;
+                clazz = byte[].class;
             } else {
                 clazz = Class.forName(value);
             }

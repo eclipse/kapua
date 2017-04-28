@@ -35,7 +35,7 @@ public class KuraObjectTypeConverter {
             value = TYPE_DOUBLE;
         } else if (clazz == Boolean.class) {
             value = TYPE_BOOLEAN;
-        } else if (clazz == Byte[].class) {
+        } else if (clazz == byte[].class || clazz == Byte[].class) {
             value = TYPE_BINARY;
         } else {
             value = clazz.getName();
@@ -58,7 +58,7 @@ public class KuraObjectTypeConverter {
         } else if (TYPE_BOOLEAN.equals(value)) {
             clazz = Boolean.class;
         } else if (TYPE_BINARY.equals(value)) {
-            clazz = Byte[].class;
+            clazz = byte[].class;
         } else {
             clazz = Class.forName(value);
         }

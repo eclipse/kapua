@@ -20,7 +20,7 @@ public class KuraObjectValueConverter {
         String stringValue = null;
         if (value != null) {
             Class<?> clazz = value.getClass();
-            if (clazz == Byte[].class) {
+            if (clazz == byte[].class || clazz == Byte[].class) {
                 stringValue = DatatypeConverter.printBase64Binary((byte[]) value);
             } else {
                 // String
@@ -52,7 +52,7 @@ public class KuraObjectValueConverter {
                 value = Double.parseDouble(stringValue);
             } else if (type == Boolean.class) {
                 value = Boolean.parseBoolean(stringValue);
-            } else if (type == Byte[].class) {
+            } else if (type == byte[].class || type == Byte[].class) {
                 value = DatatypeConverter.parseBase64Binary(stringValue);
             } else {
                 value = stringValue;
