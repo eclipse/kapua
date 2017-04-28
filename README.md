@@ -9,8 +9,7 @@
 
 ## Quick Start Guide
 
-Running an Eclipse Kapua&trade; instance on your local machine is a really simple task. There's no need to install
-IDEs and build tools to start a demo.
+Running an Eclipse Kapua&trade; demo instance on your local machine is a simple task. 
 
 Eclipse Kapua&trade; runs as distributed application that exposes three basic services:
 * A Messaging Service
