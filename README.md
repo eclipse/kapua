@@ -9,16 +9,16 @@
 
 ## Quick Start Guide
 
-Running an Eclipse Kapua&trade; demo instance on your local machine is a simple task. 
+Running an Eclipse Kapua&trade; demo instance on your local machine is a simple task.
 
 Eclipse Kapua&trade; runs as distributed application that exposes three basic services:
-* A Messaging Service
-* A Web Administration Console
-* A RESTful API
+* The Messaging Service
+* The RESTful API
+* The Web Administration Console
 
 Two more backend services are required that implement the data tier:
-* A SQL database
-* A NoSQL datastore
+* The SQL database
+* The NoSQL datastore
 
 Eclipse Kapua&trade; can be deployed in a variety of modes. A practical way for running a local demo is through Docker containers.
 
@@ -86,7 +86,7 @@ dc682f7b1533        elasticsearch:2.4           "/docker-entrypoin..."   19 minu
 ### Access
 
 Once the containers are running, the Kapua services can be accessed. Kapua is a multi tenant
-system. The demo installation comes with one default default tenant, called _kapua-sys_, which is also the root tenant. In Eclipse Kapua a tenant is commonly referred to as an _account_.
+system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. In Eclipse Kapua a tenant is commonly referred to as an _account_.
 
 #### The console
 
@@ -103,7 +103,7 @@ The documentation of RESTful API is available at http://localhost:8081/doc/ whil
 
 The documentation is available through Swagger UI which greatly helps testing and exploring the exposed services.
 
-In order to get access a REST resource through an API, an authentication token is needed. Fortunately the token can be easily obtained by executing the authentication API. There are several ways to invoke API, likely the easiest is by using the Swagger UI:
+In order to get access a REST resource through an API, an authentication token is needed. Fortunately the token can be easily obtained by executing the authentication API. There are several ways to invoke the API, an easy one is by using the Swagger UI:
 
 * Open the URL http://localhost:8081/doc/
 * Select item _Authentication_
@@ -133,12 +133,12 @@ The system will return a JSON object.
 * Copy the value of the field _tokenId_
 * Paste the value in the box labelled _api\_key_ at the top of the web page
 
-Swagger will automatically add the authentication token to each subsequent request done using the Swagger API. You're ready to try executing the documented APIs.
+Swagger will automatically add the authentication token to each subsequent request done using the Swagger UI. You're ready to try executing the documented APIs.
 
 #### The Broker
 
 The broker container exposes an [Mqtt](http://mqtt.org/) end point at tcp://localhost:1883/.
-The broker can be accessed through either a plain Mqtt client like [Eclipse Paho](http://www.eclipse.org/paho/) for example, or an higher level client like [Eclipse Kura](http://www.eclipse.org/kura/).
+The broker can be accessed through either [Eclipse Kura](http://www.eclipse.org/kura/) or a plain Mqtt client like, for example, [Eclipse Paho](http://www.eclipse.org/paho/).
 
 In order for a client to establish an Mqtt connection with the broker, a client must provide a valid identity. The _kapua-sys_ account provides the user named _kapua-broker_ which has been pre-seeded and profiled for the purpose.
 
