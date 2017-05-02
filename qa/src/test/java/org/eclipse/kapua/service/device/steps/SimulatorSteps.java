@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.device.steps;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
-import static org.eclipse.kapua.qa.steps.Wait.waitFor;
 import static org.eclipse.kapua.qa.utils.Suppressed.closeAll;
+import static org.eclipse.kapua.qa.utils.Wait.waitFor;
 import static org.eclipse.kapua.service.device.steps.With.withDevice;
 import static org.eclipse.kapua.service.device.steps.With.withUserAccount;
 

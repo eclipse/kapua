@@ -8,7 +8,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.qa.steps;
+package org.eclipse.kapua.qa.utils;
 
 import static java.time.Duration.ofMillis;
 import static java.time.Instant.now;
