@@ -30,6 +30,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  */
 public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResult<E> {
 
+    private static final long serialVersionUID = 8939666089540269261L;
     private boolean limitExceeded;
     private ArrayList<E> items;
 

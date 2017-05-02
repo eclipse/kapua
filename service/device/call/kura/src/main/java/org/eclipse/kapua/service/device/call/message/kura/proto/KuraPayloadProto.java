@@ -17,7 +17,6 @@ package org.eclipse.kapua.service.device.call.message.kura.proto;
  * @since 1.0
  *
  */
-@SuppressWarnings("unused")
 public final class KuraPayloadProto {
 
     private KuraPayloadProto() {
