@@ -98,12 +98,13 @@ public class KuraAsset {
         kuraAsset.setName(jsonKuraAsset.get("name").asText());
 
         JsonNode jsonKuraAssetChannels = jsonKuraAsset.get("channels");
-        Iterator<JsonNode> jsonNodeIterator = jsonKuraAssetChannels.elements();
-        while (jsonNodeIterator.hasNext()) {
-            JsonNode jsonNode = jsonNodeIterator.next();
-            kuraAsset.getChannels().add(KuraAssetChannel.readJsonNode(jsonNode));
+        if (jsonKuraAssetChannels != null) {
+            Iterator<JsonNode> jsonNodeIterator = jsonKuraAssetChannels.elements();
+            while (jsonNodeIterator.hasNext()) {
+                JsonNode jsonNode = jsonNodeIterator.next();
+                kuraAsset.getChannels().add(KuraAssetChannel.readJsonNode(jsonNode));
+            }
         }
-
         return kuraAsset;
     }
 
