@@ -32,9 +32,9 @@ public class KapuaMetricsMapAdapterTest extends Assert {
                     "<payload>" + newline +
                     "   <metrics>" + newline +
                     "      <metric>" + newline +
-                    "         <name>key1</name>" + newline +
                     "         <type>string</type>" + newline +
                     "         <value>value1</value>" + newline +
+                    "         <name>key1</name>" + newline +
                     "      </metric>" + newline +
                     "   </metrics>" + newline +
                     "</payload>" + newline;
