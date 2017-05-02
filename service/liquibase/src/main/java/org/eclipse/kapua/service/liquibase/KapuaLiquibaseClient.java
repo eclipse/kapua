@@ -59,23 +59,24 @@ public class KapuaLiquibaseClient {
 
     public void update() {
         try {
-            if(parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
-                Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+            if (parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
+                try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
 
-                Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
-                Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.sql"));
-                for (String script : changeLogs) {
-                    URL scriptUrl = getClass().getResource("/" + script);
-                    File changelogFile = new File(getJavaIoTmpDir(), "kapua-liquibase");
-                    changelogFile.mkdir();
-                    changelogFile = new File(changelogFile, script.replaceFirst("liquibase/", ""));
-                    IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
-                    Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-                    if(schema.isPresent()) {
-                        database.setDefaultSchemaName(schema.get());
+                    Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
+                    Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.sql"));
+                    for (String script : changeLogs) {
+                        URL scriptUrl = getClass().getResource("/" + script);
+                        File changelogFile = new File(getJavaIoTmpDir(), "kapua-liquibase");
+                        changelogFile.mkdir();
+                        changelogFile = new File(changelogFile, script.replaceFirst("liquibase/", ""));
+                        IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
+                        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+                        if (schema.isPresent()) {
+                            database.setDefaultSchemaName(schema.get());
+                        }
+                        Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), database);
+                        liquibase.update(null);
                     }
-                    Liquibase liquibase = new Liquibase(changelogFile.getAbsolutePath(), new FileSystemResourceAccessor(), database);
-                    liquibase.update(null);
                 }
             }
         } catch (LiquibaseException | SQLException | IOException e) {
