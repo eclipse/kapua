@@ -60,7 +60,7 @@
 		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.shiro</package>
 		
-		<package>org.eclipse.kapua.test</package>
+		<package>org.eclipse.kapua.test.steps</package>
         <package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.account</package>
 		<package>org.eclipse.kapua.test.authentication</package>

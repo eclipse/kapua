@@ -46,8 +46,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.kapua.test.steps.DatabaseInstance;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
@@ -61,9 +60,6 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(RoleServiceTestSteps.class);
 
     private static final Domain testDomain = new TestDomain();
 
@@ -84,7 +80,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     RoleServiceTestData roleData = null;
 
     @Inject
-    public RoleServiceTestSteps(RoleServiceTestData roleData, CommonTestData commonData) {
+    public RoleServiceTestSteps(RoleServiceTestData roleData, CommonTestData commonData, /* dependency */ DatabaseInstance databaseInstance) {
         this.roleData = roleData;
         this.commonData = commonData;
     }

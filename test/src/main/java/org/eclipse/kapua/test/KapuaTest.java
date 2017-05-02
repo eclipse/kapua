@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -39,9 +38,7 @@ import org.slf4j.LoggerFactory;
 
 public class KapuaTest extends Assert {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaTest.class);
-
-    private static boolean isInitialized;
+    private static final Logger logger = LoggerFactory.getLogger(KapuaTest.class);
 
     protected static Random random = new Random();
     protected static KapuaLocator locator = KapuaLocator.getInstance();
@@ -57,43 +54,39 @@ public class KapuaTest extends Assert {
 
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
-        LOG.debug("Setting up test...");
-        if (!isInitialized) {
-            LOG.debug("Kapua test context is not initialized. Initializing...");
-            try {
-                //
-                // Login
-                String username = "kapua-sys";
-                String password = "kapua-password";
+        logger.debug("Setting up test...");
+        try {
+            //
+            // Login
+            String username = "kapua-sys";
+            String password = "kapua-password";
 
-                AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
-                CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-                authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray()));
+            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password.toCharArray()));
 
-                //
-                // Get current user Id
-                adminUserId = KapuaSecurityUtils.getSession().getUserId();
-                adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
-            } catch (KapuaException exc) {
-                exc.printStackTrace();
-            }
-            isInitialized = true;
+            //
+            // Get current user Id
+            adminUserId = KapuaSecurityUtils.getSession().getUserId();
+            adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
+        } catch (KapuaException exc) {
+            exc.printStackTrace();
         }
     }
 
     @After
-    public void tearDown2() throws SQLException {
-        if (connection != null) {
-            connection.close();
-            connection = null;
-        }
-    }
+    public void tearDown() {
+        logger.debug("Stopping Kapua test context.");
 
-    // FIXME: find out asymmetry between setUp and tearDown
-    @AfterClass
-    public static void tearDown() {
-        LOG.debug("Stopping Kapua test context.");
-        isInitialized = false;
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException e) {
+            logger.warn("Failed to close database", e);
+        }
+
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);

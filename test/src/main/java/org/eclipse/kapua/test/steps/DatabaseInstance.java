@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.test;
+package org.eclipse.kapua.test.steps;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -39,7 +39,7 @@
 		<package>org.eclipse.kapua.service.device.registry.internal</package>
 		<package>org.eclipse.kapua.service.device.registry.event.internal</package>
 
-		<package>org.eclipse.kapua.test</package>
+		<package>org.eclipse.kapua.test.steps</package>
 		<package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.account</package>
 		<package>org.eclipse.kapua.test.authentication</package>

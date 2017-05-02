@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.test.AbstractKapuaSteps;
+import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;

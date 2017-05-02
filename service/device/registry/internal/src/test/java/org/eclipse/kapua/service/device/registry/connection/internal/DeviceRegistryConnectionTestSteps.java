@@ -42,8 +42,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSumm
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
-import org.eclipse.kapua.test.AbstractKapuaSteps;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

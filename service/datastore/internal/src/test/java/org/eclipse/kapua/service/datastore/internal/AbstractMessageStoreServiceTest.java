@@ -23,14 +23,14 @@ public abstract class AbstractMessageStoreServiceTest extends KapuaTest {
     public static final String DEFAULT_COMMONS_PATH = "../../../commons";
 
     @BeforeClass
-    public static void tearUp()
+    public static void tearUpGlobal()
             throws KapuaException {
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
     }
 
     @AfterClass
-    public static void tearDown() {
+    public static void tearDownGlobal() {
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
     }
 }

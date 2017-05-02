@@ -82,6 +82,7 @@ public class RoleServiceTest extends KapuaTest {
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
             Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            assertNotNull(permission);
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 
@@ -122,6 +123,7 @@ public class RoleServiceTest extends KapuaTest {
             assertNotNull(rolePermission.getCreatedBy());
             assertNotNull(rolePermission.getCreatedOn());
             assertEquals(role.getId(), rolePermission.getRoleId());
+            assertNotNull(rolePermission.getPermission());
             assertEquals(permission.getDomain(), rolePermission.getPermission().getDomain());
             assertEquals(permission.getAction(), rolePermission.getPermission().getAction());
             assertEquals(permission.getTargetScopeId(), rolePermission.getPermission().getTargetScopeId());
