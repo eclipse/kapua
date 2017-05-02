@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Random;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -26,6 +30,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,8 +49,12 @@ public class KapuaTest extends Assert {
     protected static KapuaId adminUserId;
     protected static KapuaId adminScopeId;
 
+    private Connection connection;
+
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
+        connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
+
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         LOG.debug("Setting up test...");
@@ -72,6 +81,15 @@ public class KapuaTest extends Assert {
         }
     }
 
+    @After
+    public void tearDown2() throws SQLException {
+        if (connection != null) {
+            connection.close();
+            connection = null;
+        }
+    }
+
+    // FIXME: find out asymmetry between setUp and tearDown
     @AfterClass
     public static void tearDown() {
         LOG.debug("Stopping Kapua test context.");
@@ -102,9 +120,12 @@ public class KapuaTest extends Assert {
     /**
      * Generates a random {@link String} from the given parameters
      *
-     * @param chars length of the generated {@link String}
-     * @param letters whether or not use chars
-     * @param numbers whether or not use numbers
+     * @param chars
+     *            length of the generated {@link String}
+     * @param letters
+     *            whether or not use chars
+     * @param numbers
+     *            whether or not use numbers
      *
      * @return the generated {@link String}
      */
@@ -120,6 +141,5 @@ public class KapuaTest extends Assert {
         EntityManagerSession entityManagerSession = new EntityManagerSession(entityManagerFactory);
         entityManagerSession.onTransactedAction(entityManager -> new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager));
     }
-
 
 }
