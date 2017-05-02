@@ -32,6 +32,7 @@
 	<packages>
 		<package>org.eclipse.kapua.commons</package>
 		<package>org.eclipse.kapua.service.account.internal</package>
+		<package>org.eclipse.kapua.test</package>
 		<package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.authentication</package>
 		<package>org.eclipse.kapua.test.authorization</package>

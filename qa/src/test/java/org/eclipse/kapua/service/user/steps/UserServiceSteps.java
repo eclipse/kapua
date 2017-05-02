@@ -57,6 +57,7 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
+import org.eclipse.kapua.test.AbstractKapuaSteps;
 import org.eclipse.kapua.test.KapuaTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
 @ScenarioScoped
-public class UserServiceSteps extends KapuaTest {
+public class UserServiceSteps extends AbstractKapuaSteps {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
