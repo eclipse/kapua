@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
  */
 public class DeviceAssetsImpl implements DeviceAssets {
 
+    private static final long serialVersionUID = -6657213220333406876L;
     private List<DeviceAsset> assets;
 
     @Override

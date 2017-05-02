@@ -12,8 +12,6 @@
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
-import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
 
 /**

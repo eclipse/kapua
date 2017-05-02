@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.device.management.asset.internal;
 
 import java.util.Date;
 
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 
 /**
  * {@link DeviceAssetChannel} implementation.
