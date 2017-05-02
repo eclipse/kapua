@@ -43,10 +43,9 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 /**
- * Device bundle service implementation.
+ * DeviceBundleManagementService implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceBundleManagementServiceImpl implements DeviceBundleManagementService {
@@ -101,7 +100,6 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
             body = new String(responsePayload.getBody(), charEncoding);
         } catch (Exception e) {
             throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
-
         }
 
         DeviceBundles deviceBundleList = null;
@@ -193,7 +191,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notEmptyOrNull(bundleId, "bundleID");
+        ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
 
         //
         // Check Access
