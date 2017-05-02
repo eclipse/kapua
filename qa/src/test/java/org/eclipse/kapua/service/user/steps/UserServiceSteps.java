@@ -129,7 +129,8 @@ public class UserServiceSteps extends KapuaTest {
     private ComparableUser lastUser;
 
     @Inject
-    public UserServiceSteps(/* dependency */ final DBHelper dbHelper) {
+    public UserServiceSteps(final DBHelper dbHelper) {
+        dbHelper.setup();
     }
 
     @Before
