@@ -111,12 +111,12 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * One of two users used in tests - A
      */
-    ComparableUser userA = null;
+    private ComparableUser userA = null;
 
     /**
      * One of two users used in tests - B
      */
-    ComparableUser userB = null;
+    private ComparableUser userB = null;
 
     /**
      * Account that was created by last Account creation step.
