@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
 
 /**
  * User permission implementation.
- * 
+ *
  * @since 1.0
  *
  */
@@ -55,7 +55,7 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public AccessPermissionImpl(KapuaId scopeId) {
@@ -64,11 +64,11 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     /**
      * Constructor
-     * 
+     *
      * @param accessPermission
      */
     public AccessPermissionImpl(AccessPermission accessPermission) {
-        super((AbstractKapuaEntity) accessPermission);
+        super(accessPermission);
 
         setAccessInfoId(accessPermission.getAccessInfoId());
         setPermission(accessPermission.getPermission());
@@ -76,7 +76,7 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     @Override
     public void setAccessInfoId(KapuaId accessInfo) {
-        this.accessInfoId = accessInfo != null ? (accessInfo instanceof KapuaEid ? (KapuaEid) accessInfo : new KapuaEid(accessInfo)) : null;
+        accessInfoId = accessInfo != null ? accessInfo instanceof KapuaEid ? (KapuaEid) accessInfo : new KapuaEid(accessInfo) : null;
     }
 
     @Override
@@ -86,7 +86,7 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     @Override
     public void setPermission(Permission permission) {
-        this.permission = permission != null ? (permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission)) : null;
+        this.permission = permission != null ? permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission) : null;
     }
 
     @Override
@@ -99,30 +99,37 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((accessInfoId == null) ? 0 : accessInfoId.hashCode());
-        result = prime * result + ((permission == null) ? 0 : permission.hashCode());
+        result = prime * result + (accessInfoId == null ? 0 : accessInfoId.hashCode());
+        result = prime * result + (permission == null ? 0 : permission.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AccessPermissionImpl other = (AccessPermissionImpl) obj;
         if (accessInfoId == null) {
-            if (other.accessInfoId != null)
+            if (other.accessInfoId != null) {
                 return false;
-        } else if (!accessInfoId.equals(other.accessInfoId))
+            }
+        } else if (!accessInfoId.equals(other.accessInfoId)) {
             return false;
+        }
         if (getPermission() == null) {
-            if (other.getPermission() != null)
+            if (other.getPermission() != null) {
                 return false;
-        } else if (!getPermission().equals(other.getPermission()))
+            }
+        } else if (!getPermission().equals(other.getPermission())) {
             return false;
+        }
         return true;
     }
 }

@@ -41,7 +41,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         // Token data
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String tokenUsername = token.getUsername();
-        String tokenPassword = new String(token.getPassword());
+        String tokenPassword = String.valueOf(token.getPassword());
 
         //
         // Info data

@@ -75,7 +75,7 @@ public class GroupServiceTest extends KapuaTest {
             GroupService groupService = locator.getService(GroupService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
@@ -106,7 +106,7 @@ public class GroupServiceTest extends KapuaTest {
             GroupService groupService = locator.getService(GroupService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
@@ -148,7 +148,7 @@ public class GroupServiceTest extends KapuaTest {
             GroupService groupService = locator.getService(GroupService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
@@ -187,7 +187,7 @@ public class GroupServiceTest extends KapuaTest {
             GroupService groupService = locator.getService(GroupService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
@@ -235,7 +235,7 @@ public class GroupServiceTest extends KapuaTest {
             GroupService groupService = locator.getService(GroupService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", new Integer(5));
+            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
             resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 

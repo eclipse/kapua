@@ -58,23 +58,27 @@ public class DatastoreChannel {
     private void init(KapuaId scopeId, String clientId, String channel) throws EsInvalidChannelException {
 
         // Must be not null
-        if (scopeId == null)
+        if (scopeId == null) {
             throw new EsInvalidChannelException("Empty scopeId.");
+        }
         // Must be not multilevel wild card
-        if (MULTI_LEVEL_WCARD.equals(scopeId.toCompactId()))
+        if (MULTI_LEVEL_WCARD.equals(scopeId.toCompactId())) {
             throw new EsInvalidChannelException("Invalid scopeId: " + scopeId.toCompactId());
+        }
 
         this.scopeId = scopeId;
 
         // Must be not null and not multilevel wild card
-        if (clientId == null || MULTI_LEVEL_WCARD.equals(clientId))
+        if (clientId == null || MULTI_LEVEL_WCARD.equals(clientId)) {
             throw new EsInvalidChannelException("Invalid client id: " + clientId);
+        }
 
         this.clientId = clientId;
 
         // Must be not null and not single level wild card
-        if (channel == null)
+        if (channel == null) {
             throw new EsInvalidChannelException("Invalid channel: " + channel);
+        }
 
         // Check if there is one single level wild card or if the multi level wild card is present more than once or not at the end of the topic
         if (channel.indexOf(SINGLE_LEVEL_WCARD) != -1) {
@@ -107,13 +111,13 @@ public class DatastoreChannel {
      * @since 1.0.0
      */
     public DatastoreChannel(KapuaId scopeId, String clientId, List<String> channelParts) throws EsInvalidChannelException {
-        this(scopeId, clientId, (new Object() {
+        this(scopeId, clientId, new Object() {
 
             @Override
             public String toString() {
                 return getChannel(channelParts);
             }
-        }).toString());
+        }.toString());
     }
 
     /**
@@ -138,12 +142,14 @@ public class DatastoreChannel {
     public DatastoreChannel(String fullName) throws EsInvalidChannelException {
 
         // Must be not null and not multilevel wild card
-        if (fullName == null)
+        if (fullName == null) {
             throw new EsInvalidChannelException("Invalid channel: " + fullName);
+        }
 
         String[] parts = fullName.split(Pattern.quote(TOPIC_SEPARATOR));
-        if (parts.length < MIN_PARTS)
+        if (parts.length < MIN_PARTS) {
             throw new EsInvalidChannelException(String.format("Invalid channel: less than %d parts found.", MIN_PARTS));
+        }
 
         // init(parts[0], parts[1], fullName.substring(parts[0].length() + parts[1].length() + 2));
     }
@@ -166,7 +172,7 @@ public class DatastoreChannel {
      * @since 1.0.0
      */
     public boolean isAnyAccount() {
-        return this.channel.startsWith(SINGLE_LEVEL_WCARD);
+        return channel.startsWith(SINGLE_LEVEL_WCARD);
     }
 
     /**
@@ -274,7 +280,7 @@ public class DatastoreChannel {
      * @since 1.0.0
      */
     public String getLeafName() {
-        return this.channelParts[this.channelParts.length - 1];
+        return channelParts[channelParts.length - 1];
     }
 
     /**

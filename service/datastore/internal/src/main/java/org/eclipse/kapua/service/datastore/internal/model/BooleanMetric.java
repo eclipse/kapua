@@ -18,7 +18,7 @@ public class BooleanMetric extends MetricImpl<Boolean> implements Metric<Boolean
     public BooleanMetric(String name, Object value) {
         setName(name);
         setType(Boolean.class);
-        setValue(new Boolean((Boolean) value).booleanValue());
+        setValue(Boolean.valueOf((Boolean) value).booleanValue());
     }
 
     @Override

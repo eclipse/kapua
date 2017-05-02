@@ -18,7 +18,7 @@ public class StringToCharArrayAdapter extends XmlAdapter<String, char[]> {
 
     @Override
     public String marshal(char[] v) throws Exception {
-        return new String(v);
+        return String.valueOf(v);
     }
 
     @Override

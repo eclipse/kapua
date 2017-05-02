@@ -76,7 +76,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class UserServiceSteps extends KapuaTest {
 
-    private static Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
     /**
      * User service by locator.

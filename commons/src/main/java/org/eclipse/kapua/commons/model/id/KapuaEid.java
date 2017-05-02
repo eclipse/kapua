@@ -21,9 +21,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * Kapua identifier reference implementation.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @Embeddable
 public class KapuaEid implements KapuaId, Serializable {
@@ -41,7 +41,7 @@ public class KapuaEid implements KapuaId, Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param id
      */
     public KapuaEid(BigInteger id) {
@@ -51,7 +51,7 @@ public class KapuaEid implements KapuaId, Serializable {
 
     /**
      * Constructor
-     * 
+     *
      * @param id
      */
     public KapuaEid(KapuaId id) {
@@ -61,7 +61,7 @@ public class KapuaEid implements KapuaId, Serializable {
 
     /**
      * Creates a {@link KapuaEid} instance parsing the short identifier provided
-     * 
+     *
      * @param shortId
      * @return
      */
@@ -77,7 +77,7 @@ public class KapuaEid implements KapuaId, Serializable {
 
     /**
      * Set the identifier
-     * 
+     *
      * @param eid
      */
     protected void setId(BigInteger eid) {
@@ -93,24 +93,29 @@ public class KapuaEid implements KapuaId, Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((eid == null) ? 0 : eid.hashCode());
+        result = prime * result + (eid == null ? 0 : eid.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         KapuaEid other = (KapuaEid) obj;
         if (eid == null) {
-            if (other.eid != null)
+            if (other.eid != null) {
                 return false;
-        } else if (!eid.equals(other.eid))
+            }
+        } else if (!eid.equals(other.eid)) {
             return false;
+        }
         return true;
     }
 }

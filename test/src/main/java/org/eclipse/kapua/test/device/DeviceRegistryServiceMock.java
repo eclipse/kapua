@@ -28,10 +28,10 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 @KapuaProvider
 public class DeviceRegistryServiceMock implements DeviceRegistryService {
 
-    private Map<KapuaId, DeviceMock> deviceRegistry;
+    private final Map<KapuaId, DeviceMock> deviceRegistry;
 
     public DeviceRegistryServiceMock() {
-        deviceRegistry = new HashMap<KapuaId, DeviceMock>();
+        deviceRegistry = new HashMap<>();
     }
 
     @Override
@@ -43,8 +43,9 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
 
     @Override
     public Device find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        if (!deviceRegistry.containsKey(entityId))
+        if (!deviceRegistry.containsKey(entityId)) {
             throw KapuaException.internalError("Device not found");
+        }
 
         return deviceRegistry.get(entityId);
     }
@@ -63,17 +64,18 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
 
     @Override
     public void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        if (!deviceRegistry.containsKey(entityId))
+        if (!deviceRegistry.containsKey(entityId)) {
             throw KapuaException.internalError("Device not found");
+        }
 
-        @SuppressWarnings("unused")
-        DeviceMock device = deviceRegistry.remove(entityId);
+        deviceRegistry.remove(entityId);
     }
 
     @Override
     public Device update(Device entity) throws KapuaException {
-        if (!deviceRegistry.containsKey(entity.getId()))
+        if (!deviceRegistry.containsKey(entity.getId())) {
             throw KapuaException.internalError("Device not found");
+        }
 
         Device device = deviceRegistry.get(entity.getId());
         device.setDisplayName(entity.getDisplayName());
@@ -86,8 +88,9 @@ public class DeviceRegistryServiceMock implements DeviceRegistryService {
         while (devices.hasNext()) {
             DeviceMock device = devices.next();
             if (device.getScopeId().equals(scopeId) &&
-                    device.getClientId() != null && device.getClientId().equals(clientId))
+                    device.getClientId() != null && device.getClientId().equals(clientId)) {
                 return device;
+            }
         }
         throw KapuaException.internalError("Device not found");
     }

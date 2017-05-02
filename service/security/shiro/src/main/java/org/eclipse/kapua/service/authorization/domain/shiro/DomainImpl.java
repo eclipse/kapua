@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 
 /**
  * {@link Domain} implementation.
- * 
+ *
  * @since 1.0
  */
 @Entity(name = "Domain")
@@ -99,36 +99,45 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((actions == null) ? 0 : actions.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((serviceName == null) ? 0 : serviceName.hashCode());
+        result = prime * result + (actions == null ? 0 : actions.hashCode());
+        result = prime * result + (name == null ? 0 : name.hashCode());
+        result = prime * result + (serviceName == null ? 0 : serviceName.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         DomainImpl other = (DomainImpl) obj;
         if (actions == null) {
-            if (other.actions != null)
+            if (other.actions != null) {
                 return false;
-        } else if (!actions.equals(other.actions))
+            }
+        } else if (!actions.equals(other.actions)) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         if (serviceName == null) {
-            if (other.serviceName != null)
+            if (other.serviceName != null) {
                 return false;
-        } else if (!serviceName.equals(other.serviceName))
+            }
+        } else if (!serviceName.equals(other.serviceName)) {
             return false;
+        }
         return true;
     }
 }

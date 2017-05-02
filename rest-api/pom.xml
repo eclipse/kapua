@@ -26,7 +26,7 @@
 
 	<properties>
 		<jersey.version>2.23.2</jersey.version>
-		<swagger.version>1.5.12</swagger.version>
+		<swagger.version>1.5.10</swagger.version>
 		<swagger-ui.version>2.1.4</swagger-ui.version>
 	</properties>
 
@@ -83,21 +83,6 @@
 			<version>${shiro.version}</version>
 		</dependency>
 
-        <!-- Jackson -->
-        <!-- Needed to specify 2.8.x version, otherwise Datastore would 
-             bring in 2.6.x that is not compatible with Jersey 1.5.12 -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-		<!-- -->
         <!-- Same version of the Servlet APIs supported in Apache Tomcat 
             8.0.x -->
 		<dependency>
@@ -123,6 +108,11 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-internal</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-message-internal</artifactId>
         </dependency>
 		
 		<dependency>
@@ -162,6 +152,10 @@
 			<artifactId>kapua-transport-test</artifactId>
 		</dependency>
         
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-asset-internal</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-bundle-internal</artifactId>

@@ -173,7 +173,9 @@ public class AccountConfigPanel extends LayoutContainer {
                             multiFieldValues.add(value);
                         }
                     }
-                    param.setValues(multiFieldValues.toArray(new String[] {}));
+                    if (param != null) {
+                        param.setValues(multiFieldValues.toArray(new String[] {}));
+                    }
                 }
             }
         }

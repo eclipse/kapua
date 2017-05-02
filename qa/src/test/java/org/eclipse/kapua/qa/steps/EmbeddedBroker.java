@@ -12,7 +12,7 @@
 package org.eclipse.kapua.qa.steps;
 
 import static java.time.Duration.ofSeconds;
-import static org.eclipse.kapua.qa.steps.Ports.isPortOpen;
+import static org.eclipse.kapua.qa.utils.Ports.isPortOpen;
 import static org.eclipse.kapua.qa.utils.Suppressed.withRuntimeException;
 
 import java.time.Duration;

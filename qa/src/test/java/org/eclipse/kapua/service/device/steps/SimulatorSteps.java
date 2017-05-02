@@ -11,8 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
 import static org.eclipse.kapua.locator.KapuaLocator.getInstance;
 import static org.eclipse.kapua.qa.utils.Suppressed.closeAll;
+import static org.eclipse.kapua.qa.utils.Wait.assertFor;
+import static org.eclipse.kapua.qa.utils.Wait.waitFor;
+import static org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus.CONNECTED;
+import static org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus.DISCONNECTED;
 import static org.eclipse.kapua.service.device.steps.With.withDevice;
 import static org.eclipse.kapua.service.device.steps.With.withUserAccount;
 
@@ -81,7 +87,9 @@ public class SimulatorSteps {
 
     private static final Logger logger = LoggerFactory.getLogger(SimulatorSteps.class);
 
-    private static final long BUNDLE_TIMEOUT = Duration.ofSeconds(Integer.getInteger("org.eclipse.kapua.service.device.steps.timeoutBundleOperation", 5)).toMillis();
+    private static final long DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(Integer.getInteger("org.eclipse.kapua.service.device.steps.timeoutBundleOperation", 5)).toMillis();
+
+    private static final Duration DEFAULT_PERIOD = Duration.ofSeconds(1);
 
     private Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
@@ -165,14 +173,18 @@ public class SimulatorSteps {
         currentDevice.stopped();
     }
 
-    @Then("Device (.*) for account (.*) is registered")
-    public void deviceIsRegistered(final String clientId, final String accountName) throws Exception {
-        assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.CONNECTED);
+    @Then("Device (.*) for account (.*) is registered after (\\d+) seconds?")
+    public void deviceIsRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
+        assertFor("Wait for connection state to become " + CONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
+            assertConnectionStatus(clientId, accountName, CONNECTED);
+        });
     }
 
-    @Then("Device (.*) for account (.*) is not registered")
-    public void deviceIsNotRegistered(final String clientId, final String accountName) throws Exception {
-        assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
+    @Then("Device (.*) for account (.*) is not registered after (\\d+) seconds?")
+    public void deviceIsNotRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
+        assertFor("Wait for connection state to become " + DISCONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
+            assertConnectionStatus(clientId, accountName, DISCONNECTED);
+        });
     }
 
     @Then("I expect the device to report the applications")
@@ -221,7 +233,7 @@ public class SimulatorSteps {
             withDevice(account, currentDevice.getClientId(), device -> {
                 DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), BUNDLE_TIMEOUT);
+                service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
             });
         });
     }
@@ -232,7 +244,7 @@ public class SimulatorSteps {
             withDevice(account, currentDevice.getClientId(), device -> {
                 DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), BUNDLE_TIMEOUT);
+                service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
             });
         });
     }
@@ -242,7 +254,7 @@ public class SimulatorSteps {
         withUserAccount(currentDevice.getAccountName(), account -> {
             withDevice(account, currentDevice.getClientId(), device -> {
                 DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                DeviceBundles bundles = service.get(account.getId(), device.getId(), BUNDLE_TIMEOUT);
+                DeviceBundles bundles = service.get(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
 
                 Assert.assertNotNull(bundles);
 
@@ -280,7 +292,7 @@ public class SimulatorSteps {
             withDevice(account, currentDevice.getClientId(), device -> {
                 final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
 
-                final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), BUNDLE_TIMEOUT);
+                final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
 
                 Assert.assertNotNull(packages);
 
@@ -331,21 +343,26 @@ public class SimulatorSteps {
                 request.setVersion(version);
                 request.setURI(uri);
 
-                service.downloadExec(account.getId(), device.getId(), request, BUNDLE_TIMEOUT);
+                service.downloadExec(account.getId(), device.getId(), request, DEFAULT_REQUEST_TIMEOUT);
             });
         });
     }
 
-    @Then("The download is in status (.+)")
-    public void assertDownloadState(String state) throws Exception {
+    @Then("The download state changes to (.+) in the next (\\d+) seconds?")
+    public void assertDownloadState(final String state, int waitSeconds) throws Exception {
         withUserAccount(currentDevice.getAccountName(), account -> {
             withDevice(account, currentDevice.getClientId(), device -> {
                 final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+                final DevicePackageDownloadStatus downloadState = DevicePackageDownloadStatus.valueOf(state);
 
-                final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), BUNDLE_TIMEOUT);
-                Assert.assertNotNull(operation);
+                waitFor("Download state change", ofSeconds(waitSeconds), ofMillis(500), () -> {
+                    final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+                    if (operation == null) {
+                        return false;
+                    }
 
-                Assert.assertEquals(DevicePackageDownloadStatus.valueOf(state), operation.getStatus());
+                    return downloadState.equals(operation.getStatus());
+                });
             });
         });
     }

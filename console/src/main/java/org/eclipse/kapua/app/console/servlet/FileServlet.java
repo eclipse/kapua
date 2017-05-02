@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -111,7 +112,7 @@ public class FileServlet extends KapuaHttpServlet {
 
             FileItem fileItem = fileItems.get(0);
             byte[] data = fileItem.get();
-            String xmlConfigurationString = new String(data, "UTF-8");
+            String xmlConfigurationString = new String(data, StandardCharsets.UTF_8);
 
             deviceConfigurationManagementService.put(KapuaEid.parseCompactId(scopeIdString),
                     KapuaEid.parseCompactId(deviceIdString),

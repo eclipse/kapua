@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     Red Hat Inc
  *******************************************************************************/
 function whenAvailable(name, callback) {
 	var interval = 10; // ms
@@ -49,21 +49,9 @@ function downloadJsOpenlayers() {
 }
 
 //
-// Adds console sking script
-function downloadJsConsoleSkin() {
-	downloadJs("console/skin/skin.js?v=1", "consoleSkinScript");
-}
-
-//
 // Adds console css
 function downloadCssConsole() {
 	downloadCss("css/console.css", "consoleCss")
-}
-
-//
-// Adds console skin css
-function downloadCssConsoleSkin() {
-	downloadCss("console/skin/skin.css?v=1", "consoleSkinCss")
 }
 
 //
@@ -75,10 +63,6 @@ function deferResourcesDownload() {
 
 	// Custom Kapua CSS
 	downloadCssConsole();
-
-	// Skin resources
-	downloadJsConsoleSkin();
-	downloadCssConsoleSkin();
 }
 
 if (window.addEventListener)

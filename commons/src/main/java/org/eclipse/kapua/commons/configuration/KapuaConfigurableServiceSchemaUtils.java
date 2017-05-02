@@ -37,7 +37,8 @@ public class KapuaConfigurableServiceSchemaUtils {
      * Executes the database scripts in the specified path matching the specified filter
      *
      * @param path
-     * @param fileFilter file names pattern
+     * @param fileFilter
+     *            file names pattern
      */
     public static void scriptSession(String path, String fileFilter) {
         EntityManager em = null;
@@ -57,11 +58,13 @@ public class KapuaConfigurableServiceSchemaUtils {
             logger.info("...database scripts done!");
         } catch (KapuaException e) {
             logger.error("Database scripts failed: {}", e.getMessage());
-            if (em != null)
+            if (em != null) {
                 em.rollback();
+            }
         } finally {
-            if (em != null)
+            if (em != null) {
                 em.close();
+            }
         }
 
     }

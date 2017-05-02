@@ -46,7 +46,7 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsClientInfoDAO {
 
-    private EsTypeDAO esTypeDAO;
+    private final EsTypeDAO esTypeDAO;
 
     /**
      * Default constructor
@@ -68,7 +68,7 @@ public class EsClientInfoDAO {
      */
     public EsClientInfoDAO setListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.setListener(daoListener);
+        esTypeDAO.setListener(daoListener);
         return this;
     }
 
@@ -82,7 +82,7 @@ public class EsClientInfoDAO {
      */
     public EsClientInfoDAO unsetListener(EsDaoListener daoListener)
             throws EsDatastoreException {
-        this.esTypeDAO.unsetListener(daoListener);
+        esTypeDAO.unsetListener(daoListener);
         return this;
     }
 
@@ -105,7 +105,7 @@ public class EsClientInfoDAO {
      * @since 1.0.0
      */
     public EsClientInfoDAO index(String indexName) {
-        this.esTypeDAO.type(indexName, EsSchema.CLIENT_TYPE_NAME);
+        esTypeDAO.type(indexName, EsSchema.CLIENT_TYPE_NAME);
         return this;
     }
 
@@ -120,7 +120,7 @@ public class EsClientInfoDAO {
     public UpdateResponse upsert(ClientInfo clientInfo)
             throws EsDocumentBuilderException {
         ClientInfoXContentBuilder clientInfoBuilder = new ClientInfoXContentBuilder().build(clientInfo);
-        return this.esTypeDAO.upsert(clientInfoBuilder.getClientId(), clientInfoBuilder.getClientBuilder());
+        return esTypeDAO.upsert(clientInfoBuilder.getClientId(), clientInfoBuilder.getClientBuilder());
     }
 
     /**
@@ -132,7 +132,7 @@ public class EsClientInfoDAO {
      * @since 1.0.0
      */
     public UpdateResponse upsert(String id, XContentBuilder esClient) {
-        return this.esTypeDAO.upsert(id, esClient);
+        return esTypeDAO.upsert(id, esClient);
     }
 
     /**
@@ -146,7 +146,7 @@ public class EsClientInfoDAO {
     public UpdateResponse update(ClientInfo clientInfo)
             throws EsDocumentBuilderException {
         ClientInfoXContentBuilder clientInfoBuilder = new ClientInfoXContentBuilder().build(clientInfo);
-        return this.esTypeDAO.upsert(clientInfoBuilder.getClientId(), clientInfoBuilder.getClientBuilder());
+        return esTypeDAO.upsert(clientInfoBuilder.getClientId(), clientInfoBuilder.getClientBuilder());
     }
 
     /**
@@ -158,7 +158,7 @@ public class EsClientInfoDAO {
      * @since 1.0.0
      */
     public UpdateResponse update(String id, XContentBuilder esClient) {
-        return this.esTypeDAO.update(id, esClient);
+        return esTypeDAO.update(id, esClient);
     }
 
     /**
@@ -185,7 +185,7 @@ public class EsClientInfoDAO {
      */
     public void deleteByQuery(ClientInfoQuery query)
             throws EsQueryConversionException {
-        this.esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
+        esTypeDAO.deleteByQuery(PredicateConverter.convertQueryPredicates(query));
     }
 
     /**
@@ -213,8 +213,9 @@ public class EsClientInfoDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null || searchHits.getTotalHits() == 0)
+        if (searchHits == null || searchHits.getTotalHits() == 0) {
             return new ClientInfoListResultImpl();
+        }
 
         int i = 0;
         long searchHitsSize = searchHits.getHits().length;
@@ -258,8 +259,9 @@ public class EsClientInfoDAO {
         SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
         SearchHits searchHits = response.getHits();
 
-        if (searchHits == null)
+        if (searchHits == null) {
             return 0;
+        }
 
         return searchHits.getTotalHits();
     }

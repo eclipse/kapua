@@ -16,10 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.eclipse.kapua.service.datastore.internal.Elasticsearch;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.elasticsearch.common.settings.Settings;
@@ -53,7 +50,7 @@ public class EmbeddedElasticsearch {
     @Before
     public void start() throws IOException {
         logger.info("Starting up embedded ES instance ...");
-        
+
         final Settings.Builder elasticsearchSettings = Settings.settingsBuilder()
                 .put("path.home", dataDirectory.toAbsolutePath().toString())
                 .put(TransportModule.TRANSPORT_TYPE_KEY, TransportModule.NETTY_TRANSPORT)
@@ -63,7 +60,7 @@ public class EmbeddedElasticsearch {
                 .settings(elasticsearchSettings)
                 .clusterName(getClusterName())
                 .node();
-        
+
         logger.info("Starting up embedded ES instance ... done!");
     }
 
@@ -77,14 +74,7 @@ public class EmbeddedElasticsearch {
 
     public void refresh() throws IOException {
         logger.info("Starting index refresh");
-        final HttpPost request = new HttpPost("http://localhost:9200/_refresh");
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (CloseableHttpResponse response = client.execute(request)) {
-                if (response.getStatusLine().getStatusCode() != 200) {
-                    logger.warn("Failed to refresh ES indices: {}", response);
-                }
-            }
-        }
+        Elasticsearch.refreshAllIndices(node.client());
         logger.info("Index refresh call done");
     }
 }

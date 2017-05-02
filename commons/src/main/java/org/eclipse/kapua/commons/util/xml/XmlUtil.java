@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
@@ -48,11 +49,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * Xml utilities
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class XmlUtil {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(XmlUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlUtil.class);
 
     private static JAXBContextProvider jaxbContextProvider;
 
@@ -81,11 +82,9 @@ public class XmlUtil {
      * @param w
      * @throws JAXBException
      */
-    @SuppressWarnings("rawtypes")
     public static void marshal(Object object, Writer w)
             throws JAXBException {
-        Class clazz = object.getClass();
-        JAXBContext context = get(clazz);
+        JAXBContext context = get();
 
         ValidationEventCollector valEventHndlr = new ValidationEventCollector();
         Marshaller marshaller = context.createMarshaller();
@@ -95,12 +94,10 @@ public class XmlUtil {
 
         try {
             marshaller.marshal(object, w);
+        } catch (JAXBException je) {
+            throw je;
         } catch (Exception e) {
-            if (e instanceof JAXBException) {
-                throw (JAXBException) e;
-            } else {
-                throw new MarshalException(e.getMessage(), e);
-            }
+            throw new MarshalException(e.getMessage(), e);
         }
 
         if (valEventHndlr.hasEvents()) {
@@ -178,7 +175,7 @@ public class XmlUtil {
      */
     public static <T> T unmarshal(Reader r, Class<T> clazz, String nsUri)
             throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException {
-        JAXBContext context = get(clazz);
+        JAXBContext context = get();
 
         ValidationEventCollector valEventHndlr = new ValidationEventCollector();
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -249,27 +246,20 @@ public class XmlUtil {
     /**
      * Get the jaxb context for the provided class
      *
-     * @param clazz
      * @return
      * @throws JAXBException
      */
-    @SuppressWarnings("rawtypes")
-    private static JAXBContext get(Class clazz) throws JAXBException {
-        //        JAXBContext context = contexts.get(clazz);
-        //        if (context == null) {
-        //            context = JAXBContext.newInstance(clazz);
-        //            contexts.put(clazz, context);
-        //        }
+    private static JAXBContext get() throws JAXBException {
         JAXBContext context;
         try {
             context = jaxbContextProvider.getJAXBContext();
             if (context == null) {
-                s_logger.warn("No JAXBContext found; using ");
+                logger.warn("No JAXBContext found! Creating one using JAXBContextFactory.createContext(...).");
                 context = JAXBContextFactory.createContext(new Class[] {}, null);
             }
         } catch (KapuaException | NullPointerException ex) {
+            logger.warn("No JAXBContextProvider provided or error while getting one! Creating one using JAXBContextFactory.createContext(...).", ex);
             context = JAXBContextFactory.createContext(new Class[] {}, null);
-            s_logger.warn("No JAXBContextProvider provided or error while getting one; using default JAXBContext");
         }
         return context;
     }

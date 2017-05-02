@@ -47,7 +47,7 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 /**
  * {@link DatastoreObjectFactory} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -95,29 +95,37 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
 
     @Override
     public Metric<?> newMetric(String name, Object value) {
-        if (value instanceof String)
+        if (value instanceof String) {
             return new StringMetric(name, value);
+        }
 
-        if (value instanceof Integer)
+        if (value instanceof Integer) {
             return new IntMetric(name, value);
+        }
 
-        if (value instanceof Long)
+        if (value instanceof Long) {
             return new LongMetric(name, value);
+        }
 
-        if (value instanceof Float)
+        if (value instanceof Float) {
             return new FloatMetric(name, value);
+        }
 
-        if (value instanceof Double)
+        if (value instanceof Double) {
             return new DoubleMetric(name, value);
+        }
 
-        if (value instanceof Date)
+        if (value instanceof Date) {
             return new DateMetric(name, value);
+        }
 
-        if (value instanceof Byte[])
+        if (value instanceof Byte[]) {
             return new BinaryMetric(name, value);
+        }
 
-        if (value instanceof Boolean)
+        if (value instanceof Boolean) {
             return new BooleanMetric(name, value);
+        }
 
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }

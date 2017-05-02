@@ -14,8 +14,6 @@ package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.elasticsearch.client.Client;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Elasticsearch client wrapper
@@ -23,9 +21,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  */
 public class ElasticsearchClient {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(ElasticsearchClient.class);
 
     private static ElasticsearchClientProvider clientProvider;
 

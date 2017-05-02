@@ -17,12 +17,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore
-public class EsClientTest
-{
+public class EsClientTest {
 
     @Test
-    public void elascticSearchClientShouldDefaultToLocalhost() throws EsDatastoreException, UnknownHostException
-    {
+    public void elascticSearchClientShouldDefaultToLocalhost() throws EsDatastoreException, UnknownHostException {
         // When
         TransportClient client = (TransportClient) ElasticsearchClient.getInstance();
 

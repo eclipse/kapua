@@ -56,9 +56,6 @@ public class KapuaHttpServlet extends HttpServlet {
 
         diskFileItemFactory = new DiskFileItemFactory(sizeThreshold, repository);
         diskFileItemFactory.setFileCleaningTracker(fileCleaningTracker);
-
-        JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
-        XmlUtil.setContextProvider(consoleProvider);
     }
 
     @Override

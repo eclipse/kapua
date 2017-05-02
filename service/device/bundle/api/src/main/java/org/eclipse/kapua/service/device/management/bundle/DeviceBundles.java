@@ -28,7 +28,7 @@ import org.eclipse.kapua.KapuaSerializable;
  */
 @XmlType(propOrder = { "bundles" }, factoryClass = DeviceBundleXmlRegistry.class, factoryMethod = "newBundleListResult")
 @XmlRootElement(name = "bundles")
-public interface DeviceBundles extends KapuaSerializable {
+public interface DeviceBundles  extends KapuaSerializable {
 
     /**
      * Get the device bundles list

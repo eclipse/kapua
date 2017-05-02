@@ -8,9 +8,8 @@ Scenario: Connect to the system and publish some data
   
   When I login as user with name "kapua-sys" and password "kapua-password"
   And I start the simulator 
-  And I wait 5 seconds
   
-  Then Device sim-1 for account kapua-sys is registered
+  Then Device sim-1 for account kapua-sys is registered after 5 seconds
    And I expect the device to report the applications
     | DEPLOY-V2 |
     | CMD-V1 |
@@ -43,5 +42,4 @@ Scenario: Connect to the system and publish some data
     | foo.boolean | BOOLEAN | true |
   
   When I stop the simulator
-  And I wait 5 seconds
-  Then Device sim-1 for account kapua-sys is not registered
+  Then Device sim-1 for account kapua-sys is not registered after 5 seconds

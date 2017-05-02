@@ -713,7 +713,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
         case CHAR:
             for (String value : defaultValues) {
-                values.add(new Character(value.charAt(0)));
+                values.add(Character.valueOf(value.charAt(0)));
             }
             return values.toArray(new Character[] {});
 

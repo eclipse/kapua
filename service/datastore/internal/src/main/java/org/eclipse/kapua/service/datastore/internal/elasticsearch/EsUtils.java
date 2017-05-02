@@ -61,13 +61,13 @@ public class EsUtils {
     public static final String ES_TYPE_SHORT_BINARY = "bin";
 
     private static final DateTimeFormatter DATA_INDEX_FORMATTER = DateTimeFormatter.ofPattern("yyyy-ww");
-    
+
     private static final DateTimeFormatter FORMAT_1 = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
             .optionalStart()
             .appendOffsetId()
             .toFormatter().withZone(ZoneOffset.UTC);
-    
+
     private static final DateTimeFormatter FORMAT_2 = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC);
 
     private static String normalizeIndexName(String name) {
@@ -135,19 +135,23 @@ public class EsUtils {
      * @since 1.0.0
      */
     public static void checkIdxAliasName(String alias) {
-        if (alias == null || alias.isEmpty())
+        if (alias == null || alias.isEmpty()) {
             throw new IllegalArgumentException(String.format("Alias name cannot be %s", alias == null ? "null" : "empty"));
-
-        if (alias.startsWith("_"))
-            throw new IllegalArgumentException(String.format("Alias name cannot start with _"));
-
-        for (int i = 0; i < alias.length(); i++) {
-            if (Character.isUpperCase(alias.charAt(i)))
-                throw new IllegalArgumentException(String.format("Alias name cannot contain uppercase chars [found %s]", alias.charAt(i)));
         }
 
-        if (alias.contains(ILLEGAL_CHARS))
+        if (alias.startsWith("_")) {
+            throw new IllegalArgumentException(String.format("Alias name cannot start with _"));
+        }
+
+        for (int i = 0; i < alias.length(); i++) {
+            if (Character.isUpperCase(alias.charAt(i))) {
+                throw new IllegalArgumentException(String.format("Alias name cannot contain uppercase chars [found %s]", alias.charAt(i)));
+            }
+        }
+
+        if (alias.contains(ILLEGAL_CHARS)) {
             throw new IllegalArgumentException(String.format("Alias name cannot contain special chars [found oneof %s]", ILLEGAL_CHARS));
+        }
     }
 
     /**
@@ -234,8 +238,9 @@ public class EsUtils {
      */
     public static String getEsTypeFromClass(Class<?> clazz) {
 
-        if (clazz == null)
+        if (clazz == null) {
             throw new NullPointerException("Metric value must not be null");
+        }
 
         String value;
         if (clazz == String.class) {
@@ -261,32 +266,41 @@ public class EsUtils {
     }
 
     public static String getEsFromValue(Object value) {
-        if (value == null)
+        if (value == null) {
             throw new NullPointerException("Metric value must not be null");
+        }
 
-        if (value instanceof String)
+        if (value instanceof String) {
             return ES_TYPE_STRING;
+        }
 
-        if (value instanceof Integer)
+        if (value instanceof Integer) {
             return ES_TYPE_INTEGER;
+        }
 
-        if (value instanceof Long)
+        if (value instanceof Long) {
             return ES_TYPE_LONG;
+        }
 
-        if (value instanceof Float)
+        if (value instanceof Float) {
             return ES_TYPE_FLOAT;
+        }
 
-        if (value instanceof Double)
+        if (value instanceof Double) {
             return ES_TYPE_DOUBLE;
+        }
 
-        if (value instanceof Date)
+        if (value instanceof Date) {
             return ES_TYPE_DATE;
+        }
 
-        if (value instanceof Byte[])
+        if (value instanceof Byte[]) {
             return ES_TYPE_BINARY;
+        }
 
-        if (value instanceof Boolean)
+        if (value instanceof Boolean) {
             return ES_TYPE_BOOLEAN;
+        }
 
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }
@@ -299,26 +313,33 @@ public class EsUtils {
      * @since 1.0.0
      */
     public static String getEsTypeAcronym(String esType) {
-        if (esType.equals("string"))
+        if (esType.equals("string")) {
             return ES_TYPE_SHORT_STRING;
+        }
 
-        if (esType.equals("integer"))
+        if (esType.equals("integer")) {
             return ES_TYPE_SHORT_INTEGER;
+        }
 
-        if (esType.equals("long"))
+        if (esType.equals("long")) {
             return ES_TYPE_SHORT_LONG;
+        }
 
-        if (esType.equals("float"))
+        if (esType.equals("float")) {
             return ES_TYPE_SHORT_FLOAT;
+        }
 
-        if (esType.equals("double"))
+        if (esType.equals("double")) {
             return ES_TYPE_SHORT_DOUBLE;
+        }
 
-        if (esType.equals("boolean"))
+        if (esType.equals("boolean")) {
             return ES_TYPE_SHORT_BOOL;
+        }
 
-        if (esType.equals("date"))
+        if (esType.equals("date")) {
             return ES_TYPE_SHORT_DATE;
+        }
 
         if (esType.equals("binary")) {
             return ES_TYPE_SHORT_BINARY;
@@ -335,26 +356,33 @@ public class EsUtils {
      * @since 1.0.0
      */
     public static <T> String convertToEsType(Class<T> aClass) {
-        if (aClass == String.class)
+        if (aClass == String.class) {
             return ES_TYPE_STRING;
+        }
 
-        if (aClass == Integer.class)
+        if (aClass == Integer.class) {
             return ES_TYPE_INTEGER;
+        }
 
-        if (aClass == Long.class)
+        if (aClass == Long.class) {
             return ES_TYPE_LONG;
+        }
 
-        if (aClass == Float.class)
+        if (aClass == Float.class) {
             return ES_TYPE_FLOAT;
+        }
 
-        if (aClass == Double.class)
+        if (aClass == Double.class) {
             return ES_TYPE_DOUBLE;
+        }
 
-        if (aClass == Boolean.class)
+        if (aClass == Boolean.class) {
             return ES_TYPE_BOOLEAN;
+        }
 
-        if (aClass == Date.class)
+        if (aClass == Date.class) {
             return ES_TYPE_DATE;
+        }
 
         if (aClass == byte[].class) {
             return ES_TYPE_BINARY;
@@ -372,26 +400,33 @@ public class EsUtils {
      */
     public static String convertToEsType(String kapuaType) {
 
-        if ("string".equals(kapuaType) || "String".equals(kapuaType))
+        if ("string".equals(kapuaType) || "String".equals(kapuaType)) {
             return ES_TYPE_STRING;
+        }
 
-        if ("integer".equals(kapuaType) || "Integer".equals(kapuaType))
+        if ("integer".equals(kapuaType) || "Integer".equals(kapuaType)) {
             return ES_TYPE_INTEGER;
+        }
 
-        if ("long".equals(kapuaType) || "Long".equals(kapuaType))
+        if ("long".equals(kapuaType) || "Long".equals(kapuaType)) {
             return ES_TYPE_LONG;
+        }
 
-        if ("float".equals(kapuaType) || "Float".equals(kapuaType))
+        if ("float".equals(kapuaType) || "Float".equals(kapuaType)) {
             return ES_TYPE_FLOAT;
+        }
 
-        if ("double".equals(kapuaType) || "Double".equals(kapuaType))
+        if ("double".equals(kapuaType) || "Double".equals(kapuaType)) {
             return ES_TYPE_DOUBLE;
+        }
 
-        if ("boolean".equals(kapuaType) || "Boolean".equals(kapuaType))
+        if ("boolean".equals(kapuaType) || "Boolean".equals(kapuaType)) {
             return ES_TYPE_BOOLEAN;
+        }
 
-        if ("date".equals(kapuaType) || "Date".equals(kapuaType))
+        if ("date".equals(kapuaType) || "Date".equals(kapuaType)) {
             return ES_TYPE_DATE;
+        }
 
         if ("base64Binary".equals(kapuaType)) {
             return ES_TYPE_BINARY;
@@ -443,27 +478,34 @@ public class EsUtils {
      */
     public static Object convertToKapuaObject(String type, String value) {
 
-        if ("string".equals(type))
+        if ("string".equals(type)) {
             return value;
+        }
 
-        if ("int".equals(type))
+        if ("int".equals(type)) {
             return value == null ? null : Integer.parseInt(value);
+        }
 
-        if ("long".equals(type))
+        if ("long".equals(type)) {
             return value == null ? null : Long.parseLong(value);
+        }
 
-        if ("float".equals(type))
+        if ("float".equals(type)) {
             return value == null ? null : Float.parseFloat(value);
+        }
 
-        if ("double".equals(type))
+        if ("double".equals(type)) {
             return value == null ? null : Double.parseDouble(value);
+        }
 
-        if ("boolean".equals(type))
+        if ("boolean".equals(type)) {
             return value == null ? null : Boolean.parseBoolean(value);
+        }
 
         if ("date".equals(type)) {
-            if (value == null)
+            if (value == null) {
                 return null;
+            }
 
             TemporalAccessor parsed = null;
             try {
@@ -479,7 +521,7 @@ public class EsUtils {
                 throw new IllegalArgumentException(String.format("Unknown data format [%s]", value));
             }
 
-            return Date.from(Instant.from((parsed)));
+            return Date.from(Instant.from(parsed));
         }
 
         if ("base64Binary".equals(type)) {
@@ -501,7 +543,7 @@ public class EsUtils {
         Object convertedValue = null;
         if (ES_TYPE_SHORT_DOUBLE.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Double(((Number) value).doubleValue());
+                convertedValue = Double.valueOf(((Number) value).doubleValue());
             } else if (value instanceof String) {
                 convertedValue = Double.parseDouble((String) value);
             } else {
@@ -509,7 +551,7 @@ public class EsUtils {
             }
         } else if (ES_TYPE_SHORT_FLOAT.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Float(((Number) value).floatValue());
+                convertedValue = Float.valueOf(((Number) value).floatValue());
             } else if (value instanceof String) {
                 convertedValue = Float.parseFloat((String) value);
             } else {
@@ -517,7 +559,7 @@ public class EsUtils {
             }
         } else if (ES_TYPE_SHORT_INTEGER.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Integer(((Number) value).intValue());
+                convertedValue = Integer.valueOf(((Number) value).intValue());
             } else if (value instanceof String) {
                 convertedValue = Integer.parseInt((String) value);
             } else {
@@ -525,7 +567,7 @@ public class EsUtils {
             }
         } else if (ES_TYPE_SHORT_LONG.equals(acronymType)) {
             if (value instanceof Number) {
-                convertedValue = new Long(((Number) value).longValue());
+                convertedValue = Long.valueOf(((Number) value).longValue());
             } else if (value instanceof String) {
                 convertedValue = Long.parseLong((String) value);
             } else {

@@ -60,15 +60,15 @@ public class KapuaPositionTest extends Assert {
         KapuaPosition position = new KapuaPositionImpl();
         populatePosition(position, referenceDate);
 
-        assertEquals(new Double("45.1111"), position.getLongitude());
-        assertEquals(new Double("15.3333"), position.getLatitude());
-        assertEquals(new Double("430.3"), position.getAltitude());
-        assertEquals(new Double("12.0"), position.getPrecision());
-        assertEquals(new Double("280.0"), position.getHeading());
-        assertEquals(new Double("60.2"), position.getSpeed());
+        assertEquals(Double.valueOf("45.1111"), position.getLongitude());
+        assertEquals(Double.valueOf("15.3333"), position.getLatitude());
+        assertEquals(Double.valueOf("430.3"), position.getAltitude());
+        assertEquals(Double.valueOf("12.0"), position.getPrecision());
+        assertEquals(Double.valueOf("280.0"), position.getHeading());
+        assertEquals(Double.valueOf("60.2"), position.getSpeed());
         assertNotNull(position.getTimestamp());
-        assertEquals(new Integer(5), position.getSatellites());
-        assertEquals(new Integer(4), position.getStatus());
+        assertEquals(Integer.valueOf(5), position.getSatellites());
+        assertEquals(Integer.valueOf(4), position.getStatus());
     }
 
     @Test

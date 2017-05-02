@@ -45,8 +45,9 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      */
     public SearchRequestBuilder toCountRequestBuilder(String indices, String type, Q query)
             throws EsQueryConversionException, EsClientUnavailableException {
-        if (query == null)
+        if (query == null) {
             throw new NullPointerException(String.format("Query parameter is undefined"));
+        }
 
         SearchRequestBuilder searchReqBuilder = ElasticsearchClient.getInstance().prepareSearch(indices);
         searchReqBuilder.setTypes(type)
@@ -69,8 +70,9 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
      */
     public SearchRequestBuilder toSearchRequestBuilder(String indices, String type, Q query)
             throws EsQueryConversionException, EsClientUnavailableException {
-        if (query == null)
+        if (query == null) {
             throw new NullPointerException(String.format("Query parameter is undefined"));
+        }
 
         SearchRequestBuilder searchReqBuilder = ElasticsearchClient.getInstance().prepareSearch(indices);
         searchReqBuilder.setTypes(type)
@@ -96,11 +98,13 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
 
         String[] includes = this.getIncludes(query.getFetchStyle());
         String[] excludes = this.getExcludes(query.getFetchStyle());
-        if (includes != null || excludes != null)
+        if (includes != null || excludes != null) {
             searchReqBuilder.setFetchSource(includes, excludes);
+        }
 
-        if (this.getFields() != null && this.getFields().length > 0)
+        if (this.getFields() != null && this.getFields().length > 0) {
             searchReqBuilder.addFields(this.getFields());
+        }
 
         return searchReqBuilder;
     }

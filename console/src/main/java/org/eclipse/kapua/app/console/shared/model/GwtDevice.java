@@ -80,8 +80,9 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     public <X> X get(String property) {
         if ("lastEventOnFormatted".equals(property)) {
             Date lastEventOn = getLastEventOn();
-            if (lastEventOn != null)
-                return (X) (DateUtils.formatDateTime(lastEventOn));
+            if (lastEventOn != null) {
+                return (X) DateUtils.formatDateTime(lastEventOn);
+            }
             return (X) "";
         } else if ("uptimeFormatted".equals(property)) {
             if (getUptime() != null) {
@@ -112,7 +113,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     public void setClientId(String clientId) {
         set("clientId", clientId);
     }
-    
+
     public String getGroupId() {
         return (String) get("groupId");
     }
@@ -120,7 +121,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     public String getUnescapedGroupId() {
         return (String) getUnescaped("groupId");
     }
-    
+
     public void setGroupId(String groupId) {
         set("groupId", groupId);
     }
@@ -519,13 +520,13 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         set("credentialsTight", credentialsTight);
     }
 
-//    public boolean getCredentialsAllowChange() {
-//        return get("credentialsAllowChange");
-//    }
-//
-//    public void setCredentialsAllowChange(boolean credentialsAllowChange) {
-//        set("credentialsAllowChange", credentialsAllowChange);
-//    }
+    // public boolean getCredentialsAllowChange() {
+    // return get("credentialsAllowChange");
+    // }
+    //
+    // public void setCredentialsAllowChange(boolean credentialsAllowChange) {
+    // set("credentialsAllowChange", credentialsAllowChange);
+    // }
 
     public boolean isOnline() {
         return "CONNECTED".equals(getGwtDeviceConnectionStatus());

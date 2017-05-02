@@ -99,6 +99,8 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDevice
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleXmlRegistry;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -215,6 +217,16 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceEventQuery.class,
                     DeviceEventXmlRegistry.class,
 
+                    // Device Management Assets
+                    DeviceAssets.class,
+                    DeviceAssetXmlRegistry.class,
+
+                    // Device Management Bundles
+                    KuraBundles.class,
+                    DeviceBundle.class,
+                    DeviceBundles.class,
+                    DeviceBundleXmlRegistry.class,
+
                     // Device Management Command
                     DeviceCommandInput.class,
                     DeviceCommandOutput.class,
@@ -231,12 +243,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceSnapshot.class,
                     DeviceSnapshots.class,
                     DeviceSnapshotXmlRegistry.class,
-
-                    // Device Management Bundles
-                    KuraBundles.class,
-                    DeviceBundle.class,
-                    DeviceBundles.class,
-                    DeviceBundleXmlRegistry.class,
 
                     // Device Management Packages
                     KuraDeploymentPackages.class,

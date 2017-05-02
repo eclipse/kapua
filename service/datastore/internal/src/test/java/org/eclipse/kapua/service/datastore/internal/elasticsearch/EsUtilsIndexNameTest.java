@@ -31,7 +31,7 @@ public class EsUtilsIndexNameTest {
         final String name = EsUtils.getDataIndexName(ONE, instant.toEpochMilli());
         Assert.assertEquals("1-2017-01", name);
     }
-    
+
     @Test
     public void test2() {
         final Instant instant = ZonedDateTime.of(2017, 1, 8, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();

@@ -51,8 +51,9 @@ public class GwtBrokerTypeOption extends KapuaBaseModel implements Serializable 
     public <X> X get(String property) {
         if ("typeEnum".equals(property)) {
             String type = getType();
-            if (type != null)
-                return (X) (GwtBrokerType.valueOf(type));
+            if (type != null) {
+                return (X) GwtBrokerType.valueOf(type);
+            }
             return (X) "";
         } else {
             return super.get(property);

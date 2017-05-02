@@ -303,12 +303,7 @@ public class DeviceTabHistory extends LayoutContainer {
 
     private void export(String format) {
         StringBuilder sbUrl = new StringBuilder();
-        if (UserAgentUtils.isSafari() || UserAgentUtils.isChrome()) {
-            sbUrl.append("console/exporter_device_event?");
-        } else {
-            sbUrl.append("exporter_device_event?");
-        }
-
+        sbUrl.append("exporter_device_event?");
         sbUrl.append("format=")
                 .append(format)
                 .append("&scopeId=")

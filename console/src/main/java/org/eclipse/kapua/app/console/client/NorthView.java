@@ -30,6 +30,9 @@ import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
 import org.eclipse.kapua.app.console.shared.service.GwtSettingsServiceAsync;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -125,76 +128,66 @@ public class NorthView extends LayoutContainer {
     }
 
     private Widget getUserActionMenu() {
-        //
-        // Switch to sub-account menu item (added only if this user has 'account:view' permission and if this account has children
-        MenuItem switchToAccountMenuItem = null;
-        if (currentSession.hasAccountReadPermission()) {
-            switchToAccountMenuItem = createAccountNavigationMenuItem();
-        }
-
-        //
-        // Logout menu item
-        KapuaMenuItem userLogoutMenuItem = new KapuaMenuItem();
-        userLogoutMenuItem.setText(MSGS.consoleHeaderUserActionLogout());
-        userLogoutMenuItem.setIcon(IconSet.SIGN_OUT);
-        userLogoutMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
+        
+        userActionButton = new Button();
+       
+        userActionButton.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
 
             @Override
-            public void componentSelected(MenuEvent ce) {
-                gwtAuthorizationService.logout(new AsyncCallback<Void>() {
+            public void handleEvent(BaseEvent be) {
+                final Menu userActionMenu = new Menu();
+                MenuItem switchToAccountMenuItem = null;
+                if (currentSession.hasAccountReadPermission()) {
+                    switchToAccountMenuItem = createAccountNavigationMenuItem();
+                }
+                
 
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                    }
+                //
+                // Logout menu item
+                KapuaMenuItem userLogoutMenuItem = new KapuaMenuItem();
+                userLogoutMenuItem.setText(MSGS.consoleHeaderUserActionLogout());
+                userLogoutMenuItem.setIcon(IconSet.SIGN_OUT);
+                userLogoutMenuItem.addSelectionListener(new SelectionListener<MenuEvent>() {
 
-                    public void onSuccess(Void arg0) {
-                        gwtSettingService.getHomeUri(new AsyncCallback<String>() {
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        gwtAuthorizationService.logout(new AsyncCallback<Void>() {
 
-                            @Override
                             public void onFailure(Throwable caught) {
                                 FailureHandler.handle(caught);
                             }
 
-                            @Override
-                            public void onSuccess(String result) {
+                            public void onSuccess(Void arg0) {
                                 ConsoleInfo.display("Info", "Logged out!");
-                                Window.Location.assign(result);
+
+                                Window.Location.reload();
                             }
 
                         });
-
                     }
 
                 });
+                if (switchToAccountMenuItem != null) {
+                    userActionMenu.add(switchToAccountMenuItem);
+                    userActionMenu.add(new SeparatorMenuItem());
+                }
+
+                userActionMenu.add(new SeparatorMenuItem());
+                userActionMenu.add(userLogoutMenuItem);
+                userActionButton.setMenu(userActionMenu);
+                
             }
-
         });
-
-        //
-        // Adding User Actions to a common menu
-        Menu userActionMenu = new Menu();
-        userActionMenu.setAutoWidth(true);
-
-        if (switchToAccountMenuItem != null) {
-            userActionMenu.add(switchToAccountMenuItem);
-            userActionMenu.add(new SeparatorMenuItem());
-        }
-
-        userActionMenu.add(new SeparatorMenuItem());
-        userActionMenu.add(userLogoutMenuItem);
-
-        //
-        // User Action Button
-        userActionButton = new Button();
-        userActionButton.setMenu(userActionMenu);
         userActionButton.setId("header-button");
         userActionButton.addStyleName("x-btn-arrow-custom");
+        
+        
 
         updateUserActionButtonLabel();
 
         return userActionButton;
     }
-
+    
     /**
      * Creates an MenuItem with the list of all child accounts of the account of the current logged user,
      * and also add as first sub-MenuItem the name of the root account.

@@ -260,15 +260,15 @@ public class DataMessages extends AbstractKapuaResource {
     // } else if (metricTypeClazz == String.class) {
     // convertedValue = (T) metricValue;
     // } else if (metricTypeClazz == Integer.class) {
-    // convertedValue = (T) new Integer(metricValue);
+    // convertedValue = (T) Integer.valueOf(metricValue);
     // } else if (metricTypeClazz == Long.class) {
-    // convertedValue = (T) new Long(metricValue);
+    // convertedValue = (T) Long.valueOf(metricValue);
     // } else if (metricTypeClazz == Float.class) {
-    // convertedValue = (T) new Float(metricValue);
+    // convertedValue = (T) Float.valueOf(metricValue);
     // } else if (metricTypeClazz == Double.class) {
-    // convertedValue = (T) new Double(metricValue);
+    // convertedValue = (T) Double.valueOf(metricValue);
     // } else if (metricTypeClazz == Boolean.class) {
-    // convertedValue = (T) new Boolean(metricValue);
+    // convertedValue = (T) Boolean.valueOf(metricValue);
     // } else {
     // throw new KapuaIllegalArgumentException("metricType", metricTypeClazz.getSimpleName());
     // }

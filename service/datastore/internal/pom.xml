@@ -9,7 +9,7 @@
 
     Contributors:
         Eurotech - initial API and implementation
-
+        Red Hat Inc
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -22,7 +22,6 @@
     </parent>
 
     <artifactId>kapua-datastore-internal</artifactId>
-    <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Implemented service interfaces -->
@@ -58,27 +57,31 @@
         </dependency>
 
         <!-- External dependencies -->
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
 
         <!-- ATTENTION: A dependency must be declared exactly once either in regular dependencies
-             			or in the test dependencies -->
+             or in the test dependencies -->
 
-		<!-- Test dependencies -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-test</artifactId>
             <scope>test</scope>
         </dependency>
-		<!-- jna is required to run a elasticsearch instance in embedded mode -->
-		<dependency>
-		    <groupId>net.java.dev.jna</groupId>
-		    <artifactId>jna</artifactId>
-		    <version>4.1.0</version>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <!-- jna is required to run a elasticsearch instance in embedded mode -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.1.0</version>
             <scope>test</scope>
-		</dependency>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

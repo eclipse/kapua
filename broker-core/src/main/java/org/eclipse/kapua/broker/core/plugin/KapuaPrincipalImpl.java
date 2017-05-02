@@ -22,104 +22,105 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
  *
  * @since 1.0
  */
-public class KapuaPrincipalImpl implements KapuaPrincipal
-{
+public class KapuaPrincipalImpl implements KapuaPrincipal {
 
     private static final long serialVersionUID = -3999313290528918167L;
 
-    private String  name;
+    private final String name;
     /**
      * Token Id coming from the KapuaSession. It's used to keep the KapuaPrincipal aligned with the KapuaSession
      */
-    private String  tokenId;
-    private KapuaId userId;
-    private String  username;
-    private KapuaId accountId;
-    private String  clientId;
-    private String  clientIp;
+    private final String tokenId;
+    private final KapuaId userId;
+    private final String username;
+    private final KapuaId accountId;
+    private final String clientId;
+    private final String clientIp;
 
     /**
      * Create a KapuaPrincipal with the supplied name.
-     * 
+     *
      * @param accessToken
      * @param username
      * @param clientId
      * @param clientIp
      */
-    public KapuaPrincipalImpl(AccessToken accessToken, String username, String clientId, String clientIp)
-    {
+    public KapuaPrincipalImpl(AccessToken accessToken, String username, String clientId, String clientIp) {
         this.username = username;
-        this.tokenId = accessToken.getTokenId();
-        this.userId = accessToken.getUserId();
-        this.accountId = accessToken.getScopeId();
+        tokenId = accessToken.getTokenId();
+        userId = accessToken.getUserId();
+        accountId = accessToken.getScopeId();
         this.clientId = clientId;
         this.clientIp = clientIp;
-        name = (new StringBuilder()).append(accountId != null ? accountId : "null").append(":").append(username).toString();
+        name = new StringBuilder().append(accountId != null ? accountId : "null").append(":").append(username).toString();
     }
 
-    public String getName()
-    {
+    @Override
+    public String getName() {
         return name;
     }
 
-    public String getTokenId()
-    {
+    @Override
+    public String getTokenId() {
         return tokenId;
     }
 
-    public KapuaId getUserId()
-    {
+    @Override
+    public KapuaId getUserId() {
         return userId;
     }
 
-    public KapuaId getAccountId()
-    {
+    @Override
+    public KapuaId getAccountId() {
         return accountId;
     }
 
-    public String getClientIp()
-    {
+    @Override
+    public String getClientIp() {
         return clientIp;
     }
 
-    public String getClientId()
-    {
+    @Override
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                 + ((accountId == null) ? 0 : accountId.hashCode());
-        result = prime * result + ((username == null) ? 0 : username.hashCode());
+                + (accountId == null ? 0 : accountId.hashCode());
+        result = prime * result + (username == null ? 0 : username.hashCode());
         return result;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         KapuaPrincipalImpl other = (KapuaPrincipalImpl) obj;
         if (accountId == null) {
-            if (other.accountId != null)
+            if (other.accountId != null) {
                 return false;
-        }
-        else if (!accountId.equals(other.accountId))
+            }
+        } else if (!accountId.equals(other.accountId)) {
             return false;
+        }
         if (username == null) {
-            if (other.username != null)
+            if (other.username != null) {
                 return false;
-        }
-        else if (!username.equals(other.username))
+            }
+        } else if (!username.equals(other.username)) {
             return false;
+        }
         return true;
     }
 

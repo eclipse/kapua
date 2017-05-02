@@ -24,6 +24,7 @@ public class GwtAlert extends KapuaBaseModel implements Serializable {
 
     public enum GwtSeverity implements IsSerializable {
         CRITICAL, WARNING, INFO;
+
         GwtSeverity() {
         }
     }
@@ -38,8 +39,9 @@ public class GwtAlert extends KapuaBaseModel implements Serializable {
             return (X) DateUtils.formatDateTime(getCreatedOn());
         } else if ("severityEnum".equals(property)) {
             String severity = getSeverity();
-            if (severity != null)
-                return (X) (GwtSeverity.valueOf(severity));
+            if (severity != null) {
+                return (X) GwtSeverity.valueOf(severity);
+            }
             return (X) "";
         } else {
             return super.get(property);

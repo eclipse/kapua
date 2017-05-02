@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
@@ -42,17 +43,15 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 /**
- * Device bundle service implementation.
+ * DeviceBundleManagementService implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceBundleManagementServiceImpl implements DeviceBundleManagementService {
 
     private static final Domain deviceManagementDomain = new DeviceManagementDomain();
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
@@ -86,7 +85,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
 
         //
         // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(bundleRequestMessage, timeout);
+        DeviceCallExecutor<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage, BundleResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(bundleRequestMessage, timeout);
         BundleResponseMessage responseMessage = (BundleResponseMessage) deviceApplicationCall.send();
 
         //
@@ -101,7 +100,6 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
             body = new String(responsePayload.getBody(), charEncoding);
         } catch (Exception e) {
             throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
-
         }
 
         DeviceBundles deviceBundleList = null;
@@ -193,7 +191,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notEmptyOrNull(bundleId, "bundleID");
+        ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
 
         //
         // Check Access

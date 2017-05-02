@@ -93,8 +93,9 @@ public class MetricInfoXContentBuilder {
             throws EsDocumentBuilderException {
         if (id == null) {
             return getMetricKey(scopeId, clientId, channel, metricName);
-        } else
+        } else {
             return id.toString();
+        }
     }
 
     /**
@@ -172,8 +173,9 @@ public class MetricInfoXContentBuilder {
     private void getMessageBuilder(KapuaId scopeId, String clientId, DatastoreMessage message, String messageId, Date indexedOn, Date receivedOn)
             throws EsDocumentBuilderException {
         KapuaPayload payload = message.getPayload();
-        if (payload == null)
+        if (payload == null) {
             return;
+        }
 
         List<MetricXContentBuilder> metricBuilders = new ArrayList<>();
 
@@ -215,7 +217,7 @@ public class MetricInfoXContentBuilder {
             }
         }
 
-        this.setBuilders(metricBuilders);
+        setBuilders(metricBuilders);
     }
 
     /**
@@ -225,7 +227,7 @@ public class MetricInfoXContentBuilder {
      * @since 1.0.0
      */
     public MetricInfoXContentBuilder clear() {
-        this.init();
+        init();
         return this;
     }
 
@@ -280,7 +282,7 @@ public class MetricInfoXContentBuilder {
         metricBuilder.setContent(metricContentBuilder);
         List<MetricXContentBuilder> metricBuilders = new ArrayList<>();
         metricBuilders.add(metricBuilder);
-        this.setBuilders(metricBuilders);
+        setBuilders(metricBuilders);
         return this;
     }
 
@@ -299,7 +301,7 @@ public class MetricInfoXContentBuilder {
      */
     public MetricInfoXContentBuilder build(KapuaId scopeId, String clientId, StorableId messageId, DatastoreMessage message, Date indexedOn, Date receivedOn)
             throws EsDocumentBuilderException {
-        this.getMessageBuilder(scopeId, clientId, message, messageId.toString(), indexedOn, receivedOn);
+        getMessageBuilder(scopeId, clientId, message, messageId.toString(), indexedOn, receivedOn);
         return this;
     }
 

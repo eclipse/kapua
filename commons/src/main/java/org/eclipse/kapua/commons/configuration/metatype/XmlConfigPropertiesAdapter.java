@@ -233,7 +233,7 @@ public class XmlConfigPropertiesAdapter extends XmlAdapter<XmlConfigPropertiesAd
                         break;
                     case charType:
                         String s = adaptedProp.getValues()[0];
-                        propvalue = new Character(s.charAt(0));
+                        propvalue = Character.valueOf(s.charAt(0));
                         break;
                     case booleanType:
                         propvalue = Boolean.parseBoolean(adaptedProp.getValues()[0]);
@@ -305,7 +305,7 @@ public class XmlConfigPropertiesAdapter extends XmlAdapter<XmlConfigPropertiesAd
                         for (int i = 0; i < adaptedProp.getValues().length; i++) {
                             if (adaptedProp.getValues()[i] != null) {
                                 String s = adaptedProp.getValues()[i];
-                                charValues[i] = new Character(s.charAt(0));
+                                charValues[i] = Character.valueOf(s.charAt(0));
                             }
                         }
                         propvalue = charValues;

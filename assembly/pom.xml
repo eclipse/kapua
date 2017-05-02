@@ -27,7 +27,7 @@
 		<commons.pool.version>2.3</commons.pool.version>
 
 		<docker.account>kapua</docker.account>
-		<java.base.image>openjdk:8u111-jre-alpine</java.base.image>
+		<java.base.image>openjdk:8u121-jre-alpine</java.base.image>
 	</properties>
 
 	<dependencies>

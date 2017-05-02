@@ -555,7 +555,7 @@ public class AccountServiceTestSteps extends KapuaTest {
     @Then("^The returned value is (\\d+)$")
     public void checkIntegerReturnValue(int val)
             throws KapuaException {
-        assertEquals(new Integer(val), intVal);
+        assertEquals(Integer.valueOf(val), intVal);
     }
 
     @Then("^Account service metadata is available$")

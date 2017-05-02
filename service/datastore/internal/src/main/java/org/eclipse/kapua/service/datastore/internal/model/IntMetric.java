@@ -18,7 +18,7 @@ public class IntMetric extends MetricImpl<Integer> implements Metric<Integer> {
     public IntMetric(String name, Object value) {
         setName(name);
         setType(Integer.class);
-        setValue(new Integer((Integer) value).intValue());
+        setValue(Integer.valueOf((Integer) value).intValue());
     }
 
     @Override

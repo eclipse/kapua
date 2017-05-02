@@ -18,7 +18,7 @@ public class FloatMetric extends MetricImpl<Float> implements Metric<Float> {
     public FloatMetric(String name, Object value) {
         setName(name);
         setType(Float.class);
-        setValue(new Float((Float) value).floatValue());
+        setValue(Float.valueOf((Float) value).floatValue());
     }
 
     @Override

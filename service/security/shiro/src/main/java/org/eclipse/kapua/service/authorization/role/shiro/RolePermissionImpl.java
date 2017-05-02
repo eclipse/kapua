@@ -32,7 +32,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 
 /**
  * {@link RolePermission} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @Entity(name = "RolePermission")
@@ -56,11 +56,11 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     /**
      * Constructor
-     * 
+     *
      * @param rolePermission
      */
     public RolePermissionImpl(RolePermission rolePermission) {
-        super((AbstractKapuaEntity) rolePermission);
+        super(rolePermission);
 
         setId(rolePermission.getId());
         setRoleId(rolePermission.getRoleId());
@@ -69,7 +69,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public RolePermissionImpl(KapuaId scopeId) {
@@ -78,7 +78,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      * @param permission
      */
@@ -89,7 +89,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setRoleId(KapuaId roleId) {
-        this.roleId = roleId != null ? (roleId instanceof KapuaEid ? (KapuaEid) roleId : new KapuaEid(roleId)) : null;
+        this.roleId = roleId != null ? roleId instanceof KapuaEid ? (KapuaEid) roleId : new KapuaEid(roleId) : null;
     }
 
     @Override
@@ -99,7 +99,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setPermission(Permission permission) {
-        this.permission = permission != null ? (permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission)) : null;
+        this.permission = permission != null ? permission instanceof PermissionImpl ? (PermissionImpl) permission : new PermissionImpl(permission) : null;
     }
 
     @Override
@@ -129,30 +129,37 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((permission == null) ? 0 : permission.hashCode());
-        result = prime * result + ((roleId == null) ? 0 : roleId.hashCode());
+        result = prime * result + (permission == null ? 0 : permission.hashCode());
+        result = prime * result + (roleId == null ? 0 : roleId.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         RolePermissionImpl other = (RolePermissionImpl) obj;
         if (roleId == null) {
-            if (other.roleId != null)
+            if (other.roleId != null) {
                 return false;
-        } else if (!roleId.equals(other.roleId))
+            }
+        } else if (!roleId.equals(other.roleId)) {
             return false;
+        }
         if (getPermission() == null) {
-            if (other.getPermission() != null)
+            if (other.getPermission() != null) {
                 return false;
-        } else if (!getPermission().equals(other.getPermission()))
+            }
+        } else if (!getPermission().equals(other.getPermission())) {
             return false;
+        }
         return true;
     }
 }
