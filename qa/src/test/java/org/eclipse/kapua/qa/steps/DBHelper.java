@@ -20,6 +20,9 @@ import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEM
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
 import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
@@ -51,6 +54,8 @@ public class DBHelper {
 
     private boolean setup;
 
+    private Connection connection;
+
     public void setup() {
         if (this.setup) {
             return;
@@ -65,12 +70,41 @@ public class DBHelper {
         String dbUsername = config.getString(DB_USERNAME);
         String dbPassword = config.getString(DB_PASSWORD);
         String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
-        new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+
+        String jdbcUrl = resolveJdbcUrl();
+
+        try {
+            /*
+             * Keep a connection open during the tests, as this may be an in-memory
+             * database and closing the last connection might destroy the database
+             * otherwise
+             */
+            this.connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.of(schema)).update();
 
     }
 
     @After(order = HookPriorities.DATABASE)
-    public void deleteAll() {
-        KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DELETE_FILTER);
+    public void deleteAll() throws SQLException {
+
+        try {
+            if (setup) {
+                KapuaConfigurableServiceSchemaUtils.scriptSession(FULL_SCHEMA_PATH, DELETE_FILTER);
+            }
+        } finally {
+
+            // close the connection
+
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+
+        }
+
     }
 }
