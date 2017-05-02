@@ -26,11 +26,19 @@ public class DateXmlAdapter extends XmlAdapter<String, Date> {
 
     @Override
     public Date unmarshal(String v) {
+        if (v == null || v.isEmpty()) {
+            return null;
+        }
+
         return DatatypeConverter.parseDateTime(v).getTime();
     }
 
     @Override
     public String marshal(Date v) throws Exception {
+        if (v == null) {
+            return null;
+        }
+
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         format.setTimeZone(TimeZone.getTimeZone(TIME_ZONE_UTC));
         return format.format(v);

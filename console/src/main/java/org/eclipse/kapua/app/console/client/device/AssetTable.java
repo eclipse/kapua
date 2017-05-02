@@ -15,13 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.client.ui.button.AddButton;
 import org.eclipse.kapua.app.console.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
-import com.extjs.gxt.ui.client.Style.ButtonArrowAlign;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
@@ -170,12 +168,13 @@ public class AssetTable extends LayoutContainer {
         add(tableContainer);
     }
 
+    /**
+     * Shows and hides the table toolbar
+     * 
+     * @param show
+     *            Whether show or not the toolbar
+     */
     public void showToolbar(boolean show) {
-        if (show == true) {
-            toolBar.show();
-        } else {
-            toolBar.hide();
-        }
-
+        toolBar.setVisible(show);
     }
 }
