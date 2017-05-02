@@ -21,41 +21,6 @@ import org.eclipse.kapua.model.xml.XmlAdaptedNameTypeValueObject;
 @XmlRootElement(name = "metric")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class XmlAdaptedMetric extends XmlAdaptedNameTypeValueObject {
-    //
-    // private String name;
-    // private Class<?> type;
-    // private String value;
-    //
-    // public XmlAdaptedMetric() {
-    // }
-    //
-    // @XmlElement(name = "name")
-    // public String getName() {
-    // return name;
-    // }
-    //
-    // public void setName(String name) {
-    // this.name = name;
-    // }
-    //
-    // @XmlElement(name = "type")
-    // @XmlJavaTypeAdapter(ObjectTypeXmlAdapter.class)
-    // public Class<?> getType() {
-    // return type;
-    // }
-    //
-    // public void setType(Class<?> type) {
-    // this.type = type;
-    // }
-    //
-    // @XmlElement(name = "value")
-    // public String getValue() {
-    // return value;
-    // }
-    //
-    // public void setValue(String value) {
-    // this.value = value;
-    // }
 
     public Object getCastedValue() {
         return ObjectValueConverter.fromString(getValue(), getType());
