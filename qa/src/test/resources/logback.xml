@@ -9,9 +9,7 @@
 		</encoder>
 	</appender>
 
-	<!-- 
-	<logger name="org.eclipse.kapua" level="DEBUG" />
-	-->
+	<logger name="liquibase" level="WARN" />
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
