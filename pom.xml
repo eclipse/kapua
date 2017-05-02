@@ -76,7 +76,7 @@
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
 
-        <jacoco.version>0.7.4.201502262128</jacoco.version>
+        <jacoco.version>0.7.9</jacoco.version>
         <surefire.version>2.12.4</surefire.version>
 
         <!-- Docker configuration -->
@@ -949,6 +949,9 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
+            <properties>
+                <jacoco.version>0.7.4.201502262128</jacoco.version>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
