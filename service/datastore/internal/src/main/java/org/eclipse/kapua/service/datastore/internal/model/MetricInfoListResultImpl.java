@@ -23,6 +23,8 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
  */
 public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricInfo> implements MetricInfoListResult {
 
+    private static final long serialVersionUID = 9057086672566426909L;
+
     /**
      * Construct a metric info result list
      */

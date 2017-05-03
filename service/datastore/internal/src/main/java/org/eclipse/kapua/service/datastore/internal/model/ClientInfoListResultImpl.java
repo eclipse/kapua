@@ -23,6 +23,8 @@ import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
  */
 public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientInfo> implements ClientInfoListResult {
 
+    private static final long serialVersionUID = -1398721444405133343L;
+
     /**
      * Construct a client info result list
      */
