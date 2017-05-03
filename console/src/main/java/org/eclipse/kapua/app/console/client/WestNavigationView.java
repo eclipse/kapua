@@ -8,11 +8,13 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
 import java.util.Arrays;
 
+import org.eclipse.kapua.app.console.client.about.AboutView;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
@@ -90,6 +92,8 @@ public class WestNavigationView extends LayoutContainer {
         panel.setIcon(new KapuaIcon(IconSet.INFO));
         panel.setHeading(MSGS.welcome());
         panel.add(m_welcomeView);
+
+        // set initial view
 
         m_centerPanel = center;
         m_centerPanel.add(panel);
@@ -183,6 +187,17 @@ public class WestNavigationView extends LayoutContainer {
                     panel.setIcon(new KapuaIcon(IconSet.INFO));
                     panel.setHeading(MSGS.welcome());
                     panel.add(m_welcomeView);
+
+                    m_centerPanel.add(panel);
+                    m_centerPanel.layout();
+                    dashboardSelected = false;
+                } else  if ("about".equals(selectedId)) {
+                    AboutView aboutView = new AboutView();
+
+                    panel.setBodyBorder(true);
+                    panel.setIcon(new KapuaIcon(IconSet.INFO));
+                    panel.setHeading(MSGS.about());
+                    panel.add(aboutView);
 
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
@@ -376,6 +391,8 @@ public class WestNavigationView extends LayoutContainer {
             if (m_currentSession.hasAccountReadPermission()) {
                 accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
+            
+            cloudResourcesTreeStore.add(newItem("about", MSGS.about(), IconSet.INFO), false);
         }
 
         if (selectedAccountItem != null) {
