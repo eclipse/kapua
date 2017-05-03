@@ -52,6 +52,8 @@ import org.eclipse.kapua.qa.steps.EmbeddedBroker;
 import org.eclipse.kapua.qa.steps.EmbeddedElasticsearch;
 import org.eclipse.kapua.qa.utils.Starting;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -103,12 +105,14 @@ public class SimulatorSteps {
 
     private String brokerUri;
 
+    private LoginCredentials credentials;
+
     @Inject
     public SimulatorSteps(
             /* dependency */ final EmbeddedBroker broker,
             /* dependency */ final EmbeddedElasticsearch elasticsearch,
             /* dependency */ final DBHelper dbHelper,
-            SimulatorDevice currentDevice) {
+            final SimulatorDevice currentDevice) {
 
         this.currentDevice = currentDevice;
     }
@@ -141,6 +145,11 @@ public class SimulatorSteps {
     @Given("The broker URI is (.*)")
     public void setBrokerUri(final String brokerUri) {
         this.brokerUri = brokerUri;
+    }
+
+    @Given("My credentials are username \"(.*)\" and password \"(.*)\"")
+    public void setUsernamePasswordCredentials(final String username, final String password) {
+        this.credentials = getInstance().getFactory(CredentialsFactory.class).newUsernamePasswordCredentials(username, password);
     }
 
     @When("I start the simulator")
@@ -183,7 +192,9 @@ public class SimulatorSteps {
     @Then("Device (.*) for account (.*) is not registered after (\\d+) seconds?")
     public void deviceIsNotRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
         assertFor("Wait for connection state to become " + DISCONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
-            assertConnectionStatus(clientId, accountName, DISCONNECTED);
+            With.withLogin(credentials, () -> {
+                assertConnectionStatus(clientId, accountName, DISCONNECTED);
+            });
         });
     }
 

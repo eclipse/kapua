@@ -4,6 +4,7 @@ Scenario: Connect to the system and publish some data
 
   Given The account name is kapua-sys and the client ID is sim-1
     And The broker URI is tcp://kapua-broker:kapua-password@localhost:1883
+    And My credentials are username "kapua-sys" and password "kapua-password"
     And I have a mock data application named "my-app-1"
   
   When I login as user with name "kapua-sys" and password "kapua-password"
@@ -42,4 +43,5 @@ Scenario: Connect to the system and publish some data
     | foo.boolean | BOOLEAN | true |
   
   When I stop the simulator
+   And I logout
   Then Device sim-1 for account kapua-sys is not registered after 5 seconds
