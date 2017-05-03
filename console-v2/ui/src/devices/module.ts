@@ -18,8 +18,6 @@ import DeviceDetailPackagesCtrl from "./controllers/DeviceDetailPackagesCtrl";
 import DeviceDetailEventsCtrl from "./controllers/DeviceDetailEventsCtrl";
 import DeviceDetailBundlesCtrl from "./controllers/DeviceDetailBundlesCtrl";
 import DeviceDetailConfigurationsCtrl from "./controllers/DeviceDetailConfigurationsCtrl";
-import DeviceDetailConfigurationsServicesCtrl from "./controllers/DeviceDetailConfigurationsServicesCtrl";
-import DeviceDetailConfigurationsSnapshotsCtrl from "./controllers/DeviceDetailConfigurationsSnapshotsCtrl";
 import DeviceDetailCommandsCtrl from "./controllers/DeviceDetailCommandsCtrl";
 import DeviceDetailGroupsCtrl from "./controllers/DeviceDetailGroupsCtrl";
 
@@ -87,24 +85,6 @@ angular.module("app.devices", [])
                         }
                     }
                 })
-                .state("kapua.devices.detail.configurations.services", {
-                    url: "/services",
-                    views: {
-                        "kapuaView@kapua": {
-                            template: require("./views/device-details/configurations-services.html"),
-                            controller: "DeviceDetailConfigurationsServicesCtrl as vm"
-                        }
-                    }
-                })
-                .state("kapua.devices.detail.configurations.snapshots", {
-                    url: "/snapshots",
-                    views: {
-                        "kapuaView@kapua": {
-                            template: require("./views/device-details/configurations-snapshots.html"),
-                            controller: "DeviceDetailConfigurationsSnapshotsCtrl as vm"
-                        }
-                    }
-                })
                 .state("kapua.devices.detail.commands", {
                     url: "/commands",
                     views: {
@@ -136,9 +116,6 @@ angular.module("app.devices", [])
     .controller("DeviceDetailPackagesCtrl", ["$stateParams", "$scope", "$http", "$templateCache", "devicesService", DeviceDetailPackagesCtrl])
     .controller("DeviceDetailEventsCtrl", ["$stateParams", "$http", DeviceDetailEventsCtrl])
     .controller("DeviceDetailBundlesCtrl", ["$stateParams", "$http", "$scope", "devicesService", DeviceDetailBundlesCtrl])
-    .controller("DeviceDetailConfigurationsCtrl", ["$stateParams", "$http", "devicesService", DeviceDetailConfigurationsCtrl])
-    .controller("DeviceDetailConfigurationsServicesCtrl", ["$stateParams", "$http", "devicesService", DeviceDetailConfigurationsServicesCtrl])
-    .controller("DeviceDetailConfigurationsSnapshotsCtrl", ["$stateParams", "$http", "devicesService", DeviceDetailConfigurationsSnapshotsCtrl])
-    .controller("DeviceDetailConfigurationsCtrl", ["$stateParams", "$http", "devicesService", DeviceDetailConfigurationsCtrl])
+    .controller("DeviceDetailConfigurationsCtrl", ["$scope", "$stateParams", "$http", "$templateCache", "devicesService", DeviceDetailConfigurationsCtrl])
     .controller("DeviceDetailCommandsCtrl", ["$scope","$stateParams", "devicesService", DeviceDetailCommandsCtrl])
     .controller("DeviceDetailGroupsCtrl", ["$stateParams", "$http", DeviceDetailGroupsCtrl]);

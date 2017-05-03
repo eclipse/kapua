@@ -21,5 +21,7 @@ interface IDevicesService {
     downloadPackage(deviceID: string, devicePackage: DevicePackage): any;
     uninstallPackage(deviceID: string, devicePackage: DevicePackage): any;
     executeCommand(deviceID: string): any;    
-    applyConfig(config: DeviceConfiguration, deviceID: string): ng.IHttpPromise<DeviceConfigurations>
+    applyConfig(config: DeviceConfiguration, deviceID: string): ng.IHttpPromise<DeviceConfigurations>;
+    getSnapshotsByDeviceId(deviceID: string): ng.IHttpPromise<DeviceSnapshots>;
+    rollbackSnapshot(deviceID: string, snapshot: DeviceSnapshot): ng.IHttpPromise<DeviceSnapshots>;
 }
