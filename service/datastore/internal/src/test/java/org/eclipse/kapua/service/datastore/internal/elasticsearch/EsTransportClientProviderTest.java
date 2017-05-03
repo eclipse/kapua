@@ -42,7 +42,7 @@ public class EsTransportClientProviderTest {
      * In case this hostname does exists on your network, which is highly unlikely, it can be overridden.
      * </p>
      */
-    private final static String UNKWNON_HOST = System.getProperty("test.org.eclipse.kapua.service.datastore.unknowHost", "26-non-existing-host-05");
+    private final static String UNKWNON_HOST = System.getProperty("test.org.eclipse.kapua.service.datastore.unknowHost", "26-non-existing-host-05.");
 
     private static final String CLUSTER_NAME = "foo-cluster";
 

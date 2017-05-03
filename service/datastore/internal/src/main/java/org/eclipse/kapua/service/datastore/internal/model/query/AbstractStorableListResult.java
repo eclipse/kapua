@@ -28,6 +28,8 @@ import org.eclipse.kapua.service.datastore.model.StorableListResult;
  */
 public class AbstractStorableListResult<E extends Storable> implements StorableListResult<E> {
 
+    private static final long serialVersionUID = -1564062785138153586L;
+
     private boolean limitExceeded;
     private ArrayList<E> items;
     private Object nextKey;

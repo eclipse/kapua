@@ -57,7 +57,7 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
-import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  * Implementation of Gherkin steps used in UserServiceI9n.feature scenarios.
  */
 @ScenarioScoped
-public class UserServiceSteps extends KapuaTest {
+public class UserServiceSteps extends AbstractKapuaSteps {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
@@ -111,12 +111,12 @@ public class UserServiceSteps extends KapuaTest {
     /**
      * One of two users used in tests - A
      */
-    ComparableUser userA = null;
+    private ComparableUser userA = null;
 
     /**
      * One of two users used in tests - B
      */
-    ComparableUser userB = null;
+    private ComparableUser userB = null;
 
     /**
      * Account that was created by last Account creation step.
@@ -129,7 +129,8 @@ public class UserServiceSteps extends KapuaTest {
     private ComparableUser lastUser;
 
     @Inject
-    public UserServiceSteps(/* dependency */ final DBHelper dbHelper) {
+    public UserServiceSteps(final DBHelper dbHelper) {
+        dbHelper.setup();
     }
 
     @Before

@@ -33,4 +33,11 @@
         <property name="multiLines" value="10"/>
         <property name="fileExtensions" value="java"/>
     </module>
+
+    <!-- Check for CRLF line endings -->
+    <module name="RegexpMultiline">
+        <property name="format" value="(?s:\r\n.*)"/>
+        <property name="fileExtensions" value="java,md,xml"/>
+        <property name="message" value="Only Unix-style line endings are allowed"/>
+    </module>
 </module>

@@ -45,8 +45,8 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.RegistryJAXBContextProvider;
 import org.eclipse.kapua.service.device.registry.TestConfig;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
-import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +58,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
@@ -68,7 +69,8 @@ import cucumber.api.java.en.When;
  *
  *
  */
-public class DeviceRegistryServiceTestSteps extends KapuaTest {
+@ScenarioScoped
+public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
     public static String DEFAULT_PATH = "src/main/sql/H2";
     public static String DEFAULT_COMMONS_PATH = "../../../commons";

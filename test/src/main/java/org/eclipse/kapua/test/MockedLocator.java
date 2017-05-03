@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MockedLocator extends KapuaLocator {
 
-    private static Logger logger = LoggerFactory.getLogger(MockedLocator.class);
+    private final static Logger logger = LoggerFactory.getLogger(MockedLocator.class);
 
     private Map<Class<?>, KapuaService> serviceMap = new HashMap<>();
 

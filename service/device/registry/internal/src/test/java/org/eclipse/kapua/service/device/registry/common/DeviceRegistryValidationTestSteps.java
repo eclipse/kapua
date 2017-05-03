@@ -38,8 +38,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceCreatorImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
-import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +50,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistryValidation.feature scenarios.
@@ -58,8 +59,8 @@ import cucumber.api.java.en.When;
  * services that the Device Registry services dependent on. Dependent services are: -
  * Authorization Service.
  */
-
-public class DeviceRegistryValidationTestSteps extends KapuaTest {
+@ScenarioScoped
+public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 

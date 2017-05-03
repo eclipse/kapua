@@ -44,8 +44,8 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
 
 import cucumber.api.Scenario;
@@ -54,6 +54,7 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Implementation of Gherkin steps used in UserService.feature scenarios.
@@ -61,7 +62,8 @@ import cucumber.api.java.en.When;
  * MockedLocator is used for Location Service.
  * Mockito is used to mock other services that UserService is dependent on.
  */
-public class UserServiceSteps extends KapuaTest {
+@ScenarioScoped
+public class UserServiceSteps extends AbstractKapuaSteps {
 
     /**
      * User service is implemented in beforeScenario()
@@ -183,9 +185,6 @@ public class UserServiceSteps extends KapuaTest {
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
 
         KapuaSecurityUtils.clearSession();
-    }
-
-    public UserServiceSteps() {
     }
 
     @Given("^User with name \"(.*)\" in scope with id (\\d+)$")
@@ -521,8 +520,10 @@ public class UserServiceSteps extends KapuaTest {
      * Create User object with user data filed with quasi random data for user name,
      * email, display name. Scope id and user id is set to test wide id.
      *
-     * @param userId  unique user id
-     * @param scopeId user scope id
+     * @param userId
+     *            unique user id
+     * @param scopeId
+     *            user scope id
      * @return User instance
      */
     private User createUserInstance(int userId, int scopeId) {

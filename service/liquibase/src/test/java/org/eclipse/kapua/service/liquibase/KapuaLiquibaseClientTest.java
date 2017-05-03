@@ -13,13 +13,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class KapuaLiquibaseClientTest {
+
+    private Connection connection;
+
+    @Before
+    public void start() throws SQLException {
+        connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "", "");
+    }
+
+    @After
+    public void stop() throws SQLException {
+        if (connection != null) {
+            connection.close();
+        }
+    }
 
     @Test
     public void shouldCreateTable() throws Exception {
@@ -33,7 +50,7 @@ public class KapuaLiquibaseClientTest {
         Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "", "");
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
         List<String> tables = new LinkedList<>();
-        while(sqlResults.next()) {
+        while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
         assertThat(tables).contains("act_account");
@@ -52,7 +69,7 @@ public class KapuaLiquibaseClientTest {
         Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "", "");
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
         List<String> tables = new LinkedList<>();
-        while(sqlResults.next()) {
+        while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
         assertThat(tables).contains("act_account");
