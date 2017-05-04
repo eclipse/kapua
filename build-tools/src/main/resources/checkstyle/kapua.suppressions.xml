@@ -8,7 +8,10 @@
 
     <!-- ignore all files in target/ folder -->
     <suppress checks=".*" files=".*[\\\/]?target[\\\/].+\.java"/>
-    
+
+    <!-- ignore all files in target/ folder -->
+    <suppress checks="FileTabCharacter" files="about\.html"/>
+
     <!-- ignore backport of SLF4J logging from EclipseLink -->
     <suppress checks=".*" files="org.eclipse.persistence.logging.slf4j.*" />
 </suppressions>
