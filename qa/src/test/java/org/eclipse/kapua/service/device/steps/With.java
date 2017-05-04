@@ -41,10 +41,7 @@ public final class With {
         final UserService userService = getInstance().getService(UserService.class);
         final User account = userService.findByName(accountName);
 
-        if (account == null) {
-            Assert.fail("Unable to find account: " + accountName);
-            return;
-        }
+        Assert.assertNotNull(String.format("Account %s should be found", accountName), account);
 
         consumer.accept(account);
     }
@@ -52,9 +49,8 @@ public final class With {
     public static void withDevice(final User account, final String clientId, final ThrowingConsumer<Device> consumer) throws Exception {
         DeviceRegistryService service = getInstance().getService(DeviceRegistryService.class);
         Device device = service.findByClientId(account.getId(), clientId);
-        if (device == null) {
-            throw new IllegalStateException(String.format("Unable to find device '%s' for account '%s'", clientId, account.getId()));
-        }
+
+        Assert.assertNotNull("Device should not be null", device);
 
         consumer.accept(device);
     }
