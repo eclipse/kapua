@@ -38,6 +38,7 @@
         <url-pattern>*.css</url-pattern>
         <url-pattern>/xsrf/*</url-pattern>
         <url-pattern>/errroHandler/*</url-pattern>
+        <url-pattern>/about/*</url-pattern>
         <url-pattern>/account/*</url-pattern>
         <url-pattern>/auth/*</url-pattern>
         <url-pattern>/device/*</url-pattern>
@@ -97,6 +98,16 @@
     <servlet-mapping>
         <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
         <url-pattern>/xsrf/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GwtAboutServiceImpl</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.server.GwtAboutServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GwtAboutServiceImpl</servlet-name>
+        <url-pattern>/about/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
