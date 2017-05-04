@@ -192,7 +192,7 @@ public class PredicateConverter {
             throw new EsQueryConversionException("Predicate parameter is undefined");
         }
 
-        RangeQueryBuilder rangeQuery = QueryBuilders.rangeQuery(predicate.getField().field());
+        RangeQueryBuilder rangeQuery = QueryBuilders.rangeQuery(predicate.getField());
         if (predicate.getMinValue() != null) {
             rangeQuery.from(predicate.getMinValue());
         }

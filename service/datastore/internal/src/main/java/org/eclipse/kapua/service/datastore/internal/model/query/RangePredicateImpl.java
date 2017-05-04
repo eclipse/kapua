@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
  */
 public class RangePredicateImpl implements RangePredicate {
 
-    private StorableField field;
+    private String field;
     private Object minValue;
     private Object maxValue;
 
@@ -45,6 +45,10 @@ public class RangePredicateImpl implements RangePredicate {
     public RangePredicateImpl() {
     }
 
+    public <V extends Comparable<V>> RangePredicateImpl(StorableField field, V minValue, V maxValue) {
+        this(field.field(), minValue, maxValue);
+    }
+
     /**
      * Construct a range predicate given the field and the values
      *
@@ -52,15 +56,19 @@ public class RangePredicateImpl implements RangePredicate {
      * @param minValue
      * @param maxValue
      */
-    public <V extends Comparable<V>> RangePredicateImpl(StorableField field, V minValue, V maxValue) {
+    public <V extends Comparable<V>> RangePredicateImpl(String field, V minValue, V maxValue) {
         this.field = field;
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
 
     @Override
-    public StorableField getField() {
+    public String getField() {
         return field;
+    }
+
+    public RangePredicate setField(StorableField field) {
+        return setField(field.field());
     }
 
     /**
@@ -69,7 +77,7 @@ public class RangePredicateImpl implements RangePredicate {
      * @param field
      * @return
      */
-    public RangePredicate setField(StorableField field) {
+    public RangePredicate setField(String field) {
         this.field = field;
         return this;
     }
