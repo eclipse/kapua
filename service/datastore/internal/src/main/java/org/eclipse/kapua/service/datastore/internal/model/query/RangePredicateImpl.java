@@ -23,9 +23,9 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
  */
 public class RangePredicateImpl implements RangePredicate {
 
-    private String field;
-    private Object minValue;
-    private Object maxValue;
+    protected String field;
+    protected Object minValue;
+    protected Object maxValue;
 
     private <V extends Comparable<V>> void checkRange(Class<V> clazz) throws KapuaException {
         if (minValue == null || maxValue == null) {

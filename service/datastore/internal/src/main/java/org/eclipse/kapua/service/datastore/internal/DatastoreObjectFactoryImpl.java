@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQuery
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
@@ -42,8 +41,6 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 /**
  * {@link DatastoreObjectFactory} implementation.
@@ -129,10 +126,4 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
 
         throw new IllegalArgumentException(String.format("Metric value type for "));
     }
-
-    @Override
-    public <V> TermPredicate newTermPredicate(StorableField field, V value) {
-        return new TermPredicateImpl(field, value);
-    }
-
 }

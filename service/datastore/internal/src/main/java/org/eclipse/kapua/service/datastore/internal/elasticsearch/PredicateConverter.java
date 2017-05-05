@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
@@ -26,6 +25,7 @@ import org.eclipse.kapua.service.datastore.model.query.IdsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -45,7 +45,7 @@ import com.google.common.base.Strings;
  */
 public class PredicateConverter {
 
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
 
     /**
      * Converts the Kapua {@link StorablePredicate}s in the {@link StorableQuery} parameter in Elasticsearch {@link QueryBuilder}.
@@ -62,7 +62,7 @@ public class PredicateConverter {
         //
         // Force the ScopeId predicate in order to partition data by it.
         AndPredicate andPredicate = new AndPredicateImpl();
-        andPredicate.getPredicates().add(datastoreObjectFactory.newTermPredicate(ChannelInfoField.SCOPE_ID, query.getScopeId().toCompactId()));
+        andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(ChannelInfoField.SCOPE_ID, query.getScopeId().toCompactId()));
         if (query.getPredicate() != null) {
             andPredicate.getPredicates().add(query.getPredicate());
         }

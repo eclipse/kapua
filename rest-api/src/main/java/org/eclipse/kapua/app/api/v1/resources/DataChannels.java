@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.google.common.base.Strings;
@@ -50,15 +51,21 @@ public class DataChannels extends AbstractKapuaResource {
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final ChannelInfoRegistryService channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
     private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link ChannelInfo} list in the scope.
      *
-     * @param scopeId  The {@link ScopeId} in which to search results.
-     * @param clientId The client id to filter results.
-     * @param name     The channel name to filter results. It allows '#' wildcard in last channel level
-     * @param offset   The result set offset.
-     * @param limit    The result set limit.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results.
+     * @param name
+     *            The channel name to filter results. It allows '#' wildcard in last channel level
+     * @param offset
+     *            The result set offset.
+     * @param limit
+     *            The result set limit.
      * @return The {@link ChannelInfoListResult} of all the channelInfos associated to the current selected scope.
      * @since 1.0.0
      */
@@ -79,7 +86,7 @@ public class DataChannels extends AbstractKapuaResource {
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
@@ -103,8 +110,10 @@ public class DataChannels extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link ChannelInfoQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link ChannelInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link ChannelInfoQuery} to used to filter results.
      * @return The {@link ChannelInfoListResult} of all the result matching the given {@link ChannelInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -132,8 +141,10 @@ public class DataChannels extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link ChannelInfoQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link ChannelInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link ChannelInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ChannelInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -160,7 +171,8 @@ public class DataChannels extends AbstractKapuaResource {
     /**
      * Returns the ChannelInfo specified by the "channelInfoId" path parameter.
      *
-     * @param channelInfoId The id of the requested ChannelInfo.
+     * @param channelInfoId
+     *            The id of the requested ChannelInfo.
      * @return The requested ChannelInfo object.
      */
     @GET
