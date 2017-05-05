@@ -21,11 +21,6 @@
 	</parent>
 
 	<artifactId>kapua-broker-core</artifactId>
-	<name>${project.artifactId}</name>
-
-	<properties>
-		<activemq.version>5.14.0</activemq.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
