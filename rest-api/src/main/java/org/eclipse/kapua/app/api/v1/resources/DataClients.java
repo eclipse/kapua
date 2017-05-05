@@ -46,10 +46,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/clients")
 public class DataClients extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
-    private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link ClientInfo} list in the scope.

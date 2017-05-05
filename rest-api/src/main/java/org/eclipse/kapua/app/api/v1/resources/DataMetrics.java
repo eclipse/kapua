@@ -48,10 +48,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/metrics")
 public class DataMetrics extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
-    private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link MetricInfo} list in the scope.

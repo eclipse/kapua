@@ -55,10 +55,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/messages")
 public class DataMessages extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final MessageStoreService messageRegistryService = locator.getService(MessageStoreService.class);
-    private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final MessageStoreService messageRegistryService = locator.getService(MessageStoreService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link DatastoreMessage} list in the scope.

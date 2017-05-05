@@ -48,10 +48,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/channels")
 public class DataChannels extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final ChannelInfoRegistryService channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
-    private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final ChannelInfoRegistryService channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link ChannelInfo} list in the scope.
