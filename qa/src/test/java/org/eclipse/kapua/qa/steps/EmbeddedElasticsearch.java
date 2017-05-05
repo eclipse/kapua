@@ -22,6 +22,7 @@ import org.eclipse.kapua.service.datastore.client.transport.ClientSettingsKey;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class EmbeddedElasticsearch {
     }
 
     @Before
-    public void start() throws IOException {
+    public void start() throws IOException, NodeValidationException {
         logger.info("Starting up embedded ES instance ...");
 
         // ES 5.3 FIX
@@ -56,9 +57,10 @@ public class EmbeddedElasticsearch {
         // .put("path.data", DEFAULT_DATA_DIRECTORY)
         // .put("path.home", ".");
         Settings settings = Settings.builder()
-                .put("http.enabled", "true")
                 .put("path.data", dataDirectory)
                 .put("cluster.name", getClusterName())
+                .put("http.enabled", "false")
+                .put("transport.type", "local")
                 .put("path.home", ".").build();
 
         // ES 5.3 FIX
@@ -67,6 +69,7 @@ public class EmbeddedElasticsearch {
         // .settings(elasticsearchSettings.build())
         // .node();
         node = new Node(settings);
+        node.start();
         logger.info("Starting up embedded ES instance ... done!");
     }
 
