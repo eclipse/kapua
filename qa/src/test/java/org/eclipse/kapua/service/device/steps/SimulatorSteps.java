@@ -49,7 +49,6 @@ import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.qa.steps.EmbeddedBroker;
-import org.eclipse.kapua.qa.steps.EmbeddedElasticsearch;
 import org.eclipse.kapua.qa.utils.Starting;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -109,7 +108,6 @@ public class SimulatorSteps {
     @Inject
     public SimulatorSteps(
             /* dependency */ final EmbeddedBroker broker,
-            /* dependency */ final EmbeddedElasticsearch elasticsearch,
             /* dependency */ final DBHelper dbHelper,
             final SimulatorDevice currentDevice,
             final Session session) {

@@ -33,13 +33,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public interface DatastoreClient {
 
     /**
+     * Close the underlying client resources (such as datastore client connection)
+     * 
+     * @throws ClientException
+     */
+    void close() throws ClientException;
+
+    /**
      * Insert
      * 
      * @param insertRequest
      * @return
      * @throws ClientException
      */
-    public InsertResponse insert(InsertRequest insertRequest) throws ClientException;
+    InsertResponse insert(InsertRequest insertRequest) throws ClientException;
 
     /**
      * Upsert
@@ -48,7 +55,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public UpdateResponse upsert(UpdateRequest updateRequest) throws ClientException;
+    UpdateResponse upsert(UpdateRequest updateRequest) throws ClientException;
 
     /**
      * Bulk upsert
@@ -57,7 +64,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public BulkUpdateResponse upsert(BulkUpdateRequest bulkUpdateRequest) throws ClientException;
+    BulkUpdateResponse upsert(BulkUpdateRequest bulkUpdateRequest) throws ClientException;
 
     /**
      * Find by query (this method returns the first result found that matches the quesy)
@@ -68,7 +75,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public <T> T find(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
+    <T> T find(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
 
     /**
      * Find by query criteria
@@ -79,7 +86,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
+    <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
 
     /**
      * Count by query criteria
@@ -89,7 +96,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException;
+    long count(TypeDescriptor typeDescriptor, Object query) throws ClientException;
 
     /**
      * Delete by id
@@ -98,7 +105,7 @@ public interface DatastoreClient {
      * @param id
      * @throws ClientException
      */
-    public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException;
+    void delete(TypeDescriptor typeDescriptor, String id) throws ClientException;
 
     /**
      * Delete by query criteria
@@ -107,7 +114,7 @@ public interface DatastoreClient {
      * @param query
      * @throws ClientException
      */
-    public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException;
+    void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException;
 
     // Indexes / mappings section
 
@@ -118,7 +125,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public IndexExistsResponse isIndexExists(IndexExistsRequest indexExistsRequest) throws ClientException;
+    IndexExistsResponse isIndexExists(IndexExistsRequest indexExistsRequest) throws ClientException;
 
     /**
      * Create the index
@@ -127,7 +134,7 @@ public interface DatastoreClient {
      * @param indexSettings
      * @throws ClientException
      */
-    public void createIndex(String indexName, ObjectNode indexSettings) throws ClientException;
+    void createIndex(String indexName, ObjectNode indexSettings) throws ClientException;
 
     /**
      * Check if the mapping exists
@@ -136,7 +143,7 @@ public interface DatastoreClient {
      * @return
      * @throws ClientException
      */
-    public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException;
+    boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException;
 
     /**
      * Put the mapping
@@ -145,14 +152,14 @@ public interface DatastoreClient {
      * @param mapping
      * @throws ClientException
      */
-    public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException;
+    void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException;
 
     /**
      * Force the datastore to refresh the indexes.
      * 
      * @throws ClientException
      */
-    public void refreshAllIndexes() throws ClientException;
+    void refreshAllIndexes() throws ClientException;
 
     /**
      * Delete all indexes.<br>
@@ -161,7 +168,7 @@ public interface DatastoreClient {
      * Be careful using it! :)
      * </b>
      */
-    public void deleteAllIndexes() throws ClientException;
+    void deleteAllIndexes() throws ClientException;
 
     // ModelContext
 
@@ -170,13 +177,13 @@ public interface DatastoreClient {
      * 
      * @param modelContext
      */
-    public void setModelContext(ModelContext modelContext);
+    void setModelContext(ModelContext modelContext);
 
     /**
      * Set the query converter
      * 
      * @param queryConverter
      */
-    public void setQueryConverter(QueryConverter queryConverter);
+    void setQueryConverter(QueryConverter queryConverter);
 
 }

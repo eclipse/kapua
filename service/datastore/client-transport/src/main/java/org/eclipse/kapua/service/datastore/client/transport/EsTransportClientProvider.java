@@ -24,7 +24,9 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
+import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -36,7 +38,11 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
  *
  * @since 1.0
  */
-public class EsTransportClientProvider implements EsClientProvider {
+public class EsTransportClientProvider implements ClientProvider<Client> {
+
+    private static final String KEY_ES_CLUSTER_NAME = "cluster.name";
+    private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
+    private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch transport";
 
     private static final int DEFAULT_PORT = 9300;
 
@@ -67,10 +73,10 @@ public class EsTransportClientProvider implements EsClientProvider {
     
     static TransportClient getClient(List<InetSocketAddress> addresses, String clustername) throws ClientUnavailableException, UnknownHostException {
         if (addresses == null || addresses.isEmpty()) {
-            throw new ClientUnavailableException("No ElasticSearch nodes are configured");
+            throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
         }
 
-        Settings settings = Settings.builder().put("cluster.name", clustername).build();
+        Settings settings = Settings.builder().put(KEY_ES_CLUSTER_NAME, clustername).build();
         TransportClient client = new PreBuiltTransportClient(settings);
         addresses.stream().map(InetSocketTransportAddress::new).forEachOrdered(client::addTransportAddress);
 
@@ -85,15 +91,12 @@ public class EsTransportClientProvider implements EsClientProvider {
     static TransportClient createClient(final AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
         try {
             final List<InetSocketAddress> addresses = parseAddresses(settings);
-            if (addresses.isEmpty()) {
-
-            }
             return getClient(addresses, settings.getString(ClientSettingsKey.ELASTICSEARCH_CLUSTER));
         } catch (final ClientUnavailableException e) {
             throw e;
         } catch (final Exception e) {
             e.printStackTrace();
-            throw new ClientUnavailableException("Failed to configure ElasticSearch transport", e);
+            throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, e);
         }
     }
 

@@ -22,10 +22,6 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum ClientSettingsKey implements SettingKey {
 
     /**
-     * Elasticsearch datastore
-     */
-    ELASTICSEARCH("datastore.elasticsearch"),
-    /**
      * Elasticsearch client provider
      */
     ELASTICSEARCH_CLIENT_PROVIDER("datastore.elasticsearch.client.provider"),

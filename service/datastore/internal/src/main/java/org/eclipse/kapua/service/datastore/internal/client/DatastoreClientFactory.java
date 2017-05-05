@@ -28,7 +28,7 @@ public class DatastoreClientFactory {
 
     private final static String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private final static String CLIENT_CLASS_NAME;
-    private static Class<DatastoreClient> INSTANCE;
+    private static Class<DatastoreClient> instance;
 
     static {
         DatastoreSettings config = DatastoreSettings.getInstance();
@@ -44,11 +44,11 @@ public class DatastoreClientFactory {
     @SuppressWarnings("unchecked")
     public static DatastoreClient getInstance() throws ClientUnavailableException {
         //lazy synchronization
-        if (INSTANCE == null) {
-            synchronized (CLIENT_CLASS_NAME) {
-                if (INSTANCE == null) {
+        if (instance == null) {
+            synchronized (DatastoreClientFactory.class) {
+                if (instance == null) {
                     try {
-                        INSTANCE = (Class<DatastoreClient>) Class.forName(CLIENT_CLASS_NAME);
+                        instance = (Class<DatastoreClient>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {
                         throw new ClientUnavailableException(String.format(CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
                     }
@@ -60,7 +60,7 @@ public class DatastoreClientFactory {
             // return INSTANCE.getConstructor(ModelContext.class, QueryConverter.class).newInstance(new ModelContextImpl(), new QueryConverterImpl());
             // but in that way who implements the interface is not advised to expose a constructor with the 2 needed parameters
             // so I prefer to instantiate the object using the empty constructor then setting the converter using the setters (provided by the interface)
-            DatastoreClient datastoreClient = INSTANCE.newInstance();
+            DatastoreClient datastoreClient = instance.newInstance();
             datastoreClient.setModelContext(new ModelContextImpl());
             datastoreClient.setQueryConverter(new QueryConverterImpl());
             return datastoreClient;

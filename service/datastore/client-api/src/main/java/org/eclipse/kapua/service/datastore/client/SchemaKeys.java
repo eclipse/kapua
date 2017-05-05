@@ -133,6 +133,15 @@ public class SchemaKeys {
      */
     public final static String KEY_REFRESH_INTERVAL = "refresh_interval";
     /**
+     * Shard number (for schema definition)
+     */
+    public final static String KEY_SHARD_NUMBER = "number_of_shards";
+    /**
+     * Replica number (for schema definition)
+     */
+    public final static String KEY_REPLICA_NUMBER = "number_of_replicas";
+
+    /**
      * Position field
      */
     public final static String FIELD_NAME_POSITION = "position";
