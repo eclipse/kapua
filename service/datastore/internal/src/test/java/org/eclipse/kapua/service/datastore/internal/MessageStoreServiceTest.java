@@ -108,14 +108,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
 
-    private static final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-    private static final DeviceFactory deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
-    private static final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
-    private static final ChannelInfoRegistryService channelInfoRegistryService = KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
-    private static final MetricInfoRegistryService metricInfoRegistryService = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
-    private static final ClientInfoRegistryService clientInfoRegistryService = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+    private static final DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
+    private static final MessageStoreService messageStoreService = locator.getService(MessageStoreService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final ChannelInfoRegistryService channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
+    private static final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
+    private static final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
 
     /**
      * This method deletes all indices of the current ES instance
