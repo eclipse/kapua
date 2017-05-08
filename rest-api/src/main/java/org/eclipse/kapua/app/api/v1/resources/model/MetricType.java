@@ -11,38 +11,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
 
 import com.google.common.base.Strings;
 
-/**
- * Adapted for query parameters of type {@link Date}.
- * 
- * @since 1.0.0
- */
-public class DateParam extends DateXmlAdapter {
+public class MetricType<V extends Comparable<V>> {
 
-    private Date date;
+    private Class<V> type;
 
-    public DateParam(String stringDate) throws KapuaIllegalArgumentException {
-        if (!Strings.isNullOrEmpty(stringDate)) {
+    @SuppressWarnings("unchecked")
+    public MetricType(String stringMetricType) throws KapuaIllegalArgumentException {
+        if (!Strings.isNullOrEmpty(stringMetricType)) {
             try {
-                setDate(super.unmarshal(stringDate));
-            } catch (IllegalArgumentException e) {
-                throw new KapuaIllegalArgumentException("date", stringDate);
+                type = (Class<V>) ObjectTypeConverter.fromString(stringMetricType);
+            } catch (ClassNotFoundException e) {
+                throw new KapuaIllegalArgumentException("type", stringMetricType);
             }
         }
     }
 
-    public Date getDate() {
-        return new Date(date.getTime());
-    }
-
-    private void setDate(Date date) {
-        this.date = new Date(date.getTime());
+    public Class<V> getType() {
+        return type;
     }
 
 }

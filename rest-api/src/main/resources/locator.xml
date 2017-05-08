@@ -76,6 +76,7 @@
         <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
+        <api>org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory</api>
 
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>

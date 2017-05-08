@@ -12,74 +12,75 @@
         Eurotech - initial API and implementation
  -->
 <locator-config>
-	<provided>
-		<api>org.eclipse.kapua.service.account.AccountFactory</api>
-		<api>org.eclipse.kapua.service.account.AccountService</api>
-		
+    <provided>
+        <api>org.eclipse.kapua.service.account.AccountFactory</api>
+        <api>org.eclipse.kapua.service.account.AccountService</api>
+
         <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
         <api>org.eclipse.kapua.service.authentication.CertificateService</api>
         <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
-		<api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
-		<api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
+        <api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
+        <api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
         <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
         <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
-		
-		<api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
-		<api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
-		<api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
-		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
-		<api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
-		<api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
-		<api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
-		<api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
+
+        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
+        <api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
+        <api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
+        <api>org.eclipse.kapua.service.authorization.domain.DomainService</api>
         <api>org.eclipse.kapua.service.authorization.group.GroupFactory</api>
         <api>org.eclipse.kapua.service.authorization.group.GroupService</api>
-		<api>org.eclipse.kapua.service.authorization.role.RoleService</api>
-		<api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
-		<api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
-		<api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
+        <api>org.eclipse.kapua.service.authorization.role.RoleService</api>
+        <api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
+        <api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
+        <api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
 
-		<api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
-		<api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
-		<api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
-		<api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
-		<api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
-        
-		<api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
-		<api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
-		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
-		<api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
-		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
-		<api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
-		<api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
-		
-		<api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
-		<api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
-		
-		<api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
-		<api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
-		<api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
-		<api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
-		<api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
-		<api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
-		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
-		<api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
-		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
-		<api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
-		
+        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
+        <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
+        <api>org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory</api>
+
+        <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
+        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
+        <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
+
+        <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
+        <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
+
+        <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
+        <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
+        <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
+        <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
+
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
-        
-		<api>org.eclipse.kapua.transport.TransportClientFactory</api>
-		
-		<api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-		<api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
-	</provided>
-	<packages>
-		<package>org.eclipse.kapua.commons</package>
-		<package>org.eclipse.kapua.service</package>
-		<package>org.eclipse.kapua.transport</package>
-	</packages>
+
+        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
+
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+    </provided>
+    <packages>
+        <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.transport</package>
+    </packages>
 </locator-config>

@@ -24,7 +24,7 @@ public interface RangePredicate extends StorablePredicate {
      * 
      * @return
      */
-    public StorableField getField();
+    public String getField();
 
     /**
      * Return the desired minimum value

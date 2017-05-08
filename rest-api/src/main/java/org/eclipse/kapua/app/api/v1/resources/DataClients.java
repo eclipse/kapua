@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.google.common.base.Strings;
@@ -45,9 +46,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/clients")
 public class DataClients extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
-    private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link ClientInfo} list in the scope.
@@ -78,7 +80,7 @@ public class DataClients extends AbstractKapuaResource {
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 

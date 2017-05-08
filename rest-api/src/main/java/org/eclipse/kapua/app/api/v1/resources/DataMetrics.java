@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.google.common.base.Strings;
@@ -47,9 +48,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/metrics")
 public class DataMetrics extends AbstractKapuaResource {
 
-    private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
-    private final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link MetricInfo} list in the scope.
@@ -86,7 +88,7 @@ public class DataMetrics extends AbstractKapuaResource {
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
@@ -96,7 +98,7 @@ public class DataMetrics extends AbstractKapuaResource {
             }
 
             if (!Strings.isNullOrEmpty(name)) {
-                TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.NAME_FULL, name);
+                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.NAME_FULL, name);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
