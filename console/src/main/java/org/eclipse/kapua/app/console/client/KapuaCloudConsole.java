@@ -91,7 +91,6 @@ public class KapuaCloudConsole implements EntryPoint {
          * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
          */
         Log.setUncaughtExceptionHandler();
-        System.out.println("---->");
 
         // Use deferred command to catch initialization exceptions in onModuleLoad2
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -189,7 +188,6 @@ public class KapuaCloudConsole implements EntryPoint {
         td.setHorizontalAlign(HorizontalAlignment.LEFT);
         TableData tdVersion = new TableData();
         tdVersion.setHorizontalAlign(HorizontalAlignment.RIGHT);
-
 
         Label copyright = new Label(MSGS.copyright(Integer.toString(Years.getCurrentYear())));
         copyright.setStyleName("x-form-label");
