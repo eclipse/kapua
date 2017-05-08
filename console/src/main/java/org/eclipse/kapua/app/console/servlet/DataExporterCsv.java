@@ -8,15 +8,15 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -38,56 +38,58 @@ public class DataExporterCsv extends DataExporter {
 
     @Override
     public void init(String[] headers) throws ServletException, IOException {
+
+        Objects.requireNonNull(headers);
+
         this.headers = headers;
 
-        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
-        writer = new CSVWriter(osw);
-        List<String> columns = new ArrayList<String>();
-        for (String column : mandatoryColumns) {
-            columns.add(column);
+        // set headers before calling getWriter()
+
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(topicOrDevice, "UTF-8") + "_data.csv");
+        response.setHeader("Cache-Control", "no-transform, max-age=0");
+
+        writer = new CSVWriter(response.getWriter());
+
+        final String[] columns = new String[MANDATORY_COLUMNS.length + headers.length];
+        int i = 0;
+
+        for (final String column : MANDATORY_COLUMNS) {
+            columns[i++] = column;
         }
-        for (String header : headers) {
-            columns.add(header);
+        for (final String header : headers) {
+            columns[i++] = header;
         }
-        writer.writeNext(columns.toArray(new String[] {}));
+        writer.writeNext(columns);
     }
 
     @Override
     public void append(List<DatastoreMessage> messages) throws ServletException, IOException {
         for (DatastoreMessage message : messages) {
-            String topic = BLANK;
             List<String> columns = new ArrayList<String>();
             columns.add(valueOf(message.getTimestamp()));
             columns.add(valueOf(message.getClientId()));
+
             if (message.getChannel() != null) {
-                List<String> semanticParts = message.getChannel().getSemanticParts();
-                StringBuilder semanticTopic = new StringBuilder();
-                for (int i = 0; i < semanticParts.size() - 1; i++) {
-                    semanticTopic.append(semanticParts.get(i));
-                    semanticTopic.append("/");
-                }
-                semanticTopic.append(semanticParts.get(semanticParts.size() - 1));
-                topic = semanticTopic.toString();
+                columns.add(String.join("/", message.getChannel().getSemanticParts()));
+            } else {
+                columns.add(BLANK);
             }
-            columns.add(topic);
+
             if (message.getPayload() != null && message.getPayload().getProperties() != null) {
                 for (String header : headers) {
                     columns.add(valueOf(message.getPayload().getProperties().get(header)));
                 }
             }
+
             writer.writeNext(columns.toArray(new String[] {}));
         }
     }
 
     @Override
     public void close() throws ServletException, IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(topicOrDevice, "UTF-8") + "_data.csv");
-        response.setHeader("Cache-Control", "no-transform, max-age=0");
-
         writer.flush();
-
         writer.close();
     }
 

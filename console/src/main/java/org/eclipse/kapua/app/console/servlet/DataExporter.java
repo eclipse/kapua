@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.servlet;
 
@@ -22,16 +23,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 
 public abstract class DataExporter {
-    
+
     protected static final String BLANK = "";
-    protected static final String[] mandatoryColumns = {"Timestamp (UTC)","Device","Topic"};
-    protected static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+    protected static final String[] MANDATORY_COLUMNS = { "Timestamp (UTC)", "Device", "Topic" };
+
+    /*
+     * As this is not multi-thread safe it must not be a static instance
+     */
+    protected final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+
     protected HttpServletResponse response;
-    
-    protected DataExporter(HttpServletResponse response){
+
+    protected DataExporter(HttpServletResponse response) {
         this.response = response;
     }
-    
+
     public abstract void init(String[] headers)
             throws ServletException, IOException;
 
@@ -40,10 +46,10 @@ public abstract class DataExporter {
 
     public abstract void close()
             throws ServletException, IOException;
-    
-    protected String valueOf(Object field){
-        if(field instanceof Date){
-            return field == null ? BLANK : dateFormat.format((Date)field);
+
+    protected String valueOf(Object field) {
+        if (field instanceof Date) {
+            return field == null ? BLANK : dateFormat.format((Date) field);
         }
         return field == null ? BLANK : field.toString();
     }

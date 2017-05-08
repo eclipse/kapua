@@ -62,7 +62,7 @@ public class DataExporterExcel extends DataExporter {
         rowCount = 0;
         Row row = sheet.createRow(rowCount++);
         int iColCount = 0;
-        for (String column : mandatoryColumns) {
+        for (String column : MANDATORY_COLUMNS) {
             sheet.setColumnWidth(iColCount, 18 * 256);
             row.createCell(iColCount++).setCellValue(truncate(column));
         }
