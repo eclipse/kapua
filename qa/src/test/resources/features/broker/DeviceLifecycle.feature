@@ -7,8 +7,6 @@ Scenario: Starting and stopping the simulator should create a device entry and p
   Given The account name is kapua-sys and the client ID is sim-1
     And The broker URI is tcp://kapua-broker:kapua-password@localhost:1883
     And My credentials are username "kapua-sys" and password "kapua-password"
-  
-  When I login as user with name "kapua-sys" and password "kapua-password"
 
   When I start the simulator
   Then Device sim-1 for account kapua-sys is registered after 5 seconds
@@ -31,7 +29,6 @@ Scenario: Starting and stopping the simulator should create a device entry and p
   Then The bundle org.eclipse.kura.api with version 2.1.0 is present and ACTIVE
   
   When I stop the simulator
-   And I logout
   Then Device sim-1 for account kapua-sys is not registered after 5 seconds
 
 Scenario: Installing a package
@@ -39,8 +36,7 @@ Scenario: Installing a package
     And The broker URI is tcp://kapua-broker:kapua-password@localhost:1883
     And My credentials are username "kapua-sys" and password "kapua-password"
   
-  When I login as user with name "kapua-sys" and password "kapua-password"
-   And I start the simulator
+  When I start the simulator
   Then Device sim-1 for account kapua-sys is registered after 5 seconds
   
   When I fetch the package states
