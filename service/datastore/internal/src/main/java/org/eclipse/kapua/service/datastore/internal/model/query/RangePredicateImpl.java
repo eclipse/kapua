@@ -18,8 +18,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
 /**
  * Implementation of query predicate for matching range values
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class RangePredicateImpl implements RangePredicate {
 

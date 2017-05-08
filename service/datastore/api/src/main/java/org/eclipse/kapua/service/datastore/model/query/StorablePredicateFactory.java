@@ -13,6 +13,11 @@ package org.eclipse.kapua.service.datastore.model.query;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
+/**
+ * {@link KapuaObjectFactory} for {@link StorablePredicate}s
+ * 
+ * @since 1.0.0
+ */
 public interface StorablePredicateFactory extends KapuaObjectFactory {
 
     /**
@@ -54,6 +59,8 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
      * 
      * @param fieldName
      *            The metric name to filter.
+     * @param type
+     *            The type of the metric to filter
      * @param minValue
      *            The lower limit. Can be {@code null}.
      * @param maxValue

@@ -20,6 +20,7 @@ public class MetricType<V extends Comparable<V>> {
 
     private Class<V> type;
 
+    @SuppressWarnings("unchecked")
     public MetricType(String stringMetricType) throws KapuaIllegalArgumentException {
         if (!Strings.isNullOrEmpty(stringMetricType)) {
             try {
