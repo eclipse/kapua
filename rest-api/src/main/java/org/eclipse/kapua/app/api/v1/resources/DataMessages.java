@@ -81,6 +81,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @return The {@link MessageListResult} of all the datastoreMessages associated to the current selected scope.
      * @since 1.0.0
      */
+    @SuppressWarnings("unchecked")
     @ApiOperation(value = "Gets the DatastoreMessage list in the scope", //
             notes = "Returns the list of all the datastoreMessages associated to the current selected scope.", //
             response = DatastoreMessage.class, //
@@ -127,7 +128,6 @@ public class DataMessages extends AbstractKapuaResource {
                 MetricPredicate metricPredicate = storablePredicateFactory.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
                 andPredicate.getPredicates().add(metricPredicate);
             }
-            // manageMetricValueFiltering(andPredicate, metricName, metricType, metricMinValue, metricMaxValue);
 
             MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(scopeId);
             query.setPredicate(andPredicate);
@@ -226,50 +226,4 @@ public class DataMessages extends AbstractKapuaResource {
         }
         return returnNotNullEntity(datastoreMessage);
     }
-
-    // /**
-    // * Manages the optional metric value filtering for {@link #simpleQuery(ScopeId, String, String, String, String, String, String, int, int)} invocation.
-    // *
-    // * @param andPredicate
-    // * The {@link AndPredicate} container
-    // * @param metricName
-    // * The metric name to filter. Mandatory.
-    // * @param metricType
-    // * The metric type to filter. Mandatory.
-    // * @param metricMinValue
-    // * The metric minimum value to filter. It must be coherent with the type parameter.
-    // * @param metricMaxValue
-    // * The metric maximum value to filter. It must be coherent with the type parameter.
-    // * @throws KapuaIllegalNullArgumentException
-    // * If metricName or metricType parameter are null.
-    // * @throws KapuaIllegalArgumentException
-    // * If metricType is not managed.
-    // */
-    // private <T extends Comparable<T>> void manageMetricValueFiltering(AndPredicate andPredicate, String metricName, MetricType metricType, String metricMinValue, String metricMaxValue)
-    // throws KapuaIllegalNullArgumentException, KapuaIllegalArgumentException {
-    //
-    // if (metricName != null && metricType != null && metricMinValue != null && metricMaxValue != null) {
-    //
-    // if (Strings.isNullOrEmpty(metricName)) {
-    // throw new KapuaIllegalNullArgumentException("metricName");
-    // }
-    //
-    // T convertedMinValue;
-    // try {
-    // convertedMinValue = (T) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
-    // } catch (NumberFormatException nfe) {
-    // throw new KapuaIllegalArgumentException("metricMinValue", metricMinValue);
-    // }
-    //
-    // T convertedMaxValue;
-    // try {
-    // convertedMaxValue = (T) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
-    // } catch (NumberFormatException nfe) {
-    // throw new KapuaIllegalArgumentException("metricMaxValue", metricMinValue);
-    // }
-    // // andPredicate.getPredicates().add(new RangePredicateImpl(MessageField.METRICS.field() + "." + metricName + ".flt", convertedMinValue, convertedMaxValue));
-    // }
-    // andPredicate.getPredicates().add(new ExistsPredicateImpl(MessageField.METRICS.field() + "." + metricName + ".flt"));
-    // }
-
 }
