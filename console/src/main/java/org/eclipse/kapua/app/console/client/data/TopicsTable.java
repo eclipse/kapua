@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class TopicsTable extends LayoutContainer {
@@ -103,18 +102,17 @@ public class TopicsTable extends LayoutContainer {
 
         store = new TreeStore<GwtTopic>();
         AsyncCallback<List<GwtTopic>> topicsCallback = new AsyncCallback<List<GwtTopic>>() {
-            
+
             @Override
             public void onSuccess(List<GwtTopic> topics) {
                 store.add(topics, true);
                 topicInfoGrid.unmask();
             }
-            
+
             @Override
             public void onFailure(Throwable t) {
                 FailureHandler.handle(t);
                 topicInfoGrid.unmask();
-                Window.alert(MSGS.noDataMessage());
             }
         };
         dataService.findTopicsTree(currentSession.getSelectedAccount().getId(), topicsCallback);
@@ -130,9 +128,9 @@ public class TopicsTable extends LayoutContainer {
 
         GridSelectionModel<GwtTopic> selectionModel = new GridSelectionModel<GwtTopic>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
-        for(SelectionChangedListener<GwtTopic> listener : listeners){
+        for (SelectionChangedListener<GwtTopic> listener : listeners) {
             selectionModel.addSelectionChangedListener(listener);
-         }
+        }
         topicInfoGrid.setSelectionModel(selectionModel);
     }
 
