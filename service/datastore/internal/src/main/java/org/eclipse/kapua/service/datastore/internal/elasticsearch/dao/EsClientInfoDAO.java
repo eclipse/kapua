@@ -36,8 +36,11 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Client information DAO
@@ -46,6 +49,7 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsClientInfoDAO {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EsClientInfoDAO.class);
     private final EsTypeDAO esTypeDAO;
 
     /**
@@ -210,8 +214,15 @@ public class EsClientInfoDAO {
 
         ClientInfoQueryConverter aic = new ClientInfoQueryConverter();
         SearchRequestBuilder builder = aic.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), localQuery);
-        SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-        SearchHits searchHits = response.getHits();
+
+        SearchHits searchHits;
+        try {
+            SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
+            searchHits = response.getHits();
+        } catch (IndexNotFoundException infe) {
+            LOG.warn("Index not found. Returning empty list!", infe);
+            return new ClientInfoListResultImpl();
+        }
 
         if (searchHits == null || searchHits.getTotalHits() == 0) {
             return new ClientInfoListResultImpl();
