@@ -722,9 +722,9 @@ public class EsSchema {
 
             String[] prevKeySplit = new String[] { "", "" };
             Set<String> keys = esMetrics.keySet();
-            for (String key : keys) {
-
-                EsMetric metric = esMetrics.get(key);
+            for (Map.Entry<String, EsMetric> entry : esMetrics.entrySet()) {
+                String key = entry.getKey();
+                EsMetric metric = entry.getValue();
                 String[] keySplit = key.split(Pattern.quote("."));
 
                 if (!keySplit[METRIC_TERM].equals(prevKeySplit[METRIC_TERM])) {
@@ -784,7 +784,7 @@ public class EsSchema {
             esClient.admin().indices().preparePutMapping(indexName).setType(MESSAGE_TYPE_NAME).setSource(builder).execute().actionGet();
 
             try {
-                logger.trace("Message mapping created: {}",  builder.string());
+                logger.trace("Message mapping created: {}", builder.string());
             } catch (IOException e) {
                 logger.trace("Message mapping created: (content unavailable)");
             }
