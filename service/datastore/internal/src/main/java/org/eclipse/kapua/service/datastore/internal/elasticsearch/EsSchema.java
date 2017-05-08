@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.kapua.model.id.KapuaId;
@@ -721,8 +720,7 @@ public class EsSchema {
             // two different types (field are all different)
 
             String[] prevKeySplit = new String[] { "", "" };
-            Set<String> keys = esMetrics.keySet();
-            for (Map.Entry<String, EsMetric> entry : esMetrics.entrySet()) {
+            for (final Map.Entry<String, EsMetric> entry : esMetrics.entrySet()) {
                 String key = entry.getKey();
                 EsMetric metric = entry.getValue();
                 String[] keySplit = key.split(Pattern.quote("."));
@@ -749,7 +747,7 @@ public class EsSchema {
                 prevKeySplit = keySplit;
             }
 
-            if (keys.size() > 0) {
+            if (esMetrics.size() > 0) {
                 if (!prevKeySplit[METRIC_TERM].isEmpty()) {
                     builder.endObject(); // Previously open properties section
                     builder.endObject(); // Previously open metrics-object section
