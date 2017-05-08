@@ -96,12 +96,13 @@ public class PredicateConverter {
             return toElasticsearchQuery((ChannelMatchPredicate) predicate);
         }
 
-        if (predicate instanceof RangePredicate) {
-            return toElasticsearchQuery((RangePredicate) predicate);
-        }
-
+        // NOTE: This must come before 'if (predicate instanceof RangePredicate) {' because MetricPredicate extends from RangePredicate
         if (predicate instanceof MetricPredicate) {
             return toElasticsearchQuery((MetricPredicate) predicate);
+        }
+
+        if (predicate instanceof RangePredicate) {
+            return toElasticsearchQuery((RangePredicate) predicate);
         }
 
         if (predicate instanceof TermPredicate) {

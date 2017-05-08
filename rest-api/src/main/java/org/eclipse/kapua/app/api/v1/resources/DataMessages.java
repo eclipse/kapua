@@ -25,21 +25,22 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.DateParam;
+import org.eclipse.kapua.app.api.v1.resources.model.MetricType;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
@@ -86,16 +87,16 @@ public class DataMessages extends AbstractKapuaResource {
             responseContainer = "DatastoreMessageListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public MessageListResult simpleQuery(  //
+    public <V extends Comparable<V>> MessageListResult simpleQuery(  //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
             @ApiParam(value = "The start date to filter the results. Must come before endDate parameter") @QueryParam("startDate") DateParam startDateParam,
             @ApiParam(value = "The end date to filter the results. Must come after startDate parameter") @QueryParam("endDate") DateParam endDateParam,
-            // @ApiParam(value = "The metric name to filter results") @QueryParam("metricName") String metricName, //
-            // @ApiParam(value = "The metric type to filter results") @QueryParam("metricType") MetricType metricType, //
-            // @ApiParam(value = "The min metric value to filter results") @QueryParam("metricValueMin") String metricMinValue, //
-            // @ApiParam(value = "The max metric value to filter results") @QueryParam("metricValueMax") String metricMaxValue, //
+            @ApiParam(value = "The metric name to filter results") @QueryParam("metricName") String metricName, //
+            @ApiParam(value = "The metric type to filter results") @QueryParam("metricType") MetricType<V> metricType, //
+            @ApiParam(value = "The min metric value to filter results") @QueryParam("metricMin") String metricMinValue, //
+            @ApiParam(value = "The max metric value to filter results") @QueryParam("metricMax") String metricMaxValue, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
     {
@@ -108,17 +109,24 @@ public class DataMessages extends AbstractKapuaResource {
             }
 
             if (!Strings.isNullOrEmpty(channel)) {
-                ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
+                ChannelMatchPredicate channelPredicate = storablePredicateFactory.newChannelMatchPredicate(channel);
                 andPredicate.getPredicates().add(channelPredicate);
             }
 
             Date startDate = startDateParam != null ? startDateParam.getDate() : null;
             Date endDate = endDateParam != null ? endDateParam.getDate() : null;
             if (startDate != null || endDate != null) {
-                RangePredicate timestampPredicate = new RangePredicateImpl(ChannelInfoField.TIMESTAMP, startDate, endDate);
+                RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
                 andPredicate.getPredicates().add(timestampPredicate);
             }
 
+            if (!Strings.isNullOrEmpty(metricName)) {
+                V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
+                V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
+
+                MetricPredicate metricPredicate = storablePredicateFactory.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+                andPredicate.getPredicates().add(metricPredicate);
+            }
             // manageMetricValueFiltering(andPredicate, metricName, metricType, metricMinValue, metricMaxValue);
 
             MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(scopeId);
@@ -248,44 +256,20 @@ public class DataMessages extends AbstractKapuaResource {
     //
     // T convertedMinValue;
     // try {
-    // convertedMinValue = parseMetricValue(metricType, metricMinValue);
+    // convertedMinValue = (T) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
     // } catch (NumberFormatException nfe) {
     // throw new KapuaIllegalArgumentException("metricMinValue", metricMinValue);
     // }
     //
     // T convertedMaxValue;
     // try {
-    // convertedMaxValue = parseMetricValue(metricType, metricMaxValue);
+    // convertedMaxValue = (T) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
     // } catch (NumberFormatException nfe) {
-    // throw new KapuaIllegalArgumentException("metricMinValue", metricMinValue);
+    // throw new KapuaIllegalArgumentException("metricMaxValue", metricMinValue);
     // }
-    //
-    // andPredicate.getPredicates().add(new RangePredicateImpl<>(MessageField.METRICS, convertedMinValue, convertedMaxValue));
+    // // andPredicate.getPredicates().add(new RangePredicateImpl(MessageField.METRICS.field() + "." + metricName + ".flt", convertedMinValue, convertedMaxValue));
     // }
+    // andPredicate.getPredicates().add(new ExistsPredicateImpl(MessageField.METRICS.field() + "." + metricName + ".flt"));
     // }
-    //
-    // @SuppressWarnings("unchecked")
-    // private <T> T parseMetricValue(MetricType metricType, String metricValue) throws KapuaIllegalArgumentException {
-    // Class<T> metricTypeClazz = metricType.getClazz();
-    //
-    // T convertedValue;
-    // if (metricValue == null) {
-    // convertedValue = null;
-    // } else if (metricTypeClazz == String.class) {
-    // convertedValue = (T) metricValue;
-    // } else if (metricTypeClazz == Integer.class) {
-    // convertedValue = (T) Integer.valueOf(metricValue);
-    // } else if (metricTypeClazz == Long.class) {
-    // convertedValue = (T) Long.valueOf(metricValue);
-    // } else if (metricTypeClazz == Float.class) {
-    // convertedValue = (T) Float.valueOf(metricValue);
-    // } else if (metricTypeClazz == Double.class) {
-    // convertedValue = (T) Double.valueOf(metricValue);
-    // } else if (metricTypeClazz == Boolean.class) {
-    // convertedValue = (T) Boolean.valueOf(metricValue);
-    // } else {
-    // throw new KapuaIllegalArgumentException("metricType", metricTypeClazz.getSimpleName());
-    // }
-    // return convertedValue;
-    // }
+
 }
