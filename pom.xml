@@ -907,6 +907,8 @@
         <module>qa</module>
         <module>qa-openshift</module>
 
+        <module>sso</module>
+
         <!-- Applications -->
         <module>console</module>
         <module>rest-api</module>
