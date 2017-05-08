@@ -89,8 +89,6 @@ public class KapuaSecurityUtils {
      * @since 1.0.0
      */
     public static <T> T doPrivileged(Callable<T> privilegedAction) throws KapuaException {
-        T result = null;
-
         // get (and keep) the current session
         KapuaSession previousSession = getSession();
         KapuaSession currentSession = null;
@@ -106,7 +104,7 @@ public class KapuaSecurityUtils {
         setSession(currentSession);
 
         try {
-            result = privilegedAction.call();
+            return privilegedAction.call();
         } catch (KapuaException ke) {
             throw ke;
         } catch (Exception e) {
@@ -115,8 +113,6 @@ public class KapuaSecurityUtils {
             // restore the original session
             setSession(previousSession);
         }
-
-        return result;
     }
 
 }
