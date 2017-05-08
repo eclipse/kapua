@@ -470,6 +470,7 @@ public class WestNavigationView extends LayoutContainer {
                     @Override
                     public void handleEvent(BaseEvent be) {
                         if (dashboardSelected) {
+                            // FIXME: seems to be dead code
                             m_welcomeView.refresh();
                         }
                     }
