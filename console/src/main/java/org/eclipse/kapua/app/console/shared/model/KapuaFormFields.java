@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public class KapuaFormFields {
         String value = formFields.get(key);
 
         if (value != null) {
-            value = new String(value.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
         }
 
         return value;
