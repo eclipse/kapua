@@ -309,6 +309,9 @@
                     <configuration>
                         <configLocation>checkstyle/kapua.xml</configLocation>
                         <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
+
+                        <includeTestResources>true</includeTestResources>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     </configuration>
                 </plugin>
             </plugins>

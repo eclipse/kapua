@@ -15,25 +15,29 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class KapuaExceptionTest 
-{
-	@Test
-	public void test() {
-		KapuaException ke = new KapuaException(KapuaErrorCodes.ENTITY_NOT_FOUND, "user", 1);
-		assertEquals("The entity of type user with id/name 1 was not found.",
-					 ke.getMessage());
+public class KapuaExceptionTest {
 
-		ke = KapuaException.internalError("ciao");
-		assertEquals("An internal error occurred: ciao.",
-					 ke.getMessage());
+    @Test
+    public void test() {
+        KapuaException ke = new KapuaException(KapuaErrorCodes.ENTITY_NOT_FOUND, "user", 1);
+        assertEquals("The entity of type user with id/name 1 was not found.",
+                ke.getMessage());
 
-		ke = KapuaException.internalError( new NullPointerException());
-		assertEquals("An internal error occurred: java.lang.NullPointerException.",
-					 ke.getMessage());
+        ke = KapuaException.internalError("ciao");
+        assertEquals("An internal error occurred: ciao.",
+                ke.getMessage());
 
-		ke = new KapuaException(new KapuaErrorCode() {
-			public String name() { return "MISSING"; }
-		}, "abc", 1);
-		assertEquals("Error: abc,1", ke.getMessage());
-	}
+        ke = KapuaException.internalError(new NullPointerException());
+        assertEquals("An internal error occurred: java.lang.NullPointerException.",
+                ke.getMessage());
+
+        ke = new KapuaException(new KapuaErrorCode() {
+
+            @Override
+            public String name() {
+                return "MISSING";
+            }
+        }, "abc", 1);
+        assertEquals("Error: abc,1", ke.getMessage());
+    }
 }

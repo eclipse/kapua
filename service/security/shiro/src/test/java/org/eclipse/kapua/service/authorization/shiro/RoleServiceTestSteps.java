@@ -161,8 +161,9 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
                 return null;
             });
 
-            if (commonData.exceptionCaught)
+            if (commonData.exceptionCaught) {
                 break;
+            }
         }
     }
 

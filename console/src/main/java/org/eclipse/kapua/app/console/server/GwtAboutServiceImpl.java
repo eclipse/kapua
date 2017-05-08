@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtAboutDependency;
 import org.eclipse.kapua.app.console.shared.model.GwtAboutInformation;
 import org.eclipse.kapua.app.console.shared.service.GwtAboutService;
 import org.eclipse.kapua.commons.about.AboutEntry;
+import org.eclipse.kapua.commons.about.AboutEntry.License;
 import org.eclipse.kapua.commons.about.AboutScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,10 @@ public class GwtAboutServiceImpl extends KapuaRemoteServiceServlet implements Gw
             // only set text when we have no more precise information
             result.setLicense("See details");
             result.setLicenseText(entry.getLicense().getText());
+        }
+        if (result.getNotice() != null && entry.getLicense() == License.UNKNOWN) {
+            // show "see details" when the license is unknown but we have some notice document
+            result.setLicense("See details");
         }
 
         return result;
