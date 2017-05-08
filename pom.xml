@@ -1032,11 +1032,6 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
             <distribution>repo</distribution>
         </license>
-        <license>
-            <name>Eclipse Distribution License (EDL), Version 1.0</name>
-            <url>http://www.eclipse.org/org/documents/edl-v10.html</url>
-            <distribution>repo</distribution>
-        </license>
     </licenses>
 
     <scm>
