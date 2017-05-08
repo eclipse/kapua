@@ -8,14 +8,21 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.kapua.message.KapuaPayload;
+
+import com.google.common.io.BaseEncoding;
 
 /**
  * Kapua message payload object reference implementation.
@@ -25,6 +32,8 @@ import org.eclipse.kapua.message.KapuaPayload;
  */
 public class KapuaPayloadImpl implements KapuaPayload {
 
+    private static final BaseEncoding HEX_ENCODER = BaseEncoding.base16().upperCase();
+    private static final Comparator<Entry<String, Object>> ENTRY_COMPARATOR = Comparator.comparing(Map.Entry<String, Object>::getKey);
     private Map<String, Object> properties;
     private byte[] body;
 
@@ -58,55 +67,47 @@ public class KapuaPayloadImpl implements KapuaPayload {
         this.body = body;
     }
 
+    public static Object forDisplay(Object value) {
+        if (value instanceof byte[]) {
+            return HEX_ENCODER.encode((byte[]) value);
+        } else if (value instanceof Float || value instanceof Double || value instanceof Integer || value instanceof Long || value instanceof Boolean || value instanceof String) {
+            return value;
+        } else {
+            return "";
+        }
+    }
+
     @Override
     public String toDisplayString() {
-        StringBuilder sb = new StringBuilder();
-        Iterator<String> hdrIterator = getProperties().keySet().iterator();
-        while (hdrIterator.hasNext()) {
-            String hdrName = hdrIterator.next();
-            Object hdrValue = getProperties().get(hdrName);
-            if (hdrValue != null) {
+        if (properties == null) {
+            // we have nothing
+            return "";
+        }
 
-                String hdrValueString = "";
-                Class<?> type = hdrValue.getClass();
-                if (type == Float.class) {
-                    hdrValueString = Float.toString((Float) hdrValue);
-                } else if (type == Double.class) {
-                    hdrValueString = Double.toString((Double) hdrValue);
-                } else if (type == Integer.class) {
-                    hdrValueString = Integer.toString((Integer) hdrValue);
-                } else if (type == Long.class) {
-                    hdrValueString = Long.toString((Long) hdrValue);
-                } else if (type == Boolean.class) {
-                    hdrValueString = Boolean.toString((Boolean) hdrValue);
-                } else if (type == String.class) {
-                    hdrValueString = (String) hdrValue;
-                } else if (type == byte[].class) {
-                    hdrValueString = byteArrayToHexString((byte[]) hdrValue);
-                }
-                sb.append(hdrName);
-                sb.append("=");
-                sb.append(hdrValueString);
+        final List<Map.Entry<String, Object>> entries = new ArrayList<>(this.properties.entrySet());
 
-                if (hdrIterator.hasNext()) {
-                    sb.append("~~");
-                }
+        // sort for a stable output
+        Collections.sort(entries, ENTRY_COMPARATOR);
+
+        // assemble output
+
+        boolean first = true;
+        final StringBuilder sb = new StringBuilder();
+        for (final Map.Entry<String, Object> entry : entries) {
+
+            if (entry.getValue() == null) {
+                continue;
             }
+
+            if (!first) {
+                sb.append("~~");
+            } else {
+                first = false;
+            }
+
+            sb.append(entry.getKey()).append('=').append(forDisplay(entry.getValue()));
         }
 
         return sb.toString();
     }
-
-    private String byteArrayToHexString(byte[] b) {
-        StringBuffer sb = new StringBuffer(b.length * 2);
-        for (int i = 0; i < b.length; i++) {
-            int v = b[i] & 0xff;
-            if (v < 16) {
-                sb.append('0');
-            }
-            sb.append(Integer.toHexString(v));
-        }
-        return sb.toString().toUpperCase();
-    }
-
 }
