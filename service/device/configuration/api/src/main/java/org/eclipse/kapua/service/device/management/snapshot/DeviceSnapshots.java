@@ -30,17 +30,14 @@ import org.eclipse.kapua.KapuaSerializable;
  */
 @XmlRootElement(name = "snapshots")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "snapshots" },
-        factoryClass = DeviceSnapshotXmlRegistry.class, 
-        factoryMethod = "newDeviceSnapshots")
-public interface DeviceSnapshots extends KapuaSerializable
-{
+@XmlType(propOrder = { "snapshots" }, factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshots")
+public interface DeviceSnapshots extends KapuaSerializable {
 
     /**
      * Get the device snapshot list
      * 
      * @return
      */
-    @XmlElement(name="snapshotId")
+    @XmlElement(name = "snapshotId")
     public List<DeviceSnapshot> getSnapshots();
 }

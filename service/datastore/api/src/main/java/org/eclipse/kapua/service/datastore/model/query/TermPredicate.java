@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public interface TermPredicate extends StorablePredicate
-{
+public interface TermPredicate extends StorablePredicate {
 
     /**
      * Return the field

@@ -20,16 +20,14 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
 
-public class TextFieldValidator implements Validator
-{
+public class TextFieldValidator implements Validator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    protected FieldType                     m_textFieldType;
-    protected TextField<String>             m_textField;
+    protected FieldType m_textFieldType;
+    protected TextField<String> m_textField;
 
-    public TextFieldValidator(TextField<String> textField, FieldType textFieldType)
-    {
+    public TextFieldValidator(TextField<String> textField, FieldType textFieldType) {
 
         m_textField = textField;
         m_textFieldType = textFieldType;
@@ -49,8 +47,7 @@ public class TextFieldValidator implements Validator
         }
     }
 
-    public String validate(Field<?> field, String value)
-    {
+    public String validate(Field<?> field, String value) {
 
         String result = null;
         if (!value.matches(m_textFieldType.getRegex())) {
@@ -59,20 +56,13 @@ public class TextFieldValidator implements Validator
         return result;
     }
 
-    public enum FieldType
-    {
+    public enum FieldType {
 
-        SIMPLE_NAME("simple_name", "^[a-zA-Z0-9\\-]{3,}$"),
-        DEVICE_CLIENT_ID("device_client_id", "^[a-zA-Z0-9\\:\\_\\-]{3,}$"),
-        NAME("name", "^[a-zA-Z0-9\\_\\-]{3,}$"),
-        NAME_SPACE("name_space", "^[a-zA-Z0-9\\ \\_\\-]{3,}$"),
-        PASSWORD("password", "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$"),
-        EMAIL("email", "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$"),
-        PHONE("phone",
-                "^(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$"),
-        ALPHABET("alphabet", "^[a-zA-Z_]+$"),
-        ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"),
-        NUMERIC("numeric", "^[+0-9.]+$");
+        SIMPLE_NAME("simple_name", "^[a-zA-Z0-9\\-]{3,}$"), DEVICE_CLIENT_ID("device_client_id", "^[a-zA-Z0-9\\:\\_\\-]{3,}$"), NAME("name", "^[a-zA-Z0-9\\_\\-]{3,}$"), NAME_SPACE("name_space",
+                "^[a-zA-Z0-9\\ \\_\\-]{3,}$"), PASSWORD("password", "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$"), EMAIL("email",
+                        "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$"), PHONE("phone",
+                                "^(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$"), ALPHABET(
+                                        "alphabet", "^[a-zA-Z_]+$"), ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"), NUMERIC("numeric", "^[+0-9.]+$");
 
         private String m_name;
         private String m_regex;
@@ -80,8 +70,7 @@ public class TextFieldValidator implements Validator
         private String m_toolTipMsg;
         private String m_requiredMsg;
 
-        FieldType(String name, String regex)
-        {
+        FieldType(String name, String regex) {
 
             m_name = name;
             m_regex = regex;
@@ -90,42 +79,34 @@ public class TextFieldValidator implements Validator
             m_requiredMsg = name + "RequiredMsg";
         }
 
-        public String getName()
-        {
+        public String getName() {
             return m_name;
         }
 
-        public String getRegex()
-        {
+        public String getRegex() {
             return m_regex;
         }
 
-        public String getRegexMessage()
-        {
+        public String getRegexMessage() {
             try {
                 return MSGS.getString(m_regexMsg);
-            }
-            catch (MissingResourceException mre) {
+            } catch (MissingResourceException mre) {
                 return null;
             }
         }
 
-        public String getToolTipMessage()
-        {
+        public String getToolTipMessage() {
             try {
                 return MSGS.getString(m_toolTipMsg);
-            }
-            catch (MissingResourceException mre) {
+            } catch (MissingResourceException mre) {
                 return null;
             }
         }
 
-        public String getRequiredMessage()
-        {
+        public String getRequiredMessage() {
             try {
                 return MSGS.getString(m_requiredMsg);
-            }
-            catch (MissingResourceException mre) {
+            } catch (MissingResourceException mre) {
                 return null;
             }
         }

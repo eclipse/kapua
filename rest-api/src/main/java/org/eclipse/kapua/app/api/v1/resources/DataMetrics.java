@@ -54,12 +54,18 @@ public class DataMetrics extends AbstractKapuaResource {
     /**
      * Gets the {@link MetricInfo} list in the scope.
      *
-     * @param scopeId  The {@link ScopeId} in which to search results.
-     * @param clientId The client id to filter results.
-     * @param channel  The channel id to filter results. It allows '#' wildcard in last channel level
-     * @param name     The metric name to filter results
-     * @param offset   The result set offset.
-     * @param limit    The result set limit.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results.
+     * @param channel
+     *            The channel id to filter results. It allows '#' wildcard in last channel level
+     * @param name
+     *            The metric name to filter results
+     * @param offset
+     *            The result set offset.
+     * @param limit
+     *            The result set limit.
      * @return The {@link MetricInfoListResult} of all the metricInfos associated to the current selected scope.
      * @since 1.0.0
      */
@@ -75,8 +81,7 @@ public class DataMetrics extends AbstractKapuaResource {
             @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
             @ApiParam(value = "The metric name to filter results") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
-    {
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         MetricInfoListResult metricInfoListResult = datastoreObjectFactory.newMetricInfoListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
@@ -110,8 +115,10 @@ public class DataMetrics extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link MetricInfoQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link MetricInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link MetricInfoQuery} to used to filter results.
      * @return The {@link MetricInfoListResult} of all the result matching the given {@link MetricInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -139,8 +146,10 @@ public class DataMetrics extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link MetricInfoQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link MetricInfoQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link MetricInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link MetricInfoQuery} parameter.
      * @since 1.0.0
      */
@@ -167,7 +176,8 @@ public class DataMetrics extends AbstractKapuaResource {
     /**
      * Returns the MetricInfo specified by the "metricInfoId" path parameter.
      *
-     * @param metricInfoId The id of the requested MetricInfo.
+     * @param metricInfoId
+     *            The id of the requested MetricInfo.
      * @return The requested MetricInfo object.
      */
     @GET

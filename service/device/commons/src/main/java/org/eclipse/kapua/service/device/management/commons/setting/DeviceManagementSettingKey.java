@@ -19,8 +19,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * @since 1.0
  *
  */
-public enum DeviceManagementSettingKey implements SettingKey
-{
+public enum DeviceManagementSettingKey implements SettingKey {
 
     /**
      * Character encoding
@@ -39,14 +38,12 @@ public enum DeviceManagementSettingKey implements SettingKey
      * 
      * @param key
      */
-    private DeviceManagementSettingKey(String key)
-    {
+    private DeviceManagementSettingKey(String key) {
         this.key = key;
     }
 
     @Override
-    public String key()
-    {
+    public String key() {
         return key;
     }
 }

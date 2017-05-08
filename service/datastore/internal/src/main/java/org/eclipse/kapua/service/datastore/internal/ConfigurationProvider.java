@@ -23,8 +23,7 @@ import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreCo
  * @since 1.0
  *
  */
-public interface ConfigurationProvider
-{
+public interface ConfigurationProvider {
 
     /**
      * Get the configuration for the given scope
@@ -34,7 +33,7 @@ public interface ConfigurationProvider
      * @throws EsConfigurationException
      */
     public MessageStoreConfiguration getConfiguration(KapuaId scopeId)
-        throws EsConfigurationException;
+            throws EsConfigurationException;
 
     /**
      * Get the message information for the given scope
@@ -44,5 +43,5 @@ public interface ConfigurationProvider
      * @throws EsConfigurationException
      */
     public MessageInfo getInfo(KapuaId scopeId)
-        throws EsConfigurationException;
+            throws EsConfigurationException;
 }

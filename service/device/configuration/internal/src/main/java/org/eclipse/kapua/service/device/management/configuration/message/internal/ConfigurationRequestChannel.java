@@ -21,21 +21,19 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class ConfigurationRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
-{
+public class ConfigurationRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
+
     private KapuaMethod method;
-    private String      configurationId;
-    private String      componentId;
+    private String configurationId;
+    private String componentId;
 
     @Override
-    public KapuaMethod getMethod()
-    {
+    public KapuaMethod getMethod() {
         return method;
     }
 
     @Override
-    public void setMethod(KapuaMethod method)
-    {
+    public void setMethod(KapuaMethod method) {
         this.method = method;
     }
 
@@ -44,8 +42,7 @@ public class ConfigurationRequestChannel extends KapuaAppChannelImpl implements 
      * 
      * @return
      */
-    public String getConfigurationId()
-    {
+    public String getConfigurationId() {
         return configurationId;
     }
 
@@ -54,8 +51,7 @@ public class ConfigurationRequestChannel extends KapuaAppChannelImpl implements 
      * 
      * @param configurationId
      */
-    public void setConfigurationId(String configurationId)
-    {
+    public void setConfigurationId(String configurationId) {
         this.configurationId = configurationId;
     }
 
@@ -64,8 +60,7 @@ public class ConfigurationRequestChannel extends KapuaAppChannelImpl implements 
      * 
      * @return
      */
-    public String getComponentId()
-    {
+    public String getComponentId() {
         return componentId;
     }
 
@@ -74,8 +69,7 @@ public class ConfigurationRequestChannel extends KapuaAppChannelImpl implements 
      * 
      * @param componentId
      */
-    public void setComponentId(String componentId)
-    {
+    public void setComponentId(String componentId) {
         this.componentId = componentId;
     }
 }

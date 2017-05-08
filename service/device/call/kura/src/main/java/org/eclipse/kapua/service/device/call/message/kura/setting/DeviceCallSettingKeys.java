@@ -20,8 +20,7 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
  * @since 1.0
  *
  */
-public enum DeviceCallSettingKeys implements SettingKey
-{
+public enum DeviceCallSettingKeys implements SettingKey {
 
     /**
      * Destination message classifier. {@link DeviceChannel#getMessageClassification} for more detail
@@ -35,14 +34,12 @@ public enum DeviceCallSettingKeys implements SettingKey
 
     private String key;
 
-    private DeviceCallSettingKeys(String key)
-    {
+    private DeviceCallSettingKeys(String key) {
         this.key = key;
     }
 
     @Override
-    public String key()
-    {
+    public String key() {
         return key;
     }
 }

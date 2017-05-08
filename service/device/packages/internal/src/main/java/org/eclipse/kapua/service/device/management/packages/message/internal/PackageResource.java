@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management.packages.message.internal;
  * @since 1.0
  *
  */
-public enum PackageResource
-{
+public enum PackageResource {
     /**
      * Download
      */

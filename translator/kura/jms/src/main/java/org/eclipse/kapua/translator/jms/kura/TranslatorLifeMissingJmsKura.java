@@ -29,22 +29,20 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  * 
  */
-public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMissingMessage>
-{
+public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMissingMessage> {
+
     private static final Logger logger = LoggerFactory.getLogger(TranslatorLifeUnmatchedJmsKura.class);
-    
+
     @Override
     public KuraMissingMessage translate(JmsMessage jmsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KuraMissingMessage(translate(jmsMessage.getTopic()),
-                                      jmsMessage.getReceivedOn(),
-                                      translate(jmsMessage.getPayload().getBody()));
+                jmsMessage.getReceivedOn(),
+                translate(jmsMessage.getPayload().getBody()));
     }
 
     private KuraMissingChannel translate(JmsTopic jmsTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] topicTokens = jmsTopic.getSplittedTopic();
         // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
         // TODO check exception type
@@ -52,18 +50,16 @@ public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMis
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
         return new KuraMissingChannel(topicTokens[1],
-                                      topicTokens[2]);
+                topicTokens[2]);
     }
 
     private KuraMissingPayload translate(byte[] jmsBody)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraMissingPayload kuraMissingPayload = new KuraMissingPayload();
         // missing message may be a text message so if the message protobuf conversion fails, try to set the kura message body as jms message raw payload
         try {
             kuraMissingPayload.readFromByteArray(jmsBody);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             logger.debug("Invalid protobuf message - set Kura payload as jms message raw body");
             kuraMissingPayload.setBody(jmsBody);
         }
@@ -71,14 +67,12 @@ public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMis
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom()
-    {
+    public Class<JmsMessage> getClassFrom() {
         return JmsMessage.class;
     }
 
     @Override
-    public Class<KuraMissingMessage> getClassTo()
-    {
+    public Class<KuraMissingMessage> getClassTo() {
         return KuraMissingMessage.class;
     }
 }

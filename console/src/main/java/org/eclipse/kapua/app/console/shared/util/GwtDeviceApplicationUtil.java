@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
-public class GwtDeviceApplicationUtil
-{
+public class GwtDeviceApplicationUtil {
     // public static final String APPID_CONFIGURATION = DeviceApplications.APP_CONFIGURATION;
     // public static final String APPID_COMMAND = DeviceApplications.APP_COMMAND;
     // public static final String APPID_DEPLOY_V1 = DeviceApplications.APP_DEPLOY_V1;

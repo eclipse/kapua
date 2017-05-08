@@ -20,8 +20,8 @@ import org.eclipse.kapua.KapuaException;
  * @since 1.0
  * 
  */
-public class KapuaExistingCredentialException extends KapuaException 
-{
+public class KapuaExistingCredentialException extends KapuaException {
+
     private static final long serialVersionUID = -2761138212317761216L;
     private static final String MESSAGE_FORMAT = "Credential of type %s for user id %s already exists";
 

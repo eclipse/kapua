@@ -61,13 +61,20 @@ public class DataMessages extends AbstractKapuaResource {
     /**
      * Gets the {@link DatastoreMessage} list in the scope.
      *
-     * @param scopeId   The {@link ScopeId} in which to search results.
-     * @param clientId  The client id to filter results.
-     * @param channel   The channel id to filter results. It allows '#' wildcard in last channel level.
-     * @param startDate The start date to filter the results. Must come before endDate parameter.
-     * @param endDate   The end date to filter the results. Must come after startDate parameter
-     * @param offset    The result set offset.
-     * @param limit     The result set limit.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param clientId
+     *            The client id to filter results.
+     * @param channel
+     *            The channel id to filter results. It allows '#' wildcard in last channel level.
+     * @param startDate
+     *            The start date to filter the results. Must come before endDate parameter.
+     * @param endDate
+     *            The end date to filter the results. Must come after startDate parameter
+     * @param offset
+     *            The result set offset.
+     * @param limit
+     *            The result set limit.
      * @return The {@link MessageListResult} of all the datastoreMessages associated to the current selected scope.
      * @since 1.0.0
      */
@@ -88,8 +95,7 @@ public class DataMessages extends AbstractKapuaResource {
             // @ApiParam(value = "The min metric value to filter results") @QueryParam("metricValueMin") String metricMinValue, //
             // @ApiParam(value = "The max metric value to filter results") @QueryParam("metricValueMax") String metricMaxValue, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) //
-    {
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
         MessageListResult datastoreMessageListResult = datastoreObjectFactory.newDatastoreMessageListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
@@ -127,8 +133,10 @@ public class DataMessages extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link DatastorMessageQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link DatastorMessageQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link DatastorMessageQuery} to used to filter results.
      * @return The {@link MessageListResult} of all the result matching the given {@link DatastorMessageQuery} parameter.
      * @since 1.0.0
      */
@@ -156,8 +164,10 @@ public class DataMessages extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link DatastorMessageQuery} parameter.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param query   The {@link DatastorMessageQuery} to used to filter results.
+     * @param scopeId
+     *            The {@link ScopeId} in which to search results.
+     * @param query
+     *            The {@link DatastorMessageQuery} to used to filter results.
      * @return The count of all the result matching the given {@link DatastorMessageQuery} parameter.
      * @since 1.0.0
      */
@@ -184,7 +194,8 @@ public class DataMessages extends AbstractKapuaResource {
     /**
      * Returns the DatastoreMessage specified by the "datastoreMessageId" path parameter.
      *
-     * @param datastoreMessageId The id of the requested DatastoreMessage.
+     * @param datastoreMessageId
+     *            The id of the requested DatastoreMessage.
      * @return The requested DatastoreMessage object.
      */
     @GET

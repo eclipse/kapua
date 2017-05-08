@@ -20,8 +20,8 @@ import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraRespo
  * @since 1.0
  *
  */
-public class KuraDeviceCallback implements DeviceCallback<KuraResponseMessage>
-{
+public class KuraDeviceCallback implements DeviceCallback<KuraResponseMessage> {
+
     private KuraDeviceResponseContainer responseContainer;
 
     /**
@@ -29,20 +29,17 @@ public class KuraDeviceCallback implements DeviceCallback<KuraResponseMessage>
      * 
      * @param responseContainer
      */
-    public KuraDeviceCallback(KuraDeviceResponseContainer responseContainer)
-    {
+    public KuraDeviceCallback(KuraDeviceResponseContainer responseContainer) {
         this.responseContainer = responseContainer;
     }
 
     @Override
-    public void responseReceived(KuraResponseMessage response)
-    {
+    public void responseReceived(KuraResponseMessage response) {
         responseContainer.add(response);
     }
 
     @Override
-    public void timedOut()
-    {
+    public void timedOut() {
         notifyAll();
     }
 }

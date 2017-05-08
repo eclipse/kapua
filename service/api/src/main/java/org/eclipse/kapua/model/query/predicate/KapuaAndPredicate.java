@@ -19,8 +19,8 @@ import java.util.List;
  * @since 1.0
  * 
  */
-public interface KapuaAndPredicate extends KapuaPredicate
-{
+public interface KapuaAndPredicate extends KapuaPredicate {
+
     /**
      * Creates an "and predicate" from a generic predicate
      * 

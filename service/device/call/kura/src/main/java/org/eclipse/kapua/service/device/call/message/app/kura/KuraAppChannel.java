@@ -20,15 +20,14 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
  * @since 1.0
  *
  */
-public abstract class KuraAppChannel extends KuraChannel implements DeviceAppChannel
-{
+public abstract class KuraAppChannel extends KuraChannel implements DeviceAppChannel {
+
     protected String appId;
 
     /**
      * Constructor
      */
-    public KuraAppChannel()
-    {
+    public KuraAppChannel() {
         super();
     }
 
@@ -38,8 +37,7 @@ public abstract class KuraAppChannel extends KuraChannel implements DeviceAppCha
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraAppChannel(String scopeNamespace, String clientId)
-    {
+    public KuraAppChannel(String scopeNamespace, String clientId) {
         this(null, scopeNamespace, clientId);
     }
 
@@ -50,20 +48,17 @@ public abstract class KuraAppChannel extends KuraChannel implements DeviceAppCha
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraAppChannel(String controlDestinationPrefix, String scopeNamespace, String clientId)
-    {
+    public KuraAppChannel(String controlDestinationPrefix, String scopeNamespace, String clientId) {
         super(controlDestinationPrefix, scopeNamespace, clientId);
     }
 
     @Override
-    public String getAppId()
-    {
+    public String getAppId() {
         return appId;
     }
 
     @Override
-    public void setAppId(String appId)
-    {
+    public void setAppId(String appId) {
         this.appId = appId;
     }
 }

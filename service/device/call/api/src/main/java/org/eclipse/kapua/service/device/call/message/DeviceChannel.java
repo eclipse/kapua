@@ -19,8 +19,7 @@ import org.eclipse.kapua.message.Channel;
  * @since 1.0
  *
  */
-public interface DeviceChannel extends Channel
-{
+public interface DeviceChannel extends Channel {
 
     /**
      * Get the message classification.<br>

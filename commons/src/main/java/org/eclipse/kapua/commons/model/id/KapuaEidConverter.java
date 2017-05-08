@@ -21,17 +21,15 @@ import javax.persistence.AttributeConverter;
  * @since 1.0
  *
  */
-public class KapuaEidConverter implements AttributeConverter<KapuaEid, BigInteger>
-{
+public class KapuaEidConverter implements AttributeConverter<KapuaEid, BigInteger> {
+
     @Override
-    public BigInteger convertToDatabaseColumn(KapuaEid keid)
-    {
+    public BigInteger convertToDatabaseColumn(KapuaEid keid) {
         return keid.getId();
     }
 
     @Override
-    public KapuaEid convertToEntityAttribute(BigInteger id)
-    {
+    public KapuaEid convertToEntityAttribute(BigInteger id) {
         return new KapuaEid(id);
     }
 }

@@ -21,30 +21,25 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload
  * @since 1.0
  *
  */
-public class KapuaResponsePayloadImpl extends KapuaPayloadImpl implements KapuaResponsePayload
-{
+public class KapuaResponsePayloadImpl extends KapuaPayloadImpl implements KapuaResponsePayload {
 
     @Override
-    public String getExceptionMessage()
-    {
+    public String getExceptionMessage() {
         return (String) getProperties().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue());
     }
 
     @Override
-    public void setExceptionMessage(String setExecptionMessage)
-    {
+    public void setExceptionMessage(String setExecptionMessage) {
         getProperties().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue(), setExecptionMessage);
     }
 
     @Override
-    public String getExceptionStack()
-    {
+    public String getExceptionStack() {
         return (String) getProperties().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue());
     }
 
     @Override
-    public void setExceptionStack(String setExecptionStack)
-    {
+    public void setExceptionStack(String setExecptionStack) {
         getProperties().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue(), setExecptionStack);
     }
 

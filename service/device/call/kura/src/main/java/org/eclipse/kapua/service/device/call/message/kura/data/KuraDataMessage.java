@@ -21,17 +21,16 @@ import org.eclipse.kapua.service.device.call.message.DeviceMessage;
  * @since 1.0
  * 
  */
-public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataPayload>
-{
-    protected KuraDataChannel  channel;
-    protected Date             timestamp;
-    protected KuraDataPayload  payload;
+public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataPayload> {
+
+    protected KuraDataChannel channel;
+    protected Date timestamp;
+    protected KuraDataPayload payload;
 
     /**
      * Constructor
      */
-    public KuraDataMessage()
-    {
+    public KuraDataMessage() {
         super();
     }
 
@@ -42,8 +41,7 @@ public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataP
      * @param timestamp
      * @param payload
      */
-    public KuraDataMessage(KuraDataChannel channel, Date timestamp, KuraDataPayload payload)
-    {
+    public KuraDataMessage(KuraDataChannel channel, Date timestamp, KuraDataPayload payload) {
         this();
         this.channel = channel;
         this.timestamp = timestamp;
@@ -51,20 +49,17 @@ public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataP
     }
 
     @Override
-    public KuraDataChannel getChannel()
-    {
+    public KuraDataChannel getChannel() {
         return channel;
     }
 
     @Override
-    public KuraDataPayload getPayload()
-    {
+    public KuraDataPayload getPayload() {
         return payload;
     }
 
     @Override
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -73,8 +68,7 @@ public class KuraDataMessage implements DeviceMessage<KuraDataChannel, KuraDataP
      * 
      * @param timestamp
      */
-    public void setTimestamp(Date timestamp)
-    {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 }

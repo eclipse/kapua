@@ -26,8 +26,7 @@ import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestPa
  *
  */
 @SuppressWarnings("rawtypes")
-public interface DeviceMessageFactory extends KapuaObjectFactory
-{
+public interface DeviceMessageFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new device message

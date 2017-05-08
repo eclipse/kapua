@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum SnapshotMetrics
-{
+public enum SnapshotMetrics {
     /**
      * Application identifier
      */
@@ -30,8 +29,7 @@ public enum SnapshotMetrics
 
     private String value;
 
-    SnapshotMetrics(String value)
-    {
+    SnapshotMetrics(String value) {
         this.value = value;
     }
 
@@ -40,8 +38,7 @@ public enum SnapshotMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

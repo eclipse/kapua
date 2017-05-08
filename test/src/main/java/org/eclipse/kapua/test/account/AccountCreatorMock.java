@@ -14,168 +14,144 @@ package org.eclipse.kapua.test.account;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountCreator;
 
-public class AccountCreatorMock implements AccountCreator
-{
+public class AccountCreatorMock implements AccountCreator {
+
     private KapuaId scopeId;
     private String name;
     private String organizationName;
     private String organizationEmail;
-    
+
     @Override
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public KapuaId getScopeId()
-    {
+    public KapuaId getScopeId() {
         return this.scopeId;
     }
 
-    public void setScopeId(KapuaId scopeId)
-    {
+    public void setScopeId(KapuaId scopeId) {
         this.scopeId = scopeId;
     }
 
     @Override
-    public String getOrganizationName()
-    {
+    public String getOrganizationName() {
         return this.organizationName;
     }
 
     @Override
-    public void setOrganizationName(String organizationName)
-    {
+    public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
     }
 
     @Override
-    public String getOrganizationPersonName()
-    {
+    public String getOrganizationPersonName() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationPersonName(String organizationPersonName)
-    {
+    public void setOrganizationPersonName(String organizationPersonName) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationEmail()
-    {
+    public String getOrganizationEmail() {
         return organizationEmail;
     }
 
     @Override
-    public void setOrganizationEmail(String organizationEmail)
-    {
+    public void setOrganizationEmail(String organizationEmail) {
         this.organizationEmail = organizationEmail;
     }
 
     @Override
-    public String getOrganizationPhoneNumber()
-    {
+    public String getOrganizationPhoneNumber() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationPhoneNumber(String organizationPhoneNumber)
-    {
+    public void setOrganizationPhoneNumber(String organizationPhoneNumber) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationAddressLine1()
-    {
+    public String getOrganizationAddressLine1() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationAddressLine1(String organizationAddressLine1)
-    {
+    public void setOrganizationAddressLine1(String organizationAddressLine1) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationAddressLine2()
-    {
+    public String getOrganizationAddressLine2() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationAddressLine2(String organizationAddressLine2)
-    {
+    public void setOrganizationAddressLine2(String organizationAddressLine2) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationCity()
-    {
+    public String getOrganizationCity() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationCity(String organizationCity)
-    {
+    public void setOrganizationCity(String organizationCity) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationZipPostCode()
-    {
+    public String getOrganizationZipPostCode() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationZipPostCode(String organizationZipPostCode)
-    {
+    public void setOrganizationZipPostCode(String organizationZipPostCode) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationStateProvinceCounty()
-    {
+    public String getOrganizationStateProvinceCounty() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationStateProvinceCounty(String organizationStateProvinceCounty)
-    {
+    public void setOrganizationStateProvinceCounty(String organizationStateProvinceCounty) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getOrganizationCountry()
-    {
+    public String getOrganizationCountry() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setOrganizationCountry(String organizationCountry)
-    {
+    public void setOrganizationCountry(String organizationCountry) {
         // TODO Auto-generated method stub
 
     }

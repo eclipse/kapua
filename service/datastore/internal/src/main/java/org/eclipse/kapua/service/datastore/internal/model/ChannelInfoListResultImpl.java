@@ -21,15 +21,14 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
  * @since 1.0
  *
  */
-public class ChannelInfoListResultImpl extends AbstractStorableListResult<ChannelInfo> implements ChannelInfoListResult
-{
+public class ChannelInfoListResultImpl extends AbstractStorableListResult<ChannelInfo> implements ChannelInfoListResult {
+
     private static final long serialVersionUID = -6150141413325816028L;
 
     /**
      * Construct a channel info result list
      */
-    public ChannelInfoListResultImpl()
-    {
+    public ChannelInfoListResultImpl() {
         super();
     }
 
@@ -38,8 +37,7 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
      * 
      * @param nextKey
      */
-    public ChannelInfoListResultImpl(Object nextKey)
-    {
+    public ChannelInfoListResultImpl(Object nextKey) {
         super(nextKey);
     }
 
@@ -49,8 +47,7 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
      * @param nextKey
      * @param totalCount
      */
-    public ChannelInfoListResultImpl(Object nextKey, Long totalCount)
-    {
+    public ChannelInfoListResultImpl(Object nextKey, Long totalCount) {
         super(nextKey, totalCount);
     }
 }

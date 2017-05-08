@@ -19,8 +19,7 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
-public interface KapuaAppsPayload extends KapuaPayload
-{
+public interface KapuaAppsPayload extends KapuaPayload {
 
     /**
      * Get the device uptime

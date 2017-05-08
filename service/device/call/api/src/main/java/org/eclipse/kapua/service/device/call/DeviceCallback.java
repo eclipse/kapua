@@ -16,13 +16,13 @@ import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 /**
  * Device callback definition
  * 
- * @param <RSM> response message type
+ * @param <RSM>
+ *            response message type
  * 
  * @since 1.0
  * 
  */
-public interface DeviceCallback<RSM extends DeviceMessage<?,?>>
-{
+public interface DeviceCallback<RSM extends DeviceMessage<?, ?>> {
 
     /**
      * Action to be invoked on response received

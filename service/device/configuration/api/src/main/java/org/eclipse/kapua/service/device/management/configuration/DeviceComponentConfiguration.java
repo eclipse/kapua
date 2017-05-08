@@ -38,8 +38,8 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
         "definition",
         "properties"
 }, factoryClass = DeviceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
-public interface DeviceComponentConfiguration
-{
+public interface DeviceComponentConfiguration {
+
     /**
      * Get device configuration component identifier
      * 

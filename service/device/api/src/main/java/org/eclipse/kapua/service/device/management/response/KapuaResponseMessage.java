@@ -21,8 +21,7 @@ import org.eclipse.kapua.message.KapuaMessage;
  * @since 1.0
  *
  */
-public interface KapuaResponseMessage<C extends KapuaResponseChannel, P extends KapuaResponsePayload> extends KapuaMessage<C, P>
-{
+public interface KapuaResponseMessage<C extends KapuaResponseChannel, P extends KapuaResponsePayload> extends KapuaMessage<C, P> {
 
     /**
      * Get the response code

@@ -25,16 +25,14 @@ import com.codahale.metrics.Counter;
  * 
  * @since 1.0
  */
-public class ErrorMessageListener extends AbstractListener
-{
+public class ErrorMessageListener extends AbstractListener {
 
     private static final Logger s_logger = LoggerFactory.getLogger(ErrorMessageListener.class);
 
     private Counter metricError;
     private Counter metricErrorLifeCycleMessage;
 
-    public ErrorMessageListener()
-    {
+    public ErrorMessageListener() {
         super("error");
         metricError = registerCounter("messages", "generic", "count");
         metricErrorLifeCycleMessage = registerCounter("messages", "life_cycle", "count");
@@ -47,8 +45,7 @@ public class ErrorMessageListener extends AbstractListener
      * @param message
      * @throws KapuaException
      */
-    public void processMessage(Exchange exchange, Object message) throws KapuaException
-    {
+    public void processMessage(Exchange exchange, Object message) throws KapuaException {
         metricError.inc();
         logError(exchange, message, "generic");
     }
@@ -60,8 +57,7 @@ public class ErrorMessageListener extends AbstractListener
      * @param message
      * @throws KapuaException
      */
-    public void lifeCycleMessage(Exchange exchange, Object message) throws KapuaException
-    {
+    public void lifeCycleMessage(Exchange exchange, Object message) throws KapuaException {
         metricErrorLifeCycleMessage.inc();
         logError(exchange, message, "LifeCycle");
     }
@@ -73,31 +69,28 @@ public class ErrorMessageListener extends AbstractListener
      * @param message
      * @throws KapuaException
      */
-    public void unmatchedMessage(Exchange exchange, Object message) throws KapuaException
-    {
+    public void unmatchedMessage(Exchange exchange, Object message) throws KapuaException {
         metricErrorLifeCycleMessage.inc();
         logUnmatched(exchange, message, "unmatched");
     }
 
-    private void logError(Exchange exchange, Object message, String serviceName)
-    {
+    private void logError(Exchange exchange, Object message, String serviceName) {
         Throwable t = ((Throwable) exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_EXCEPTION));
         s_logger.warn("Processing error message for service {}... Message type {} - Endpoint {} - Error message {}",
-                      new Object[] {
-                                     serviceName,
-                                     (message != null ? message.getClass().getName() : null),
-                                     exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT),
-                                     t.getMessage() });
+                new Object[] {
+                        serviceName,
+                        (message != null ? message.getClass().getName() : null),
+                        exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT),
+                        t.getMessage() });
         s_logger.warn("Exception: ", t);
     }
-    private void logUnmatched(Exchange exchange, Object message, String serviceName)
 
-    {
+    private void logUnmatched(Exchange exchange, Object message, String serviceName) {
         s_logger.warn("Processing unmatched message for service {}... Message type {} - Endpoint {}",
-                      new Object[] {
-                                     serviceName,
-                                     (message != null ? message.getClass().getName() : null),
-                                     exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT) });
+                new Object[] {
+                        serviceName,
+                        (message != null ? message.getClass().getName() : null),
+                        exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT) });
     }
 
 }

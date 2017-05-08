@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public interface SortField
-{
+public interface SortField {
 
     /**
      * Get the field name

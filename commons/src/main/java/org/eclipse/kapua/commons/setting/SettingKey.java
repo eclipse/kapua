@@ -17,8 +17,7 @@ package org.eclipse.kapua.commons.setting;
  * @since 1.0
  *
  */
-public interface SettingKey
-{
+public interface SettingKey {
 
     /**
      * Get the setting key

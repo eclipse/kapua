@@ -21,20 +21,17 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class CommandRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
-{
+public class CommandRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
 
     private KapuaMethod method;
 
     @Override
-    public KapuaMethod getMethod()
-    {
+    public KapuaMethod getMethod() {
         return method;
     }
 
     @Override
-    public void setMethod(KapuaMethod method)
-    {
+    public void setMethod(KapuaMethod method) {
         this.method = method;
     }
 

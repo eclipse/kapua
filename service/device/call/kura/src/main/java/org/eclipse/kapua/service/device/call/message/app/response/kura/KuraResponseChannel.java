@@ -20,8 +20,8 @@ import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponse
  * @since 1.0
  *
  */
-public class KuraResponseChannel extends KuraAppChannel implements DeviceResponseChannel
-{
+public class KuraResponseChannel extends KuraAppChannel implements DeviceResponseChannel {
+
     private String replyPart;
     private String requestId;
 
@@ -31,8 +31,7 @@ public class KuraResponseChannel extends KuraAppChannel implements DeviceRespons
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraResponseChannel(String scopeNamespace, String clientId)
-    {
+    public KuraResponseChannel(String scopeNamespace, String clientId) {
         this(null, scopeNamespace, clientId);
     }
 
@@ -43,32 +42,27 @@ public class KuraResponseChannel extends KuraAppChannel implements DeviceRespons
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraResponseChannel(String controlDestinationPrefix, String scopeNamespace, String clientId)
-    {
+    public KuraResponseChannel(String controlDestinationPrefix, String scopeNamespace, String clientId) {
         super(controlDestinationPrefix, scopeNamespace, clientId);
     }
 
     @Override
-    public String getReplyPart()
-    {
+    public String getReplyPart() {
         return replyPart;
     }
 
     @Override
-    public void setReplyPart(String replyPart)
-    {
+    public void setReplyPart(String replyPart) {
         this.replyPart = replyPart;
     }
 
     @Override
-    public String getRequestId()
-    {
+    public String getRequestId() {
         return requestId;
     }
 
     @Override
-    public void setRequestId(String requestId)
-    {
+    public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
 }

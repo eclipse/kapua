@@ -23,28 +23,25 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
  * @since 1.0
  *
  */
-public class AndPredicate implements KapuaAndPredicate
-{
+public class AndPredicate implements KapuaAndPredicate {
+
     private List<KapuaPredicate> predicates;
 
     /**
      * Constructor
      */
-    public AndPredicate()
-    {
+    public AndPredicate() {
         this.predicates = new ArrayList<KapuaPredicate>();
     }
 
     @Override
-    public AndPredicate and(KapuaPredicate predicate)
-    {
+    public AndPredicate and(KapuaPredicate predicate) {
         this.predicates.add(predicate);
         return this;
     }
 
     @Override
-    public List<KapuaPredicate> getPredicates()
-    {
+    public List<KapuaPredicate> getPredicates() {
         return this.predicates;
     }
 }

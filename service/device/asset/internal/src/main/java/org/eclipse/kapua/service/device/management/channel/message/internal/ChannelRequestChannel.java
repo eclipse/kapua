@@ -20,17 +20,16 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class ChannelRequestChannel extends AssetRequestChannel implements KapuaRequestChannel
-{
-    private String      assetName;
+public class ChannelRequestChannel extends AssetRequestChannel implements KapuaRequestChannel {
+
+    private String assetName;
 
     /**
      * Get the asset identifier
      * 
      * @return
      */
-    public String getAssetName()
-    {
+    public String getAssetName() {
         return assetName;
     }
 
@@ -39,8 +38,7 @@ public class ChannelRequestChannel extends AssetRequestChannel implements KapuaR
      * 
      * @param assetName
      */
-    public void setAssetName(String assetName)
-    {
+    public void setAssetName(String assetName) {
         this.assetName = assetName;
     }
 }

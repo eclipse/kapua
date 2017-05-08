@@ -14,18 +14,18 @@ package org.eclipse.kapua.model.query.predicate;
 /**
  * Kapua attribute predicate definition.
  *
- * @param <T> attribute value
+ * @param <T>
+ *            attribute value
  * 
  * @since 1.0
  * 
  */
-public interface KapuaAttributePredicate<T> extends KapuaPredicate
-{
+public interface KapuaAttributePredicate<T> extends KapuaPredicate {
+
     /**
      * Allowed predicate operator
      */
-    public enum Operator
-    {
+    public enum Operator {
         /**
          * equal
          */

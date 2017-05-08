@@ -20,8 +20,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * @since 1.0
  *
  */
-public enum DatastoreSettingKey implements SettingKey
-{
+public enum DatastoreSettingKey implements SettingKey {
 
     /**
      * Elasticsearch datastore
@@ -75,14 +74,12 @@ public enum DatastoreSettingKey implements SettingKey
 
     private String key;
 
-    private DatastoreSettingKey(String key)
-    {
+    private DatastoreSettingKey(String key) {
         this.key = key;
     }
 
     @Override
-    public String key()
-    {
+    public String key() {
         return key;
     }
 }

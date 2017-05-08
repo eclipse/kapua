@@ -21,14 +21,16 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 /**
  * Common interface for all KapuaService that are managing identifiable entities.
  *
- * @param <E> - Class of the KapuaEntity being managed by this Service
- * @param <C> - Creator Class of the KapuaEntity being managed by this Service
+ * @param <E>
+ *            - Class of the KapuaEntity being managed by this Service
+ * @param <C>
+ *            - Creator Class of the KapuaEntity being managed by this Service
  * 
  * @since 1.0
  * 
  */
-public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntityCreator<E>> extends KapuaService
-{
+public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntityCreator<E>> extends KapuaService {
+
     /**
      * Creates the entity using information provided via entity creator
      * 
@@ -37,7 +39,7 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @throws KapuaException
      */
     public E create(C creator)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Find the entity identified by entity and scope identifiers
@@ -48,7 +50,7 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @throws KapuaException
      */
     public E find(KapuaId scopeId, KapuaId entityId)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Returns the entity list matching the provided query
@@ -58,7 +60,7 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @throws KapuaException
      */
     public KapuaListResult<E> query(KapuaQuery<E> query)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Returns the entity count matching the provided query
@@ -68,7 +70,7 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @throws KapuaException
      */
     public long count(KapuaQuery<E> query)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Delete the entity identified by the entity and scope identifiers
@@ -78,5 +80,5 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @throws KapuaException
      */
     public void delete(KapuaId scopeId, KapuaId entityId)
-        throws KapuaException;
+            throws KapuaException;
 }

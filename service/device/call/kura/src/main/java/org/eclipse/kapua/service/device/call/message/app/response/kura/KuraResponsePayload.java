@@ -21,43 +21,37 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
  * @since 1.0
  *
  */
-public class KuraResponsePayload extends KuraPayload implements DeviceResponsePayload
-{
+public class KuraResponsePayload extends KuraPayload implements DeviceResponsePayload {
+
     @SuppressWarnings("unchecked")
     @Override
-    public KuraResponseCode getResponseCode()
-    {
+    public KuraResponseCode getResponseCode() {
         return KuraResponseCode.valueOf((String) getMetrics().get("response.code"));
     }
 
     @Override
-    public String getExceptionMessage()
-    {
+    public String getExceptionMessage() {
         return (String) getMetrics().get("response.exception.message");
     }
 
     @Override
-    public String getExceptionStack()
-    {
+    public String getExceptionStack() {
         return (String) getMetrics().get("response.exception.stack");
     }
 
     @Override
-    public byte[] getResponseBody()
-    {
+    public byte[] getResponseBody() {
         return getBody();
     }
 
     @Override
-    public byte[] toByteArray()
-    {
+    public byte[] toByteArray() {
         return super.toByteArray();
     }
 
     @Override
     public void readFromByteArray(byte[] rawPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         super.readFromByteArray(rawPayload);
     }
 }

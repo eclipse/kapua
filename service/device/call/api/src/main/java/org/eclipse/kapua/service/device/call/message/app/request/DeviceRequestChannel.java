@@ -20,8 +20,7 @@ import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
  * @since 1.0
  *
  */
-public interface DeviceRequestChannel extends DeviceAppChannel
-{
+public interface DeviceRequestChannel extends DeviceAppChannel {
 
     /**
      * Get the request method

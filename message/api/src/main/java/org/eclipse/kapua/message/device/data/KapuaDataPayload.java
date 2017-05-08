@@ -19,7 +19,6 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
-public interface KapuaDataPayload extends KapuaPayload
-{
-    
+public interface KapuaDataPayload extends KapuaPayload {
+
 }

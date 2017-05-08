@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
  * @since 1.0
  *
  */
-public interface DeviceResponseChannel extends DeviceAppChannel
-{
+public interface DeviceResponseChannel extends DeviceAppChannel {
 
     /**
      * Get the reply part

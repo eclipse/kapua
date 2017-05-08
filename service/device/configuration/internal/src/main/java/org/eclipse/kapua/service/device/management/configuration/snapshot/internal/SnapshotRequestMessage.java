@@ -20,19 +20,17 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
  * @since 1.0
  * 
  */
-public class SnapshotRequestMessage extends KapuaMessageImpl<SnapshotRequestChannel, SnapshotRequestPayload>implements KapuaRequestMessage<SnapshotRequestChannel, SnapshotRequestPayload>
-{
+public class SnapshotRequestMessage extends KapuaMessageImpl<SnapshotRequestChannel, SnapshotRequestPayload> implements KapuaRequestMessage<SnapshotRequestChannel, SnapshotRequestPayload> {
+
     @SuppressWarnings("unchecked")
     @Override
-    public Class<SnapshotRequestMessage> getRequestClass()
-    {
+    public Class<SnapshotRequestMessage> getRequestClass() {
         return SnapshotRequestMessage.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Class<SnapshotResponseMessage> getResponseClass()
-    {
+    public Class<SnapshotResponseMessage> getResponseClass() {
         return SnapshotResponseMessage.class;
     }
 

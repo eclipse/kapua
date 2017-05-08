@@ -37,12 +37,10 @@ public class DevicesMap extends LayoutContainer {
         super.onRender(parent, index);
     }
 
-    public void refresh(GwtDeviceQueryPredicates predicates)
-    {
+    public void refresh(GwtDeviceQueryPredicates predicates) {
     }
 
-    private void initMapOptions()
-    {
+    private void initMapOptions() {
     }
 
     private void placeMarkers(List<GwtDevice> devices) {

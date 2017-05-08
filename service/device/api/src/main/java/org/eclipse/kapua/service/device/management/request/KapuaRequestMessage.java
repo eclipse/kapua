@@ -24,8 +24,7 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload
  * @since 1.0
  *
  */
-public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessage<C, P>
-{
+public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessage<C, P> {
 
     /**
      * Get the request message class type

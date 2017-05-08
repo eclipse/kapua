@@ -19,8 +19,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
-public class KapuaEntityExistsException extends KapuaRuntimeException
-{
+public class KapuaEntityExistsException extends KapuaRuntimeException {
 
     private static final long serialVersionUID = -2991079800089173789L;
 
@@ -30,10 +29,10 @@ public class KapuaEntityExistsException extends KapuaRuntimeException
      * Constructor for the {@link KapuaEntityExistsException} taking in the duplicated name.
      * 
      * @param t
-     * @param id the key that conflicts on the insert operation (duplicated key)
+     * @param id
+     *            the key that conflicts on the insert operation (duplicated key)
      */
-    public KapuaEntityExistsException(Throwable t, KapuaId id)
-    {
+    public KapuaEntityExistsException(Throwable t, KapuaId id) {
         super(KapuaErrorCodes.ENTITY_ALREADY_EXISTS, t);
         this.id = id;
     }
@@ -43,8 +42,7 @@ public class KapuaEntityExistsException extends KapuaRuntimeException
      * 
      * @return
      */
-    public KapuaId getId()
-    {
+    public KapuaId getId() {
         return id;
     }
 

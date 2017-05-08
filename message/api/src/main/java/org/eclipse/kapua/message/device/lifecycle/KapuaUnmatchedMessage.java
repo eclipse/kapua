@@ -20,7 +20,6 @@ import org.eclipse.kapua.message.KapuaMessage;
  * @since 1.0
  *
  */
-public interface KapuaUnmatchedMessage extends KapuaMessage<KapuaUnmatchedChannel, KapuaUnmatchedPayload>
-{
+public interface KapuaUnmatchedMessage extends KapuaMessage<KapuaUnmatchedChannel, KapuaUnmatchedPayload> {
 
 }

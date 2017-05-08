@@ -17,8 +17,8 @@ package org.eclipse.kapua;
  * @since 1.0
  * 
  */
-public class KapuaIllegalAccessException extends KapuaException 
-{
+public class KapuaIllegalAccessException extends KapuaException {
+
     private static final long serialVersionUID = 7415560563036738488L;
 
     /**

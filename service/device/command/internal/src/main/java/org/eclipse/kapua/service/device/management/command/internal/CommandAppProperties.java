@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.device.management.KapuaAppProperties;
  * @since 1.0
  *
  */
-public enum CommandAppProperties implements KapuaAppProperties
-{
+public enum CommandAppProperties implements KapuaAppProperties {
     /**
      * Application name
      */
@@ -85,14 +84,12 @@ public enum CommandAppProperties implements KapuaAppProperties
 
     private String value;
 
-    CommandAppProperties(String value)
-    {
+    CommandAppProperties(String value) {
         this.value = value;
     }
 
     @Override
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

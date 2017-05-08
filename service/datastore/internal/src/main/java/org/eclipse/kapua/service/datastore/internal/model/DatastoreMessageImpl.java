@@ -25,14 +25,13 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
  * @since 1.0
  *
  */
-public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPayload> implements DatastoreMessage
-{
+public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPayload> implements DatastoreMessage {
+
     private StorableId datastoreId;
-    private Date       timestamp;
+    private Date timestamp;
 
     @Override
-    public StorableId getDatastoreId()
-    {
+    public StorableId getDatastoreId() {
         return datastoreId;
     }
 
@@ -41,14 +40,12 @@ public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPa
      * 
      * @param id
      */
-    public void setDatastoreId(StorableId id)
-    {
+    public void setDatastoreId(StorableId id) {
         this.datastoreId = id;
     }
 
     @Override
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return this.timestamp;
     }
 
@@ -57,8 +54,7 @@ public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPa
      * 
      * @param timestamp
      */
-    public void setTimestamp(Date timestamp)
-    {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 }

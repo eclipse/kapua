@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management.response;
  * @since 1.0
  *
  */
-public enum KapuaResponseCode
-{
+public enum KapuaResponseCode {
     /**
      * Accepted
      */

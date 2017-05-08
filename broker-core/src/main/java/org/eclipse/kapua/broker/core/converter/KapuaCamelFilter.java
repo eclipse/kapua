@@ -24,10 +24,9 @@ import org.eclipse.kapua.commons.security.KapuaSession;
  * Kapua Camel session filter used to bind/unbind Kapua session to the thread context
  *
  */
-public class KapuaCamelFilter extends AbstractListener
-{
-    public KapuaCamelFilter()
-    {
+public class KapuaCamelFilter extends AbstractListener {
+
+    public KapuaCamelFilter() {
         super("filter");
     }
 
@@ -38,8 +37,7 @@ public class KapuaCamelFilter extends AbstractListener
      * @param value
      * @throws KapuaException
      */
-    public void bindSession(Exchange exchange, Object value) throws KapuaException
-    {
+    public void bindSession(Exchange exchange, Object value) throws KapuaException {
         ThreadContext.unbindSubject();
         // FIX #164
         byte[] kapuaSession = exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_SESSION, byte[].class);
@@ -53,8 +51,7 @@ public class KapuaCamelFilter extends AbstractListener
      * @param value
      * @throws KapuaException
      */
-    public void unbindSession(Exchange exchange, Object value) throws KapuaException
-    {
+    public void unbindSession(Exchange exchange, Object value) throws KapuaException {
         KapuaSecurityUtils.clearSession();
     }
 

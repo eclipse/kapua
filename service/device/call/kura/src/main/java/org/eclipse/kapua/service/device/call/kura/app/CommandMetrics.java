@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum CommandMetrics
-{
+public enum CommandMetrics {
     /**
      * Application identifier
      */
@@ -83,8 +82,7 @@ public enum CommandMetrics
 
     private String value;
 
-    CommandMetrics(String value)
-    {
+    CommandMetrics(String value) {
         this.value = value;
     }
 
@@ -93,8 +91,7 @@ public enum CommandMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

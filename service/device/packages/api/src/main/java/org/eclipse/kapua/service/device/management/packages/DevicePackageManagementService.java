@@ -28,8 +28,7 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
  * @since 1.0
  *
  */
-public interface DevicePackageManagementService extends KapuaService
-{
+public interface DevicePackageManagementService extends KapuaService {
 
     /**
      * Get the installed packages list
@@ -41,7 +40,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public DevicePackages getInstalled(KapuaId scopeId, KapuaId deviceId, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Starts a download package operation
@@ -53,7 +52,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public void downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Interrupt a download package operation
@@ -64,7 +63,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public void downloadStop(KapuaId scopeId, KapuaId deviceId, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Gets the download package status
@@ -76,7 +75,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public DevicePackageDownloadOperation downloadStatus(KapuaId scopeId, KapuaId deviceId, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Installs a package
@@ -88,7 +87,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public void installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Gets the package installation status
@@ -100,7 +99,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public DevicePackageInstallOperation installStatus(KapuaId scopeId, KapuaId deviceId, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Uninstalls a package
@@ -112,7 +111,7 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public void uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Gets the package uninstallation status
@@ -124,5 +123,5 @@ public interface DevicePackageManagementService extends KapuaService
      * @throws KapuaException
      */
     public DevicePackageUninstallOperation uninstallStatus(KapuaId scopeId, KapuaId deviceId, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 }

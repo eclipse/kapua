@@ -19,7 +19,6 @@ import org.eclipse.kapua.message.KapuaMessage;
  * @since 1.0
  *
  */
-public interface KapuaMissingMessage extends KapuaMessage<KapuaMissingChannel, KapuaMissingPayload>
-{
+public interface KapuaMissingMessage extends KapuaMessage<KapuaMissingChannel, KapuaMissingPayload> {
 
 }

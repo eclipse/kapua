@@ -22,12 +22,11 @@ import com.codahale.metrics.Timer;
  *
  * @since 1.0
  */
-public abstract class AbstractListener
-{
+public abstract class AbstractListener {
 
     // metrics
-    private String                      metricComponentName = "listener";
-    private final static MetricsService metricsService      = KapuaLocator.getInstance().getService(MetricsService.class);
+    private String metricComponentName = "listener";
+    private final static MetricsService metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
 
     protected String name;
 
@@ -35,21 +34,22 @@ public abstract class AbstractListener
      * Create a listener with the specific name.<BR>
      * The "listener" constant will be used as metricComponentName.
      * 
-     * @param name First level name to categorize the metrics inside the listener
+     * @param name
+     *            First level name to categorize the metrics inside the listener
      */
-    protected AbstractListener(String name)
-    {
+    protected AbstractListener(String name) {
         this.name = name;
     }
 
     /**
      * Create a listener with the specific metricComponentName and name
      * 
-     * @param metricComponentName Root name to categorize the metrics inside the listener
-     * @param name First level name to categorize the metrics inside the listener
+     * @param metricComponentName
+     *            Root name to categorize the metrics inside the listener
+     * @param name
+     *            First level name to categorize the metrics inside the listener
      */
-    protected AbstractListener(String metricComponentName, String name)
-    {
+    protected AbstractListener(String metricComponentName, String name) {
         this(name);
         this.metricComponentName = metricComponentName;
     }
@@ -61,8 +61,7 @@ public abstract class AbstractListener
      * @param names
      * @return
      */
-    protected Counter registerCounter(String... names)
-    {
+    protected Counter registerCounter(String... names) {
         return metricsService.getCounter(metricComponentName, name, names);
     }
 
@@ -73,8 +72,7 @@ public abstract class AbstractListener
      * @param names
      * @return
      */
-    protected Timer registerTimer(String... names)
-    {
+    protected Timer registerTimer(String... names) {
         return metricsService.getTimer(metricComponentName, name, names);
     }
 

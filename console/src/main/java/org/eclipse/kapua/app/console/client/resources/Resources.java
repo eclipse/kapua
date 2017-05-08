@@ -16,8 +16,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
 import com.google.gwt.resources.client.TextResource;
 
-public interface Resources extends ClientBundleWithLookup
-{
+public interface Resources extends ClientBundleWithLookup {
 
     Resources INSTANCE = GWT.create(Resources.class);
 

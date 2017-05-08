@@ -27,12 +27,11 @@ import org.eclipse.kapua.broker.core.message.MessageConstants;
  * 
  * @since 1.0
  */
-public class JmsAssistantProducerWrapper extends JmsProducerWrapper
-{
+public class JmsAssistantProducerWrapper extends JmsProducerWrapper {
 
-    private final static List<String> semanticTopicConnect    = new ArrayList<String>();
+    private final static List<String> semanticTopicConnect = new ArrayList<String>();
     private final static List<String> semanticTopicDisconnect = new ArrayList<String>();
-    private final static List<String> semanticTopicMissing    = new ArrayList<String>();
+    private final static List<String> semanticTopicMissing = new ArrayList<String>();
 
     static {
         semanticTopicConnect.add("MQTT");
@@ -45,8 +44,7 @@ public class JmsAssistantProducerWrapper extends JmsProducerWrapper
         semanticTopicMissing.add("MISSING");
     }
 
-    public JmsAssistantProducerWrapper(ActiveMQConnectionFactory vmconnFactory, String destination, boolean transacted, boolean start) throws JMSException
-    {
+    public JmsAssistantProducerWrapper(ActiveMQConnectionFactory vmconnFactory, String destination, boolean transacted, boolean start) throws JMSException {
         super(vmconnFactory, destination, transacted, start);
     }
 
@@ -60,8 +58,7 @@ public class JmsAssistantProducerWrapper extends JmsProducerWrapper
      * @param topic
      * @throws JMSException
      */
-    public void sendDataMessageNotStored(String topic, byte[] messageNotStored) throws JMSException
-    {
+    public void sendDataMessageNotStored(String topic, byte[] messageNotStored) throws JMSException {
         BytesMessage message = session.createBytesMessage();
 
         message.setStringProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, JmsUtil.convertMqttWildCardToJms(topic));

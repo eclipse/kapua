@@ -21,20 +21,20 @@ import org.eclipse.kapua.service.KapuaService;
  * @since 1.0
  *
  */
-public interface DeviceSnapshotManagementService extends KapuaService
-{
+public interface DeviceSnapshotManagementService extends KapuaService {
 
     /**
      * Get the device snapshots list for the the provided device identifier
      * 
      * @param scopeId
      * @param deviceid
-     * @param timeout timeout waiting for the device response
+     * @param timeout
+     *            timeout waiting for the device response
      * @return
      * @throws KapuaException
      */
     public DeviceSnapshots get(KapuaId scopeId, KapuaId deviceid, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Rollback the device configuration to the device snapshot identified by the provided snapshot identifier
@@ -42,9 +42,10 @@ public interface DeviceSnapshotManagementService extends KapuaService
      * @param scopeId
      * @param deviceid
      * @param snapshotId
-     * @param timeout timeout waiting for the device response
+     * @param timeout
+     *            timeout waiting for the device response
      * @throws KapuaException
      */
     public void rollback(KapuaId scopeId, KapuaId deviceid, String snapshotId, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 }

@@ -15,18 +15,16 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.google.gwt.user.client.Element;
 
-public abstract class TabbedDialog extends ActionDialog
-{
+public abstract class TabbedDialog extends ActionDialog {
+
     protected TabPanel m_tabsPanel;
 
-    public TabbedDialog()
-    {
+    public TabbedDialog() {
         super();
     }
 
     @Override
-    protected void onRender(Element parent, int pos)
-    {
+    protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
 
         //

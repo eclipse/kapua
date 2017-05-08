@@ -18,7 +18,6 @@ package org.eclipse.kapua.service.device.call.message.app.response;
  * @since 1.0
  * 
  */
-public interface DeviceResponseCode
-{
+public interface DeviceResponseCode {
 
 }

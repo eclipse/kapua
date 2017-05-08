@@ -18,7 +18,6 @@ package org.eclipse.kapua.service.datastore.model;
  *
  * @param <E>
  */
-public interface StorableCreator<E extends Storable>
-{
+public interface StorableCreator<E extends Storable> {
 
 }

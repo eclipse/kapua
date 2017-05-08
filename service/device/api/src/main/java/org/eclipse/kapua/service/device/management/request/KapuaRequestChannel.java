@@ -22,8 +22,7 @@ import org.eclipse.kapua.service.device.management.KapuaMethod;
  * @since 1.0
  *
  */
-public interface KapuaRequestChannel extends KapuaAppChannel
-{
+public interface KapuaRequestChannel extends KapuaAppChannel {
 
     /**
      * Get the request method

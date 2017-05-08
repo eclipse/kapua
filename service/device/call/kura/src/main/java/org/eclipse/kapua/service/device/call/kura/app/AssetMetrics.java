@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum AssetMetrics
-{
+public enum AssetMetrics {
 
     /**
      * Application identifier
@@ -32,8 +31,7 @@ public enum AssetMetrics
 
     private String value;
 
-    AssetMetrics(String value)
-    {
+    AssetMetrics(String value) {
         this.value = value;
     }
 
@@ -42,8 +40,7 @@ public enum AssetMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

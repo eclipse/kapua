@@ -26,8 +26,7 @@ import com.codahale.metrics.Counter;
  * 
  * @since 1.0
  */
-public class KapuaLifeCycleConverter extends AbstractKapuaConverter
-{
+public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(KapuaLifeCycleConverter.class);
 
@@ -37,8 +36,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
     private Counter metricConverterMissingMessage;
     private Counter metricConverterNotifyMessage;
 
-    public KapuaLifeCycleConverter()
-    {
+    public KapuaLifeCycleConverter() {
         super();
         metricConverterAppMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "app", "count");
         metricConverterBirthMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "birth", "count");
@@ -53,11 +51,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
      * @param exchange
      * @param value
      * @return Message container that contains application message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
-    public CamelKapuaMessage<?> convertToApps(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToApps(Exchange exchange, Object value) throws KapuaException {
         metricConverterAppMessage.inc();
         return convertTo(exchange, value, MessageType.APP);
     }
@@ -68,11 +66,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
      * @param exchange
      * @param value
      * @return Message container that contains birth message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
-    public CamelKapuaMessage<?> convertToBirth(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToBirth(Exchange exchange, Object value) throws KapuaException {
         metricConverterBirthMessage.inc();
         return convertTo(exchange, value, MessageType.BIRTH);
     }
@@ -83,11 +81,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
      * @param exchange
      * @param value
      * @return Message container that contains disconnect message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
-    public CamelKapuaMessage<?> convertToDisconnect(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToDisconnect(Exchange exchange, Object value) throws KapuaException {
         metricConverterDcMessage.inc();
         return convertTo(exchange, value, MessageType.DISCONNECT);
     }
@@ -98,11 +96,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
      * @param exchange
      * @param value
      * @return Message container that contains missing message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
-    public CamelKapuaMessage<?> convertToMissing(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToMissing(Exchange exchange, Object value) throws KapuaException {
         metricConverterMissingMessage.inc();
         return convertTo(exchange, value, MessageType.MISSING);
     }
@@ -116,8 +114,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
      * @throws KapuaException
      */
     @Converter
-    public CamelKapuaMessage<?> convertToNotify(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToNotify(Exchange exchange, Object value) throws KapuaException {
         metricConverterNotifyMessage.inc();
         return convertTo(exchange, value, MessageType.NOTIFY);
     }
@@ -131,8 +128,7 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter
      * @throws KapuaException
      */
     @Converter
-    public CamelKapuaMessage<?> convertToUnmatched(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToUnmatched(Exchange exchange, Object value) throws KapuaException {
         metricConverterNotifyMessage.inc();
         return convertTo(exchange, value, MessageType.UNMATCHED);
     }

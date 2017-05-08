@@ -25,8 +25,7 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
  * @since 1.0
  *
  */
-public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent>
-{
+public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
 
     /**
      * Get the device identifier

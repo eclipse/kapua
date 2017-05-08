@@ -19,8 +19,7 @@ import org.eclipse.kapua.message.KapuaChannel;
  * @since 1.0
  *
  */
-public interface KapuaAppsChannel extends KapuaChannel
-{
+public interface KapuaAppsChannel extends KapuaChannel {
 
     /**
      * Set client identifier

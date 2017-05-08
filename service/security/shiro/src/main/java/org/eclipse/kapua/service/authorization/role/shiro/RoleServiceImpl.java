@@ -55,8 +55,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public Role create(RoleCreator roleCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
         ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
@@ -67,7 +66,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
-        
+
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
         }
@@ -137,8 +136,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public Role find(KapuaId scopeId, KapuaId roleId)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(roleId, "roleId");
 
@@ -154,8 +152,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public RoleListResult query(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -171,8 +168,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public long count(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 

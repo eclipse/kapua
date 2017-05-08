@@ -51,24 +51,22 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class AccountForm extends Window
-{
+public class AccountForm extends Window {
 
-    private static final ConsoleMessages       MSGS              = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final GwtAccountServiceAsync       gwtAccountService = GWT.create(GwtAccountService.class);
-    private final GwtSecurityTokenServiceAsync gwtXSRFService    = GWT.create(GwtSecurityTokenService.class);
+    private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    private static final int                   LABEL_WIDTH_FORM  = 190;
+    private static final int LABEL_WIDTH_FORM = 190;
 
-    private GwtSession                         m_currentSession;
-    private GwtAccount                         m_newAccount;
-    private GwtAccount                         m_existingAccount;
-    private FormPanel                          m_formPanel;
-    private Status                             m_status;
+    private GwtSession m_currentSession;
+    private GwtAccount m_newAccount;
+    private GwtAccount m_existingAccount;
+    private FormPanel m_formPanel;
+    private Status m_status;
 
-    public AccountForm(GwtSession session)
-    {
+    public AccountForm(GwtSession session) {
         m_currentSession = session;
         m_newAccount = null;
 
@@ -81,8 +79,7 @@ public class AccountForm extends Window
         DialogUtils.resizeDialog(this, 600, 700);
     }
 
-    public AccountForm(GwtSession session, GwtAccount existingAccount)
-    {
+    public AccountForm(GwtSession session, GwtAccount existingAccount) {
         this(session);
         m_existingAccount = existingAccount;
         if (m_existingAccount != null) {
@@ -90,18 +87,15 @@ public class AccountForm extends Window
         }
     }
 
-    public GwtAccount getNewAccount()
-    {
+    public GwtAccount getNewAccount() {
         return m_newAccount;
     }
 
-    public GwtAccount getExistingAccount()
-    {
+    public GwtAccount getExistingAccount() {
         return m_existingAccount;
     }
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
         FormData formData = new FormData("-30");
@@ -320,9 +314,9 @@ public class AccountForm extends Window
         // Behave of Submit Button
         //
         m_formPanel.addButton(new Button(MSGS.submitButton(), new SelectionListener<ButtonEvent>() {
+
             @Override
-            public void componentSelected(ButtonEvent ce)
-            {
+            public void componentSelected(ButtonEvent ce) {
 
                 // make sure all visible fields are valid before performing the action
                 for (Field<?> field : m_formPanel.getFields()) {
@@ -365,32 +359,29 @@ public class AccountForm extends Window
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
                         @Override
-                        public void onFailure(Throwable ex)
-                        {
+                        public void onFailure(Throwable ex) {
                             FailureHandler.handle(ex);
                         }
 
                         @Override
-                        public void onSuccess(GwtXSRFToken token)
-                        {
+                        public void onSuccess(GwtXSRFToken token) {
                             gwtAccountService.create(token,
-                                                     gwtAccountCreator,
-                                                     new AsyncCallback<GwtAccount>() {
-                                                         public void onFailure(Throwable caught)
-                                                         {
-                                                             FailureHandler.handleFormException(m_formPanel, caught);
-                                                             m_status.hide();
-                                                             m_formPanel.getButtonBar().enable();
-                                                         }
+                                    gwtAccountCreator,
+                                    new AsyncCallback<GwtAccount>() {
 
-                                                         public void onSuccess(GwtAccount account)
-                                                         {
-                                                             ConsoleInfo.display(MSGS.info(), MSGS.accountCreatedConfirmation(account.getUnescapedName()));
-                                                             m_newAccount = account;
-                                                             // gwtAccountUtils.loadChildAccounts();
-                                                             hide();
-                                                         }
-                                                     });
+                                        public void onFailure(Throwable caught) {
+                                            FailureHandler.handleFormException(m_formPanel, caught);
+                                            m_status.hide();
+                                            m_formPanel.getButtonBar().enable();
+                                        }
+
+                                        public void onSuccess(GwtAccount account) {
+                                            ConsoleInfo.display(MSGS.info(), MSGS.accountCreatedConfirmation(account.getUnescapedName()));
+                                            m_newAccount = account;
+                                            // gwtAccountUtils.loadChildAccounts();
+                                            hide();
+                                        }
+                                    });
                         }
                     });
                 }
@@ -419,31 +410,28 @@ public class AccountForm extends Window
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
                         @Override
-                        public void onFailure(Throwable ex)
-                        {
+                        public void onFailure(Throwable ex) {
                             FailureHandler.handle(ex);
                         }
 
                         @Override
-                        public void onSuccess(GwtXSRFToken token)
-                        {
+                        public void onSuccess(GwtXSRFToken token) {
                             gwtAccountService.update(token,
-                                                     m_existingAccount,
-                                                     new AsyncCallback<GwtAccount>() {
-                                                         public void onFailure(Throwable caught)
-                                                         {
-                                                             FailureHandler.handleFormException(m_formPanel, caught);
-                                                             m_status.hide();
-                                                             m_formPanel.getButtonBar().enable();
-                                                         }
+                                    m_existingAccount,
+                                    new AsyncCallback<GwtAccount>() {
 
-                                                         public void onSuccess(GwtAccount account)
-                                                         {
-                                                             ConsoleInfo.display(MSGS.info(), MSGS.accountUpdatedConfirmation(account.getUnescapedName()));
-                                                             m_existingAccount = account;
-                                                             hide();
-                                                         }
-                                                     });
+                                        public void onFailure(Throwable caught) {
+                                            FailureHandler.handleFormException(m_formPanel, caught);
+                                            m_status.hide();
+                                            m_formPanel.getButtonBar().enable();
+                                        }
+
+                                        public void onSuccess(GwtAccount account) {
+                                            ConsoleInfo.display(MSGS.info(), MSGS.accountUpdatedConfirmation(account.getUnescapedName()));
+                                            m_existingAccount = account;
+                                            hide();
+                                        }
+                                    });
                         }
                     });
 
@@ -455,9 +443,9 @@ public class AccountForm extends Window
         // Cancel Button
         //
         m_formPanel.addButton(new Button(MSGS.cancelButton(), new SelectionListener<ButtonEvent>() {
+
             @Override
-            public void componentSelected(ButtonEvent ce)
-            {
+            public void componentSelected(ButtonEvent ce) {
                 hide();
             }
         }));
@@ -469,13 +457,12 @@ public class AccountForm extends Window
         parentAccountName.setValue(m_currentSession.getSelectedAccount().getName());
         if (m_existingAccount != null) {
             gwtAccountService.find(m_existingAccount.getId(), new AsyncCallback<GwtAccount>() {
-                public void onFailure(Throwable caught)
-                {
+
+                public void onFailure(Throwable caught) {
                     FailureHandler.handle(caught);
                 }
 
-                public void onSuccess(GwtAccount account)
-                {
+                public void onSuccess(GwtAccount account) {
                     // set value and original value as we want to track the Dirty state
                     accountNameLabel.setValue(account.getName());
                     accountNameField.setValue(account.getName());

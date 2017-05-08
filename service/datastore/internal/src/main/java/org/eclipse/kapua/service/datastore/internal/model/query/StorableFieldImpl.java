@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableField;
  * @since 1.0
  *
  */
-public class StorableFieldImpl implements StorableField
-{
+public class StorableFieldImpl implements StorableField {
 
     private String field;
 
@@ -29,14 +28,12 @@ public class StorableFieldImpl implements StorableField
      * 
      * @param field
      */
-    public StorableFieldImpl(String field)
-    {
+    public StorableFieldImpl(String field) {
         this.field = field;
     }
 
     @Override
-    public String field()
-    {
+    public String field() {
         return field;
     }
 

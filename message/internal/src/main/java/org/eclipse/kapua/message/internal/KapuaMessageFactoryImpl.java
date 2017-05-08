@@ -20,31 +20,26 @@ import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 
 @KapuaProvider
-public class KapuaMessageFactoryImpl implements KapuaMessageFactory
-{
+public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
 
     @Override
-    public KapuaMessage<?,?> newMessage()
-    {
-        return new KapuaMessageImpl<KapuaChannel,KapuaPayload>();
+    public KapuaMessage<?, ?> newMessage() {
+        return new KapuaMessageImpl<KapuaChannel, KapuaPayload>();
     }
 
     @Override
-    public KapuaChannel newChannel()
-    {
+    public KapuaChannel newChannel() {
         return new KapuaChannelImpl();
     }
 
     @Override
-    public KapuaPayload newPayload()
-    {
+    public KapuaPayload newPayload() {
         return new KapuaPayloadImpl();
     }
 
     @Override
 
-    public KapuaPosition newPosition()
-    {
+    public KapuaPosition newPosition() {
         return new KapuaPositionImpl();
     }
 

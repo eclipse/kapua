@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum BundleMetrics
-{
+public enum BundleMetrics {
 
     /**
      * Application identifier
@@ -32,8 +31,7 @@ public enum BundleMetrics
 
     private String value;
 
-    BundleMetrics(String value)
-    {
+    BundleMetrics(String value) {
         this.value = value;
     }
 
@@ -42,8 +40,7 @@ public enum BundleMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

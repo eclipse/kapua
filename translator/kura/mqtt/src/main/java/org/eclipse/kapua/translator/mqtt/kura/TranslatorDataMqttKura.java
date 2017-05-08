@@ -28,13 +28,12 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
  *
  */
 @SuppressWarnings("rawtypes")
-public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraMessage>
-{
+public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraMessage> {
+
     @Override
     @SuppressWarnings("unchecked")
     public KuraMessage translate(MqttMessage mqttMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Kura topic
         KuraChannel kuraChannel = translate(mqttMessage.getRequestTopic());
@@ -46,24 +45,22 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraMessage>
         //
         // Return Kura message
         return new KuraMessage(kuraChannel,
-                               mqttMessage.getTimestamp(),
-                               kuraPayload);
+                mqttMessage.getTimestamp(),
+                kuraPayload);
     }
 
     private KuraChannel translate(MqttTopic mqttTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
 
         //
         // Return Kura Channel
         return new KuraResponseChannel(mqttTopicTokens[0],
-                                       mqttTopicTokens[1]);
+                mqttTopicTokens[1]);
     }
 
     private KuraPayload translate(MqttPayload mqttPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         byte[] jmsBody = mqttPayload.getBody();
 
         KuraPayload kuraPayload = new KuraPayload();
@@ -75,14 +72,12 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraMessage>
     }
 
     @Override
-    public Class<MqttMessage> getClassFrom()
-    {
+    public Class<MqttMessage> getClassFrom() {
         return MqttMessage.class;
     }
 
     @Override
-    public Class<KuraMessage> getClassTo()
-    {
+    public Class<KuraMessage> getClassTo() {
         return KuraMessage.class;
     }
 

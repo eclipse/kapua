@@ -21,8 +21,8 @@ public class ConfirmPasswordUpdateFieldValidator extends PasswordUpdateFieldVali
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    private TextField<String>               passwordField;
-    
+    private TextField<String> passwordField;
+
     public ConfirmPasswordUpdateFieldValidator(TextField<String> confirmPasswordField, TextField<String> passwordField) {
         super(confirmPasswordField);
         this.passwordField = passwordField;
@@ -30,8 +30,7 @@ public class ConfirmPasswordUpdateFieldValidator extends PasswordUpdateFieldVali
     }
 
     @Override
-    public String validate(Field<?> field, String value)
-    {
+    public String validate(Field<?> field, String value) {
 
         String result = super.validate(field, value);
         if (result == null) {

@@ -23,15 +23,15 @@ import org.eclipse.kapua.service.user.UserType;
  * @since 1.0
  *
  */
-public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> implements UserCreator
-{
+public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> implements UserCreator {
+
     private static final long serialVersionUID = 4664940282892151008L;
 
-    private String            displayName;
-    private String            email;
-    private String            phoneNumber;
-    private UserType          userType = UserType.INTERNAL;
-    private String            externalId;
+    private String displayName;
+    private String email;
+    private String phoneNumber;
+    private UserType userType = UserType.INTERNAL;
+    private String externalId;
 
     /**
      * Constructor
@@ -39,8 +39,7 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
      * @param accountId
      * @param name
      */
-    public UserCreatorImpl(KapuaId accountId, String name)
-    {
+    public UserCreatorImpl(KapuaId accountId, String name) {
         super(accountId, name);
     }
 
@@ -49,57 +48,47 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     }
 
     @Override
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return displayName;
     }
 
     @Override
-    public void setDisplayName(String displayName)
-    {
+    public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     @Override
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
     @Override
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
     @Override
-    public String getPhoneNumber()
-    {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
     @Override
-    public void setPhoneNumber(String phoneNumber)
-    {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    
     public UserType getUserType() {
         return userType;
     }
 
-    
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
 
-    
     public String getExternalId() {
         return externalId;
     }
 
-    
     public void setExternalId(String externalId) {
         this.externalId = externalId;
     }

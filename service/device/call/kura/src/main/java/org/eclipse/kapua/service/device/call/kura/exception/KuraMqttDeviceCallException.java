@@ -19,9 +19,9 @@ import org.eclipse.kapua.KapuaException;
  * @since 1.0
  *
  */
-public class KuraMqttDeviceCallException extends KapuaException
-{
-    private static final long   serialVersionUID     = -6207605695086240243L;
+public class KuraMqttDeviceCallException extends KapuaException {
+
+    private static final long serialVersionUID = -6207605695086240243L;
 
     private static final String KAPUA_ERROR_MESSAGES = "device-call-service-error-messages";
 
@@ -30,8 +30,7 @@ public class KuraMqttDeviceCallException extends KapuaException
      * 
      * @param code
      */
-    public KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes code)
-    {
+    public KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes code) {
         super(code);
     }
 
@@ -41,8 +40,7 @@ public class KuraMqttDeviceCallException extends KapuaException
      * @param code
      * @param arguments
      */
-    public KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes code, Object... arguments)
-    {
+    public KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
@@ -53,13 +51,11 @@ public class KuraMqttDeviceCallException extends KapuaException
      * @param cause
      * @param arguments
      */
-    public KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes code, Throwable cause, Object... arguments)
-    {
+    public KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
-    protected String getKapuaErrorMessagesBundle()
-    {
+    protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }
 }
