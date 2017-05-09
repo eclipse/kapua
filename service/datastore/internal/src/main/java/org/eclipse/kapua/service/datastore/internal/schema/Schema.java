@@ -85,7 +85,7 @@ public class Schema {
             // Check existence of the data index
             IndexExistsResponse dataIndexExistsResponse = DatastoreClientFactory.getInstance().isIndexExists(new IndexExistsRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
-                datastoreClient.createIndex(dataIndexName, getMappingSchema());
+                datastoreClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
                 logger.info("Data index created: " + dataIndexName);
             }
 
@@ -97,7 +97,7 @@ public class Schema {
             String registryIndexName = DatastoreUtils.getRegistryIndexName(scopeId);
             IndexExistsResponse registryIndexExistsResponse = datastoreClient.isIndexExists(new IndexExistsRequest(registryIndexName));
             if (!registryIndexExistsResponse.isIndexExists()) {
-                datastoreClient.createIndex(registryIndexName, getMappingSchema());
+                datastoreClient.createIndex(registryIndexName, getMappingSchema(registryIndexName));
                 logger.info("Metadata index created: " + registryIndexExistsResponse);
 
                 datastoreClient.putMapping(new TypeDescriptor(registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableAllField, enableSourceField));
@@ -228,7 +228,7 @@ public class Schema {
         return diffs;
     }
 
-    private ObjectNode getMappingSchema() throws DatamodelMappingException {
+    private ObjectNode getMappingSchema(String idxName) throws DatamodelMappingException {
         String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingKey.INDEX_REFRESH_INTERVAL));
         Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_SHARD_NUMBER, 1);
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_REPLICA_NUMBER, 0);
@@ -238,6 +238,7 @@ public class Schema {
                 new KeyValueEntry(KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(KEY_REPLICA_NUMBER, idxReplicaNumber) });
         rootNode.set(KEY_INDEX, refreshIntervaleNode);
+        logger.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", new Object[] { idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber });
         return rootNode;
     }
 

@@ -89,14 +89,13 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private static final Logger logger = LoggerFactory.getLogger(TransportDatastoreClient.class);
 
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
-    private static final String CLIENT_INITIALIZATION_ERROR_MSG = "Elasticsearch client is not fully initialized";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup transport datastore driver. Cannot close Elasticsearch client instance";
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
     private final static String CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private final static String CLIENT_CLASS_NAME;
-    private static Class<ClientProvider<Client>> INSTANCE;
+    private static Class<ClientProvider<Client>> instance;
     private static ClientProvider<Client> esClientProvider;
 
     static {
@@ -109,38 +108,70 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     /**
      * Default constructor
-     * Initialize the client provider ({@link EsClientProvider}) as singleton. The implementation is specified by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
+     * Initialize the client provider ({@link ClientProvider<Client>}) as singleton. The implementation is specified by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
      * 
      * @throws ClientUnavailableException
      */
     @SuppressWarnings("unchecked")
     public TransportDatastoreClient() throws ClientUnavailableException {
         // lazy synchronization
-        if (INSTANCE == null) {
-            synchronized (CLIENT_CLASS_NAME) {
-                if (INSTANCE == null) {
+        if (instance == null) {
+            synchronized (TransportDatastoreClient.class) {
+                if (instance == null) {
                     if (esClientProvider != null) {
-                        // try to cleanup the client and raise exception
-                        try {
-                            esClientProvider.close();
-                            esClientProvider = null;
-                        } catch (IOException e) {
-                            logger.error(CLIENT_CLEANUP_ERROR_MSG, e);
-                        }
-                        throw new ClientUnavailableException(CLIENT_INITIALIZATION_ERROR_MSG);
+                        cleanupClient(true);
                     }
+                    logger.info("Starting Elasticsearch transport client...");
                     try {
-                        INSTANCE = (Class<ClientProvider<Client>>) Class.forName(CLIENT_CLASS_NAME);
+                        instance = (Class<ClientProvider<Client>>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {
                         throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
                     }
                     try {
-                        esClientProvider = INSTANCE.newInstance();
+                        esClientProvider = instance.newInstance();
                     } catch (InstantiationException | IllegalAccessException e) {
+                        instance = null;
                         throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
                     }
+                    logger.info("Starting Elasticsearch transport client... DONE");
                 }
             }
+        }
+    }
+
+    @Override
+    public void close() throws ClientUnavailableException {
+        synchronized (TransportDatastoreClient.class) {
+            if (instance != null) {
+                if (esClientProvider != null) {
+                    logger.info("Stopping Elasticsearch transport client...");
+                    // all fine... try to cleanup the client
+                    cleanupClient(false);
+                    logger.info("Stopping Elasticsearch transport client... DONE");
+                } else {
+                    logger.warn("Close method called for a not initialized client!");
+                }
+            } else if (esClientProvider != null) {
+                // something wrong happened in the client lifecycle... try to cleanup and raise exception
+                cleanupClient(true);
+            }
+        }
+    }
+
+    private void cleanupClient(boolean raiseException) throws ClientUnavailableException {
+        Throwable cause = null;
+        try {
+            esClientProvider.close();
+            esClientProvider = null;
+            instance = null;
+        } catch (IOException e) {
+            cause = e;
+            logger.error(CLIENT_CLEANUP_ERROR_MSG, e);
+        }
+        if (cause != null) {
+            throw new ClientUnavailableException(CLIENT_CLEANUP_ERROR_MSG, cause);
+        } else if (raiseException) {
+            throw new ClientUnavailableException(CLIENT_CLEANUP_ERROR_MSG);
         }
     }
 

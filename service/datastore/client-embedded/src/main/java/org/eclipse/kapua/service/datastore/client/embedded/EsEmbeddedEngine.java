@@ -18,8 +18,12 @@ import org.elasticsearch.common.settings.Settings;
 //import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EsEmbeddedEngine {
+
+    private static final Logger logger = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
     private static final String DEFAULT_DATA_DIRECTORY = "target/elasticsearch/data";
 
@@ -30,6 +34,7 @@ public class EsEmbeddedEngine {
         if (node == null) {
             synchronized (DEFAULT_DATA_DIRECTORY) {
                 if (node == null) {
+                    logger.info("Starting Elasticsearch embedded node...");
                     // ES 5.3 FIX
                     // Builder elasticsearchSettings = Settings.settingsBuilder()
                     // .put("http.enabled", "false")
@@ -47,6 +52,7 @@ public class EsEmbeddedEngine {
                     // .node();
                     node = new Node(settings);
                     node.start();
+                    logger.info("Starting Elasticsearch embedded node... DONE");
                 }
             }
         }
@@ -58,8 +64,10 @@ public class EsEmbeddedEngine {
 
     public void close() throws IOException {
         if (node != null) {
+            logger.info("Closing Elasticsearch embedded node...");
             node.close();
             node = null;
+            logger.info("Closing Elasticsearch embedded node... DONE");
         }
     }
 }
