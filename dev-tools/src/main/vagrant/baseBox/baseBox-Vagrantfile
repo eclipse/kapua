@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
 
 	 export ELASTICSEARCH_VERSION="2.3.4"
 	 export H2DB_VERSION="1.4.192"
-	 export ACTIVE_MQ_VERSION="5.14.4"
+	 export ACTIVE_MQ_VERSION="5.14.5"
 	 export TOMCAT_VERSION="8.0.41"
 
      # update
