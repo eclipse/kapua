@@ -67,13 +67,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <!-- ATTENTION: A dependency must be declared exactly once either in regular dependencies
@@ -82,6 +80,11 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-client-embedded</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

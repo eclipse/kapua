@@ -9,28 +9,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.transport;
+package org.eclipse.kapua.service.datastore.client;
 
 import java.io.IOException;
 
-import org.elasticsearch.client.Client;
-
 /**
- * Elasticsearch transport client wrapper definition.
+ * Datastore client wrapper definition.
  *
  * @since 1.0
+ *
+ * @param <C>
+ *            client type
  */
-public interface EsClientProvider {
+public interface ClientProvider<C> {
 
     /**
-     * Get a new Elasticsearch client instance
+     * Get a client instance
      *
      * @return
      */
-    public Client getClient();
+    public C getClient();
 
     /**
-     * Close the Elasticsearch client instance
+     * Close the client instance
      */
     public void close() throws IOException;
 

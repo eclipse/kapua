@@ -49,7 +49,15 @@ public enum DatastoreSettingKey implements SettingKey {
     /**
      * Elasticsearch index refresh interval (the data is available for a search operation only if it is indexed)
      */
-    INDEX_REFRESH_INTERVAL("datastore.index.refresh_interval");
+    INDEX_REFRESH_INTERVAL("datastore.index.refresh_interval"),
+    /**
+     * Shards number
+     */
+    INDEX_SHARD_NUMBER("datastore.index.number_of_shards"),
+    /**
+     * Replicas count
+     */
+    INDEX_REPLICA_NUMBER("datastore.index.number_of_replicas");
 
     private String key;
 

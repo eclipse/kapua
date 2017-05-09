@@ -9,10 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.transport;
+package org.eclipse.kapua.service.datastore.client.embedded;
 
 import java.io.IOException;
 
+import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.NodeValidationException;
 
@@ -22,7 +23,7 @@ import org.elasticsearch.node.NodeValidationException;
  *
  * @since 1.0
  */
-public class EsEmbeddedClientProvider implements EsClientProvider {
+public class EsEmbeddedClientProvider implements ClientProvider<Client> {
 
     private final EsEmbeddedEngine embeddedEngine;
 

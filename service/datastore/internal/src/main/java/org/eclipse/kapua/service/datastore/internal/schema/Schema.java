@@ -40,7 +40,9 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_KEYWORD;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SHARD_NUMBER;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REFRESH_INTERVAL;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REPLICA_NUMBER;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
 
 /**
@@ -228,8 +230,13 @@ public class Schema {
 
     private ObjectNode getMappingSchema() throws DatamodelMappingException {
         String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingKey.INDEX_REFRESH_INTERVAL));
+        Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_SHARD_NUMBER, 1);
+        Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_REPLICA_NUMBER, 0);
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_REFRESH_INTERVAL, idxRefreshInterval) });
+        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[] {
+                new KeyValueEntry(KEY_REFRESH_INTERVAL, idxRefreshInterval),
+                new KeyValueEntry(KEY_SHARD_NUMBER, idxShardNumber),
+                new KeyValueEntry(KEY_REPLICA_NUMBER, idxReplicaNumber) });
         rootNode.set(KEY_INDEX, refreshIntervaleNode);
         return rootNode;
     }

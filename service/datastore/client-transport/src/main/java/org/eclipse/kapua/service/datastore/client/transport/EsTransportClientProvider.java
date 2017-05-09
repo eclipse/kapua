@@ -24,7 +24,9 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
+import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -36,7 +38,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
  *
  * @since 1.0
  */
-public class EsTransportClientProvider implements EsClientProvider {
+public class EsTransportClientProvider implements ClientProvider<Client> {
 
     private static final int DEFAULT_PORT = 9300;
 

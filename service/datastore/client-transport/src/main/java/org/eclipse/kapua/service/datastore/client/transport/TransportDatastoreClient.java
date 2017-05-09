@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
 import org.eclipse.kapua.service.datastore.client.ClientException;
+import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.ClientUndefinedException;
 import org.eclipse.kapua.service.datastore.client.ModelContext;
@@ -49,6 +50,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
@@ -94,8 +96,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
     private final static String CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private final static String CLIENT_CLASS_NAME;
-    private static Class<EsClientProvider> INSTANCE;
-    private static EsClientProvider esClientProvider;
+    private static Class<ClientProvider<Client>> INSTANCE;
+    private static ClientProvider<Client> esClientProvider;
 
     static {
         ClientSettings config = ClientSettings.getInstance();
@@ -128,7 +130,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                         throw new ClientUnavailableException(CLIENT_INITIALIZATION_ERROR_MSG);
                     }
                     try {
-                        INSTANCE = (Class<EsClientProvider>) Class.forName(CLIENT_CLASS_NAME);
+                        INSTANCE = (Class<ClientProvider<Client>>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {
                         throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
                     }
