@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum ResponseMetrics
-{
+public enum ResponseMetrics {
     /**
      * Response exit code
      */
@@ -35,8 +34,7 @@ public enum ResponseMetrics
 
     private String value;
 
-    ResponseMetrics(String value)
-    {
+    ResponseMetrics(String value) {
         this.value = value;
     }
 
@@ -45,8 +43,7 @@ public enum ResponseMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

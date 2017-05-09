@@ -22,12 +22,10 @@ import org.eclipse.kapua.service.user.UserQuery;
 
 @TestService
 @KapuaProvider
-public class UserFactoryMock implements UserFactory
-{
+public class UserFactoryMock implements UserFactory {
 
     @Override
-    public UserCreator newCreator(KapuaId scopeId, String name)
-    {
+    public UserCreator newCreator(KapuaId scopeId, String name) {
         UserCreatorMock userCreatorMock = new UserCreatorMock();
         userCreatorMock.setScopeId(scopeId);
         userCreatorMock.setName(name);
@@ -35,8 +33,7 @@ public class UserFactoryMock implements UserFactory
     }
 
     @Override
-    public UserQuery newQuery(KapuaId scopedId)
-    {
+    public UserQuery newQuery(KapuaId scopedId) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -21,8 +21,7 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
  * @since 1.0
  *
  */
-public interface IdsPredicate extends StorablePredicate
-{
+public interface IdsPredicate extends StorablePredicate {
 
     /**
      * Get the identifier type

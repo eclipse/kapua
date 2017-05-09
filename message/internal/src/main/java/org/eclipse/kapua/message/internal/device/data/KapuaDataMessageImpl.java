@@ -22,7 +22,6 @@ import org.eclipse.kapua.message.internal.KapuaMessageImpl;
  * @since 1.0
  *
  */
-public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage
-{
+public class KapuaDataMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaDataPayload> implements KapuaDataMessage {
 
 }

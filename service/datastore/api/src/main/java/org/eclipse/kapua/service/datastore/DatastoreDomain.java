@@ -28,48 +28,41 @@ import com.google.common.collect.Lists;
  * @since 1.0
  *
  */
-public class DatastoreDomain extends AbstractKapuaEntity implements Domain
-{
+public class DatastoreDomain extends AbstractKapuaEntity implements Domain {
 
     private static final long serialVersionUID = 3782336558657796495L;
 
-    private String       name        = "datastore";
-    private String       serviceName = "datastoreService";
-    private Set<Actions> actions     = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
+    private String name = "datastore";
+    private String serviceName = "datastoreService";
+    private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setServiceName(String serviceName)
-    {
+    public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
 
     @Override
-    public String getServiceName()
-    {
+    public String getServiceName() {
         return serviceName;
     }
 
     @Override
-    public void setActions(Set<Actions> actions)
-    {
+    public void setActions(Set<Actions> actions) {
         this.actions = actions;
     }
 
     @Override
-    public Set<Actions> getActions()
-    {
+    public Set<Actions> getActions() {
         return actions;
     }
 }

@@ -23,8 +23,7 @@ import org.eclipse.kapua.message.Payload;
  * @since 1.0
  *
  */
-public interface DevicePayload extends Payload
-{
+public interface DevicePayload extends Payload {
 
     /**
      * Get the message timestamp
@@ -71,6 +70,6 @@ public interface DevicePayload extends Payload
      * @throws KapuaException
      */
     public void readFromByteArray(byte[] rawPayload)
-        throws KapuaException;
+            throws KapuaException;
 
 }

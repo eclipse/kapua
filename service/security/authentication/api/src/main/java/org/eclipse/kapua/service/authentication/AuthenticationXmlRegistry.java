@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication;
 
@@ -24,7 +25,7 @@ public class AuthenticationXmlRegistry {
      * @return
      */
     public UsernamePasswordCredentials newUsernamePasswordCredentials() {
-        return credentialsFactory.newUsernamePasswordCredentials(null, null);
+        return credentialsFactory.newUsernamePasswordCredentials();
     }
 
     /**

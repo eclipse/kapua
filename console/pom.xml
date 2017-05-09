@@ -211,16 +211,10 @@
             <version>0.9</version>
         </dependency>
 
-        <!-- use log4j only for testing -->
+        <!-- use logback only for testing -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -256,6 +250,7 @@
                     <i18nConstantsWithLookupBundle>org.eclipse.kapua.app.console.client.messages.ValidationMessages</i18nConstantsWithLookupBundle>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleMessages</i18nMessagesBundle>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleAboutMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages</i18nMessagesBundle>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.client.messages.ConsoleGroupMessages</i18nMessagesBundle>
@@ -440,10 +435,10 @@
                                 <directory>${project.build.directory}/Kapua</directory>
                             </resource>
                         </webResources>
-                        <!-- exclude slf4j-api as the web container has to provide this -->
+                        <!-- exclude slf4j-api and logback as the web container has to provide this -->
                         <packagingExcludes>
                             WEB-INF/lib/slf4j-api-*.jar,
-                            WEB-INF/lib/log4j*.jar
+                            WEB-INF/lib/logback*.jar
                         </packagingExcludes>
                     </configuration>
                 </plugin>

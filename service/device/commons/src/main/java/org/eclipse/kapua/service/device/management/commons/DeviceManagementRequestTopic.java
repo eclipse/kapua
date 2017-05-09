@@ -17,7 +17,6 @@ package org.eclipse.kapua.service.device.management.commons;
  * @since 1.0
  *
  */
-public class DeviceManagementRequestTopic
-{
+public class DeviceManagementRequestTopic {
 
 }

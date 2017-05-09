@@ -26,8 +26,7 @@ import org.eclipse.kapua.service.KapuaService;
  * @since 1.0
  *
  */
-public interface DeviceLifeCycleService extends KapuaService
-{
+public interface DeviceLifeCycleService extends KapuaService {
 
     /**
      * Processes a birth certificate for a device, creating or updating the device footprint with the information supplied.
@@ -37,7 +36,7 @@ public interface DeviceLifeCycleService extends KapuaService
      * @throws KapuaException
      */
     public <M extends KapuaBirthMessage> void birth(KapuaId connectionId, M message)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Processes a death certificate for a device, updating the device footprint with the information supplied.
@@ -47,7 +46,7 @@ public interface DeviceLifeCycleService extends KapuaService
      * @throws KapuaException
      */
     public <M extends KapuaDisconnectMessage> void death(KapuaId connectionId, M message)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Processes a last-will testament for a device, updating the device footprint with the information supplied.
@@ -57,7 +56,7 @@ public interface DeviceLifeCycleService extends KapuaService
      * @throws KapuaException
      */
     public <M extends KapuaMissingMessage> void missing(KapuaId connectionId, M message)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Processes a birth certificate for a device, creating or updating the device footprint with the information supplied.
@@ -67,5 +66,5 @@ public interface DeviceLifeCycleService extends KapuaService
      * @throws KapuaException
      */
     public <M extends KapuaAppsMessage> void applications(KapuaId connectionId, M message)
-        throws KapuaException;
+            throws KapuaException;
 }

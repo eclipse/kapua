@@ -21,15 +21,14 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
  * @since 1.0
  *
  */
-public class MessageListResultImpl extends AbstractStorableListResult<DatastoreMessage> implements MessageListResult
-{
+public class MessageListResultImpl extends AbstractStorableListResult<DatastoreMessage> implements MessageListResult {
+
     private static final long serialVersionUID = -3862584760563199758L;
 
     /**
      * Construct a message result list
      */
-    public MessageListResultImpl()
-    {
+    public MessageListResultImpl() {
         super();
     }
 
@@ -38,8 +37,7 @@ public class MessageListResultImpl extends AbstractStorableListResult<DatastoreM
      * 
      * @param nextKey
      */
-    public MessageListResultImpl(Object nextKey)
-    {
+    public MessageListResultImpl(Object nextKey) {
         super(nextKey);
     }
 
@@ -49,8 +47,7 @@ public class MessageListResultImpl extends AbstractStorableListResult<DatastoreM
      * @param nextKey
      * @param totalCount
      */
-    public MessageListResultImpl(Object nextKey, Long totalCount)
-    {
+    public MessageListResultImpl(Object nextKey, Long totalCount) {
         super(nextKey, totalCount);
     }
 }

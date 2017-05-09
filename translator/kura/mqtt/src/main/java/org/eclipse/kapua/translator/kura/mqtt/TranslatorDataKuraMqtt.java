@@ -31,12 +31,11 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
  *
  */
 @SuppressWarnings("rawtypes")
-public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage>
-{
+public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage> {
+
     @Override
     public MqttMessage translate(KuraMessage kuraMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         //
         // Mqtt request topic
         MqttTopic mqttRequestTopic = translate(kuraMessage.getChannel());
@@ -48,20 +47,19 @@ public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage>
         //
         // Return Mqtt message
         return new MqttMessage(mqttRequestTopic,
-                               new Date(),
-                               mqttPayload);
+                new Date(),
+                mqttPayload);
     }
 
     private MqttTopic translate(KuraChannel kuraChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         List<String> topicTokens = new ArrayList<>();
 
         topicTokens.add(kuraChannel.getScope());
         topicTokens.add(kuraChannel.getClientId());
 
         if (kuraChannel.getSemanticChannelParts() != null &&
-            !kuraChannel.getSemanticChannelParts().isEmpty()) {
+                !kuraChannel.getSemanticChannelParts().isEmpty()) {
             topicTokens.addAll(kuraChannel.getSemanticChannelParts());
         }
 
@@ -69,20 +67,17 @@ public class TranslatorDataKuraMqtt extends Translator<KuraMessage, MqttMessage>
     }
 
     private MqttPayload translate(KuraPayload kuraPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new MqttPayload(kuraPayload.toByteArray());
     }
 
     @Override
-    public Class<KuraMessage> getClassFrom()
-    {
+    public Class<KuraMessage> getClassFrom() {
         return KuraMessage.class;
     }
 
     @Override
-    public Class<MqttMessage> getClassTo()
-    {
+    public Class<MqttMessage> getClassTo() {
         return MqttMessage.class;
     }
 

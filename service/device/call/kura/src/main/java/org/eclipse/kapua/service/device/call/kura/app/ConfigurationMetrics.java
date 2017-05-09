@@ -17,12 +17,11 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum ConfigurationMetrics
-{
+public enum ConfigurationMetrics {
     /**
      * Application identifier
      */
-    APP_ID("CONF"), 
+    APP_ID("CONF"),
     /**
      * Application version
      */
@@ -31,8 +30,7 @@ public enum ConfigurationMetrics
 
     private String value;
 
-    ConfigurationMetrics(String value)
-    {
+    ConfigurationMetrics(String value) {
         this.value = value;
     }
 
@@ -41,8 +39,7 @@ public enum ConfigurationMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

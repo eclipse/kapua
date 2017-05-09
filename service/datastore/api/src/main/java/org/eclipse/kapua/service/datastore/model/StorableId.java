@@ -18,8 +18,8 @@ package org.eclipse.kapua.service.datastore.model;
  * @since 1.0
  * 
  */
-public interface StorableId
-{
+public interface StorableId {
+
     /**
      * Return the storable identifier as a string
      * 

@@ -17,8 +17,8 @@ package org.eclipse.kapua;
  * @since 1.0
  * 
  */
-public class KapuaUnauthenticatedException extends KapuaException 
-{
+public class KapuaUnauthenticatedException extends KapuaException {
+
     private static final long serialVersionUID = -8059684526029130460L;
 
     /**

@@ -35,8 +35,8 @@ import org.eclipse.kapua.KapuaSerializable;
         "exitCode",
         "hasTimedout"
 }, factoryClass = DeviceCommandXmlRegistry.class, factoryMethod = "newCommandOutput")
-public interface DeviceCommandOutput extends KapuaSerializable
-{
+public interface DeviceCommandOutput extends KapuaSerializable {
+
     /**
      * Get the standard error
      * 

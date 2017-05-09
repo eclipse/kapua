@@ -28,15 +28,12 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
  * @since 1.0
  *
  */
-@XmlRootElement(name="credentialCreator")
+@XmlRootElement(name = "credentialCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "userId",
-                      "credentialType",
-                      "credentialPlainKey"},
-         factoryClass = CredentialXmlRegistry.class,
-         factoryMethod = "newCredentialCreator")
-public interface CredentialCreator extends KapuaEntityCreator<Credential>
-{
+        "credentialType",
+        "credentialPlainKey" }, factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
+public interface CredentialCreator extends KapuaEntityCreator<Credential> {
 
     /**
      * Return the user identifier
@@ -53,7 +50,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      * @param userId
      */
     public void setUserId(KapuaId userId);
-    
+
     /**
      * Return the credential type.<br>
      * The returned object will depend on the authentication algorithm.
@@ -69,6 +66,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      * @param credentialType
      */
     public void setCredentialType(CredentialType credentialType);
+
     /**
      * Return the plain credential (unencrypted value).
      * 
@@ -76,7 +74,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential>
      */
     @XmlElement(name = "credentialKey")
     public String getCredentialPlainKey();
-    
+
     /**
      * Set the credential plain key
      * 

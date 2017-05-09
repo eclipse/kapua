@@ -19,8 +19,7 @@ import org.eclipse.kapua.KapuaErrorCode;
  * @since 1.0
  *
  */
-public enum KuraMqttDeviceCallErrorCodes implements KapuaErrorCode
-{
+public enum KuraMqttDeviceCallErrorCodes implements KapuaErrorCode {
     /**
      * Call error
      */

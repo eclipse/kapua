@@ -32,41 +32,35 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
  */
 @KapuaProvider
 @SuppressWarnings("rawtypes")
-public class KuraMessageFactoryImpl implements DeviceMessageFactory
-{
+public class KuraMessageFactoryImpl implements DeviceMessageFactory {
+
     @Override
-    public DeviceRequestChannel newChannel()
-    {
+    public DeviceRequestChannel newChannel() {
         return new KuraRequestChannel();
     }
 
     @Override
-    public DeviceRequestChannel newRequestChannel()
-    {
+    public DeviceRequestChannel newRequestChannel() {
         return new KuraRequestChannel();
     }
 
     @Override
-    public DevicePayload newPayload()
-    {
+    public DevicePayload newPayload() {
         return new KuraPayload();
     }
 
     @Override
-    public DeviceRequestPayload newRequestPayload()
-    {
+    public DeviceRequestPayload newRequestPayload() {
         return new KuraRequestPayload();
     }
 
     @Override
-    public DeviceMessage newMessage()
-    {
+    public DeviceMessage newMessage() {
         return new KuraMessage();
     }
 
     @Override
-    public DeviceRequestMessage newRequestMessage()
-    {
+    public DeviceRequestMessage newRequestMessage() {
         return new KuraRequestMessage();
     }
 

@@ -30,14 +30,13 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
  */
 @XmlRootElement(name = "bundleInfos")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DevicePackageBundleInfosImpl implements DevicePackageBundleInfos
-{
+public class DevicePackageBundleInfosImpl implements DevicePackageBundleInfos {
+
     @XmlElement(name = "bundleInfo")
     List<DevicePackageBundleInfo> bundleInfos;
 
     @Override
-    public List<DevicePackageBundleInfo> getBundlesInfos()
-    {
+    public List<DevicePackageBundleInfo> getBundlesInfos() {
         if (bundleInfos == null) {
             bundleInfos = new ArrayList<>();
         }

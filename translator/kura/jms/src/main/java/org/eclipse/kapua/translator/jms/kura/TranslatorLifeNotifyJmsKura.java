@@ -26,20 +26,18 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
  * @since 1.0
  * 
  */
-public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNotifyMessage>
-{
+public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNotifyMessage> {
+
     @Override
     public KuraNotifyMessage translate(JmsMessage jmsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KuraNotifyMessage(translate(jmsMessage.getTopic()),
-                                      jmsMessage.getReceivedOn(),
-                                      translate(jmsMessage.getPayload().getBody()));
+                jmsMessage.getReceivedOn(),
+                translate(jmsMessage.getPayload().getBody()));
     }
 
     private KuraNotifyChannel translate(JmsTopic jmsTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] topicTokens = jmsTopic.getSplittedTopic();
         // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
         // TODO check exception type
@@ -47,26 +45,23 @@ public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNoti
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
         return new KuraNotifyChannel(topicTokens[1],
-                                      topicTokens[2]);
+                topicTokens[2]);
     }
 
     private KuraNotifyPayload translate(byte[] jmsBody)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraNotifyPayload kuraNotifyPayload = new KuraNotifyPayload();
         kuraNotifyPayload.readFromByteArray(jmsBody);
         return kuraNotifyPayload;
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom()
-    {
+    public Class<JmsMessage> getClassFrom() {
         return JmsMessage.class;
     }
 
     @Override
-    public Class<KuraNotifyMessage> getClassTo()
-    {
+    public Class<KuraNotifyMessage> getClassTo() {
         return KuraNotifyMessage.class;
     }
 }

@@ -89,8 +89,9 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
     }
 
     public void call(final Callable<?> callable) {
-        if (callable == null)
+        if (callable == null) {
             return;
+        }
 
         try {
             callable.call();
@@ -100,8 +101,9 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
     }
 
     public void add(Throwable e) {
-        if (e == null)
+        if (e == null) {
             return;
+        }
 
         if (errors == null) {
             errors = new LinkedList<>();
@@ -155,7 +157,7 @@ public class Suppressed<X extends Exception> implements AutoCloseable {
 
         closeAll(list.stream());
     }
-    
+
     public static void closeAll(Stream<? extends AutoCloseable> list) {
         if (list == null) {
             return;

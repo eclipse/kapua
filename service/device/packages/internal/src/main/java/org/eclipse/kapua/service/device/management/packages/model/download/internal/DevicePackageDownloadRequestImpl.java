@@ -21,9 +21,9 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
  * @since 1.0
  *
  */
-public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRequest
-{
-    public URI    uri;
+public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRequest {
+
+    public URI uri;
     public String name;
     public String version;
 
@@ -33,74 +33,62 @@ public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRe
     public Integer rebootDelay;
 
     @Override
-    public URI getURI()
-    {
+    public URI getURI() {
         return uri;
     }
 
     @Override
-    public void setURI(URI uri)
-    {
+    public void setURI(URI uri) {
         this.uri = uri;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     @Override
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
     @Override
-    public Boolean isInstall()
-    {
+    public Boolean isInstall() {
         return install;
     }
 
     @Override
-    public void setInstall(Boolean install)
-    {
+    public void setInstall(Boolean install) {
         this.install = install;
     }
 
     @Override
-    public Boolean isReboot()
-    {
+    public Boolean isReboot() {
         return reboot;
     }
 
     @Override
-    public void setReboot(Boolean reboot)
-    {
+    public void setReboot(Boolean reboot) {
         this.reboot = reboot;
     }
 
     @Override
-    public Integer getRebootDelay()
-    {
+    public Integer getRebootDelay() {
         return rebootDelay;
     }
 
     @Override
-    public void setRebootDelay(Integer rebootDelay)
-    {
+    public void setRebootDelay(Integer rebootDelay) {
         this.rebootDelay = rebootDelay;
     }
 }

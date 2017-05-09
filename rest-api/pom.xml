@@ -183,18 +183,18 @@
 			<artifactId>joda-time</artifactId>
 		</dependency>
 		
-		<!-- use log4j only for testing -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<!-- <scope>test</scope> -->
-		</dependency>
+		<!-- use logback only for testing -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 		<!-- re-declare as provided as our web container will provide this -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<!-- <scope>provided</scope> -->
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
@@ -274,6 +274,7 @@
 						</configuration>
 					</execution>
 				</executions>
+				
 			</plugin>
 		</plugins>
 	</build>

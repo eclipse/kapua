@@ -19,8 +19,8 @@ package org.eclipse.kapua;
  * @since 1.0
  * 
  */
-public class KapuaOptimisticLockingException extends KapuaException 
-{
+public class KapuaOptimisticLockingException extends KapuaException {
+
     private static final long serialVersionUID = -4694476988566169899L;
 
     /**

@@ -20,19 +20,17 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
  * @since 1.0
  * 
  */
-public class CommandRequestMessage extends KapuaMessageImpl<CommandRequestChannel, CommandRequestPayload> implements KapuaRequestMessage<CommandRequestChannel, CommandRequestPayload>
-{
+public class CommandRequestMessage extends KapuaMessageImpl<CommandRequestChannel, CommandRequestPayload> implements KapuaRequestMessage<CommandRequestChannel, CommandRequestPayload> {
+
     @SuppressWarnings("unchecked")
     @Override
-    public Class<CommandRequestMessage> getRequestClass()
-    {
+    public Class<CommandRequestMessage> getRequestClass() {
         return CommandRequestMessage.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Class<CommandResponseMessage> getResponseClass()
-    {
+    public Class<CommandResponseMessage> getResponseClass() {
         return CommandResponseMessage.class;
     }
 

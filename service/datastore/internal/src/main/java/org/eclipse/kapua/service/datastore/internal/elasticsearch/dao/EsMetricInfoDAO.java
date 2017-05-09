@@ -42,8 +42,11 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Metric information DAO
@@ -52,6 +55,7 @@ import org.elasticsearch.search.SearchHits;
  */
 public class EsMetricInfoDAO {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EsMetricInfoDAO.class);
     private final EsTypeDAO esTypeDAO;
 
     /**
@@ -271,8 +275,14 @@ public class EsMetricInfoDAO {
 
         MetricInfoQueryConverter mic = new MetricInfoQueryConverter();
         SearchRequestBuilder builder = mic.toSearchRequestBuilder(esTypeDAO.getIndexName(), esTypeDAO.getTypeName(), localQuery);
-        SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
-        SearchHits searchHits = response.getHits();
+        SearchHits searchHits;
+        try {
+            SearchResponse response = builder.get(TimeValue.timeValueMillis(EsUtils.getQueryTimeout()));
+            searchHits = response.getHits();
+        } catch (IndexNotFoundException infe) {
+            LOG.warn("Index not found. Returning empty list!", infe);
+            return new MetricInfoListResultImpl();
+        }
 
         if (searchHits == null || searchHits.getTotalHits() == 0) {
             return new MetricInfoListResultImpl();

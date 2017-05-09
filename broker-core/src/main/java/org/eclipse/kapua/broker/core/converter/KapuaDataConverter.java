@@ -26,15 +26,13 @@ import com.codahale.metrics.Counter;
  * 
  * @since 1.0
  */
-public class KapuaDataConverter extends AbstractKapuaConverter
-{
+public class KapuaDataConverter extends AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(KapuaDataConverter.class);
 
     private Counter metricConverterDataMessage;
 
-    public KapuaDataConverter()
-    {
+    public KapuaDataConverter() {
         super();
         metricConverterDataMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "data", "count");
     }
@@ -45,11 +43,11 @@ public class KapuaDataConverter extends AbstractKapuaConverter
      * @param exchange
      * @param value
      * @return Message container that contains data message
-     * @throws KapuaException if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
+     * @throws KapuaException
+     *             if incoming message does not contain a javax.jms.BytesMessage or an error during conversion occurred
      */
     @Converter
-    public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException
-    {
+    public CamelKapuaMessage<?> convertToData(Exchange exchange, Object value) throws KapuaException {
         metricConverterDataMessage.inc();
         return convertTo(exchange, value, MessageType.DATA);
     }

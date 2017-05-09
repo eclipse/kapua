@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.registry;
  * @since 1.0
  *
  */
-public enum DeviceStatus
-{
+public enum DeviceStatus {
     /**
      * Enabled
      */

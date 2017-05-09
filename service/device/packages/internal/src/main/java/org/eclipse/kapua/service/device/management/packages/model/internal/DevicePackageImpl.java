@@ -22,8 +22,8 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
  * @since 1.0
  *
  */
-public class DevicePackageImpl implements DevicePackage
-{
+public class DevicePackageImpl implements DevicePackage {
+
     private String name;
 
     private String version;
@@ -33,33 +33,28 @@ public class DevicePackageImpl implements DevicePackage
     private Date installDate;
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     @Override
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DevicePackageBundleInfosImpl getBundleInfos()
-    {
+    public DevicePackageBundleInfosImpl getBundleInfos() {
         if (bundleInfos == null) {
             bundleInfos = new DevicePackageBundleInfosImpl();
         }
@@ -67,14 +62,12 @@ public class DevicePackageImpl implements DevicePackage
     }
 
     @Override
-    public Date getInstallDate()
-    {
+    public Date getInstallDate() {
         return installDate;
     }
 
     @Override
-    public void setInstallDate(Date installDate)
-    {
+    public void setInstallDate(Date installDate) {
         this.installDate = installDate;
     }
 

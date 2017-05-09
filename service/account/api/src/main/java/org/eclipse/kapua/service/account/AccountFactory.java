@@ -20,8 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  * @since 1.0
  * 
  */
-public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreator, AccountQuery, AccountListResult>
-{
+public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreator, AccountQuery, AccountListResult> {
 
     /**
      * Creates a new {@link AccountCreator} for the specified name
@@ -31,12 +30,12 @@ public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreat
      * @return
      */
     public AccountCreator newCreator(KapuaId scopeId, String name);
-    
+
     /**
      * Creates a new organization entity
      * 
      * @return
      */
     public Organization newOrganization();
-    
+
 }

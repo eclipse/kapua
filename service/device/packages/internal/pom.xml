@@ -24,7 +24,6 @@
     </parent>
 
     <artifactId>kapua-device-packages-internal</artifactId>
-    <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Implemented service interfaces -->
@@ -32,16 +31,16 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-packages-api</artifactId>
         </dependency>
-        
+
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-commons</artifactId>
         </dependency>
-        
+
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -21,20 +21,18 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  *
  */
-public class PackageRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
-{
-    private KapuaMethod     method;
+public class PackageRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
+
+    private KapuaMethod method;
     private PackageResource packageResource;
 
     @Override
-    public KapuaMethod getMethod()
-    {
+    public KapuaMethod getMethod() {
         return method;
     }
 
     @Override
-    public void setMethod(KapuaMethod method)
-    {
+    public void setMethod(KapuaMethod method) {
         this.method = method;
     }
 
@@ -43,8 +41,7 @@ public class PackageRequestChannel extends KapuaAppChannelImpl implements KapuaR
      * 
      * @return
      */
-    public PackageResource getResource()
-    {
+    public PackageResource getResource() {
         return packageResource;
     }
 
@@ -53,8 +50,7 @@ public class PackageRequestChannel extends KapuaAppChannelImpl implements KapuaR
      * 
      * @param packageResource
      */
-    public void setPackageResource(PackageResource packageResource)
-    {
+    public void setPackageResource(PackageResource packageResource) {
         this.packageResource = packageResource;
     }
 }

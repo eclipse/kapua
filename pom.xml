@@ -27,7 +27,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Dependencies versions -->
-        <activemq.version>5.14.4</activemq.version>
+        <activemq.version>5.14.5</activemq.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
         <commons-cli.version>1.4</commons-cli.version>
@@ -56,7 +56,7 @@
         <protobuf.version>2.6.1</protobuf.version>
         <reflections.version>0.9.10</reflections.version>
         <shiro.version>1.3.2</shiro.version>
-        <slf4j.version>1.7.21</slf4j.version>
+        <slf4j.version>1.7.24</slf4j.version>
         <logback.version>1.1.8</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
@@ -71,12 +71,14 @@
         <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+        <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
 
-        <jacoco.version>0.7.4.201502262128</jacoco.version>
+        <jacoco.version>0.7.9</jacoco.version>
         <surefire.version>2.12.4</surefire.version>
 
         <!-- Docker configuration -->
@@ -130,6 +132,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -302,6 +309,9 @@
                     <configuration>
                         <configLocation>checkstyle/kapua.xml</configLocation>
                         <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
+
+                        <includeTestResources>true</includeTestResources>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     </configuration>
                 </plugin>
             </plugins>
@@ -951,10 +961,50 @@
         </profile>
 
         <profile>
+            <id>add-about.html</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>${basedir}/about.html</exists>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>process-about.html</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>.</directory>
+                                            <includes>
+                                                <include>about.html</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>eclipse-hudson</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
+            <properties>
+                <jacoco.version>0.7.4.201502262128</jacoco.version>
+            </properties>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -986,11 +1036,6 @@
         <license>
             <name>Eclipse Public License (EPL), Version 1.0</name>
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
-            <name>Eclipse Distribution License (EDL), Version 1.0</name>
-            <url>http://www.eclipse.org/org/documents/edl-v10.html</url>
             <distribution>repo</distribution>
         </license>
     </licenses>

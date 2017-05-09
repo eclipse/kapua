@@ -33,36 +33,33 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AccountsJAXBContextProvider implements JAXBContextProvider
-{
+public class AccountsJAXBContextProvider implements JAXBContextProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountsJAXBContextProvider.class);
 
     private JAXBContext context;
 
     @Override
-    public JAXBContext getJAXBContext() throws KapuaException
-    {
+    public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
             Class<?>[] classes = new Class<?>[] {
-                                                  Account.class,
-                                                  AccountListResult.class,
-                                                  AccountXmlRegistry.class,
-                                                  Organization.class,
-                                                  KapuaTmetadata.class,
-                                                  KapuaTocd.class,
-                                                  KapuaTad.class,
-                                                  KapuaTicon.class,
-                                                  TscalarImpl.class,
-                                                  KapuaToption.class,
-                                                  KapuaTdesignate.class,
-                                                  KapuaTobject.class,
-                                                  MetatypeXmlRegistry.class
+                    Account.class,
+                    AccountListResult.class,
+                    AccountXmlRegistry.class,
+                    Organization.class,
+                    KapuaTmetadata.class,
+                    KapuaTocd.class,
+                    KapuaTad.class,
+                    KapuaTicon.class,
+                    TscalarImpl.class,
+                    KapuaToption.class,
+                    KapuaTdesignate.class,
+                    KapuaTobject.class,
+                    MetatypeXmlRegistry.class
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);
-            }
-            catch (JAXBException jaxbException) {
+            } catch (JAXBException jaxbException) {
                 logger.warn("Error creating JAXBContext, tests will fail!");
             }
         }

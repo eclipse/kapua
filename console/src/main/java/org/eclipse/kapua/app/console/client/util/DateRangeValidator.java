@@ -20,22 +20,19 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
 
-public class DateRangeValidator implements Validator
-{
+public class DateRangeValidator implements Validator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    private DateField                       m_startDateField;
-    private DateField                       m_endDateField;
+    private DateField m_startDateField;
+    private DateField m_endDateField;
 
-    public DateRangeValidator(DateField startDateField, DateField endDateField)
-    {
+    public DateRangeValidator(DateField startDateField, DateField endDateField) {
         m_startDateField = startDateField;
         m_endDateField = endDateField;
     }
 
-    public String validate(Field<?> field, String value)
-    {
+    public String validate(Field<?> field, String value) {
         String result = null;
 
         Date currentDate = m_startDateField.getValue();

@@ -46,19 +46,18 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
                 KuraResponseCode responseCode = responsePayload.getResponseCode();
 
                 switch (responseCode) {
-                case ACCEPTED: {
+                case ACCEPTED:
                     responseObject = handleAcceptedRequest(responseMessage);
-                }
                     break;
-                case BAD_REQUEST: {
+                case BAD_REQUEST: 
                     handleBadRequestReply(responseMessage);
-                }
-                case INTERNAL_ERROR: {
+                    //$FALL-THROUGH$
+                case INTERNAL_ERROR:
                     handleDeviceInternalErrorReply(responseMessage);
-                }
-                case NOT_FOUND: {
+                    //$FALL-THROUGH$
+                case NOT_FOUND:
                     handleNotFoundReply(responseMessage);
-                }
+                    //$FALL-THROUGH$
                 }
             }
         }

@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client;
 
-import java.util.Date;
 import java.util.logging.Logger;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.client.util.Years;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtJwtCredential;
@@ -91,7 +91,6 @@ public class KapuaCloudConsole implements EntryPoint {
          * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
          */
         Log.setUncaughtExceptionHandler();
-        System.out.println("---->");
 
         // Use deferred command to catch initialization exceptions in onModuleLoad2
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -190,11 +189,7 @@ public class KapuaCloudConsole implements EntryPoint {
         TableData tdVersion = new TableData();
         tdVersion.setHorizontalAlign(HorizontalAlignment.RIGHT);
 
-        Date now = new Date();
-        @SuppressWarnings("deprecation")
-        int year = now.getYear() + 1900;
-
-        Label copyright = new Label(MSGS.copyright(String.valueOf(year)));
+        Label copyright = new Label(MSGS.copyright(Integer.toString(Years.getCurrentYear())));
         copyright.setStyleName("x-form-label");
 
         Label version = new Label(currentSession.getVersion() + "-" + currentSession.getBuildNumber());

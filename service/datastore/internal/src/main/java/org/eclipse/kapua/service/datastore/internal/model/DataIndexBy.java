@@ -19,8 +19,7 @@ import javax.xml.bind.annotation.XmlEnum;
  * @since 1.0
  */
 @XmlEnum
-public enum DataIndexBy
-{
+public enum DataIndexBy {
     /**
      * Server timestamp.<br>
      * The message will be indexed by the timestamp of the server at the processing time

@@ -19,8 +19,7 @@ import org.eclipse.kapua.KapuaErrorCode;
  * @since 1.0
  *
  */
-public enum MessageErrorCodes implements KapuaErrorCode
-{
+public enum MessageErrorCodes implements KapuaErrorCode {
     /**
      * Invalid destination
      */

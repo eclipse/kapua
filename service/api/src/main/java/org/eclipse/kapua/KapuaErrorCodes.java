@@ -18,8 +18,7 @@ package org.eclipse.kapua;
  * @since 1.0
  * 
  */
-public enum KapuaErrorCodes implements KapuaErrorCode
-{
+public enum KapuaErrorCodes implements KapuaErrorCode {
     /**
      * Entity not found
      */

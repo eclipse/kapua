@@ -37,7 +37,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
  */
 public class KuraPayload implements DevicePayload {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(KuraPayload.class);
+    private static final Logger logger = LoggerFactory.getLogger(KuraPayload.class);
 
     protected Date timestamp;
     protected DevicePosition position;
@@ -114,10 +114,10 @@ public class KuraPayload implements DevicePayload {
         }
 
         // set the metrics
-        for (String name : getMetrics().keySet()) {
-
+        for (Map.Entry<String, Object> entry : getMetrics().entrySet()) {
             // build a metric
-            Object value = getMetrics().get(name);
+            String name = entry.getKey();
+            Object value = entry.getValue();
 
             if (value == null) {
                 continue;
@@ -134,9 +134,9 @@ public class KuraPayload implements DevicePayload {
                 protoMsg.addMetric(metricB);
             } catch (MessageException eihte) {
                 try {
-                    s_logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
+                    logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
                 } catch (NullPointerException npe) {
-                    s_logger.error("During serialization, ignoring metric named: {}. The value is null.", name);
+                    logger.error("During serialization, ignoring metric named: {}. The value is null.", name);
                 }
                 throw new RuntimeException(eihte);
             }
@@ -151,8 +151,7 @@ public class KuraPayload implements DevicePayload {
     }
 
     @Override
-    public void readFromByteArray(byte[] bytes)
-            throws KapuaException {
+    public void readFromByteArray(byte[] bytes) throws KapuaException {
         if (GZIPUtils.isCompressed(bytes)) {
             try {
                 bytes = GZIPUtils.decompress(bytes);
@@ -191,7 +190,7 @@ public class KuraPayload implements DevicePayload {
                 metrics.put(name, value);
             } catch (MessageException ihte) {
 
-                s_logger.warn("During deserialization, ignoring metric named: " + name + ". Unrecognized value type: " + protoMsg.getMetric(i).getType(), ihte);
+                logger.warn("During deserialization, ignoring metric named: " + name + ". Unrecognized value type: " + protoMsg.getMetric(i).getType(), ihte);
             }
         }
 

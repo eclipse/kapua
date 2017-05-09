@@ -69,11 +69,14 @@ public class DataSteps {
     }
 
     private final SimulatorDevice currentDevice;
+    private final Session session;
+
     private String currentApplication;
 
     @Inject
-    public DataSteps(final SimulatorDevice currentDevice) {
+    public DataSteps(final SimulatorDevice currentDevice, final Session session) {
         this.currentDevice = currentDevice;
+        this.session = session;
     }
 
     @Given("I have a mock data application named \"(.*)\"")
@@ -81,15 +84,15 @@ public class DataSteps {
         Assert.assertFalse(currentDevice.isStarted());
 
         final MockDataApplication app = new MockDataApplication(applicationId);
-        this.currentDevice.getMockApplications().put(applicationId, app);
+        currentDevice.getMockApplications().put(applicationId, app);
     }
 
     @Given("I publish for the application \"(.*)\"")
     public void selectPublishApplication(final String applicationId) {
-        this.currentApplication = applicationId;
+        currentApplication = applicationId;
     }
 
-    @When("I publish on the opic \"(.*)\" timestamped now")
+    @When("I publish on the topic \"(.*)\" timestamped now")
     public void publishMetric(final String topic, final List<MetricEntry> metrics) {
 
         final Map<String, Object> data = toData(metrics);
@@ -102,6 +105,7 @@ public class DataSteps {
         final Map<String, Object> data = new HashMap<>();
 
         for (final MetricEntry entry : metrics) {
+
             final String key = entry.getKey();
             final String stringValue = entry.getValue();
             final String type = entry.getType();
@@ -130,7 +134,7 @@ public class DataSteps {
     }
 
     private MockDataApplication getMockApplication(final String applicationId) {
-        final MockDataApplication app = this.currentDevice.getMockApplications().get(applicationId);
+        final MockDataApplication app = currentDevice.getMockApplications().get(applicationId);
         if (app == null) {
             throw new IllegalStateException(String.format("Application '%s' not found in current setup", applicationId));
         }
@@ -140,81 +144,85 @@ public class DataSteps {
     @Then("I expect the number of messages for this device to be (\\d+)")
     public void expectNumberOfMessages(long numberOfMessages) throws Exception {
         final MessageStoreService service = getInstance().getService(MessageStoreService.class);
-        withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
 
-            // create new query
+                // create new query
 
-            final MessageQueryImpl query = new MessageQueryImpl(account.getId());
+                final MessageQueryImpl query = new MessageQueryImpl(account.getId());
 
-            // filter for client only
+                // filter for client only
 
-            query.setPredicate(new TermPredicateImpl(MessageField.CLIENT_ID, currentDevice.getClientId()));
+                query.setPredicate(new TermPredicateImpl(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
-            // set query options
+                // set query options
 
-            query.setAskTotalCount(true);
+                query.setAskTotalCount(true);
 
-            // perform query
+                // perform query
 
-            final MessageListResult result = service.query(query);
+                final MessageListResult result = service.query(query);
 
-            // eval just the size
+                // eval just the size
 
-            Assert.assertEquals(numberOfMessages, result.getSize());
+                Assert.assertEquals(numberOfMessages, result.getSize());
 
-            // eval the total count
+                // eval the total count
 
-            Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
+                Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
 
-            // different approach -> same result
+                // different approach -> same result
 
-            Assert.assertEquals(numberOfMessages, service.count(query));
+                Assert.assertEquals(numberOfMessages, service.count(query));
+            });
         });
     }
 
     @Then("I expect the latest captured message on channel \"(.*)\" to have the metrics")
     public void testMessageData(final String topic, final List<MetricEntry> expectedMetrics) throws Exception {
         final MessageStoreService service = getInstance().getService(MessageStoreService.class);
-        withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
 
-            // start a new query
+                // start a new query
 
-            final MessageQueryImpl query = new MessageQueryImpl(account.getId());
+                final MessageQueryImpl query = new MessageQueryImpl(account.getId());
 
-            // query for client and channel
+                // query for client and channel
 
-            final AndPredicateImpl and = new AndPredicateImpl();
-            and.getPredicates().add(new TermPredicateImpl(MessageField.CLIENT_ID, currentDevice.getClientId()));
-            and.getPredicates().add(new TermPredicateImpl(MessageField.CHANNEL, topic));
-            query.setPredicate(and);
+                final AndPredicateImpl and = new AndPredicateImpl();
+                and.getPredicates().add(new TermPredicateImpl(MessageField.CLIENT_ID, currentDevice.getClientId()));
+                and.getPredicates().add(new TermPredicateImpl(MessageField.CHANNEL, topic));
+                query.setPredicate(and);
 
-            // sort by captured time
+                // sort by captured time
 
-            final SortField field = new SortFieldImpl();
-            field.setField(MessageField.CAPTURED_ON.field());
-            field.setSortDirection(SortDirection.DESC);
+                final SortField field = new SortFieldImpl();
+                field.setField(MessageField.CAPTURED_ON.field());
+                field.setSortDirection(SortDirection.DESC);
 
-            query.setSortFields(Arrays.asList(field));
+                query.setSortFields(Arrays.asList(field));
 
-            // perform the query
+                // perform the query
 
-            final MessageListResult result = service.query(query);
+                final MessageListResult result = service.query(query);
 
-            Assert.assertEquals(1, result.getSize());
+                Assert.assertEquals(1, result.getSize());
 
-            // get the first item
+                // get the first item
 
-            final DatastoreMessage message = result.getFirstItem();
-            Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
+                final DatastoreMessage message = result.getFirstItem();
+                Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
 
-            // get payload structure
+                // get payload structure
 
-            final KapuaPayload payload = message.getPayload();
+                final KapuaPayload payload = message.getPayload();
 
-            // assert metrics data
+                // assert metrics data
 
-            final Map<String, Object> properties = payload.getProperties();
-            Assert.assertEquals(toData(expectedMetrics), properties);
+                final Map<String, Object> properties = payload.getProperties();
+                Assert.assertEquals(toData(expectedMetrics), properties);
+            });
         });
     }
 }

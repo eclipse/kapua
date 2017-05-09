@@ -69,8 +69,6 @@ public class WelcomeView extends LayoutContainer {
     }
 
     public void refresh() {
-        if (rendered) {
-        }
+        // FIXME: no-op
     }
-
 }

@@ -36,54 +36,47 @@ import org.eclipse.kapua.transport.message.TransportMessage;
  * 
  */
 @SuppressWarnings("rawtypes")
-public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage>
-{
+public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
+
     @Override
     public KuraResponseMessage create(KuraRequestMessage requestMessage, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         return send(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage read(KuraRequestMessage requestMessage, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         return send(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage options(KuraRequestMessage requestMessage, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         return send(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage delete(KuraRequestMessage requestMessage, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         return send(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage execute(KuraRequestMessage requestMessage, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         return send(requestMessage, timeout);
     }
 
     @Override
     public KuraResponseMessage write(KuraRequestMessage requestMessage, Long timeout)
-        throws KapuaException
-    {
+            throws KapuaException {
         return send(requestMessage, timeout);
     }
 
     @SuppressWarnings({ "unchecked" })
     private KuraResponseMessage send(KuraRequestMessage requestMessage, Long timeout)
-        throws KuraMqttDeviceCallException
-    {
+            throws KuraMqttDeviceCallException {
         KuraResponseMessage response = null;
         TransportFacade transportFacade = null;
         try {
@@ -125,19 +118,16 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
                 // Translate response
                 response = (KuraResponseMessage) translatorTransportKura.translate(transportResponseMessage);
-            }
-            catch (KapuaException e) {
+            } catch (KapuaException e) {
                 throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CLIENT_SEND_ERROR,
-                                                      e,
-                                                      (Object[]) null);
+                        e,
+                        (Object[]) null);
             }
-        }
-        catch (KapuaException ke) {
+        } catch (KapuaException ke) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
-                                                  ke,
-                                                  (Object[]) null);
-        }
-        finally {
+                    ke,
+                    (Object[]) null);
+        } finally {
             if (transportFacade != null) {
                 transportFacade.clean();
             }
@@ -148,8 +138,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
     @Override
     @SuppressWarnings("unchecked")
-    public Class<KuraMessage> getBaseMessageClass()
-    {
+    public Class<KuraMessage> getBaseMessageClass() {
         return KuraMessage.class;
     }
 
@@ -157,34 +146,30 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     // Private methods
     //
     private TransportFacade borrowClient()
-        throws KuraMqttDeviceCallException
-    {
+            throws KuraMqttDeviceCallException {
         TransportFacade transportFacade;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
             TransportClientFactory transportClientFactory = locator.getFactory(TransportClientFactory.class);
             transportFacade = transportClientFactory.getFacade();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
-                                                  e,
-                                                  (Object[]) null);
+                    e,
+                    (Object[]) null);
         }
         return transportFacade;
     }
 
     @SuppressWarnings("unchecked")
     private Translator getTranslator(Class from, Class to)
-        throws KuraMqttDeviceCallException
-    {
+            throws KuraMqttDeviceCallException {
         Translator translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
-                                                  e,
-                                                  (Object[]) null);
+                    e,
+                    (Object[]) null);
         }
         return translator;
     }

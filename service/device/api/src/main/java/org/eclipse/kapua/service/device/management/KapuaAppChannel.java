@@ -19,8 +19,7 @@ package org.eclipse.kapua.service.device.management;
  * @since 1.0
  *
  */
-public interface KapuaAppChannel extends KapuaControlChannel
-{
+public interface KapuaAppChannel extends KapuaControlChannel {
 
     /**
      * Get the application name

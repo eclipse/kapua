@@ -18,15 +18,14 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
-public class DateUtils
-{
+public class DateUtils {
+
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     /**
      * formatDate takes a date an return its string representation with date and time
      */
-    public static String formatDateTime(Date d)
-    {
+    public static String formatDateTime(Date d) {
         if (d == null) {
             return MSGS.none();
         }
@@ -88,8 +87,7 @@ public class DateUtils
 
             DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.TIME_MEDIUM);
             date = MSGS.yesterday(dtf.format(d));
-        }
-        else {
+        } else {
 
             DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM);
             date = dtf.format(d);
@@ -101,8 +99,7 @@ public class DateUtils
     /**
      * formatDate takes a date an return its string representation with only the date
      */
-    public static String formatDate(Date d)
-    {
+    public static String formatDate(Date d) {
         if (d == null) {
             return MSGS.none();
         }
@@ -164,8 +161,7 @@ public class DateUtils
 
             DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
             date = MSGS.yesterday(dtf.format(d));
-        }
-        else {
+        } else {
 
             DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
             date = dtf.format(d);
@@ -177,8 +173,7 @@ public class DateUtils
     /**
      * formatDate takes a date an return its string representation with only the time
      */
-    public static String formatTime(Date d)
-    {
+    public static String formatTime(Date d) {
         if (d == null) {
             return MSGS.none();
         }
@@ -189,44 +184,36 @@ public class DateUtils
         return date;
     }
 
-    public static int getYear(Date date)
-    {
+    public static int getYear(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("yyyy").format(date));
     }
 
-    public static int getMonth(Date date)
-    {
+    public static int getMonth(Date date) {
         // NB: The month in DateTimeFormat is not zero based [unlike Date() & Calendar()] so we need to subtract one when getting !!!
         return Integer.parseInt(DateTimeFormat.getFormat("MM").format(date)) - 1;
     }
 
-    public static int getDayOfMonth(Date date)
-    {
+    public static int getDayOfMonth(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("dd").format(date));
     }
 
-    public static int getHour(Date date)
-    {
+    public static int getHour(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("HH").format(date));
     }
 
-    public static int getMinute(Date date)
-    {
+    public static int getMinute(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("mm").format(date));
     }
 
-    public static int getSecond(Date date)
-    {
+    public static int getSecond(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("ss").format(date));
     }
 
-    public static int getMillisecond(Date date)
-    {
+    public static int getMillisecond(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("SSS").format(date));
     }
 
-    public static Date setYear(Date date, int year)
-    {
+    public static Date setYear(Date date, int year) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -236,8 +223,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setMonth(Date date, int month)
-    {
+    public static Date setMonth(Date date, int month) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -249,8 +235,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setDayOfMonth(Date date, int dayOfMonth)
-    {
+    public static Date setDayOfMonth(Date date, int dayOfMonth) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -261,57 +246,55 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setToLastDayOfMonth(Date date)
-    {
+    public static Date setToLastDayOfMonth(Date date) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 8));
 
         switch (getMonth(date)) {
-            case 0: // Jan
-                sb.append("31");
-                break;
-            case 1: // Feb
-                if (isLeapYear(getYear(date))) {
-                    sb.append("29");
-                }
-                else {
-                    sb.append("28");
-                }
-                break;
-            case 2: // Mar
-                sb.append("31");
-                break;
-            case 3: // Apr
-                sb.append("30");
-                break;
-            case 4: // May
-                sb.append("31");
-                break;
-            case 5: // June
-                sb.append("30");
-                break;
-            case 6: // July
-                sb.append("31");
-                break;
-            case 7: // August
-                sb.append("31");
-                break;
-            case 8: // Sept
-                sb.append("30");
-                break;
-            case 9: // Oct
-                sb.append("31");
-                break;
-            case 10: // Nov
-                sb.append("30");
-                break;
-            case 11: // Dec
-                sb.append("31");
-                break;
-            default:
-                break;
+        case 0: // Jan
+            sb.append("31");
+            break;
+        case 1: // Feb
+            if (isLeapYear(getYear(date))) {
+                sb.append("29");
+            } else {
+                sb.append("28");
+            }
+            break;
+        case 2: // Mar
+            sb.append("31");
+            break;
+        case 3: // Apr
+            sb.append("30");
+            break;
+        case 4: // May
+            sb.append("31");
+            break;
+        case 5: // June
+            sb.append("30");
+            break;
+        case 6: // July
+            sb.append("31");
+            break;
+        case 7: // August
+            sb.append("31");
+            break;
+        case 8: // Sept
+            sb.append("30");
+            break;
+        case 9: // Oct
+            sb.append("31");
+            break;
+        case 10: // Nov
+            sb.append("30");
+            break;
+        case 11: // Dec
+            sb.append("31");
+            break;
+        default:
+            break;
         }
 
         sb.append(dateString.substring(10));
@@ -319,8 +302,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setHour(Date date, int hour)
-    {
+    public static Date setHour(Date date, int hour) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -331,8 +313,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setMinute(Date date, int minute)
-    {
+    public static Date setMinute(Date date, int minute) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -343,8 +324,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setSecond(Date date, int second)
-    {
+    public static Date setSecond(Date date, int second) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -355,8 +335,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    public static Date setMillisecond(Date date, int millisecond)
-    {
+    public static Date setMillisecond(Date date, int millisecond) {
         String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
 
         StringBuilder sb = new StringBuilder();
@@ -366,8 +345,7 @@ public class DateUtils
         return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
     }
 
-    private static String pad(String data, int size)
-    {
+    private static String pad(String data, int size) {
         if (data.length() < size) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < (size - data.length()); i++) {
@@ -380,12 +358,10 @@ public class DateUtils
         return data;
     }
 
-    private static boolean isLeapYear(int year)
-    {
+    private static boolean isLeapYear(int year) {
         if (year % 4 == 0) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

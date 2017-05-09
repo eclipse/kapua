@@ -23,16 +23,15 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
  * 
  */
 @KapuaProvider
-public class DeviceSnapshotFactoryImpl implements DeviceSnapshotFactory
-{
+public class DeviceSnapshotFactoryImpl implements DeviceSnapshotFactory {
 
-    @Override public DeviceSnapshot newDeviceSnapshot() {
+    @Override
+    public DeviceSnapshot newDeviceSnapshot() {
         return new DeviceSnapshotImpl();
     }
 
     @Override
-    public DeviceSnapshots newDeviceSnapshots()
-    {
+    public DeviceSnapshots newDeviceSnapshots() {
         return new DeviceSnapshotsImpl();
     }
 

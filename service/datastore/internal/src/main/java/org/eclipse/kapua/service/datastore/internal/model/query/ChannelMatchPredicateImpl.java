@@ -19,29 +19,27 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
  * @since 1.0
  *
  */
-public class ChannelMatchPredicateImpl implements ChannelMatchPredicate
-{
+public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
+
     private String expression;
 
     /**
      * Default constructor
      */
-    public ChannelMatchPredicateImpl()
-    {}
+    public ChannelMatchPredicateImpl() {
+    }
 
     /**
      * Construct a channel match predicate for the given expression
      * 
      * @param expression
      */
-    public ChannelMatchPredicateImpl(String expression)
-    {
+    public ChannelMatchPredicateImpl(String expression) {
         this.expression = expression;
     }
 
     @Override
-    public String getExpression()
-    {
+    public String getExpression() {
         return this.expression;
     }
 
@@ -51,8 +49,7 @@ public class ChannelMatchPredicateImpl implements ChannelMatchPredicate
      * @param expression
      * @return
      */
-    public ChannelMatchPredicate setExpression(String expression)
-    {
+    public ChannelMatchPredicate setExpression(String expression) {
         this.expression = expression;
         return this;
     }

@@ -19,8 +19,7 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
  * @since 1.0
  * 
  */
-public interface DeviceSnapshotFactory extends KapuaObjectFactory
-{
+public interface DeviceSnapshotFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link DeviceSnapshot}

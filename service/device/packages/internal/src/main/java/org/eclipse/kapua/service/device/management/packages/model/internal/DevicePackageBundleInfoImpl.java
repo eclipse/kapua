@@ -28,31 +28,27 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 @XmlRootElement(name = "bundleInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "name", "version" })
-public class DevicePackageBundleInfoImpl implements DevicePackageBundleInfo
-{
+public class DevicePackageBundleInfoImpl implements DevicePackageBundleInfo {
+
     @XmlElement(name = "name")
     public String name;
 
     @XmlElement(name = "version")
     public String version;
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
-    public void setVersion(String version)
-    {
+    public void setVersion(String version) {
         this.version = version;
     }
 }

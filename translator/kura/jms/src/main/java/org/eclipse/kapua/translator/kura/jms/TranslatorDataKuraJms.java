@@ -30,48 +30,42 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
  * @since 1.0
  */
 @SuppressWarnings("rawtypes")
-public class TranslatorDataKuraJms extends Translator<KuraMessage, JmsMessage>
-{
+public class TranslatorDataKuraJms extends Translator<KuraMessage, JmsMessage> {
 
     @Override
     public JmsMessage translate(KuraMessage kuraMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         JmsTopic jmsRequestTopic = translate(kuraMessage.getChannel());
         JmsPayload jmsPayload = translate(kuraMessage.getPayload());
         return new JmsMessage(jmsRequestTopic,
-                              new Date(),
-                              jmsPayload);
+                new Date(),
+                jmsPayload);
     }
 
     private JmsTopic translate(KuraChannel kuraChannel)
-        throws KapuaException
-    {
+            throws KapuaException {
         List<String> topicTokens = new ArrayList<>();
         topicTokens.add(kuraChannel.getScope());
         topicTokens.add(kuraChannel.getClientId());
         if (kuraChannel.getSemanticChannelParts() != null &&
-            !kuraChannel.getSemanticChannelParts().isEmpty()) {
+                !kuraChannel.getSemanticChannelParts().isEmpty()) {
             topicTokens.addAll(kuraChannel.getSemanticChannelParts());
         }
         return new JmsTopic(topicTokens.toArray(new String[0]));
     }
 
     private JmsPayload translate(KuraPayload kuraPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new JmsPayload(kuraPayload.toByteArray());
     }
 
     @Override
-    public Class<KuraMessage> getClassFrom()
-    {
+    public Class<KuraMessage> getClassFrom() {
         return KuraMessage.class;
     }
 
     @Override
-    public Class<JmsMessage> getClassTo()
-    {
+    public Class<JmsMessage> getClassTo() {
         return JmsMessage.class;
     }
 

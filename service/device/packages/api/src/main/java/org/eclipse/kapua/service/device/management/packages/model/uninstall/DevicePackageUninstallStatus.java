@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management.packages.model.uninstall;
  * @since 1.0
  *
  */
-public enum DevicePackageUninstallStatus
-{
+public enum DevicePackageUninstallStatus {
     /**
      * In progress
      */

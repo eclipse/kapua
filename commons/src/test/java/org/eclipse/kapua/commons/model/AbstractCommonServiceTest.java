@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
@@ -23,55 +22,52 @@ import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractCommonServiceTest
-{
+public abstract class AbstractCommonServiceTest {
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractCommonServiceTest.class);
-    
+
     public static String DEFAULT_TEST_PATH = "./src/test/sql/H2/";
     public static String DEFAULT_COMMONS_PATH = "../commons";
-    public static String DROP_TEST_FILTER     = "test_*_drop.sql";
+    public static String DROP_TEST_FILTER = "test_*_drop.sql";
 
-    public static void scriptSession(String path, String fileFilter)
-    {
+    public static void scriptSession(String path, String fileFilter) {
         EntityManager em = null;
         try {
-            
+
             logger.info("Running database scripts...");
-            
+
             em = CommonsEntityManagerFactory.getInstance().createEntityManager();
             em.beginTransaction();
-                        
+
             SimpleSqlScriptExecutor sqlScriptExecutor = new SimpleSqlScriptExecutor();
             sqlScriptExecutor.scanScripts(path, fileFilter);
             sqlScriptExecutor.executeUpdate(em);
-            
+
             em.commit();
-            
+
             logger.info("...database scripts done!");
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             logger.error("Database scripts failed: {}", e.getMessage());
-            if (em != null)
+            if (em != null) {
                 em.rollback();
-        }
-        finally {
-            if (em != null)
+            }
+        } finally {
+            if (em != null) {
                 em.close();
+            }
         }
 
     }
-    
+
     @BeforeClass
     public static void tearUp()
-        throws KapuaException
-    {
+            throws KapuaException {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
     }
-    
+
     @AfterClass
-    public static void tearDown()
-    {
+    public static void tearDown() {
         scriptSession(DEFAULT_TEST_PATH, DROP_TEST_FILTER);
-    	KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
     }
 }

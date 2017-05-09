@@ -18,23 +18,20 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
 
-public class DeviceDisplayNameValidator implements Validator
-{
+public class DeviceDisplayNameValidator implements Validator {
 
-    private static final ValidationMessages MSGS  = GWT.create(ValidationMessages.class);
+    private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    private TextField<String>               m_deviceDisplayNameField;
-    private String                          regex = ".{3,}";
+    private TextField<String> m_deviceDisplayNameField;
+    private String regex = ".{3,}";
 
-    public DeviceDisplayNameValidator(TextField<String> deviceDisplayNameField)
-    {
+    public DeviceDisplayNameValidator(TextField<String> deviceDisplayNameField) {
         m_deviceDisplayNameField = deviceDisplayNameField;
         m_deviceDisplayNameField.setRegex(regex);
     }
 
     @Override
-    public String validate(Field<?> field, String value)
-    {
+    public String validate(Field<?> field, String value) {
         String result = null;
 
         if (!value.equals(value.trim())) {

@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
-
 /**
  * <p>
  * Java class for Tdesignate complex type.
@@ -58,23 +57,23 @@ import org.w3c.dom.Element;
 @XmlRootElement(name = "Designate", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "Tdesignate", propOrder = {
-                                            "object",
-                                            "any",
-                                            "pid",
-                                            "factoryPid",
-                                            "bundle",
-                                            "optional",
-                                            "merge",
-                                            "otherAttributes"
+        "object",
+        "any",
+        "pid",
+        "factoryPid",
+        "bundle",
+        "optional",
+        "merge",
+        "otherAttributes"
 }, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTdesignate")
-public interface KapuaTdesignate 
-{
+public interface KapuaTdesignate {
+
     /**
      * Gets the value of the object property.
      *
      * @return
-     *     possible object is
-     *     {@link KapuaTobject }
+     *         possible object is
+     *         {@link KapuaTobject }
      *
      */
     @XmlElement(name = "Object", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0", required = true)
@@ -84,8 +83,8 @@ public interface KapuaTdesignate
      * Sets the value of the object property.
      *
      * @param value
-     *     allowed object is
-     *     {@link KapuaTobject }
+     *            allowed object is
+     *            {@link KapuaTobject }
      *
      */
     public void setObject(KapuaTobject value);
@@ -101,8 +100,9 @@ public interface KapuaTdesignate
      *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAny().add(newItem);
+     * getAny().add(newItem);
      * </pre>
      *
      *
@@ -117,12 +117,13 @@ public interface KapuaTdesignate
     public List<Object> getAny();
 
     public void setAny(List<Object> any);
+
     /**
      * Gets the value of the pid property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     @XmlAttribute(name = "pid")
@@ -132,8 +133,8 @@ public interface KapuaTdesignate
      * Sets the value of the pid property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setPid(String value);
@@ -142,8 +143,8 @@ public interface KapuaTdesignate
      * Gets the value of the factoryPid property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     @XmlAttribute(name = "factoryPid")
@@ -153,8 +154,8 @@ public interface KapuaTdesignate
      * Sets the value of the factoryPid property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setFactoryPid(String value);
@@ -163,8 +164,8 @@ public interface KapuaTdesignate
      * Gets the value of the bundle property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     @XmlAttribute(name = "bundle")
@@ -174,8 +175,8 @@ public interface KapuaTdesignate
      * Sets the value of the bundle property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setBundle(String value);
@@ -184,8 +185,8 @@ public interface KapuaTdesignate
      * Gets the value of the optional property.
      *
      * @return
-     *     possible object is
-     *     {@link Boolean }
+     *         possible object is
+     *         {@link Boolean }
      *
      */
     @XmlAttribute(name = "optional")
@@ -195,8 +196,8 @@ public interface KapuaTdesignate
      * Sets the value of the optional property.
      *
      * @param value
-     *     allowed object is
-     *     {@link Boolean }
+     *            allowed object is
+     *            {@link Boolean }
      *
      */
     public void setOptional(Boolean value);
@@ -205,8 +206,8 @@ public interface KapuaTdesignate
      * Gets the value of the merge property.
      *
      * @return
-     *     possible object is
-     *     {@link Boolean }
+     *         possible object is
+     *         {@link Boolean }
      *
      */
     @XmlAttribute(name = "merge")
@@ -216,8 +217,8 @@ public interface KapuaTdesignate
      * Sets the value of the merge property.
      *
      * @param value
-     *     allowed object is
-     *     {@link Boolean }
+     *            allowed object is
+     *            {@link Boolean }
      *
      */
     public void setMerge(Boolean value);
@@ -234,7 +235,7 @@ public interface KapuaTdesignate
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     @XmlAnyAttribute
     public Map<QName, String> getOtherAttributes();

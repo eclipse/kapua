@@ -21,19 +21,17 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
  * 
  */
 public class BundleRequestMessage extends KapuaMessageImpl<BundleRequestChannel, BundleRequestPayload>
-                                         implements KapuaRequestMessage<BundleRequestChannel, BundleRequestPayload>
-{
+        implements KapuaRequestMessage<BundleRequestChannel, BundleRequestPayload> {
+
     @SuppressWarnings("unchecked")
     @Override
-    public Class<BundleRequestMessage> getRequestClass()
-    {
+    public Class<BundleRequestMessage> getRequestClass() {
         return BundleRequestMessage.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Class<BundleResponseMessage> getResponseClass()
-    {
+    public Class<BundleResponseMessage> getResponseClass() {
         return BundleResponseMessage.class;
     }
 

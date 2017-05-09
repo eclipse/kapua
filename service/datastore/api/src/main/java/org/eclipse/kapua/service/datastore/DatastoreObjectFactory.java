@@ -22,8 +22,6 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 /**
  * Datastore object factory definition
@@ -116,15 +114,4 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @return
      */
     public Metric<?> newMetric(String name, Object value);
-
-    /**
-     * Return a new term comparison predicate
-     * 
-     * @param field
-     * @param value
-     * @return
-     * 
-     * @since 1.0.0
-     */
-    public <V> TermPredicate newTermPredicate(StorableField field, V value);
 }

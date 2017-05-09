@@ -21,8 +21,7 @@ import org.eclipse.kapua.service.KapuaService;
  * @since 1.0
  *
  */
-public interface DeviceConfigurationManagementService extends KapuaService
-{
+public interface DeviceConfigurationManagementService extends KapuaService {
 
     /**
      * Get the device configuration for the given device identifier and configuration identifier
@@ -31,28 +30,31 @@ public interface DeviceConfigurationManagementService extends KapuaService
      * @param deviceId
      * @param configurationId
      * @param configurationComponentPid
-     * @param timeout timeout waiting for the device response
+     * @param timeout
+     *            timeout waiting for the device response
      * @return
      * @throws KapuaException
      */
     public DeviceConfiguration get(KapuaId scopeId,
-                                   KapuaId deviceId,
-                                   String configurationId,
-                                   String configurationComponentPid,
-                                   Long timeout)
-        throws KapuaException;
+            KapuaId deviceId,
+            String configurationId,
+            String configurationComponentPid,
+            Long timeout)
+            throws KapuaException;
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
      * 
      * @param scopeId
      * @param deviceId
-     * @param xmlDeviceConfig xml marshalled device configuration
-     * @param timeout timeout waiting for the device response
+     * @param xmlDeviceConfig
+     *            xml marshalled device configuration
+     * @param timeout
+     *            timeout waiting for the device response
      * @throws KapuaException
      */
     public void put(KapuaId scopeId, KapuaId deviceId, String xmlDeviceConfig, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
@@ -60,11 +62,12 @@ public interface DeviceConfigurationManagementService extends KapuaService
      * @param scopeId
      * @param deviceId
      * @param deviceConfig
-     * @param timeout timeout waiting for the device response
+     * @param timeout
+     *            timeout waiting for the device response
      * @throws KapuaException
      */
     public void put(KapuaId scopeId, KapuaId deviceId, DeviceConfiguration deviceConfig, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 
     /**
      * Put the provided configuration to the device identified by the provided device identifier
@@ -72,9 +75,10 @@ public interface DeviceConfigurationManagementService extends KapuaService
      * @param scopeId
      * @param deviceId
      * @param deviceComponentConfig
-     * @param timeout timeout waiting for the device response
+     * @param timeout
+     *            timeout waiting for the device response
      * @throws KapuaException
      */
     public void put(KapuaId scopeId, KapuaId deviceId, DeviceComponentConfiguration deviceComponentConfig, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 }

@@ -19,7 +19,7 @@ import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
  * @since 1.0
  * 
  */
-public class ServiceConfigListResultImpl extends KapuaListResultImpl<ServiceConfig> implements ServiceConfigListResult
-{
+public class ServiceConfigListResultImpl extends KapuaListResultImpl<ServiceConfig> implements ServiceConfigListResult {
+
     private static final long serialVersionUID = -2550359084026132096L;
 }

@@ -18,6 +18,11 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import com.google.common.base.Strings;
 
+/**
+ * Adapted for query parameters of type {@link Date}.
+ * 
+ * @since 1.0.0
+ */
 public class DateParam extends DateXmlAdapter {
 
     private Date date;

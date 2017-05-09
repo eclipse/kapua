@@ -23,7 +23,12 @@
 
     <module name="TreeWalker">
         <module name="AvoidStarImport"/>
+        <module name="FallThrough">
+           <property name="reliefPattern" value="\$FALL-THROUGH\$"/>
+        </module>
         <module name="NeedBraces"/>
+
+        <module name="LeftCurly"/>
     </module>
 
     <module name="FileTabCharacter"/>

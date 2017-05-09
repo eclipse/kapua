@@ -20,41 +20,35 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
  * @since 1.0
  *
  */
-public class SortFieldImpl implements SortField
-{
+public class SortFieldImpl implements SortField {
 
-    private String        field;
+    private String field;
     private SortDirection sortDirection;
 
     /**
      * Default constructor
      */
-    public SortFieldImpl()
-    {
+    public SortFieldImpl() {
 
     }
 
     @Override
-    public String getField()
-    {
+    public String getField() {
         return field;
     }
 
     @Override
-    public void setField(String field)
-    {
+    public void setField(String field) {
         this.field = field;
     }
 
     @Override
-    public SortDirection getSortDirection()
-    {
+    public SortDirection getSortDirection() {
         return sortDirection;
     }
 
     @Override
-    public void setSortDirection(SortDirection sortDirection)
-    {
+    public void setSortDirection(SortDirection sortDirection) {
         this.sortDirection = sortDirection;
     }
 

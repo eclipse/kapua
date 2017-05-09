@@ -23,18 +23,15 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
  *
  */
 @KapuaProvider
-public class DeviceCommandFactoryImpl implements DeviceCommandFactory
-{
+public class DeviceCommandFactoryImpl implements DeviceCommandFactory {
 
     @Override
-    public DeviceCommandInput newCommandInput()
-    {
+    public DeviceCommandInput newCommandInput() {
         return new DeviceCommandInputImpl();
     }
 
     @Override
-    public DeviceCommandOutput newCommandOutput()
-    {
+    public DeviceCommandOutput newCommandOutput() {
         return new DeviceCommandOutputImpl();
     }
 

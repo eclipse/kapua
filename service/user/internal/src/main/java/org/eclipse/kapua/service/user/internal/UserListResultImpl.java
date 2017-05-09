@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.user.UserListResult;
  * @since 1.0
  * 
  */
-public class UserListResultImpl extends KapuaListResultImpl<User> implements UserListResult
-{
+public class UserListResultImpl extends KapuaListResultImpl<User> implements UserListResult {
+
     private static final long serialVersionUID = 2231053707705207563L;
 }

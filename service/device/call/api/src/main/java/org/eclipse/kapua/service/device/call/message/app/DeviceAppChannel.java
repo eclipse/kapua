@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
  * @since 1.0
  *
  */
-public interface DeviceAppChannel extends DeviceChannel
-{
+public interface DeviceAppChannel extends DeviceChannel {
 
     /**
      * Get the application identifier

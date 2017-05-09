@@ -25,8 +25,8 @@ import org.eclipse.kapua.service.device.management.KapuaMethod;
  * @since 1.0
  *
  */
-public class MethodDictionaryKapuaKura
-{
+public class MethodDictionaryKapuaKura {
+
     /**
      * Translations dictionary map
      */
@@ -48,8 +48,7 @@ public class MethodDictionaryKapuaKura
      * @param kapuaMethod
      * @return
      */
-    public static KuraMethod get(KapuaMethod kapuaMethod)
-    {
+    public static KuraMethod get(KapuaMethod kapuaMethod) {
         return dictionary.get(kapuaMethod);
     }
 }

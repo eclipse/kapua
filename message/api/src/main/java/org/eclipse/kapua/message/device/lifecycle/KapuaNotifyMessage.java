@@ -19,7 +19,6 @@ import org.eclipse.kapua.message.KapuaMessage;
  * @since 1.0
  *
  */
-public interface KapuaNotifyMessage extends KapuaMessage<KapuaNotifyChannel, KapuaNotifyPayload>
-{
+public interface KapuaNotifyMessage extends KapuaMessage<KapuaNotifyChannel, KapuaNotifyPayload> {
 
 }

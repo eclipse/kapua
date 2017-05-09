@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.device.management.KapuaAppChannel;
  * @since 1.0
  *
  */
-public interface KapuaResponseChannel extends KapuaAppChannel
-{
+public interface KapuaResponseChannel extends KapuaAppChannel {
 
 }

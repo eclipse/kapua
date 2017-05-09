@@ -26,13 +26,18 @@ import org.junit.Test;
 
 public class KapuaPayloadTest extends Assert {
 
-    private static final int PAYLOAD_DISPLAY_STR_LEN = 109;
+    private static final String PAYLOAD_DISPLAY_STR = "Boolean=true~~Double=42.42~~Float=42.42~~Integer=42~~Long=43~~String=Big brown fox~~byte=626F647900~~unknown=";
 
     private static final String KAPUA_PAYLOAD_XML_STR = "missing";
 
     @Before
     public void before() throws Exception {
         XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+    }
+
+    @Test
+    public void neverGetNull() {
+        assertNotNull(new KapuaPayloadImpl().getProperties());
     }
 
     @Test
@@ -44,16 +49,24 @@ public class KapuaPayloadTest extends Assert {
         byte[] body = kapuaPayload.getBody();
         assertEquals("value1", properties.get("key1"));
         assertEquals("value2", properties.get("key2"));
-        assertArrayEquals(new byte[]{'b', 'o', 'd', 'y'}, body);
+        assertArrayEquals(new byte[] { 'b', 'o', 'd', 'y' }, body);
     }
 
     @Test
+    public void displayStringEmpty() throws Exception {
+        final KapuaPayload kapuaPayload = new KapuaPayloadImpl();
+        assertEquals("", kapuaPayload.toDisplayString());
+    }
+    
+    @Test
     public void displayString() throws Exception {
-        KapuaPayload kapuaPayload = new KapuaPayloadImpl();
+        final KapuaPayload kapuaPayload = new KapuaPayloadImpl();
+
         populatePayloadWithAllTypesOfMetrics(kapuaPayload);
+        kapuaPayload.getProperties().put("null", null);
 
         String displayStr = kapuaPayload.toDisplayString();
-        assertEquals("Length not equal, content probably too.", PAYLOAD_DISPLAY_STR_LEN, displayStr.length());
+        assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
     }
 
     @Test

@@ -19,8 +19,7 @@ import org.eclipse.kapua.model.query.KapuaFetchStyle;
  * @since 1.0
  *
  */
-public enum EntityFetchStyle implements KapuaFetchStyle
-{
+public enum EntityFetchStyle implements KapuaFetchStyle {
     /**
      * Partial entity fields retrieving
      */

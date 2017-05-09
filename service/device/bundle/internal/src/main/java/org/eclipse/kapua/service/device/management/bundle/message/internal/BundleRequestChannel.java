@@ -21,21 +21,19 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel
-{
+public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
+
     private KapuaMethod method;
-    private String      bundleId;
+    private String bundleId;
     private boolean start;
 
     @Override
-    public KapuaMethod getMethod()
-    {
+    public KapuaMethod getMethod() {
         return method;
     }
 
     @Override
-    public void setMethod(KapuaMethod method)
-    {
+    public void setMethod(KapuaMethod method) {
         this.method = method;
     }
 
@@ -44,8 +42,7 @@ public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRe
      * 
      * @return
      */
-    public String getBundleId()
-    {
+    public String getBundleId() {
         return bundleId;
     }
 
@@ -54,8 +51,7 @@ public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRe
      * 
      * @param bundleId
      */
-    public void setBundleId(String bundleId)
-    {
+    public void setBundleId(String bundleId) {
         this.bundleId = bundleId;
     }
 
@@ -64,8 +60,7 @@ public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRe
      * 
      * @return
      */
-    public boolean isStart()
-    {
+    public boolean isStart() {
         return start;
     }
 
@@ -74,8 +69,7 @@ public class BundleRequestChannel extends KapuaAppChannelImpl implements KapuaRe
      * 
      * @param start
      */
-    public void setStart(boolean start)
-    {
+    public void setStart(boolean start) {
         this.start = start;
     }
 }

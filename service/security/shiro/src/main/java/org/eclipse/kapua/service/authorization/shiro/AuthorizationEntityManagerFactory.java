@@ -26,22 +26,21 @@ import org.eclipse.kapua.locator.KapuaProvider;
  *
  */
 @KapuaProvider
-public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFactory
-{
-    private static final String                      PERSISTENCE_UNIT_NAME = "kapua-authorization";
-    private static final String                      DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String>         s_uniqueConstraints   = new HashMap<>();
+public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFactory {
 
-    private static AuthorizationEntityManagerFactory instance              = new AuthorizationEntityManagerFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-authorization";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+
+    private static AuthorizationEntityManagerFactory instance = new AuthorizationEntityManagerFactory();
 
     /**
      * Constructs a new entity manager factory and configure it to use the authorization persistence unit.
      */
-    private AuthorizationEntityManagerFactory()
-    {
+    private AuthorizationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
-              DATASOURCE_NAME,
-              s_uniqueConstraints);
+                DATASOURCE_NAME,
+                s_uniqueConstraints);
     }
 
     /**
@@ -51,8 +50,7 @@ public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFact
      * @throws KapuaException
      */
     public static EntityManager getEntityManager()
-        throws KapuaException
-    {
+            throws KapuaException {
         return instance.createEntityManager();
     }
 
@@ -61,8 +59,7 @@ public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFact
      * 
      * @return
      */
-    public static AuthorizationEntityManagerFactory getInstance()
-    {
+    public static AuthorizationEntityManagerFactory getInstance() {
         return instance;
     }
 

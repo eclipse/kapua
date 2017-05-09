@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management;
  * @since 1.0
  *
  */
-public interface KapuaAppProperties
-{
+public interface KapuaAppProperties {
 
     /**
      * Get the property value

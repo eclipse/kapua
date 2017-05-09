@@ -39,7 +39,7 @@ public class AccountEditDialog extends AccountAddDialog {
         fieldSet.remove(accountNameField);
         accountNameLabel.setVisible(true);
         parentAccountName.setValue(currentSession.getSelectedAccount().getName());
-        
+
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());
 
@@ -78,7 +78,7 @@ public class AccountEditDialog extends AccountAddDialog {
         accountClusterLabel.setVisible(true);
         optlock.setValue(selectedAccount.getOptlock());
     }
-    
+
     @Override
     public void submit() {
         // Organization data
@@ -94,19 +94,18 @@ public class AccountEditDialog extends AccountAddDialog {
         gwtOrganization.setStateProvinceCounty(organizationStateProvinceCounty.getValue());
         gwtOrganization.setCountry(organizationCountry.getValue());
         selectedAccount.setGwtOrganization(gwtOrganization);
-        
+
         gwtAccountService.update(xsrfToken,
                 selectedAccount,
                 new AsyncCallback<GwtAccount>() {
-                    public void onFailure(Throwable caught)
-                    {
+
+                    public void onFailure(Throwable caught) {
                         FailureHandler.handleFormException(m_formPanel, caught);
                         m_status.hide();
                         m_formPanel.getButtonBar().enable();
                     }
 
-                    public void onSuccess(GwtAccount account)
-                    {
+                    public void onSuccess(GwtAccount account) {
                         ConsoleInfo.display(MSGS.info(), MSGS.accountUpdatedConfirmation(account.getUnescapedName()));
                         hide();
                     }

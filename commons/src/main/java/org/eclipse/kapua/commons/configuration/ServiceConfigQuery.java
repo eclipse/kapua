@@ -19,6 +19,5 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * @since 1.0
  *
  */
-public interface ServiceConfigQuery extends KapuaQuery<ServiceConfig>
-{
+public interface ServiceConfigQuery extends KapuaQuery<ServiceConfig> {
 }

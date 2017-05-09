@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
  * @since 1.0
  *
  */
-public class ExistsPredicateImpl implements ExistsPredicate
-{
+public class ExistsPredicateImpl implements ExistsPredicate {
 
     private String name;
 
@@ -29,8 +28,7 @@ public class ExistsPredicateImpl implements ExistsPredicate
      * 
      * @param name
      */
-    public ExistsPredicateImpl(String name)
-    {
+    public ExistsPredicateImpl(String name) {
         this.name = name;
     }
 
@@ -39,8 +37,7 @@ public class ExistsPredicateImpl implements ExistsPredicate
      * 
      * @param paths
      */
-    public ExistsPredicateImpl(String... paths)
-    {
+    public ExistsPredicateImpl(String... paths) {
         StringBuilder builder = new StringBuilder();
         for (String str : paths) {
             builder.append(str);
@@ -50,8 +47,7 @@ public class ExistsPredicateImpl implements ExistsPredicate
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 

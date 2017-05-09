@@ -25,20 +25,18 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
  * 
  * @since 1.0
  */
-public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMessage>
-{
+public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMessage> {
+
     @Override
     public KuraAppsMessage translate(JmsMessage jmsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KuraAppsMessage(translate(jmsMessage.getTopic()),
-                                   jmsMessage.getReceivedOn(),
-                                   translate(jmsMessage.getPayload().getBody()));
+                jmsMessage.getReceivedOn(),
+                translate(jmsMessage.getPayload().getBody()));
     }
 
     private KuraAppsChannel translate(JmsTopic jmsTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] topicTokens = jmsTopic.getSplittedTopic();
         // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
         // TODO check exception type
@@ -46,26 +44,23 @@ public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMe
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
         return new KuraAppsChannel(topicTokens[1],
-                                   topicTokens[2]);
+                topicTokens[2]);
     }
 
     private KuraAppsPayload translate(byte[] jmsBody)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraAppsPayload kuraAppsPayload = new KuraAppsPayload();
         kuraAppsPayload.readFromByteArray(jmsBody);
         return kuraAppsPayload;
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom()
-    {
+    public Class<JmsMessage> getClassFrom() {
         return JmsMessage.class;
     }
 
     @Override
-    public Class<KuraAppsMessage> getClassTo()
-    {
+    public Class<KuraAppsMessage> getClassTo() {
         return KuraAppsMessage.class;
     }
 

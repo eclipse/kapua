@@ -27,11 +27,10 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
  * 
  */
 @KapuaProvider
-public class CredentialFactoryImpl implements CredentialFactory
-{
+public class CredentialFactoryImpl implements CredentialFactory {
+
     @Override
-    public CredentialCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey)
-    {
+    public CredentialCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
         return new CredentialCreatorImpl(scopeId, userId, credentialType, credentialKey);
     }
 

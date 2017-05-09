@@ -18,7 +18,6 @@ package org.eclipse.kapua.service.device.call;
  * @since 1.0
  *
  */
-public interface DeviceMethod
-{
+public interface DeviceMethod {
 
 }

@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.call.kura.app;
  * @since 1.0
  *
  */
-public enum RequestMetrics
-{
+public enum RequestMetrics {
 
     /**
      * Request identifier
@@ -32,8 +31,7 @@ public enum RequestMetrics
 
     private String value;
 
-    RequestMetrics(String value)
-    {
+    RequestMetrics(String value) {
         this.value = value;
     }
 
@@ -42,8 +40,7 @@ public enum RequestMetrics
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

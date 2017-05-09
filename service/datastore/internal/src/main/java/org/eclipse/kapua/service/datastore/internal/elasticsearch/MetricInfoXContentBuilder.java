@@ -182,9 +182,9 @@ public class MetricInfoXContentBuilder {
         Map<String, Object> kapuaMetrics = payload.getProperties();
         if (kapuaMetrics != null) {
 
-            for (String kapuaMetricName : kapuaMetrics.keySet()) {
-
-                Object metricValue = kapuaMetrics.get(kapuaMetricName);
+            for (Map.Entry<String, Object> entry : kapuaMetrics.entrySet()) {
+                String kapuaMetricName = entry.getKey();
+                Object metricValue = entry.getValue();
 
                 // Sanitize field names: '.' is not allowed
                 String esMetricName = EsUtils.normalizeMetricName(kapuaMetricName);

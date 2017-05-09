@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.datastore.internal.elasticsearch;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -115,11 +116,10 @@ public class MessageXContentBuilder {
             Map<String, Object> kapuaMetrics = payload.getProperties();
             if (kapuaMetrics != null) {
 
-                Map<String, Object> metrics = new HashMap<>();
-                String[] metricNames = kapuaMetrics.keySet().toArray(new String[] {});
-                for (String kapuaMetricName : metricNames) {
-
-                    Object metricValue = kapuaMetrics.get(kapuaMetricName);
+                Map<String, Object> metrics = new HashMap<>(kapuaMetrics.size());
+                for (final Map.Entry<String, Object> entry : kapuaMetrics.entrySet()) {
+                    String kapuaMetricName = entry.getKey();
+                    Object metricValue = entry.getValue();
 
                     // Sanitize field names: '.' is not allowed
                     String esMetricName = EsUtils.normalizeMetricName(kapuaMetricName);
@@ -129,8 +129,7 @@ public class MessageXContentBuilder {
                     esMetric.setName(esMetricName);
                     esMetric.setType(esType);
 
-                    Map<String, Object> field = new HashMap<>();
-                    field.put(esTypeAcronim, metricValue);
+                    final Map<String, Object> field = Collections.singletonMap(esTypeAcronim, metricValue);
                     metrics.put(esMetricName, field);
 
                     // each metric is potentially a dynamic field so report it a new mapping
@@ -141,7 +140,7 @@ public class MessageXContentBuilder {
 
             messageBuilder.endObject();
 
-            this.setMetricMappings(metricMappings);
+            setMetricMappings(metricMappings);
             return messageBuilder;
         } catch (IOException e) {
             throw new EsDocumentBuilderException("Unable to build message document", e);

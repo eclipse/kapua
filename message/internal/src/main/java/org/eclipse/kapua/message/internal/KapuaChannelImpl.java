@@ -21,25 +21,22 @@ import org.eclipse.kapua.message.KapuaChannel;
  * @since 1.0
  *
  */
-public class KapuaChannelImpl implements KapuaChannel
-{
+public class KapuaChannelImpl implements KapuaChannel {
+
     private List<String> semanticParts;
 
     @Override
-    public List<String> getSemanticParts()
-    {
+    public List<String> getSemanticParts() {
         return semanticParts;
     }
 
     @Override
-    public void setSemanticParts(List<String> semanticParts)
-    {
+    public void setSemanticParts(List<String> semanticParts) {
         this.semanticParts = semanticParts;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder strBuilder = new StringBuilder();
         if (semanticParts != null && !semanticParts.isEmpty()) {
             for (String str : semanticParts) {
@@ -47,8 +44,7 @@ public class KapuaChannelImpl implements KapuaChannel
                 strBuilder.append("/");
             }
             return strBuilder.toString();
-        }
-        else {
+        } else {
             return "NO semantic topic defined";
         }
     }

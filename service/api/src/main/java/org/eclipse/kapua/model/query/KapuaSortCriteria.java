@@ -17,7 +17,6 @@ package org.eclipse.kapua.model.query;
  * @since 1.0
  * 
  */
-public interface KapuaSortCriteria
-{
+public interface KapuaSortCriteria {
 
 }

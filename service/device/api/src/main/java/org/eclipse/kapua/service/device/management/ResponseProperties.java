@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management;
  * @since 1.0
  * 
  */
-public enum ResponseProperties
-{
+public enum ResponseProperties {
 
     /**
      * Exception message (if present)
@@ -37,8 +36,7 @@ public enum ResponseProperties
      * 
      * @param value
      */
-    ResponseProperties(String value)
-    {
+    ResponseProperties(String value) {
         this.value = value;
     }
 
@@ -47,8 +45,7 @@ public enum ResponseProperties
      * 
      * @return
      */
-    public String getValue()
-    {
+    public String getValue() {
         return value;
     }
 }

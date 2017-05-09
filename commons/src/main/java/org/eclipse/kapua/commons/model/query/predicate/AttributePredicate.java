@@ -16,23 +16,23 @@ import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate;
 /**
  * Kapua attribute predicate reference implementation.
  *
- * @param <T> attribute value
+ * @param <T>
+ *            attribute value
  * 
  * @since 1.0
  * 
  */
-public class AttributePredicate<T> implements KapuaAttributePredicate<T>
-{
+public class AttributePredicate<T> implements KapuaAttributePredicate<T> {
 
     /**
      * Predicate attribute name
      */
-    private String   attributeName;
+    private String attributeName;
 
     /**
      * Predicate attribute value
      */
-    private T        attributeValue;
+    private T attributeValue;
 
     /**
      * Comparison attribute
@@ -45,8 +45,7 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T>
      * @param attributeName
      * @param attributeValue
      */
-    public AttributePredicate(String attributeName, T attributeValue)
-    {
+    public AttributePredicate(String attributeName, T attributeValue) {
         this(attributeName, attributeValue, Operator.EQUAL);
     }
 
@@ -57,8 +56,7 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T>
      * @param attributeValue
      * @param operator
      */
-    public AttributePredicate(String attributeName, T attributeValue, Operator operator)
-    {
+    public AttributePredicate(String attributeName, T attributeValue, Operator operator) {
         this.attributeName = attributeName;
         this.attributeValue = attributeValue;
         this.operator = operator;
@@ -87,20 +85,17 @@ public class AttributePredicate<T> implements KapuaAttributePredicate<T>
     }
 
     @Override
-    public String getAttributeName()
-    {
+    public String getAttributeName() {
         return attributeName;
     }
 
     @Override
-    public T getAttributeValue()
-    {
+    public T getAttributeValue() {
         return attributeValue;
     }
 
     @Override
-    public Operator getOperator()
-    {
+    public Operator getOperator() {
         return operator;
     }
 

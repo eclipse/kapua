@@ -26,20 +26,18 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
  * @since 1.0
  *
  */
-public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirthMessage>
-{
+public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirthMessage> {
+
     @Override
     public KuraBirthMessage translate(JmsMessage jmsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KuraBirthMessage(translate(jmsMessage.getTopic()),
-                                    jmsMessage.getReceivedOn(),
-                                    translate(jmsMessage.getPayload().getBody()));
+                jmsMessage.getReceivedOn(),
+                translate(jmsMessage.getPayload().getBody()));
     }
 
     private KuraBirthChannel translate(JmsTopic jmsTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] topicTokens = jmsTopic.getSplittedTopic();
         // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
         // TODO check exception type
@@ -47,26 +45,23 @@ public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirth
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
         return new KuraBirthChannel(topicTokens[1],
-                                    topicTokens[2]);
+                topicTokens[2]);
     }
 
     private KuraBirthPayload translate(byte[] jmsBody)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraBirthPayload kuraBirthPayload = new KuraBirthPayload();
         kuraBirthPayload.readFromByteArray(jmsBody);
         return kuraBirthPayload;
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom()
-    {
+    public Class<JmsMessage> getClassFrom() {
         return JmsMessage.class;
     }
 
     @Override
-    public Class<KuraBirthMessage> getClassTo()
-    {
+    public Class<KuraBirthMessage> getClassTo() {
         return KuraBirthMessage.class;
     }
 

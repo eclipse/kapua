@@ -22,21 +22,21 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
 
-public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>> extends AbstractTranslatorKuraKapua<TO_C, TO_P, TO_M> {
+public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
+        extends AbstractTranslatorKuraKapua<TO_C, TO_P, TO_M> {
 
     @Override
-    protected TO_M translateMessage(KuraResponseMessage kuraMessage, Account account) throws KapuaException
-    {
+    protected TO_M translateMessage(KuraResponseMessage kuraMessage, Account account) throws KapuaException {
         // Translate channel
-        
+
         TO_C bundleResponseChannel = translateChannel(kuraMessage.getChannel());
 
         // Translate payload
-        
+
         TO_P responsePayload = translatePayload(kuraMessage.getPayload());
 
         // Process messsage
-        
+
         TO_M kapuaMessage = createMessage();
         kapuaMessage.setScopeId(account.getId());
         kapuaMessage.setChannel(bundleResponseChannel);
@@ -51,8 +51,8 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
         return kapuaMessage;
     }
 
-    protected abstract TO_M createMessage () throws KapuaException;
-    
+    protected abstract TO_M createMessage() throws KapuaException;
+
     protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws KapuaException;
 
     protected abstract TO_P translatePayload(KuraResponsePayload kuraPayload) throws KapuaException;

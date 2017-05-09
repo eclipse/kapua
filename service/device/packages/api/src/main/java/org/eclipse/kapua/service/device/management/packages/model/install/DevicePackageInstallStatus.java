@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management.packages.model.install;
  * @since 1.0
  *
  */
-public enum DevicePackageInstallStatus
-{
+public enum DevicePackageInstallStatus {
     /**
      * In progress
      */

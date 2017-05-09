@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.device.call.message.DevicePayload;
  * @since 1.0
  *
  */
-public interface DeviceRequestPayload extends DevicePayload
-{
+public interface DeviceRequestPayload extends DevicePayload {
 
     /**
      * Get the request identifier

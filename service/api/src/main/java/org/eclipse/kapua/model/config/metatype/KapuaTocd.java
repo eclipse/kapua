@@ -54,11 +54,8 @@ import javax.xml.namespace.QName;
  */
 @XmlRootElement(name = "OCD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(
-        factoryClass = MetatypeXmlRegistry.class,
-        factoryMethod = "newKapuaTocd")
-public interface KapuaTocd
-{
+@XmlType(factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTocd")
+public interface KapuaTocd {
 
     /**
      * Gets the value of the ad property.
@@ -87,6 +84,7 @@ public interface KapuaTocd
     public List<KapuaTad> getAD();
 
     public void setAD(List<? extends KapuaTad> icon);
+
     /**
      * Gets the value of the icon property.
      *
@@ -143,6 +141,7 @@ public interface KapuaTocd
     public List<Object> getAny();
 
     public void setAny(List<Object> any);
+
     /**
      * Gets the value of the name property.
      *

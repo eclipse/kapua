@@ -158,17 +158,16 @@ public class MessageObjectBuilder {
 
             Map<String, Object> payloadMetrics = new HashMap<>();
 
-            String[] metricNames = metrics.keySet().toArray(new String[] {});
-            for (String metricsName : metricNames) {
+            for (Map.Entry<String, Object> entry : metrics.entrySet()) {
+                String metricsName = entry.getKey();
                 @SuppressWarnings("unchecked")
                 Map<String, Object> metricValue = (Map<String, Object>) metrics.get(metricsName);
-                if (metricValue.size() > 0) {
-                    String[] valueTypes = metricValue.keySet().toArray(new String[] {});
-                    Object value = metricValue.get(valueTypes[0]);
+                if (!metricValue.isEmpty()) {
+                    Map.Entry<String,Object> valueEntry = metricValue.entrySet().iterator().next();
                     // since elasticsearch doesn't return always the same type of the saved field
                     // (usually due to some promotion of the field type)
                     // we need to check the metric type returned by elasticsearch and, if needed, convert to the proper type
-                    payloadMetrics.put(EsUtils.restoreMetricName(metricsName), EsUtils.convertToCorrectType(valueTypes[0], value));
+                    payloadMetrics.put(EsUtils.restoreMetricName(metricsName), EsUtils.convertToCorrectType(valueEntry.getKey(), valueEntry.getValue()));
                 }
             }
 

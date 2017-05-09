@@ -18,8 +18,7 @@ package org.eclipse.kapua.service.device.management;
  * @since 1.0
  *
  */
-public enum KapuaMethod
-{
+public enum KapuaMethod {
     /**
      * Read
      */

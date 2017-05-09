@@ -19,8 +19,8 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
-public interface KapuaBirthPayload extends KapuaPayload
-{
+public interface KapuaBirthPayload extends KapuaPayload {
+
     /**
      * Get the device uptime
      * 
