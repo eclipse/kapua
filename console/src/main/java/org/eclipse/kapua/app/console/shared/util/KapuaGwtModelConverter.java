@@ -301,7 +301,7 @@ public class KapuaGwtModelConverter {
      *
      * @param group
      *            The {@link Group} to convert
-     * @return The converted {@link GwtGroup\}
+     * @return The converted {@link GwtGroup}
      * @since 1.0.0
      */
     public static GwtGroup convert(Group group) {
@@ -391,7 +391,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link KapuaId} into its {@link String} short id representation.
      * <p>
-     * Example: 1 => AQ
+     * Example: 1 =&gt; AQ
      * </p>
      *
      * @param kapuaId

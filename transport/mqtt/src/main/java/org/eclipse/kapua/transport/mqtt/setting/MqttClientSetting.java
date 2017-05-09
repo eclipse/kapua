@@ -28,7 +28,7 @@ public class MqttClientSetting extends AbstractKapuaSetting<MqttClientSettingKey
     private static final String MQTT_CLIENT_CONFIG_RESOURCE = "mqtt-client-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      * @since 1.0.0
      */

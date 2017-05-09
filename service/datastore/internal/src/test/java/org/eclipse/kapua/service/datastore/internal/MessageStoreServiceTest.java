@@ -1167,7 +1167,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     /**
      * This method should create a new account for the test (temp implementation that return always the default kapua-sys account)
      *
-     * @param accountName
      * @param password
      * @return
      * @throws KapuaException
@@ -1182,7 +1181,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param clientId
      * @param scopeId
      * @param deviceId
-     * @param receiedOn
      * @param capturedOn
      * @param sentOn
      * @return
@@ -1369,7 +1367,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp filter
      *
      * @param messageQuery
-     * @param accountName
      * @param dateRange
      */
     private void setMessageQueryBaseCriteria(MessageQuery messageQuery, DateRange dateRange) {
@@ -1380,7 +1377,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param messageQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
@@ -1401,7 +1397,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp filter
      *
      * @param channelInfoQuery
-     * @param accountName
      * @param dateRange
      */
     private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, DateRange dateRange) {
@@ -1412,7 +1407,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param channelInfoQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
@@ -1433,8 +1427,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @param channelInfoQuery
      * @param channelPredicate
-     * @param dateLowerBound
-     * @param dateUpperBound
      */
     private void setChannelInfoQueryChannelPredicateCriteria(ChannelInfoQuery channelInfoQuery, String clientId, String channelPredicate, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
@@ -1472,7 +1464,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp id filter
      *
      * @param metricInfoQuery
-     * @param accountName
      * @param dateRange
      */
     private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, DateRange dateRange) {
@@ -1483,7 +1474,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param metricInfoQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
@@ -1504,7 +1494,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp filter
      *
      * @param clientInfoQuery
-     * @param accountName
      * @param dateRange
      */
     private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, DateRange dateRange) {
@@ -1515,7 +1504,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param clientInfoQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
@@ -1704,7 +1692,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Check if in the result set has the expected channel info client ids
      *
      * @param result
-     * @return
      */
     private void checkChannelInfoClientIdsAndTopics(ChannelInfoListResult result, int clientInfoCount, String[] clientIds, String[] topics) {
         checkChannelInfoCount(result, clientInfoCount);
@@ -1753,7 +1740,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Check if in the result set has the expected metric info client ids
      *
      * @param result
-     * @return
      */
     private void checkMetricInfoClientIdsAndMetricNames(MetricInfoListResult result, int metricInfoCount, String[] clientIds, String[] metrics) {
         checkMetricInfoCount(result, metricInfoCount);
@@ -1866,8 +1852,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @param result
      * @param sortFieldList
-     * @param cleanComposedFieldName
-     *            takes only the field part after the last dot (useful for clean up the composed field name)
      */
     private static void checkListOrder(StorableListResult<?> result, List<OrderConstraint<?>> sortFieldList) {
         Object previousItem = null;
@@ -1905,9 +1889,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     /**
      * Return the value of the field name provided (assuming that this value is a Comparable)
      *
-     * @param message
      * @param field
-     * @param cleanComposedFieldName
      * @return
      */
     private static <T> T getValue(Object object, String field, Class<T> clazz) {
@@ -1940,7 +1922,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * It removes the _ and append the remaining part capitalizing the first letter (if capitalizeFirstLetter = true)
      *
      * @param field
-     * @param cleanComposedFieldName
      * @return
      */
     private static String getFieldName(String field, boolean capitalizeFirstLetter) {
@@ -1997,7 +1978,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @param objectClass
      * @param field
-     * @param prefix
      * @return
      */
     private static Field getField(Class<?> objectClass, final String field) {

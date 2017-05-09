@@ -64,7 +64,6 @@ public class MetricInfoXContentBuilder {
      * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and metricMappedName with the slash).<br>
      * <b>NOTE: metricMappedName is the metric name concatenated with its type (see {@link EsUtils#convertToEsType(String kapuaType)}</b>
      *
-     * @param accountName
      * @param clientId
      * @param channel
      * @param metricName
@@ -81,7 +80,6 @@ public class MetricInfoXContentBuilder {
      * <b>If the id is null then it is generated.</b>
      *
      * @param id
-     * @param accountName
      * @param clientId
      * @param channel
      * @param metricName
@@ -99,14 +97,12 @@ public class MetricInfoXContentBuilder {
     }
 
     /**
-     * Get the metric identifier getting parameters from the metricInfoCreator. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel, String
-     * metricName, String metricType)}
+     * Get the metric identifier getting parameters from the metricInfoCreator. Then it calls {@link #getOrDeriveId(StorableId, KapuaId, String, String, String)}
      *
      * @param id
      * @param metricInfoCreator
      * @return
      * @throws EsDocumentBuilderException
-     * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, MetricInfoCreator<?> metricInfoCreator)
             throws EsDocumentBuilderException {
@@ -118,14 +114,13 @@ public class MetricInfoXContentBuilder {
     }
 
     /**
-     * Get the metric identifier getting parameters from the metricInfo. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel, String
+     * Get the metric identifier getting parameters from the metricInfo. Then it calls {@link #getOrDeriveId(StorableId, KapuaId, String, String, String)}
      * metricName, String metricType)}
      *
      * @param id
      * @param metricInfo
      * @return
      * @throws EsDocumentBuilderException
-     * @since 1.0.0
      */
     public static String getOrDeriveId(StorableId id, MetricInfo metricInfo)
             throws EsDocumentBuilderException {
@@ -139,16 +134,13 @@ public class MetricInfoXContentBuilder {
     /**
      * Get the {@link XContentBuilder} initialized with the provided parameters
      *
-     * @param account
      * @param clientId
      * @param channel
      * @param metricName
-     * @param value
      * @param msgTimestamp
      * @param msgId
      * @return
      * @throws EsDocumentBuilderException
-     * @since 1.0.0
      */
     private XContentBuilder build(KapuaId scopeId, String clientId, String channel, String metricName, Class<?> metricType, Date msgTimestamp, String msgId)
             throws EsDocumentBuilderException {
@@ -289,7 +281,6 @@ public class MetricInfoXContentBuilder {
     /**
      * Get the {@link MetricInfoXContentBuilder} initialized with the provided parameters
      *
-     * @param account
      * @param clientId
      * @param messageId
      * @param message
@@ -297,7 +288,6 @@ public class MetricInfoXContentBuilder {
      * @param receivedOn
      * @return
      * @throws EsDocumentBuilderException
-     * @since 1.0.0
      */
     public MetricInfoXContentBuilder build(KapuaId scopeId, String clientId, StorableId messageId, DatastoreMessage message, Date indexedOn, Date receivedOn)
             throws EsDocumentBuilderException {

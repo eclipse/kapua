@@ -201,9 +201,6 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      * Update the last published date and last published message identifier for the specified client info, so it gets the timestamp and the message identifier of the last published message for the
      * account/clientId in the client info
      * 
-     * @param scopeId
-     * @param channelInfo
-     * 
      * @throws KapuaException
      * 
      * @since 1.0.0

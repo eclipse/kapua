@@ -220,7 +220,7 @@ public class NorthView extends LayoutContainer {
      * 
      * @param menu
      *            the menu to fill
-     * @param account
+     * @param accountId
      *            the account of the current menu item.
      */
     private void populateNavigatorMenu(final Menu menu, final String accountId) {

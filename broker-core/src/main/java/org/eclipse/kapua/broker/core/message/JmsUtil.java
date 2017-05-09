@@ -100,8 +100,7 @@ public class JmsUtil {
      * @param jmsMessage
      * @throws JMSException
      * @throws KapuaException
-     * @throws KapuaInvalidTopicException
-     * @see {@link AbstractKapuaConverter}
+     * @see AbstractKapuaConverter
      */
 
     // TODO check the code with huge messages

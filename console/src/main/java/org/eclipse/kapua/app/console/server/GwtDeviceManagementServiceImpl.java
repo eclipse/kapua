@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,7 +32,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
-import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
@@ -772,9 +770,6 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
      *
      * @param icon
      *            The icon from the OCD of the component configuration.
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws ImageReadException
      */
     private void checkIconResource(KapuaTicon icon) {
         ConsoleSetting config = ConsoleSetting.getInstance();

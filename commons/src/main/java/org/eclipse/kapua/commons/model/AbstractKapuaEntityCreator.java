@@ -41,11 +41,6 @@ public abstract class AbstractKapuaEntityCreator<E extends KapuaEntity> implemen
         setScopeId(scopeId);
     }
 
-    /**
-     * Constructor
-     * 
-     * @param scopeId
-     */
     protected AbstractKapuaEntityCreator(AbstractKapuaEntityCreator<E> abstractEntityCreator) {
         this(abstractEntityCreator.getScopeId());
     }

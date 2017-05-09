@@ -71,7 +71,6 @@ public class ChannelInfoRegistryFacade {
     /**
      * Update the channel information after a message store operation
      * 
-     * @param scopeId
      * @param channelInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -219,7 +218,6 @@ public class ChannelInfoRegistryFacade {
     /**
      * Find channels informations matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -260,7 +258,6 @@ public class ChannelInfoRegistryFacade {
     /**
      * Get channels informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -299,7 +296,6 @@ public class ChannelInfoRegistryFacade {
     /**
      * Delete channels informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws EsQueryConversionException

@@ -52,10 +52,10 @@ public interface AccessRole extends KapuaEntity {
     }
 
     /**
-     * Sets the {@link AccessInfo} id of which this {@link AccessRole} belongs.
+     * Sets the {@link KapuaId} id of which this {@link AccessRole} belongs.
      * 
-     * @param accessId
-     *            The {@link AccessInfo} id.
+     * @param accessInfoId
+     *            The {@link KapuaId} id.
      * @since 1.0.0
      */
     public void setAccessInfoId(KapuaId accessInfoId);

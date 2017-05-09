@@ -21,13 +21,16 @@
     </parent>
 
     <artifactId>kapua-security-authorization-api</artifactId>
-    <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Extended service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-api</artifactId>
         </dependency>
     </dependencies>
 </project>

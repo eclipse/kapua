@@ -158,7 +158,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * cannot make a direct control of the {@link Group#getId()} parameter as it is not known and they can be a lot.<br>
      * The access control then, is performed by hiding the data that a {@link Subject} cannot see instead of throwing {@link UnauthorizedException}.
      *
-     * The access control for {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)}) must specify that {@link KapuaEid#ANY} group assigned to the permission is
+     * The access control for {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)}) must specify that {@link Group#ANY} group assigned to the permission is
      * enough to pass the {@link AuthorizationService#checkPermission(Permission)}.
      *
      */

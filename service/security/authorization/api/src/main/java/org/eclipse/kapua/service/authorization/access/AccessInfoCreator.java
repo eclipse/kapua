@@ -27,6 +27,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.user.User;
 
 /**
  * {@link AccessInfo} creator definition.<br>

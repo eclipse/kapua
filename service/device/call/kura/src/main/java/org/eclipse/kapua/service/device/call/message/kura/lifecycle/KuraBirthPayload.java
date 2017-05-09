@@ -77,7 +77,7 @@ public class KuraBirthPayload extends KuraPayload implements DevicePayload {
      * @param jvmName
      * @param jvmVersion
      * @param jvmProfile
-     * @param esfkuraVersion
+     * @param applicationFramework
      * @param connectionInterface
      * @param connectionIp
      * @param acceptEncoding

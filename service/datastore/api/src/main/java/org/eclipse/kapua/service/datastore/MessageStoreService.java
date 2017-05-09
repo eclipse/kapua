@@ -58,7 +58,6 @@ public interface MessageStoreService extends KapuaService, KapuaConfigurableServ
     /**
      * Query for messages objects matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -71,7 +70,6 @@ public interface MessageStoreService extends KapuaService, KapuaConfigurableServ
     /**
      * Get messages count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -96,7 +94,6 @@ public interface MessageStoreService extends KapuaService, KapuaConfigurableServ
     /**
      * Delete messages matching the given query
      * 
-     * @param scopeId
      * @param query
      * @throws KapuaException
      * 

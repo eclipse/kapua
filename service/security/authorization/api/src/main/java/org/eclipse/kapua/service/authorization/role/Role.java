@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 
 /**
  * Role entity definition.<br>
- * Role is a collection of {@link RolePermission}s that can be assigned to one or more {@link User}s (using {@link AccessInfo}).<br>
+ * Role is a collection of {@link RolePermission}s that can be assigned to one or more {@link org.eclipse.kapua.service.user.User}s (using {@link AccessInfo}).<br>
  * {@link Role#getName()} must be unique within the scope.
  * 
  * @since 1.0.0

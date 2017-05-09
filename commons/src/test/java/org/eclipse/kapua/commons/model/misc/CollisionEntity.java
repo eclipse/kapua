@@ -55,8 +55,6 @@ public class CollisionEntity extends AbstractKapuaNamedEntity {
 
     /**
      * Before update action to correctly set the modified on and modified by fields
-     *
-     * @throws KapuaException
      */
     @PrePersist
     @Override

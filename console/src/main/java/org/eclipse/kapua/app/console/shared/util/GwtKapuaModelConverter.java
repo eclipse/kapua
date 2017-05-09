@@ -107,9 +107,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 
 /**
  * Utility class for convert {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models
- *
- * @author alberto.codutti
- *
  */
 public class GwtKapuaModelConverter {
 
@@ -121,7 +118,6 @@ public class GwtKapuaModelConverter {
      * @param gwtRoleQuery
      *            the {@link GwtRoleQuery} to convert
      * @return the converted {@link RoleQuery}
-     * @since 1.0.0
      */
     public static RoleQuery convertRoleQuery(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery) {
 
@@ -181,7 +177,6 @@ public class GwtKapuaModelConverter {
      * @param gwtUserQuery
      *            the {@link GwtUserQuery} to convert
      * @return the converted {@link UserQuery}
-     * @since 1.0.0
      */
     public static UserQuery convertUserQuery(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery) {
 
@@ -256,7 +251,6 @@ public class GwtKapuaModelConverter {
      * @param gwtCredentialQuery
      *            the {@link GwtCredentialQuery} to convert
      * @return the converted {@link CredentialQuery}
-     * @since 1.0.0
      */
     public static CredentialQuery convertCredentialQuery(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) {
 
@@ -298,7 +292,6 @@ public class GwtKapuaModelConverter {
      * @param gwtRole
      *            the {@link GwtRole} to convert
      * @return the converted {@link Role}
-     * @since 1.0.0
      */
     public static Role convert(GwtRole gwtRole) {
 
@@ -345,7 +338,6 @@ public class GwtKapuaModelConverter {
      * @param gwtRoleCreator
      *            the {@link GwtRoleCreator} to convert
      * @return the converted {@link RoleCreator}
-     * @since 1.0.0
      */
     public static RoleCreator convert(GwtRoleCreator gwtRoleCreator) {
 
@@ -381,7 +373,6 @@ public class GwtKapuaModelConverter {
      * @param gwtCredentialCreator
      *            the {@link GwtCredentialCreator} to convert
      * @return the converted {@link CredentialCreator}
-     * @since 1.0.0
      */
     public static CredentialCreator convert(GwtCredentialCreator gwtCredentialCreator) {
 
@@ -405,7 +396,6 @@ public class GwtKapuaModelConverter {
      * @param gwtCredential
      *            the {@link GwtCredential} to convert
      * @return the converted {@link Credential}
-     * @since 1.0.0
      */
     public static Credential convert(GwtCredential gwtCredential) {
 
@@ -665,7 +655,7 @@ public class GwtKapuaModelConverter {
     /**
      * Converts a {@link KapuaId} form the short form to the actual object.
      * <p>
-     * Example: AQ => 1
+     * Example: AQ =&gt; 1
      * </p>
      *
      * @param shortKapuaId

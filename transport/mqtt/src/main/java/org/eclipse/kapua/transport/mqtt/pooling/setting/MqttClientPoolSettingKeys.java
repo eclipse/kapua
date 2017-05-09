@@ -103,7 +103,7 @@ public enum MqttClientPoolSettingKeys implements SettingKey {
      * Set up the {@code enum} with the key value provided
      * 
      * @param key
-     *            The value mapped by this {@link enum} value
+     *            The value mapped by this {@link Enum} value
      * @since 1.0.0
      */
     private MqttClientPoolSettingKeys(String key) {

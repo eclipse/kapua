@@ -28,7 +28,7 @@ public class JmsClientSetting extends AbstractKapuaSetting<JmsClientSettingKeys>
     private static final String JMS_CLIENT_CONFIG_RESOURCE = "jms-client-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      * @since 1.0.0
      */

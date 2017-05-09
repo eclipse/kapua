@@ -40,7 +40,7 @@ public void close () {
     s.closeSuppressed(resource2);
     s.closeSuppressed(resource1);
   }
-}}
+}}}
  * </pre>
  * <p>
  * If something fails during initialization of MyClass then {@code resource1} would not get
@@ -58,7 +58,7 @@ public MyClass ()  {
 
     s.started(); // from now on this class takes on control
   }
-}}
+}}}
  * </pre>
  * <p>
  * If something happens during the initialization of resource2, then the try-with-resource construct

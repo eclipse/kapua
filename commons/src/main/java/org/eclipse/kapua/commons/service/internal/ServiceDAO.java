@@ -319,7 +319,7 @@ public class ServiceDAO {
      *            The {@link KapuaQuery} to perform.
      * @return The reference of the {@code resultContainer} parameter. Results are added to the given {@code resultContainer} parameter.
      * @throws KapuaException
-     *             If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates()}.
+     *             If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -443,7 +443,7 @@ public class ServiceDAO {
      *            The {@link KapuaQuery} to perform.
      * @return The number of {@link KapuaEntity}es that matched the filter predicates.
      * @throws KapuaException
-     *             If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates()}.
+     *             If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(KapuaPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -702,7 +702,7 @@ public class ServiceDAO {
      * Handles the {@link Groupable} property of the {@link KapuaEntity}.
      * 
      * @param query
-     *            The {@link DeviceQuery} to manage.
+     *            The {@link KapuaQuery} to manage.
      * @param domain
      *            The {@link Domain} inside which the {@link KapuaQuery} param targets.
      * @param groupPredicateName

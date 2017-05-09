@@ -44,7 +44,6 @@ public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurab
     /**
      * Query for clients informations objects matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -57,7 +56,6 @@ public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurab
     /**
      * Get the clients informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaException
@@ -82,7 +80,6 @@ public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurab
     /**
      * Delete clients informations matching the given query
      * 
-     * @param scopeId
      * @param query
      * @throws KapuaException
      * 

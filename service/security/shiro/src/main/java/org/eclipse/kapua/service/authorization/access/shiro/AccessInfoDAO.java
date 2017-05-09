@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 
 /**
- * {@link AccessInfo) DAO
+ * {@link AccessInfo} DAO
  * 
  * @since 1.0.0
  *
@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 public class AccessInfoDAO extends ServiceDAO {
 
     /**
-     * Creates and return new {@link AccessInfo)
+     * Creates and return new {@link AccessInfo}
      * 
      * @param em
      * @param creator
@@ -47,7 +47,7 @@ public class AccessInfoDAO extends ServiceDAO {
     }
 
     /**
-     * Find the {@link AccessInfo) by user {@link AccessInfo) identifier
+     * Find the {@link AccessInfo} by user {@link AccessInfo} identifier
      * 
      * @param em
      * @param accessInfoId
@@ -59,7 +59,7 @@ public class AccessInfoDAO extends ServiceDAO {
     }
 
     /**
-     * Delete the {@link AccessInfo) by {@link AccessInfo) identifier
+     * Delete the {@link AccessInfo} by {@link AccessInfo} identifier
      * 
      * @param em
      * @param accessInfoId
@@ -72,7 +72,7 @@ public class AccessInfoDAO extends ServiceDAO {
     }
 
     /**
-     * Return the {@link AccessInfo) list matching the provided query
+     * Return the {@link AccessInfo} list matching the provided query
      * 
      * @param em
      * @param accessInfoQuery
@@ -86,7 +86,7 @@ public class AccessInfoDAO extends ServiceDAO {
     }
 
     /**
-     * Return the {@link AccessInfo) count matching the provided query
+     * Return the {@link AccessInfo} count matching the provided query
      * 
      * @param em
      * @param accessInfoQuery

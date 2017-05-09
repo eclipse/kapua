@@ -24,8 +24,8 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 /**
  * Access info entity definition.<br>
- * It contains all authorization accesses for a {@link User}.<br>
- * It refers to the {@link User} entity by the {@link AccessInfo#getUserId()} property.<br>
+ * It contains all authorization accesses for a {@link org.eclipse.kapua.service.user.User}.<br>
+ * It refers to the {@link org.eclipse.kapua.service.user.User} entity by the {@link AccessInfo#getUserId()} property.<br>
  * <br>
  * {@link AccessInfo} is unique by the {@link AccessInfo#getUserId()} property.
  * 
