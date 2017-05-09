@@ -30,20 +30,6 @@
 		<swagger-ui.version>2.1.4</swagger-ui.version>
 	</properties>
 
-    <repositories>
-        <repository>
-            <!-- This repository is needed for GXT. We will remove it as 
-                soon as we migrate from GXT to some other UI framework. -->
-            <id>kapua_addons</id>
-            <name>Kapua Addons Maven Repository</name>
-            <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
 	<dependencies>
 		<!-- -->
 		<!-- Jersey -->
@@ -214,11 +200,11 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>io.swagger</groupId>
+									<groupId>org.eclipse.kapua.external</groupId>
 									<artifactId>swagger-ui</artifactId>
 									<version>${swagger-ui.version}-CQ-10792</version>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/tmp/</outputDirectory>
+									<outputDirectory>${project.build.directory}/tmp/swagger-ui</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -232,11 +218,11 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>io.swagger</groupId>
+                                    <groupId>org.eclipse.kapua.external</groupId>
                                     <artifactId>swagger-ui-lib</artifactId>
                                     <version>${swagger-ui.version}</version>
                                     <!-- <overWrite>true</overWrite> -->
-                                    <outputDirectory>${project.build.directory}/tmp/</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/tmp/swagger-ui-lib</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -263,8 +249,7 @@
                                         dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
 								
-                                <echo>Swagger-ui-lib: create lib dir for
-                                    swagger-ui</echo>
+                                <echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
                                 <copy
                                     todir="${project.build.directory}/${project.build.finalName}/doc/lib">
                                     <fileset

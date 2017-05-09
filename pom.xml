@@ -829,6 +829,8 @@
     <modules>
         <module>build-tools</module>
 
+        <module>external</module>
+
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
