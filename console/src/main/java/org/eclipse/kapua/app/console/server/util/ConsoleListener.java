@@ -25,13 +25,14 @@ public class ConsoleListener implements ServletContextListener {
     private static final Logger logger = LoggerFactory.getLogger(ConsoleListener.class);
 
     @Override
-    public void contextDestroyed(ServletContextEvent arg0) {
-    }
-
-    @Override
-    public void contextInitialized(ServletContextEvent arg0) {
+    public void contextInitialized(final ServletContextEvent event) {
         logger.info("Initialize Console JABContext Provider");
         JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
         XmlUtil.setContextProvider(consoleProvider);
     }
+
+    @Override
+    public void contextDestroyed(final ServletContextEvent event) {
+    }
+
 }
