@@ -1052,8 +1052,8 @@
 
     <!-- Meta information required for release -->
 
-    <description>Kapua</description>
-    <url>https://github.com/eclipse/kapua</url>
+    <description>Eclipse Kapua™</description>
+    <url>https://eclipse.org/kapua</url>
 
     <developers>
         <developer>
