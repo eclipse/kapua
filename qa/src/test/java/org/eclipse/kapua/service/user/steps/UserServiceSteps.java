@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.steps.DBHelper;
+import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountService;
@@ -104,39 +105,24 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     private AccessInfoService accessInfoService;
 
     /**
-     * Check if exception was fired in step.
+     * Single point to database access.
      */
-    private boolean isException;
+    private DBHelper dbHelper;
 
     /**
-     * One of two users used in tests - A
+     * Inter step data scratchpad.
      */
-    private ComparableUser userA = null;
-
-    /**
-     * One of two users used in tests - B
-     */
-    private ComparableUser userB = null;
-
-    /**
-     * Account that was created by last Account creation step.
-     */
-    private Account lastAccount;
-
-    /**
-     * User that was created by last User creation step.
-     */
-    private ComparableUser lastUser;
+    private StepData stepData = null;
 
     @Inject
-    public UserServiceSteps(final DBHelper dbHelper) {
-        dbHelper.setup();
+    public UserServiceSteps(StepData stepData, DBHelper dbHelper) {
+
+        this.stepData = stepData;
+        this.dbHelper = dbHelper;
     }
 
     @Before
     public void beforeScenario(Scenario scenario) throws KapuaException {
-
-        this.isException = false;
 
         // Services by default Locator
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -165,44 +151,61 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         TestAccount testAccount = accountList.get(0);
         // If accountId is not set in account list, use last created Account for scope id
         if (testAccount.getScopeId() == null) {
-            testAccount.setScopeId(lastAccount.getId().getId());
+            testAccount.setScopeId(((Account) stepData.get("LastAccount")).getId().getId());
         }
 
-        lastAccount = createAccount(testAccount);
+        stepData.put("LastAccount", createAccount(testAccount));
     }
 
     @Given("^Credentials$")
     public void givenCredentials(List<TestCredentials> credentialsList) throws Exception {
         TestCredentials testCredentials = credentialsList.get(0);
-
         createCredentials(testCredentials);
     }
 
     @Given("^Permissions$")
     public void givenPermissions(List<TestPermission> permissionList) throws Exception {
-        createPermissions(permissionList, lastUser, lastAccount);
+        createPermissions(permissionList, (ComparableUser) stepData.get("LastUser"), (Account) stepData.get("LastAccount"));
     }
 
     @Given("^User A$")
     public void givenUserA(List<TestUser> userList) throws Exception {
         // User is created within account that was last created in steps
-        HashSet<ComparableUser> createdList = createUsersInList(userList, lastAccount);
+        ComparableUser tmpUser = null;
+        HashSet<ComparableUser> createdList = createUsersInList(userList, (Account) stepData.get("LastAccount"));
         Iterator<ComparableUser> userIterator = createdList.iterator();
         while (userIterator.hasNext()) {
-            userA = userIterator.next();
+            tmpUser = userIterator.next();
         }
-        lastUser = userA;
+
+        stepData.put("UserA", tmpUser);
+        stepData.put("LastUser", tmpUser);
     }
 
     @Given("^User B$")
     public void givenUserB(List<TestUser> userList) throws Exception {
         // User is created within account that was last created in steps
-        HashSet<ComparableUser> createdList = createUsersInList(userList, lastAccount);
+        ComparableUser tmpUser = null;
+        HashSet<ComparableUser> createdList = createUsersInList(userList, (Account) stepData.get("LastAccount"));
         Iterator<ComparableUser> userIterator = createdList.iterator();
         while (userIterator.hasNext()) {
-            userB = userIterator.next();
+            tmpUser = userIterator.next();
         }
-        lastUser = userB;
+
+        stepData.put("UserB", tmpUser);
+        stepData.put("LastUser", tmpUser);
+    }
+
+    @Given("^A generic user$")
+    public void givenGenericUser(List<TestUser> userList) throws Exception {
+        // User is created within account that was last created in steps
+        ComparableUser tmpUser = null;
+        HashSet<ComparableUser> createdList = createUsersInList(userList, (Account) stepData.get("LastAccount"));
+        Iterator<ComparableUser> userIterator = createdList.iterator();
+        while (userIterator.hasNext()) {
+            tmpUser = userIterator.next();
+        }
+        stepData.put("LastUser", tmpUser);
     }
 
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
@@ -216,12 +219,13 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     @Then("^I try to delete user \"(.*)\"$")
     public void thenDeleteUser(String userName) throws KapuaException {
         try {
+            stepData.put("ExceptionCaught", false);
             User userToDelete = userService.findByName(userName);
             if (userToDelete != null) {
                 userService.delete(userToDelete);
             }
         } catch (KapuaException e) {
-            isException = true;
+            stepData.put("ExceptionCaught", true);
         }
     }
 
@@ -234,10 +238,11 @@ public class UserServiceSteps extends AbstractKapuaSteps {
             config.addConfigToMap(valueMap);
         }
         try {
-            isException = false;
-            accountService.setConfigValues(lastAccount.getId(), lastAccount.getScopeId(), valueMap);
+            stepData.put("ExceptionCaught", false);
+            Account tmpAccount = (Account) stepData.get("LastAccount");
+            accountService.setConfigValues(tmpAccount.getId(), tmpAccount.getScopeId(), valueMap);
         } catch (KapuaException ex) {
-            isException = true;
+            stepData.put("ExceptionCaught", true);
         }
     }
 
@@ -247,9 +252,11 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId = null;
         KapuaId scopeId = null;
-        if (lastAccount != null) {
-            accId = lastAccount.getId();
-            scopeId = lastAccount.getScopeId();
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+
+        if (tmpAccount != null) {
+            accId = tmpAccount.getId();
+            scopeId = tmpAccount.getScopeId();
         } else {
             accId = new KapuaEid(BigInteger.ONE);
             scopeId = new KapuaEid(BigInteger.ONE);
@@ -259,24 +266,10 @@ public class UserServiceSteps extends AbstractKapuaSteps {
             config.addConfigToMap(valueMap);
         }
         try {
-            isException = false;
+            stepData.put("ExceptionCaught", false);
             userService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
-            isException = true;
-        }
-    }
-
-    @Then("^I get KapuaException$")
-    public void thenGetKapuaException() throws KapuaException {
-        if (!isException) {
-            fail("Should fail with KapuaException.");
-        }
-    }
-
-    @Then("^I don't get KapuaException$")
-    public void thenDontGetKapuaException() throws KapuaException {
-        if (isException) {
-            fail("Should not fail with KapuaException.");
+            stepData.put("ExceptionCaught", true);
         }
     }
 
@@ -287,7 +280,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
     @And("^Using kapua-sys account$")
     public void usingSysAccount() {
-        lastAccount = null;
+        stepData.put("LastAccount", null);
     }
 
     /**
@@ -306,6 +299,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         HashSet<ComparableUser> users = new HashSet<>();
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
+                stepData.put("ExceptionCaught", false);
                 for (TestUser userItem : userList) {
                     String name = userItem.getName();
                     String displayName = userItem.getDisplayName();
@@ -318,7 +312,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
                     users.add(new ComparableUser(user));
                 }
             } catch (KapuaException ke) {
-                isException = true;
+                stepData.put("ExceptionCaught", true);
             }
 
             return null;
@@ -341,11 +335,12 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         List<Account> accountList = new ArrayList<>();
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
+                stepData.put("ExceptionCaught", false);
                 Account account = accountService.create(accountCreatorCreator(testAccount.getName(),
                         testAccount.getScopeId()));
                 accountList.add(account);
             } catch (KapuaException ke) {
-                isException = true;
+                stepData.put("ExceptionCaught", true);
             }
 
             return null;
@@ -367,13 +362,14 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
+                stepData.put("ExceptionCaught", false);
                 User user = userService.findByName(testCredentials.getName());
 
                 Credential credential = credentialService.create(credentialCreatorCreator(user.getScopeId(),
                         user.getId(), testCredentials.getPassword()));
                 credentialList.add(credential);
             } catch (KapuaException ke) {
-                isException = true;
+                stepData.put("ExceptionCaught", true);
             }
 
             return null;
@@ -399,9 +395,10 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
+                stepData.put("ExceptionCaught", false);
                 accessInfoService.create(accessInfoCreatorCreator(permissionList, user, account));
             } catch (KapuaException ke) {
-                isException = true;
+                stepData.put("ExceptionCaught", true);
             }
 
             return null;
@@ -499,5 +496,4 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
         return accessInfoCreator;
     }
-
 }

@@ -53,6 +53,9 @@ Feature: User Service Integration
       | user   | read   |
       | user   | write  |
       | user   | delete |
+    And A generic user
+      | name    | displayName  | email             | phoneNumber     | status  | userType |
+      | kapua-g | Kapua User G | kapua_g@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
     And Account
       | name      |
       | account-b |
@@ -77,8 +80,10 @@ Feature: User Service Integration
       | user   | delete |
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    When I try to delete user "kapua-g"
+    Then No exception was thrown
     When I try to delete user "kapua-b"
-    Then I get KapuaException
+    Then An exception was thrown
     And I logout
 
   Scenario: Deleting user in account that is higher in hierarchy
@@ -145,5 +150,5 @@ Feature: User Service Integration
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
     When I try to delete user "kapua-a"
-    Then I get KapuaException
+    Then An exception was thrown
     And I logout

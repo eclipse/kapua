@@ -19,12 +19,16 @@ import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "classpath:features/broker",
+        features = {"classpath:features/broker"
+                   },
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps"},
-        plugin = {"pretty", "html:target/cucumber/DeviceBrokerI9n",
-                "json:target/DeviceBrokerI9n_cucumber.json"},
-        monochrome = true)
-public class RunDeviceBrokerI9nTest {
-}
+                "org.eclipse.kapua.service.device.steps"
+               },
+        plugin = {"pretty", 
+                  "html:target/cucumber/DeviceBrokerI9n",
+                  "json:target/DeviceBrokerI9n_cucumber.json"
+                 },
+        monochrome = true )
+
+public class RunDeviceBrokerI9nTest {}
