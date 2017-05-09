@@ -196,6 +196,23 @@
 			<version>${activemq.version}</version>
 			<classifier>bin</classifier>
 			<type>tar.gz</type>
+			<exclusions>
+					<!--
+					  - Mark log4j as excluded. Although that has no real
+					  - effect here since we specifying the tar.gz file, which
+					  - cannot be changed. However the assembly descriptor
+					  - will still filter out those dependencies and the
+					  - exclusions here fix the dependency report. 
+					  -->
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
