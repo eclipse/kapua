@@ -84,7 +84,7 @@
                 <exclude>lib/optional/proton-j*</exclude>
                 <exclude>lib/optional/scala-library*</exclude>
                 <exclude>lib/optional/shiro*</exclude>
-                <exclude>lib/optional/slf4j*</exclude> <!-- pull in version 1.7.21 - CQ12852 -->
+                <exclude>lib/optional/slf4j*</exclude> <!-- pull in version 1.7.24 -->
                 <exclude>lib/optional/snappy-*</exclude>
                 <exclude>lib/optional/spring-oxm-*</exclude>
                 <exclude>lib/optional/velocity*</exclude>
@@ -140,7 +140,8 @@
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <fileMode>0644</fileMode>
             <includes>
-                <include>org.slf4j:slf4j-log4j12</include><!-- CQ12852 -->
+                <include>ch.qos.logback:logback-core</include>
+                <include>ch.qos.logback:logback-classic</include>
             </includes>
         </dependencySet>
         
