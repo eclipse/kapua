@@ -39,7 +39,6 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
      */
     public T handle(DeviceResponseMessage<?, ?> responseMessage)
             throws DeviceManagementException {
-        T responseObject = null;
         if (responseMessage != null) {
             DeviceResponsePayload responsePayload = responseMessage.getPayload();
             if (responsePayload != null) {
@@ -47,22 +46,21 @@ public abstract class AbstractDeviceApplicationCallResponseHandler<T> {
 
                 switch (responseCode) {
                 case ACCEPTED:
-                    responseObject = handleAcceptedRequest(responseMessage);
-                    break;
-                case BAD_REQUEST: 
+                    return handleAcceptedRequest(responseMessage);
+                case BAD_REQUEST:
                     handleBadRequestReply(responseMessage);
-                    //$FALL-THROUGH$
+                    break;
                 case INTERNAL_ERROR:
                     handleDeviceInternalErrorReply(responseMessage);
-                    //$FALL-THROUGH$
+                    break;
                 case NOT_FOUND:
                     handleNotFoundReply(responseMessage);
-                    //$FALL-THROUGH$
+                    break;
                 }
             }
         }
 
-        return responseObject;
+        return null;
     }
 
     /**
