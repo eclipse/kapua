@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
@@ -151,8 +152,8 @@ public class DataSteps {
             query.setPredicate(new TermPredicateImpl(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
             // set query options
-
             query.setAskTotalCount(true);
+            query.setLimit((int)numberOfMessages);
 
             // perform query
 
@@ -195,6 +196,7 @@ public class DataSteps {
             field.setSortDirection(SortDirection.DESC);
 
             query.setSortFields(Arrays.asList(field));
+            query.setLimit(1);
 
             // perform the query
 
@@ -217,4 +219,10 @@ public class DataSteps {
             Assert.assertEquals(toData(expectedMetrics), properties);
         });
     }
+
+    @When("^I refresh all indices$")
+    public void refreshIndeces() throws Throwable {
+        DatastoreMediator.getInstance().refreshAllIndexes();
+    }
+
 }

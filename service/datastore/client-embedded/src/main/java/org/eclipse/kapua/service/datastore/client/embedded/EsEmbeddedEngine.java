@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.client.embedded;
 import java.io.IOException;
 
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.UUIDs;
 import org.elasticsearch.common.settings.Settings;
 //import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.node.Node;
@@ -31,7 +32,7 @@ public class EsEmbeddedEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
-    private static final String DEFAULT_DATA_DIRECTORY = "target/elasticsearch/data";
+    private static final String DEFAULT_DATA_DIRECTORY = "target/elasticsearch/data"+ UUIDs.randomBase64UUID();
 
     private static Node node;
 
