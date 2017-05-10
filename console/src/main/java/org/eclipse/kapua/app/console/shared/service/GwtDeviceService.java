@@ -109,4 +109,11 @@ public interface GwtDeviceService extends RemoteService {
      */
     public String getTileEndpoint()
             throws GwtKapuaException;
+    
+    /**
+     * Returns whether the Map tab is enabled or not
+     * @return whether the Map tab is enabled or not
+     */
+    public boolean isMapEnabled()
+            throws GwtKapuaException;
 }

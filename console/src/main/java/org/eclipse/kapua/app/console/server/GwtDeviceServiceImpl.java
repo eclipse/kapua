@@ -455,5 +455,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
     public String getTileEndpoint() throws GwtKapuaException {
         return ConsoleSetting.getInstance().getString(ConsoleSettingKeys.DEVICE_MAP_TILE_URI);
     }
+    
+    public boolean isMapEnabled() {
+        return ConsoleSetting.getInstance().getBoolean(ConsoleSettingKeys.DEVICE_MAP_ENABLED);
+    }
 
 }
