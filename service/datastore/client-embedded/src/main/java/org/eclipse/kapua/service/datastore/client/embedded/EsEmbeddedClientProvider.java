@@ -18,10 +18,13 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.node.NodeValidationException;
 
 /**
- * Elasticsearch embedded client implementation.<br>
- * Used for test scope
- *
+ * Elasticsearch embedded node client implementation.<br>
+ * <b>To be used for test scope.</b><br>
+ * To use this client provider please set properly the configuration key 'datastore.elasticsearch.client.provider' to 'org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedClientProvider' in
+ * the kapua-datastore-client-setting.properties.
+ * 
  * @since 1.0
+ *
  */
 public class EsEmbeddedClientProvider implements ClientProvider<Client> {
 

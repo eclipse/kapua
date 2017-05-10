@@ -108,7 +108,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     /**
      * Default constructor
-     * Initialize the client provider ({@link ClientProvider<Client>}) as singleton. The implementation is specified by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
+     * Initialize the client provider ({@link ClientProvider}) as singleton. The implementation is specified by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
      * 
      * @throws ClientUnavailableException
      */

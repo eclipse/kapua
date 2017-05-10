@@ -21,6 +21,12 @@ import org.elasticsearch.node.NodeValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Elasticsearch embedded node engine
+ * 
+ * @since 1.0
+ *
+ */
 public class EsEmbeddedEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(EsEmbeddedEngine.class);
@@ -34,7 +40,7 @@ public class EsEmbeddedEngine {
         if (node == null) {
             synchronized (DEFAULT_DATA_DIRECTORY) {
                 if (node == null) {
-                    logger.info("Starting Elasticsearch embedded node...");
+                    logger.info("Starting Elasticsearch embedded node... (data directory: '{}')", DEFAULT_DATA_DIRECTORY);
                     // ES 5.3 FIX
                     // Builder elasticsearchSettings = Settings.settingsBuilder()
                     // .put("http.enabled", "false")
