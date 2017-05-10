@@ -250,7 +250,7 @@ public class DeviceTabs extends LayoutContainer {
         });
         m_tabsPanel.add(m_tabCommand);
         
-        m_tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.AMAZON));
+        m_tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
         m_tabAssets.setBorders(false);
         m_tabAssets.setLayout(new FitLayout());
         m_tabAssets.add(m_deviceAssetsTab);
