@@ -70,6 +70,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-datastore-client-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-datastore-client-transport</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-call-kura</artifactId>
 			<scope>provided</scope>
 		</dependency>
