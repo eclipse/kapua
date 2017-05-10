@@ -849,6 +849,7 @@
 
         <!-- Assembly -->
         <module>assembly</module>
+        <module>docker</module>
 
         <module>dev-tools</module>
     </modules>

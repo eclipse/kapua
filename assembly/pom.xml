@@ -595,19 +595,6 @@
 				<configuration>
 					<images>
 						<image>
-							<name>${docker.account}/java-base</name>
-							<build>
-								<from>${java.base.image}</from>
-								<runCmds>
-									<runCmd><![CDATA[
-									apk update && apk add curl tar && \
-									adduser -D -g "Eclipse Kapua" kapua && \
-									curl -s https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.3.4/jolokia-jvm-1.3.4-agent.jar -o /jolokia-jvm-agent.jar
-									]]></runCmd>
-								</runCmds>
-							</build>
-						</image>
-						<image>
 							<name>${docker.account}/jetty-base</name>
 							<build>
 								<from>${docker.account}/java-base</from>
@@ -816,15 +803,6 @@
 					<configuration>
 						<images>
 							<image>
-								<name>${docker.account}/java-base</name>
-								<build>
-									<tags>
-										<tag>${project.version}</tag>
-										<tag>${timestamp}</tag>
-									</tags>
-								</build>
-							</image>
-							<image>
 								<name>${docker.account}/kapua-sql</name>
 								<build>
 									<tags>
@@ -963,16 +941,6 @@
 							<artifactId>docker-maven-plugin</artifactId>
 							<configuration>
 								<images>
-									<image>
-										<name>${docker.account}/java-base</name>
-										<build>
-											<tags>
-												<tag>latest</tag>
-												<tag>${project.version}</tag>
-												<tag>${timestamp}</tag>
-											</tags>
-										</build>
-									</image>
 									<image>
 										<name>${docker.account}/kapua-sql</name>
 										<build>
