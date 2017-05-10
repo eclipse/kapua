@@ -44,7 +44,7 @@ public class EsEmbeddedClientProvider implements ClientProvider<Client> {
     private EsEmbeddedEngine embeddedEngine;
 
     /**
-     * Get the {@link EsTransportClientProvider} instance
+     * Get the {@link EsEmbeddedClientProvider} instance
      * 
      * @return
      * @throws ClientUnavailableException

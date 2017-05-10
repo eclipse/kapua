@@ -21,8 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @since 1.0
  *
  */
-public interface StorablePredicate
-{
+public interface StorablePredicate {
 
     /**
      * Serialize the predicate to a Json object

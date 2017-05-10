@@ -163,7 +163,7 @@ public class RangePredicateImpl implements RangePredicate {
             SchemaUtil.appendField(valuesNode, GTE_KEY, minValue);
         }
         ObjectNode termNode = SchemaUtil.getObjectNode();
-        termNode.set(field.field(), valuesNode);
+        termNode.set(field, valuesNode);
         rootNode.set(RANGE_KEY, termNode);
         return rootNode;
     }

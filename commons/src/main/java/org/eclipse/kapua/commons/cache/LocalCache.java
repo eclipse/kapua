@@ -62,8 +62,7 @@ public class LocalCache<K, V> implements Cache<K, V> {
      * @param defaultValue
      *            default value (if no value is found for a specific key)
      */
-    public LocalCache(int sizeMax, final V defaultValue)
-    {
+    public LocalCache(int sizeMax, final V defaultValue) {
         this.defaultValue = defaultValue;
         // from google javadoc ("https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilder.html")
         // By default cache instances created by CacheBuilder will not perform any type of eviction.
