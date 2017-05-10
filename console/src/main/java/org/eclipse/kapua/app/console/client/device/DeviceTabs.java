@@ -129,8 +129,7 @@ public class DeviceTabs extends LayoutContainer {
             }
         }
         
-        boolean hasAssetApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_ASSET_V1) ||
-                selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
+        boolean hasAssetApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_ASSET_V1));
         if (hasAssetApp && m_currentSession.hasDeviceManagePermission()) {
             m_tabAssets.enable();
         } else {
