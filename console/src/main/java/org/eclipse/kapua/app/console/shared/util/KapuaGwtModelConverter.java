@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.console.shared.util;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
@@ -38,12 +40,17 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
@@ -68,6 +75,9 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -686,4 +696,37 @@ public class KapuaGwtModelConverter {
         }
         return gwtMessage;
     }
+    
+    public static GwtDeviceAssets convert(DeviceAssets assets) {
+        GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
+        List<GwtDeviceAsset> gwtAssetsList = new ArrayList<GwtDeviceAsset>();
+        for(DeviceAsset asset : assets.getAssets()) {
+            gwtAssetsList.add(convert(asset));
+        }
+        gwtAssets.setAssets(gwtAssetsList);
+        return gwtAssets;
+    }
+    
+    public static GwtDeviceAsset convert(DeviceAsset asset) {
+        GwtDeviceAsset gwtAsset = new GwtDeviceAsset();
+        List<GwtDeviceAssetChannel> gwtChannelsList = new ArrayList<GwtDeviceAssetChannel>();
+        gwtAsset.setName(asset.getName());
+        for(DeviceAssetChannel channel : asset.getChannels()) {
+            gwtChannelsList.add(convert(channel));
+        }
+        gwtAsset.setChannels(gwtChannelsList);
+        return gwtAsset;
+    }
+    
+    public static GwtDeviceAssetChannel convert(DeviceAssetChannel channel) {
+        GwtDeviceAssetChannel gwtChannel = new GwtDeviceAssetChannel();
+        gwtChannel.setName(channel.getName());
+        gwtChannel.setError(channel.getError());
+        gwtChannel.setTimestamp(channel.getTimestamp());
+        gwtChannel.setMode(channel.getMode().toString());
+        gwtChannel.setType(ObjectTypeConverter.toString(channel.getType()));
+        gwtChannel.setValue(ObjectValueConverter.toString(channel.getValue()));
+        return gwtChannel;
+    }
+
 }

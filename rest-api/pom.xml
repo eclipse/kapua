@@ -125,6 +125,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-asset-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-translator-api</artifactId>
 		</dependency>
 		<dependency>
