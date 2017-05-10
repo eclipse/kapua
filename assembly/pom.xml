@@ -630,40 +630,6 @@
 							</build>
 						</image>
 						<image>
-							<name>${docker.account}/kapua-sql</name>
-							<build>
-								<from>${docker.account}/java-base</from>
-								<assembly>
-									<descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
-									<basedir>/</basedir>
-								</assembly>
-								<runCmds>
-									<runCmd><![CDATA[
-									mkdir -p /var/h2/data && \
-									chown kapua:kapua /var/h2/data && \
-									chmod a+rw /var/h2/data && \
-									cd /home/kapua && \
-									mkdir tmp && chmod a+rwx tmp && \
-									curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
-									]]></runCmd>
-								</runCmds>
-								<volumes>
-									<volume>/var/h2/data</volume>
-								</volumes>
-								<ports>
-									<port>3306</port>
-									<port>8181</port>
-									<port>8778</port>
-								</ports>
-								<user>kapua</user>
-								<entryPoint>
-									<exec>
-										<arg>/home/kapua/run-h2</arg>
-									</exec>
-								</entryPoint>
-							</build>
-						</image>
-						<image>
 							<name>${docker.account}/kapua-broker</name>
 							<build>
 								<from>${docker.account}/java-base</from>
@@ -803,15 +769,6 @@
 					<configuration>
 						<images>
 							<image>
-								<name>${docker.account}/kapua-sql</name>
-								<build>
-									<tags>
-										<tag>${project.version}</tag>
-										<tag>${timestamp}</tag>
-									</tags>
-								</build>
-							</image>
-							<image>
 								<name>${docker.account}/kapua-broker</name>
 								<build>
 									<tags>
@@ -941,16 +898,6 @@
 							<artifactId>docker-maven-plugin</artifactId>
 							<configuration>
 								<images>
-									<image>
-										<name>${docker.account}/kapua-sql</name>
-										<build>
-											<tags>
-												<tag>latest</tag>
-												<tag>${project.version}</tag>
-												<tag>${timestamp}</tag>
-											</tags>
-										</build>
-									</image>
 									<image>
 										<name>${docker.account}/kapua-broker</name>
 										<build>
