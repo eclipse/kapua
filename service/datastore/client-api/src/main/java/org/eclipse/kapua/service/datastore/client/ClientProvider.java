@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client;
 
-import java.io.IOException;
-
 /**
  * Datastore client wrapper definition.
  *
@@ -29,10 +27,5 @@ public interface ClientProvider<C> {
      * @return
      */
     public C getClient();
-
-    /**
-     * Close the client instance
-     */
-    public void close() throws IOException;
 
 }

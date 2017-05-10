@@ -209,8 +209,8 @@ public class EsTransportClientProviderTest {
         Map<String, Object> map = new HashMap<>();
         map.put(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678");
         map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
-
-        try (Client result = EsTransportClientProvider.createClient(fromMap(map))) {
+        EsTransportClientProvider.init(fromMap(map));
+        try (Client result = EsTransportClientProvider.getInstance().getClient()) {
             assertThat(result).isNotNull();
         }
     }
@@ -218,13 +218,13 @@ public class EsTransportClientProviderTest {
     @Test
     public void testEmpty3() {
         Assertions.assertThatExceptionOfType(ClientUnavailableException.class) //
-                .isThrownBy(() -> EsTransportClientProvider.getClient(null, null));
+                .isThrownBy(() -> EsTransportClientProvider.init(null, null));
     }
 
     @Test
     public void testEmpty4() {
         Assertions.assertThatExceptionOfType(ClientUnavailableException.class) //
-                .isThrownBy(() -> EsTransportClientProvider.getClient(Collections.emptyList(), null));
+                .isThrownBy(() -> EsTransportClientProvider.init(Collections.emptyList(), null));
     }
 
     @Test
@@ -234,8 +234,8 @@ public class EsTransportClientProviderTest {
                     Map<String, Object> map = new HashMap<>();
                     map.put(ClientSettingsKey.ELASTICSEARCH_NODES.key(), UNKWNON_HOST);
                     map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
-
-                    try (Client result = EsTransportClientProvider.createClient(fromMap(map))) {
+                    EsTransportClientProvider.init(fromMap(map));
+                    try (Client result = EsTransportClientProvider.getInstance().getClient()) {
                     }
                 });
     }

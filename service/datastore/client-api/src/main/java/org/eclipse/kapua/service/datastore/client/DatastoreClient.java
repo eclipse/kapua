@@ -26,7 +26,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Datastore client definition. It defines the methods (crud and utilities) to be exposed to the caller.
+ * Datastore client definition. It defines the methods (crud and utilities) to be exposed to the caller.<br>
+ * The datastore client implementation should provide a static init method and a static getInstance method that return the already initialized client instance.
  * 
  * @since 1.0
  */

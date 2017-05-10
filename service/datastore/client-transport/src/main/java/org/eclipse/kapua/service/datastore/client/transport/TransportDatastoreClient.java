@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.transport;
 
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
@@ -95,8 +96,11 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
     private final static String CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private final static String CLIENT_CLASS_NAME;
-    private static Class<ClientProvider<Client>> instance;
-    private static ClientProvider<Client> esClientProvider;
+    private static Class<ClientProvider<Client>> providerInstance;
+
+    private static TransportDatastoreClient instance;
+
+    private ClientProvider<Client> esClientProvider;
 
     static {
         ClientSettings config = ClientSettings.getInstance();
@@ -106,6 +110,17 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private ModelContext modelContext;
     private QueryConverter queryConverter;
 
+    public static TransportDatastoreClient getInstance() throws ClientUnavailableException {
+        if (instance == null) {
+            synchronized (TransportDatastoreClient.class) {
+                if (instance == null) {
+                    instance = new TransportDatastoreClient();
+                }
+            }
+        }
+        return instance;
+    }
+
     /**
      * Default constructor
      * Initialize the client provider ({@link ClientProvider}) as singleton. The implementation is specified by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
@@ -113,7 +128,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
      * @throws ClientUnavailableException
      */
     @SuppressWarnings("unchecked")
-    public TransportDatastoreClient() throws ClientUnavailableException {
+    private TransportDatastoreClient() throws ClientUnavailableException {
         // lazy synchronization
         if (instance == null) {
             synchronized (TransportDatastoreClient.class) {
@@ -123,13 +138,17 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     }
                     logger.info("Starting Elasticsearch transport client...");
                     try {
-                        instance = (Class<ClientProvider<Client>>) Class.forName(CLIENT_CLASS_NAME);
+                        providerInstance = (Class<ClientProvider<Client>>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {
                         throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
                     }
                     try {
-                        esClientProvider = instance.newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
+                        // esClientProvider = providerInstance.newInstance();
+                        Method initMethod = providerInstance.getMethod("init", new Class[0]);
+                        initMethod.invoke(null, new Object[0]);
+                        Method getInstanceMethod = providerInstance.getMethod("getInstance", new Class[0]);
+                        esClientProvider = (ClientProvider<Client>) getInstanceMethod.invoke(null, new Object[0]);
+                    } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                         instance = null;
                         throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
                     }
@@ -151,7 +170,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                 } else {
                     logger.warn("Close method called for a not initialized client!");
                 }
-            } else if (esClientProvider != null) {
+            } else if (esClientProvider == null) {
                 // something wrong happened in the client lifecycle... try to cleanup and raise exception
                 cleanupClient(true);
             }
@@ -161,10 +180,10 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private void cleanupClient(boolean raiseException) throws ClientUnavailableException {
         Throwable cause = null;
         try {
-            esClientProvider.close();
+            esClientProvider.getClient().close();
             esClientProvider = null;
             instance = null;
-        } catch (IOException e) {
+        } catch (Throwable e) {
             cause = e;
             logger.error(CLIENT_CLEANUP_ERROR_MSG, e);
         }
@@ -173,19 +192,6 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         } else if (raiseException) {
             throw new ClientUnavailableException(CLIENT_CLEANUP_ERROR_MSG);
         }
-    }
-
-    /**
-     * Constructs the client with the provided model context and query converter
-     * 
-     * @param modelContext
-     * @param queryConverter
-     * @throws ClientUnavailableException
-     */
-    public TransportDatastoreClient(ModelContext modelContext, QueryConverter queryConverter) throws ClientUnavailableException {
-        this();
-        this.modelContext = modelContext;
-        this.queryConverter = queryConverter;
     }
 
     @Override

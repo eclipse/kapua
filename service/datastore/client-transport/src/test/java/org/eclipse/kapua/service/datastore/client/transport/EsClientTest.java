@@ -26,7 +26,8 @@ public class EsClientTest {
     @Test
     public void elascticSearchClientShouldDefaultToLocalhost() throws UnknownHostException, ClientUnavailableException {
         // When
-        TransportClient client = (new EsTransportClientProvider()).getClient();
+        EsTransportClientProvider.init();
+        TransportClient client = EsTransportClientProvider.getInstance().getClient();
 
         // Then
         String host = client.listedNodes().get(0).getHostAddress();
