@@ -105,20 +105,14 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     private AccessInfoService accessInfoService;
 
     /**
-     * Single point to database access.
-     */
-    private DBHelper dbHelper;
-
-    /**
      * Inter step data scratchpad.
      */
     private StepData stepData = null;
 
     @Inject
-    public UserServiceSteps(StepData stepData, DBHelper dbHelper) {
+    public UserServiceSteps(StepData stepData, /*dependency*/ DBHelper dbHelper) {
 
         this.stepData = stepData;
-        this.dbHelper = dbHelper;
     }
 
     @Before
