@@ -12,27 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import java.net.URL;
-import java.util.Arrays;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.util.ResourceUtils;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
 
 public class KapuaModule extends AbstractModule {
 
@@ -43,45 +40,27 @@ public class KapuaModule extends AbstractModule {
      */
     private static final String SERVICE_RESOURCE = "locator.xml";
 
+    private LocatorConfig locatorConfig;
+    
+    public KapuaModule(LocatorConfig locatorConfig) {
+        this.locatorConfig = locatorConfig;
+    }
+    
     @Override
     protected void configure() {
         try {
-            // Find locator configuration file
-            List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(SERVICE_RESOURCE));
-            if (locatorConfigurations.isEmpty()) {
-                return;
-            }
-
-            // Read configurations from resource files
-            URL locatorConfigURL = locatorConfigurations.get(0);
-            LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
-
-            // Packages are supposed to contain service implementations
-            Collection<String> packageNames = locatorConfig.getPackageNames();
-
-            ClassLoader classLoader = this.getClass().getClassLoader();
-            ClassPath classPath = ClassPath.from(classLoader);
+            ClassLoader classLoader = locatorConfig.getClassLoader();
             boolean initialize = true;
-
-            // Among all the classes in the configured packages, retain only the ones
-            // annotated with @KapuaProvider annotation
-            Set<Class<?>> extendedClassInfo = new HashSet<>();
-            for (String packageName : packageNames) {
-                // Use the class loader of this (module) class
-                ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
-                for (ClassInfo classInfo : classInfos) {
-                    logger.trace("CLASS: {}", classInfo.getName());
-                    Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
-                    KapuaProvider serviceProvider = theClass.getAnnotation(KapuaProvider.class);
-                    if (serviceProvider != null) {
-                        extendedClassInfo.add(theClass);
-                    }
-                }
-            }
+            
+            // Packages are supposed to contain service implementations
+            Set<Class<?>> providers = locatorConfig.getProvidersInfo();
 
             // Provided names are the objects provided by the module (services or factories
             Collection<String> providedInterfaceNames = locatorConfig.getProvidedInterfaceNames();
-
+            
+            logger.info("Binding interceptors ..");
+            
+            logger.info("Binding service apis and factories...");
             for (String providedName : providedInterfaceNames) {
 
                 boolean isClassBound = false;
@@ -92,7 +71,7 @@ public class KapuaModule extends AbstractModule {
                 // When the provided object is a service ...
                 // ... add binding with a matching implementation
                 if (KapuaService.class.isAssignableFrom(kapuaObject)) {
-                    for (Class<?> clazz : extendedClassInfo) {
+                    for (Class<?> clazz : providers) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
                             @SuppressWarnings("unchecked")
                             ServiceResolver<KapuaService, ?> resolver = ServiceResolver.newInstance(kapuaObject, clazz);
@@ -111,7 +90,7 @@ public class KapuaModule extends AbstractModule {
                 // When the provided object is a factory ...
                 // ... add binding with a matching implementation
                 if (KapuaObjectFactory.class.isAssignableFrom(kapuaObject)) {
-                    for (Class<?> clazz : extendedClassInfo) {
+                    for (Class<?> clazz : providers) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
                             @SuppressWarnings("unchecked")
                             FactoryResolver<KapuaObjectFactory, ?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
@@ -129,7 +108,18 @@ public class KapuaModule extends AbstractModule {
 
                 logger.warn("No provider found for {}", kapuaObject);
             }
-
+            
+            // Bind interceptors
+            for (Class<?> clazz : providers) {
+                if (MethodInterceptor.class.isAssignableFrom(clazz)) {
+                    InterceptorBind annotation = clazz.getAnnotation(InterceptorBind.class);
+                    Class<?> parentClazz = annotation.matchSublclassOf();
+                    Class<? extends Annotation> methodAnnotation = annotation.matchAnnotatedWith();
+                    bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), (MethodInterceptor) clazz.newInstance());
+                    logger.info("Bind service interceptor {} to subclasses of {} annotated with {}", clazz, parentClazz, methodAnnotation);
+                }
+            }
+            
             logger.trace("Binding completed");
 
         } catch (Exception e) {
@@ -137,5 +127,9 @@ public class KapuaModule extends AbstractModule {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load " + SERVICE_RESOURCE);
         }
     }
-
+    
+    @Override
+    protected void bindInterceptor(Matcher<? super Class<?>> classMatcher, Matcher<? super Method> methodMatcher, MethodInterceptor... interceptors) {
+        super.bindInterceptor(classMatcher, Matchers.not(SyntheticMethodMatcher.getInstance()).and(methodMatcher), interceptors);
+    }
 }
