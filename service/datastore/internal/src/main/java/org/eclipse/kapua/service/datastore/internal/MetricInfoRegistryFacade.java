@@ -74,7 +74,6 @@ public class MetricInfoRegistryFacade {
     /**
      * Update the metric information after a message store operation (for a single metric)
      *
-     * @param scopeId
      * @param metricInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -136,7 +135,6 @@ public class MetricInfoRegistryFacade {
     /**
      * Update the metrics informations after a message store operation (for few metrics)
      *
-     * @param scopeId
      * @param metricInfos
      * @return
      * @throws KapuaIllegalArgumentException
@@ -297,7 +295,6 @@ public class MetricInfoRegistryFacade {
     /**
      * Find metrics informations matching the given query
      *
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -338,7 +335,6 @@ public class MetricInfoRegistryFacade {
     /**
      * Get metrics informations count matching the given query
      *
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -377,7 +373,6 @@ public class MetricInfoRegistryFacade {
     /**
      * Delete metrics informations count matching the given query
      *
-     * @param scopeId
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException

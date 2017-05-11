@@ -73,8 +73,6 @@ public interface DevicePackage {
 
     /**
      * Set device package bundle informations
-     * 
-     * @return
      */
     public <B extends DevicePackageBundleInfos> void setBundleInfos(B bundleInfos);
 

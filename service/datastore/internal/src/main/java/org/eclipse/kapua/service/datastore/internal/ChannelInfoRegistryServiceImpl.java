@@ -194,7 +194,6 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * account/clientId in the
      * channel info
      * 
-     * @param scopeId
      * @param channelInfo
      * 
      * @throws KapuaException

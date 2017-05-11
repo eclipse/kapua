@@ -52,7 +52,7 @@ public interface RolePermission extends KapuaEntity {
     /**
      * Sets the {@link Role} id of which this {@link RolePermission} belongs.
      * 
-     * @param accessId
+     * @param roleId
      *            The {@link RoleInfo} id.
      * @since 1.0.0
      */

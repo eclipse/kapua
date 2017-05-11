@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -38,9 +37,6 @@ public class DataExporterCsv extends DataExporter {
 
     @Override
     public void init(String[] headers) throws ServletException, IOException {
-
-        Objects.requireNonNull(headers);
-
         this.headers = headers;
 
         // set headers before calling getWriter()
@@ -72,7 +68,7 @@ public class DataExporterCsv extends DataExporter {
             columns.add(valueOf(message.getClientId()));
 
             if (message.getChannel() != null) {
-                columns.add(String.join("/", message.getChannel().getSemanticParts()));
+                columns.add(message.getChannel().toPathString());
             } else {
                 columns.add(BLANK);
             }

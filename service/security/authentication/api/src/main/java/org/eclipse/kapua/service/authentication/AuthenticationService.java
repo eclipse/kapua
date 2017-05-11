@@ -40,7 +40,6 @@ public interface AuthenticationService extends KapuaService {
      * FIXME: add javadoc
      * 
      * @param sessionCredentials
-     * @return
      * @throws KapuaException
      *             an exception is thrown if the credentials are not found on the system, are expired or are disabled
      */

@@ -103,7 +103,6 @@ public class DeviceDAO extends ServiceDAO {
      * @param query
      * @return
      * @throws KapuaException
-     * @throws Exception
      */
     public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {

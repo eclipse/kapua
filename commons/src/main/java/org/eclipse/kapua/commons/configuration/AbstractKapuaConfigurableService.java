@@ -203,7 +203,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Create the service configuration entity
      *
-     * @param em
      * @param serviceConfig
      * @return
      * @throws KapuaException
@@ -217,7 +216,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Update the service configuration entity
      *
-     * @param em
      * @param serviceConfig
      * @return
      * @throws KapuaException

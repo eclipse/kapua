@@ -96,8 +96,6 @@ public interface Domain extends KapuaEntity {
      * 
      * @param actions
      *            The set of {@link Actions}.
-     * @throws KapuaException
-     *             If the given set is incompatible with the implementation-specific field.
      * @since 1.0.0
      */
     public void setActions(Set<Actions> actions);

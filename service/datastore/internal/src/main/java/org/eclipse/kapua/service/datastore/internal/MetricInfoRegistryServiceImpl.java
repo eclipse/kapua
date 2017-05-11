@@ -215,12 +215,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      * Update the last published date and last published message identifier for the specified metric info, so it gets the timestamp and the message identifier of the last published message for the
      * account/clientId in the metric info
      * 
-     * @param scopeId
-     * @param channelInfo
-     * 
      * @throws KapuaException
-     * 
-     * @since 1.0.0
      */
     private void updateLastPublishedFields(MetricInfo metricInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();

@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!--
+    Copyright (c) 2017 Red Hat Inc and others
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Red Hat Inc - initial API and implementation
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.kapua</groupId>
+        <artifactId>kapua-docker</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kapua-docker-sql</artifactId>
+    <name>${project.artifactId}</name>
+
+    <properties>
+        <java.base.image>openjdk:8u121-jre-alpine</java.base.image>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <timestamp>latest</timestamp>
+            </properties>
+        </profile>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${docker.account}/kapua-sql</name>
+                                    <build>
+                                        <from>${docker.account}/java-base</from>
+                                        <assembly>
+                                            <descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
+                                            <basedir>/</basedir>
+                                        </assembly>
+                                        <runCmds>
+                                            <runCmd><![CDATA[
+									mkdir -p /var/h2/data && \
+									chown kapua:kapua /var/h2/data && \
+									chmod a+rw /var/h2/data && \
+									cd /home/kapua && \
+									mkdir tmp && chmod a+rwx tmp && \
+									curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
+									]]></runCmd>
+                                        </runCmds>
+                                        <volumes>
+                                            <volume>/var/h2/data</volume>
+                                        </volumes>
+                                        <ports>
+                                            <port>3306</port>
+                                            <port>8181</port>
+                                            <port>8778</port>
+                                        </ports>
+                                        <user>kapua</user>
+                                        <entryPoint>
+                                            <exec>
+                                                <arg>/home/kapua/run-h2</arg>
+                                            </exec>
+                                        </entryPoint>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

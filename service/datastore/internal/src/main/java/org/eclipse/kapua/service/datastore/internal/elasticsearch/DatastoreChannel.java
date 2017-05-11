@@ -104,7 +104,6 @@ public class DatastoreChannel {
     /**
      * Construct a datastore channel given the account, client identifier and the list of the channel parts.
      *
-     * @param account
      * @param clientId
      * @param channelParts
      * @throws EsInvalidChannelException
@@ -123,7 +122,6 @@ public class DatastoreChannel {
     /**
      * Construct a datastore channel given the account, client identifier and the full channel string.
      *
-     * @param account
      * @param clientId
      * @param channel
      * @throws EsInvalidChannelException

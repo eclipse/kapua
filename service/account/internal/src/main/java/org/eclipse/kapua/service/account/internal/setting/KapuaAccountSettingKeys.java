@@ -31,7 +31,7 @@ public enum KapuaAccountSettingKeys implements SettingKey {
      * Set up the {@code enum} with the key value provided
      * 
      * @param key
-     *            The value mapped by this {@link enum} value
+     *            The value mapped by this {@link Enum} value
      */
     private KapuaAccountSettingKeys(String key) {
         this.key = key;

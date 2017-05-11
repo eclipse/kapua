@@ -70,9 +70,9 @@ public class DataMessages extends AbstractKapuaResource {
      *            The client id to filter results.
      * @param channel
      *            The channel id to filter results. It allows '#' wildcard in last channel level.
-     * @param startDate
+     * @param startDateParam
      *            The start date to filter the results. Must come before endDate parameter.
-     * @param endDate
+     * @param endDateParam
      *            The end date to filter the results. Must come after startDate parameter
      * @param offset
      *            The result set offset.
@@ -141,13 +141,13 @@ public class DataMessages extends AbstractKapuaResource {
     }
 
     /**
-     * Queries the results with the given {@link DatastorMessageQuery} parameter.
+     * Queries the results with the given {@link MessageQuery} parameter.
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link DatastorMessageQuery} to used to filter results.
-     * @return The {@link MessageListResult} of all the result matching the given {@link DatastorMessageQuery} parameter.
+     *            The {@link MessageQuery} to used to filter results.
+     * @return The {@link MessageListResult} of all the result matching the given {@link MessageQuery} parameter.
      * @since 1.0.0
      */
     @POST
@@ -172,13 +172,13 @@ public class DataMessages extends AbstractKapuaResource {
     }
 
     /**
-     * Counts the results with the given {@link DatastorMessageQuery} parameter.
+     * Counts the results with the given {@link MessageQuery} parameter.
      *
      * @param scopeId
      *            The {@link ScopeId} in which to search results.
      * @param query
-     *            The {@link DatastorMessageQuery} to used to filter results.
-     * @return The count of all the result matching the given {@link DatastorMessageQuery} parameter.
+     *            The {@link MessageQuery} to used to filter results.
+     * @return The count of all the result matching the given {@link MessageQuery} parameter.
      * @since 1.0.0
      */
     @POST

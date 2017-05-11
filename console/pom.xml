@@ -442,6 +442,14 @@
                         </packagingExcludes>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <excludePackageNames>*.messages</excludePackageNames>
+                    </configuration>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

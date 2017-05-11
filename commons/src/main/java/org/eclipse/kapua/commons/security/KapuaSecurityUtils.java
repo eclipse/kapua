@@ -61,9 +61,8 @@ public class KapuaSecurityUtils {
      * Execute the {@link Runnable} in a privileged context.<br>
      * Trusted mode means that checks for permissions and role will pass.
      *
-     * @param privilegedAction
-     *            The {@link Runnable} action to be executed.
-     * @return The result of the {@link Runnable} action.
+     * @param runnable
+     *            The {@link ThrowingRunnable} action to be executed.
      * @throws KapuaException
      */
     public static void doPrivileged(final ThrowingRunnable runnable) throws KapuaException {

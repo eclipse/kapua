@@ -27,7 +27,7 @@ public interface EntityManagerInsertCallback<T> {
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to this method.<br>
      * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * (@see {@link EntityManagerSession#onEntityManagerInsert}
+     * @see EntityManagerSession#onInsert(EntityManagerInsertCallback)
      *
      * @param entityManager
      * @return

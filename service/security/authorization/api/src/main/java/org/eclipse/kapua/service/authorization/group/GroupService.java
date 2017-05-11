@@ -59,7 +59,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * 
      * @param scopeId
      *            The scope id in which to search.
-     * @param roleId
+     * @param groupId
      *            The {@link Group} id to search.
      * @return The {@link Group} found or {@code null} if no entity was found.
      * @throws KapuaException
@@ -97,7 +97,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * 
      * @param scopeId
      *            The scope id in which to delete.
-     * @param roleId
+     * @param groupId
      *            The {@link Group} id to delete.
      * @throws KapuaException
      * @since 1.0.0

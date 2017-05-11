@@ -576,9 +576,9 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     /**
      * Create a user creator object. The creator is pre-filled with default data.
      *
-     * @param parentId:
+     * @param parentId
      *            Id of the parent account
-     * @param name:
+     * @param name
      *            The name of the account
      * @return The newly created account creator object.
      */

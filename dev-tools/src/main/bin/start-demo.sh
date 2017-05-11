@@ -1,5 +1,5 @@
 export KAPUA_GIT_ROOT="$(pwd)"
-export ACTIVEMQ_VERSION=5.14.4
+export ACTIVEMQ_VERSION=5.14.5
 export TOMCAT_VERSION=8.0.41
 
 cd ../vagrant

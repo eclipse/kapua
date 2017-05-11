@@ -29,7 +29,7 @@ public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys>
     private static final String USER_SETTING_RESOURCE = "kapua-user-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      */
     private static final KapuaUserSetting instance = new KapuaUserSetting();

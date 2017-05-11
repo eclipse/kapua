@@ -26,8 +26,7 @@ import java.util.List;
  * Assume the following code:
  * </p>
  * 
- * <pre>
- * {@code
+ * <pre><code>
 class MyClass {
 
 public MyClass () {
@@ -36,19 +35,18 @@ public MyClass () {
 }
 
 public void close () {
-  try ( Suppressed<Exception> s = Suppressed.withException() ) {
+  try ( Suppressed{@code <Exception>} s = Suppressed.withException() ) {
     s.closeSuppressed(resource2);
     s.closeSuppressed(resource1);
   }
 }}
- * </pre>
+ * </code></pre>
  * <p>
  * If something fails during initialization of MyClass then {@code resource1} would not get
  * closed properly. This class can help in solving this scenario by using:
  * </p>
  * 
- * <pre>
- * {@code
+ * <pre><code>
 public MyClass ()  {
   try ( Starting s = new Starting() )  {
     this.resource1 = new Resource1();
@@ -58,8 +56,8 @@ public MyClass ()  {
 
     s.started(); // from now on this class takes on control
   }
-}}
- * </pre>
+}}}
+ * </code></pre>
  * <p>
  * If something happens during the initialization of resource2, then the try-with-resource construct
  * call {@link Starting#close()} which will close all added closables up to this point. Once the

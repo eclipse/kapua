@@ -27,8 +27,6 @@ public class KapuaExistingCredentialException extends KapuaException {
 
     /**
      * Constructor for the {@link KapuaExistingCredentialException} taking in the duplicated name.
-     *
-     * @param duplicatedName
      */
     public KapuaExistingCredentialException(CredentialType credentialType, String userId) {
         super(KapuaErrorCodes.ENTITY_ALREADY_EXISTS, String.format(MESSAGE_FORMAT, credentialType, userId));

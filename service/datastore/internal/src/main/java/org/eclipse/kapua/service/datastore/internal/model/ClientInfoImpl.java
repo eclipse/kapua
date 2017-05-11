@@ -36,9 +36,7 @@ public class ClientInfoImpl implements ClientInfo {
     /**
      * Construct a client information for the given account
      * 
-     * @param account
-     * 
-     * @since 1.0.0
+     * @param scopeId
      */
     public ClientInfoImpl(KapuaId scopeId) {
         setScopeId(scopeId);
@@ -47,10 +45,8 @@ public class ClientInfoImpl implements ClientInfo {
     /**
      * Construct a client information for the given account and storable identifier
      * 
-     * @param account
+     * @param scopeId
      * @param id
-     * 
-     * @since 1.0.0
      */
     public ClientInfoImpl(KapuaId scopeId, StorableId id) {
         this(scopeId);

@@ -13,19 +13,34 @@ package org.eclipse.kapua.qa.steps;
 
 import static java.time.Duration.ofSeconds;
 
+import org.eclipse.kapua.service.StepData;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
 import cucumber.api.java.Before;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
-public class BasicSteps {
+public class BasicSteps extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(BasicSteps.class);
 
     private static final double WAIT_MULTIPLIER = Double.parseDouble(System.getProperty("org.eclipse.kapua.qa.waitMultiplier", "1.0"));
+
+    /**
+     * Scenario scoped step data.
+     */
+    private StepData stepData;
+
+    @Inject
+    public BasicSteps(StepData stepData) {
+        this.stepData = stepData;
+    }
 
     @Before
     public void checkWaitMultipier() {
@@ -40,4 +55,23 @@ public class BasicSteps {
         Thread.sleep(ofSeconds((long) Math.ceil(effectiveSeconds)).toMillis());
     }
 
+    @Then("^An exception was thrown$")
+    public void exceptionCaught() {
+        assertTrue((boolean) stepData.get("ExceptionCaught"));
+    }
+
+    @Then("^No exception was thrown$")
+    public void noExceptionCaught() {
+        assertFalse((boolean) stepData.get("ExceptionCaught"));
+    }
+
+    @Then("^I get (\\d+)$")
+    public void checkCountResult(int num) {
+        assertEquals(num, (int) stepData.get("Count"));
+    }
+
+    @Then("^I get the text \"(.+)\"$")
+    public void checkStringResult(String text) {
+        assertEquals(text, (String) stepData.get("Text"));
+    }
 }

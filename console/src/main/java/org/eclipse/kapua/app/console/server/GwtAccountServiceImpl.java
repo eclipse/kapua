@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -503,7 +502,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 // Tmp file name creation
                 String systemTmpDir = System.getProperty("java.io.tmpdir");
                 String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
-                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes(StandardCharsets.UTF_8)));
+                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
 
                 // Conversions needed got security reasons!
                 // On the file servlet we use the regex [0-9A-Za-z]{1,} to validate the given file id.

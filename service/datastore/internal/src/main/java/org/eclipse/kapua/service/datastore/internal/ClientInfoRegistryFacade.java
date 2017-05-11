@@ -71,7 +71,6 @@ public class ClientInfoRegistryFacade {
     /**
      * Update the client information after a message store operation
      * 
-     * @param scopeId
      * @param clientInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -204,7 +203,6 @@ public class ClientInfoRegistryFacade {
     /**
      * Find clients informations matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -245,7 +243,6 @@ public class ClientInfoRegistryFacade {
     /**
      * Get clients informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -284,7 +281,6 @@ public class ClientInfoRegistryFacade {
     /**
      * Delete clients informations count matching the given query
      * 
-     * @param scopeId
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException

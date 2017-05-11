@@ -108,7 +108,7 @@
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <releaseProfiles>deploy,release,docker-push</releaseProfiles>
+                        <releaseProfiles>javadoc,deploy,release,docker-push</releaseProfiles>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
@@ -137,6 +137,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -642,6 +647,11 @@
                 <version>${h2.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.ning</groupId>
+                <artifactId>compress-lzf</artifactId>
+                <version>1.0.3</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>${commons-configuration.version}</version>
@@ -764,11 +774,6 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
@@ -849,6 +854,7 @@
         <module>simulator-kura</module>
 
         <!-- Assembly -->
+        <module>docker</module>
         <module>assembly</module>
 
         <module>dev-tools</module>
@@ -878,15 +884,13 @@
             </build>
         </profile>
 
-        <!-- Profile used only during deploy. -->
         <profile>
-            <id>deploy</id>
+            <id>javadoc</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven-javadoc-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -896,6 +900,15 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile used only during deploy. -->
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -933,6 +946,7 @@
                 <module>dev-tools</module>
             </modules>
         </profile>
+
         <profile>
             <id>security-scan</id>
             <activation>
@@ -1053,8 +1067,8 @@
 
     <!-- Meta information required for release -->
 
-    <description>Kapua</description>
-    <url>https://github.com/eclipse/kapua</url>
+    <description>Eclipse Kapua™</description>
+    <url>https://eclipse.org/kapua</url>
 
     <developers>
         <developer>
