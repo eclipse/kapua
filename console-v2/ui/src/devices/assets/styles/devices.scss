@@ -14,38 +14,46 @@
 table.dataTable {
     height: inherit;
 }
+
 .dataTables_wrapper .dataTable {
     width: 100% !important;
 }
+
 td.table-view-pf-select {
     width: 1px;
 }
+
 .detailsAccordion {
     margin-left: 10px;
     margin-right: 10px;
 }
+
 .displayDetailsContent {
     margin-left: 20px;
     margin-right: 20px;
 }
+
 .displayDeviceContainer {
     padding-bottom: 16px;
 }
+
 uib-accordion {
     .panel-group {
         margin-bottom: 0px;
     }
 }
+
 tr {
     cursor: pointer;
 }
+
 .list-view-container {
     .list-group {
         margin-bottom: 0px;
     }
 }
 
-bundles, packages, commands {
+bundles, packages, commands, configurations {
     .header {
         overflow: hidden;
         padding-bottom: 10px;
@@ -54,7 +62,7 @@ bundles, packages, commands {
         font-size: 20px;
         font-weight: bold;
         padding-top: 3px;
-    }    
+    }
     .headerActions {
         text-align: right;
         padding-top: 5px;
@@ -63,9 +71,49 @@ bundles, packages, commands {
     .list-group-item-heading {
         padding-top: 6px;
     }
-
     .list-group-item-container {
         background: none;
         border-top: none;
+    }
+}
+
+configurations {
+    .dirtyField {
+        border-left-width: 4px;
+        border-left-color: #3f9c35;
+    }
+
+    .fieldDescription {
+        color: #C0C0C0;
+    }
+
+    .radioButton {
+        margin-left: 8px;
+    }
+
+    .dirtyRadio {
+        width: 6px;
+        height: 3px;
+        position: relative;
+    }
+
+    .dirtyRadio::before, .dirtyRadio::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-color: transparent;
+        border-style: solid;
+    }
+
+    .dirtyRadio::before {
+        border-width: 2px;
+    }
+    
+    .dirtyRadio::after {
+        border-radius: 1px;
+        border-width: 4px;
+        border-left-color: #3f9c35;
+        border-top-color: #3f9c35;
     }
 }
