@@ -20,7 +20,7 @@
         <Icon resource="OSGI-INF/account-service.png" size="32"/>
 
         <AD id="infiniteChildEntities"
-            name="infiniteChildEntities"
+            name="infiniteChildGroups"
             type="Boolean"
             cardinality="0"
             required="true"
@@ -29,7 +29,7 @@
         </AD>
 
         <AD id="maxNumberChildEntities"  
-            name="maxNumberChildEntities"
+            name="maxNumberChildGroups"
             type="Integer"
             cardinality="0" 
             required="true"
