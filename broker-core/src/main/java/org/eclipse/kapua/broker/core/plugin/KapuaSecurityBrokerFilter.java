@@ -48,7 +48,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
-import org.eclipse.kapua.commons.core.ApplicationContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -143,22 +142,32 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Histogram metricPublishMessageSizeAllowed;
     private Histogram metricPublishMessageSizeNotAllowed;
 
-    // The following line must be done before any invocation of KapuaLocator.getInstance()
-    private static ApplicationContainer application = new ApplicationContainer() {};
-    ////
-
-    private AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
-    private AuthorizationService authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-    private PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-    private CredentialsFactory credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
-    private AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
-    private DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
-    private DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
-    private MetricsService metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
+    private AuthenticationService authenticationService;
+    private AuthorizationService authorizationService;
+    private PermissionFactory permissionFactory;
+    private CredentialsFactory credentialsFactory;
+    private AccountService accountService;
+    private DeviceConnectionService deviceConnectionService;
+    private DeviceConnectionFactory deviceConnectionFactory;
+    private MetricsService metricsService;
 
     public KapuaSecurityBrokerFilter(Broker next) throws KapuaException {
         super(next);
-        
+    }
+
+    @Override
+    public void start()
+            throws Exception {
+        logger.info(">>> Security broker filter: calling start...");
+        authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
+        authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
+        accountService = KapuaLocator.getInstance().getService(AccountService.class);
+        deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
+        deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
+        metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
+
         // login
         metricLoginSuccess = metricsService.getCounter("security", "login", "success", "count");
         metricLoginFailure = metricsService.getCounter("security", "login", "failure", "count");
@@ -196,19 +205,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         metricPublishMessageSizeNotAllowed = metricsService.getHistogram("security", "publish", "messages", "not_allowed", "size", "bytes");
 
         XmlUtil.setContextProvider(new BrokerJAXBContextProvider());
-    }
-
-    @Override
-    public void start()
-            throws Exception {
-        logger.info(">>> Security broker filter: calling start...");
-        synchronized(KapuaSecurityBrokerFilter.class) {
-            if (application == null) {
-                application = new ApplicationContainer() {};
-            }
-            application.startup();
-        }
         super.start();
+        logger.info(">>> Security broker filter: calling start... DONE");
     }
 
     @Override
@@ -216,11 +214,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             throws Exception {
         logger.info(">>> Security broker filter: calling stop...");
         super.stop();
-        synchronized(KapuaSecurityBrokerFilter.class) {
-            if (application != null) {
-                application.shutdown();;
-            }
-        }
+        logger.info(">>> Security broker filter: calling stop... DONE");
     }
 
     // ------------------------------------------------------------------

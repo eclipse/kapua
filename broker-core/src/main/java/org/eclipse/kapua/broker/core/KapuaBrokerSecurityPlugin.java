@@ -54,7 +54,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
     private static final Logger logger = LoggerFactory.getLogger(KapuaBrokerSecurityPlugin.class);
 
     public Broker installPlugin(Broker broker) throws Exception {
-        logger.info("Installing Kapua broker plugin.");
+        logger.info("Installing Kapua security broker plugin.");
 
         logger.debug("Starting Liquibase embedded client.");
         SystemSetting config = SystemSetting.getInstance();
