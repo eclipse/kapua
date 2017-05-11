@@ -48,6 +48,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.commons.core.ApplicationContainer;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -143,6 +144,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Histogram metricPublishMessageSizeAllowed;
     private Histogram metricPublishMessageSizeNotAllowed;
 
+    // The following line must be done before any invocation of KapuaLocator.getInstance()
+    private static ApplicationContainer application = new ApplicationContainer() {};
+    ////
+
     private AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
     private AuthorizationService authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
     private PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
@@ -197,6 +202,13 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     @Override
     public void start()
             throws Exception {
+        logger.info(">>> Security broker filter: calling start...");
+        synchronized(KapuaSecurityBrokerFilter.class) {
+            if (application == null) {
+                application = new ApplicationContainer() {};
+            }
+            application.startup();
+        }
         super.start();
     }
 
@@ -205,6 +217,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             throws Exception {
         logger.info(">>> Security broker filter: calling stop...");
         super.stop();
+        synchronized(KapuaSecurityBrokerFilter.class) {
+            if (application != null) {
+                application.shutdown();;
+            }
+        }
     }
 
     // ------------------------------------------------------------------

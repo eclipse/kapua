@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,21 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.server.util;
+package org.eclipse.kapua.app.api;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.core.ApplicationContainer;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class ConsoleListener implements ServletContextListener {
-
-    private static final Logger logger = LoggerFactory.getLogger(ConsoleListener.class);
+public class RestApiListener implements ServletContextListener {
 
     private ApplicationContainer kapuaContainer;
     
@@ -41,9 +34,5 @@ public class ConsoleListener implements ServletContextListener {
         }
         
         kapuaContainer.startup();
-       
-        logger.info("Initialize Console JABContext Provider");
-        JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
-        XmlUtil.setContextProvider(consoleProvider);
     }
 }

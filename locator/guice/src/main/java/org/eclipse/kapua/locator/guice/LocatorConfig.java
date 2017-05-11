@@ -12,18 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.eclipse.kapua.commons.core.KapuaPlugin;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.KapuaLocatorException;
+import org.eclipse.kapua.locator.KapuaProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 
 public class LocatorConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(LocatorConfig.class);
 
     private static final String SERVICE_RESOURCE_INTERFACES = "provided.api";
     private static final String SERVICE_RESOURCE_PACKAGES = "packages.package";
@@ -91,5 +104,65 @@ public class LocatorConfig {
 
     public Collection<String> getProvidedInterfaceNames() {
         return providedInterfaceNames;
+    }
+    
+    public ClassLoader getClassLoader() {
+        return this.getClass().getClassLoader();
+    }
+    
+    public Set<Class<?>> getProvidersInfo() throws KapuaLocatorException, IOException, ClassNotFoundException {
+
+        // Packages are supposed to contain service implementations
+        Collection<String> packageNames = this.getPackageNames();
+
+        ClassLoader classLoader = this.getClassLoader();
+        ClassPath classPath = ClassPath.from(classLoader);
+        boolean initialize = true;
+
+        // Among all the classes in the configured packages, retain only the ones
+        // annotated with @KapuaProvider annotation
+        Set<Class<?>> extendedClassInfo = new HashSet<>();
+        for (String packageName : packageNames) {
+            // Use the class loader of this (module) class
+            ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
+            for (ClassInfo classInfo : classInfos) {
+                logger.trace("CLASS: {}", classInfo.getName());
+                Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
+                KapuaProvider serviceProvider = theClass.getAnnotation(KapuaProvider.class);
+                if (serviceProvider != null) {
+                    extendedClassInfo.add(theClass);
+                }
+            }
+        }
+
+        return extendedClassInfo;
+    }
+    
+    public Set<Class<?>> getPluginsInfo() throws KapuaLocatorException, IOException, ClassNotFoundException {
+
+        // Packages are supposed to contain service implementations
+        Collection<String> packageNames = this.getPackageNames();
+
+        ClassLoader classLoader = this.getClassLoader();
+        ClassPath classPath = ClassPath.from(classLoader);
+        boolean initialize = true;
+
+        // Among all the classes in the configured packages, retain only the ones
+        // annotated with @KapuaProvider annotation
+        Set<Class<?>> extendedClassInfo = new HashSet<>();
+        for (String packageName : packageNames) {
+            // Use the class loader of this (module) class
+            ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
+            for (ClassInfo classInfo : classInfos) {
+                logger.trace("CLASS: {}", classInfo.getName());
+                Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
+                KapuaPlugin plugin = theClass.getAnnotation(KapuaPlugin.class);
+                if (plugin != null) {
+                    extendedClassInfo.add(theClass);
+                }
+            }
+        }
+
+        return extendedClassInfo;
     }
 }

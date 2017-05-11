@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,9 +18,10 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.core.ApplicationContainer;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
-import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.locator.internal.guice.FactoryA;
 import org.eclipse.kapua.locator.internal.guice.FactoryB;
@@ -28,14 +29,27 @@ import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.locator.internal.guice.ServiceC;
 import org.eclipse.kapua.service.KapuaService;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class GuiceLocatorImplTest {
 
-    private KapuaLocator locator = GuiceLocatorImpl.getInstance();
+    ApplicationContainer container = new ApplicationContainer() {};
+    KapuaLocator locator = KapuaLocatorImpl.getInstance();
 
+    @Before
+    public void before() {
+        container.startup();
+    }
+    
+    @After
+    public void after() {
+        container.shutdown();
+    }
+    
     @Ignore
     @Test
     public void shouldThrowKapuaExceptionWhenServiceIsNotAvailable() {
