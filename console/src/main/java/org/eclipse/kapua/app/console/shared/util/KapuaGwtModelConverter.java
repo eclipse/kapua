@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
@@ -622,6 +623,10 @@ public class KapuaGwtModelConverter {
 
     public static GwtTopic convertToTopic(ChannelInfo channelInfo) {
         return new GwtTopic(channelInfo.getName(), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
+    }
+    
+    public static GwtDatastoreAsset convertToAssets(ChannelInfo channelInfo) {
+        return new GwtDatastoreAsset(channelInfo.getName(), channelInfo.getName());
     }
 
     public static GwtHeader convertToHeader(MetricInfo metric) {

@@ -18,7 +18,9 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
+import org.eclipse.kapua.app.console.shared.model.GwtMessage;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
+import org.eclipse.kapua.app.console.shared.model.GwtTopic;
 import org.eclipse.kapua.app.console.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 
@@ -26,6 +28,9 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.LoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -95,13 +100,13 @@ public class AssetTable extends LayoutContainer {
         column = new ColumnConfig("driver", MSGS.assetTableDriverHeader(), 100);
         configs.add(column);
         RpcProxy<ListLoadResult<GwtDatastoreAsset>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreAsset>>() {
-
-            @Override
+        	
+        	@Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtDatastoreAsset>> callback) {
                 if (selectedDevice != null) {
-                    //TODO Fetch available assets.
-                } else {
-                    callback.onSuccess(new BaseListLoadResult<GwtDatastoreAsset>(new ArrayList<GwtDatastoreAsset>()));
+//                	 dataService.findTopicsTree(currentSession.getSelectedAccount().getId(), callback);
+//                    dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, null, null, null, callback);
+                dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), callback);
                 }
             }
         };

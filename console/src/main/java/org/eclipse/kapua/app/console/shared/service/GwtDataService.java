@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtKapuaChartResult;
@@ -56,6 +57,9 @@ public interface GwtDataService extends RemoteService {
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String accountName) throws GwtKapuaException;
+
+    
+    public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String accountName) throws GwtKapuaException;
 
 
     /**
@@ -106,6 +110,8 @@ public interface GwtDataService extends RemoteService {
             List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit, int lastOffset, Integer indexOffset) throws GwtKapuaException;
 
     public PagingLoadResult<GwtMessage> findMessagesByDevice(PagingLoadConfig loadConfig, String accountName, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
+
+    public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String accountName, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
 
     public GwtKapuaChartResult findMessagesByDevice(String accountName, GwtDatastoreDevice device,
             List<GwtHeader> headers, Date startDate, Date endDate, Stack<KapuaBasePagingCursor> cursors, int limit, int lastOffset, Integer indexOffset) throws GwtKapuaException;
