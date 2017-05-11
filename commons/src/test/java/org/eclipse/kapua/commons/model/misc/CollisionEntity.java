@@ -20,7 +20,6 @@ import javax.persistence.Entity;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 
