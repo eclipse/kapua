@@ -13,29 +13,20 @@
 package org.eclipse.kapua.app.console.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.json.Json;
 import javax.json.JsonObject;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.kapua.app.console.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.sso.SingleSignOnLocator;
 
 public class SsoCallbackServlet extends HttpServlet {
 
@@ -43,49 +34,19 @@ public class SsoCallbackServlet extends HttpServlet {
 
     private final ConsoleSetting settings = ConsoleSetting.getInstance();
 
+    private SingleSignOnLocator locator;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        this.locator = SsoLocator.getLocator(config);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String authCode = req.getParameter("code");
 
-        final URL url = new URL(settings.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN));
-        final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-        urlConnection.setRequestMethod("POST");
-        urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
-
-        final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        parameters.add(new BasicNameValuePair("code", authCode));
-        parameters.add(new BasicNameValuePair("client_id", settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID)));
-
-        final String clientSecret = settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_SECRET);
-        if (clientSecret != null && !clientSecret.isEmpty()) {
-            parameters.add(new BasicNameValuePair("client_secret", clientSecret));
-        }
-
-        parameters.add(new BasicNameValuePair("redirect_uri", settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI)));
-        final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
-
-        // Send post request
-        
-        urlConnection.setDoOutput(true);
-
-        final OutputStream outputStream = urlConnection.getOutputStream();
-        try {
-            entity.writeTo(outputStream);
-        } finally {
-            outputStream.close();
-        }
-
-        // parse result
-        
-        final JsonObject jsonObject;
-        final InputStream stream = urlConnection.getInputStream();
-        try {
-            jsonObject = Json.createReader(stream).readObject();
-        } finally {
-            stream.close();
-        }
+        final JsonObject jsonObject = locator.getService().getAccessToken(authCode);
 
         // Get and clean jwks_uri property
         final String accessToken = jsonObject.getString("access_token");

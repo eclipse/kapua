@@ -23,12 +23,16 @@
 		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kapua-sso-api</artifactId>
+	<artifactId>kapua-sso-provider</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>javax.json</artifactId>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-sso-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-commons</artifactId>
 		</dependency>
 	</dependencies>
 </project>

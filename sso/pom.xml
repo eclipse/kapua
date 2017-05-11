@@ -31,8 +31,9 @@
 
     <modules>
         <module>api</module>
-        <module>generic</module>
-        <module>keycloak</module>
+        <module>provider</module>
+        <module>provider-generic</module>
+        <module>provider-keycloak</module>
     </modules>
 
 </project>

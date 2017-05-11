@@ -14,23 +14,18 @@ package org.eclipse.kapua.app.console.server;
 
 import java.util.UUID;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.eclipse.kapua.app.console.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
 import org.eclipse.kapua.app.console.shared.service.GwtSettingsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * This is the security token service, a concrete implementation to fix the XSFR security problem.
  */
-public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
-        GwtSettingsService {
-
-    private static final Logger logger = LoggerFactory.getLogger(GwtSettingsServiceImpl.class);
+public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtSettingsService {
 
     private static final long serialVersionUID = -6876999298300071273L;
     private static final ConsoleSetting SETTINGS = ConsoleSetting.getInstance();
@@ -45,25 +40,12 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public String getSsoLoginUri() {
-        try {
-            final URIBuilder uri = new URIBuilder(SETTINGS.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH));
-
-            uri.addParameter("scope", "openid");
-            uri.addParameter("response_type", "code");
-            uri.addParameter("client_id", SETTINGS.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID));
-            uri.addParameter("state", UUID.randomUUID().toString());
-            uri.addParameter("redirect_uri", SETTINGS.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI));
-
-            return uri.toString();
-        } catch (Exception e) {
-            logger.warn("Failed to construct SSO URI", e);
-        }
-        return null;
+        return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString());
     }
 
     @Override
     public boolean getSsoEnabled() {
-        return SETTINGS.getBoolean(ConsoleSettingKeys.SSO_ENABLE);
+        return SsoLocator.getLocator(this).getService().isEnabled();
     }
 
     @Override
