@@ -848,8 +848,8 @@
         <module>simulator-kura</module>
 
         <!-- Assembly -->
-        <module>assembly</module>
         <module>docker</module>
+        <module>assembly</module>
 
         <module>dev-tools</module>
     </modules>
