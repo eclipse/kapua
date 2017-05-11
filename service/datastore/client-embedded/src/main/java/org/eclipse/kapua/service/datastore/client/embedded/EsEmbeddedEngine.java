@@ -32,7 +32,7 @@ public class EsEmbeddedEngine {
 
     private static final Logger logger = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
-    private static final String DEFAULT_DATA_DIRECTORY = "target/elasticsearch/data"+ UUIDs.randomBase64UUID();
+    private static final String DEFAULT_DATA_DIRECTORY = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
 
     private static Node node;
 

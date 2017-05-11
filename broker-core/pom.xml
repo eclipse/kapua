@@ -21,7 +21,6 @@
 	</parent>
 
 	<artifactId>kapua-broker-core</artifactId>
-	<name>${project.artifactId}</name>
 
 	<dependencies>
 		<dependency>

@@ -59,7 +59,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final MessageStoreFacade messageStoreFacade;
 
     /**
-     * Defualt constructor
+     * Default constructor
      * 
      * @throws ClientUnavailableException
      */
