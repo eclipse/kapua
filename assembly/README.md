@@ -40,6 +40,9 @@ Navigate your browser to http://localhost:8080 and log in using the following cr
 
 You can access the API using: http://localhost:8081
 
+**Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
+the IP address of your docker instance.
+
 ### SSO testing
 
 **Note:** This is only a setup for testing SSO support.
