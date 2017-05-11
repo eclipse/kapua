@@ -8,8 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
+
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +40,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl
 import org.eclipse.kapua.service.datastore.internal.model.query.ExistsPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
@@ -48,7 +50,6 @@ import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
@@ -219,10 +220,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      */
     private void updateLastPublishedFields(MetricInfo metricInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        SortField sortTimestamp = new SortFieldImpl();
-        sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sortTimestamp.setSortDirection(SortDirection.DESC);
-        sort.add(sortTimestamp);
+        sort.add(descending(EsSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(metricInfo.getScopeId());
         messageQuery.setAskTotalCount(true);

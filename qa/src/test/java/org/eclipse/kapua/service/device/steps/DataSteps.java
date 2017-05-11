@@ -25,11 +25,9 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.junit.Assert;
 
@@ -197,11 +195,7 @@ public class DataSteps {
 
                 // sort by captured time
 
-                final SortField field = new SortFieldImpl();
-                field.setField(MessageField.CAPTURED_ON.field());
-                field.setSortDirection(SortDirection.DESC);
-
-                query.setSortFields(Arrays.asList(field));
+                query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
 
                 // perform the query
 
