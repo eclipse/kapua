@@ -34,11 +34,14 @@ import org.eclipse.kapua.service.authorization.group.Group;
  */
 @XmlRootElement(name = "permission")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "domain",
-        "action",
-        "targetScopeId",
-        "groupId"
-}, factoryClass = PermissionXmlRegistry.class, factoryMethod = "newPermission")
+@XmlType(propOrder = { //
+        "domain", //
+        "action", //
+        "targetScopeId", //
+        "groupId" //
+}, //
+        factoryClass = PermissionXmlRegistry.class, //
+        factoryMethod = "newPermission")
 public interface Permission {
 
     public static final String WILDCARD = "*";
@@ -117,4 +120,9 @@ public interface Permission {
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getGroupId();
+
+    public void setForwardable(boolean forwardable);
+
+    @XmlElement(name = "forwardable")
+    public boolean getForwardable();
 }

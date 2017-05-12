@@ -66,6 +66,10 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     })
     private KapuaEid groupId;
 
+    @Basic
+    @Column(name = "forwardable", nullable = false, updatable = false)
+    private boolean forwardable;
+
     /**
      * Constructor
      */
@@ -146,6 +150,16 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     @Override
     public KapuaId getGroupId() {
         return groupId;
+    }
+
+    @Override
+    public boolean getForwardable() {
+        return forwardable;
+    }
+
+    @Override
+    public void setForwardable(boolean forwardable) {
+        this.forwardable = forwardable;
     }
 
     /**

@@ -41,3 +41,9 @@ INSERT INTO athz_access_permission
 --changeset access_permission:2
 
 ALTER TABLE athz_access_permission MODIFY COLUMN domain VARCHAR(64) NULL;
+
+--changeset access_permission:3
+
+ALTER TABLE athz_access_permission ADD COLUMN forwardable BOOLEAN NOT NULL DEFAULT FALSE;
+
+UPDATE athz_access_permission SET forwardable = false WHERE id = 1;
