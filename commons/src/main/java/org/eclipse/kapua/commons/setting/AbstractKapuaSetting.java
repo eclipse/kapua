@@ -38,7 +38,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractKapuaSetting.class);
 
-    private static final String EXTERNAL_CONFIG_FILE_PARAM = "kapua.config.file";
+    private static final String EXTERNAL_CONFIG_URL_PARAM = "kapua.config.url";
     private static final String EXTERNAL_CONFIG_DIR_PARAM = "kapua.config.dir";
 
     /**
@@ -59,15 +59,15 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
 
         try {
             // External configuration file loading
-            String externalConfigResourceName = System.getProperty(EXTERNAL_CONFIG_FILE_PARAM);
-            if (externalConfigResourceName != null) {
-                loadConfigResource(compositeConfig, externalConfigResourceName);
+            String externalConfigResourceUrl = System.getProperty(EXTERNAL_CONFIG_URL_PARAM);
+            if (externalConfigResourceUrl != null) {
+                loadConfigResource(compositeConfig, externalConfigResourceUrl);
             }
 
-            // External configuration folder loading
-            String externalConfigResourceFolder = System.getProperty(EXTERNAL_CONFIG_DIR_PARAM);
-            if (externalConfigResourceFolder != null) {
-                loadConfigResources(compositeConfig, externalConfigResourceFolder);
+            // External configuration directory loading
+            String externalConfigResourceDir = System.getProperty(EXTERNAL_CONFIG_DIR_PARAM);
+            if (externalConfigResourceDir != null) {
+                loadConfigResources(compositeConfig, externalConfigResourceDir);
             }
 
             // Default configuration file loading
@@ -81,29 +81,29 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
     }
 
     /**
-     * Search the configuration resources in the given folder name and loads them into the given {@link CompositeConfiguration} parameter.<br>
-     * If the given folder name refer to a file or a not existing folder an error will be thrown.
-     * If the folder exists and it is empty, no error will be thrown.
+     * Search the configuration resources in the given directory name and loads them into the given {@link CompositeConfiguration} parameter.<br>
+     * If the given directory name refer to a file or a not existing directory an error will be thrown.
+     * If the directory exists and it is empty, no error will be thrown.
      * Note that this can only work with local files.
      * 
      * @param compositeConfig
      *            The {@link CompositeConfiguration} where load the resources.
-     * @param configResourceFolderName
-     *            The folder path to scan.
+     * @param configResourceDirName
+     *            The directory path to scan.
      * @throws KapuaSettingException
-     *             When folder is not found, or loading them causes an exception.
+     *             When directory is not found, or loading them causes an exception.
      * 
      * @see #loadConfigResource(CompositeConfiguration, String)
      * 
      * @since 1.0.0
      */
-    private static void loadConfigResources(CompositeConfiguration compositeConfig, String configResourceFolderName) throws KapuaSettingException {
+    private static void loadConfigResources(CompositeConfiguration compositeConfig, String configResourceDirName) throws KapuaSettingException {
 
-        if (!configResourceFolderName.endsWith("/")) {
-            configResourceFolderName = configResourceFolderName.concat("/");
+        if (!configResourceDirName.endsWith("/")) {
+            configResourceDirName = configResourceDirName.concat("/");
         }
 
-        File configsDir = new File(configResourceFolderName);
+        File configsDir = new File(configResourceDirName);
         if (configsDir.exists() || configsDir.isDirectory()) {
             // Exclude hidden files
             String[] configFileNames = configsDir.list((dir, name) -> !name.startsWith("."));
@@ -111,7 +111,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
             if (configFileNames != null && configFileNames.length > 0) {
                 for (String configFileName : configFileNames) {
 
-                    String fileFullPath = String.join("", "file://", configResourceFolderName, configFileName);
+                    String fileFullPath = String.join("", "file://", configResourceDirName, configFileName);
 
                     // Ignore files that arent named '*.properties'
                     if (fileFullPath.endsWith(".properties")) {
@@ -121,11 +121,11 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
                     }
                 }
             } else {
-                LOG.warn(String.format("Empty config folder: '%s'", configResourceFolderName));
+                LOG.warn(String.format("Empty config directory: '%s'", configResourceDirName));
             }
         } else {
-            LOG.error(String.format("Unable to locate folder: '%s'", configResourceFolderName));
-            throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceFolderName);
+            LOG.error(String.format("Unable to locate directory: '%s'", configResourceDirName));
+            throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceDirName);
         }
     }
 
