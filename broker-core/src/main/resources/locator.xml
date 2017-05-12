@@ -83,5 +83,6 @@
         <package>org.eclipse.kapua.transport</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.model.config</package>
+        <package>org.eclipse.kapua.broker.core.plugin</package>
     </packages>
 </locator-config>
