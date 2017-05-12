@@ -75,4 +75,10 @@ public class AuthenticationServiceMock implements AuthenticationService {
         return null;
     }
 
+    @Override
+    public boolean verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

@@ -168,6 +168,19 @@ public class NorthView extends LayoutContainer {
                     userActionMenu.add(new SeparatorMenuItem());
                 }
 
+                KapuaMenuItem changePassword = new KapuaMenuItem();
+                changePassword.setText(MSGS.changePassword());
+                changePassword.setIcon(IconSet.KEY);
+                changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
+                        changePasswordDialog.show();
+                    }
+
+                });
+                userActionMenu.add(changePassword);
                 userActionMenu.add(new SeparatorMenuItem());
                 userActionMenu.add(userLogoutMenuItem);
                 userActionButton.setMenu(userActionMenu);

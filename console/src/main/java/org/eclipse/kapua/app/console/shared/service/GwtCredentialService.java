@@ -54,4 +54,7 @@ public interface GwtCredentialService extends RemoteService {
 
     public ListLoadResult<GwtGroupedNVPair> getCredentialDescription(String scopeShortId, String roleShortId)
             throws GwtKapuaException;
+
+    public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, String newPassword, String stringUserId, String stringScopeId)
+            throws GwtKapuaException;
 }
