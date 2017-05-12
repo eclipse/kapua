@@ -23,7 +23,6 @@
     </parent>
 
     <artifactId>kapua-console</artifactId>
-    <name>${project.artifactId}</name>
     <packaging>war</packaging>
 
     <properties>
@@ -428,11 +427,18 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.0.0</version>
                     <configuration>
                         <webResources>
                             <resource>
                                 <directory>${project.build.directory}/Kapua</directory>
+                            </resource>
+                            <resource>
+                                <directory>${basedir}</directory>
+                                <includes>
+                                    <include>about.html</include>
+                                    <include>epl-v10.html</include>
+                                    <include>notice.html</include>
+                                </includes>
                             </resource>
                         </webResources>
                         <!-- exclude slf4j-api and logback as the web container has to provide this -->
