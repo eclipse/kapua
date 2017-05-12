@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.ApplicationPlugin;
 import org.eclipse.kapua.commons.core.ProviderLocator;
 import org.eclipse.kapua.commons.core.LifecycleHandler;
 import org.eclipse.kapua.commons.util.ResourceUtils;
@@ -66,11 +65,10 @@ public class ProviderLocatorImpl extends ProviderLocator {
             Set<Class<?>> pluginsInfo;
             pluginsInfo = locatorConfig.getPluginsInfo();
             
+            // no check about the assignability since it should be done by the LocatorConfig
             for (Class<?> clazz : pluginsInfo) {
-                if (ApplicationPlugin.class.isAssignableFrom(clazz)) {
-                    injector.getInstance(clazz);
-                    logger.info("Initilize Kapua plugin {}", clazz);
-                }
+                injector.getInstance(clazz);
+                logger.info("Initilize Kapua plugin {}", clazz);
             }
         } catch (KapuaLocatorException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load " + locatorConfigURL);

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.locator.guice;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -148,6 +149,8 @@ public class LocatorConfig {
         boolean initialize = true;
 
         // Among all the classes in the configured packages, retain only the ones
+        // implements the KapuaPlugin interface
+
         // annotated with @KapuaProvider annotation
         Set<Class<?>> extendedClassInfo = new HashSet<>();
         for (String packageName : packageNames) {
@@ -155,14 +158,46 @@ public class LocatorConfig {
             ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
             for (ClassInfo classInfo : classInfos) {
                 logger.trace("CLASS: {}", classInfo.getName());
-                Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
-                KapuaPlugin plugin = theClass.getAnnotation(KapuaPlugin.class);
-                if (plugin != null) {
-                    extendedClassInfo.add(theClass);
+                Class<?> classToCheck = Class.forName(classInfo.getName(), !initialize, classLoader);
+                // for performance reason which is the best way?
+                // KapuaPlugin plugin = classToCheck.getAnnotation(KapuaPlugin.class);
+                // first way
+                // if (KapuaPlugin.class.isAssignableFrom(classToCheck) && !classToCheck.isInterface() && !Modifier.isAbstract(classToCheck.getModifiers()) {
+                // extendedClassInfo.add(classToCheck);
+                // }
+
+                // second way
+                if (isPlugin(classToCheck)) {
+                    extendedClassInfo.add(classToCheck);
                 }
             }
         }
 
         return extendedClassInfo;
     }
+
+    /**
+     * Check if the class is a {@link KapuaPlugin} representation, so if:<br>
+     * <br>
+     * <ul>
+     * <li>it implements {@link KapuaPlugin}</li>
+     * <li>it is not an interface</li>
+     * <li>it is not abstract</li>
+     * </ul>
+     * 
+     * @param clazz
+     * @return
+     */
+    private boolean isPlugin(Class<?> clazz) {
+        Class<?>[] implementedInterfaces = clazz.getInterfaces();
+        if (implementedInterfaces != null && implementedInterfaces.length > 0) {
+            for (Class<?> implementedInterface : implementedInterfaces) {
+                if (KapuaPlugin.class.equals(implementedInterface) && !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

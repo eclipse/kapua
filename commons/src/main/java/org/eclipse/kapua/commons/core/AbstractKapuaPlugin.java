@@ -14,13 +14,13 @@ package org.eclipse.kapua.commons.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractApplicationPlugin {
+public abstract class AbstractKapuaPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractApplicationPlugin.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaPlugin.class);
 
-    public AbstractApplicationPlugin(LifecycleHandler lifecycleHandler) {
+    public AbstractKapuaPlugin(LifecycleHandler lifecycleHandler) {
         
-        final AbstractApplicationPlugin pluginInstance = this;
+        final AbstractKapuaPlugin pluginInstance = this;
         lifecycleHandler.register(new LifecyleListener() {
 
             @Override

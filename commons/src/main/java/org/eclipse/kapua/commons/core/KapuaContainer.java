@@ -13,15 +13,15 @@ package org.eclipse.kapua.commons.core;
 
 import java.util.List;
 
-public abstract class ApplicationContainer {
+public abstract class KapuaContainer {
 
     private LifecycleHandler lifecycleHandler;
 
-    public ApplicationContainer() {
-        this(new ApplicationConfiguration());
+    public KapuaContainer() {
+        this(new KapuaConfiguration());
     }
 
-    public ApplicationContainer(ApplicationConfiguration configuration) {
+    public KapuaContainer(KapuaConfiguration configuration) {
         lifecycleHandler = ProviderLocator.getInstance().getLifecycleHandler();
     }
 
