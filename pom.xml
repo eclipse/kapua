@@ -170,6 +170,12 @@
                 </plugin>
 
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>sql-maven-plugin</artifactId>
                     <version>${sql-maven-plugin.version}</version>
