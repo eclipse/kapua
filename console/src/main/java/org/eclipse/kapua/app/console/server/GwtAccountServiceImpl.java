@@ -469,8 +469,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         KapuaId kapuaParentId = GwtKapuaModelConverter.convert(parentId);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            Class configurableServiceClass = Class.forName(configComponent.<String> get("componentId"));
-            KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
+            AccountService configurableService = locator.getService(AccountService.class);
 
             // execute the update
             Map<String, Object> parameters = GwtKapuaModelConverter.convert(configComponent);
