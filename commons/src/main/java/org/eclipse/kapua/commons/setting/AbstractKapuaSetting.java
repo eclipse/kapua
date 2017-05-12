@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * Setting reference abstract implementation.
  *
  * @param <K>
- *            setting key type
+ *            Setting key type
  *
  * @since 1.0.0
  */
@@ -80,6 +80,23 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
         return new DataConfiguration(compositeConfig);
     }
 
+    /**
+     * Search the configuration resources in the given folder name and loads them into the given {@link CompositeConfiguration} parameter.<br>
+     * If the given folder name refer to a file or a not existing folder an error will be thrown.
+     * If the folder exists and it is empty, no error will be thrown.
+     * Note that this can only work with local files.
+     * 
+     * @param compositeConfig
+     *            The {@link CompositeConfiguration} where load the resources.
+     * @param configResourceFolderName
+     *            The folder path to scan.
+     * @throws KapuaSettingException
+     *             When folder is not found, or loading them causes an exception.
+     * 
+     * @see #loadConfigResource(CompositeConfiguration, String)
+     * 
+     * @since 1.0.0
+     */
     private static void loadConfigResources(CompositeConfiguration compositeConfig, String configResourceFolderName) throws KapuaSettingException {
 
         if (!configResourceFolderName.endsWith("/")) {
@@ -112,6 +129,20 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
         }
     }
 
+    /**
+     * Search the configuration resource name and loads it into the given {@link CompositeConfiguration} parameter.<br>
+     * It can handle resources on the class path and file in the file system (prefixed by 'file://')
+     * or file over HTTP/HTTPS (prefixed by 'http://'|'https://')
+     * 
+     * @param compositeConfig
+     *            The {@link CompositeConfiguration} where load the given resource.
+     * @param configResourceName
+     *            The resource name to search and load.
+     * @throws KapuaSettingException
+     *             When error occurs while loading setting resource.
+     * 
+     * @since 1.0.0
+     */
     private static void loadConfigResource(CompositeConfiguration compositeConfig, String configResourceName) throws KapuaSettingException {
 
         URL configUrl = null;
@@ -136,6 +167,21 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
         }
     }
 
+    /**
+     * Scans the given string URL to check that contains a valid scheme.<br>
+     * Scheme accepted are:
+     * <ul>
+     * <li>file://</li>
+     * <li>http://</li>
+     * <li>https://</li>
+     * </ul>
+     * 
+     * @param stringURL
+     *            The URL in {@link String} form to check
+     * @return {@code true} if it is a valid {@link URL}, false otherwise
+     * 
+     * @since 1.0.0
+     */
     private static boolean hasValidScheme(String stringURL) {
         return stringURL != null && (stringURL.startsWith("file://") || stringURL.startsWith("http://") || stringURL.startsWith("https://"));
     }
