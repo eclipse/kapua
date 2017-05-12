@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.authorization;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -36,13 +35,6 @@ public class PermissionFactoryMock implements PermissionFactory {
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
-        return null;
-    }
-
-    @Override
-    public Permission parseString(String stringPermission)
-            throws KapuaException {
-        // TODO Auto-generated method stub
         return null;
     }
 
