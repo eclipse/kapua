@@ -121,8 +121,25 @@ public interface Permission {
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getGroupId();
 
+    /**
+     * Sets whether or not this {@link Permission} is valid also for children scopeId.
+     * 
+     * @param forwardable
+     *            {@code true} if this {@link Permission} is forward-able to children scopeIds.
+     * 
+     * @since 1.0.0
+     */
     public void setForwardable(boolean forwardable);
 
+    /**
+     * Gets whether or not this {@link Permission} is valid also for children scopeIds.
+     * If a {@link Permission} is forward-able to children, the {@link Permission} will be valid
+     * for all scopeIds of the {@link #getTargetScopeId()} scopeId.
+     * 
+     * @return {@code true} if this {@link Permission} is forward-able to children scopeIds.
+     * 
+     * @since 1.0.0
+     */
     @XmlElement(name = "forwardable")
     public boolean getForwardable();
 }
