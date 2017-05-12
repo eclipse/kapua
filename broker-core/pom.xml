@@ -158,18 +158,6 @@
 			<version>${elasticsearch-client-transport.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-	    	<groupId>org.apache.logging.log4j</groupId>
-	    	<artifactId>log4j-api</artifactId>
-	    	<version>${log4j-to-slf4j.version}</version>
-	    	<scope>provided</scope>
-		</dependency>
-		<dependency>
-	    	<groupId>org.apache.logging.log4j</groupId>
-	    	<artifactId>log4j-core</artifactId>
-	    	<version>${log4j-to-slf4j.version}</version>
-	    	<scope>provided</scope>
-		</dependency>
 		<!-- misc -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -195,6 +183,16 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-to-slf4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.dentrassi.elasticsearch</groupId>
+			<artifactId>log4j2-mock</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

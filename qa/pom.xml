@@ -264,7 +264,7 @@
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- needed by Elasticsearch -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
@@ -276,17 +276,15 @@
             <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
-	    	<groupId>org.apache.logging.log4j</groupId>
-	    	<artifactId>log4j-api</artifactId>
-	    	<version>${log4j-to-slf4j.version}</version>
-	    	<scope>test</scope>
-		</dependency>
-		<dependency>
-	    	<groupId>org.apache.logging.log4j</groupId>
-	    	<artifactId>log4j-core</artifactId>
-	    	<version>${log4j-to-slf4j.version}</version>
-	    	<scope>test</scope>
-		</dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+        <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.dentrassi.elasticsearch</groupId>
+            <artifactId>log4j2-mock</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
