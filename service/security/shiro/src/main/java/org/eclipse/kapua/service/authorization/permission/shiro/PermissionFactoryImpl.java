@@ -41,7 +41,12 @@ public class PermissionFactoryImpl implements PermissionFactory {
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
-        return new PermissionImpl(domain != null ? domain.getName() : null, action, targetScopeId, groupId);
+        return newPermission(domain, action, targetScopeId, null, false);
+    }
+
+    @Override
+    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
+        return new PermissionImpl(domain != null ? domain.getName() : null, action, targetScopeId, groupId, false);
     }
 
     @Override
@@ -91,7 +96,7 @@ public class PermissionFactoryImpl implements PermissionFactory {
             }
         }
 
-        return new PermissionImpl(domain, action, scopeTargetId, groupId);
+        return new PermissionImpl(domain, action, scopeTargetId, groupId, false);
     }
 
 }

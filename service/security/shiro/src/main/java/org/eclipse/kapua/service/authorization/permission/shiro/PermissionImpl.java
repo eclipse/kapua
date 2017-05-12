@@ -89,7 +89,8 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
                 permission.getDomain(),
                 permission.getAction(),
                 permission.getTargetScopeId(),
-                permission.getGroupId());
+                permission.getGroupId(),
+                permission.getForwardable());
     }
 
     /**
@@ -103,11 +104,26 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
+        this(domain, action, targetScopeId, groupId, false);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param domain
+     * @param action
+     * @param targetScopeId
+     * @param groupId
+     *
+     * @since 1.0.0
+     */
+    public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
 
         setDomain(domain);
         setAction(action);
         setTargetScopeId(targetScopeId);
         setGroupId(groupId);
+        setForwardable(forwardable);
 
         setParts(toString());
     }

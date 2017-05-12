@@ -55,6 +55,24 @@ public interface PermissionFactory extends KapuaObjectFactory {
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId);
 
     /**
+     * Instantiate a new {@link Permission} implementing object with the provided parameters.
+     * 
+     * @param domain
+     *            The {@link Domain} of the new {@link Permission}.
+     * @param action
+     *            The {@link Action} of the new {@link Permission}.
+     * @param targetScopeId
+     *            The target scope id of the new {@link Permission}.
+     * @param groupId
+     *            The {@link Group} id that this {@link Permission} gives access.
+     * @param forwardable
+     *            If the {@link Permission} is forward-able to children scopeIds
+     * @return A instance of the implementing class of {@link Permission}.
+     * @since 1.0.0
+     */
+    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable);
+
+    /**
      * Parse the {@link Permission} {@link String} representation to build a new {@link Permission}.
      * 
      * @param stringPermission

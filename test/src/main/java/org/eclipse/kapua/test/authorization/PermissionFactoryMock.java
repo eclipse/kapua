@@ -31,6 +31,11 @@ public class PermissionFactoryMock implements PermissionFactory {
 
     @Override
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
+        return newPermission(domain, action, targetScopeId, groupId, true);
+    }
+
+    @Override
+    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
         return null;
     }
 
