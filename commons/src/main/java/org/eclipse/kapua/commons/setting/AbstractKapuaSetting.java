@@ -45,6 +45,8 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
      * Constructor.
      *
      * @param configResourceName
+     * 
+     * @since 1.0.0
      */
     protected AbstractKapuaSetting(String configResourceName) {
         super(createCompositeSource(configResourceName));
@@ -78,7 +80,7 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
         return new DataConfiguration(compositeConfig);
     }
 
-    private static void loadConfigResources(CompositeConfiguration compositeConfig, String configResourceFolderName) throws ConfigurationException, MalformedURLException {
+    private static void loadConfigResources(CompositeConfiguration compositeConfig, String configResourceFolderName) throws KapuaSettingException {
 
         if (!configResourceFolderName.endsWith("/")) {
             configResourceFolderName = configResourceFolderName.concat("/");
@@ -106,25 +108,31 @@ public abstract class AbstractKapuaSetting<K extends SettingKey> extends Abstrac
             }
         } else {
             LOG.error(String.format("Unable to locate folder: '%s'", configResourceFolderName));
-            throw new IllegalArgumentException(String.format("Unable to locate folder: '%s'", configResourceFolderName));
+            throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceFolderName);
         }
     }
 
-    private static void loadConfigResource(CompositeConfiguration compositeConfig, String configResourceName) throws ConfigurationException, MalformedURLException {
+    private static void loadConfigResource(CompositeConfiguration compositeConfig, String configResourceName) throws KapuaSettingException {
 
-        URL configUrl;
-        if (hasValidScheme(configResourceName)) {
-            configUrl = new URL(configResourceName);
-        } else {
-            configUrl = ResourceUtils.getResource(configResourceName);
-        }
+        URL configUrl = null;
+        try {
+            if (hasValidScheme(configResourceName)) {
+                configUrl = new URL(configResourceName);
+            } else {
+                configUrl = ResourceUtils.getResource(configResourceName);
+            }
 
-        if (configUrl != null) {
-            compositeConfig.addConfiguration(new PropertiesConfiguration(configUrl));
-            LOG.debug("Loaded configuration resource: '{}'", configResourceName);
-        } else {
-            LOG.error("Unable to locate configuration resource: '{}'", configResourceName);
-            throw new IllegalArgumentException(String.format("Unable to locate resource: '%s'", configResourceName));
+            if (configUrl != null) {
+                compositeConfig.addConfiguration(new PropertiesConfiguration(configUrl));
+                LOG.debug("Loaded configuration resource: '{}'", configResourceName);
+            } else {
+                LOG.error("Unable to locate configuration resource: '{}'", configResourceName);
+                throw new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, null, configResourceName);
+            }
+        } catch (MalformedURLException mue) {
+            throw new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, mue, configResourceName);
+        } catch (ConfigurationException ce) {
+            throw new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_FILE, ce, configUrl);
         }
     }
 
