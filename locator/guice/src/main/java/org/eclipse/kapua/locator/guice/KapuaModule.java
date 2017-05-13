@@ -76,6 +76,13 @@ public class KapuaModule extends AbstractModule {
                             @SuppressWarnings("unchecked")
                             ServiceResolver<KapuaService, ?> resolver = ServiceResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getServiceClass()).to(resolver.getImplementationClass()).in(Singleton.class);
+                            
+                            // This further EXPLICIT bind is necessary to let the service implementation be visible to 
+                            // Guice when an interceptor binding has to be applied later on at runtime.
+                            bind(clazz).in(Singleton.class);
+                            //
+                            //////
+                            
                             logger.info("Bind Kapua service {} to {}", kapuaObject, clazz);
                             isClassBound = true;
                             break;
