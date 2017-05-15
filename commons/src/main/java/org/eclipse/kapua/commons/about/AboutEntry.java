@@ -20,6 +20,7 @@ public class AboutEntry {
 
         public static final License UNKNOWN = new License("Unknown", null, null);
         public static final License APL2;
+        public static final License EPL;
 
         static {
             URL url = null;
@@ -29,6 +30,7 @@ public class AboutEntry {
             }
 
             APL2 = new License("Apache License 2.0", null, url);
+            EPL =  new License("EPL","Eclipse Public License", url);
         }
 
         private final String name;

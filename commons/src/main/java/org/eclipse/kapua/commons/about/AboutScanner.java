@@ -48,7 +48,7 @@ public final class AboutScanner {
     }
 
     private static AboutEntry map(URL url) {
-
+        
         AboutEntry result = null;
 
         try (InputStream in = url.openStream();
@@ -66,7 +66,7 @@ public final class AboutScanner {
                 } else if ("META-INF/NOTICE".equals(entry.getName())) {
                     result = processNotice(result, url, zis);
                 } else if ("about.html".equals(entry.getName())) {
-                    result = processNotice(result, url, zis);
+                    result = processHtmlFile(result, url, zis);
                 } else if ("META-INF/LICENSE.txt".equals(entry.getName())) {
                     result = processLicense(result, url, zis);
                 } else if ("META-INF/LICENSE".equals(entry.getName())) {
@@ -103,6 +103,31 @@ public final class AboutScanner {
         }
 
         return about;
+    }
+
+    /**
+     * Detect if the underlying project is EPL licensed
+     */
+    private static AboutEntry processHtmlFile(AboutEntry about, final URL url, final InputStream in) {
+
+        about = processNotice(about, url, in);
+
+        final String[] keywords = {"epl","eclipse public license"};
+
+        // Default license
+        about.setLicense(License.UNKNOWN);
+        
+
+            // Look for keywords
+            for (final String keyword : keywords) {
+                if (about.getNotice().toLowerCase().contains(keyword.toLowerCase())) {
+                    about.setLicense(License.EPL);
+                }
+            }
+
+
+
+        return  about;
     }
 
     /**
