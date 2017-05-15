@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Arthur Deschamps - EPL license detection
  *******************************************************************************/
 package org.eclipse.kapua.commons.about;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Manifest;
@@ -112,20 +114,16 @@ public final class AboutScanner {
 
         about = processNotice(about, url, in);
 
-        final String[] keywords = {"epl","eclipse public license"};
+        final List<String> keywords = Arrays.asList("epl","eclipse public license");
+        final String fileContent = about.getNotice();
 
-        // Default license
-        about.setLicense(License.UNKNOWN);
-        
-
-            // Look for keywords
-            for (final String keyword : keywords) {
-                if (about.getNotice().toLowerCase().contains(keyword.toLowerCase())) {
-                    about.setLicense(License.EPL);
-                }
-            }
-
-
+        // Makes sure all the keywords are contained in the about.html file
+        if (keywords.stream().allMatch(keyword -> fileContent.toLowerCase().contains(keyword.toLowerCase()))) {
+            about.setLicense(License.EPL);
+        } else {
+            // Default license
+            about.setLicense(License.UNKNOWN);
+        }
 
         return  about;
     }

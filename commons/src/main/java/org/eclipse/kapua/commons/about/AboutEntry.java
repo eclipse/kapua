@@ -23,14 +23,16 @@ public class AboutEntry {
         public static final License EPL;
 
         static {
-            URL url = null;
+            URL urlApache = null;
+            URL urlEpl = null;
             try {
-                url = new URL("http://www.apache.org/licenses/");
+                urlApache = new URL("http://www.apache.org/licenses/");
+                urlEpl = new URL("https://www.eclipse.org/legal/epl-v10.html");
             } catch (MalformedURLException e) {
             }
 
-            APL2 = new License("Apache License 2.0", null, url);
-            EPL =  new License("EPL","Eclipse Public License", url);
+            APL2 = new License("Apache License 2.0", null, urlApache);
+            EPL =  new License("EPL","Eclipse Public License", urlEpl);
         }
 
         private final String name;
