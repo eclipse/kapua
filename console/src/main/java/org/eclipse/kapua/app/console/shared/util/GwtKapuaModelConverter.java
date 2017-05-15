@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
@@ -330,7 +329,8 @@ public class GwtKapuaModelConverter {
                 Permission p = convert(new GwtPermission(gwtRolePermission.getDomainEnum(),
                         gwtRolePermission.getActionEnum(),
                         gwtRolePermission.getTargetScopeId(),
-                        gwtRolePermission.getGroupId()));
+                        gwtRolePermission.getGroupId(),
+                        gwtRolePermission.getForwardable()));
 
                 RolePermission rp = rolePermissionFactory.newEntity(scopeId);
                 rp.setPermission(p);
@@ -641,7 +641,7 @@ public class GwtKapuaModelConverter {
         assets.setAssets(assetList);
         return assets;
     }
-    
+
     public static DeviceAsset convert(GwtDeviceAsset gwtDeviceAsset) {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
@@ -652,7 +652,7 @@ public class GwtKapuaModelConverter {
         }
         return deviceAsset;
     }
-    
+
     public static DeviceAssetChannel convert(GwtDeviceAssetChannel gwtDeviceAssetChannel) {
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
@@ -668,7 +668,7 @@ public class GwtKapuaModelConverter {
         channel.setMode(convert(gwtDeviceAssetChannel.getModeEnum()));
         channel.setError(gwtDeviceAssetChannel.getError());
         return channel;
-        
+
     }
 
     public static DeviceAssetChannelMode convert(GwtDeviceAssetChannelMode gwtMode) {
@@ -770,5 +770,5 @@ public class GwtKapuaModelConverter {
         }
         return parameters;
     }
-    
+
 }

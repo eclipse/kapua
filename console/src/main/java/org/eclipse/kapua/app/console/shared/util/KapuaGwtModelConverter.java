@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceEvent;
@@ -202,6 +201,8 @@ public class KapuaGwtModelConverter {
             gwtAccessPermission.setPermissionGroupId("ALL");
         }
 
+        gwtAccessPermission.setPermissionForwardable(accessPermission.getPermission().getForwardable());
+
         //
         // Return converted entity
         return gwtAccessPermission;
@@ -252,6 +253,7 @@ public class KapuaGwtModelConverter {
         gwtRolePermission.setAction(gwtPermission.getAction());
         gwtRolePermission.setGroupId(gwtPermission.getGroupId());
         gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
+        gwtRolePermission.setForwardable(gwtPermission.getForwardable());
 
         //
         // Return converted entity
@@ -270,7 +272,8 @@ public class KapuaGwtModelConverter {
         return new GwtPermission(convertDomain(permission.getDomain()),
                 convert(permission.getAction()),
                 convert(permission.getTargetScopeId()),
-                convert(permission.getGroupId()));
+                convert(permission.getGroupId()),
+                permission.getForwardable());
     }
 
     /**
@@ -574,7 +577,7 @@ public class KapuaGwtModelConverter {
 
         return gwtDeviceEvent;
     }
-    
+
     public static GwtDeviceConnection convert(DeviceConnection deviceConnection) {
         GwtDeviceConnection gwtDeviceConnection = new GwtDeviceConnection();
 
@@ -591,7 +594,7 @@ public class KapuaGwtModelConverter {
         gwtDeviceConnection.setProtocol(deviceConnection.getProtocol());
         gwtDeviceConnection.setConnectionStatus(convert(deviceConnection.getStatus()));
         gwtDeviceConnection.setOptlock(deviceConnection.getOptlock());
-        
+
         //
         // Return converted entity
         return gwtDeviceConnection;
@@ -696,28 +699,28 @@ public class KapuaGwtModelConverter {
         }
         return gwtMessage;
     }
-    
+
     public static GwtDeviceAssets convert(DeviceAssets assets) {
         GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
         List<GwtDeviceAsset> gwtAssetsList = new ArrayList<GwtDeviceAsset>();
-        for(DeviceAsset asset : assets.getAssets()) {
+        for (DeviceAsset asset : assets.getAssets()) {
             gwtAssetsList.add(convert(asset));
         }
         gwtAssets.setAssets(gwtAssetsList);
         return gwtAssets;
     }
-    
+
     public static GwtDeviceAsset convert(DeviceAsset asset) {
         GwtDeviceAsset gwtAsset = new GwtDeviceAsset();
         List<GwtDeviceAssetChannel> gwtChannelsList = new ArrayList<GwtDeviceAssetChannel>();
         gwtAsset.setName(asset.getName());
-        for(DeviceAssetChannel channel : asset.getChannels()) {
+        for (DeviceAssetChannel channel : asset.getChannels()) {
             gwtChannelsList.add(convert(channel));
         }
         gwtAsset.setChannels(gwtChannelsList);
         return gwtAsset;
     }
-    
+
     public static GwtDeviceAssetChannel convert(DeviceAssetChannel channel) {
         GwtDeviceAssetChannel gwtChannel = new GwtDeviceAssetChannel();
         gwtChannel.setName(channel.getName());
