@@ -622,7 +622,7 @@
 									]]></runCmd>
 								</runCmds>
 								<assembly>
-									<descriptor>/src/main/descriptors/jetty-base.xml</descriptor>
+									<descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
 									<basedir>/</basedir>
 								</assembly>
 								<workdir>/var/lib/jetty</workdir>
@@ -642,7 +642,7 @@
 							<build>
 								<from>${docker.account}/java-base</from>
 								<assembly>
-									<descriptor>/src/main/descriptors/kapua-broker.xml</descriptor>
+									<descriptor>${basedir}/src/main/descriptors/kapua-broker.xml</descriptor>
 								</assembly>
 								<entryPoint>
 									<exec>
@@ -677,7 +677,7 @@
 							<build>
 								<from>${docker.account}/jetty-base</from>
 								<assembly>
-									<descriptor>/src/main/descriptors/kapua-console-jetty.xml</descriptor>
+									<descriptor>${basedir}/src/main/descriptors/kapua-console-jetty.xml</descriptor>
 									<basedir>/</basedir>
 								</assembly>
 								<env>
@@ -696,7 +696,7 @@
 							<build>
 								<from>${docker.account}/jetty-base</from>
 								<assembly>
-									<descriptor>/src/main/descriptors/kapua-api-jetty.xml</descriptor>
+									<descriptor>${basedir}/src/main/descriptors/kapua-api-jetty.xml</descriptor>
 									<basedir>/var/lib/jetty</basedir>
 								</assembly>
 								<env>
