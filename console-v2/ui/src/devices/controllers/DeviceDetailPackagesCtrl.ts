@@ -1,23 +1,25 @@
 /*******************************************************************************
-* Copyright (c) 2011, 2016 Eurotech and/or its affiliates                       
-*                                                                               
-* All rights reserved. This program and the accompanying materials              
-* are made available under the terms of the Eclipse Public License v1.0         
-* which accompanies this distribution, and is available at                      
-* http://www.eclipse.org/legal/epl-v10.html                                     
-*                                                                               
-* Contributors:                                                                 
-*     Eurotech - initial API and implementation                                 
-*                                                                               
+* Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+*
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*     Eurotech - initial API and implementation
+*
 *******************************************************************************/
 export default class DeviceDetailPackagesCtrl {
   private deviceId: string;
   private packages: DevicePackage[];
 
-  constructor(private $stateParams: angular.ui.IStateParamsService,
+  constructor(
+    private $modal: angular.ui.bootstrap.IModalService,
+    private $stateParams: angular.ui.IStateParamsService,
     private $scope: any,
     private $http: angular.IHttpService,
-    private $templateCache: any,
+    private $templateCache: any,    
     private devicesService: IDevicesService) {
     $scope.deviceId = $stateParams["id"];
 
@@ -49,10 +51,18 @@ export default class DeviceDetailPackagesCtrl {
   };
 
   installPackage(packageItem): void {
-    alert("Installing ...");
-    this.devicesService.downloadPackage(this.$scope.deviceId, packageItem);
+    let modal = this.$modal.open({
+      template: require("../views/device-details/install-packages-modal.html"),
+      controller: "InstallPackagesModalCtrl as vm"
+    });
+    modal.result.then((result: any) => {
+      console.info(result);
+    },
+      (result) => {
+        console.warn(result);
+      });
   }
-  
+
 
   getPackages(deviceID: string): void {
     this.devicesService.getPackagesByDeviceId(deviceID).then((responseData: ng.IHttpPromiseCallbackArg<DevicePackages>) => {
