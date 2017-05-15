@@ -31,6 +31,14 @@
 	</properties>
 
 	<dependencies>
+	
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-docker-java-base</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+	
 		<!-- console and api dependency -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
