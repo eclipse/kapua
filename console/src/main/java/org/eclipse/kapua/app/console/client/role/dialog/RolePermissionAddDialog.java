@@ -37,6 +37,8 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.core.client.GWT;
@@ -51,15 +53,18 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     protected EnumComboBox<GwtDomain> domainCombo;
     protected EnumComboBox<GwtAction> actionCombo;
     protected ComboBox<GwtGroup> groupCombo;
+    protected CheckBoxGroup forwardableChecboxGroup;
+    protected CheckBox forwardableChecbox;
+
     protected GwtRole selectedRole;
-    
+
     private final GwtGroup allGroup;
     private final GwtDomain allDomain = GwtDomain.ALL;
     private final GwtAction allAction = GwtAction.ALL;
 
     public RolePermissionAddDialog(GwtSession currentSession) {
         super(currentSession);
-        DialogUtils.resizeDialog(this, 400, 200);
+        DialogUtils.resizeDialog(this, 400, 250);
         allGroup = new GwtGroup();
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
@@ -74,6 +79,8 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         FormPanel formPanel = new FormPanel();
         formPanel.setHeaderVisible(false);
 
+        //
+        // Domain
         domainService.findAll(new AsyncCallback<List<GwtDomain>>() {
 
             @Override
@@ -98,6 +105,8 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         domainCombo.setAllowBlank(false);
         formPanel.add(domainCombo);
 
+        //
+        // Action
         actionCombo = new EnumComboBox<GwtAction>();
         domainCombo.addListener(Events.Select, new Listener<BaseEvent>() {
 
@@ -113,6 +122,8 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         actionCombo.setAllowBlank(false);
         formPanel.add(actionCombo);
 
+        //
+        // Groups
         groupCombo = new ComboBox<GwtGroup>();
         groupCombo.setStore(new ListStore<GwtGroup>());
         groupCombo.setFieldLabel(MSGS.permissionAddDialogGroup());
@@ -136,8 +147,17 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                 FailureHandler.handle(t);
             }
         });
-
         formPanel.add(groupCombo);
+
+        //
+        // Forwardable
+        forwardableChecbox = new CheckBox();
+        forwardableChecbox.setBoxLabel("");
+
+        forwardableChecboxGroup = new CheckBoxGroup();
+        forwardableChecboxGroup.setFieldLabel(MSGS.permissionAddDialogForwardable());
+        forwardableChecboxGroup.add(forwardableChecbox);
+        formPanel.add(forwardableChecboxGroup);
 
         m_bodyPanel.add(formPanel);
     }
@@ -163,11 +183,12 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     @Override
     public void submit() {
         GwtPermission permission = new GwtPermission();
-
         permission.setDomain(domainCombo.getValue().getValue().toString());
         permission.setAction(actionCombo.getValue().getValue().toString());
         permission.setGroupId(groupCombo.getValue().getId());
         permission.setTargetScopeId(currentSession.getSelectedAccount().getId());
+        permission.setForwardable(forwardableChecboxGroup.getValue() != null ? true : false);
+
         GwtRolePermissionCreator rolePermission = new GwtRolePermissionCreator();
         rolePermission.setScopeId(currentSession.getSelectedAccount().getId());
         rolePermission.setRoleId(selectedRole.getId());

@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtGroup;
+import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -36,6 +37,8 @@ import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -58,6 +61,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private SimpleComboBox<GwtAction> actionsCombo;
     private TextField<String> targetScopeIdTxtField;
     private ComboBox<GwtGroup> groupsCombo;
+    private CheckBoxGroup forwardableChecboxGroup;
+    private CheckBox forwardableChecbox;
 
     private final GwtGroup allGroup;
     private final GwtDomain allDomain = GwtDomain.ALL;
@@ -93,13 +98,18 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     @Override
     public void submit() {
+
+        GwtPermission newPermission = new GwtPermission(//
+                domainsCombo.getValue().getValue(), //
+                actionsCombo.getValue().getValue(), //
+                targetScopeIdTxtField.getValue(), //
+                groupsCombo.getValue().getId(), //
+                forwardableChecboxGroup.getValue() != null ? true : false);
+
         GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
-
         gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccount().getId());
-
         gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
-        // gwtAccessPermissionCreator
-        // .setPermission(new GwtPermission(domainsCombo.getValue().getValue(), actionsCombo.getValue().getValue(), targetScopeIdTxtField.getValue(), groupsCombo.getValue().getId()));
+        gwtAccessPermissionCreator.setPermission(newPermission);
 
         gwtAccessPermissionService.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
 
@@ -204,6 +214,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.disable();
         permissionFormPanel.add(actionsCombo);
 
+        //
+        // Target scope id
         targetScopeIdTxtField = new TextField<String>();
         targetScopeIdTxtField.setFieldLabel(MSGS.dialogAddPermissionTargetScopeId());
         targetScopeIdTxtField.setValue(currentSession.getSelectedAccount().getId());
@@ -211,6 +223,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
         permissionFormPanel.add(targetScopeIdTxtField);
 
+        //
+        // Groups
         groupsCombo = new ComboBox<GwtGroup>();
         groupsCombo.setStore(new ListStore<GwtGroup>());
         groupsCombo.setEditable(false);
@@ -238,6 +252,16 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             }
         });
         permissionFormPanel.add(groupsCombo);
+
+        //
+        // Forwardable
+        forwardableChecbox = new CheckBox();
+        forwardableChecbox.setBoxLabel("");
+
+        forwardableChecboxGroup = new CheckBoxGroup();
+        forwardableChecboxGroup.setFieldLabel(MSGS.dialogAddPermissionForwardable());
+        forwardableChecboxGroup.add(forwardableChecbox);
+        permissionFormPanel.add(forwardableChecboxGroup);
 
         //
         // Add form panel to body

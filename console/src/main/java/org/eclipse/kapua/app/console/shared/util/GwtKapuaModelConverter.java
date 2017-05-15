@@ -522,7 +522,8 @@ public class GwtKapuaModelConverter {
         return permissionFactory.newPermission(convert(gwtPermission.getDomainEnum()),
                 convert(gwtPermission.getActionEnum()),
                 convert(gwtPermission.getTargetScopeId()),
-                convert(gwtPermission.getGroupId()));
+                convert(gwtPermission.getGroupId()),
+                gwtPermission.getForwardable());
     }
 
     /**
