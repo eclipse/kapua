@@ -25,12 +25,18 @@ import javax.persistence.Enumerated;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.subject.Subject;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -45,6 +51,9 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 public class PermissionImpl extends WildcardPermission implements Permission, org.apache.shiro.authz.Permission, Serializable {
 
     private static final long serialVersionUID = 1480557438886065675L;
+
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final AccountService accountService = locator.getService(AccountService.class);
 
     @Basic
     @Column(name = "domain", nullable = true, updatable = false)
@@ -202,7 +211,36 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
         }
 
         setParts(toString());
-        return super.implies(p);
+
+        boolean implies = super.implies(p);
+
+        if (!implies && getForwardable()) {
+            implies = forwardPermission(p, permission);
+        }
+
+        return implies;
+    }
+
+    private boolean forwardPermission(org.apache.shiro.authz.Permission p, Permission permission) {
+        try {
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(permission.getTargetScopeId()));
+
+            if (account != null && account.getScopeId() != null) {
+                String parentAccountPath = account.getParentAccountPath();
+
+                // If it doesn't contain the scope id in the parent, don't even try to check against
+                if (parentAccountPath.contains("/" + getTargetScopeId().toStringId() + "/")) {
+                    setTargetScopeId(permission.getTargetScopeId());
+                    setParts(toString());
+
+                    return super.implies(p);
+                }
+            }
+        } catch (KapuaException e) {
+            throw KapuaRuntimeException.internalError("Error while forwarding permission: " + p.toString());
+        }
+
+        return false;
     }
 
     @Override
