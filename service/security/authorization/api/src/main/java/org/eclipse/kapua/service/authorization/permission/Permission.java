@@ -38,7 +38,8 @@ import org.eclipse.kapua.service.authorization.group.Group;
         "domain", //
         "action", //
         "targetScopeId", //
-        "groupId" //
+        "groupId", //
+        "forwardable" //
 }, //
         factoryClass = PermissionXmlRegistry.class, //
         factoryMethod = "newPermission")
