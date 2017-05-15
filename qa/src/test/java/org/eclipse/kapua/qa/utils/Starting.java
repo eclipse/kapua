@@ -61,7 +61,7 @@ public MyClass ()  {
  * <p>
  * If something happens during the initialization of resource2, then the try-with-resource construct
  * call {@link Starting#close()} which will close all added closables up to this point. Once the
- * {@link #started()} method was called, this will be reset and the caller takes over responsiblity
+ * {@link #started()} method was called, this will be reset and the caller takes over responsibility
  * of closing this.
  * </p>
  */
