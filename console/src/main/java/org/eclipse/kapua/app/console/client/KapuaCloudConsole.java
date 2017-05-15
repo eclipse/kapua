@@ -355,7 +355,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
             @Override
             public void onSuccess(final GwtSession gwtSession) {
-                logger.fine("User: " + gwtSession.getGwtUser());
+                logger.fine("User: " + gwtSession.getUser());
                 dlg.hide();
                 renderMainScreen(viewport, gwtSession);
             }
@@ -412,7 +412,7 @@ public class KapuaCloudConsole implements EntryPoint {
         currentSession = session;
 
         if (currentSession != null) {
-            String username = currentSession.getGwtUser().getUsername();
+            String username = currentSession.getUser().getUsername();
             if (username != null) {
 
                 //

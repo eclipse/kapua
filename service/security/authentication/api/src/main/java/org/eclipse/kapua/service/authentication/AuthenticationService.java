@@ -64,8 +64,19 @@ public interface AuthenticationService extends KapuaService {
      */
     public AccessToken findAccessToken(String tokenId)
             throws KapuaException;
-    
+
     public AccessToken refreshAccessToken(String tokenId, String refreshToken)
+            throws KapuaException;
+
+    /**
+     * Verifies the password of a user without logging him in, and thus create any kind of session
+     * 
+     * @param loginCredentials
+     * @return true if the credentials are valid, false otherwise
+     * @throws KapuaException
+     *             an exception is thrown if the credentials are not found on the system, are expired or are disabled
+     */
+    public boolean verifyCredentials(LoginCredentials loginCredentials)
             throws KapuaException;
 
 }
