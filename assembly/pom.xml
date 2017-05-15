@@ -849,7 +849,7 @@
 										</build>
 									</image>
 									<image>
-										<name>${docker.account}/kapua-api-jetty</name>
+										<name>${docker.account}/kapua-api</name>
 										<build>
 											<tags>
 												<tag>latest</tag>
