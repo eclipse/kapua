@@ -91,14 +91,22 @@
 
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-datastore-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-datastore-internal</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>kapua-message-internal</artifactId>
+			<artifactId>kapua-datastore-client-transport</artifactId>
 		</dependency>
-
+		<dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-message-internal</artifactId>
+        </dependency>
+		
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-security-shiro</artifactId>
