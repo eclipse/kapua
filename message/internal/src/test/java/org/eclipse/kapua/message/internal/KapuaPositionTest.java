@@ -17,14 +17,18 @@ import java.io.StringWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class KapuaPositionTest extends Assert {
+
+    private KapuaContainer container = new KapuaContainer() {};
 
     private static final String newline = System.lineSeparator();
 
@@ -52,7 +56,14 @@ public class KapuaPositionTest extends Assert {
 
     @Before
     public void before() throws Exception {
+        container.startup();
+
         XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+    }
+
+    @After
+    public void after() {
+        container.shutdown();
     }
 
     @Test

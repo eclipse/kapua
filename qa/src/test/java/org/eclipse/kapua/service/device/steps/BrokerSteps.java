@@ -15,11 +15,13 @@ package org.eclipse.kapua.service.device.steps;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.qa.steps.EmbeddedBroker;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
@@ -57,6 +59,10 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class BrokerSteps extends Assert {
+
+    protected static KapuaContainer container = new KapuaContainer() {};
+
+    protected static KapuaLocator locator = KapuaLocatorImpl.getInstance();
 
     /**
      * Embedded broker configuration file from classpath resources.
@@ -127,7 +133,8 @@ public class BrokerSteps extends Assert {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
 
-        KapuaLocator locator = KapuaLocator.getInstance();
+        container.startup();
+        //KapuaLocator locator = KapuaLocator.getInstance();
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceConfiguratiomManagementService = locator.getService(DeviceConfigurationManagementService.class);
@@ -150,6 +157,8 @@ public class BrokerSteps extends Assert {
         KapuaSecurityUtils.clearSession();
 
         this.stepData = null;
+
+        container.startup();
     }
 
     @When("^I start the Kura Mock")
