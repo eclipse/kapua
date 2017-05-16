@@ -41,11 +41,11 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     // store timers
     private final Timer metricStorageDataSaveTime;
 
-    private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
+    private final MessageStoreService messageStoreService;
 
     public DataStorageMessageProcessor() {
         super("DataStorage");
-
+        messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         // data message
         metricStorageMessage = registerCounter("listener", "storage", "messages", "count");
         metricStorageDataErrorMessage = registerCounter("listener", "storage", "messages", "data", "error", "count");

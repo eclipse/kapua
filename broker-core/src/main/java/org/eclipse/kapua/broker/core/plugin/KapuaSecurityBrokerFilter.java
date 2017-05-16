@@ -159,14 +159,15 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     public void start()
             throws Exception {
         logger.info(">>> Security broker filter: calling start...");
-        authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
-        authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
-        accountService = KapuaLocator.getInstance().getService(AccountService.class);
-        deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
-        deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
-        metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
+        KapuaLocator locator = KapuaLocator.getInstance();
+        authenticationService = locator.getService(AuthenticationService.class);
+        authorizationService = locator.getService(AuthorizationService.class);
+        permissionFactory = locator.getFactory(PermissionFactory.class);
+        credentialsFactory = locator.getFactory(CredentialsFactory.class);
+        accountService = locator.getService(AccountService.class);
+        deviceConnectionService = locator.getService(DeviceConnectionService.class);
+        deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
+        metricsService = locator.getService(MetricsService.class);
 
         // login
         metricLoginSuccess = metricsService.getCounter("security", "login", "success", "count");
