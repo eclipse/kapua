@@ -168,10 +168,20 @@
 
                 <include>org.elasticsearch:elasticsearch</include>
                 <include>org.elasticsearch.client:transport</include>
+                <include>org.elasticsearch.plugin:transport-netty3-client</include>
+                <include>org.elasticsearch.plugin:transport-netty4-client</include>
+                <include>org.elasticsearch.plugin:reindex-client</include>
+                <include>org.elasticsearch.plugin:lang-mustache-client</include>
+                <include>org.elasticsearch.plugin:percolator-client</include>
                 <include>org.elasticsearch:securesm</include>
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.slf4j:log4j-over-slf4j</include>
                 <include>org.apache.logging.log4j:log4j-to-slf4j</include>
+                <include>org.apache.logging.log4j:log4j-api</include>
+                <include>org.apache.logging.log4j:log4j-core</include>
+                <include>io.netty:netty-all</include>
+                <include>org.apache.httpcomponents:httpclient</include>
+                <include>org.apache.httpcomponents:httpcore</include>
                 <include>org.apache.lucene:*</include>
                 <include>com.twitter:jsr166e</include>
                 <include>joda-time:joda-time</include>
