@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Arthur Deschamps - EPL license detection
  *******************************************************************************/
 package org.eclipse.kapua.commons.about;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Manifest;
@@ -48,7 +50,7 @@ public final class AboutScanner {
     }
 
     private static AboutEntry map(URL url) {
-
+        
         AboutEntry result = null;
 
         try (InputStream in = url.openStream();
@@ -66,7 +68,7 @@ public final class AboutScanner {
                 } else if ("META-INF/NOTICE".equals(entry.getName())) {
                     result = processNotice(result, url, zis);
                 } else if ("about.html".equals(entry.getName())) {
-                    result = processNotice(result, url, zis);
+                    result = processHtmlFile(result, url, zis);
                 } else if ("META-INF/LICENSE.txt".equals(entry.getName())) {
                     result = processLicense(result, url, zis);
                 } else if ("META-INF/LICENSE".equals(entry.getName())) {
@@ -103,6 +105,27 @@ public final class AboutScanner {
         }
 
         return about;
+    }
+
+    /**
+     * Detect if the underlying project is EPL licensed
+     */
+    private static AboutEntry processHtmlFile(AboutEntry about, final URL url, final InputStream in) {
+
+        about = processNotice(about, url, in);
+
+        final List<String> keywords = Arrays.asList("epl","eclipse public license");
+        final String fileContent = about.getNotice();
+
+        // Makes sure all the keywords are contained in the about.html file
+        if (keywords.stream().allMatch(keyword -> fileContent.toLowerCase().contains(keyword.toLowerCase()))) {
+            about.setLicense(License.EPL);
+        } else {
+            // Default license
+            about.setLicense(License.UNKNOWN);
+        }
+
+        return  about;
     }
 
     /**
