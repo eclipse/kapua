@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
@@ -59,6 +60,14 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.write, accessPermissionCreator.getScopeId()));
+
+        //
+        // If permission are created out of the access permission scope, check that the current user has the permission on the external scopeId.
+        Permission permission = accessPermissionCreator.getPermission();
+        if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(accessPermissionCreator.getScopeId())) {
+            authorizationService.checkPermission(permission);
+        }
+
         return entityManagerSession.onTransactedInsert(em -> AccessPermissionDAO.create(em, accessPermissionCreator));
     }
 
