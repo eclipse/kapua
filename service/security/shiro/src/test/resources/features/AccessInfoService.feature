@@ -8,7 +8,6 @@
 #
 # Contributors:
 #     Eurotech - initial API and implementation
-#
 ###############################################################################
 
 Feature: Access Info Service CRUD tests
