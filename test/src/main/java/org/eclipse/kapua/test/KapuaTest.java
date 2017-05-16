@@ -21,11 +21,13 @@ import java.util.Random;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -41,7 +43,8 @@ public class KapuaTest extends Assert {
     private static final Logger logger = LoggerFactory.getLogger(KapuaTest.class);
 
     protected static Random random = new Random();
-    protected static KapuaLocator locator = KapuaLocator.getInstance();
+    protected static KapuaContainer container = new KapuaContainer() {};
+    protected static KapuaLocator locator = KapuaLocatorImpl.getInstance();
 
     protected static KapuaId adminUserId;
     protected static KapuaId adminScopeId;
@@ -50,6 +53,7 @@ public class KapuaTest extends Assert {
 
     @Before
     public void setUp() throws SQLException {
+        container.startup();
         connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
 
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
@@ -95,6 +99,8 @@ public class KapuaTest extends Assert {
         } catch (KapuaException exc) {
             exc.printStackTrace();
         }
+
+        container.shutdown();
     }
 
     //
