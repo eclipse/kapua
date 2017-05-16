@@ -21,6 +21,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
@@ -68,7 +69,17 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
             authorizationService.checkPermission(permission);
         }
 
-        return entityManagerSession.onTransactedInsert(em -> AccessPermissionDAO.create(em, accessPermissionCreator));
+        return entityManagerSession.onTransactedInsert(em -> {
+            //
+            // Check that accessInfo exists
+            AccessInfo accessInfo = AccessInfoDAO.find(em, accessPermissionCreator.getAccessInfoId());
+
+            if (accessInfo == null) {
+                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
+            }
+
+            return AccessPermissionDAO.create(em, accessPermissionCreator);
+        });
     }
 
     @Override
