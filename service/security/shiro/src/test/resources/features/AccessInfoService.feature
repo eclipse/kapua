@@ -236,6 +236,10 @@ Scenario: Create regular access permissions
     It must be possible to create sets of regular permissions.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
     Given A scope with ID 20
@@ -250,6 +254,10 @@ Scenario: Find last created permision
     It must be possible to find a specific permission entry based on its ID.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
     When I search for the last created permission
@@ -259,6 +267,10 @@ Scenario: Delete an existing access permission entity
     It must be possibel to delete a specific permission entry.
     
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
     When I count the permissions in scope 10
@@ -272,6 +284,10 @@ Scenario: Delete a non existing permission entity
     an exception. In this case this is achieved by deleting the same entry twice.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
     And The permission "read"
     And I create the permission
     When I count the permissions in scope 10
@@ -300,6 +316,10 @@ Scenario: Creation of access role without an acess info entity
     entry is permitted.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
     And The permissions "read, write, execute"
     And The role "test_role_1"
     When I create the access role
@@ -309,15 +329,27 @@ Scenario: Creation of access role with neither acess info and role entities
     The creation of an access role entity with neither access info nor role
     entries is permitted. 
 
-Given A scope with ID 10
-When I create the access role
-Then No exception was thrown
+	Given A scope with ID 10
+	And A user such as
+	        | name     | displayName     | email              | phoneNumber     |
+	        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+	When I create the access info entity
+	And The permissions "read, write, execute"
+	And The role "test_role_1"
+	When I create the access role
+	Then No exception was thrown
 
 Scenario: Find an existing access role entity
     It must be possible to find an existing access role entry in the database 
     based on its ID.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    And The permissions "read, write, execute"
+    And The role "test_role_1"
     When I create the access role
     When I search for the last created access role entity
     Then I find an access role entity
@@ -328,14 +360,33 @@ Scenario: Count access role entities by scope
     result list must be returned. No exception must be thrown.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    And The permissions "read, write, execute"
+    And The role "test_role_1"
     And I create the access role
+    And The role "test_role_2"
     And I create the access role
+    And The role "test_role_3"
     And I create the access role
+    
     Given A scope with ID 20
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u2 | Kapua User 2    | kapua_u2@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    And The permissions "read, write, execute"
+    And The role "test_role_2"
     And I create the access role
-    And I create the access role
+    
     Given A scope with ID 30
-    And I create the access role
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u3 | Kapua User 3    | kapua_u3@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    
     When I count the access roles in scope 10
     Then I get 3 as result
     When I count the access roles in scope 20
@@ -349,8 +400,18 @@ Scenario: Delete an existing access role entry
     It must be possible to delete an existing access role entry from the database.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    And The permissions "read, write, execute"
+    And The role "test_role_1"
     And I create the access role
+    And The permissions "read, write, execute"
+    And The role "test_role_2"
     And I create the access role
+    And The permissions "read, write, execute"
+    And The role "test_role_3"
     And I create the access role
     When I count the access roles in scope 10
     Then I get 3 as result
@@ -363,6 +424,12 @@ Scenario: Delete an existing role twice
     this case this is achieved by trying to delete the same entry twice.
 
     Given A scope with ID 10
+    And A user such as
+        | name     | displayName     | email              | phoneNumber     |
+        | kapua-u1 | Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 |
+    When I create the access info entity
+    And The permissions "read, write, execute"
+    And The role "test_role_1"
     And I create the access role
     When I delete the last created access role entry
     And I delete the last created access role entry
