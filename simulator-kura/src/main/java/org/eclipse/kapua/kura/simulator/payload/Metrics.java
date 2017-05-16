@@ -54,10 +54,10 @@ public final class Metrics {
      * @throws IllegalArgumentException
      *             in case of an unsupported value type
      */
-    public static void buildMetrics(final KuraPayload.Builder builder, final Map<String, Object> metrics) {
+    public static void buildMetrics(final KuraPayload.Builder builder, final Map<String, ?> metrics) {
         Objects.requireNonNull(metrics);
 
-        for (final Map.Entry<String, Object> metric : metrics.entrySet()) {
+        for (final Map.Entry<String, ?> metric : metrics.entrySet()) {
             addMetric(builder, metric.getKey(), metric.getValue());
         }
     }
