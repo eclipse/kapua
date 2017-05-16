@@ -117,7 +117,10 @@ public class KapuaLocatorImpl extends KapuaLocator {
         for (Binding<?> binding : bindings.values()) {
             final Class<?> clazz = binding.getKey().getTypeLiteral().getRawType();
             if (KapuaService.class.isAssignableFrom(clazz)) {
-                servicesList.add(injector.getInstance(clazz.asSubclass(KapuaService.class)));
+                KapuaService serviceInstance = injector.getInstance(clazz.asSubclass(KapuaService.class));
+                if (!servicesList.contains(serviceInstance)) {
+                    servicesList.add(serviceInstance);
+                }
             }
         }
         return servicesList;
