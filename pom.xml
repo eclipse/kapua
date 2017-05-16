@@ -50,6 +50,7 @@
         <junit.version>4.11</junit.version>
         <liquibase.version>3.0.5</liquibase.version>
         <mariadb.version>1.4.6</mariadb.version>
+        <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
         <mockito.version>1.10.19</mockito.version>
         <paho.version>1.1.0</paho.version>
         <poi.version>3.9</poi.version>
@@ -102,6 +103,11 @@
         <defaultGoal>clean install</defaultGoal>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
