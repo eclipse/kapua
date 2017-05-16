@@ -89,13 +89,28 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
             KapuaListResult<E> currentChildEntities = service.query(query);
             long childCount = currentChildEntities.getSize();
             for (E childEntity : currentChildEntities.getItems()) {
-                Map<String, Object> childConfigValues = getConfigValues(childEntity.getId());
+                Map<String, Object> childConfigValues = getConfigValues(childEntity);
                 int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildEntities");
                 childCount += maxChildChildAccounts;
             }
             return (int) (maxChildAccounts - childCount);
         }
         return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Gets the scoped configuration values from the given {@link KapuaEntity}.
+     * This method defaults to {@link KapuaEntity#getScopeId()}, but implementations can change it to use other attributes.
+     * 
+     * @param entity
+     *            The entity from which get the scope id.
+     * @return The scoped configurations for the scope id in the {@link KapuaEntity} parameter.
+     * @throws KapuaException
+     * 
+     * @since 1.0.0
+     */
+    protected Map<String, Object> getConfigValues(E entity) throws KapuaException {
+        return getConfigValues(entity.getScopeId());
     }
 
 }
