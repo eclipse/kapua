@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
+public abstract class KapuaRemoteServiceServlet extends RemoteServiceServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8615748799422377390L;
 
     private static final Logger LOG = LoggerFactory.getLogger(KapuaRemoteServiceServlet.class);
 
