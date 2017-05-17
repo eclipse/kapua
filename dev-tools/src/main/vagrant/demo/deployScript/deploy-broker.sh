@@ -61,7 +61,7 @@ vagrant ssh -c "echo 'deploying the Kapua broker'
 	sudo cp /kapua/transport/jms/target/kapua-*.jar lib/extra
 	sudo cp /kapua/transport/mqtt/target/kapua-*.jar lib/extra
 	echo 'copying Kapua configuration'
-	sudo cp /kapua/assembly/src/main/resources/conf/broker/activemq.xml conf/ 
-	sudo cp /kapua/assembly/src/main/resources/conf/broker/camel.xml conf/
+	sudo cp /kapua/docker/broker/src/main/resources/conf/broker/activemq.xml conf/ 
+	sudo cp /kapua/docker/broker/src/main/resources/conf/broker/camel.xml conf/
 	cd ..
 	sudo chown -R vagrant:vagrant apache-activemq-${ACTIVEMQ_VERSION}"
