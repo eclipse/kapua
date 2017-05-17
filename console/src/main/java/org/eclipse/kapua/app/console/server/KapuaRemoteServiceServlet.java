@@ -23,7 +23,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.eclipse.kapua.app.console.shared.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.shared.util.KapuaGwtModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger s_logger = LoggerFactory.getLogger(KapuaGwtModelConverter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaRemoteServiceServlet.class);
 
     /**
      *
@@ -63,11 +62,11 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
 
         if (!isValidXSRFToken(session, userToken)) {
             if (session != null) {
-                s_logger.info("XSRF token is NOT VALID - Token={}", userToken.getToken());
-                s_logger.debug("\tSender IP: {}", req.getRemoteAddr());
-                s_logger.debug("\tSender Host: {}", req.getRemoteHost());
-                s_logger.debug("\tSender Port: {}", req.getRemotePort());
-                s_logger.debug("\tFull Request URL\n {}?{}\n\n",
+                LOG.info("XSRF token is NOT VALID - Token={}", userToken.getToken());
+                LOG.debug("\tSender IP: {}", req.getRemoteAddr());
+                LOG.debug("\tSender Host: {}", req.getRemoteHost());
+                LOG.debug("\tSender Port: {}", req.getRemotePort());
+                LOG.debug("\tFull Request URL\n {}?{}\n\n",
                         req.getRequestURL().toString(),
                         req.getQueryString());
 
@@ -75,7 +74,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
                 session.invalidate();
             }
 
-            s_logger.debug("Session invalidated.");
+            LOG.debug("Session invalidated.");
 
             throw new GwtKapuaException(GwtKapuaErrorCode.XSRF_INVALID_TOKEN, null, "Invalid XSRF token");
         }
@@ -93,10 +92,10 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      * @return boolean
      */
     static public boolean isValidXSRFToken(HttpSession session, GwtXSRFToken userToken) {
-        s_logger.debug("Starting XSRF Token validation...'");
+        LOG.debug("Starting XSRF Token validation...'");
 
         if (userToken == null) {
-            s_logger.debug("XSRF Token is NOT VALID -> NULL TOKEN");
+            LOG.debug("XSRF Token is NOT VALID -> NULL TOKEN");
             return false;
         }
 
@@ -111,21 +110,21 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
                     if (serverToken.equals(userToken.getToken())) {
                         // Checking expire date
                         if (new Date().before(userToken.getExpiresOn())) {
-                            s_logger.debug("XSRF Token is VALID - {}", userToken.getToken());
+                            LOG.debug("XSRF Token is VALID - {}", userToken.getToken());
 
                             // Reset used token
                             session.setAttribute(GwtSecurityTokenServiceImpl.XSRF_TOKEN_KEY, null);
                             return true;
                         } else {
                             session.setAttribute(GwtSecurityTokenServiceImpl.XSRF_TOKEN_KEY, null);
-                            s_logger.error("XSRF Token is EXPIRED - {}", userToken.getToken());
+                            LOG.error("XSRF Token is EXPIRED - {}", userToken.getToken());
                         }
                     }
                 }
             }
         }
 
-        s_logger.debug("XSRF Token is NOT VALID - {}", userToken.getToken());
+        LOG.debug("XSRF Token is NOT VALID - {}", userToken.getToken());
         return false;
     }
 
@@ -172,7 +171,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
 
                 if (name.equals(fieldName)) {
                     fieldValue = item.getString();
-                    s_logger.debug("Found field name '{}' with value: {}", name, fieldValue);
+                    LOG.debug("Found field name '{}' with value: {}", name, fieldValue);
                 }
             }
         }
