@@ -56,7 +56,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      * @param req
      * @param userToken
      */
-    static private void performXSRFTokenValidation(HttpServletRequest req, GwtXSRFToken userToken)
+    private static void performXSRFTokenValidation(HttpServletRequest req, GwtXSRFToken userToken)
             throws GwtKapuaException {
         HttpSession session = req.getSession();
 
@@ -91,7 +91,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      * @param userToken
      * @return boolean
      */
-    static public boolean isValidXSRFToken(HttpSession session, GwtXSRFToken userToken) {
+    public static boolean isValidXSRFToken(HttpSession session, GwtXSRFToken userToken) {
         LOG.debug("Starting XSRF Token validation...'");
 
         if (userToken == null) {
@@ -135,7 +135,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      * @param token
      * @return boolean
      */
-    static private boolean isValidStringToken(String token) {
+    private static boolean isValidStringToken(String token) {
         if (token != null) {
             if (!token.isEmpty()) {
                 return true;
@@ -154,8 +154,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      * @return String
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
-    static public String getFieldFromMultiPartForm(HttpServletRequest req, String fieldName)
+    public static String getFieldFromMultiPartForm(HttpServletRequest req, String fieldName)
             throws Exception {
         String fieldValue = null;
 
@@ -192,7 +191,7 @@ public class KapuaRemoteServiceServlet extends RemoteServiceServlet {
      * @param req
      * @throws Exception
      */
-    static public void checkXSRFTokenMultiPart(HttpServletRequest req, GwtXSRFToken token)
+    public static void checkXSRFTokenMultiPart(HttpServletRequest req, GwtXSRFToken token)
             throws Exception {
         performXSRFTokenValidation(req, token);
     }
