@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.TypedQuery;
@@ -318,4 +319,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             return AccountDAO.query(em, query);
         });
     }
+
+    @Override
+    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
+        return super.getConfigValues(entity.getId());
+    }
+
 }
