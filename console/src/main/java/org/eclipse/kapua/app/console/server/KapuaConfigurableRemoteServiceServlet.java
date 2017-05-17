@@ -18,9 +18,7 @@ import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.util.GwtKapuaModelConverter;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 public abstract class KapuaConfigurableRemoteServiceServlet<S extends KapuaConfigurableService> extends KapuaRemoteServiceServlet {
@@ -40,9 +38,6 @@ public abstract class KapuaConfigurableRemoteServiceServlet<S extends KapuaConfi
         KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
         KapuaId kapuaParentId = GwtKapuaModelConverter.convert(parentId);
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService configurableService = locator.getService(AccountService.class);
-
             // execute the update
             Map<String, Object> configParameters = GwtKapuaModelConverter.convert(gwtConfigComponent);
 
