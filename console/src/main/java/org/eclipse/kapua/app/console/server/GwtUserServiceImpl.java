@@ -37,7 +37,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
@@ -45,7 +44,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -95,34 +93,6 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             if (gwtUserCreator.getPermissions() != null) {
                 // build the set of permissions
                 permissions.addAll(Arrays.asList(gwtUserCreator.getPermissions().split(",")));
-            }
-
-            AccessInfoService userPermissionService = locator.getService(AccessInfoService.class);
-            AccessInfoFactory userPermissionFactory = locator.getFactory(AccessInfoFactory.class);
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
-            for (String p : permissions) {
-                // UserPermissionCreator userPermissionCreator = userPermissionFactory.newCreator(user.getScopeId());
-                // userPermissionCreator.setAccessId(scopeId);
-                //
-                // String[] tokens = p.split(":");
-                // String domain = null;
-                // Actions action = null;
-                // KapuaId targetScopeId = null;
-                // if (tokens.length > 0) {
-                // domain = tokens[0];
-                // }
-                // if (tokens.length > 1) {
-                // action = Actions.valueOf(tokens[1]);
-                // }
-                // if (tokens.length > 2) {
-                // targetScopeId = KapuaEid.parseCompactId(tokens[2]);
-                // }
-                //
-                // Permission permission = permissionFactory.newPermission(domain, action, targetScopeId);
-                // userPermissionCreator.setPermission(permission);
-                //
-                // userPermissionService.create(userPermissionCreator);
             }
 
             //
@@ -345,32 +315,32 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
         return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);
     }
-    
+
     @Override
     public ListLoadResult<GwtGroupedNVPair> getUserDescription(String shortScopeId,
             String shortUserId) throws GwtKapuaException {
-       List<GwtGroupedNVPair> gwtUserDescription = new ArrayList<GwtGroupedNVPair>();
-       try {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        UserService userService = locator.getService(UserService.class);
-        KapuaId scopeId = KapuaEid.parseCompactId(shortScopeId);
-        KapuaId userId = KapuaEid.parseCompactId(shortUserId);
-        User user = userService.find(scopeId, userId);
-        
-        if (user != null) {
-            gwtUserDescription.add(new GwtGroupedNVPair("Entity", "Created By", user.getCreatedBy().toCompactId()));
-            gwtUserDescription.add(new GwtGroupedNVPair("Entity", "Created On", user.getCreatedOn().toString()));
-            gwtUserDescription.add(new GwtGroupedNVPair("User", "Status", user.getStatus().toString()));                                                                                                                                                                               
-            gwtUserDescription.add(new GwtGroupedNVPair("User", "User Name", user.getName()));
-            gwtUserDescription.add(new GwtGroupedNVPair("User", "Display Name", user.getDisplayName()));
-            gwtUserDescription.add(new GwtGroupedNVPair("User", "Phone Number", user.getPhoneNumber()));
-            gwtUserDescription.add(new GwtGroupedNVPair("User", "Email", user.getEmail()));
-           
+        List<GwtGroupedNVPair> gwtUserDescription = new ArrayList<GwtGroupedNVPair>();
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            UserService userService = locator.getService(UserService.class);
+            KapuaId scopeId = KapuaEid.parseCompactId(shortScopeId);
+            KapuaId userId = KapuaEid.parseCompactId(shortUserId);
+            User user = userService.find(scopeId, userId);
+
+            if (user != null) {
+                gwtUserDescription.add(new GwtGroupedNVPair("Entity", "Created By", user.getCreatedBy().toCompactId()));
+                gwtUserDescription.add(new GwtGroupedNVPair("Entity", "Created On", user.getCreatedOn().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "Status", user.getStatus().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "User Name", user.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "Display Name", user.getDisplayName()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "Phone Number", user.getPhoneNumber()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "Email", user.getEmail()));
+
+            }
+        } catch (Exception e) {
+            KapuaExceptionHandler.handle(e);
         }
-    } catch (Exception e) {
-        KapuaExceptionHandler.handle(e);
-    }
-       
-       return new BaseListLoadResult<GwtGroupedNVPair>(gwtUserDescription);
+
+        return new BaseListLoadResult<GwtGroupedNVPair>(gwtUserDescription);
     }
 }
