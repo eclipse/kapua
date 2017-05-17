@@ -40,9 +40,13 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements GwtGroupService {
+public class GwtGroupServiceImpl extends KapuaConfigurableRemoteServiceServlet<GroupService> implements GwtGroupService {
 
     private static final long serialVersionUID = 929002466564699535L;
+
+    protected GwtGroupServiceImpl(GroupService configurableService) {
+        super(KapuaLocator.getInstance().getService(GroupService.class));
+    }
 
     @Override
     public GwtGroup create(GwtGroupCreator gwtGroupCreator) throws GwtKapuaException {

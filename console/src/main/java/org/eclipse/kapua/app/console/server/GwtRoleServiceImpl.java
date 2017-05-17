@@ -48,9 +48,13 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements GwtRoleService {
+public class GwtRoleServiceImpl extends KapuaConfigurableRemoteServiceServlet<RoleService> implements GwtRoleService {
 
     private static final long serialVersionUID = 3606053200278262228L;
+
+    protected GwtRoleServiceImpl(RoleService configurableService) {
+        super(KapuaLocator.getInstance().getService(RoleService.class));
+    }
 
     @Override
     public GwtRole create(GwtXSRFToken xsrfToken, GwtRoleCreator gwtRoleCreator) throws GwtKapuaException {

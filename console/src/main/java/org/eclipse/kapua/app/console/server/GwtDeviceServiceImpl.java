@@ -69,9 +69,13 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
  * The server side implementation of the Device RPC service.
  * 
  */
-public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceService {
+public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<DeviceRegistryService> implements GwtDeviceService {
 
     private static final long serialVersionUID = -1391026997499175151L;
+
+    protected GwtDeviceServiceImpl(DeviceRegistryService configurableService) {
+        super(KapuaLocator.getInstance().getService(DeviceRegistryService.class));
+    }
 
     public GwtDevice findDevice(String scopeIdString, String clientId)
             throws GwtKapuaException {
@@ -119,7 +123,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devInfo", "devDisplayName", device.getDisplayName()));
                 String groupId = device.getGroupId() == null ? "N/A" : device.getGroupId().toCompactId();
                 pairs.add(new GwtGroupedNVPair("devInfo", "devGroupId", groupId));
-                
+
                 String lastEventType = device.getLastEvent() != null ? device.getLastEvent().getType() : "";
                 pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEventType));
                 if (device.getLastEvent() != null) {
@@ -317,7 +321,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId, gwtDeviceCreator.getClientId());
             deviceCreator.setDisplayName(gwtDeviceCreator.getDisplayName());
             deviceCreator.setGroupId(GwtKapuaModelConverter.convert(gwtDeviceCreator.getGroupId()));
-            
+
             // FIXME One day it will be specified from the form. In the meantime, defaults to LOOSE
             deviceCreator.setCredentialsMode(DeviceCredentialsMode.LOOSE);
 
@@ -363,9 +367,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             device.setGroupId(GwtKapuaModelConverter.convert(gwtDevice.getGroupId()));
 
             // Security Stuff
-//            device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
-//            KapuaId deviceUserId = KapuaEid.parseCompactId(gwtDevice.getDeviceUserId());
-//            device.setPreferredUserId(deviceUserId);
+            // device.setCredentialsMode(DeviceCredentialsMode.valueOf(gwtDevice.getCredentialsTight()));
+            // KapuaId deviceUserId = KapuaEid.parseCompactId(gwtDevice.getDeviceUserId());
+            // device.setPreferredUserId(deviceUserId);
 
             // Custom attributes
             device.setCustomAttribute1(gwtDevice.getUnescapedCustomAttribute1());

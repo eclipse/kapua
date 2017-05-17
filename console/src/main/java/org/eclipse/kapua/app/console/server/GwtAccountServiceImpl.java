@@ -82,7 +82,11 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 /**
  * The server side implementation of the RPC service.
  */
-public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements GwtAccountService {
+public class GwtAccountServiceImpl extends KapuaConfigurableRemoteServiceServlet<AccountService> implements GwtAccountService {
+
+    public GwtAccountServiceImpl() {
+        super(KapuaLocator.getInstance().getService(AccountService.class));
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(GwtAccountServiceImpl.class);
     private static final long serialVersionUID = 3314502846487119577L;
@@ -458,28 +462,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             KapuaExceptionHandler.handle(t);
         }
         return gwtConfigs;
-    }
-
-    @Override
-    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, String parentId, GwtConfigComponent configComponent) throws GwtKapuaException {
-        //
-        // Checking validity of the given XSRF Token
-        checkXSRFToken(xsrfToken);
-        KapuaId kapuaScopeId = GwtKapuaModelConverter.convert(scopeId);
-        KapuaId kapuaParentId = GwtKapuaModelConverter.convert(parentId);
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService configurableService = locator.getService(AccountService.class);
-
-            // execute the update
-            Map<String, Object> parameters = GwtKapuaModelConverter.convert(configComponent);
-
-            configurableService.setConfigValues(kapuaScopeId, kapuaParentId, parameters);
-
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-
     }
 
     private void checkIconResource(KapuaTicon icon) {

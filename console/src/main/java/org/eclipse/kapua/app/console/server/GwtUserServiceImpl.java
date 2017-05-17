@@ -61,9 +61,13 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 /**
  * The server side implementation of the RPC service.
  */
-public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements GwtUserService {
+public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<UserService> implements GwtUserService {
 
     private static final long serialVersionUID = 7430961652373364113L;
+
+    protected GwtUserServiceImpl() {
+        super(KapuaLocator.getInstance().getService(UserService.class));
+    }
 
     @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator)
