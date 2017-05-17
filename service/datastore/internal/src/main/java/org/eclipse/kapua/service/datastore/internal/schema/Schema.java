@@ -83,7 +83,7 @@ public class Schema {
             logger.debug("Entered updating metadata");
             DatastoreClient datastoreClient = DatastoreClientFactory.getInstance();
             // Check existence of the data index
-            IndexExistsResponse dataIndexExistsResponse = DatastoreClientFactory.getInstance().isIndexExists(new IndexExistsRequest(dataIndexName));
+            IndexExistsResponse dataIndexExistsResponse = datastoreClient.isIndexExists(new IndexExistsRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
                 logger.info("Data index created: " + dataIndexName);

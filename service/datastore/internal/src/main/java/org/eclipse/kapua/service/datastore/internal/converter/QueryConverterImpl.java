@@ -64,8 +64,14 @@ public class QueryConverterImpl implements QueryConverter {
             }
         }
         // offset and limit settings
-        rootNode.set(KEY_FROM, SchemaUtil.getNumericNode(storableQuery.getOffset()));
-        rootNode.set(KEY_SIZE, SchemaUtil.getNumericNode(storableQuery.getLimit()));
+        Integer offset = storableQuery.getOffset();
+        if (offset != null) {
+            rootNode.set(KEY_FROM, SchemaUtil.getNumericNode(offset));
+        }
+        Integer limit = storableQuery.getLimit();
+        if (limit != null) {
+            rootNode.set(KEY_SIZE, SchemaUtil.getNumericNode(limit));
+        }
         rootNode.set(KEY_SORT, sortNode);
         return rootNode;
     }

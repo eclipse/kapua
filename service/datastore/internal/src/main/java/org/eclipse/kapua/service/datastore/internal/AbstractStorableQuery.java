@@ -28,16 +28,15 @@ import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
  * @since 1.0.0
  *
  * @param <S>
- *            persisted object type (such as messages, channeles information...)
+ *            persisted object type (such as messages, channels information...)
  */
 public abstract class AbstractStorableQuery<S extends Storable> implements StorableQuery<S> {
 
     private StorablePredicate predicate;
 
     private KapuaId scopeId;
-    private int limit;
-    private Object keyOffset;
-    private int indexOffset;
+    private Integer limit;
+    private Integer indexOffset;
     private boolean askTotalCount;
     private List<SortField> sortFields;
     private StorableFetchStyle fetchStyle;
@@ -111,36 +110,23 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
         this.predicate = predicate;
     }
 
-    public Object getKeyOffset() {
-        return keyOffset;
-    }
-
-    public void setKeyOffset(Object offset) {
-        this.keyOffset = offset;
-    }
-
     @Override
-    public int getOffset() {
+    public Integer getOffset() {
         return indexOffset;
     }
 
     @Override
-    public void setOffset(int offset) {
+    public void setOffset(Integer offset) {
         this.indexOffset = offset;
     }
 
-    public int addIndexOffset(int delta) {
-        indexOffset += delta;
-        return indexOffset;
-    }
-
     @Override
-    public void setLimit(int limit) {
+    public void setLimit(Integer limit) {
         this.limit = limit;
     }
 
     @Override
-    public int getLimit() {
+    public Integer getLimit() {
         return limit;
     }
 
