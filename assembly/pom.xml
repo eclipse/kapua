@@ -316,21 +316,6 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>kapua-console</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/descriptors/kapua-console-jetty.xml</descriptor>
-							</descriptors>
-							<tarLongFileMode>posix</tarLongFileMode>
-							<finalName>kapua-console-${project.version}</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-					</execution>
-					<execution>
 						<id>kapua-api</id>
 						<phase>package</phase>
 						<goals>
@@ -444,25 +429,6 @@
 							</build>
 						</image>
 						<image>
-							<name>${docker.account}/kapua-console</name>
-							<build>
-								<from>${docker.account}/jetty-base</from>
-								<assembly>
-									<descriptor>${basedir}/src/main/descriptors/kapua-console-jetty.xml</descriptor>
-									<basedir>/</basedir>
-								</assembly>
-								<env>
-									<JAVA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} -Ddatastore.elasticsearch.nodes=\${ES_PORT_9300_TCP_ADDR} -Ddatastore.elasticsearch.port=\${ES_PORT_9300_TCP_PORT}</JAVA_OPTS>
-								</env>
-								<user>kapua</user>
-								<entryPoint>
-									<exec>
-										<arg>/home/kapua/run-console</arg>
-									</exec>
-								</entryPoint>
-							</build>
-						</image>
-						<image>
 							<name>${docker.account}/kapua-api</name>
 							<build>
 								<from>${docker.account}/jetty-base</from>
@@ -487,15 +453,6 @@
 					<artifactId>docker-maven-plugin</artifactId>
 					<configuration>
 						<images>
-							<image>
-								<name>${docker.account}/kapua-console</name>
-								<build>
-									<tags>
-										<tag>${project.version}</tag>
-										<tag>${timestamp}</tag>
-									</tags>
-								</build>
-							</image>
 							<image>
 								<name>${docker.account}/kapua-api</name>
 								<build>
@@ -590,16 +547,6 @@
 							<artifactId>docker-maven-plugin</artifactId>
 							<configuration>
 								<images>
-									<image>
-										<name>${docker.account}/kapua-console</name>
-										<build>
-											<tags>
-												<tag>latest</tag>
-												<tag>${project.version}</tag>
-												<tag>${timestamp}</tag>
-											</tags>
-										</build>
-									</image>
 									<image>
 										<name>${docker.account}/kapua-api</name>
 										<build>

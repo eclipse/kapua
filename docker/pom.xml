@@ -32,6 +32,7 @@
         <module>java-base</module>
         <module>sql</module>
         <module>broker</module>
+        <module>console</module>
     </modules>
 
     <build>
