@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
@@ -129,7 +130,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     previous.add(t);
                 }
             } else {
-                if (t.getTimestamp().before(channel.getLastMessageOn())) {
+                if (channel.getLastMessageOn() != null && t.getTimestamp().before(channel.getLastMessageOn())) {
                     t.setTimestamp(channel.getLastMessageOn());
                 }
             }
