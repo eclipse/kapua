@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
@@ -25,14 +26,14 @@ public class FactoryResolver<F extends KapuaObjectFactory, I extends F> {
         this.implementationClass = implementation;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static FactoryResolver newInstance(Class<?> factory, Class<?> implementation)
+    @SuppressWarnings("unchecked")
+    public static <F extends KapuaObjectFactory, I extends F> FactoryResolver<F, I> newInstance(Class<?> factory, Class<?> implementation)
             throws KapuaLocatorException {
         if (!factory.isAssignableFrom(implementation)) {
             throw new KapuaLocatorException(KapuaLocatorErrorCodes.FACTORY_PROVIDER_INVALID, implementation, factory);
         }
 
-        return new FactoryResolver(factory, implementation);
+        return new FactoryResolver<F,I>((Class<F>)factory, (Class<I>)implementation);
     }
 
     public Class<F> getFactoryClass() {
