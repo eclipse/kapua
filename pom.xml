@@ -64,6 +64,8 @@
         <cucumber.version>1.2.4</cucumber.version>
         <elasticsearch.version>2.3.4</elasticsearch.version>
         <jackson.version>2.6.6</jackson.version>
+        <tomcat.version>8.0.41</tomcat.version>
+
         <!-- Plugins versions -->
         <checkstyle-maven-plugin.version>2.17</checkstyle-maven-plugin.version>
         <checkstyle.version>7.6.1</checkstyle.version>

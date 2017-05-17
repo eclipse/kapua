@@ -23,8 +23,6 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tomcat.version>8.0.41</tomcat.version>
-
 		<docker.account>kapua</docker.account>
 		<java.base.image>openjdk:8u121-jre-alpine</java.base.image>
 	</properties>
