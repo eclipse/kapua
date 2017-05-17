@@ -21,8 +21,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
@@ -32,22 +30,17 @@ import com.google.inject.Key;
 
 /**
  * Kapua locator implementation bases on Guice framework
- *
- * @since 1.0
  */
 public class GuiceLocatorImpl extends KapuaLocator {
 
-    private static final Logger logger = LoggerFactory.getLogger(GuiceLocatorImpl.class);
+    private final Injector injector;
 
-    private static final Injector injector;
+    public GuiceLocatorImpl() {
+        injector = Guice.createInjector(new KapuaModule());
+    }
 
-    static {
-        try {
-            injector = Guice.createInjector(new KapuaModule());
-        } catch (Throwable e) {
-            logger.error("Cannot instantiate injector {}", e.getMessage(), e);
-            throw e;
-        }
+    public GuiceLocatorImpl(String resourceName) {
+        injector = Guice.createInjector(new KapuaModule(resourceName));
     }
 
     @Override
@@ -61,13 +54,11 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
     @Override
     public <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass) {
-        F kapuaEntityFactory = injector.getInstance(factoryClass);
-
-        if (kapuaEntityFactory == null) {
-            throw new KapuaRuntimeException(KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE, factoryClass);
+        try {
+            return injector.getInstance(factoryClass);
+        } catch (ConfigurationException e) {
+            throw new KapuaRuntimeException(KapuaLocatorErrorCodes.FACTORY_UNAVAILABLE, factoryClass);
         }
-
-        return kapuaEntityFactory;
     }
 
     @Override
