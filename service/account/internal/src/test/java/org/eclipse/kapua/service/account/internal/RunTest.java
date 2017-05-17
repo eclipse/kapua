@@ -11,13 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import org.eclipse.kapua.test.cucumber.CucumberProperties;
+import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
 
-@RunWith(Cucumber.class)
+@RunWith(CucumberWithProperties.class)
 @CucumberOptions(features = "classpath:features", plugin = { "pretty", "html:target/cucumber",
         "json:target/cucumber.json" }, monochrome = true)
+@CucumberProperties(systemProperties="locator.class.impl=org.eclipse.kapua.test.MockedLocator")
 public class RunTest {
 }

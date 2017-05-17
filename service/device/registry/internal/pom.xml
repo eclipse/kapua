@@ -16,20 +16,6 @@
     <artifactId>kapua-device-registry-internal</artifactId>
     <name>${project.artifactId}</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <systemPropertyVariables>
-                        <locator.class.impl>org.eclipse.kapua.test.MockedLocator</locator.class.impl>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>
