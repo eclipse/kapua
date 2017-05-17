@@ -31,4 +31,5 @@ import cucumber.api.junit.Cucumber;
                  },
         monochrome = true )
 
-public class RunDeviceBrokerI9nTest {}
+public class RunDeviceBrokerI9nTest {
+}
