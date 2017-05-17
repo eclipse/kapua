@@ -11,57 +11,12 @@
 #
 #*******************************************************************************
 vagrant ssh -c "echo 'deploying the Kapua broker'
-	cd /usr/local/kapua/apache-activemq-${ACTIVEMQ_VERSION}
-	echo 'deleting different guava/shiro runtime dependency'
-	sudo rm lib/optional/guava-*
-	sudo rm lib/optional/shiro-*
-	echo 'deleting old Kapua runtime dependency'
-	find lib/extra ! -name 'mqtt-client*.jar' -type f -exec rm -f {} +
-	echo 'copying Kapua runtime dependency'
-    sudo cp /kapua/assembly/target/broker_dependency/* lib/extra
-	for name in \$(ls /kapua/broker-core/target/dependency/ | grep -Ev 'jaxb-|activemq-|kapua-'); do echo copying from /kapua/broker-core/target/dependency/\$name lib/extra/\$name; sudo cp /kapua/broker-core/target/dependency/\$name lib/extra/\$name; done;
-	echo 'copying Kapua artifact'
-	sudo cp /kapua/broker-core/target/kapua-*.jar lib/extra
-	sudo cp /kapua/commons/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/locator/guice/target/kapua-*.jar lib/extra
-	sudo cp /kapua/message/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/message/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/account/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/account/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/datastore/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/datastore/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/bundle/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/bundle/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/call/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/call/kura/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/command/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/command/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/commons/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/configuration/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/configuration/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/packages/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/packages/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/registry/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/device/registry/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/idgenerator/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/idgenerator/sequence/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/liquibase/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/security/authentication/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/security/authorization/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/security/shiro/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/user/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/service/user/internal/target/kapua-*.jar lib/extra
-	sudo cp /kapua/translator/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/translator/kapua/kura/target/kapua-*.jar lib/extra
-	sudo cp /kapua/translator/kura/jms/target/kapua-*.jar lib/extra
-	sudo cp /kapua/translator/kura/mqtt/target/kapua-*.jar lib/extra
-	sudo cp /kapua/transport/api/target/kapua-*.jar lib/extra
-	sudo cp /kapua/transport/jms/target/kapua-*.jar lib/extra
-	sudo cp /kapua/transport/mqtt/target/kapua-*.jar lib/extra
-	echo 'copying Kapua configuration'
-	sudo cp /kapua/assembly/broker/src/main/resources/conf/broker/activemq.xml conf/ 
-	sudo cp /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml conf/
-	cd ..
-	sudo chown -R vagrant:vagrant apache-activemq-${ACTIVEMQ_VERSION}"
+    cd /usr/local/kapua
+    rm -rf apache-activemq*
+    tar -xvzf /kapua/assembly/target/kapua-broker*
+    mv kapua-broker* apache-activemq-${ACTIVEMQ_VERSION}
+    cd apache-activemq-${ACTIVEMQ_VERSION}
+    sed -i -E 's/console(.*)ch.qos.logback.core.ConsoleAppender(.*)/file\1ch.qos.logback.core.FileAppender\2\n\t\t<file>data\/kapua.log<\/file>/' conf/logback.xml
+    sed -i -E 's/<appender-ref ref=\"console\" \/>/<appender-ref ref=\"file\" \/>/' conf/logback.xml
+    cd ..
+    sudo chown -R vagrant:vagrant apache-activemq-${ACTIVEMQ_VERSION}"
