@@ -232,6 +232,8 @@
                 <include>${pom.groupId}:kapua-device-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
+                <include>${pom.groupId}:kapua-device-asset-api</include>
+                <include>${pom.groupId}:kapua-device-asset-internal</include>
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
