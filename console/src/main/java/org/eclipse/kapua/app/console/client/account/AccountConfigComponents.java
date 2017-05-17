@@ -29,8 +29,20 @@ import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
+import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtDataService;
+import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtDeviceService;
+import org.eclipse.kapua.app.console.shared.service.GwtDeviceServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtRoleService;
+import org.eclipse.kapua.app.console.shared.service.GwtRoleServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.shared.service.GwtUserService;
+import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -68,8 +80,14 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
-    private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
+    private static final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
+    private static final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    private static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
+    private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
+    private static final GwtDataServiceAsync gwtDataService = GWT.create(GwtDataService.class);
+    private static final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
     private GwtSession m_currentSession;
 
@@ -98,6 +116,20 @@ public class AccountConfigComponents extends LayoutContainer {
     private boolean resetProcess;
 
     private boolean applyProcess;
+
+    private final AsyncCallback<Void> applyConfigCallback = new AsyncCallback<Void>() {
+
+        public void onFailure(Throwable caught) {
+            FailureHandler.handle(caught);
+            m_dirty = true;
+            refresh();
+        }
+
+        public void onSuccess(Void arg0) {
+            m_dirty = true;
+            refresh();
+        }
+    };
 
     AccountConfigComponents(GwtSession currentSession,
             AccountTabConfiguration tabConfig) {
@@ -398,23 +430,23 @@ public class AccountConfigComponents extends LayoutContainer {
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
                                     final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
-                                    gwtAccountService.updateComponentConfiguration(token,
-                                            m_selectedAccount.getId(),
-                                            m_selectedAccount.getParentAccountId(),
-                                            configComponent,
-                                            new AsyncCallback<Void>() {
 
-                                                public void onFailure(Throwable caught) {
-                                                    FailureHandler.handle(caught);
-                                                    m_dirty = true;
-                                                    refresh();
-                                                }
-
-                                                public void onSuccess(Void arg0) {
-                                                    m_dirty = true;
-                                                    refresh();
-                                                }
-                                            });
+                                    if ("AccountService".equals(configComponent.getComponentName())) {
+                                        gwtAccountService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    } else if ("CredentialService".equals(configComponent.getComponentName())) {
+                                        gwtCredentialService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent,
+                                                applyConfigCallback);
+                                    } else if ("DeviceRegistryService".equals(configComponent.getComponentName())) {
+                                        gwtDeviceService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    } else if ("GroupService".equals(configComponent.getComponentName())) {
+                                        gwtGroupService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    } else if ("RoleService".equals(configComponent.getComponentName())) {
+                                        gwtRoleService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    } else if ("MessageStoreService".equals(configComponent.getComponentName())) {
+                                        gwtDataService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    } else if ("UserService".equals(configComponent.getComponentName())) {
+                                        gwtUserService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                    }
                                 }
                             });
 
