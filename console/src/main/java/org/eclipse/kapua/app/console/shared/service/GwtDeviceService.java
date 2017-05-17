@@ -24,14 +24,13 @@ import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("device")
-public interface GwtDeviceService extends RemoteService {
+public interface GwtDeviceService extends KapuaConfigurableRemoteService {
 
     /**
      * Finds device given its clientId

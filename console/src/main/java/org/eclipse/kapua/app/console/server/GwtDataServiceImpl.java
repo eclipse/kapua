@@ -81,7 +81,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
     private static KapuaLocator locator = KapuaLocator.getInstance();
     private static final long serialVersionUID = -5518740923786017558L;
 
-    protected GwtDataServiceImpl() {
+    public GwtDataServiceImpl() {
         super(locator.getService(MessageStoreService.class));
     }
 

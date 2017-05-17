@@ -57,7 +57,7 @@ public class GwtCredentialServiceImpl extends KapuaConfigurableRemoteServiceServ
 
     private static final long serialVersionUID = 7323313459749361320L;
 
-    protected GwtCredentialServiceImpl() {
+    public GwtCredentialServiceImpl() {
         super(KapuaLocator.getInstance().getService(CredentialService.class));
     }
 

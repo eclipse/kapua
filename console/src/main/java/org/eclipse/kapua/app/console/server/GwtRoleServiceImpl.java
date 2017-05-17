@@ -52,7 +52,7 @@ public class GwtRoleServiceImpl extends KapuaConfigurableRemoteServiceServlet<Ro
 
     private static final long serialVersionUID = 3606053200278262228L;
 
-    protected GwtRoleServiceImpl(RoleService configurableService) {
+    public GwtRoleServiceImpl() {
         super(KapuaLocator.getInstance().getService(RoleService.class));
     }
 

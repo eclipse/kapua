@@ -44,7 +44,7 @@ public class GwtGroupServiceImpl extends KapuaConfigurableRemoteServiceServlet<G
 
     private static final long serialVersionUID = 929002466564699535L;
 
-    protected GwtGroupServiceImpl(GroupService configurableService) {
+    public GwtGroupServiceImpl() {
         super(KapuaLocator.getInstance().getService(GroupService.class));
     }
 

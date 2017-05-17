@@ -73,7 +73,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
     private static final long serialVersionUID = -1391026997499175151L;
 
-    protected GwtDeviceServiceImpl(DeviceRegistryService configurableService) {
+    public GwtDeviceServiceImpl() {
         super(KapuaLocator.getInstance().getService(DeviceRegistryService.class));
     }
 

@@ -21,11 +21,10 @@ import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQu
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("credential")
-public interface GwtCredentialService extends RemoteService {
+public interface GwtCredentialService extends KapuaConfigurableRemoteService {
 
     /**
      * Returns the list of all Credentials matching the query.

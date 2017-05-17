@@ -24,11 +24,10 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtRoleQuery;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("role")
-public interface GwtRoleService extends RemoteService {
+public interface GwtRoleService extends KapuaConfigurableRemoteService {
 
     public GwtRole create(GwtXSRFToken gwtXsrfToken, GwtRoleCreator gwtRoleCreator)
             throws GwtKapuaException;
@@ -38,7 +37,7 @@ public interface GwtRoleService extends RemoteService {
 
     public GwtRole find(String scopeShortId, String roleShortId)
             throws GwtKapuaException;
-    
+
     /**
      * Returns the list of all Roles which belong to an account.
      * 
@@ -48,7 +47,7 @@ public interface GwtRoleService extends RemoteService {
      * 
      */
     public ListLoadResult<GwtRole> findAll(String scopeIdStirng)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     public PagingLoadResult<GwtRole> query(PagingLoadConfig loadConfig, GwtRoleQuery gwtRoleQuery)
             throws GwtKapuaException;
@@ -62,9 +61,9 @@ public interface GwtRoleService extends RemoteService {
     public void delete(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
             throws GwtKapuaException;
 
-    public GwtRolePermission addRolePermission(GwtXSRFToken gwtXsrfToken, GwtRolePermissionCreator gwtRolePermissionCreator, GwtPermission gwtPermission) 
+    public GwtRolePermission addRolePermission(GwtXSRFToken gwtXsrfToken, GwtRolePermissionCreator gwtRolePermissionCreator, GwtPermission gwtPermission)
             throws GwtKapuaException;
-    
-    public void deleteRolePermission(GwtXSRFToken gwtXsrfToken,String scopeShortId, String roleShortId)
+
+    public void deleteRolePermission(GwtXSRFToken gwtXsrfToken, String scopeShortId, String roleShortId)
             throws GwtKapuaException;
 }

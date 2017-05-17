@@ -25,14 +25,13 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccountStringListIt
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * The client side stub for the RPC service.
  */
 @RemoteServiceRelativePath("account")
-public interface GwtAccountService extends RemoteService {
+public interface GwtAccountService extends KapuaConfigurableRemoteService {
 
     /**
      * Creates a new Account based on the information provided in the supplied GwtAccountCreator. Each new account results in the creation of an Organization, a set of Users, and a provisioning step
@@ -43,7 +42,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     public GwtAccount create(GwtXSRFToken xsfrToken, GwtAccountCreator gwtAccountCreator)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Returns a GwtAccount by its Id or null if an account with such Id does not exist.
@@ -52,7 +51,7 @@ public interface GwtAccountService extends RemoteService {
      * @return
      */
     public GwtAccount find(String accountId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Returns a GwtAccount by its acountName or null if an account with such acountName does not exist.
@@ -61,7 +60,7 @@ public interface GwtAccountService extends RemoteService {
      * @return GwtAccount
      */
     public GwtAccount findByAccountName(String accountName)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Get account info ad name values pairs
@@ -71,7 +70,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String gwtAccountId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Updates GwtAccount PROPERTIES ONLY in the database and returns the refreshed/reloaded entity instance.
@@ -82,7 +81,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     public GwtAccount updateAccountProperties(GwtXSRFToken xsfrToken, GwtAccount gwtAccount)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Updates a GwtAccount in the database and returns the refreshed/reloaded entity instance.
@@ -93,7 +92,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     public GwtAccount update(GwtXSRFToken xsfrToken, GwtAccount gwtAccount)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Deletes the supplied GwtAccount.
@@ -103,7 +102,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     public void delete(GwtXSRFToken xsfrToken, GwtAccount gwtAccount)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Lists GwtAccounts.
@@ -113,7 +112,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtAccount> findAll(String scopeId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Lists GwtAccounts child of the given accountId.
@@ -126,7 +125,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtAccount> findChildren(String accountId, boolean recoursive)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Lists all child of the given account id as a list of strings
@@ -139,7 +138,7 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtAccountStringListItem> findChildrenAsStrings(String scopeId, boolean recoursive)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Returns the configuration of an Account as the list of all the configurable components.
@@ -151,16 +150,6 @@ public interface GwtAccountService extends RemoteService {
             throws GwtKapuaException;
 
     /**
-     * Updates the configuration of the provided component.
-     *
-     * @param scopeId
-     * @param parentScopeId
-     * @param configComponent
-     */
-    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, String scopeId, String parentScopeId, GwtConfigComponent configComponent)
-            throws GwtKapuaException;
-
-    /**
      * Returns the list of all Account matching the query.
      * 
      * @param gwtAccountQuery
@@ -168,6 +157,6 @@ public interface GwtAccountService extends RemoteService {
      * @throws GwtKapuaException
      * 
      */
-    PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery) 
+    PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery)
             throws GwtKapuaException;
 }
