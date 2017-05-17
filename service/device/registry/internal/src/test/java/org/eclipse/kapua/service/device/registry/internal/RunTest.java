@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import cucumber.api.CucumberOptions;
+import org.eclipse.kapua.test.cucumber.CucumberProperties;
+import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
-
-@RunWith(Cucumber.class)
+@RunWith(CucumberWithProperties.class)
 @CucumberOptions(features = "classpath:features",
         glue = { "org.eclipse.kapua.service.device.registry.common",
                 "org.eclipse.kapua.service.device.registry.internal",
@@ -26,7 +26,6 @@ import cucumber.api.junit.Cucumber;
                 "html:target/cucumber",
                 "json:target/cucumber.json" },
         monochrome = true)
-
+@CucumberProperties(systemProperties="locator.class.impl=org.eclipse.kapua.test.MockedLocator")
 public class RunTest {
-
 }
