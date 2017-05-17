@@ -45,20 +45,14 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
  * @since 1.0.0
  */
 @KapuaProvider
-public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<
-    Account, 
-    AccountCreator, 
-    AccountService, 
-    AccountListResult, 
-    AccountQuery, 
-    AccountFactory
-> implements AccountService {
+public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
+        implements AccountService {
 
     private static final Domain accountDomain = new AccountDomain();
     private static final KapuaLocator locator = KapuaLocator.getInstance();
     private static final AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
     private static final PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-    
+
     /**
      * Constructor.
      * 

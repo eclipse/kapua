@@ -124,7 +124,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission adminPermission = permissionFactory.newPermission(null, null, account.getId());
+            Permission adminPermission = permissionFactory.newPermission(null, null, account.getId(), null, true);
             RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
             Set<Permission> adminPermissions = new HashSet<Permission>();
             adminPermissions.add(adminPermission);
@@ -134,7 +134,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             roleService.create(adminRoleCreator);
 
             RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
-            Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId());
+            Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId(), null, false);
             Set<Permission> thingPermissions = new HashSet<Permission>();
             thingPermissions.add(thingPermission);
             thingRoleCreator.setName("thing");

@@ -43,7 +43,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
@@ -299,29 +298,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         // session.setAttribute(SESSION_CURRENT_USER, user);
 
         return gwtSession;
-    }
-
-    /**
-     * Returns true if the currently connected user has the specified permission granted.
-     */
-    @Override
-    public Boolean hasAccess(String gwtPermission)
-            throws GwtKapuaException {
-        Boolean hasAccess = false;
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-
-            // Parse from string
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.parseString(gwtPermission);
-
-            // Check
-            hasAccess = authorizationService.isPermitted(permission);
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-        return hasAccess;
     }
 
     /**

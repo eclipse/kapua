@@ -67,3 +67,9 @@ ALTER TABLE athz_role_permission MODIFY COLUMN domain VARCHAR(64) NULL;
 DELETE FROM athz_role_permission WHERE scope_id = 1;
 
 INSERT INTO athz_role_permission VALUES (1,  1, NOW(), 1, 1, null, null, null, null); -- kapua-sys assigned of permission: *:*:*:*
+
+--changeset role_permission:3
+
+ALTER TABLE athz_role_permission ADD COLUMN forwardable BOOLEAN NOT NULL DEFAULT FALSE;
+
+UPDATE athz_role_permission SET forwardable = true WHERE id = 1;

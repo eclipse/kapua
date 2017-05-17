@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client.role;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
@@ -29,13 +30,18 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
 
-    private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
 
@@ -76,26 +82,36 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     protected List<ColumnConfig> getColumns() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridRolePermissionColumnHeaderId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", ROLE_MSGS.gridRolePermissionColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("domain", MSGS.gridRolePermissionColumnHeaderDomain(), 100);
+        columnConfig = new ColumnConfig("domain", ROLE_MSGS.gridRolePermissionColumnHeaderDomain(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("action", MSGS.gridRolePermissionColumnHeaderAction(), 100);
+        columnConfig = new ColumnConfig("action", ROLE_MSGS.gridRolePermissionColumnHeaderAction(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("groupId", MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
+        columnConfig = new ColumnConfig("groupId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("targetScopeId", MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 100);
+        columnConfig = new ColumnConfig("targetScopeId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetScopeId(), 100);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
+        columnConfig = new ColumnConfig("forwardable", ROLE_MSGS.gridRolePermissionColumnHeaderForwardable(), 200);
+        columnConfig.setRenderer(new GridCellRenderer<GwtRolePermission>() {
+
+            @Override
+            public Object render(GwtRolePermission model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtRolePermission> store, Grid<GwtRolePermission> grid) {
+                return model.getForwardable() ? COMMONS_MSGS.yes() : COMMONS_MSGS.no();
+            }
+        });
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);
+        columnConfig = new ColumnConfig("createdBy", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("createdOnFormatted", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedOn(), 100);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

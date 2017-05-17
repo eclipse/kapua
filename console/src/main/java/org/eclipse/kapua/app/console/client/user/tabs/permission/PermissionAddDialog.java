@@ -37,6 +37,8 @@ import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
@@ -59,11 +61,13 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     private SimpleComboBox<GwtAction> actionsCombo;
     private TextField<String> targetScopeIdTxtField;
     private ComboBox<GwtGroup> groupsCombo;
+    private CheckBoxGroup forwardableChecboxGroup;
+    private CheckBox forwardableChecbox;
 
     private final GwtGroup allGroup;
     private final GwtDomain allDomain = GwtDomain.ALL;
     private final GwtAction allAction = GwtAction.ALL;
-    
+
     private String accessInfoId;
 
     public PermissionAddDialog(GwtSession currentSession, String userId) {
@@ -94,13 +98,18 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     @Override
     public void submit() {
+
+        GwtPermission newPermission = new GwtPermission(//
+                domainsCombo.getValue().getValue(), //
+                actionsCombo.getValue().getValue(), //
+                targetScopeIdTxtField.getValue(), //
+                groupsCombo.getValue().getId(), //
+                forwardableChecboxGroup.getValue() != null ? true : false);
+
         GwtAccessPermissionCreator gwtAccessPermissionCreator = new GwtAccessPermissionCreator();
-
         gwtAccessPermissionCreator.setScopeId(currentSession.getSelectedAccount().getId());
-
         gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
-        gwtAccessPermissionCreator
-                .setPermission(new GwtPermission(domainsCombo.getValue().getValue(), actionsCombo.getValue().getValue(), targetScopeIdTxtField.getValue(), groupsCombo.getValue().getId()));
+        gwtAccessPermissionCreator.setPermission(newPermission);
 
         gwtAccessPermissionService.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
 
@@ -151,24 +160,24 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setTriggerAction(TriggerAction.ALL);
         gwtDomainService.findAll(new AsyncCallback<List<GwtDomain>>() {
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        m_exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
-                        m_exitStatus = false;
-                        hide();
-                    }
+            @Override
+            public void onFailure(Throwable caught) {
+                m_exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
+                m_exitStatus = false;
+                hide();
+            }
 
-                    @Override
-                    public void onSuccess(List<GwtDomain> result) {
-                        domainsCombo.add(allDomain);
-                        domainsCombo.add(result);
-                        domainsCombo.setSimpleValue(allDomain);
-                        actionsCombo.enable();
-                    }
-                });
-        
+            @Override
+            public void onSuccess(List<GwtDomain> result) {
+                domainsCombo.add(allDomain);
+                domainsCombo.add(result);
+                domainsCombo.setSimpleValue(allDomain);
+                actionsCombo.enable();
+            }
+        });
+
         domainsCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtDomain>>() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtDomain>> se) {
                 gwtDomainService.findActionsByDomainName(se.getSelectedItem().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
@@ -188,11 +197,11 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                         actionsCombo.setSimpleValue(allAction);
                     }
                 });
-                
+
             }
         });
         permissionFormPanel.add(domainsCombo);
-        
+
         //
         // Action
         actionsCombo = new SimpleComboBox<GwtAction>();
@@ -201,17 +210,21 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.setAllowBlank(false);
         actionsCombo.setFieldLabel(MSGS.dialogAddPermissionAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
-        
+
         actionsCombo.disable();
         permissionFormPanel.add(actionsCombo);
 
+        //
+        // Target scope id
         targetScopeIdTxtField = new TextField<String>();
         targetScopeIdTxtField.setFieldLabel(MSGS.dialogAddPermissionTargetScopeId());
         targetScopeIdTxtField.setValue(currentSession.getSelectedAccount().getId());
         targetScopeIdTxtField.setEnabled(false);
-        
+
         permissionFormPanel.add(targetScopeIdTxtField);
 
+        //
+        // Groups
         groupsCombo = new ComboBox<GwtGroup>();
         groupsCombo.setStore(new ListStore<GwtGroup>());
         groupsCombo.setEditable(false);
@@ -239,7 +252,17 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             }
         });
         permissionFormPanel.add(groupsCombo);
-        
+
+        //
+        // Forwardable
+        forwardableChecbox = new CheckBox();
+        forwardableChecbox.setBoxLabel("");
+
+        forwardableChecboxGroup = new CheckBoxGroup();
+        forwardableChecboxGroup.setFieldLabel(MSGS.dialogAddPermissionForwardable());
+        forwardableChecboxGroup.add(forwardableChecbox);
+        permissionFormPanel.add(forwardableChecboxGroup);
+
         //
         // Add form panel to body
         m_bodyPanel.add(permissionFormPanel);

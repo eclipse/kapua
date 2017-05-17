@@ -58,6 +58,14 @@ public class GwtAccessPermission extends GwtUpdatableEntityModel {
         set("permissionGroupId", permissionGroupId == null ? "ALL" : permissionGroupId);
     }
 
+    public boolean getPermissionForwardable() {
+        return get("permissionForwardable");
+    }
+
+    public void setPermissionForwardable(boolean forwardable) {
+        set("permissionForwardable", forwardable);
+    }
+
     /**
      * Returns the string representation for this {@link GwtPermission} in the following format:
      * <p>

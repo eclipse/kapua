@@ -86,7 +86,7 @@ VALUES (NULL,
 		NULL,
 		NULL,
         NULL,
-		'\1',
+		'/1',
 		0,
 		NULL,
 		NULL);
