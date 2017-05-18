@@ -38,6 +38,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
 @XmlType(propOrder = { //
         "id", //
         "datastoreId", //
+        "timestamp", //
         "scopeId", //
         "deviceId", //
         "clientId", //
