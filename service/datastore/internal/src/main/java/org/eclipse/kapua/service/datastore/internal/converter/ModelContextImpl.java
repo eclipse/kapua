@@ -127,7 +127,11 @@ public class ModelContextImpl implements ModelContext {
         
         KapuaId scopeId = new KapuaEid(new BigInteger((String) messageMap.get(MessageSchema.MESSAGE_SCOPE_ID)));
         message.setScopeId(scopeId);
-        KapuaId deviceId = new KapuaEid(new BigInteger((String) messageMap.get(MessageSchema.MESSAGE_DEVICE_ID)));
+        KapuaId deviceId = null;
+        String deviceIdStr = (String) messageMap.get(MessageSchema.MESSAGE_DEVICE_ID);
+        if (deviceIdStr != null) {
+            deviceId = new KapuaEid(new BigInteger(deviceIdStr));
+        }
         message.setDeviceId(deviceId);
         String clientId = (String) messageMap.get(MessageSchema.MESSAGE_CLIENT_ID);
         message.setClientId(clientId);
@@ -188,15 +192,15 @@ public class ModelContextImpl implements ModelContext {
                 position.setStatus((int) obj);
             }
             obj = positionMap.get(MessageSchema.MESSAGE_POS_TIMESTAMP);
-            position.setTimestamp((Date) KapuaDateUtils.parseDate((String) obj));
+            position.setTimestamp(KapuaDateUtils.parseDate((String) obj));
             message.setPosition(position);
         }
         Object capturedOnFld = messageMap.get(MessageSchema.MESSAGE_CAPTURED_ON);
-        message.setCapturedOn((Date) (capturedOnFld == null ? null : KapuaDateUtils.parseDate((String) capturedOnFld)));
+        message.setCapturedOn(KapuaDateUtils.parseDate((String) capturedOnFld));
         Object sentOnFld = messageMap.get(MessageSchema.MESSAGE_SENT_ON);
-        message.setSentOn((Date) (sentOnFld == null ? null : KapuaDateUtils.parseDate((String) sentOnFld)));
+        message.setSentOn(KapuaDateUtils.parseDate((String) sentOnFld));
         Object receivedOnFld = messageMap.get(MessageSchema.MESSAGE_RECEIVED_ON);
-        message.setReceivedOn((Date) (receivedOnFld == null ? null : KapuaDateUtils.parseDate((String) receivedOnFld)));
+        message.setReceivedOn(KapuaDateUtils.parseDate((String) receivedOnFld));
         if (messageMap.get(MessageSchema.MESSAGE_METRICS) != null) {
             @SuppressWarnings("unchecked")
             Map<String, Object> metrics = (Map<String, Object>) messageMap.get(MessageSchema.MESSAGE_METRICS);
