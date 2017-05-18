@@ -229,12 +229,10 @@
   		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>${elasticsearch.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>transport</artifactId>
-			<version>${elasticsearch-client-transport.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.elasticsearch.plugin</groupId>
@@ -264,12 +262,12 @@
 		<dependency>
 		    <groupId>io.netty</groupId>
 		    <artifactId>netty-all</artifactId>
-		    <version>4.1.5.Final</version>
+		    <version>${elasticsearch-netty-4.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>io.netty</groupId>
 		    <artifactId>netty</artifactId>
-		    <version>3.10.6.Final</version>
+		    <version>${elasticsearch-netty-3.version}</version>
 		</dependency>
     </dependencies>
 

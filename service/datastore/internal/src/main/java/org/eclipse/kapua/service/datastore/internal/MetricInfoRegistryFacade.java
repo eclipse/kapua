@@ -175,7 +175,7 @@ public class MetricInfoRegistryFacade {
                     logger.debug(String.format("Upsert on channel metric succesfully executed [%s.%s, %s]",
                             index, type, id));
                     
-                    if (DatastoreCacheManager.getInstance().getMetricsCache().get(id)) {
+                    if (id == null || DatastoreCacheManager.getInstance().getMetricsCache().get(id)) {
                         continue;
                     }
                     

@@ -53,6 +53,7 @@
                 <exclude>lib/activemq-web-*</exclude>
                 <exclude>lib/activemq-rar.txt</exclude>
                 <exclude>lib/geronimo-jta_1.0.1B_spec*</exclude>
+                <exclude>lib/slf4j*</exclude> <!-- pull in version 1.7.24 -->
                 <exclude>lib/optional/activeio-core-*</exclude>
                 <exclude>lib/optional/activemq-amqp-*</exclude>
                 <exclude>lib/optional/activemq-jdbc-store*</exclude>
@@ -79,12 +80,12 @@
                 <exclude>lib/optional/jettison-*</exclude>
                 <exclude>lib/optional/jmdns-*</exclude>
                 <exclude>lib/optional/leveldb*</exclude>
+                <exclude>lib/optional/log4*</exclude>
                 <exclude>lib/optional/org.apache.servicemix.bundles*</exclude>
                 <exclude>lib/optional/org.linkedin*</exclude>
                 <exclude>lib/optional/proton-j*</exclude>
                 <exclude>lib/optional/scala-library*</exclude>
                 <exclude>lib/optional/shiro*</exclude>
-                <exclude>lib/optional/slf4j*</exclude> <!-- pull in version 1.7.24 -->
                 <exclude>lib/optional/snappy-*</exclude>
                 <exclude>lib/optional/spring-oxm-*</exclude>
                 <exclude>lib/optional/velocity*</exclude>
@@ -174,11 +175,10 @@
                 <include>org.elasticsearch.plugin:lang-mustache-client</include>
                 <include>org.elasticsearch.plugin:percolator-client</include>
                 <include>org.elasticsearch:securesm</include>
+                <include>org.apache.logging.log4j:log4j-api</include>
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.slf4j:log4j-over-slf4j</include>
                 <include>org.apache.logging.log4j:log4j-to-slf4j</include>
-                <include>org.apache.logging.log4j:log4j-api</include>
-                <include>org.apache.logging.log4j:log4j-core</include>
                 <include>io.netty:netty-all</include>
                 <include>org.apache.httpcomponents:httpclient</include>
                 <include>org.apache.httpcomponents:httpcore</include>

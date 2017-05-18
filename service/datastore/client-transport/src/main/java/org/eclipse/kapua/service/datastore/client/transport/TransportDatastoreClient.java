@@ -248,7 +248,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         BulkItemResponse[] itemResponses = bulkResponse.getItems();
         if (itemResponses != null) {
             for (BulkItemResponse bulkItemResponse : itemResponses) {
-                String metricId = ((org.elasticsearch.action.update.UpdateResponse) bulkItemResponse.getResponse()).getId();
+                String metricId = null;
                 String indexName = bulkItemResponse.getIndex();
                 String typeName = bulkItemResponse.getType();
                 if (bulkItemResponse.isFailed()) {
@@ -257,6 +257,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     logger.info("Upsert failed [{}, {}, {}]", new Object[] { indexName, typeName, failureMessage });
                     continue;
                 }
+                metricId = ((org.elasticsearch.action.update.UpdateResponse) bulkItemResponse.getResponse()).getId();
                 response.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
                 logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", new Object[] { indexName, typeName, metricId });
             }
