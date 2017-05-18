@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.user.internal;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.test.cucumber.CucumberProperties;
+import org.eclipse.kapua.test.cucumber.CucumberProperty;
 import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
@@ -22,6 +22,6 @@ import org.junit.runner.RunWith;
         plugin = { "pretty", "html:target/cucumber",
                 "json:target/cucumber.json" },
         monochrome = true)
-@CucumberProperties(systemProperties="locator.class.impl=org.eclipse.kapua.test.MockedLocator")
+@CucumberProperty(key="locator.class.impl", value="org.eclipse.kapua.test.MockedLocator")
 public class RunTest {
 }

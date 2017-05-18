@@ -11,17 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.cucumber;
 
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
 /**
- * Annotation for CucumberWithProperties junit runner. It is used to set
- * System properties on Cucumber tests.
+ * Used as CucumberProperty repeatable annotation on CucumberWithProperties junit runner.
+ * It is used to set System property on Cucumber tests.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface CucumberProperties {
-    String[] systemProperties() default {};
+@Repeatable(CucumberSystemProperties.class)
+public @interface CucumberProperty {
+    String key();
+
+    String value();
 }
