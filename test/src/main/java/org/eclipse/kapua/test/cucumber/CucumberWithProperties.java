@@ -15,48 +15,31 @@ import cucumber.api.junit.Cucumber;
 import org.junit.runners.model.InitializationError;
 
 import java.io.IOException;
-import java.util.AbstractMap;
 
 /**
  * Extension of Cucumber junit runner that adds functionality of System properties
- * that are set with CucumberProperties annotation with systemProperties attribute.
+ * that are set with CucumberProperty repeatable annotation with key and value attribute
+ * that represents system property.
  */
 public class CucumberWithProperties extends Cucumber {
 
     public CucumberWithProperties(Class clazz) throws InitializationError, IOException {
         super(clazz);
 
-        CucumberProperties cucumberProperties = getProperties(clazz);
-        String[] systemProperties = cucumberProperties.systemProperties();
-        for (String property : systemProperties) {
-            AbstractMap.SimpleEntry<String, String> keyValue = extractKeyValue(property);
-            System.setProperty(keyValue.getKey(), keyValue.getValue());
+        CucumberProperty[] systemProperties = getProperties(clazz);
+        for (CucumberProperty property : systemProperties) {
+            System.setProperty(property.key(), property.value());
         }
     }
 
     /**
-     * Extract key / value pair from string that is split in two by equal sign.
-     * e.g. user.name=unknown
-     *
-     * @param property key / value pair separeted by equal sign
-     * @return key / value tuple
-     */
-    private AbstractMap.SimpleEntry extractKeyValue(String property) {
-        String[] tokens = property.split("=");
-        AbstractMap.SimpleEntry<String, String> keyValue =
-                new AbstractMap.SimpleEntry<String, String>(tokens[0],tokens[1]);
-
-        return keyValue;
-    }
-
-    /**
-     * Extract CucumberProperties from annotation on junit runner CucumberWithProperties
+     * Extract repeatable CucumberProperty from annotation on junit runner CucumberWithProperties
      *
      * @param clazz Class that is annotated
-     * @return properties array of key / value pairs
+     * @return property repeatable array of key / value pairs as CucumberProperty class
      */
-    private CucumberProperties getProperties(Class<?> clazz) {
+    private CucumberProperty[] getProperties(Class<?> clazz) {
 
-        return clazz.getAnnotation(CucumberProperties.class);
+        return clazz.getAnnotationsByType(CucumberProperty.class);
     }
 }
