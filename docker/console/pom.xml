@@ -23,14 +23,9 @@
 
     <artifactId>kapua-docker-console</artifactId>
     <name>${project.artifactId}</name>
-
-    <properties>
-        <docker.account>kapua</docker.account>
-        <java.base.image>openjdk:8u121-jre-alpine</java.base.image>
-    </properties>
+    <packaging>pom</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-docker-java-base</artifactId>
