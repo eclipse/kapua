@@ -15,14 +15,17 @@ import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
+import org.eclipse.kapua.model.KapuaEntityPredicates;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 
@@ -47,12 +50,12 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         @SuppressWarnings("unused")
         boolean parentValidation = super.validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
-        int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, updatedProps);
+        int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, null, updatedProps);
         if (availableChildEntitiesWithNewConfig < 0) {
             throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG);
             // parentValidation = "you can't set limited entities if current limit is lower than actual child accounts count";
         }
-        int availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId);
+        int availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId, scopeId);
         if (availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig < 0) {
             throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG);
             // parentValidation = "parent account child entities limit is lower than the sum of his child entities and his children's assigned child entities";
@@ -61,7 +64,11 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     }
 
     protected int allowedChildEntities(KapuaId scopeId) throws KapuaException {
-        return allowedChildEntities(scopeId, null);
+        return allowedChildEntities(scopeId, null, null);
+    }
+
+    protected int allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId) throws KapuaException {
+        return allowedChildEntities(scopeId, targetScopeId, null);
     }
 
     /**
@@ -75,7 +82,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @return the number of child accounts spots still available
      * @throws KapuaException
      */
-    protected int allowedChildEntities(KapuaId scopeId, Map<String, Object> configuration) throws KapuaException {
+    protected int allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         S service = locator.getService(serviceClass);
         F factory = locator.getFactory(factoryClass);
@@ -84,16 +91,28 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         }
         boolean allowInfiniteChildEntities = (boolean) configuration.get("infiniteChildEntities");
         if (!allowInfiniteChildEntities) {
-            int maxChildAccounts = (int) configuration.get("maxNumberChildEntities");
             Q query = factory.newQuery(scopeId);
+
+            // Current used entities
+            long currentChildAccounts = service.count(query);
+
+            // Exclude the scope that is under config update
+            if (targetScopeId != null) {
+                query.setPredicate(new AttributePredicate<KapuaId>(KapuaEntityPredicates.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
+            }
+
             KapuaListResult<E> currentChildEntities = service.query(query);
-            long childCount = currentChildEntities.getSize();
+            // Resources assigned to children
+            long childCount = 0;
             for (E childEntity : currentChildEntities.getItems()) {
                 Map<String, Object> childConfigValues = getConfigValues(childEntity);
                 int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildEntities");
                 childCount += maxChildChildAccounts;
             }
-            return (int) (maxChildAccounts - childCount);
+
+            // Max allowed for this account
+            int maxChildAccounts = (int) configuration.get("maxNumberChildEntities");
+            return (int) (maxChildAccounts - currentChildAccounts - childCount);
         }
         return Integer.MAX_VALUE;
     }
