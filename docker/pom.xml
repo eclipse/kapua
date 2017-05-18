@@ -33,6 +33,7 @@
         <module>sql</module>
         <module>broker</module>
         <module>console</module>
+        <module>api</module>
     </modules>
 
     <build>

@@ -14,12 +14,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>kapua</artifactId>
+		<artifactId>kapua-docker</artifactId>
 		<groupId>org.eclipse.kapua</groupId>
 		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kapua-assembly</artifactId>
+	<artifactId>kapua-docker-api</artifactId>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -314,16 +314,17 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>kapua-cucumber-report</id>
+						<id>kapua-api</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>src/main/descriptors/kapua-cucumber-report.xml</descriptor>
+								<descriptor>src/main/descriptors/kapua-api-jetty.xml</descriptor>
 							</descriptors>
-							<finalName>kapua-cucumber-report</finalName>
+							<tarLongFileMode>posix</tarLongFileMode>
+							<finalName>kapua-api-${project.version}</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
@@ -334,24 +335,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>unpack-activemq</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.activemq</groupId>
-									<artifactId>apache-activemq</artifactId>
-									<classifier>bin</classifier>
-									<type>tar.gz</type>
-									<outputDirectory>target/dependencies/activemq</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
 					<execution>
 						<id>unpack-tomcat</id>
 						<phase>generate-resources</phase>
@@ -370,49 +353,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<configuration>
-					<images>
-						<image>
-							<name>${docker.account}/jetty-base</name>
-							<build>
-								<from>${docker.account}/java-base</from>
-								<runCmds>
-									<runCmd><![CDATA[
-									apk update && apk add bash && \
-									cd /home/kapua && \
-									curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
-									mkdir -p jetty && cd jetty && \
-									tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
-									rm ../jetty-distribution.tar.gz && \
-									chown -R kapua:kapua /home/kapua && \
-									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
-									chown kapua:kapua /var/lib/jetty && \
-									cd /var/lib/jetty && \
-									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
-									]]></runCmd>
-								</runCmds>
-								<assembly>
-									<descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
-									<basedir>/</basedir>
-								</assembly>
-								<workdir>/var/lib/jetty</workdir>
-								<entryPoint>
-									<exec>
-										<arg>/home/kapua/run-jetty</arg>
-									</exec>
-								</entryPoint>
-								<ports>
-									<port>8080</port>
-									<port>8778</port>
-								</ports>
-							</build>
-						</image>
-					</images>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -466,22 +406,39 @@
 		</profile>
 
 		<profile>
-			<id>docker</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<defaultGoal>clean install docker:build</defaultGoal>
-			</build>
+			<id>release</id>
+			<properties>
+				<timestamp>latest</timestamp>
+			</properties>
 		</profile>
 
 		<profile>
-			<id>docker-push</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
+			<id>docker</id>
 			<build>
-				<defaultGoal>clean install docker:build docker:push</defaultGoal>
+					<plugins>
+						<plugin>
+							<groupId>io.fabric8</groupId>
+							<artifactId>docker-maven-plugin</artifactId>
+							<configuration>
+								<images>
+									<image>
+										<name>${docker.account}/kapua-api</name>
+										<build>
+											<from>${docker.account}/jetty-base</from>
+											<assembly>
+												<descriptor>${basedir}/src/main/descriptors/kapua-api-jetty.xml</descriptor>
+												<basedir>/var/lib/jetty</basedir>
+											</assembly>
+											<env>
+												<JAVA_OPTS>-Dcommons.db.connection.host=\${DB_PORT_3306_TCP_ADDR} -Dcommons.db.connection.port=\${DB_PORT_3306_TCP_PORT} -Dbroker.host=\${BROKER_PORT_1883_TCP_ADDR} -Ddatastore.elasticsearch.nodes=\${ES_PORT_9300_TCP_ADDR} -Ddatastore.elasticsearch.port=\${ES_PORT_9300_TCP_PORT}</JAVA_OPTS>
+											</env>
+											<user>kapua</user>
+										</build>
+									</image>
+								</images>
+							</configuration>
+						</plugin>
+					</plugins>
 			</build>
 		</profile>
 	</profiles>
