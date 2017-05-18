@@ -40,7 +40,9 @@
             dataDirectory="./data"
             schedulePeriodForDestinationPurge="-1"
             networkConnectorStartAsync="true"
-            restartAllowed="false" useJmx="false" advisorySupport="false">
+            restartAllowed="false"
+            useJmx="true"
+            advisorySupport="false">
 
         <destinationPolicy>
             <policyMap>
@@ -62,7 +64,7 @@
                             <vmCursor/>
                         </pendingSubscriberPolicy>
                         <!--
-                            Limit of messages sent to the consumer but not yet acknoledged.
+                            Limit of messages sent to the consumer but not yet acknowledged.
                             The settings is per consumer so setting it to 1000.
                             http://activemq.apache.org/slow-consumer-handling.html
                         -->
@@ -82,7 +84,7 @@
                         But if you are using a group of consumers to distribute the workload, it is usually better to restrict the prefetch limit to
                         a very small number—for example, 0 or 1.
                         http://activemq.apache.org/per-destination-policies.html
-                        Restest with default prefetch of 1000. Is it better than 2?
+                        Retest with default prefetch of 1000. Is it better than 2?
                     -->
                     <policyEntry queue=">"
                                  producerFlowControl="true"
@@ -133,6 +135,9 @@
             <bean xmlns="http://www.springframework.org/schema/beans"
                   id="kapuaBrokerPlugin"
                   class="org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin"/>
+            <bean xmlns="http://www.springframework.org/schema/beans"
+                  id="applicationFilter"
+                  class="org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin"/>
             <discardingDLQBrokerPlugin dropAll="true"
                                        dropTemporaryTopics="true"
                                        dropTemporaryQueues="true"/>

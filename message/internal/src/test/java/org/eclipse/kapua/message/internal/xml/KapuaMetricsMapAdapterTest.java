@@ -15,15 +15,19 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class KapuaMetricsMapAdapterTest extends Assert {
+
+    private KapuaContainer container = new KapuaContainer() {};
 
     private static final String newline = System.lineSeparator();
 
@@ -41,7 +45,14 @@ public class KapuaMetricsMapAdapterTest extends Assert {
 
     @Before
     public void before() throws Exception {
+        container.startup();
+
         XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+    }
+
+    @After
+    public void after() {
+        container.shutdown();
     }
 
     @Test
