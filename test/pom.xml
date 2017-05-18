@@ -189,7 +189,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice</artifactId>
+            <artifactId>kapua-guice-service</artifactId>
         </dependency>
 
         <!-- External dependencies -->
