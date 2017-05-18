@@ -141,10 +141,4 @@ public class AccountServiceMock implements AccountService {
         return null;
     }
 
-    @Override
-    public void onKapuaEvent(KapuaEvent event) {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

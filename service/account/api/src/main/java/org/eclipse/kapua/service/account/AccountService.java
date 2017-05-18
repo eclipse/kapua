@@ -18,7 +18,6 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.event.KapuaEventListener;
 
 /**
  * AccountService exposes APIs to manage Account objects.<br>
@@ -31,8 +30,7 @@ import org.eclipse.kapua.service.event.KapuaEventListener;
 public interface AccountService extends KapuaEntityService<Account, AccountCreator>,
         KapuaUpdatableEntityService<Account>,
         KapuaNamedEntityService<Account>,
-        KapuaConfigurableService,
-        KapuaEventListener {
+        KapuaConfigurableService {
 
     /**
      * Finds the account by account identifiers

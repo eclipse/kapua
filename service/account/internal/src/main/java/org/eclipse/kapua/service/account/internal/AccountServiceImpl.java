@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.account.internal;
 
 import java.util.Objects;
 
-import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -25,6 +24,7 @@ import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResource
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -38,12 +38,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.event.FilterKapuaEvent;
-import org.eclipse.kapua.service.event.ActionPerformedOn;
-import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.RaiseKapuaEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link AccountService} implementation.
@@ -61,12 +55,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 > implements AccountService {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
-
     private static final Domain accountDomain = new AccountDomain();
-//    private static final KapuaLocator locator = KapuaLocator.getInstance();
-    @Inject private AuthorizationService authorizationService;
-    @Inject private PermissionFactory permissionFactory ;
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+    private static final PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
     
     /**
      * Constructor.
@@ -78,7 +70,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseKapuaEvent(eventActionPerformedOn = ActionPerformedOn.AFTER)
     public Account create(AccountCreator accountCreator)
             throws KapuaException {
         //
@@ -117,7 +108,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseKapuaEvent(eventActionPerformedOn = ActionPerformedOn.AFTER)
     public Account update(Account account)
             throws KapuaException {
         //
@@ -157,7 +147,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    @RaiseKapuaEvent(eventActionPerformedOn = ActionPerformedOn.AFTER)
     public void delete(KapuaId scopeId, KapuaId accountId)
             throws KapuaException {
 
@@ -335,11 +324,5 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             AccountQuery query = new AccountQueryImpl(accountId);
             return AccountDAO.query(em, query);
         });
-    }
-
-    @Override
-    @FilterKapuaEvent
-    public void onKapuaEvent(KapuaEvent event) {
-        logger.info("**** Hi there I'm ready to manage events !!!");
     }
 }
