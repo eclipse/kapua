@@ -325,6 +325,7 @@
 							</descriptors>
 							<finalName>kapua-cucumber-report</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
+							<attach>false</attach><!-- unable to attach a directory -->
 						</configuration>
 					</execution>
 				</executions>
