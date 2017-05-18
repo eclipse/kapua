@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *
+ *     
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
