@@ -226,7 +226,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
         boolean implies = super.implies(p);
 
-        if (!implies && getForwardable()) {
+        if (!implies && permission.getTargetScopeId() != null && getForwardable()) {
             implies = forwardPermission(p);
         }
 
