@@ -17,4 +17,5 @@ public interface LifecycleHandler {
 
     public List<LifecyleListener> getListeners();
     public void register(LifecyleListener listener);
+    public LifecyleListener deregister(LifecyleListener listener);
 }

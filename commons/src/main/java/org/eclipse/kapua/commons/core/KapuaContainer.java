@@ -13,6 +13,14 @@ package org.eclipse.kapua.commons.core;
 
 import java.util.List;
 
+import org.eclipse.kapua.commons.locator.CommonsLocator;
+
+/**
+ * Kpaua container hosts a Kapua application and provides the means to configure it
+ * and manage its lifecycle.
+ * 
+ * @since 1.0
+ */
 public abstract class KapuaContainer {
 
     private LifecycleHandler lifecycleHandler;
@@ -22,7 +30,7 @@ public abstract class KapuaContainer {
     }
 
     public KapuaContainer(KapuaConfiguration configuration) {
-        lifecycleHandler = ProviderLocator.getInstance().getLifecycleHandler();
+        lifecycleHandler = CommonsLocator.getInstance().getLifecycleHandler();
     }
 
     public final void startup() {

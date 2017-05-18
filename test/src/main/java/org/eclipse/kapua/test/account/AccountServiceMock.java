@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 @TestService
 @KapuaProvider
@@ -138,6 +139,12 @@ public class AccountServiceMock implements AccountService {
             throws KapuaException {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void onKapuaEvent(KapuaEvent event) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

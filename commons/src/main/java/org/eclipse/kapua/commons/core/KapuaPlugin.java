@@ -12,6 +12,11 @@
 package org.eclipse.kapua.commons.core;
 
 
+/**
+ * Kapua plugin hosts custom code
+ * 
+ * @since 1.0
+ */
 public interface KapuaPlugin {
 
     public void start();

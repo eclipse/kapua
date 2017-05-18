@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractKapuaPlugin {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaPlugin.class);
-
     public AbstractKapuaPlugin(LifecycleHandler lifecycleHandler) {
         
         final AbstractKapuaPlugin pluginInstance = this;
