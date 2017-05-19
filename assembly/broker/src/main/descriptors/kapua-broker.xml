@@ -183,16 +183,12 @@
                 <include>org.apache.httpcomponents:httpclient</include>
                 <include>org.apache.httpcomponents:httpcore</include>
                 <include>org.apache.lucene:*</include>
-                <include>com.twitter:jsr166e</include>
                 <include>joda-time:joda-time</include>
-                <include>org.joda:joda-convert</include>
-                <include>com.spatial4j:spatial4j</include>
                 <include>com.fasterxml.jackson.core:*</include>
                 <include>com.fasterxml.jackson.dataformat:*</include>
                 <include>com.carrotsearch:hppc</include>
                 <include>com.tdunning:t-digest</include>
                 <include>org.hdrhistogram:HdrHistogram</include>
-                <include>com.ning:compress-lzf</include>
                 <include>io.netty:netty</include>
 
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
