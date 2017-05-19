@@ -269,6 +269,15 @@
 		    <artifactId>netty</artifactId>
 		    <version>${elasticsearch-netty-3.version}</version>
 		</dependency>
+		<!-- log4j2 for ES -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-to-slf4j</artifactId>
+		</dependency>
     </dependencies>
 
     <build>
