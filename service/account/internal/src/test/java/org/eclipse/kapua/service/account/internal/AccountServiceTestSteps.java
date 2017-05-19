@@ -604,7 +604,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     // *****************
 
     // Custom String tuple class for name/value pairs as given in the cucumber feature file
-    public class StringTuple {
+    static public class StringTuple {
 
         private String name;
         private String value;
