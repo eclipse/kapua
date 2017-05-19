@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.util;
 
@@ -156,7 +157,7 @@ public class GwtKapuaModelConverter {
         KapuaLocator locator = KapuaLocator.getInstance();
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
         GroupQuery groupQuery = groupFactory.newQuery(convert(gwtGroupQuery.getScopeId()));
-        if (gwtGroupQuery.getName() != null && gwtGroupQuery.getName() != "") {
+        if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
             groupQuery
                     .setPredicate(new AttributePredicate<String>("name", gwtGroupQuery.getName(), Operator.LIKE));
         }
@@ -199,7 +200,7 @@ public class GwtKapuaModelConverter {
 
         // Convert query
         UserQuery userQuery = userFactory.newQuery(convert(gwtUserQuery.getScopeId()));
-        if (gwtUserQuery.getName() != null && gwtUserQuery.getName() != "") {
+        if (gwtUserQuery.getName() != null && !gwtUserQuery.getName().isEmpty()) {
             userQuery.setPredicate(new AttributePredicate<String>(UserPredicates.NAME, gwtUserQuery.getName(), Operator.LIKE));
         }
         userQuery.setOffset(loadConfig.getOffset());
