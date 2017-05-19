@@ -24,6 +24,9 @@ import org.elasticsearch.client.Client;
 
 public final class Elasticsearch {
 
+    private Elasticsearch() {
+    }
+
     /**
      * Refresh all Elasticsearch indices
      * 

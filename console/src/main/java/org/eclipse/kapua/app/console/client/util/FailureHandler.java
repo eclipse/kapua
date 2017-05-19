@@ -33,6 +33,9 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  */
 public class FailureHandler {
 
+    private FailureHandler() {
+    }
+
     private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 

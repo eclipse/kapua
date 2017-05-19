@@ -19,6 +19,9 @@ import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 
 public class TestDownloadSimulator {
 
+    private TestDownloadSimulator() {
+    }
+
     public static void main(final String[] args) throws Exception {
         final ScheduledExecutorService executor = Executors
                 .newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));

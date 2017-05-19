@@ -26,6 +26,7 @@
         <module name="UnusedImports"/>
 
         <module name="ExplicitInitialization"/>
+        <module name="HideUtilityClassConstructor"/>
         <module name="StringLiteralEquality"/>
 
         <module name="FallThrough">

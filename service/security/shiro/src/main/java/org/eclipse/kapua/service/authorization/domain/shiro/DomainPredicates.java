@@ -19,6 +19,9 @@ package org.eclipse.kapua.service.authorization.domain.shiro;
  */
 public class DomainPredicates {
 
+    private DomainPredicates() {
+    }
+
     /**
      * Domain name
      */

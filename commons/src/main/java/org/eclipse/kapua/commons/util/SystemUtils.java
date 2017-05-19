@@ -25,6 +25,9 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
  */
 public class SystemUtils {
 
+    private SystemUtils() {
+    }
+
     /**
      * Get the broker url. Gets the broker schema, host and port from the {@link SystemSetting}
      *

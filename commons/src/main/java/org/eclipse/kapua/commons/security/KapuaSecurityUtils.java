@@ -32,6 +32,9 @@ public class KapuaSecurityUtils {
 
     private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<>();
 
+    private KapuaSecurityUtils() {
+    }
+
     /**
      * Return the {@link KapuaSession} associated to the current thread session.
      *

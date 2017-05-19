@@ -26,6 +26,9 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class CryptoUtil {
 
+    private CryptoUtil() {
+    }
+
     /**
      * Evaluate the sha1 hash for the provided String
      *

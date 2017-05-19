@@ -15,6 +15,9 @@ import java.io.IOException;
 
 public class StandaloneDeviceRegistry {
 
+    private StandaloneDeviceRegistry() {
+    }
+
     public static void main(String... args) throws IOException {
         new ConsoleRequestProvider().start();
     }

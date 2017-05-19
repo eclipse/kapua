@@ -19,6 +19,9 @@ import com.google.gwt.core.client.GWT;
 
 public class MessageUtils {
 
+    private MessageUtils() {
+    }
+
     private static final ValidationMessages VMSGS = GWT.create(ValidationMessages.class);
 
     public static String get(String key) {

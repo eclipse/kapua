@@ -45,6 +45,9 @@ import com.google.common.base.Strings;
  */
 public class PredicateConverter {
 
+    private PredicateConverter () {
+    }
+    
     private static final StorablePredicateFactory storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
 
     /**

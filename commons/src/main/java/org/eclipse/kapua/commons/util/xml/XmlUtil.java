@@ -55,6 +55,9 @@ public class XmlUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(XmlUtil.class);
 
+    private XmlUtil() {
+    }
+
     private static JAXBContextProvider jaxbContextProvider;
 
     public static void setContextProvider(JAXBContextProvider provider) {

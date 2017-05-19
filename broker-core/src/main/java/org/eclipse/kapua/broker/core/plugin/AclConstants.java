@@ -22,6 +22,9 @@ import java.util.List;
  */
 public class AclConstants {
 
+    private AclConstants() {
+    }
+
     public static final String VT_TOPIC_PREFIX_TEMPLATE = "VirtualTopic.{0}";
     public static final String VT_TOPIC_PREFIX = "VirtualTopic.";
 

@@ -19,6 +19,9 @@ import com.google.gwt.core.client.GWT;
 
 public class HeaderTypeUtils {
 
+    private HeaderTypeUtils() {
+    }
+
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     public static String format(GwtHeader header) {

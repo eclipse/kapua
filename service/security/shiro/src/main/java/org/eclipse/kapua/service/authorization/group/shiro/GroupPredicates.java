@@ -23,6 +23,9 @@ import org.eclipse.kapua.service.authorization.group.Group;
  */
 public class GroupPredicates {
 
+    private GroupPredicates() {
+    }
+
     /**
      * {@link Group} name
      */

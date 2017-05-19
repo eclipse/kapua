@@ -22,7 +22,10 @@ import org.slf4j.LoggerFactory;
  */
 public class JmsConnectionFactory {
 
-    private static Logger s_logger = LoggerFactory.getLogger(JmsConnectionFactory.class);
+    private JmsConnectionFactory () {
+    }
+    
+    private static final Logger s_logger = LoggerFactory.getLogger(JmsConnectionFactory.class);
 
     /**
      * ActiveMQ vm connection factory instance

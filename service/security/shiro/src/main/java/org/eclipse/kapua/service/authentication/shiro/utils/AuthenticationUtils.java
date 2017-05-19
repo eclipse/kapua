@@ -34,6 +34,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  */
 public class AuthenticationUtils {
 
+    private AuthenticationUtils() {
+    }
+
     /**
      * Encrypts and return the plain credential value (unencrypted value).
      * 

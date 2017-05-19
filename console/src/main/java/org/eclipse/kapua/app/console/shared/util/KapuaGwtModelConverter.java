@@ -91,6 +91,9 @@ import org.eclipse.kapua.service.user.internal.UserDomain;
 
 public class KapuaGwtModelConverter {
 
+    private KapuaGwtModelConverter() {
+    }
+
     /**
      * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
      *

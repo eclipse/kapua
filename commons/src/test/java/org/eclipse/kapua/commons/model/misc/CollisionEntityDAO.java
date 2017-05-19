@@ -18,6 +18,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class CollisionEntityDAO {
 
+    private CollisionEntityDAO() {
+    }
+
     public static CollisionEntity create(EntityManager em, CollisionEntityCreator collisionEntityCreator)
             throws KapuaException {
         //

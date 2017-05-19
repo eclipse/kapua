@@ -19,6 +19,9 @@ package org.eclipse.kapua.service.authentication.credential;
  */
 public class CredentialPredicates {
 
+    private CredentialPredicates() {
+    }
+
     public static final String USER_ID = "userId";
     public static final String CREDENTIAL_TYPE = "credentialType";
     public static final String CREDENTIAL_KEY = "credentialKey";

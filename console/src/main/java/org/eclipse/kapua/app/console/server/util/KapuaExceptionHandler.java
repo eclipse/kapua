@@ -25,27 +25,30 @@ public class KapuaExceptionHandler {
 
     private static final Logger s_logger = LoggerFactory.getLogger(KapuaExceptionHandler.class);
 
+    private KapuaExceptionHandler() {
+    }
+
     public static void handle(Throwable t) throws GwtKapuaException {
         if (t instanceof KapuaUnauthenticatedException) {
 
             // sessions has expired
             throw new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, t);
         } else if (t instanceof KapuaAuthenticationException) {
-            
+
             final KapuaAuthenticationException ke = (KapuaAuthenticationException) t;
             final String cause = ke.getCode().name();
 
             // INVALID_USERNAME_PASSWORD
-            
+
             if (cause.equals(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS.name())) {
                 throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
             }
             if (cause.equals(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL.name())) {
                 throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
             }
-            
+
             // LOCKED_USER
-            
+
             if (cause.equals(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL.name())) {
                 throw new GwtKapuaException(GwtKapuaErrorCode.LOCKED_USER, t);
             }

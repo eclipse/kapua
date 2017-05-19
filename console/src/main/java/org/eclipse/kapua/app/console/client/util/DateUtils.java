@@ -22,6 +22,9 @@ public class DateUtils {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
+    private DateUtils() {
+    }
+
     /**
      * formatDate takes a date an return its string representation with date and time
      */

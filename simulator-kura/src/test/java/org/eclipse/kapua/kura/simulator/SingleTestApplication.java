@@ -36,6 +36,9 @@ public class SingleTestApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(SingleTestApplication.class);
 
+    private SingleTestApplication() {
+    }
+
     public static void main(final String[] args) throws Throwable {
 
         toInfinityAndBeyond();

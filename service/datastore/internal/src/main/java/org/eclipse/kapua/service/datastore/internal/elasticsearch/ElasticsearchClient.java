@@ -22,6 +22,9 @@ import org.elasticsearch.client.Client;
  */
 public class ElasticsearchClient {
 
+    private ElasticsearchClient() {
+    }
+
     private static ElasticsearchClientProvider clientProvider;
 
     /**

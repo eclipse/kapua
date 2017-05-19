@@ -19,6 +19,9 @@ import cucumber.api.java.Before;
  */
 public final class HookPriorities {
 
+    private HookPriorities() {
+    }
+
     /*
      * Fire up the database first and shut it down last
      */

@@ -29,6 +29,9 @@ import org.eclipse.kapua.service.account.AccountListResult;
  */
 public class AccountDAO {
 
+    private AccountDAO() {
+    }
+
     /**
      * Creates and return new Account
      * 

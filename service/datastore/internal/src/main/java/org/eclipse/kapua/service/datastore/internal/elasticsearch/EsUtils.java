@@ -34,6 +34,9 @@ public class EsUtils {
 
     private static final Logger s_logger = LoggerFactory.getLogger(EsUtils.class);
 
+    private EsUtils() {
+    }
+
     private static final char SPECIAL_DOT = '.';
     private static final String SPECIAL_DOT_ESC = "$2e";
 

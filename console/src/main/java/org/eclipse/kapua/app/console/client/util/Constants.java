@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.console.client.util;
 
 public class Constants {
 
+    private Constants() {
+    }
+
     public static final int LABEL_WIDTH_FORM = 125;
     public static final int LABEL_WIDTH_DEVICE_FORM = 150;
     public static final int LABEL_WIDTH_CONFIG_FORM = 225;

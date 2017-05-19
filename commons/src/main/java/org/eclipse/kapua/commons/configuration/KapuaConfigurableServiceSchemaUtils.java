@@ -29,6 +29,9 @@ public class KapuaConfigurableServiceSchemaUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaConfigurableServiceSchemaUtils.class);
 
+    private KapuaConfigurableServiceSchemaUtils() {
+    }
+
     public static String DEFAULT_PATH = "src/main/sql/H2";
     public static String DEFAULT_FILTER = "sys_*.sql";
     public static String DROP_FILTER = "sys_*_drop.sql";

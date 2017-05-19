@@ -15,6 +15,9 @@ import com.google.gwt.resources.client.ImageResource;
 
 public class ImageUtils {
 
+    private ImageUtils() {
+    }
+
     public static String toHTML(ImageResource ir, String altText) {
         StringBuilder sb = new StringBuilder();
         sb.append("<img src='")

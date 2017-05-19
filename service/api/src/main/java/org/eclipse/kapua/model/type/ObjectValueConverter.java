@@ -15,6 +15,9 @@ import javax.xml.bind.DatatypeConverter;
 
 public class ObjectValueConverter {
 
+    private ObjectValueConverter() {
+    }
+
     public static String toString(Object value) {
 
         String stringValue = null;

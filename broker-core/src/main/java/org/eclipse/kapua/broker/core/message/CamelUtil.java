@@ -30,6 +30,9 @@ public class CamelUtil {
 
     public static final Logger logger = LoggerFactory.getLogger(CamelUtil.class);
 
+    private CamelUtil() {
+    }
+
     /**
      * Extract the topic from the {@link Message} looking for Kapua header property that handles this value and inspecting Camel header properties)
      *

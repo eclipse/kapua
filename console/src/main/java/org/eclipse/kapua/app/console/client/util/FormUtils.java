@@ -19,6 +19,10 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.MultiField;
 
 public class FormUtils {
+
+    private FormUtils() {
+    }
+
     public static boolean isDirty(FieldSet fieldSet) {
         List<Component> fields = fieldSet.getItems();
         for (int i = 0; i < fields.size(); i++) {

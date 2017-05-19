@@ -15,6 +15,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
 public class KapuaSafeHtmlUtils {
 
+    private KapuaSafeHtmlUtils() {
+    }
+
     public static String htmlEscape(String unsafeHtml) {
         if (unsafeHtml == null) {
             return null;

@@ -15,6 +15,9 @@ import com.extjs.gxt.ui.client.widget.Window;
 
 public class DialogUtils {
 
+    private DialogUtils() {
+    }
+
     /**
      * It resize the dialog if the max format height exceeds the browser window size.
      * If needed the resizing will be performed by 10% steps and caps at 50% of the original size of the dialog.

@@ -29,6 +29,9 @@ import org.eclipse.persistence.exceptions.DatabaseException;
  */
 public class KapuaExceptionUtils {
 
+    private KapuaExceptionUtils() {
+    }
+
     /**
      * Converts a low-level PersistenceException/SQLException to a business-level KapuaException.
      *

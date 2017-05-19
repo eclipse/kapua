@@ -19,6 +19,9 @@ package org.eclipse.kapua.service.authorization.access;
  */
 public class AccessInfoPredicates {
 
+    private AccessInfoPredicates() {
+    }
+
     /**
      * User id
      */
