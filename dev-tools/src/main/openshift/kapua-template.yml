@@ -383,7 +383,7 @@ objects:
             value: ${ELASTIC_SEARCH_MEMORY}
           - name: ES_JAVA_OPTS
             value: -Des.cluster.name=kapua-datastore
-          image: elasticsearch:2.4
+          image: elasticsearch:5.3
           imagePullPolicy: Always
           name: elasticsearch
           ports:
