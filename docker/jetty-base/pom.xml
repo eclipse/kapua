@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!--
+    Copyright (c) 2017 Red Hat Inc and others
+   
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Red Hat Inc - initial API and implementation
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.kapua</groupId>
+        <artifactId>kapua-docker</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kapua-docker-jetty-base</artifactId>
+    <name>${project.artifactId}</name>
+
+    <properties>
+        <java.base.image>openjdk:8u121-jre-alpine</java.base.image>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <timestamp>latest</timestamp>
+            </properties>
+        </profile>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${docker.account}/jetty-base</name>
+                                    <build>
+                                        <from>${docker.account}/java-base</from>
+                                        <runCmds>
+                                            <runCmd><![CDATA[
+									apk update && apk add bash && \
+									cd /home/kapua && \
+									curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
+									mkdir -p jetty && cd jetty && \
+									tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
+									rm ../jetty-distribution.tar.gz && \
+									chown -R kapua:kapua /home/kapua && \
+									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
+									chown kapua:kapua /var/lib/jetty && \
+									cd /var/lib/jetty && \
+									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
+									]]></runCmd>
+                                        </runCmds>
+                                        <assembly>
+                                            <descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
+                                            <basedir>/</basedir>
+                                        </assembly>
+                                        <workdir>/var/lib/jetty</workdir>
+                                        <entryPoint>
+                                            <exec>
+                                                <arg>/home/kapua/run-jetty</arg>
+                                            </exec>
+                                        </entryPoint>
+                                        <ports>
+                                            <port>8080</port>
+                                            <port>8778</port>
+                                        </ports>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

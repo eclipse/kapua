@@ -30,6 +30,7 @@
 
     <modules>
         <module>java-base</module>
+        <module>jetty-base</module>
         <module>sql</module>
         <module>broker</module>
         <module>console</module>

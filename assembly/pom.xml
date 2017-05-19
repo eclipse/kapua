@@ -22,20 +22,7 @@
 	<artifactId>kapua-assembly</artifactId>
 	<packaging>pom</packaging>
 
-	<properties>
-		<docker.account>kapua</docker.account>
-		<java.base.image>openjdk:8u121-jre-alpine</java.base.image>
-	</properties>
-
 	<dependencies>
-	
-		<dependency>
-			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>kapua-docker-java-base</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-	
 		<!-- console and api dependency -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
@@ -353,67 +340,7 @@
 							</artifactItems>
 						</configuration>
 					</execution>
-					<execution>
-						<id>unpack-tomcat</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.tomcat</groupId>
-									<artifactId>tomcat</artifactId>
-									<type>tar.gz</type>
-									<outputDirectory>target/dependencies/tomcat</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<configuration>
-					<images>
-						<image>
-							<name>${docker.account}/jetty-base</name>
-							<build>
-								<from>${docker.account}/java-base</from>
-								<runCmds>
-									<runCmd><![CDATA[
-									apk update && apk add bash && \
-									cd /home/kapua && \
-									curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
-									mkdir -p jetty && cd jetty && \
-									tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
-									rm ../jetty-distribution.tar.gz && \
-									chown -R kapua:kapua /home/kapua && \
-									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
-									chown kapua:kapua /var/lib/jetty && \
-									cd /var/lib/jetty && \
-									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
-									]]></runCmd>
-								</runCmds>
-								<assembly>
-									<descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
-									<basedir>/</basedir>
-								</assembly>
-								<workdir>/var/lib/jetty</workdir>
-								<entryPoint>
-									<exec>
-										<arg>/home/kapua/run-jetty</arg>
-									</exec>
-								</entryPoint>
-								<ports>
-									<port>8080</port>
-									<port>8778</port>
-								</ports>
-							</build>
-						</image>
-					</images>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -463,26 +390,6 @@
 						</executions>
 					</plugin>
 				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>docker</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<defaultGoal>clean install docker:build</defaultGoal>
-			</build>
-		</profile>
-
-		<profile>
-			<id>docker-push</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<defaultGoal>clean install docker:build docker:push</defaultGoal>
 			</build>
 		</profile>
 	</profiles>
