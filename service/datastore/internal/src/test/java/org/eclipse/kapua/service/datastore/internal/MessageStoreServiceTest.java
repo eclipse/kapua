@@ -74,6 +74,8 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
@@ -417,9 +419,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
-        sort.add(orderConstraint(descending(EsSchema.MESSAGE_SENT_ON), Date.class));
-        sort.add(orderConstraint(ascending(EsSchema.MESSAGE_TIMESTAMP), Date.class));
-        sort.add(orderConstraint(descending(EsSchema.MESSAGE_CLIENT_ID), String.class));
+        sort.add(orderConstraint(descending(MessageSchema.MESSAGE_SENT_ON), Date.class));
+        sort.add(orderConstraint(ascending(MessageSchema.MESSAGE_TIMESTAMP), Date.class));
+        sort.add(orderConstraint(descending(MessageSchema.MESSAGE_CLIENT_ID), String.class));
         MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), messagesCount + 1, sort);
         setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn1, capturedOn2));
 
@@ -1016,7 +1018,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
-        sort.add(orderConstraint(ascending(EsSchema.METRIC_MTR_NAME_FULL), String.class));
+        sort.add(orderConstraint(ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL), String.class));
 
         MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
@@ -1372,7 +1374,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1389,7 +1391,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(ChannelInfoSchema.CHANNEL_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1414,7 +1416,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(MetricInfoSchema.METRIC_MTR_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1431,7 +1433,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(ClientInfoSchema.CLIENT_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }

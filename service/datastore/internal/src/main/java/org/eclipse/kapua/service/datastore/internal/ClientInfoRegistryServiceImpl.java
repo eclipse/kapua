@@ -195,7 +195,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      */
     private void updateLastPublishedFields(ClientInfo clientInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        sort.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        sort.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(clientInfo.getScopeId());
         messageQuery.setAskTotalCount(true);

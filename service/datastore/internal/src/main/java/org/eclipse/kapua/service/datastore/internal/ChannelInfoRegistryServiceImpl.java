@@ -198,18 +198,13 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      */
     private void updateLastPublishedFields(ChannelInfo channelInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        sort.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        sort.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(channelInfo.getScopeId());
         messageQuery.setAskTotalCount(true);
         messageQuery.setFetchStyle(StorableFetchStyle.FIELDS);
         messageQuery.setLimit(1);
         messageQuery.setOffset(0);
-        List<SortField> sort = new ArrayList<SortField>();
-        SortField sortTimestamp = new SortFieldImpl();
-        sortTimestamp.setField(MessageSchema.MESSAGE_TIMESTAMP);
-        sortTimestamp.setSortDirection(SortDirection.DESC);
-        sort.add(sortTimestamp);
         messageQuery.setSortFields(sort);
 
         RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(ChannelInfoSchema.CHANNEL_TIMESTAMP), channelInfo.getFirstMessageOn(), null);

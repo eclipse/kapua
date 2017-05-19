@@ -70,6 +70,7 @@
         <elasticsearch-netty-3.version>3.10.6.Final</elasticsearch-netty-3.version>
         <elasticsearch-netty-4.version>4.1.7.Final</elasticsearch-netty-4.version>
         <jackson.version>2.8.6</jackson.version> <!-- same version used by elasticsearch -->
+        <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <tomcat.version>8.0.41</tomcat.version>

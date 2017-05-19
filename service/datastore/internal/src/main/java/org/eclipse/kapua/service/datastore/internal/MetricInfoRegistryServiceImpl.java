@@ -196,7 +196,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      */
     private void updateLastPublishedFields(MetricInfo metricInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        sort.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        sort.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(metricInfo.getScopeId());
         messageQuery.setAskTotalCount(true);

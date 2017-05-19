@@ -49,6 +49,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -304,7 +305,10 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             }
         } catch (IndexNotFoundException infe) {
             logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+        } catch (SearchPhaseExecutionException spee) {
+            logger.warn("Generic search error {}", spee.getMessage(), spee);
         }
+
         ResultList<T> result = new ResultList<T>(totalCount);
         if (searchHits != null) {
             for (SearchHit searchHit : searchHits) {
@@ -333,6 +337,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             searchHits = response.getHits();
         } catch (IndexNotFoundException infe) {
             logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+        } catch (SearchPhaseExecutionException spee) {
+            logger.warn("Generic search error {}", spee.getMessage(), spee);
         }
         if (searchHits == null) {
             return 0;
@@ -377,6 +383,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     .get(queryTimeout);
         } catch (IndexNotFoundException infe) {
             logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+        } catch (SearchPhaseExecutionException spee) {
+            logger.warn("Generic search error {}", spee.getMessage(), spee);
         }
 
         if (scrollResponse != null) {
