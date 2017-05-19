@@ -23,7 +23,6 @@ import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
-import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;

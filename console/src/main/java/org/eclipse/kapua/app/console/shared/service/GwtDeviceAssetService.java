@@ -13,13 +13,11 @@ package org.eclipse.kapua.app.console.shared.service;
 
 import java.util.List;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
 import org.eclipse.kapua.app.console.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
-import org.eclipse.kapua.model.id.KapuaId;
 
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.google.gwt.user.client.rpc.RemoteService;

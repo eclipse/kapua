@@ -15,7 +15,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
-import org.eclipse.kapua.app.console.servlet.KapuaHttpServlet;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.slf4j.Logger;
