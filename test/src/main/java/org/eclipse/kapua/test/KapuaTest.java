@@ -44,7 +44,7 @@ public class KapuaTest extends Assert {
 
     protected static Random random = new Random();
     protected static KapuaContainer container = new KapuaContainer() {};
-    protected static KapuaLocator locator = KapuaLocatorImpl.getInstance();
+    protected KapuaLocator locator;
 
     protected static KapuaId adminUserId;
     protected static KapuaId adminScopeId;
@@ -55,10 +55,11 @@ public class KapuaTest extends Assert {
     public void setUp() throws SQLException {
         logger.debug("Setting up test...");
         container.startup();
+        locator = KapuaLocatorImpl.getInstance();
         try {
             connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
 
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+            new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
             //
             // Login
@@ -92,7 +93,6 @@ public class KapuaTest extends Assert {
         }
 
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
 
             authenticationService.logout();

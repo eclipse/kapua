@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -137,6 +138,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
+        container.startup();
+        locator = KapuaLocatorImpl.getInstance();
 
         this.scenario = scenario;
         this.isException = false;
@@ -185,6 +188,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
 
         KapuaSecurityUtils.clearSession();
+
+        container.shutdown();
     }
 
     @Given("^User with name \"(.*)\" in scope with id (\\d+)$")

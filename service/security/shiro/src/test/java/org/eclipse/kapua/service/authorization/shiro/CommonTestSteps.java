@@ -20,10 +20,12 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 
 // Implementation of Gherkin steps used in various integration test scenarios.
 @ScenarioScoped
@@ -40,7 +42,15 @@ public class CommonTestSteps extends AbstractKapuaSteps {
     // Database setup and tear-down steps
     @Before
     public void beforeScenario(Scenario scenario) throws KapuaException {
+        container.startup();
+        locator = KapuaLocatorImpl.getInstance();
+
         commonData.clearData();
+    }
+
+    @After
+    public void afterScenario() throws KapuaException {
+        container.shutdown();
     }
 
     // Cucumber test steps
