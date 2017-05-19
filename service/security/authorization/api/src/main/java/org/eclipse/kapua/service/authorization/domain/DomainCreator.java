@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.permission.Action;

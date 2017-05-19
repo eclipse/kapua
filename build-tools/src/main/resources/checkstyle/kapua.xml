@@ -23,6 +23,8 @@
 
     <module name="TreeWalker">
         <module name="AvoidStarImport"/>
+        <module name="UnusedImports"/>
+
         <module name="FallThrough">
            <property name="reliefPattern" value="\$FALL-THROUGH\$"/>
         </module>
