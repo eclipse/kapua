@@ -17,10 +17,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import cucumber.api.java.After;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
@@ -116,6 +119,10 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
+        container = new KapuaContainer() {};
+        container.startup();
+        locator = KapuaLocator.getInstance();
+
         this.scenario = scenario;
 
         // Instantiate all the services and factories that are required by the tests
@@ -141,6 +148,11 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         // Clean up the test data scratchpads
         accessData.clearData();
         commonData.clearData();
+    }
+
+    @After
+    public void afterScenario() throws KapuaException {
+        container.shutdown();
     }
 
     // *************************************

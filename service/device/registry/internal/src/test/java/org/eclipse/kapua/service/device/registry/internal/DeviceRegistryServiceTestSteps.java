@@ -32,6 +32,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -130,8 +131,10 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     // Setup and tear-down steps
 
     @Before
-    public void beforeScenario(Scenario scenario)
-            throws Exception {
+    public void beforeScenario(Scenario scenario) throws Exception {
+        container.startup();
+        locator = KapuaLocatorImpl.getInstance();
+
         this.scenario = scenario;
         exceptionCaught = false;
 
@@ -186,6 +189,8 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
+
+        container.shutdown();
     }
 
     // The Cucumber test steps

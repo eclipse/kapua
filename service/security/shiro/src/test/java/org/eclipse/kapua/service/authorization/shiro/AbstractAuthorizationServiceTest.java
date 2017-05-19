@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -32,7 +33,8 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
     private static String DEFAULT_PATH = "../../../dev-tools/src/main/database";
     private static String DROP_ALL_TABLES = "all_drop.sql";
 
-    protected static final KapuaLocator locator = KapuaLocator.getInstance();
+    protected KapuaContainer container;
+    protected KapuaLocator locator;
     protected static final KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
     protected static Random random = new Random();
 

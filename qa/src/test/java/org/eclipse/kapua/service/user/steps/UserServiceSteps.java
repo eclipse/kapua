@@ -29,6 +29,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
@@ -123,6 +124,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
     @Before
     public void beforeScenario(Scenario scenario) throws KapuaException {
+        container.startup();
+        locator = KapuaLocatorImpl.getInstance();
 
         // Services by default Locator
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -144,6 +147,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         } catch (Exception e) {
             logger.error("Failed to log out in @After", e);
         }
+
+        container.shutdown();
     }
 
     @Given("^Account$")

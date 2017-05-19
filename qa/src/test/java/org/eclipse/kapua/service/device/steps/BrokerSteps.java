@@ -132,8 +132,9 @@ public class BrokerSteps extends Assert {
 
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
-
         container.startup();
+        locator = KapuaLocatorImpl.getInstance();
+
         //KapuaLocator locator = KapuaLocator.getInstance();
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
@@ -158,7 +159,7 @@ public class BrokerSteps extends Assert {
 
         this.stepData = null;
 
-        container.startup();
+        container.shutdown();
     }
 
     @When("^I start the Kura Mock")

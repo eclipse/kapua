@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -113,8 +114,10 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     // Setup and tear-down steps
 
     @Before
-    public void beforeScenario(Scenario scenario)
-            throws Exception {
+    public void beforeScenario(Scenario scenario) throws Exception {
+        container.startup();
+        locator = KapuaLocatorImpl.getInstance();
+
         this.scenario = scenario;
         exceptionCaught = false;
 
@@ -160,6 +163,8 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         scriptSession(AccountEntityManagerFactory.getInstance(), DROP_ACCOUNT_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
+
+        container.shutdown();
     }
 
     // The Cucumber test steps
