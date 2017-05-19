@@ -68,12 +68,12 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     /**
      * User service is implemented in beforeScenario()
      */
-    private UserService userService = null;
+    private UserService userService;
 
     /**
      * User factory is implemented in beforeScenario()
      */
-    private UserFactory userFactory = null;
+    private UserFactory userFactory;
 
     public static String DEFAULT_COMMONS_PATH = "../../../commons/";
     public static String DROP_FILTER = "usr_*_drop.sql";
@@ -118,12 +118,12 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     /**
      * Metadata boolean value.
      */
-    private Boolean boolVal = null;
+    private Boolean boolVal;
 
     /**
      * Metadata integer value.
      */
-    private Integer intVal = null;
+    private Integer intVal;
 
     /**
      * Set of users that are created in step.

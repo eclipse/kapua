@@ -43,7 +43,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
     private static final ConsoleUserMessages USR_MSGS = GWT.create(ConsoleUserMessages.class);
     private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
 
-    private String userId = null;
+    private String userId;
 
     private UserTabPermissionToolbar toolbar;
 

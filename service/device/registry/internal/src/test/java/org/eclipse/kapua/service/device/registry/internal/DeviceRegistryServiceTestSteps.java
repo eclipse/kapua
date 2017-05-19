@@ -97,24 +97,24 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     Scenario scenario;
 
     // Various device registry related service references
-    DeviceRegistryService deviceRegistryService = null;
-    DeviceFactory deviceFactory = null;
+    DeviceRegistryService deviceRegistryService;
+    DeviceFactory deviceFactory;
 
     // Device registry related objects
-    DeviceCreator deviceCreator = null;
-    Device device = null;
+    DeviceCreator deviceCreator;
+    Device device;
 
     // The registry ID of a device
-    KapuaId deviceId = null;
+    KapuaId deviceId;
 
     // Check if exception was fired in step.
-    boolean exceptionCaught = false;
+    boolean exceptionCaught;
 
     // A list result for device query operations
-    DeviceListResult deviceList = null;
+    DeviceListResult deviceList;
 
     // Item count
-    long count = 0;
+    long count;
 
     // String scratchpad
     String stringValue;

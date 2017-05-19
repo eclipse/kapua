@@ -79,12 +79,12 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     // Device registry related objects
     DeviceRegistryService deviceRegistryService = new DeviceRegistryServiceImpl();
     DeviceFactory deviceFactory = new DeviceFactoryImpl();
-    DeviceCreator deviceCreator = null;
-    DeviceImpl device = null;
-    DeviceQuery query = null;
+    DeviceCreator deviceCreator;
+    DeviceImpl device;
+    DeviceQuery query;
 
     // Check if exception was fired in step.
-    boolean exceptionCaught = false;
+    boolean exceptionCaught;
 
     // *************************************
     // Definition of Cucumber scenario steps

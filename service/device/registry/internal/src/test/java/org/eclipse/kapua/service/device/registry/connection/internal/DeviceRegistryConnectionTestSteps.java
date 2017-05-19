@@ -87,30 +87,30 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
     Scenario scenario;
 
     // Various device connection related service references
-    DeviceConnectionService deviceConnectionService = null;
-    DeviceConnectionFactory deviceConnectionFactory = null;
+    DeviceConnectionService deviceConnectionService;
+    DeviceConnectionFactory deviceConnectionFactory;
 
     // Device connection related objects
-    DeviceConnection connection = null;
-    DeviceConnectionListResult connectionList = null;
+    DeviceConnection connection;
+    DeviceConnectionListResult connectionList;
 
     // Device registry related objects
-    DeviceConnectionCreator connectionCreator = null;
-    Device device = null;
+    DeviceConnectionCreator connectionCreator;
+    Device device;
 
     // The registry IDs
-    KapuaId userId = null;
-    KapuaId scopeId = null;
-    KapuaId connectionId = null;
-    KapuaId deviceId = null;
+    KapuaId userId;
+    KapuaId scopeId;
+    KapuaId connectionId;
+    KapuaId deviceId;
 
     // Scratchpad data
     String stringVal = "";
-    int intVal = 0;
-    boolean boolVal = false;
+    int intVal;
+    boolean boolVal;
 
     // Check if exception was fired in step.
-    boolean exceptionCaught = false;
+    boolean exceptionCaught;
 
     // *************************************
     // Definition of Cucumber scenario steps

@@ -41,7 +41,7 @@ public class DateRangeSelectorChart extends LayoutContainer {
     private SplitButton m_dateRange;
     private DateRangeSelectorListener m_listener;
 
-    private int m_currentIndex = 0;
+    private int m_currentIndex;
 
     protected void onRender(Element parent, int index) {
 

@@ -18,7 +18,7 @@ import com.extjs.gxt.ui.client.data.LoadEvent;
 
 public class KapuaBasePagingLoader<D extends KapuaPagingLoadResult<?>> extends BasePagingLoader<D> implements KapuaPagingLoader<D> {
 
-    protected int virtualOffset = 0;
+    protected int virtualOffset;
 
     @SuppressWarnings("rawtypes")
     public KapuaBasePagingLoader(DataProxy proxy) {

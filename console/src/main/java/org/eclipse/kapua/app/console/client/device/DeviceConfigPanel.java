@@ -1062,7 +1062,7 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class StringValidator implements Validator {
 
-        private int m_minValue = 0;
+        private int m_minValue;
         private int m_maxValue = 255;
 
         public StringValidator(String minValue, String maxValue) {

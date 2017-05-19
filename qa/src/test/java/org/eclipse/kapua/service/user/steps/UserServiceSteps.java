@@ -107,7 +107,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     /**
      * Inter step data scratchpad.
      */
-    private StepData stepData = null;
+    private StepData stepData;
 
     @Inject
     public UserServiceSteps(StepData stepData, /*dependency*/ DBHelper dbHelper) {

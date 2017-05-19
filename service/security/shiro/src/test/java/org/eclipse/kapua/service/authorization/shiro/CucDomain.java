@@ -18,10 +18,10 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 
 public class CucDomain {
 
-    private String name = null;
-    private String serviceName = null;
-    private String actions = null;
-    private Set<Actions> actionSet = null;
+    private String name;
+    private String serviceName;
+    private String actions;
+    private Set<Actions> actionSet;
 
     public void doParse() {
         if (this.actions != null) {

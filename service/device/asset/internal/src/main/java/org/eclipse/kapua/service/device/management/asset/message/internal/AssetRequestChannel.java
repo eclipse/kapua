@@ -24,8 +24,8 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
 public class AssetRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
 
     private KapuaMethod method;
-    private boolean read = false;
-    private boolean write = false;
+    private boolean read;
+    private boolean write;
 
     @Override
     public KapuaMethod getMethod() {

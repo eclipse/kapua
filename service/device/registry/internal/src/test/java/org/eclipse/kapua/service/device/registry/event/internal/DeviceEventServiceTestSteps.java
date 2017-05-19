@@ -85,27 +85,27 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     Scenario scenario;
 
     // Various device registry related service references
-    DeviceEventService eventService = null;
-    DeviceEventFactory eventFactory = null;
+    DeviceEventService eventService;
+    DeviceEventFactory eventFactory;
 
     // Device registry related objects
-    DeviceEvent event = null;
-    DeviceEventCreator eventCreator = null;
+    DeviceEvent event;
+    DeviceEventCreator eventCreator;
 
     // The entity ID of the last event
-    KapuaId eventId = null;
+    KapuaId eventId;
 
-    KapuaId scopeId = null;
-    KapuaId userId = null;
+    KapuaId scopeId;
+    KapuaId userId;
 
     // Check if exception was fired in step.
-    boolean exceptionCaught = false;
+    boolean exceptionCaught;
 
     // A list result for device query operations
-    DeviceEventListResult eventList = null;
+    DeviceEventListResult eventList;
 
     // Item count
-    long count = 0;
+    long count;
 
     // String scratchpad
     String stringValue;

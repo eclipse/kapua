@@ -80,7 +80,7 @@ public class MessageStoreConfiguration {
 
     private static final Duration TTL_DEFAULT_DAYS = Duration.ofDays(30);                                         // TODO define as a default configuration
 
-    private Date expirationDate = null;
+    private Date expirationDate;
     private boolean dataStorageEnabled = true;
     private Duration dataTimeToLive = Duration.ofDays(90);
     private long rxByteLimit = 1000000;

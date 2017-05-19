@@ -63,7 +63,7 @@ public class SimpleDeployApplication extends AbstractDeployApplication implement
     private final Map<Long, BundleState> bundles = new TreeMap<>();
     private final List<DeploymentPackageInformation> packages = new LinkedList<>();
     private final DownloadSimulator downloadSimulator;
-    private long nextFreeBundleId = 0;
+    private long nextFreeBundleId;
 
     public SimpleDeployApplication(final ScheduledExecutorService downloadExecutor) {
         this.downloadSimulator = new DownloadSimulator(downloadExecutor, 10 * 1024);

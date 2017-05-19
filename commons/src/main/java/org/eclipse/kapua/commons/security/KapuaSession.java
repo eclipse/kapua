@@ -58,7 +58,7 @@ public class KapuaSession implements Serializable {
      * Trusted mode.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      */
-    private boolean trustedMode = false;
+    private boolean trustedMode;
 
     /**
      * Default constructor

@@ -19,7 +19,7 @@ public class CollisionIdGenerator {
     private BigInteger startIncrementalValue;
     private int fixedValueGenerationCount;
 
-    private int extractedValues = 0;
+    private int extractedValues;
 
     public CollisionIdGenerator(String fixedValue, BigInteger startIncrementalValue, int fixedValueGenerationCount) {
         this.fixedValue = fixedValue;

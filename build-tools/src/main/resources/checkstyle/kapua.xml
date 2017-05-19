@@ -25,6 +25,7 @@
         <module name="AvoidStarImport"/>
         <module name="UnusedImports"/>
 
+        <module name="ExplicitInitialization"/>
         <module name="StringLiteralEquality"/>
 
         <module name="FallThrough">

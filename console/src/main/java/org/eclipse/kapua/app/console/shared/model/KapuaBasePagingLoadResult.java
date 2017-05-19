@@ -24,8 +24,8 @@ public class KapuaBasePagingLoadResult<Data> extends BasePagingLoadResult<Data> 
      */
     private static final long serialVersionUID = -7139907276082424059L;
 
-    protected int virtualOffset = 0;
-    private int lastOffset = 0;
+    protected int virtualOffset;
+    private int lastOffset;
     private Stack<KapuaBasePagingCursor> cursorOffset;
 
     KapuaBasePagingLoadResult() {

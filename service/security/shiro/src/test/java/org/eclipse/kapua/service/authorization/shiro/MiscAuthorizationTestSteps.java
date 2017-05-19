@@ -38,15 +38,15 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
     private static final Logger s_logger = LoggerFactory.getLogger(AccessInfoServiceTestSteps.class);
 
     // Test data scratchpads
-    private CommonTestData commonData = null;
-    private MiscAuthorizationTestData miscData = null;
+    private CommonTestData commonData ;
+    private MiscAuthorizationTestData miscData ;
 
     // Currently executing scenario.
     @SuppressWarnings("unused")
     private Scenario scenario;
 
     // Various Shiro Authorization related service references
-    private PermissionFactory permissionFactory = null;
+    private PermissionFactory permissionFactory ;
 
     @Inject
     public MiscAuthorizationTestSteps(MiscAuthorizationTestData miscData, CommonTestData commonData) {

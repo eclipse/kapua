@@ -21,11 +21,11 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 
 public class CucRole {
 
-    private String name = null;
-    private Integer scopeId = null;
-    private String actions = null;
-    private KapuaId id = null;
-    private Set<Actions> actionSet = null;
+    private String name;
+    private Integer scopeId;
+    private String actions;
+    private KapuaId id;
+    private Set<Actions> actionSet;
 
     public void doParse() {
         if (scopeId != null) {

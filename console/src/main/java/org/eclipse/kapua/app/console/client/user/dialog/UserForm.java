@@ -72,7 +72,7 @@ public class UserForm extends Window {
     protected Status m_status;
 
     protected TabPanel m_tabsPanel;
-    protected int preselectedTabIndex = 0;
+    protected int preselectedTabIndex;
     private TabItem m_tabUserInfo;
     protected TabItem m_tab2FA;
 

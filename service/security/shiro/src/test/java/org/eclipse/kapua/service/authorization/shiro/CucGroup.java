@@ -18,9 +18,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class CucGroup {
 
-    private String name = null;
-    private Integer scope = null;
-    private KapuaId scopeId = null;
+    private String name;
+    private Integer scope;
+    private KapuaId scopeId;
 
     public void doParse() {
         if (this.scope != null) {

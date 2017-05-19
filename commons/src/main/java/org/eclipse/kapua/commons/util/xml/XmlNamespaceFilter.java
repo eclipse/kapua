@@ -35,7 +35,7 @@ public class XmlNamespaceFilter extends XMLFilterImpl {
     private boolean addNamespace;
 
     // State variable
-    private boolean addedNamespace = false;
+    private boolean addedNamespace;
 
     /**
      * Constructor

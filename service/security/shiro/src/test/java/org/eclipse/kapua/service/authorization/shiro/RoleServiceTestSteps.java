@@ -64,20 +64,20 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     private static final Domain testDomain = new TestDomain();
 
     // Various Role related service references
-    RoleCreator roleCreator = null;
-    RoleService roleService = null;
-    RoleFactory roleFactory = null;
-    RolePermissionCreator rolePermissionCreator = null;
-    RolePermissionService rolePermissionService = null;
-    RolePermissionFactory rolePermissionFactory = null;
-    PermissionFactory permissionFactory = null;
+    RoleCreator roleCreator ;
+    RoleService roleService ;
+    RoleFactory roleFactory ;
+    RolePermissionCreator rolePermissionCreator ;
+    RolePermissionService rolePermissionService ;
+    RolePermissionFactory rolePermissionFactory ;
+    PermissionFactory permissionFactory ;
 
     // Currently executing scenario.
     Scenario scenario;
 
     // Test data scratchpads
-    CommonTestData commonData = null;
-    RoleServiceTestData roleData = null;
+    CommonTestData commonData ;
+    RoleServiceTestData roleData ;
 
     @Inject
     public RoleServiceTestSteps(RoleServiceTestData roleData, CommonTestData commonData, /* dependency */ DatabaseInstance databaseInstance) {

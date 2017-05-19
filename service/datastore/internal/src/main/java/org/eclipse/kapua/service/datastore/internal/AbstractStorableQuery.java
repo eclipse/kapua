@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
  */
 public abstract class AbstractStorableQuery<S extends Storable> implements StorableQuery<S> {
 
-    private StorablePredicate predicate = null;
+    private StorablePredicate predicate;
 
     private KapuaId scopeId;
     private int limit;
