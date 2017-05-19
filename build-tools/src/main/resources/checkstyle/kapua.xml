@@ -28,8 +28,9 @@
         <module name="FallThrough">
            <property name="reliefPattern" value="\$FALL-THROUGH\$"/>
         </module>
-        <module name="NeedBraces"/>
+        <module name="OneStatementPerLine"/>
 
+        <module name="NeedBraces"/>
         <module name="LeftCurly"/>
     </module>
 
