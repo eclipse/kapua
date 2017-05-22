@@ -31,13 +31,31 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsPayloadImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthChannelImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthMessageImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthPayloadImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectPayloadImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
@@ -127,7 +145,7 @@ public class DeviceServiceSteps extends KapuaTest {
         assertNotNull(tmpAccount);
         assertNotNull(tmpAccount.getId());
 
-        Device tmpDev = null;
+        Device tmpDev;
         List<String> tmpSemParts = new ArrayList<>();
         KapuaBirthMessage tmpMsg = new KapuaBirthMessageImpl();
         KapuaBirthChannel tmpChan = new KapuaBirthChannelImpl();
@@ -154,6 +172,120 @@ public class DeviceServiceSteps extends KapuaTest {
         }
 
         deviceLifeCycleService.birth(generateRandomId(), tmpMsg);
+    }
+
+    @Given("^A disconnect message from device \"(.+)\"$")
+    public void createADeathMessage(String clientId)
+            throws KapuaException {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaDisconnectMessage tmpMsg = new KapuaDisconnectMessageImpl();
+        KapuaDisconnectChannel tmpChan = new KapuaDisconnectChannelImpl();
+        KapuaDisconnectPayload tmpPayload = prepareDefaultDeathPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setClientId(clientId);
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        try {
+            stepData.put("ExceptionCaught", false);
+            deviceLifeCycleService.death(generateRandomId(), tmpMsg);
+        } catch (KapuaException ex) {
+            stepData.put("ExceptionCaught", true);
+        }
+    }
+
+    @Given("^A missing message from device \"(.+)\"$")
+    public void createAMissingMessage(String clientId)
+            throws KapuaException {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaMissingMessage tmpMsg = new KapuaMissingMessageImpl();
+        KapuaMissingChannel tmpChan = new KapuaMissingChannelImpl();
+        KapuaMissingPayload tmpPayload = prepareDefaultMissingPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        try {
+            stepData.put("ExceptionCaught", false);
+            deviceLifeCycleService.missing(generateRandomId(), tmpMsg);
+        } catch (KapuaException ex) {
+            stepData.put("ExceptionCaught", true);
+        }
+    }
+
+    @Given("^An application message from device \"(.+)\"$")
+    public void createAnApplicationMessage(String clientId)
+            throws KapuaException {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaAppsMessage tmpMsg = new KapuaAppsMessageImpl();
+        KapuaAppsChannel tmpChan = new KapuaAppsChannelImpl();
+        KapuaAppsPayload tmpPayload = prepareDefaultApplicationPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        try {
+            stepData.put("ExceptionCaught", false);
+            deviceLifeCycleService.applications(generateRandomId(), tmpMsg);
+        } catch (KapuaException ex) {
+        }
     }
 
     @When("^I configure the device service$")
@@ -192,8 +324,8 @@ public class DeviceServiceSteps extends KapuaTest {
     public void searchForDeviceWithClientID(String clientId, String Account)
             throws KapuaException {
 
-        Account tmpAcc = null;
-        Device tmpDev = null;
+        Account tmpAcc;
+        Device tmpDev;
         DeviceListResult tmpList = new DeviceListResultImpl();
 
         tmpAcc = KapuaLocator.getInstance().getService(AccountService.class).findByName(Account);
@@ -202,7 +334,7 @@ public class DeviceServiceSteps extends KapuaTest {
 
         tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
         if (tmpDev != null) {
-            Vector<Device> dv = new Vector<>();
+            Vector<Device> dv = new Vector<Device>();
             dv.add(tmpDev);
             tmpList.addItems(dv);
             stepData.put("Device", tmpDev);
@@ -214,10 +346,10 @@ public class DeviceServiceSteps extends KapuaTest {
     public void searchForEventsFromDeviceWithClientID(String clientId, String Account)
             throws KapuaException {
 
-        DeviceEventQuery tmpQuery = null;
-        Device tmpDev = null;
-        DeviceEventListResult tmpList = null;
-        Account tmpAcc = null;
+        DeviceEventQuery tmpQuery;
+        Device tmpDev;
+        DeviceEventListResult tmpList;
+        Account tmpAcc;
 
         tmpAcc = KapuaLocator.getInstance().getService(AccountService.class).findByName(Account);
         assertNotNull(tmpAcc);
@@ -230,7 +362,8 @@ public class DeviceServiceSteps extends KapuaTest {
         tmpQuery = new DeviceEventQueryImpl(tmpAcc.getId());
         tmpQuery.setPredicate(attributeIsEqualTo("deviceId", tmpDev.getId()));
         tmpQuery.setSortCriteria(new FieldSortCriteria("receivedOn", FieldSortCriteria.SortOrder.ASCENDING));
-        tmpList = deviceEventsService.query(tmpQuery);
+        tmpList = (DeviceEventListResult) deviceEventsService.query(tmpQuery);
+
         assertNotNull(tmpList);
         stepData.put("DeviceEventList", tmpList);
     }
@@ -249,7 +382,7 @@ public class DeviceServiceSteps extends KapuaTest {
 
     @Then("^The type of the last event is \"(.+)\"$")
     public void checkLastEventType(String type) {
-        DeviceEventListResult tmpList = null;
+        DeviceEventListResult tmpList;
 
         assertNotNull(stepData.get("DeviceEventList"));
         assertNotEquals(0, ((DeviceEventListResultImpl) stepData.get("DeviceEventList")).getSize());
@@ -314,10 +447,60 @@ public class DeviceServiceSteps extends KapuaTest {
         return tmpPayload;
     }
 
+    private KapuaDisconnectPayload prepareDefaultDeathPayload() {
+        KapuaDisconnectPayload tmpPayload = new KapuaDisconnectPayloadImpl(
+                "1000", // uptime
+                "ReliaGate 10-20" // displayName
+        );
+
+        return tmpPayload;
+    }
+
+    private KapuaMissingPayload prepareDefaultMissingPayload() {
+        KapuaMissingPayload tmpPayload = new KapuaMissingPayloadImpl();
+        return tmpPayload;
+    }
+
+    private KapuaAppsPayload prepareDefaultApplicationPayload() {
+        KapuaAppsPayload tmpPayload = new KapuaAppsPayloadImpl(
+                "500", // uptime
+                "ReliaGate 10-20", // displayName
+                "ReliaGate", // modelName
+                "ReliaGate 10-20", // modelId
+                "ABC123456", // partNumber
+                "12312312312", // serialNumber
+                "Kura", // firmware
+                "2.0", // firmwareVersion
+                "BIOStm", // bios
+                "1.2.3", // biosVersion
+                "linux", // os
+                "4.9.18", // osVersion
+                "J9", // jvm
+                "2.4", // jvmVersion
+                "J8SE", // jvmProfile
+                "OSGi", // containerFramework
+                "1.2.3", // containerFrameworkVersion
+                "Kura", // applicationFramework
+                "2.0", // applicationFrameworkVersion
+                "eth0", // connectionInterface
+                "192.168.1.2", // connectionIp
+                "gzip", // acceptEncoding
+                "CLOUD-V1", // applicationIdentifiers
+                "1", // availableProcessors
+                "1024", // totalMemory
+                "linux", // osArch
+                "123456789ABCDEF", // modemImei
+                "123456789", // modemImsi
+                "ABCDEF" // modemIccid
+        );
+
+        return tmpPayload;
+    }
+
     private DeviceCreator prepareDeviceCreatorFromCucDevice(CucDevice dev) {
         Account tmpAccount = (Account) stepData.get("LastAccount");
-        DeviceCreator tmpCr = null;
-        KapuaId tmpScope = null;
+        DeviceCreator tmpCr;
+        KapuaId tmpScope;
 
         if (dev.scopeId != null) {
             tmpScope = dev.getScopeId();
@@ -394,7 +577,7 @@ public class DeviceServiceSteps extends KapuaTest {
     }
 
     private DeviceCreator prepareDefaultDeviceCreator(KapuaId scopeId, String clientId) {
-        DeviceCreator tmpCr = null;
+        DeviceCreator tmpCr;
 
         tmpCr = KapuaLocator.getInstance().getFactory(DeviceFactory.class).newCreator(
                 scopeId,
