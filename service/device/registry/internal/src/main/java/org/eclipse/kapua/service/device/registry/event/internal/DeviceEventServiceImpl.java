@@ -152,6 +152,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
             if (DeviceEventDAO.find(em, deviceEventId) == null) {
                 throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
             }
+
             DeviceEventDAO.delete(em, deviceEventId);
         });
     }

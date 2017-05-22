@@ -32,13 +32,8 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
-import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -218,21 +213,6 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
                 throw new KapuaEntityNotFoundException(AccessPermission.TYPE, accessInfoId);
             }
 
-            // Clean up of access roles
-            AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
-            AccessRoleListResult accessRoles = accessRoleService.findByAccessInfoId(scopeId, accessInfoId);
-            for (AccessRole ar : accessRoles.getItems()) {
-                AccessRoleDAO.delete(em, ar.getId());
-            }
-
-            // Clean up of access permission
-            AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
-            AccessPermissionListResult accessPermissions = accessPermissionService.findByAccessInfoId(scopeId, accessInfoId);
-            for (AccessPermission ap : accessPermissions.getItems()) {
-                AccessPermissionDAO.delete(em, ap.getId());
-            }
-
-            // Finally, delete role
             AccessInfoDAO.delete(em, accessInfoId);
         });
     }
