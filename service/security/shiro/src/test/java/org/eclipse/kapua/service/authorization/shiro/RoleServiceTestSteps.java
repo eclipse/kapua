@@ -61,7 +61,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
-    private static final Domain testDomain = new TestDomain();
+    private static final Domain TEST_DOMAIN = new TestDomain();
 
     // Various Role related service references
     RoleCreator roleCreator;
@@ -146,7 +146,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
             roleData.permissions = new HashSet<>();
             if ((tmpRole.getActions() != null) && (tmpRole.getActions().size() > 0)) {
                 for (Actions tmpAct : tmpRole.getActions()) {
-                    roleData.permissions.add(permissionFactory.newPermission(testDomain, tmpAct, tmpRole.getScopeId()));
+                    roleData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, tmpAct, tmpRole.getScopeId()));
                 }
             }
             roleCreator = roleFactory.newCreator(tmpRole.getScopeId());
@@ -254,7 +254,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void searchForRandomId()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            roleData.roleFound = roleService.find(rootScopeId, generateId());
+            roleData.roleFound = roleService.find(ROOT_SCOPE_ID, generateId());
             return null;
         });
     }
@@ -445,25 +445,25 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Then("^The role factory returns sane results$")
     public void performRoleFactorySanityChecks() {
-        assertNotNull(roleFactory.newEntity(rootScopeId));
-        assertNotNull(roleFactory.newCreator(rootScopeId));
-        assertNotNull(roleFactory.newQuery(rootScopeId));
+        assertNotNull(roleFactory.newEntity(ROOT_SCOPE_ID));
+        assertNotNull(roleFactory.newCreator(ROOT_SCOPE_ID));
+        assertNotNull(roleFactory.newQuery(ROOT_SCOPE_ID));
         assertNotNull(roleFactory.newListResult());
         assertNotNull(roleFactory.newRolePermission());
     }
 
     @Then("^The role permission factory returns sane results$")
     public void performRolePermissionFactorySanityChecks() {
-        assertNotNull(rolePermissionFactory.newEntity(rootScopeId));
-        assertNotNull(rolePermissionFactory.newCreator(rootScopeId));
-        assertNotNull(rolePermissionFactory.newQuery(rootScopeId));
+        assertNotNull(rolePermissionFactory.newEntity(ROOT_SCOPE_ID));
+        assertNotNull(rolePermissionFactory.newCreator(ROOT_SCOPE_ID));
+        assertNotNull(rolePermissionFactory.newQuery(ROOT_SCOPE_ID));
         assertNotNull(rolePermissionFactory.newListResult());
     }
 
     @Then("^The role comparator does its job$")
     public void checkRoleEqualityMethod() {
-        Role role1 = roleFactory.newEntity(rootScopeId);
-        Role role2 = roleFactory.newEntity(rootScopeId);
+        Role role1 = roleFactory.newEntity(ROOT_SCOPE_ID);
+        Role role2 = roleFactory.newEntity(ROOT_SCOPE_ID);
         Integer miscObj = 10;
 
         assertNotNull(role1);
@@ -484,11 +484,11 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Then("^The role permission comparator does its job$")
     public void checkRolePermissionEqualityMethod() {
-        RolePermission perm1 = rolePermissionFactory.newEntity(rootScopeId);
-        RolePermission perm2 = rolePermissionFactory.newEntity(rootScopeId);
+        RolePermission perm1 = rolePermissionFactory.newEntity(ROOT_SCOPE_ID);
+        RolePermission perm2 = rolePermissionFactory.newEntity(ROOT_SCOPE_ID);
         Integer miscObj = 1;
-        Permission tmpPermission1 = permissionFactory.newPermission(testDomain, Actions.read, rootScopeId);
-        Permission tmpPermission2 = permissionFactory.newPermission(testDomain, Actions.write, rootScopeId);
+        Permission tmpPermission1 = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, ROOT_SCOPE_ID);
+        Permission tmpPermission2 = permissionFactory.newPermission(TEST_DOMAIN, Actions.write, ROOT_SCOPE_ID);
         KapuaId tmpRoleId1 = generateId();
         KapuaId tmpRoleId2 = generateId();
 
@@ -519,16 +519,16 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     @Then("^The role permission object constructors are sane$")
     public void checkRolePermissionConstructors() {
 
-        Permission tmpPermission = permissionFactory.newPermission(testDomain, Actions.read, rootScopeId);
+        Permission tmpPermission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, ROOT_SCOPE_ID);
         KapuaId tmpRoleId = generateId();
 
         assertNotNull(tmpRoleId);
-        RolePermission perm1 = new RolePermissionImpl(rootScopeId);
+        RolePermission perm1 = new RolePermissionImpl(ROOT_SCOPE_ID);
         assertNotNull(perm1);
         RolePermission perm2 = new RolePermissionImpl(perm1);
         assertNotNull(perm2);
         assertTrue(perm1.equals(perm2));
-        RolePermission perm3 = new RolePermissionImpl(rootScopeId, tmpPermission);
+        RolePermission perm3 = new RolePermissionImpl(ROOT_SCOPE_ID, tmpPermission);
         assertNotNull(perm3);
         assertEquals(perm3.getPermission(), tmpPermission);
         perm1.setRoleId(tmpRoleId);

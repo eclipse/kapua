@@ -30,13 +30,13 @@ public class KapuaSession implements Serializable {
 
     public final static String KAPUA_SESSION_KEY = "KapuaSession";
 
-    private static final List<String> trustedClasses = new ArrayList<>();
+    private static final List<String> TRUSTED_CLASSES = new ArrayList<>();
     private static final String TRUST_CLASS_METHOD_PATTERN = "{0}.{1}";
 
     // TODO to be moved inside configuration service or something like that "fully.qualified.classname.methodname" (<init> for the constructor)
     static {
-        trustedClasses.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
-        trustedClasses.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
+        TRUSTED_CLASSES.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
+        TRUSTED_CLASSES.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
     }
 
     /**
@@ -99,7 +99,7 @@ public class KapuaSession implements Serializable {
         // 3 ---> "outside" caller class that should be checked
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
         if (stackTraceElements != null && stackTraceElements.length > 4) {
-            return trustedClasses.contains(MessageFormat.format(TRUST_CLASS_METHOD_PATTERN, stackTraceElements[3].getClassName(), stackTraceElements[3].getMethodName()));
+            return TRUSTED_CLASSES.contains(MessageFormat.format(TRUST_CLASS_METHOD_PATTERN, stackTraceElements[3].getClassName(), stackTraceElements[3].getMethodName()));
         } else {
             return false;
         }

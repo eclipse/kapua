@@ -30,7 +30,7 @@ public class KapuaSecurityUtils {
 
     public static final String MDC_USER_ID = "userId";
 
-    private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<>();
+    private static final ThreadLocal<KapuaSession> THREAD_SESSION = new ThreadLocal<>();
 
     private KapuaSecurityUtils() {
     }
@@ -41,7 +41,7 @@ public class KapuaSecurityUtils {
      * @return
      */
     public static KapuaSession getSession() {
-        return threadSession.get();
+        return THREAD_SESSION.get();
     }
 
     /**
@@ -50,14 +50,14 @@ public class KapuaSecurityUtils {
      * @param session
      */
     public static void setSession(KapuaSession session) {
-        threadSession.set(session);
+        THREAD_SESSION.set(session);
     }
 
     /**
      * Clear the {@link KapuaSession} from the current thread session.
      */
     public static void clearSession() {
-        threadSession.remove();
+        THREAD_SESSION.remove();
     }
 
     /**

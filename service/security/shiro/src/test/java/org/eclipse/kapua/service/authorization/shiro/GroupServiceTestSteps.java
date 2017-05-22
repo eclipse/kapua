@@ -31,8 +31,6 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
@@ -47,9 +45,6 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(GroupServiceTestSteps.class);
 
     // Test data scratchpads
     CommonTestData commonData ;
@@ -128,7 +123,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void countDomainEntries()
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
-            commonData.count = groupService.count(groupFactory.newQuery(rootScopeId));
+            commonData.count = groupService.count(groupFactory.newQuery(ROOT_SCOPE_ID));
             return null;
         });
     }
@@ -205,7 +200,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             try {
-                groupService.delete(rootScopeId, generateId());
+                groupService.delete(ROOT_SCOPE_ID, generateId());
                 commonData.exceptionCaught = false;
             } catch (KapuaException ex) {
                 commonData.exceptionCaught = true;

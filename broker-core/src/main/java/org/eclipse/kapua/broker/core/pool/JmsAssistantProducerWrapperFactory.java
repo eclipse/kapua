@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<JmsAssistantProducerWrapper> {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerWrapperFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsAssistantProducerWrapperFactory.class);
 
     private final String destination;
 
@@ -37,7 +37,7 @@ public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<
 
     @Override
     public JmsAssistantProducerWrapper create() throws Exception {
-        return new JmsAssistantProducerWrapper(JmsConnectionFactory.vmConnFactory, destination, false, false);
+        return new JmsAssistantProducerWrapper(JmsConnectionFactory.VM_CONN_FACTORY, destination, false, false);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<
         if (session instanceof ActiveMQSession) {
             return !((ActiveMQSession) session).isClosed();
         } else {
-            s_logger.warn("Wrong session object type {}", session.getClass());
+            logger.warn("Wrong session object type {}", session.getClass());
             return true;
         }
     }
@@ -62,7 +62,7 @@ public class JmsAssistantProducerWrapperFactory extends BasePooledObjectFactory<
     @Override
     public void destroyObject(PooledObject<JmsAssistantProducerWrapper> pooledProducerWrapper) throws Exception {
         JmsAssistantProducerWrapper producerWrapper = pooledProducerWrapper.getObject();
-        s_logger.info("Close jms broker assistant producer wrapper: {}", producerWrapper.toString());
+        logger.info("Close jms broker assistant producer wrapper: {}", producerWrapper.toString());
         producerWrapper.close();
         super.destroyObject(pooledProducerWrapper);
     }

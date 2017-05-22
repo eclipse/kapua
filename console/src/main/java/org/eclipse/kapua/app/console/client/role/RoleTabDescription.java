@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RoleTabDescription extends EntityDescriptionTabItem<GwtRole> {
 
-    private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
+    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
@@ -33,7 +33,7 @@ public class RoleTabDescription extends EntityDescriptionTabItem<GwtRole> {
 
             @Override
             protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                gwtRoleService.getRoleDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
+                GWT_ROLE_SERVICE.getRoleDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
             }
         };
     }

@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 @KapuaProvider
 public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements ChannelInfoRegistryService {
 
-    private static final Domain datastoreDomain = new DatastoreDomain();
+    private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
 
     private static final Logger logger = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
@@ -82,7 +82,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * @throws ClientUnavailableException
      */
     public ChannelInfoRegistryServiceImpl() throws ClientUnavailableException {
-        super(ChannelInfoRegistryService.class.getName(), datastoreDomain, DatastoreEntityManagerFactory.getInstance());
+        super(ChannelInfoRegistryService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
@@ -181,7 +181,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
 
     private void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(datastoreDomain, action, scopeId);
+        Permission permission = permissionFactory.newPermission(DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
     }
 

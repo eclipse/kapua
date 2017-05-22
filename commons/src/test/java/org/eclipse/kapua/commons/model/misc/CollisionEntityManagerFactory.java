@@ -27,7 +27,7 @@ public class CollisionEntityManagerFactory extends AbstractEntityManagerFactory 
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-commons-unit-test";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
     private static CollisionEntityManagerFactory instance = new CollisionEntityManagerFactory();
 
@@ -35,7 +35,7 @@ public class CollisionEntityManagerFactory extends AbstractEntityManagerFactory 
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
     private CollisionEntityManagerFactory() {
-        super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, uniqueConstraints);
+        super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, UNIQUE_CONTRAINTS);
     }
 
     /**

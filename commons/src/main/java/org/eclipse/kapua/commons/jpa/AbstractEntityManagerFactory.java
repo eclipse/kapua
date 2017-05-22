@@ -35,7 +35,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
     private EntityManagerFactory entityManagerFactory;
 
     /**
@@ -78,7 +78,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
         // Set unique constrains for this persistence unit
         // FIXME: this is needed? With EclipseLink we lost the ConstraintViolationException.
         for (Entry<String, String> uc : uniqueConstraints.entrySet()) {
-            s_uniqueConstraints.put(uc.getKey(), uc.getValue());
+            UNIQUE_CONTRAINTS.put(uc.getKey(), uc.getValue());
         }
     }
 

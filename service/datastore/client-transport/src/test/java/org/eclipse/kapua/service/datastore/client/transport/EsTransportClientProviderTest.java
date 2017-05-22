@@ -48,13 +48,13 @@ public class EsTransportClientProviderTest {
 
     private static final String CLUSTER_NAME = "foo-cluster";
 
-    private final static Condition<InetSocketAddress> unresolved = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
+    private final static Condition<InetSocketAddress> UNRESOLVED = new Condition<>(InetSocketAddress::isUnresolved, "Host unresolved");
 
     private void assertThatResolvedAs(InetSocketAddress result, Class<? extends InetAddress> addressClazz, String hostAddress, int port) {
         assertThat(result).isNotNull();
         assertThat(result.getAddress()).isNotNull();
 
-        assertThat(result).doesNotHave(unresolved);
+        assertThat(result).doesNotHave(UNRESOLVED);
         assertThat(result.getHostString()).isEqualTo(hostAddress);
         assertThat(result.getPort()).isEqualTo(port);
         assertThat(result.getAddress()).isInstanceOf(addressClazz);
@@ -100,14 +100,14 @@ public class EsTransportClientProviderTest {
     public void testHostNotFound1() {
         InetSocketAddress result = parseAddress(UNKWNON_HOST);
         assertThat(result).isNotNull();
-        assertThat(result).has(unresolved);
+        assertThat(result).has(UNRESOLVED);
     }
 
     @Test
     public void testHostNotFound2() {
         InetSocketAddress result = parseAddress(UNKWNON_HOST + ":123");
         assertThat(result).isNotNull();
-        assertThat(result).has(unresolved);
+        assertThat(result).has(UNRESOLVED);
     }
 
     @Test

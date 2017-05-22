@@ -49,7 +49,7 @@ public abstract class AbstractKapuaConverter {
 
     // metrics
     protected final static String METRIC_COMPONENT_NAME = "converter";
-    protected final static MetricsService metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
+    protected final static MetricsService METRICS_SERVICE = KapuaLocator.getInstance().getService(MetricsService.class);
 
     private final Counter metricConverterJmsMessage;
     private final Counter metricConverterJmsErrorMessage;
@@ -59,9 +59,9 @@ public abstract class AbstractKapuaConverter {
      * Constructor
      */
     protected AbstractKapuaConverter() {
-        metricConverterJmsMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "count");
-        metricConverterJmsErrorMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "error", "count");
-        metricConverterErrorMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "error", "count");
+        metricConverterJmsMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "count");
+        metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "error", "count");
+        metricConverterErrorMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "error", "count");
     }
 
     /**

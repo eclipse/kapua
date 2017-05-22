@@ -95,7 +95,7 @@ public class AccountEditDialog extends AccountAddDialog {
         gwtOrganization.setCountry(organizationCountry.getValue());
         selectedAccount.setGwtOrganization(gwtOrganization);
 
-        gwtAccountService.update(xsrfToken,
+        GWT_ACCOUNT_SERVICE.update(xsrfToken,
                 selectedAccount,
                 new AsyncCallback<GwtAccount>() {
 

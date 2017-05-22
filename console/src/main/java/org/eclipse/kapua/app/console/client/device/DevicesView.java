@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DevicesView extends LayoutContainer {
 
-    private final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private GwtSession m_currentSession;
 
@@ -51,7 +51,7 @@ public class DevicesView extends LayoutContainer {
     private DevicesMap m_deviceMap;
     private DeviceTabs m_deviceTabs;
 
-    private static final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
 
     public DevicesView(GwtSession currentSession) {
         m_currentSession = currentSession;
@@ -124,7 +124,7 @@ public class DevicesView extends LayoutContainer {
         m_tabTable.add(m_deviceTable);
         m_tabsPanel.add(m_tabTable);
 
-        gwtDeviceService.isMapEnabled(new AsyncCallback<Boolean>() {
+        GWT_DEVICE_SERVICE.isMapEnabled(new AsyncCallback<Boolean>() {
 
             @Override
             public void onFailure(Throwable caught) {

@@ -36,20 +36,20 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<CommandAppProperties, CommandMetrics> propertiesDictionary = new HashMap<>();
+    private static final Map<CommandAppProperties, CommandMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {
-        propertiesDictionary.put(CommandAppProperties.APP_NAME, CommandMetrics.APP_ID);
-        propertiesDictionary.put(CommandAppProperties.APP_VERSION, CommandMetrics.APP_VERSION);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_NAME, CommandMetrics.APP_ID);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_VERSION, CommandMetrics.APP_VERSION);
 
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_CMD, CommandMetrics.APP_METRIC_CMD);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_ARG, CommandMetrics.APP_METRIC_ARG);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_ENVP, CommandMetrics.APP_METRIC_ENVP);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_DIR, CommandMetrics.APP_METRIC_DIR);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_STDIN, CommandMetrics.APP_METRIC_STDIN);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_TOUT, CommandMetrics.APP_METRIC_TOUT);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_ASYNC, CommandMetrics.APP_METRIC_ASYNC);
-        propertiesDictionary.put(CommandAppProperties.APP_PROPERTY_PASSWORD, CommandMetrics.APP_METRIC_PASSWORD);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_CMD, CommandMetrics.APP_METRIC_CMD);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_ARG, CommandMetrics.APP_METRIC_ARG);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_ENVP, CommandMetrics.APP_METRIC_ENVP);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_DIR, CommandMetrics.APP_METRIC_DIR);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_STDIN, CommandMetrics.APP_METRIC_STDIN);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_TOUT, CommandMetrics.APP_METRIC_TOUT);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_ASYNC, CommandMetrics.APP_METRIC_ASYNC);
+        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_PASSWORD, CommandMetrics.APP_METRIC_PASSWORD);
     }
 
     protected KuraRequestChannel translateChannel(CommandRequestChannel kapuaChannel) throws KapuaException {
@@ -58,9 +58,9 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(propertiesDictionary.get(CommandAppProperties.APP_NAME).getValue())
+        appIdSb.append(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_NAME).getValue())
                 .append("-")
-                .append(propertiesDictionary.get(CommandAppProperties.APP_VERSION).getValue());
+                .append(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
@@ -77,20 +77,20 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
         //
         // Payload translation
         Map<String, Object> metrics = kuraRequestPayload.getMetrics();
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_CMD).getValue(), kapuaPayload.getCommand());
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_ENVP).getValue(), kapuaPayload.getEnvironmentPairs());
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_DIR).getValue(), kapuaPayload.getWorkingDir());
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_STDIN).getValue(), kapuaPayload.getStdin());
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_TOUT).getValue(), kapuaPayload.getTimeout());
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_ASYNC).getValue(), kapuaPayload.isRunAsync());
-        metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_PASSWORD).getValue(), kapuaPayload.getPassword());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_CMD).getValue(), kapuaPayload.getCommand());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ENVP).getValue(), kapuaPayload.getEnvironmentPairs());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_DIR).getValue(), kapuaPayload.getWorkingDir());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_STDIN).getValue(), kapuaPayload.getStdin());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_TOUT).getValue(), kapuaPayload.getTimeout());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ASYNC).getValue(), kapuaPayload.isRunAsync());
+        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_PASSWORD).getValue(), kapuaPayload.getPassword());
 
         // argument translation
         int i = 0;
         String[] arguments = kapuaPayload.getArguments();
         if (arguments != null) {
             for (String argument : arguments) {
-                metrics.put(propertiesDictionary.get(CommandAppProperties.APP_PROPERTY_ARG).getValue() + i++, argument);
+                metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ARG).getValue() + i++, argument);
             }
         }
 

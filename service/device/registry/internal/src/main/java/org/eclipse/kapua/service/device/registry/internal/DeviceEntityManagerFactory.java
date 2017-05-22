@@ -27,7 +27,7 @@ public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-device";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
     private static DeviceEntityManagerFactory instance = new DeviceEntityManagerFactory();
 
@@ -37,7 +37,7 @@ public class DeviceEntityManagerFactory extends AbstractEntityManagerFactory {
     private DeviceEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
-                s_uniqueConstraints);
+                UNIQUE_CONSTRAINTS);
     }
 
     /**

@@ -39,30 +39,30 @@ import org.eclipse.kapua.service.device.management.packages.message.internal.Pac
 public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<PackageAppProperties, PackageMetrics> propertiesDictionary = new HashMap<>();
+    private static final Map<PackageAppProperties, PackageMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {
-        propertiesDictionary.put(PackageAppProperties.APP_NAME, PackageMetrics.APP_ID);
-        propertiesDictionary.put(PackageAppProperties.APP_VERSION, PackageMetrics.APP_VERSION);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_NAME, PackageMetrics.APP_ID);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_VERSION, PackageMetrics.APP_VERSION);
 
         // Commons properties
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID, PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT, PackageMetrics.APP_METRIC_PACKAGE_REBOOT);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY, PackageMetrics.APP_METRIC_PACKAGE_REBOOT_DELAY);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID, PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT, PackageMetrics.APP_METRIC_PACKAGE_REBOOT);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY, PackageMetrics.APP_METRIC_PACKAGE_REBOOT_DELAY);
 
         // Download properties
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_URI);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_NAME);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_VERSION);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_INSTALL);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_URI);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_NAME);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_VERSION);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_INSTALL);
 
         // Install properties
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_INSTALL_PACKAGE_NAME);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_INSTALL_PACKAGE_VERSION);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_INSTALL_PACKAGE_NAME);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_INSTALL_PACKAGE_VERSION);
 
         // Uninstall properties
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_NAME);
-        propertiesDictionary.put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_VERSION);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_NAME);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_VERSION);
 
     }
 
@@ -73,9 +73,9 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(propertiesDictionary.get(PackageAppProperties.APP_NAME).getValue())
+        appIdSb.append(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_NAME).getValue())
                 .append("-")
-                .append(propertiesDictionary.get(PackageAppProperties.APP_VERSION).getValue());
+                .append(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
@@ -111,27 +111,27 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
 
         KapuaId operationId = kapuaPayload.getOperationId();
         if (operationId != null) {
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID).getValue(), operationId.getId().longValue());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID).getValue(), operationId.getId().longValue());
         }
 
-        metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT).getValue(), kapuaPayload.isReboot());
-        metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY).getValue(), kapuaPayload.getRebootDelay());
+        metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT).getValue(), kapuaPayload.isReboot());
+        metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_REBOOT_DELAY).getValue(), kapuaPayload.getRebootDelay());
 
         if (kapuaPayload.isDownloadRequest()) {
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI).getValue(), kapuaPayload.getPackageDownloadURI().toString());
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME).getValue(), kapuaPayload.getPackageDownloadName());
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageDownloadVersion());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI).getValue(), kapuaPayload.getPackageDownloadURI().toString());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME).getValue(), kapuaPayload.getPackageDownloadName());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageDownloadVersion());
             metrics.put(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PROTOCOL.getValue(), "HTTP");
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL).getValue(), kapuaPayload.isPackageDownloadnstall());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL).getValue(), kapuaPayload.isPackageDownloadnstall());
 
             metrics.put(PackageMetrics.APP_METRIC_PACKAGE_INSTALL_SYS_UPDATE.getValue(), false);
         } else if (kapuaPayload.isInstallRequest()) {
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME).getValue(), kapuaPayload.getPackageInstallName());
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageInstallVersion());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME).getValue(), kapuaPayload.getPackageInstallName());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageInstallVersion());
             metrics.put(PackageMetrics.APP_METRIC_PACKAGE_INSTALL_SYS_UPDATE.getValue(), false);
         } else if (kapuaPayload.isUninstallRequest()) {
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME).getValue(), kapuaPayload.getPackageUninstallName());
-            metrics.put(propertiesDictionary.get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageUninstallVersion());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_NAME).getValue(), kapuaPayload.getPackageUninstallName());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_UNINSTALL_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageUninstallVersion());
         }
 
         //

@@ -33,7 +33,7 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-user";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
     private static UserEntityManagerFactory instance = new UserEntityManagerFactory();
 
@@ -41,7 +41,7 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory {
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
     private UserEntityManagerFactory() {
-        super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, uniqueConstraints);
+        super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, UNIQUE_CONSTRAINTS);
     }
 
     /**

@@ -37,8 +37,6 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link AccessTokenCredentials} based {@link AuthenticatingRealm} implementation.
@@ -47,9 +45,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(AccessTokenAuthenticatingRealm.class);
 
     /**
      * Realm name
@@ -121,7 +116,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
 
         // Check validity
         if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(new Date())) ||
-            (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(new Date()))){
+                (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(new Date()))) {
             throw new ExpiredCredentialsException();
         }
 

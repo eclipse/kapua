@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
 @KapuaProvider
 public class DeviceConfigurationManagementServiceImpl implements DeviceConfigurationManagementService {
 
-    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
+    private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
@@ -74,7 +74,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -157,7 +157,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request
@@ -243,7 +243,7 @@ public class DeviceConfigurationManagementServiceImpl implements DeviceConfigura
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
 
         //
         // Prepare the request

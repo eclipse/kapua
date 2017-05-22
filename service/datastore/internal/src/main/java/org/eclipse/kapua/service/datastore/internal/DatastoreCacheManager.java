@@ -24,7 +24,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
  */
 public class DatastoreCacheManager {
 
-    private static final DatastoreCacheManager instance = new DatastoreCacheManager();
+    private static final DatastoreCacheManager INSTANCE = new DatastoreCacheManager();
 
     private final LocalCache<String, Metadata> schemaCache;
     private final LocalCache<String, Boolean> channelsCache;
@@ -53,7 +53,7 @@ public class DatastoreCacheManager {
      * @since 1.0.0
      */
     public static DatastoreCacheManager getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**

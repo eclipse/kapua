@@ -52,10 +52,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    private final static GwtDomainServiceAsync gwtDomainService = GWT.create(GwtDomainService.class);
-    private final static GwtAccessPermissionServiceAsync gwtAccessPermissionService = GWT.create(GwtAccessPermissionService.class);
-    private final static GwtAccessInfoServiceAsync gwtAccessInfoService = GWT.create(GwtAccessInfoService.class);
-    private final static GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private final static GwtDomainServiceAsync GWT_DOMAIN_SERVICE = GWT.create(GwtDomainService.class);
+    private final static GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
+    private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
+    private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
     private SimpleComboBox<GwtDomain> domainsCombo;
     private SimpleComboBox<GwtAction> actionsCombo;
@@ -77,18 +77,18 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         allGroup.setId(null);
         allGroup.setGroupName("ALL");
 
-        gwtAccessInfoService.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
+        GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
             public void onSuccess(GwtAccessInfo result) {
                 accessInfoId = result.getId();
-                m_submitButton.enable();
+                submitButton.enable();
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                m_exitMessage = MSGS.dialogAddPermissionErrorAccessInfo(caught.getLocalizedMessage());
-                m_exitStatus = false;
+                exitMessage = MSGS.dialogAddPermissionErrorAccessInfo(caught.getLocalizedMessage());
+                exitStatus = false;
                 hide();
             }
         });
@@ -111,12 +111,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         gwtAccessPermissionCreator.setAccessInfoId(accessInfoId);
         gwtAccessPermissionCreator.setPermission(newPermission);
 
-        gwtAccessPermissionService.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
+        GWT_ACCESS_PERMISSION_SERVICE.create(xsrfToken, gwtAccessPermissionCreator, new AsyncCallback<GwtAccessPermission>() {
 
             @Override
             public void onSuccess(GwtAccessPermission gwtAccessPermission) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddPermissionConfirmation();   // TODO Localize
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddPermissionConfirmation();   // TODO Localize
                 hide();
             }
 
@@ -124,12 +124,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
             public void onFailure(Throwable cause) {
                 unmask();
 
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
                 m_status.hide();
 
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
+                exitStatus = false;
+                exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
 
                 hide();
             }
@@ -158,12 +158,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setAllowBlank(false);
         domainsCombo.setFieldLabel(MSGS.dialogAddPermissionDomain());
         domainsCombo.setTriggerAction(TriggerAction.ALL);
-        gwtDomainService.findAll(new AsyncCallback<List<GwtDomain>>() {
+        GWT_DOMAIN_SERVICE.findAll(new AsyncCallback<List<GwtDomain>>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                m_exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
-                m_exitStatus = false;
+                exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
+                exitStatus = false;
                 hide();
             }
 
@@ -180,12 +180,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtDomain>> se) {
-                gwtDomainService.findActionsByDomainName(se.getSelectedItem().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
+                GWT_DOMAIN_SERVICE.findActionsByDomainName(se.getSelectedItem().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        m_exitMessage = MSGS.dialogAddPermissionErrorActions(caught.getLocalizedMessage());
-                        m_exitStatus = false;
+                        exitMessage = MSGS.dialogAddPermissionErrorActions(caught.getLocalizedMessage());
+                        exitStatus = false;
                         hide();
                     }
 
@@ -234,12 +234,12 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setValueField("id");
         groupsCombo.setFieldLabel(MSGS.dialogAddPermissionGroupId());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
-        gwtGroupService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+        GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                m_exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
-                m_exitStatus = false;
+                exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
+                exitStatus = false;
                 hide();
             }
 
@@ -271,6 +271,6 @@ public class PermissionAddDialog extends EntityAddEditDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-        m_submitButton.disable();
+        submitButton.disable();
     }
 }

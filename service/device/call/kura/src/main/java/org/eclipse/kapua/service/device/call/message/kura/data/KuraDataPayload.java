@@ -38,7 +38,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
  */
 public class KuraDataPayload implements DevicePayload {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(KuraDataPayload.class);
+    private static final Logger logger = LoggerFactory.getLogger(KuraDataPayload.class);
 
     protected Date timestamp;
     protected DevicePosition position;
@@ -135,9 +135,9 @@ public class KuraDataPayload implements DevicePayload {
                 protoMsg.addMetric(metricB);
             } catch (MessageException eihte) {
                 try {
-                    s_logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
+                    logger.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
                 } catch (NullPointerException npe) {
-                    s_logger.error("During serialization, ignoring metric named: {}. The value is null.", name);
+                    logger.error("During serialization, ignoring metric named: {}. The value is null.", name);
                 }
                 throw new RuntimeException(eihte);
             }
@@ -192,7 +192,7 @@ public class KuraDataPayload implements DevicePayload {
                 metrics.put(name, value);
             } catch (MessageException ihte) {
 
-                s_logger.warn("During deserialization, ignoring metric named: " + name + ". Unrecognized value type: " + protoMsg.getMetric(i).getType(), ihte);
+                logger.warn("During deserialization, ignoring metric named: " + name + ". Unrecognized value type: " + protoMsg.getMetric(i).getType(), ihte);
             }
         }
 

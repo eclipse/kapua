@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PackageUninstallDialog extends SimpleDialog {
 
-    private static final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
+    private static final GwtDeviceManagementServiceAsync GWT_DEVICE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceManagementService.class);
     private static final int FORM_LABEL_WIDTH = 150;
 
     private String scopeId;
@@ -117,19 +117,19 @@ public class PackageUninstallDialog extends SimpleDialog {
             gwtPackageUninstallRequest.setRebootDelay(nValue.intValue() * 1000);
         }
 
-        gwtDeviceManagementService.uninstallPackage(xsrfToken, gwtPackageUninstallRequest, new AsyncCallback<Void>() {
+        GWT_DEVICE_MANAGEMENT_SERVICE.uninstallPackage(xsrfToken, gwtPackageUninstallRequest, new AsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void result) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.packageUninstallAsyncSuccess();
+                exitStatus = true;
+                exitMessage = MSGS.packageUninstallAsyncSuccess();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                m_exitStatus = false;
-                m_exitMessage = caught.getMessage();
+                exitStatus = false;
+                exitMessage = caught.getMessage();
                 hide();
             }
         });

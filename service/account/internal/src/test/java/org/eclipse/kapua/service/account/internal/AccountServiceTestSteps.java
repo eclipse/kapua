@@ -48,8 +48,6 @@ import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -76,9 +74,6 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     public static final String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(AccountServiceTestSteps.class);
 
     // Account creator object used for creating new accounts.
     AccountCreator accountCreator;

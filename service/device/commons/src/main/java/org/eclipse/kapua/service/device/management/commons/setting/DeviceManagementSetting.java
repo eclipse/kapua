@@ -27,7 +27,7 @@ public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManageme
      */
     private static final String DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
 
-    private static final DeviceManagementSetting instance = new DeviceManagementSetting();
+    private static final DeviceManagementSetting INSTANCE = new DeviceManagementSetting();
 
     /**
      * Constructor
@@ -42,6 +42,6 @@ public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManageme
      * @return
      */
     public static DeviceManagementSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

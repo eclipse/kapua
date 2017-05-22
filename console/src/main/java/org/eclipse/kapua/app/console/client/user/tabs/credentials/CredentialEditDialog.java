@@ -36,26 +36,26 @@ public class CredentialEditDialog extends CredentialAddDialog {
     public void submit() {
         // TODO read enabled and expire date
         selectedCredential.setCredentialKey(password.getValue());
-        gwtCredentialService.update(xsrfToken, selectedCredential, new AsyncCallback<GwtCredential>() {
+        GWT_CREDENTIAL_SERVICE.update(xsrfToken, selectedCredential, new AsyncCallback<GwtCredential>() {
 
             @Override
             public void onFailure(Throwable caught) {
                 unmask();
 
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
                 m_status.hide();
 
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogEditError(caught.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogEditError(caught.getLocalizedMessage());
 
                 hide();
             }
 
             @Override
             public void onSuccess(GwtCredential result) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogEditConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogEditConfirmation();
                 hide();
             }
         });

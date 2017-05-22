@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class CredentialDeleteDialog extends EntityDeleteDialog {
 
     private final GwtCredential selectedCredential;
-    private static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
+    private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
     public CredentialDeleteDialog(GwtCredential selectedCredential) {
@@ -45,19 +45,19 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public void submit() {
-        gwtCredentialService.delete(xsrfToken, selectedCredential.getScopeId(), selectedCredential.getId(), new AsyncCallback<Void>() {
+        GWT_CREDENTIAL_SERVICE.delete(xsrfToken, selectedCredential.getScopeId(), selectedCredential.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogDeleteConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogDeleteConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
                 hide();
             }
         });

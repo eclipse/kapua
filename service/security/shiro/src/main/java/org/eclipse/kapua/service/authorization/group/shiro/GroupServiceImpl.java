@@ -41,10 +41,10 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 @KapuaProvider
 public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Group, GroupCreator, GroupService, GroupListResult, GroupQuery, GroupFactory> implements GroupService {
 
-    private static final Domain groupDomain = new GroupDomain();
+    private static final Domain GROUP_DOMAIN = new GroupDomain();
 
     public GroupServiceImpl() {
-        super(GroupService.class.getName(), groupDomain, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
+        super(GroupService.class.getName(), GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.write, groupCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
         
         if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
@@ -79,7 +79,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.write, group.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, group.getScopeId()));
         return entityManagerSession.onTransactedInsert(em -> {
 
             Group currentGroup = GroupDAO.find(em, group.getId());
@@ -101,7 +101,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
             if (GroupDAO.find(em, groupId) == null) {
@@ -123,7 +123,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> GroupDAO.find(em, groupId));
     }
@@ -139,7 +139,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> GroupDAO.query(em, query));
     }
@@ -155,7 +155,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(groupDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> GroupDAO.count(em, query));
     }

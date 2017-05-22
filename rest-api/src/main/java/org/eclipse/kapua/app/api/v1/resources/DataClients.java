@@ -46,10 +46,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/clients")
 public class DataClients extends AbstractKapuaResource {
 
-    private static final KapuaLocator locator = KapuaLocator.getInstance();
-    private static final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
-    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link ClientInfo} list in the scope.
@@ -76,15 +76,15 @@ public class DataClients extends AbstractKapuaResource {
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        ClientInfoListResult clientInfoListResult = datastoreObjectFactory.newClientInfoListResult();
+        ClientInfoListResult clientInfoListResult = DATASTORE_OBJECT_FACTORY.newClientInfoListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
-            ClientInfoQuery query = datastoreObjectFactory.newClientInfoQuery(scopeId);
+            ClientInfoQuery query = DATASTORE_OBJECT_FACTORY.newClientInfoQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
             query.setLimit(limit);
@@ -120,7 +120,7 @@ public class DataClients extends AbstractKapuaResource {
         ClientInfoListResult clientInfoListResult = null;
         try {
             query.setScopeId(scopeId);
-            clientInfoListResult = clientInfoRegistryService.query(query);
+            clientInfoListResult = CLIENT_INFO_REGISTRY_SERVICE.query(query);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -150,7 +150,7 @@ public class DataClients extends AbstractKapuaResource {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
-            countResult = new CountResult(clientInfoRegistryService.count(query));
+            countResult = new CountResult(CLIENT_INFO_REGISTRY_SERVICE.count(query));
         } catch (Throwable t) {
             handleException(t);
         }
@@ -175,7 +175,7 @@ public class DataClients extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested ClientInfo", required = true) @PathParam("clientInfoId") StorableEntityId clientInfoId) {
         ClientInfo clientInfo = null;
         try {
-            clientInfo = clientInfoRegistryService.find(scopeId, clientInfoId);
+            clientInfo = CLIENT_INFO_REGISTRY_SERVICE.find(scopeId, clientInfoId);
         } catch (Throwable t) {
             handleException(t);
         }

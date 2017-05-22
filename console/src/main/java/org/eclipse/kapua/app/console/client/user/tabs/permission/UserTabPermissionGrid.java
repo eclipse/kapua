@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
-    private static final GwtAccessPermissionServiceAsync gwtAccessPermissionService = GWT.create(GwtAccessPermissionService.class);
+    private static final GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
 
     private static final ConsoleUserMessages USR_MSGS = GWT.create(ConsoleUserMessages.class);
     private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
@@ -57,7 +57,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtAccessPermission>> callback) {
-                gwtAccessPermissionService.findByUserId((PagingLoadConfig) loadConfig,
+                GWT_ACCESS_PERMISSION_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
                         currentSession.getSelectedAccount().getId(),
                         userId,
                         callback);

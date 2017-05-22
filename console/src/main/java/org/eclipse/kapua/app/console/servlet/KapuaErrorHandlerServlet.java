@@ -37,7 +37,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
     private static final String HTTP_ERROR_PATH = "/httpError";
     private static final String THROWABLE_PATH = "/throwable";
 
-    private static final String httpErrorTemplate = "<!doctype html>" +
+    private static final String HTTP_ERROR_TEMPLATE = "<!doctype html>" +
             "<html>" +
             "   <head>" +
             "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
@@ -64,7 +64,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             "      </div>" +
             "   </body>" +
             "</html>";
-    private static final String throwableErrorTemplate = "<!doctype html>" +
+    private static final String THROWABLE_ERROR_TEMPLATE = "<!doctype html>" +
             "<html>" +
             "   <head>" +
             "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
@@ -152,7 +152,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         data.put("requestUri", requestUri);
         data.put("errorMessage", errorMessage);
 
-        response.getWriter().write(processTemplate(data, httpErrorTemplate));
+        response.getWriter().write(processTemplate(data, HTTP_ERROR_TEMPLATE));
 
         logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
     }
@@ -190,7 +190,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         data.put("errorMessage", errorMessage);
         data.put("exceptionMessage", exceptionMessage);
 
-        response.getWriter().write(processTemplate(data, throwableErrorTemplate));
+        response.getWriter().write(processTemplate(data, THROWABLE_ERROR_TEMPLATE));
 
         logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
     }

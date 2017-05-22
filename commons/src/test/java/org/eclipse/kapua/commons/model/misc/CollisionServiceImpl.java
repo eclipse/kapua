@@ -23,13 +23,13 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 
 public class CollisionServiceImpl extends AbstractKapuaConfigurableService implements CollisionEntityService {
 
-    private static final Domain collisionEntityDomain = new CollisionEntityDomain();
+    private static final Domain COLLISION_ENTITY_DOMAIN = new CollisionEntityDomain();
 
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -5296593780771944081L;
 
     public CollisionServiceImpl() {
-        super(CollisionServiceImpl.class.getName(), collisionEntityDomain, CollisionEntityManagerFactory.getInstance());
+        super(CollisionServiceImpl.class.getName(), COLLISION_ENTITY_DOMAIN, CollisionEntityManagerFactory.getInstance());
     }
 
     public CollisionEntity insert(String testField) throws KapuaException {

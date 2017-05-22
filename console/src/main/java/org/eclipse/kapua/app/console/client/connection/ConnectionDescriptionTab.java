@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDeviceConnection> {
 
-    private static final GwtDeviceConnectionServiceAsync gwtDeviceConnectionService = GWT.create(GwtDeviceConnectionService.class);
+    private static final GwtDeviceConnectionServiceAsync GWT_DEVICE_CONNECTION_SERVICE = GWT.create(GwtDeviceConnectionService.class);
     
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
@@ -32,7 +32,7 @@ public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDevice
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                gwtDeviceConnectionService.getConnectionInfo(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
+                GWT_DEVICE_CONNECTION_SERVICE.getConnectionInfo(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
             }
         };
     }

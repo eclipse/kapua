@@ -28,7 +28,7 @@ public class AccountEntityManagerFactory extends AbstractEntityManagerFactory im
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-account";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
     private static AccountEntityManagerFactory instance = new AccountEntityManagerFactory();
 
@@ -38,7 +38,7 @@ public class AccountEntityManagerFactory extends AbstractEntityManagerFactory im
     private AccountEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
-                s_uniqueConstraints);
+                UNIQUE_CONTRAINTS);
     }
 
     /**

@@ -19,8 +19,6 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.user.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**
@@ -30,9 +28,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  * 
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(UserPassCredentialsMatcher.class);
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {

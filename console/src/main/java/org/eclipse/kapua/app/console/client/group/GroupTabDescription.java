@@ -27,7 +27,7 @@ public class GroupTabDescription extends EntityDescriptionTabItem<GwtGroup> {
     public GroupTabDescription() {
     }
 
-    private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
@@ -37,7 +37,7 @@ public class GroupTabDescription extends EntityDescriptionTabItem<GwtGroup> {
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                gwtGroupService.getGroupDescription(selectedEntity.getScopeId(),
+                GWT_GROUP_SERVICE.getGroupDescription(selectedEntity.getScopeId(),
                         selectedEntity.getId(), callback);
 
             }

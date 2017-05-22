@@ -92,14 +92,14 @@ public class ServiceDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceDAO.class);
 
-    private static final AccessInfoService accessInfoService;
-    private static final AccessInfoFactory accessInfoFactory;
+    private static final AccessInfoService ACCESS_INFO_SERVICE;
+    private static final AccessInfoFactory ACCESS_INFO_FACTORY;
 
-    private static final AccessPermissionService accessPermissionService;
-    private static final AccessRoleService accessRoleService;
+    private static final AccessPermissionService ACCESS_PERMISSION_SERVICE;
+    private static final AccessRoleService ACCESS_ROLE_SERVICE;
 
-    private static final RoleService roleService;
-    private static final RolePermissionService rolePermissionService;
+    private static final RoleService ROLE_SERVICE;
+    private static final RolePermissionService ROLE_PERMISSION_SERVICE;
 
     private static final String SQL_ERROR_CODE_CONSTRAINT_VIOLATION = "23505";
 
@@ -117,23 +117,23 @@ public class ServiceDAO {
         }
 
         if (locator != null) {
-            accessInfoService = KapuaLocator.getInstance().getService(AccessInfoService.class);
-            accessInfoFactory = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
+            ACCESS_INFO_SERVICE = KapuaLocator.getInstance().getService(AccessInfoService.class);
+            ACCESS_INFO_FACTORY = KapuaLocator.getInstance().getFactory(AccessInfoFactory.class);
 
-            accessPermissionService = KapuaLocator.getInstance().getService(AccessPermissionService.class);
-            accessRoleService = KapuaLocator.getInstance().getService(AccessRoleService.class);
+            ACCESS_PERMISSION_SERVICE = KapuaLocator.getInstance().getService(AccessPermissionService.class);
+            ACCESS_ROLE_SERVICE = KapuaLocator.getInstance().getService(AccessRoleService.class);
 
-            roleService = KapuaLocator.getInstance().getService(RoleService.class);
-            rolePermissionService = KapuaLocator.getInstance().getService(RolePermissionService.class);
+            ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);
+            ROLE_PERMISSION_SERVICE = KapuaLocator.getInstance().getService(RolePermissionService.class);
         } else {
-            accessInfoService = null;
-            accessInfoFactory = null;
+            ACCESS_INFO_SERVICE = null;
+            ACCESS_INFO_FACTORY = null;
 
-            accessPermissionService = null;
-            accessRoleService = null;
+            ACCESS_PERMISSION_SERVICE = null;
+            ACCESS_ROLE_SERVICE = null;
 
-            roleService = null;
-            rolePermissionService = null;
+            ROLE_SERVICE = null;
+            ROLE_PERMISSION_SERVICE = null;
         }
 
     }
@@ -712,21 +712,21 @@ public class ServiceDAO {
     @SuppressWarnings("rawtypes")
     protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) {
 
-        if (accessInfoFactory != null) {
+        if (ACCESS_INFO_FACTORY != null) {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
             if (kapuaSession != null) {
                 try {
                     KapuaId userId = kapuaSession.getUserId();
 
-                    AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(kapuaSession.getScopeId());
+                    AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
                     accessInfoQuery.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
-                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> accessInfoService.query(accessInfoQuery));
+                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
 
                     List<Permission> groupPermissions = new ArrayList<>();
                     if (!accessInfos.isEmpty()) {
 
                         AccessInfo accessInfo = accessInfos.getFirstItem();
-                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> accessPermissionService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                         for (AccessPermission ap : accessPermissions.getItems()) {
                             Permission p = ap.getPermission();
@@ -742,14 +742,14 @@ public class ServiceDAO {
                             }
                         }
 
-                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPrivileged(() -> accessRoleService.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPrivileged(() -> ACCESS_ROLE_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                         for (AccessRole ar : accessRoles.getItems()) {
                             KapuaId roleId = ar.getRoleId();
 
-                            Role role = KapuaSecurityUtils.doPrivileged(() -> roleService.find(ar.getScopeId(), roleId));
+                            Role role = KapuaSecurityUtils.doPrivileged(() -> ROLE_SERVICE.find(ar.getScopeId(), roleId));
 
-                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> rolePermissionService.findByRoleId(role.getScopeId(), role.getId()));
+                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId()));
 
                             for (RolePermission rp : rolePermissions.getItems()) {
 

@@ -59,11 +59,11 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
 public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapuaKura<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<DeviceConfigurationAppProperties, ConfigurationMetrics> propertiesDictionary = new HashMap<>();
+    private static final Map<DeviceConfigurationAppProperties, ConfigurationMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {
-        propertiesDictionary.put(DeviceConfigurationAppProperties.APP_NAME, ConfigurationMetrics.APP_ID);
-        propertiesDictionary.put(DeviceConfigurationAppProperties.APP_VERSION, ConfigurationMetrics.APP_VERSION);
+        PROPERTIES_DICTIONARY.put(DeviceConfigurationAppProperties.APP_NAME, ConfigurationMetrics.APP_ID);
+        PROPERTIES_DICTIONARY.put(DeviceConfigurationAppProperties.APP_VERSION, ConfigurationMetrics.APP_VERSION);
     }
 
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws KapuaException {
@@ -72,9 +72,9 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(propertiesDictionary.get(DeviceConfigurationAppProperties.APP_NAME).getValue())
+        appIdSb.append(PROPERTIES_DICTIONARY.get(DeviceConfigurationAppProperties.APP_NAME).getValue())
                 .append("-")
-                .append(propertiesDictionary.get(DeviceConfigurationAppProperties.APP_VERSION).getValue());
+                .append(PROPERTIES_DICTIONARY.get(DeviceConfigurationAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));

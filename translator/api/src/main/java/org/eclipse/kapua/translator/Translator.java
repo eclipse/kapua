@@ -45,7 +45,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
     private static final Logger logger = LoggerFactory.getLogger(Translator.class);
 
-    private static final ServiceLoader<Translator> translators = ServiceLoader.load(Translator.class);
+    private static final ServiceLoader<Translator> TRANSLATOR = ServiceLoader.load(Translator.class);
 
     /**
      * Return a translator for the given messages classes.
@@ -67,7 +67,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
         Objects.requireNonNull(fromMessageClass);
         Objects.requireNonNull(toMessageClass);
 
-        for (Translator translator : translators) {
+        for (Translator translator : TRANSLATOR) {
             if ((fromMessageClass.isAssignableFrom(translator.getClassFrom())) &&
                     toMessageClass.isAssignableFrom(translator.getClassTo())) {
                 return (T) translator;
@@ -78,7 +78,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
         throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.TRANSLATOR_NOT_FOUND,
                 null,
                 new Object[] {
-                        translators,
+                        TRANSLATOR,
                         fromMessageClass.getName(),
                         toMessageClass.getName(),
                 });

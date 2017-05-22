@@ -56,10 +56,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/messages")
 public class DataMessages extends AbstractKapuaResource {
 
-    private static final KapuaLocator locator = KapuaLocator.getInstance();
-    private static final MessageStoreService messageRegistryService = locator.getService(MessageStoreService.class);
-    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link DatastoreMessage} list in the scope.
@@ -103,20 +103,20 @@ public class DataMessages extends AbstractKapuaResource {
             @ApiParam(value = "The max metric value to filter results") @QueryParam("metricMax") String metricMaxValue, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        MessageListResult datastoreMessageListResult = datastoreObjectFactory.newDatastoreMessageListResult();
+        MessageListResult datastoreMessageListResult = DATASTORE_OBJECT_FACTORY.newDatastoreMessageListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
             if (!Strings.isNullOrEmpty(channel)) {
                 StorablePredicate channelPredicate = null;
                 if (strictChannel) {
-                    channelPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+                    channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
                 } else {
-                    channelPredicate = storablePredicateFactory.newChannelMatchPredicate(channel);
+                    channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
                 }
                 andPredicate.getPredicates().add(channelPredicate);
             }
@@ -124,7 +124,7 @@ public class DataMessages extends AbstractKapuaResource {
             Date startDate = startDateParam != null ? startDateParam.getDate() : null;
             Date endDate = endDateParam != null ? endDateParam.getDate() : null;
             if (startDate != null || endDate != null) {
-                RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
+                RangePredicate timestampPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
                 andPredicate.getPredicates().add(timestampPredicate);
             }
 
@@ -132,11 +132,11 @@ public class DataMessages extends AbstractKapuaResource {
                 V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
                 V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
 
-                MetricPredicate metricPredicate = storablePredicateFactory.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+                MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
                 andPredicate.getPredicates().add(metricPredicate);
             }
 
-            MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(scopeId);
+            MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
             query.setLimit(limit);
@@ -172,7 +172,7 @@ public class DataMessages extends AbstractKapuaResource {
         MessageListResult datastoreMessageListResult = null;
         try {
             query.setScopeId(scopeId);
-            datastoreMessageListResult = messageRegistryService.query(query);
+            datastoreMessageListResult = MESSAGE_STORE_SERVICE.query(query);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -202,7 +202,7 @@ public class DataMessages extends AbstractKapuaResource {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
-            countResult = new CountResult(messageRegistryService.count(query));
+            countResult = new CountResult(MESSAGE_STORE_SERVICE.count(query));
         } catch (Throwable t) {
             handleException(t);
         }
@@ -227,7 +227,7 @@ public class DataMessages extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested DatastoreMessage", required = true) @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) {
         DatastoreMessage datastoreMessage = null;
         try {
-            datastoreMessage = messageRegistryService.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
+            datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
         } catch (Throwable t) {
             handleException(t);
         }

@@ -50,13 +50,13 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<SnapshotMetrics, DeviceSnapshotAppProperties> metricsDictionary;
+    private static final Map<SnapshotMetrics, DeviceSnapshotAppProperties> METRICS_DICTIONARY;
 
     static {
-        metricsDictionary = new HashMap<>();
+        METRICS_DICTIONARY = new HashMap<>();
 
-        metricsDictionary.put(SnapshotMetrics.APP_ID, DeviceSnapshotAppProperties.APP_NAME);
-        metricsDictionary.put(SnapshotMetrics.APP_VERSION, DeviceSnapshotAppProperties.APP_VERSION);
+        METRICS_DICTIONARY.put(SnapshotMetrics.APP_ID, DeviceSnapshotAppProperties.APP_NAME);
+        METRICS_DICTIONARY.put(SnapshotMetrics.APP_VERSION, DeviceSnapshotAppProperties.APP_VERSION);
     }
     
     

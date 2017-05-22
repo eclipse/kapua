@@ -61,8 +61,6 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
@@ -78,10 +76,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest {
 
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(AccessInfoServiceTestSteps.class);
-
-    private static final Domain testDomain = new TestDomain();
+    private static final Domain TEST_DOMAIN = new TestDomain();
 
     // Test data scratchpads
     private CommonTestData commonData;
@@ -126,12 +121,12 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         accessRoleService = new AccessRoleServiceImpl();
         accessRoleFactory = new AccessRoleFactoryImpl();
 
-        userService = locator.getService(UserService.class);
-        userFactory = locator.getFactory(UserFactory.class);
-        permissionFactory = locator.getFactory(PermissionFactory.class);
+        userService = LOCATOR.getService(UserService.class);
+        userFactory = LOCATOR.getFactory(UserFactory.class);
+        permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
 
-        roleService = locator.getService(RoleService.class);
-        roleFactory = locator.getFactory(RoleFactory.class);
+        roleService = LOCATOR.getService(RoleService.class);
+        roleFactory = LOCATOR.getFactory(RoleFactory.class);
 
         // Clean up the database. A clean slate is needed for truly independent
         // test case executions!
@@ -211,19 +206,19 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         for (String perm : tmpList) {
             switch (perm.trim()) {
             case "read":
-                accessData.permissions.add(permissionFactory.newPermission(testDomain, Actions.read, commonData.scopeId));
+                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.read, commonData.scopeId));
                 break;
             case "write":
-                accessData.permissions.add(permissionFactory.newPermission(testDomain, Actions.write, commonData.scopeId));
+                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.write, commonData.scopeId));
                 break;
             case "delete":
-                accessData.permissions.add(permissionFactory.newPermission(testDomain, Actions.delete, commonData.scopeId));
+                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.delete, commonData.scopeId));
                 break;
             case "connect":
-                accessData.permissions.add(permissionFactory.newPermission(testDomain, Actions.connect, commonData.scopeId));
+                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.connect, commonData.scopeId));
                 break;
             case "execute":
-                accessData.permissions.add(permissionFactory.newPermission(testDomain, Actions.execute, commonData.scopeId));
+                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.execute, commonData.scopeId));
                 break;
             }
         }
@@ -769,8 +764,8 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
         AccessPermissionImpl accPerm_1 = new AccessPermissionImpl(generateId());
         AccessPermissionImpl accPerm_2 = new AccessPermissionImpl(generateId());
-        Permission tmpPerm_1 = new PermissionImpl("test_domain", Actions.read, rootScopeId, generateId());
-        Permission tmpPerm_2 = new PermissionImpl("test_domain", Actions.write, rootScopeId, generateId());
+        Permission tmpPerm_1 = new PermissionImpl("test_domain", Actions.read, ROOT_SCOPE_ID, generateId());
+        Permission tmpPerm_2 = new PermissionImpl("test_domain", Actions.write, ROOT_SCOPE_ID, generateId());
 
         assertTrue(accPerm_1.equals(accPerm_1));
         assertFalse(accPerm_1.equals(null));

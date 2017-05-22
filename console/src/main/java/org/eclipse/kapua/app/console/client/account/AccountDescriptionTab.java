@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AccountDescriptionTab extends EntityDescriptionTabItem<GwtAccount> {
 
-    private static final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
     
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
@@ -32,7 +32,7 @@ public class AccountDescriptionTab extends EntityDescriptionTabItem<GwtAccount> 
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                gwtAccountService.getAccountInfo(selectedEntity.getId(), callback);
+                GWT_ACCOUNT_SERVICE.getAccountInfo(selectedEntity.getId(), callback);
             }
         };
     }

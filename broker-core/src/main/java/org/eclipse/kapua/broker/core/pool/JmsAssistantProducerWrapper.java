@@ -29,19 +29,19 @@ import org.eclipse.kapua.broker.core.message.MessageConstants;
  */
 public class JmsAssistantProducerWrapper extends JmsProducerWrapper {
 
-    private final static List<String> semanticTopicConnect = new ArrayList<String>();
-    private final static List<String> semanticTopicDisconnect = new ArrayList<String>();
-    private final static List<String> semanticTopicMissing = new ArrayList<String>();
+    private final static List<String> SEMANTIC_TOPIC_CONNECT = new ArrayList<String>();
+    private final static List<String> SEMANTIC_TOPIC_DISCONNECT = new ArrayList<String>();
+    private final static List<String> SEMANTIC_TOPIC_MISSING = new ArrayList<String>();
 
     static {
-        semanticTopicConnect.add("MQTT");
-        semanticTopicConnect.add("CONNECT");
+        SEMANTIC_TOPIC_CONNECT.add("MQTT");
+        SEMANTIC_TOPIC_CONNECT.add("CONNECT");
 
-        semanticTopicDisconnect.add("MQTT");
-        semanticTopicDisconnect.add("DISCONNECT");
+        SEMANTIC_TOPIC_DISCONNECT.add("MQTT");
+        SEMANTIC_TOPIC_DISCONNECT.add("DISCONNECT");
 
-        semanticTopicMissing.add("MQTT");
-        semanticTopicMissing.add("MISSING");
+        SEMANTIC_TOPIC_MISSING.add("MQTT");
+        SEMANTIC_TOPIC_MISSING.add("MISSING");
     }
 
     public JmsAssistantProducerWrapper(ActiveMQConnectionFactory vmconnFactory, String destination, boolean transacted, boolean start) throws JMSException {

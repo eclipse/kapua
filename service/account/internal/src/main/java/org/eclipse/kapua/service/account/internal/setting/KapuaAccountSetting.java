@@ -27,7 +27,7 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
      */
     private static final String ACCOUNT_CONFIG_RESOURCE = "kapua-account-setting.properties";
 
-    private static final KapuaAccountSetting instance = new KapuaAccountSetting();
+    private static final KapuaAccountSetting INSTANCE = new KapuaAccountSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaAccountSettingKeys#ACCOUNT_KEY} value.
@@ -43,6 +43,6 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
      * @return A singleton instance of KapuaAccountSetting.
      */
     public static KapuaAccountSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

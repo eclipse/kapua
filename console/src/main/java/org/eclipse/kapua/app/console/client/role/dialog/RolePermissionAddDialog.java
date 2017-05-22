@@ -47,8 +47,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class RolePermissionAddDialog extends EntityAddEditDialog {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
-    private final static GwtDomainServiceAsync domainService = GWT.create(GwtDomainService.class);
-    private final static GwtGroupServiceAsync groupService = GWT.create(GwtGroupService.class);
+    private final static GwtDomainServiceAsync DOMAIN_SERVICE = GWT.create(GwtDomainService.class);
+    private final static GwtGroupServiceAsync GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
     protected EnumComboBox<GwtDomain> domainCombo;
     protected EnumComboBox<GwtAction> actionCombo;
@@ -81,7 +81,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
         //
         // Domain
-        domainService.findAll(new AsyncCallback<List<GwtDomain>>() {
+        DOMAIN_SERVICE.findAll(new AsyncCallback<List<GwtDomain>>() {
 
             @Override
             public void onSuccess(List<GwtDomain> domainslist) {
@@ -132,7 +132,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         groupCombo.setAllowBlank(false);
         groupCombo.setDisplayField("groupName");
         groupCombo.setValueField("id");
-        groupService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+        GROUP_SERVICE.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
             public void onSuccess(List<GwtGroup> groups) {
@@ -163,7 +163,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
     }
 
     private void refreshActions() {
-        domainService.findActionsByDomainName(domainCombo.getValue().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
+        DOMAIN_SERVICE.findActionsByDomainName(domainCombo.getValue().getValue().toString(), new AsyncCallback<List<GwtAction>>() {
 
             @Override
             public void onSuccess(List<GwtAction> actionslist) {
@@ -198,15 +198,15 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(GwtRolePermission rolePermission) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
             }
         });
 

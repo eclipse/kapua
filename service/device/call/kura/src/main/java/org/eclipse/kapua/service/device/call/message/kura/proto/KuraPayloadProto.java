@@ -130,15 +130,15 @@ public final class KuraPayloadProto {
             unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
         }
 
-        private static final KuraPayload defaultInstance;
+        private static final KuraPayload DEFAULT_INSTANCE;
 
         public static KuraPayload getDefaultInstance() {
-            return defaultInstance;
+            return DEFAULT_INSTANCE;
         }
 
         @Override
         public KuraPayload getDefaultInstanceForType() {
-            return defaultInstance;
+            return DEFAULT_INSTANCE;
         }
 
         private final com.google.protobuf.UnknownFieldSet unknownFields;
@@ -218,7 +218,7 @@ public final class KuraPayloadProto {
         }
 
         public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-            return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_descriptor;
+            return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR;
         }
 
         @Override
@@ -368,15 +368,15 @@ public final class KuraPayloadProto {
                 unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
             }
 
-            private static final KuraMetric defaultInstance;
+            private static final KuraMetric DEFAULT_INSTANCE;
 
             public static KuraMetric getDefaultInstance() {
-                return defaultInstance;
+                return DEFAULT_INSTANCE;
             }
 
             @Override
             public KuraMetric getDefaultInstanceForType() {
-                return defaultInstance;
+                return DEFAULT_INSTANCE;
             }
 
             private final com.google.protobuf.UnknownFieldSet unknownFields;
@@ -475,7 +475,7 @@ public final class KuraPayloadProto {
             }
 
             public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_KuraMetric_descriptor;
+                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAMETRIC_DESCRIPTOR;
             }
 
             @Override
@@ -1089,7 +1089,7 @@ public final class KuraPayloadProto {
                     org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.KuraPayload.KuraMetricOrBuilder {
 
                 public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_KuraMetric_descriptor;
+                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAMETRIC_DESCRIPTOR;
                 }
 
                 @Override
@@ -1149,7 +1149,7 @@ public final class KuraPayloadProto {
 
                 @Override
                 public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_KuraMetric_descriptor;
+                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAMETRIC_DESCRIPTOR;
                 }
 
                 @Override
@@ -1736,8 +1736,8 @@ public final class KuraPayloadProto {
             }
 
             static {
-                defaultInstance = new KuraMetric(true);
-                defaultInstance.initFields();
+                DEFAULT_INSTANCE = new KuraMetric(true);
+                DEFAULT_INSTANCE.initFields();
             }
 
             // @@protoc_insertion_point(class_scope:kuradatatypes.KuraPayload.KuraMetric)
@@ -1896,15 +1896,15 @@ public final class KuraPayloadProto {
                 unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance();
             }
 
-            private static final KuraPosition defaultInstance;
+            private static final KuraPosition DEFAULT_INSTANCE;
 
             public static KuraPosition getDefaultInstance() {
-                return defaultInstance;
+                return DEFAULT_INSTANCE;
             }
 
             @Override
             public KuraPosition getDefaultInstanceForType() {
-                return defaultInstance;
+                return DEFAULT_INSTANCE;
             }
 
             private final com.google.protobuf.UnknownFieldSet unknownFields;
@@ -1994,7 +1994,7 @@ public final class KuraPayloadProto {
             }
 
             public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_KuraPosition_descriptor;
+                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAPOSITION_DESCRIPTOR;
             }
 
             @Override
@@ -2458,7 +2458,7 @@ public final class KuraPayloadProto {
                     org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.KuraPayload.KuraPositionOrBuilder {
 
                 public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_KuraPosition_descriptor;
+                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAPOSITION_DESCRIPTOR;
                 }
 
                 @Override
@@ -2518,7 +2518,7 @@ public final class KuraPayloadProto {
 
                 @Override
                 public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_KuraPosition_descriptor;
+                    return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAPOSITION_DESCRIPTOR;
                 }
 
                 @Override
@@ -3087,8 +3087,8 @@ public final class KuraPayloadProto {
             }
 
             static {
-                defaultInstance = new KuraPosition(true);
-                defaultInstance.initFields();
+                DEFAULT_INSTANCE = new KuraPosition(true);
+                DEFAULT_INSTANCE.initFields();
             }
 
             // @@protoc_insertion_point(class_scope:kuradatatypes.KuraPayload.KuraPosition)
@@ -3420,7 +3420,7 @@ public final class KuraPayloadProto {
                 org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.KuraPayloadOrBuilder {
 
             public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
-                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_descriptor;
+                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR;
             }
 
             @Override
@@ -3482,7 +3482,7 @@ public final class KuraPayloadProto {
 
             @Override
             public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
-                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.internal_static_kuradatatypes_KuraPayload_descriptor;
+                return org.eclipse.kapua.service.device.call.message.kura.proto.KuraPayloadProto.INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR;
             }
 
             @Override
@@ -4167,18 +4167,18 @@ public final class KuraPayloadProto {
         }
 
         static {
-            defaultInstance = new KuraPayload(true);
-            defaultInstance.initFields();
+            DEFAULT_INSTANCE = new KuraPayload(true);
+            DEFAULT_INSTANCE.initFields();
         }
 
         // @@protoc_insertion_point(class_scope:kuradatatypes.KuraPayload)
     }
 
-    private static final com.google.protobuf.Descriptors.Descriptor internal_static_kuradatatypes_KuraPayload_descriptor;
+    private static final com.google.protobuf.Descriptors.Descriptor INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR;
     private static com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_kuradatatypes_KuraPayload_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor internal_static_kuradatatypes_KuraPayload_KuraMetric_descriptor;
+    private static final com.google.protobuf.Descriptors.Descriptor INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAMETRIC_DESCRIPTOR;
     private static com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_kuradatatypes_KuraPayload_KuraMetric_fieldAccessorTable;
-    private static final com.google.protobuf.Descriptors.Descriptor internal_static_kuradatatypes_KuraPayload_KuraPosition_descriptor;
+    private static final com.google.protobuf.Descriptors.Descriptor INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAPOSITION_DESCRIPTOR;
     private static com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_kuradatatypes_KuraPayload_KuraPosition_fieldAccessorTable;
 
     public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
@@ -4229,21 +4229,21 @@ public final class KuraPayloadProto {
                 .internalBuildGeneratedFileFrom(descriptorData,
                         new com.google.protobuf.Descriptors.FileDescriptor[] {
                         }, assigner);
-        internal_static_kuradatatypes_KuraPayload_descriptor = getDescriptor().getMessageTypes().get(0);
+        INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR = getDescriptor().getMessageTypes().get(0);
         internal_static_kuradatatypes_KuraPayload_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                internal_static_kuradatatypes_KuraPayload_descriptor,
+                INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR,
                 new java.lang.String[] { "Timestamp", "Position", "Metric",
                         "Body", });
-        internal_static_kuradatatypes_KuraPayload_KuraMetric_descriptor = internal_static_kuradatatypes_KuraPayload_descriptor.getNestedTypes().get(0);
+        INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAMETRIC_DESCRIPTOR = INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR.getNestedTypes().get(0);
         internal_static_kuradatatypes_KuraPayload_KuraMetric_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                internal_static_kuradatatypes_KuraPayload_KuraMetric_descriptor,
+                INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAMETRIC_DESCRIPTOR,
                 new java.lang.String[] { "Name", "Type", "DoubleValue",
                         "FloatValue", "LongValue",
                         "IntValue", "BoolValue",
                         "StringValue", "BytesValue", });
-        internal_static_kuradatatypes_KuraPayload_KuraPosition_descriptor = internal_static_kuradatatypes_KuraPayload_descriptor.getNestedTypes().get(1);
+        INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAPOSITION_DESCRIPTOR = INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_DESCRIPTOR.getNestedTypes().get(1);
         internal_static_kuradatatypes_KuraPayload_KuraPosition_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-                internal_static_kuradatatypes_KuraPayload_KuraPosition_descriptor,
+                INTERNAL_STATIC_KURADATATYPES_KURAPAYLOAD_KURAPOSITION_DESCRIPTOR,
                 new java.lang.String[] { "Latitude", "Longitude",
                         "Altitude", "Precision",
                         "Heading", "Speed",

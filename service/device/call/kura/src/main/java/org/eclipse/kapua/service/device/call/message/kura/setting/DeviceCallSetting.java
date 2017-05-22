@@ -27,7 +27,7 @@ public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKey
      */
     private static final String DEVICE_CALL_SETTING_RESOURCE = "device-call-setting.properties";
 
-    private static final DeviceCallSetting instance = new DeviceCallSetting();
+    private static final DeviceCallSetting INSTANCE = new DeviceCallSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link DeviceCallSetting#DEVICE_CALL_SETTING_RESOURCE} value.
@@ -43,6 +43,6 @@ public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKey
      * @return A singleton instance of DeviceCallSetting.
      */
     public static DeviceCallSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

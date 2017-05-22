@@ -22,7 +22,7 @@ public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingKey>
 
     private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-setting.properties";
 
-    private static final DatastoreSettings instance = new DatastoreSettings();
+    private static final DatastoreSettings INSTANCE = new DatastoreSettings();
 
     private DatastoreSettings() {
         super(DATASTORE_CONFIG_RESOURCE);
@@ -34,6 +34,6 @@ public class DatastoreSettings extends AbstractKapuaSetting<DatastoreSettingKey>
      * @return
      */
     public static DatastoreSettings getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

@@ -34,7 +34,7 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
 
     public KapuaDataConverter() {
         super();
-        metricConverterDataMessage = metricsService.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "data", "count");
+        metricConverterDataMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "data", "count");
     }
 
     /**

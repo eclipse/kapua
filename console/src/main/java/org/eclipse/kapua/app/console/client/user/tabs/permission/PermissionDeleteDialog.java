@@ -25,7 +25,7 @@ public class PermissionDeleteDialog extends EntityDeleteDialog {
 
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    private static final GwtAccessPermissionServiceAsync gwtAccessPermissionService = GWT.create(GwtAccessPermissionService.class);
+    private static final GwtAccessPermissionServiceAsync GWT_ACCESS_PERMISSION_SERVICE = GWT.create(GwtAccessPermissionService.class);
 
     private GwtAccessPermission gwtAccessPermission;
 
@@ -47,19 +47,19 @@ public class PermissionDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public void submit() {
-        gwtAccessPermissionService.delete(xsrfToken, gwtAccessPermission.getScopeId(), gwtAccessPermission.getId(), new AsyncCallback<Void>() {
+        GWT_ACCESS_PERMISSION_SERVICE.delete(xsrfToken, gwtAccessPermission.getScopeId(), gwtAccessPermission.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogDeletePermissionConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogDeletePermissionConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogDeletePermissionError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogDeletePermissionError(cause.getLocalizedMessage());
                 hide();
             }
         });

@@ -22,7 +22,7 @@ public class ClientSettings extends AbstractKapuaSetting<ClientSettingsKey> {
 
     private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-transport-client-setting.properties";
 
-    private static final ClientSettings instance = new ClientSettings();
+    private static final ClientSettings INSTANCE = new ClientSettings();
 
     private ClientSettings() {
         super(DATASTORE_CONFIG_RESOURCE);
@@ -34,6 +34,6 @@ public class ClientSettings extends AbstractKapuaSetting<ClientSettingsKey> {
      * @return
      */
     public static ClientSettings getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

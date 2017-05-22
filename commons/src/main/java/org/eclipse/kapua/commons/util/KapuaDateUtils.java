@@ -30,7 +30,7 @@ public final class KapuaDateUtils {
 
     public static final String ISO_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // example 24/01/2017T11:22:10.999Z
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter
             .ofPattern(ISO_DATE_PATTERN, Locale.US)
             .withZone(ZoneOffset.UTC);
 
@@ -58,7 +58,7 @@ public final class KapuaDateUtils {
         if (date == null) {
             return null;
         } else {
-            return Date.from(Instant.from(formatter.parse(date)));
+            return Date.from(Instant.from(FORMATTER.parse(date)));
         }
     }
 
@@ -73,7 +73,7 @@ public final class KapuaDateUtils {
         if (date == null) {
             return null;
         } else {
-            return formatter.format(date.toInstant());
+            return FORMATTER.format(date.toInstant());
         }
     }
 

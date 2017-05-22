@@ -32,8 +32,8 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
     private static String DEFAULT_PATH = "../../../dev-tools/src/main/database";
     private static String DROP_ALL_TABLES = "all_drop.sql";
 
-    protected static final KapuaLocator locator = KapuaLocator.getInstance();
-    protected static final KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
+    protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    protected static final KapuaId ROOT_SCOPE_ID = new KapuaEid(BigInteger.ONE);
     protected static Random random = new Random();
 
     // Drop the whole database. All tables are deleted.

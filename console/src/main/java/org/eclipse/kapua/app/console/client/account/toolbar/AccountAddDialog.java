@@ -37,7 +37,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AccountAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
-    protected static final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    protected static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
 
     private static final int LABEL_WIDTH_FORM = 190;
 
@@ -237,7 +237,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         gwtAccountCreator.setOrganizationStateProvinceCounty(organizationStateProvinceCounty.getValue());
         gwtAccountCreator.setOrganizationCountry(organizationCountry.getValue());
 
-        gwtAccountService.create(xsrfToken,
+        GWT_ACCOUNT_SERVICE.create(xsrfToken,
                 gwtAccountCreator,
                 new AsyncCallback<GwtAccount>() {
 
@@ -246,7 +246,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
                         m_status.hide();
                         m_formPanel.getButtonBar().enable();
                         unmask();
-                        m_submitButton.enable();
+                        submitButton.enable();
                         m_cancelButton.enable();
                     }
 

@@ -48,8 +48,6 @@ import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -89,9 +87,6 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     public static String fullClientIdTooLong = "fullClientIdWith65Chars_✁✂✃✄✅✆✇✈✉✊✋✌✍✎✏✐✑✒✓✔✕✁✂✃✄✅✆✇✈✉✊✋✌✍✎✏✐✑✒✓✔";
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(DeviceRegistryServiceTestSteps.class);
 
     // Currently executing scenario.
     Scenario scenario;

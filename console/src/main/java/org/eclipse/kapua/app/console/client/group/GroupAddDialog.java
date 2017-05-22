@@ -27,7 +27,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupAddDialog extends EntityAddEditDialog {
 
-    private final static GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
     protected TextField<String> groupNameField;
@@ -53,12 +53,12 @@ public class GroupAddDialog extends EntityAddEditDialog {
         GwtGroupCreator gwtGroupCreator = new GwtGroupCreator();
         gwtGroupCreator.setScopeId(currentSession.getSelectedAccount().getId());
         gwtGroupCreator.setName(groupNameField.getValue());
-        gwtGroupService.create(gwtGroupCreator, new AsyncCallback<GwtGroup>() {
+        GWT_GROUP_SERVICE.create(gwtGroupCreator, new AsyncCallback<GwtGroup>() {
 
             @Override
             public void onSuccess(GwtGroup arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
@@ -68,7 +68,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
                 m_status.hide();
                 m_formPanel.getButtonBar().enable();
                 unmask();
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
             }
         });

@@ -26,7 +26,7 @@ public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
      */
     private static final String CONFIG_RESOURCE_NAME = "kapua-environment-setting.properties";
 
-    private static final SystemSetting instance = new SystemSetting();
+    private static final SystemSetting INSTANCE = new SystemSetting();
 
     // Constructors
 
@@ -42,7 +42,7 @@ public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
      * @return singleton system setting instance
      */
     public static SystemSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
 }

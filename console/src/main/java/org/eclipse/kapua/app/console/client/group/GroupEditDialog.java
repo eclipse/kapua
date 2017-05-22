@@ -22,7 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupEditDialog extends GroupAddDialog {
 
-    private final static GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private final static GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
     private GwtGroup selectedGroup;
 
@@ -41,19 +41,19 @@ public class GroupEditDialog extends GroupAddDialog {
     @Override
     public void submit() {
         selectedGroup.setGroupName(groupNameField.getValue());
-        gwtGroupService.update(selectedGroup, new AsyncCallback<GwtGroup>() {
+        GWT_GROUP_SERVICE.update(selectedGroup, new AsyncCallback<GwtGroup>() {
 
             @Override
             public void onFailure(Throwable arg0) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogEditError(arg0.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogEditError(arg0.getLocalizedMessage());
                 hide();
             }
 
             @Override
             public void onSuccess(GwtGroup arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogEditConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogEditConfirmation();
                 hide();
             }
         });

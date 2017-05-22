@@ -37,7 +37,7 @@ public class KapuaException extends Exception {
     private static final String KAPUA_ERROR_MESSAGES = "kapua-service-error-messages";
     private static final String KAPUA_GENERIC_MESSAGE = "Error: {0}";
 
-    private static final Logger s_logger = LoggerFactory.getLogger(KapuaException.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaException.class);
 
     protected KapuaErrorCode code;
     protected Object[] args;
@@ -209,7 +209,7 @@ public class KapuaException extends Exception {
             messagePattern = resourceBundle.getString(code.name());
         } catch (MissingResourceException mre) {
             // log the failure to load a message bundle
-            s_logger.warn("Could not load Exception Messages Bundle for Locale {}", locale);
+            logger.warn("Could not load Exception Messages Bundle for Locale {}", locale);
         }
 
         return messagePattern;

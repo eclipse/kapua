@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class KapuaExceptionHandler {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(KapuaExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaExceptionHandler.class);
 
     private KapuaExceptionHandler() {
     }
@@ -113,12 +113,12 @@ public class KapuaExceptionHandler {
         // throw new GwtEdcException(GwtEdcErrorCode.WARNING, t, t.getLocalizedMessage());
         // }
         else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
-            s_logger.error("internal service error", t);
+            logger.error("internal service error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getLocalizedMessage());
         } else {
 
             // all others => log and throw internal error code
-            s_logger.warn("RPC service non-application error", t);
+            logger.warn("RPC service non-application error", t);
             throw GwtKapuaException.internalError(t, t.getLocalizedMessage());
         }
     }

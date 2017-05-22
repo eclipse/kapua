@@ -32,7 +32,7 @@ public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys>
      * Singleton instance of this {@link Class}.
      * 
      */
-    private static final KapuaUserSetting instance = new KapuaUserSetting();
+    private static final KapuaUserSetting INSTANCE = new KapuaUserSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaUserSettingKeys#USER_KEY} value.
@@ -48,6 +48,6 @@ public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys>
      * @return A singleton instance of JmsClientSetting.
      */
     public static KapuaUserSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

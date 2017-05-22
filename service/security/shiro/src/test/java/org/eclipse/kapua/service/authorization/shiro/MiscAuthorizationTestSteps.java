@@ -20,8 +20,6 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
@@ -33,9 +31,6 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
 public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(AccessInfoServiceTestSteps.class);
 
     // Test data scratchpads
     private CommonTestData commonData ;
@@ -84,13 +79,13 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
         Permission tmpPerm = null;
         Domain tmpDomain = new TestDomain();
 
-        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.read, rootScopeId);
+        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.read, ROOT_SCOPE_ID);
         assertNotNull(tmpPerm);
         assertNotNull(tmpPerm.getDomain());
         assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
         assertEquals(Actions.read, tmpPerm.getAction());
 
-        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.write, rootScopeId, generateId(9));
+        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.write, ROOT_SCOPE_ID, generateId(9));
         assertNotNull(tmpPerm);
         assertNotNull(tmpPerm.getDomain());
         assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
@@ -98,13 +93,13 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
         assertEquals(generateId(9), tmpPerm.getGroupId());
         assertFalse(tmpPerm.getForwardable());
 
-        tmpPerm = permissionFactory.newPermission(null, Actions.execute, rootScopeId, generateId(9), true);
+        tmpPerm = permissionFactory.newPermission(null, Actions.execute, ROOT_SCOPE_ID, generateId(9), true);
         assertNotNull(tmpPerm);
         assertEquals(Actions.execute, tmpPerm.getAction());
         assertTrue(tmpPerm.getForwardable());
 
         tmpDomain.setName(null);
-        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.connect, rootScopeId, generateId());
+        tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.connect, ROOT_SCOPE_ID, generateId());
         assertNotNull(tmpPerm);
         assertEquals(Actions.connect, tmpPerm.getAction());
     }

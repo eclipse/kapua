@@ -37,11 +37,11 @@ import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnaps
  */
 public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage> {
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<DeviceSnapshotAppProperties, SnapshotMetrics> propertiesDictionary = new HashMap<>();
+    private static final Map<DeviceSnapshotAppProperties, SnapshotMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {
-        propertiesDictionary.put(DeviceSnapshotAppProperties.APP_NAME, SnapshotMetrics.APP_ID);
-        propertiesDictionary.put(DeviceSnapshotAppProperties.APP_VERSION, SnapshotMetrics.APP_VERSION);
+        PROPERTIES_DICTIONARY.put(DeviceSnapshotAppProperties.APP_NAME, SnapshotMetrics.APP_ID);
+        PROPERTIES_DICTIONARY.put(DeviceSnapshotAppProperties.APP_VERSION, SnapshotMetrics.APP_VERSION);
     }
 
     protected KuraRequestChannel translateChannel(SnapshotRequestChannel kapuaChannel) throws KapuaException {
@@ -50,9 +50,9 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(propertiesDictionary.get(DeviceSnapshotAppProperties.APP_NAME).getValue())
+        appIdSb.append(PROPERTIES_DICTIONARY.get(DeviceSnapshotAppProperties.APP_NAME).getValue())
                 .append("-")
-                .append(propertiesDictionary.get(DeviceSnapshotAppProperties.APP_VERSION).getValue());
+                .append(PROPERTIES_DICTIONARY.get(DeviceSnapshotAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
 

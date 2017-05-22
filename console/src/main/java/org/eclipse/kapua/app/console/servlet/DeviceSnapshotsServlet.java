@@ -32,7 +32,7 @@ public class DeviceSnapshotsServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2533869595709953567L;
 
-    private static final Logger s_logger = LoggerFactory.getLogger(DeviceSnapshotsServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceSnapshotsServlet.class);
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -67,7 +67,7 @@ public class DeviceSnapshotsServlet extends HttpServlet {
 
             XmlUtil.marshal(conf, writer);
         } catch (Exception e) {
-            s_logger.error("Error creating Excel export", e);
+            logger.error("Error creating Excel export", e);
             throw new ServletException(e);
         } finally {
             if (writer != null) {

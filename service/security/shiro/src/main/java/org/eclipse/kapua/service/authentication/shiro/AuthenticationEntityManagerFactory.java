@@ -29,7 +29,7 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
     private static AuthenticationEntityManagerFactory instance = new AuthenticationEntityManagerFactory();
 
@@ -39,7 +39,7 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
     private AuthenticationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
-                s_uniqueConstraints);
+                UNIQUE_CONSTRAINTS);
     }
 
     /**

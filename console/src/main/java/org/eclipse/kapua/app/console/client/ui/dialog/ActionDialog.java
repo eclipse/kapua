@@ -40,12 +40,12 @@ public abstract class ActionDialog extends KapuaDialog {
     protected static int FORM_LABEL_WIDTH = 120;
     protected FormPanel m_formPanel;
 
-    protected Button m_submitButton;
+    protected Button submitButton;
     protected Button m_cancelButton;
     protected Status m_status;
 
-    protected Boolean m_exitStatus;
-    protected String m_exitMessage;
+    protected Boolean exitStatus;
+    protected String exitMessage;
 
     public ActionDialog() {
         super();
@@ -96,10 +96,10 @@ public abstract class ActionDialog extends KapuaDialog {
 
         getButtonBar().add(new FillToolItem());
 
-        m_submitButton = new Button(getSubmitButtonText());
-        m_submitButton.setSize(60, 25);
-        m_submitButton.setStyleAttribute("margin-right", "2px");
-        m_submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        submitButton = new Button(getSubmitButtonText());
+        submitButton.setSize(60, 25);
+        submitButton.setStyleAttribute("margin-right", "2px");
+        submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -114,12 +114,12 @@ public abstract class ActionDialog extends KapuaDialog {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                m_exitStatus = null;
+                exitStatus = null;
                 hide();
             }
         });
 
-        addButton(m_submitButton);
+        addButton(submitButton);
         addButton(m_cancelButton);
     }
 
@@ -144,7 +144,7 @@ public abstract class ActionDialog extends KapuaDialog {
                 setXsrfToken(xsrfToken);
 
                 mask();
-                m_submitButton.disable();
+                submitButton.disable();
                 m_cancelButton.disable();
                 m_status.show();
 
@@ -160,11 +160,11 @@ public abstract class ActionDialog extends KapuaDialog {
     public abstract void submit();
 
     public Boolean getExitStatus() {
-        return m_exitStatus;
+        return exitStatus;
     }
 
     public String getExitMessage() {
-        return m_exitMessage;
+        return exitMessage;
     }
 
     public void maskDialog() {

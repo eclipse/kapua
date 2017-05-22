@@ -20,8 +20,6 @@ import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
-import org.eclipse.kapua.app.console.shared.service.GwtDataService;
-import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
@@ -43,8 +41,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ChannelTable extends LayoutContainer {
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
-    private static final GwtDataServiceAsync dataService = GWT.create(GwtDataService.class);
-
+    
     private BaseListLoader<ListLoadResult<GwtDatastoreChannel>> loader;
     private GwtSession currentSession;
     private Grid<GwtDatastoreChannel> channelGrid;

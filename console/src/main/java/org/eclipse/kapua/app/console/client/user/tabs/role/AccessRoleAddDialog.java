@@ -41,27 +41,27 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    private final static GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
-    private final static GwtAccessRoleServiceAsync gwtAccessRoleService = GWT.create(GwtAccessRoleService.class);
-    private final static GwtAccessInfoServiceAsync gwtAccessInfoService = GWT.create(GwtAccessInfoService.class);
+    private final static GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
+    private final static GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
+    private final static GwtAccessInfoServiceAsync GWT_ACCESS_INFO_SERVICE = GWT.create(GwtAccessInfoService.class);
 
     private ComboBox<GwtRole> rolesCombo;
     private String accessInfoId;
 
     public AccessRoleAddDialog(GwtSession currentSession, String userId) {
         super(currentSession);
-        gwtAccessInfoService.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
+        GWT_ACCESS_INFO_SERVICE.findByUserIdOrCreate(currentSession.getSelectedAccount().getId(), userId, new AsyncCallback<GwtAccessInfo>() {
 
             @Override
             public void onSuccess(GwtAccessInfo result) {
                 accessInfoId = result.getId();
-                m_submitButton.enable();
+                submitButton.enable();
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleErrorAccessInfo(caught.getLocalizedMessage()));
+                exitStatus = false;
+                exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleErrorAccessInfo(caught.getLocalizedMessage()));
 
                 hide();
             }
@@ -79,12 +79,12 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
         gwtAccessRoleCreator.setAccessInfoId(accessInfoId);
         gwtAccessRoleCreator.setRoleId(rolesCombo.getValue().getId());
 
-        gwtAccessRoleService.create(xsrfToken, gwtAccessRoleCreator, new AsyncCallback<GwtAccessRole>() {
+        GWT_ACCESS_ROLE_SERVICE.create(xsrfToken, gwtAccessRoleCreator, new AsyncCallback<GwtAccessRole>() {
 
             @Override
             public void onSuccess(GwtAccessRole arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
@@ -92,12 +92,12 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
             public void onFailure(Throwable cause) {
                 unmask();
 
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
                 m_status.hide();
 
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                exitStatus = false;
+                exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
 
                 hide();
             }
@@ -122,7 +122,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtRole>> callback) {
-                gwtRoleService.findAll(currentSession.getSelectedAccount().getId(),
+                GWT_ROLE_SERVICE.findAll(currentSession.getSelectedAccount().getId(),
                         callback);
             }
         };
@@ -151,6 +151,6 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-        m_submitButton.disable();
+        submitButton.disable();
     }
 }

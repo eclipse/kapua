@@ -49,7 +49,7 @@ public class MetricsTable extends LayoutContainer {
     }
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
-    private static final GwtDataServiceAsync dataService = GWT.create(GwtDataService.class);
+    private static final GwtDataServiceAsync DATA_SERVICE = GWT.create(GwtDataService.class);
 
     private BaseListLoader<ListLoadResult<GwtHeader>> loader;
     private GwtSession currentSession;
@@ -131,11 +131,11 @@ public class MetricsTable extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtHeader>> callback) {
                 if (selectedTopic != null) {
-                    dataService.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, callback);
+                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, callback);
                 } else if (selectedDevice != null) {
-                    dataService.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
+                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
                 } else if (selectedAsset != null) {
-                    dataService.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, callback);
+                    DATA_SERVICE.findHeaders((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, callback);
                 } else {
                     callback.onSuccess(new BaseListLoadResult<GwtHeader>(new ArrayList<GwtHeader>()));
                 }

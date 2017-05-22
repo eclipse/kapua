@@ -26,7 +26,7 @@ public abstract class AbstractListener {
 
     // metrics
     private String metricComponentName = "listener";
-    private final static MetricsService metricsService = KapuaLocator.getInstance().getService(MetricsService.class);
+    private final static MetricsService METRICS_SERVICE = KapuaLocator.getInstance().getService(MetricsService.class);
 
     protected String name;
 
@@ -62,7 +62,7 @@ public abstract class AbstractListener {
      * @return
      */
     protected Counter registerCounter(String... names) {
-        return metricsService.getCounter(metricComponentName, name, names);
+        return METRICS_SERVICE.getCounter(metricComponentName, name, names);
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class AbstractListener {
      * @return
      */
     protected Timer registerTimer(String... names) {
-        return metricsService.getTimer(metricComponentName, name, names);
+        return METRICS_SERVICE.getTimer(metricComponentName, name, names);
     }
 
 }

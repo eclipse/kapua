@@ -38,11 +38,11 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<BundleRequestChannel, BundleRequestPayload, BundleRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<DeviceBundleAppProperties, BundleMetrics> propertiesDictionary= new HashMap<>();
+    private static final Map<DeviceBundleAppProperties, BundleMetrics> PROPERTIES_DICTIONARY= new HashMap<>();
     
     static {
-        propertiesDictionary.put(DeviceBundleAppProperties.APP_NAME, BundleMetrics.APP_ID);
-        propertiesDictionary.put(DeviceBundleAppProperties.APP_VERSION, BundleMetrics.APP_VERSION);
+        PROPERTIES_DICTIONARY.put(DeviceBundleAppProperties.APP_NAME, BundleMetrics.APP_ID);
+        PROPERTIES_DICTIONARY.put(DeviceBundleAppProperties.APP_VERSION, BundleMetrics.APP_VERSION);
     }
 
 
@@ -52,9 +52,9 @@ public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<Bu
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(propertiesDictionary.get(DeviceBundleAppProperties.APP_NAME).getValue())
+        appIdSb.append(PROPERTIES_DICTIONARY.get(DeviceBundleAppProperties.APP_NAME).getValue())
                 .append("-")
-                .append(propertiesDictionary.get(DeviceBundleAppProperties.APP_VERSION).getValue());
+                .append(PROPERTIES_DICTIONARY.get(DeviceBundleAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));

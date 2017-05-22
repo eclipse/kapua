@@ -17,8 +17,6 @@ import java.util.Map;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Entity manager factory for the {@link AccessTokenServiceImpl} module.
@@ -27,12 +25,9 @@ import org.slf4j.LoggerFactory;
  */
 public class AccessTokenEntityManagerFactory extends AbstractEntityManagerFactory {
 
-    @SuppressWarnings("unused")
-    private static final Logger LOG = LoggerFactory.getLogger(AccessTokenEntityManagerFactory.class);
-
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
     private static AccessTokenEntityManagerFactory instance = new AccessTokenEntityManagerFactory();
 
@@ -40,7 +35,7 @@ public class AccessTokenEntityManagerFactory extends AbstractEntityManagerFactor
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
     private AccessTokenEntityManagerFactory() {
-        super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, uniqueConstraints);
+        super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, UNIQUE_CONSTRAINTS);
     }
 
     /**
