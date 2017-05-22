@@ -19,8 +19,8 @@ import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.button.Button;
 import org.eclipse.kapua.app.console.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
-import org.eclipse.kapua.app.console.shared.model.GwtDatastoreChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
+import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -50,8 +50,7 @@ public class AssetTabItem extends TabItem {
     private ResultsTable resultsTable;
 
     private AssetTable assetTable;
-
-    private ChannelTable channelTable;
+    private MetricsTable metricsTable;
 
     public AssetTabItem(GwtSession currentSession) {
         super(MSGS.assetTabItemTitle(), null);
@@ -94,26 +93,29 @@ public class AssetTabItem extends TabItem {
         assetTable = new AssetTable(currentSession);
         assetTable.addSelectionChangedListener(new SelectionChangedListener<GwtDatastoreAsset>() {
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GwtDatastoreAsset> se) {
-                GwtDatastoreDevice selectedDevice = deviceTable.getSelectedDevice();
-                channelTable.refresh(selectedDevice, se.getSelectedItem());
-            }
+        	   @Override
+               public void selectionChanged(SelectionChangedEvent<GwtDatastoreAsset> selectedAsset) {
+                   metricsTable.refresh(selectedAsset.getSelectedItem());
+               }
         });
         tables.add(assetTable, assetLayout);
 
         BorderLayoutData channelLayout = new BorderLayoutData(LayoutRegion.EAST, 0.3f);
         channelLayout.setMargins(new Margins(0, 0, 0, 5));
         channelLayout.setSplit(true);
-        channelTable = new ChannelTable(currentSession);
-        channelTable.addSelectionListener(new SelectionChangedListener<GwtDatastoreChannel>() {
+        metricsTable = new MetricsTable(currentSession, MetricsTable.Type.ASSET);
+        metricsTable.addSelectionListener(new SelectionChangedListener<GwtHeader>() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent<GwtDatastoreChannel> se) {
-                queryButton.setEnabled(!se.getSelection().isEmpty());
+            public void selectionChanged(SelectionChangedEvent<GwtHeader> se) {
+                if(!se.getSelection().isEmpty()){
+                    queryButton.enable();
+                } else {
+                    queryButton.disable();
+                }
             }
         });
-        tables.add(channelTable, channelLayout);
+        tables.add(metricsTable, channelLayout);
 
         BorderLayoutData queryButtonLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.1f);
         queryButtonLayout.setMargins(new Margins(5));
@@ -121,10 +123,9 @@ public class AssetTabItem extends TabItem {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                GwtDatastoreDevice gwtDevice = deviceTable.getSelectedDevice();
                 GwtDatastoreAsset gwtAsset = assetTable.getSelectedAsset();
-                List<GwtDatastoreChannel> gwtChannels = channelTable.getSelectedChannels();
-                // TODO Fetch data.
+                List<GwtHeader> metricsInfo = metricsTable.getSelectedMetrics();
+                resultsTable.refresh(gwtAsset, metricsInfo);
             }
         });
         queryButton.disable();

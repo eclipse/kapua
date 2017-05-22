@@ -229,6 +229,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         TermPredicateImpl predicate = new TermPredicateImpl(MetricInfoField.CLIENT_ID, device.getDevice());
         return findHeaders(config, scopeId, predicate);
     }
+    
+	@Override
+	public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName,
+			GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(gwtDatastoreAsset.getTopick());
+        return findHeaders(config, accountName, predicate);
+	}
 
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByTopic(PagingLoadConfig loadConfig, String scopeId, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate)

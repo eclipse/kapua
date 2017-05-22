@@ -56,6 +56,8 @@ public class AssetTable extends LayoutContainer {
     private List<SelectionChangedListener<GwtDatastoreAsset>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreAsset>>();
 
     private GwtDatastoreDevice selectedDevice;
+    private GwtDatastoreAsset selectedAsset;
+    
 
     public AssetTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -133,6 +135,11 @@ public class AssetTable extends LayoutContainer {
     
     public void refresh(GwtDatastoreDevice selectedDevice){
         this.selectedDevice = selectedDevice;
+        refresh();
+    }
+    
+    public void refresh(GwtDatastoreAsset selectedAsset){
+        this.selectedAsset = selectedAsset;
         refresh();
     }
     

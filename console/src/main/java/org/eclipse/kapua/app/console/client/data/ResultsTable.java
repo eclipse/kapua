@@ -137,7 +137,10 @@ public class ResultsTable extends LayoutContainer {
                         dataService.findMessagesByTopic((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, selectedMetrics, startDate, endDate, callback);
                     } else if (selectedDevice != null) {
                         dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
+                    } else if (selectedAsset != null) {
+                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
                     }
+                    
                 } else if (selectedDevice != null && selectedAsset != null && selectedChannels != null && !selectedChannels.isEmpty()) {
                     // TODO fetch data.
                 } else {
@@ -244,6 +247,11 @@ public class ResultsTable extends LayoutContainer {
 
     public void refresh(GwtDatastoreDevice device, List<GwtHeader> headers) {
         this.selectedDevice = device;
+        refresh(headers);
+    }
+    
+    public void refresh(GwtDatastoreAsset asset, List<GwtHeader> headers) {
+        this.selectedAsset = asset;
         refresh(headers);
     }
 

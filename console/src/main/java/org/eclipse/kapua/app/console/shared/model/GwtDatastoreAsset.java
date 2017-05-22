@@ -12,14 +12,20 @@
 package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class GwtDatastoreAsset extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 5356482049849648552L;
 
-    public GwtDatastoreAsset(String asset, String driver) {
+    public GwtDatastoreAsset(String asset, String driver, String semanticTopic, Date timestamp) {
         set("asset", asset);
         set("driver", driver);
+        set("semanticTopic", semanticTopic);
+        set("timestamp", timestamp);
+    }
+    
+    public GwtDatastoreAsset() {
     }
 
     public String getAsset() {
@@ -28,5 +34,13 @@ public class GwtDatastoreAsset extends KapuaBaseModel implements Serializable {
 
     public String getDriver() {
         return get("driver");
+    }
+    
+    public String getTopick() {
+        return get("semanticTopic");
+    }
+    
+    public Date getTimestamp() {
+        return (Date) get("timestamp");
     }
 }
