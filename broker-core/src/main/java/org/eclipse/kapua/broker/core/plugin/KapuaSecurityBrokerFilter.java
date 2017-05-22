@@ -741,9 +741,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         return new DefaultAuthorizationMap(dme);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unused")
     private DefaultAuthorizationMap buildProvisioningAuthMap(List<String> authDestinations, KapuaPrincipal principal, String accountName, String fullClientId) {
-        ArrayList<DestinationMapEntry> dme = new ArrayList<DestinationMapEntry>();
+        @SuppressWarnings("rawtypes")
+        final List<DestinationMapEntry> dme = new ArrayList<>();
 
         String clientId = principal.getClientId();
         // Write reply to any client Id and any application
