@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.role;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
@@ -25,28 +24,26 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 
-
 public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
-    private static final ConsoleMessages     MSGS      = GWT.create(ConsoleMessages.class);
     private final static ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
-    private final int                    WIDTH = 200;
-    
+    private final int WIDTH = 200;
+
     private final EntityGrid<GwtRole> entityGrid;
     private final GwtSession currentSession;
 
     private final TextField<String> nameField;
-    
+
     public RoleFilterPanel(EntityView<GwtRole> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
-        
+
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-        
+
         setHeading(ROLE_MSGS.filterHeader());
-        
+
         VerticalPanel fieldsPanel = getFieldsPanel();
-        
+
         final Label roleNameLabel = new Label(ROLE_MSGS.filterFieldRoleNameLabel());
         roleNameLabel.setWidth(WIDTH);
         roleNameLabel.setStyleAttribute("margin", "5px");
@@ -74,9 +71,9 @@ public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
     @Override
     public void doFilter() {
         GwtRoleQuery query = new GwtRoleQuery();
-        query.setName(nameField.getValue());            
+        query.setName(nameField.getValue());
         query.setScopeId(currentSession.getSelectedAccount().getId());
         entityGrid.refresh(query);
     }
-    
+
 }
