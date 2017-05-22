@@ -74,15 +74,15 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 public class DeviceServiceSteps extends KapuaTest {
 
     // Device registry services
-    private DeviceRegistryService deviceRegistryService = null;
-    private DeviceEventService deviceEventsService = null;
-    private DeviceLifeCycleService deviceLifeCycleService = null;
+    private DeviceRegistryService deviceRegistryService;
+    private DeviceEventService deviceEventsService;
+    private DeviceLifeCycleService deviceLifeCycleService;
 
     // Scenario scoped Device Registry test data
-    StepData stepData = null;
+    StepData stepData;
 
     // Single point to database access.
-    private DBHelper dbHelper = null;
+    private DBHelper dbHelper;
 
     @Inject
     public DeviceServiceSteps(StepData stepData, DBHelper dbHelper) {

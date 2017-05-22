@@ -25,33 +25,33 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
  */
 public class CucDevice {
 
-    Integer scopeId = null;
-    KapuaId kScopeId = null;
-    Integer groupId = null;
-    KapuaId kGroupId = null;
-    Integer connectionId = null;
-    KapuaId kConnectionId = null;
-    Integer preferredUserId = null;
-    KapuaId kPreferredUserId = null;
-    String clientId = null;
-    String displayName = null;
-    String status = null;
-    DeviceStatus kStatus = null;
-    String modelId = null;
-    String serialNumber = null;
-    String imei = null;
-    String imsi = null;
-    String iccid = null;
-    String biosVersion = null;
-    String firmwareVersion = null;
-    String osVersion = null;
-    String jvmVersion = null;
-    String osgiFrameworkVersion = null;
-    String applicationFrameworkVersion = null;
-    String applicationIdentifiers = null;
-    String acceptEncoding = null;
-    String credentialsMode = null;
-    DeviceCredentialsMode kCredentialsMode = null;
+    Integer scopeId;
+    KapuaId kScopeId;
+    Integer groupId;
+    KapuaId kGroupId;
+    Integer connectionId;
+    KapuaId kConnectionId;
+    Integer preferredUserId;
+    KapuaId kPreferredUserId;
+    String clientId;
+    String displayName;
+    String status;
+    DeviceStatus kStatus;
+    String modelId;
+    String serialNumber;
+    String imei;
+    String imsi;
+    String iccid;
+    String biosVersion;
+    String firmwareVersion;
+    String osVersion;
+    String jvmVersion;
+    String osgiFrameworkVersion;
+    String applicationFrameworkVersion;
+    String applicationIdentifiers;
+    String acceptEncoding;
+    String credentialsMode;
+    DeviceCredentialsMode kCredentialsMode;
 
     public void parse() {
         if (scopeId != null) {
