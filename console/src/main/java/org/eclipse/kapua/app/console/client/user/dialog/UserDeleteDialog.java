@@ -25,7 +25,7 @@ public class UserDeleteDialog extends EntityDeleteDialog {
 
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    private static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
     private GwtUser gwtUser;
 
@@ -47,19 +47,19 @@ public class UserDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public void submit() {
-        gwtUserService.delete(xsrfToken, gwtUser.getScopeId(), gwtUser.getId(), new AsyncCallback<Void>() {
+        GWT_USER_SERVICE.delete(xsrfToken, gwtUser.getScopeId(), gwtUser.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogDeleteConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogDeleteConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
                 hide();
             }
         });

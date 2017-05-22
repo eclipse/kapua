@@ -36,7 +36,7 @@ import com.google.common.hash.Hashing;
  */
 public class DatastoreUtils {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(DatastoreUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatastoreUtils.class);
 
     private DatastoreUtils() {
     }
@@ -96,7 +96,7 @@ public class DatastoreUtils {
             DatastoreUtils.checkIdxAliasName(name);
             normName = name;
         } catch (IllegalArgumentException exc) {
-            s_logger.trace(exc.getMessage(), exc);
+            logger.trace(exc.getMessage(), exc);
             normName = name.toLowerCase().replace(ILLEGAL_CHARS, "_");
             DatastoreUtils.checkIdxAliasName(normName);
         }
@@ -116,7 +116,7 @@ public class DatastoreUtils {
         if (newName.contains(".")) {
             newName = newName.replace(String.valueOf(SPECIAL_DOLLAR), SPECIAL_DOLLAR_ESC);
             newName = newName.replace(String.valueOf(SPECIAL_DOT), SPECIAL_DOT_ESC);
-            s_logger.trace(String.format("Metric %s contains a special char '%s' that will be replaced with '%s'", name, String.valueOf(SPECIAL_DOT), SPECIAL_DOT_ESC));
+            logger.trace(String.format("Metric %s contains a special char '%s' that will be replaced with '%s'", name, String.valueOf(SPECIAL_DOT), SPECIAL_DOT_ESC));
         }
         return newName;
     }

@@ -31,7 +31,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupGrid extends EntityGrid<GwtGroup> {
-    private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
     private GwtGroupQuery query;
 
@@ -48,7 +48,7 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtGroup>> callback) {
-                gwtGroupService.query((PagingLoadConfig) loadConfig, query, callback);
+                GWT_GROUP_SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
 
             }
         };

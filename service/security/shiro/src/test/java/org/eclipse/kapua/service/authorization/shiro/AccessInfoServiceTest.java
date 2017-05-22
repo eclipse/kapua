@@ -47,7 +47,7 @@ import org.junit.Test;
 
 public class AccessInfoServiceTest extends KapuaTest {
 
-    private static final Domain testDomain = new TestDomain();
+    private static final Domain TEST_DOMAIN = new TestDomain();
 
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
 
@@ -101,7 +101,7 @@ public class AccessInfoServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, scope);
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 
@@ -143,7 +143,7 @@ public class AccessInfoServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, scope);
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 
@@ -201,11 +201,11 @@ public class AccessInfoServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permissionRole = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            Permission permissionRole = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, scope);
             Set<Permission> permissionsRole = new HashSet<>();
             permissionsRole.add(permissionRole);
 
-            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, scope);
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 
@@ -274,7 +274,7 @@ public class AccessInfoServiceTest extends KapuaTest {
 
             // Create permission
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.newPermission(testDomain, Actions.read, scope);
+            Permission permission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, scope);
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 

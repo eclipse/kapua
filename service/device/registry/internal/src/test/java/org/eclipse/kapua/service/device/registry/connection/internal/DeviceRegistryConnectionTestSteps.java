@@ -40,13 +40,10 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionSummary;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
-import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceTestSteps;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
@@ -79,9 +76,6 @@ public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
     KapuaId rootUserId = new KapuaEid(BigInteger.ONE);
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(DeviceRegistryServiceTestSteps.class);
 
     // Currently executing scenario.
     Scenario scenario;

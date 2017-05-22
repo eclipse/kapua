@@ -34,7 +34,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PackageInstallDialog extends TabbedDialog {
 
-    private static final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
+    private static final GwtDeviceManagementServiceAsync GWT_DEVICE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceManagementService.class);
 
     private String scopeId;
     private String deviceId;
@@ -204,19 +204,19 @@ public class PackageInstallDialog extends TabbedDialog {
             gwtPackageInstallRequest.setRebootDelay(nValue.intValue() * 1000);
         }
 
-        gwtDeviceManagementService.installPackage(xsrfToken, gwtPackageInstallRequest, new AsyncCallback<Void>() {
+        GWT_DEVICE_MANAGEMENT_SERVICE.installPackage(xsrfToken, gwtPackageInstallRequest, new AsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void result) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.packageInstallSuccess();
+                exitStatus = true;
+                exitMessage = MSGS.packageInstallSuccess();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                m_exitStatus = false;
-                m_exitMessage = caught.getMessage();
+                exitStatus = false;
+                exitMessage = caught.getMessage();
                 hide();
             }
         });

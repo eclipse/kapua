@@ -27,7 +27,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AccountDeleteDialog extends EntityDeleteDialog {
 
     private static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
-    private static final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
     
     GwtAccount selectedAccount;
     
@@ -39,11 +39,11 @@ public class AccountDeleteDialog extends EntityDeleteDialog {
     
     @Override
     public void submit() {
-        gwtAccountService.delete(xsrfToken, selectedAccount, new AsyncCallback<Void>() {
+        GWT_ACCOUNT_SERVICE.delete(xsrfToken, selectedAccount, new AsyncCallback<Void>() {
             
             @Override
             public void onSuccess(Void v) {
-                m_exitStatus = true;
+                exitStatus = true;
                 ConsoleInfo.display(MSGS.info(),
                         MSGS.accountDeletedConfirmation(selectedAccount.getUnescapedName()));
                 hide();
@@ -51,7 +51,7 @@ public class AccountDeleteDialog extends EntityDeleteDialog {
             
             @Override
             public void onFailure(Throwable t) {
-                m_exitStatus = false;
+                exitStatus = false;
                 FailureHandler.handle(t);
                 hide();
             }

@@ -48,10 +48,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/channels")
 public class DataChannels extends AbstractKapuaResource {
 
-    private static final KapuaLocator locator = KapuaLocator.getInstance();
-    private static final ChannelInfoRegistryService channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
-    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link ChannelInfo} list in the scope.
@@ -81,11 +81,11 @@ public class DataChannels extends AbstractKapuaResource {
             @ApiParam(value = "The channel name to filter results. It allows '#' wildcard in last channel level") @QueryParam("name") String name, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        ChannelInfoListResult channelInfoListResult = datastoreObjectFactory.newChannelInfoListResult();
+        ChannelInfoListResult channelInfoListResult = DATASTORE_OBJECT_FACTORY.newChannelInfoListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
@@ -94,7 +94,7 @@ public class DataChannels extends AbstractKapuaResource {
                 andPredicate.getPredicates().add(channelPredicate);
             }
 
-            ChannelInfoQuery query = datastoreObjectFactory.newChannelInfoQuery(scopeId);
+            ChannelInfoQuery query = DATASTORE_OBJECT_FACTORY.newChannelInfoQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
             query.setLimit(limit);
@@ -130,7 +130,7 @@ public class DataChannels extends AbstractKapuaResource {
         ChannelInfoListResult channelInfoListResult = null;
         try {
             query.setScopeId(scopeId);
-            channelInfoListResult = channelInfoRegistryService.query(query);
+            channelInfoListResult = CHANNEL_INFO_REGISTRY_SERVICE.query(query);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -160,7 +160,7 @@ public class DataChannels extends AbstractKapuaResource {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
-            countResult = new CountResult(channelInfoRegistryService.count(query));
+            countResult = new CountResult(CHANNEL_INFO_REGISTRY_SERVICE.count(query));
         } catch (Throwable t) {
             handleException(t);
         }
@@ -185,7 +185,7 @@ public class DataChannels extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested ChannelInfo", required = true) @PathParam("channelInfoId") StorableEntityId channelInfoId) {
         ChannelInfo channelInfo = null;
         try {
-            channelInfo = channelInfoRegistryService.find(scopeId, channelInfoId);
+            channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.find(scopeId, channelInfoId);
         } catch (Throwable t) {
             handleException(t);
         }

@@ -80,14 +80,14 @@ public class AccountConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private static final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
-    private static final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
-    private static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
-    private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
-    private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
-    private static final GwtDataServiceAsync gwtDataService = GWT.create(GwtDataService.class);
-    private static final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
-    private static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private static final GwtSecurityTokenServiceAsync GWT_SECURITY_TOKEN_SERVICE = GWT.create(GwtSecurityTokenService.class);
+    private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
+    private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
+    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
+    private static final GwtDataServiceAsync GWT_DATA_SERVICE = GWT.create(GwtDataService.class);
+    private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
     private GwtSession m_currentSession;
 
@@ -262,7 +262,7 @@ public class AccountConfigComponents extends LayoutContainer {
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
                 if (m_selectedAccount != null) {
                     m_tree.mask(MSGS.loading());
-                    gwtAccountService.findServiceConfigurations(m_selectedAccount.getId(), callback);
+                    GWT_ACCOUNT_SERVICE.findServiceConfigurations(m_selectedAccount.getId(), callback);
                     m_dirty = false;
                 }
             }
@@ -420,7 +420,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
                             //
                             // Getting XSRF token
-                            gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+                            GWT_SECURITY_TOKEN_SERVICE.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
                                 @Override
                                 public void onFailure(Throwable ex) {
@@ -432,20 +432,20 @@ public class AccountConfigComponents extends LayoutContainer {
                                     final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
 
                                     if ("AccountService".equals(configComponent.getComponentName())) {
-                                        gwtAccountService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_ACCOUNT_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("CredentialService".equals(configComponent.getComponentName())) {
-                                        gwtCredentialService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent,
+                                        GWT_CREDENTIAL_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent,
                                                 applyConfigCallback);
                                     } else if ("DeviceRegistryService".equals(configComponent.getComponentName())) {
-                                        gwtDeviceService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_DEVICE_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("GroupService".equals(configComponent.getComponentName())) {
-                                        gwtGroupService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_GROUP_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("RoleService".equals(configComponent.getComponentName())) {
-                                        gwtRoleService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_ROLE_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("MessageStoreService".equals(configComponent.getComponentName())) {
-                                        gwtDataService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_DATA_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("UserService".equals(configComponent.getComponentName())) {
-                                        gwtUserService.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_USER_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     }
                                 }
                             });

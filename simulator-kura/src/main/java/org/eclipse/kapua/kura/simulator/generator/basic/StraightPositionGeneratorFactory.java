@@ -41,12 +41,12 @@ import org.eclipse.kapua.kura.simulator.generator.Position;
  */
 public class StraightPositionGeneratorFactory extends AbstractGeneratorFactory {
 
-    private static final ToDoubleFunction<Instant> satellitesFunction = Generators.sineDoubleBetween(ofMinutes(10), 0, 10, null);
-    private static final ToDoubleFunction<Instant> precisionFunction = Generators.sineDoubleBetween(ofMinutes(10), 0.5, 25.0, null);
+    private static final ToDoubleFunction<Instant> SATELLITES_FUNCTION = Generators.sineDoubleBetween(ofMinutes(10), 0, 10, null);
+    private static final ToDoubleFunction<Instant> PRECISION_FUNCTION = Generators.sineDoubleBetween(ofMinutes(10), 0.5, 25.0, null);
 
-    private static final ToDoubleFunction<Instant> altitudeFunction = Generators.sineDoubleBetween(ofMinutes(10), 0.0, 1_000.0, null);
-    private static final ToDoubleFunction<Instant> longitudeFunction = Generators.sineDouble(ofDays(80), -90.0, 90.0, null);
-    private static final ToDoubleFunction<Instant> speedFunction = Generators.sineDouble(ofMinutes(2), 10.0, 100.0, null);
+    private static final ToDoubleFunction<Instant> ALTITUDE_FUNCTION = Generators.sineDoubleBetween(ofMinutes(10), 0.0, 1_000.0, null);
+    private static final ToDoubleFunction<Instant> LONGITUDE_FUNCTION = Generators.sineDouble(ofDays(80), -90.0, 90.0, null);
+    private static final ToDoubleFunction<Instant> SPEED_FUNCTION = Generators.sineDouble(ofMinutes(2), 10.0, 100.0, null);
 
     public StraightPositionGeneratorFactory() {
         super("spos");
@@ -59,13 +59,13 @@ public class StraightPositionGeneratorFactory extends AbstractGeneratorFactory {
 
     protected static Position createPosition(final Instant timestamp) {
         final double latitude = 0.0; // equator
-        final double longitude = longitudeFunction.applyAsDouble(timestamp);
+        final double longitude = LONGITUDE_FUNCTION.applyAsDouble(timestamp);
         final double heading = Math.toRadians(90.0D); // heading east
-        final double speed = speedFunction.applyAsDouble(timestamp);
+        final double speed = SPEED_FUNCTION.applyAsDouble(timestamp);
 
-        final int satellites = (int) Math.round(satellitesFunction.applyAsDouble(timestamp));
-        final double precision = precisionFunction.applyAsDouble(timestamp);
-        final double altitude = altitudeFunction.applyAsDouble(timestamp);
+        final int satellites = (int) Math.round(SATELLITES_FUNCTION.applyAsDouble(timestamp));
+        final double precision = PRECISION_FUNCTION.applyAsDouble(timestamp);
+        final double altitude = ALTITUDE_FUNCTION.applyAsDouble(timestamp);
 
         return Position.from(altitude, heading, latitude, longitude, precision, satellites, speed, timestamp);
     }

@@ -48,10 +48,10 @@ import io.swagger.annotations.ApiParam;
 @Path("{scopeId}/data/metrics")
 public class DataMetrics extends AbstractKapuaResource {
 
-    private static final KapuaLocator locator = KapuaLocator.getInstance();
-    private static final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
-    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     /**
      * Gets the {@link MetricInfo} list in the scope.
@@ -84,11 +84,11 @@ public class DataMetrics extends AbstractKapuaResource {
             @ApiParam(value = "The metric name to filter results") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
             @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        MetricInfoListResult metricInfoListResult = datastoreObjectFactory.newMetricInfoListResult();
+        MetricInfoListResult metricInfoListResult = DATASTORE_OBJECT_FACTORY.newMetricInfoListResult();
         try {
             AndPredicate andPredicate = new AndPredicateImpl();
             if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
@@ -98,11 +98,11 @@ public class DataMetrics extends AbstractKapuaResource {
             }
 
             if (!Strings.isNullOrEmpty(name)) {
-                TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.NAME_FULL, name);
+                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.NAME_FULL, name);
                 andPredicate.getPredicates().add(clientIdPredicate);
             }
 
-            MetricInfoQuery query = datastoreObjectFactory.newMetricInfoQuery(scopeId);
+            MetricInfoQuery query = DATASTORE_OBJECT_FACTORY.newMetricInfoQuery(scopeId);
             query.setPredicate(andPredicate);
             query.setOffset(offset);
             query.setLimit(limit);
@@ -138,7 +138,7 @@ public class DataMetrics extends AbstractKapuaResource {
         MetricInfoListResult metricInfoListResult = null;
         try {
             query.setScopeId(scopeId);
-            metricInfoListResult = metricInfoRegistryService.query(query);
+            metricInfoListResult = METRIC_INFO_REGISTRY_SERVICE.query(query);
         } catch (Throwable t) {
             handleException(t);
         }
@@ -168,7 +168,7 @@ public class DataMetrics extends AbstractKapuaResource {
         CountResult countResult = null;
         try {
             query.setScopeId(scopeId);
-            countResult = new CountResult(metricInfoRegistryService.count(query));
+            countResult = new CountResult(METRIC_INFO_REGISTRY_SERVICE.count(query));
         } catch (Throwable t) {
             handleException(t);
         }
@@ -193,7 +193,7 @@ public class DataMetrics extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested MetricInfo", required = true) @PathParam("metricInfoId") StorableEntityId metricInfoId) {
         MetricInfo metricInfo = null;
         try {
-            metricInfo = metricInfoRegistryService.find(scopeId, metricInfoId);
+            metricInfo = METRIC_INFO_REGISTRY_SERVICE.find(scopeId, metricInfoId);
         } catch (Throwable t) {
             handleException(t);
         }

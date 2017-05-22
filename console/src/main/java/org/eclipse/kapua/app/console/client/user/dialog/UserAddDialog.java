@@ -152,8 +152,8 @@ public class UserAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(GwtUser arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
@@ -161,12 +161,12 @@ public class UserAddDialog extends EntityAddEditDialog {
             public void onFailure(Throwable cause) {
                 unmask();
                 
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
                 m_status.hide();
                 
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
                 
                 hide();
             }

@@ -101,11 +101,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private final static Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
 
-    private final static Map<String, ConnectionId> connectionMap = new ConcurrentHashMap<>();
+    private final static Map<String, ConnectionId> CONNECTION_MAP = new ConcurrentHashMap<>();
 
-    private static final Domain brokerDomain = new BrokerDomain();
-    private static final Domain datastoreDomain = new DatastoreDomain();
-    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
+    private static final Domain BROKER_DOMAIN = new BrokerDomain();
+    private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
+    private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
     // login
     private Counter metricLoginSuccess;
@@ -365,13 +365,13 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 Context loginCheckAccessTimeContext = metricLoginCheckAccessTime.time();
                 boolean[] hasPermissions = new boolean[] {
                         // TODO check the permissions... move them to a constants class?
-                        authorizationService.isPermitted(permissionFactory.newPermission(brokerDomain, Actions.connect, scopeId)),
-                        authorizationService.isPermitted(permissionFactory.newPermission(deviceManagementDomain, Actions.write, scopeId)),
-                        authorizationService.isPermitted(permissionFactory.newPermission(datastoreDomain, Actions.read, scopeId)),
-                        authorizationService.isPermitted(permissionFactory.newPermission(datastoreDomain, Actions.write, scopeId))
+                        authorizationService.isPermitted(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, scopeId)),
+                        authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId)),
+                        authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, scopeId)),
+                        authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, scopeId))
                 };
                 if (!hasPermissions[AclConstants.BROKER_CONNECT_IDX]) {
-                    throw new KapuaIllegalAccessException(permissionFactory.newPermission(brokerDomain, Actions.connect, scopeId).toString());
+                    throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, scopeId).toString());
                 }
                 loginCheckAccessTimeContext.stop();
 
@@ -386,7 +386,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 Context loginFindDevTimeContext = metricLoginFindDevTime.time();
 
                 // send connect message
-                ConnectionId previousConnectionId = connectionMap.put(fullClientId, info.getConnectionId());
+                ConnectionId previousConnectionId = CONNECTION_MAP.put(fullClientId, info.getConnectionId());
                 boolean stealingLinkDetected = (previousConnectionId != null);
                 if (deviceConnection == null) {
                     DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(scopeId);
@@ -514,7 +514,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
                 if (!isAdminUser(username)) {
                     // Stealing link check
-                    ConnectionId connectionId = connectionMap.get(fullClientId);
+                    ConnectionId connectionId = CONNECTION_MAP.get(fullClientId);
 
                     boolean stealingLinkDetected = false;
                     if (connectionId != null) {
@@ -565,7 +565,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 authenticationService.logout();
                 if (fullClientId != null) {
                     // cleanup stealing link detection map
-                    connectionMap.remove(fullClientId);
+                    CONNECTION_MAP.remove(fullClientId);
                 }
             }
         }

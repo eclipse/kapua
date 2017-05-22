@@ -39,18 +39,18 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
 public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<CommandResponseChannel,CommandResponsePayload, CommandResponseMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<CommandMetrics, CommandAppProperties> metricsDictionary;
+    private static final Map<CommandMetrics, CommandAppProperties> METRICS_DICTIONARY;
 
     static {
-        metricsDictionary = new HashMap<>();
+        METRICS_DICTIONARY = new HashMap<>();
 
-        metricsDictionary.put(CommandMetrics.APP_ID, CommandAppProperties.APP_NAME);
-        metricsDictionary.put(CommandMetrics.APP_VERSION, CommandAppProperties.APP_VERSION);
+        METRICS_DICTIONARY.put(CommandMetrics.APP_ID, CommandAppProperties.APP_NAME);
+        METRICS_DICTIONARY.put(CommandMetrics.APP_VERSION, CommandAppProperties.APP_VERSION);
 
-        metricsDictionary.put(CommandMetrics.APP_METRIC_STDERR, CommandAppProperties.APP_PROPERTY_STDERR);
-        metricsDictionary.put(CommandMetrics.APP_METRIC_STDOUT, CommandAppProperties.APP_PROPERTY_STDOUT);
-        metricsDictionary.put(CommandMetrics.APP_METRIC_EXIT_CODE, CommandAppProperties.APP_PROPERTY_EXIT_CODE);
-        metricsDictionary.put(CommandMetrics.APP_METRIC_TIMED_OUT, CommandAppProperties.APP_PROPERTY_TIMED_OUT);
+        METRICS_DICTIONARY.put(CommandMetrics.APP_METRIC_STDERR, CommandAppProperties.APP_PROPERTY_STDERR);
+        METRICS_DICTIONARY.put(CommandMetrics.APP_METRIC_STDOUT, CommandAppProperties.APP_PROPERTY_STDOUT);
+        METRICS_DICTIONARY.put(CommandMetrics.APP_METRIC_EXIT_CODE, CommandAppProperties.APP_PROPERTY_EXIT_CODE);
+        METRICS_DICTIONARY.put(CommandMetrics.APP_METRIC_TIMED_OUT, CommandAppProperties.APP_PROPERTY_TIMED_OUT);
     }
     
     /**

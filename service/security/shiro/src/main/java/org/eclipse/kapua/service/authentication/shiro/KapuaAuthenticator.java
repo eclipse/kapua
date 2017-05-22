@@ -35,14 +35,14 @@ import org.slf4j.LoggerFactory;
  */
 public class KapuaAuthenticator extends ModularRealmAuthenticator {
 
-    private static final Logger loggger = LoggerFactory.getLogger(KapuaAuthenticator.class);
+    private static final Logger logger = LoggerFactory.getLogger(KapuaAuthenticator.class);
 
     @Override
     protected AuthenticationInfo doMultiRealmAuthentication(Collection<Realm> realms, AuthenticationToken token) {
         AuthenticationStrategy strategy = getAuthenticationStrategy();
         AuthenticationInfo aggregate = strategy.beforeAllAttempts(realms, token);
-        if (loggger.isTraceEnabled()) {
-            loggger.trace("Iterating through {} realms for PAM authentication", realms.size());
+        if (logger.isTraceEnabled()) {
+            logger.trace("Iterating through {} realms for PAM authentication", realms.size());
         }
         List<Throwable> exceptionList = new ArrayList<>();
         boolean loginSucceeded = false;
@@ -51,7 +51,7 @@ public class KapuaAuthenticator extends ModularRealmAuthenticator {
             aggregate = strategy.beforeAttempt(realm, token, aggregate);
             if (realm.supports(token)) {
                 supportedRealmFound = true;
-                loggger.trace("Attempting to authenticate token [{}] using realm [{}]", token, realm);
+                logger.trace("Attempting to authenticate token [{}] using realm [{}]", token, realm);
                 AuthenticationInfo info = null;
                 Throwable t = null;
                 try {
@@ -59,16 +59,16 @@ public class KapuaAuthenticator extends ModularRealmAuthenticator {
                     loginSucceeded = true;
                 } catch (Throwable throwable) {
                     t = throwable;
-                    if (loggger.isDebugEnabled()) {
+                    if (logger.isDebugEnabled()) {
                         String msg = "Realm [" + realm
                                 + "] threw an exception during a multi-realm authentication attempt:";
-                        loggger.debug(msg, t);
+                        logger.debug(msg, t);
                     }
                 }
                 aggregate = strategy.afterAttempt(realm, token, info, aggregate, t);
                 exceptionList.add(t);
             } else {
-                loggger.debug("Realm [{}] does not support token {}.  Skipping realm.", realm, token);
+                logger.debug("Realm [{}] does not support token {}.  Skipping realm.", realm, token);
             }
         }
         // modified behavior from the ModularRealmAuthenticator to provide a more significantly exception message to the user if the login fails

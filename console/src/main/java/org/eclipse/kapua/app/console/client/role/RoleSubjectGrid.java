@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class RoleSubjectGrid extends EntityGrid<GwtUser> {
 
     private GwtRole selectedRole;
-    private static final GwtAccessInfoServiceAsync service = GWT.create(GwtAccessInfoService.class);
+    private static final GwtAccessInfoServiceAsync SERVICE = GWT.create(GwtAccessInfoService.class);
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
     private GwtAccessRoleQuery query;
 
@@ -55,7 +55,7 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtUser>> callback) {
                 if (selectedRole != null) {
-                    service.query((PagingLoadConfig) loadConfig, query, callback);
+                    SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
                 }
             }
 

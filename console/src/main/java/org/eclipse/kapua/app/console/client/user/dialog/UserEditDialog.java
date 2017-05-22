@@ -52,8 +52,8 @@ public class UserEditDialog extends UserAddDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
                 unmaskDialog();
                 hide();
             }
@@ -72,15 +72,15 @@ public class UserEditDialog extends UserAddDialog {
 
             @Override
             public void onSuccess(GwtUser arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogEditConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogEditConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
             }
         });
 

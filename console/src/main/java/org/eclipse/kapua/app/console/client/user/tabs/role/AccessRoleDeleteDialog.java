@@ -25,7 +25,7 @@ public class AccessRoleDeleteDialog extends EntityDeleteDialog {
 
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
-    private static final GwtAccessRoleServiceAsync gwtAccessRoleService = GWT.create(GwtAccessRoleService.class);
+    private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
 
     private GwtAccessRole gwtAccessRole;
 
@@ -47,19 +47,19 @@ public class AccessRoleDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public void submit() {
-        gwtAccessRoleService.delete(xsrfToken, gwtAccessRole.getScopeId(), gwtAccessRole.getId(), new AsyncCallback<Void>() {
+        GWT_ACCESS_ROLE_SERVICE.delete(xsrfToken, gwtAccessRole.getScopeId(), gwtAccessRole.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogDeleteRoleConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogDeleteRoleConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogDeleteRoleError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogDeleteRoleError(cause.getLocalizedMessage());
                 hide();
             }
         });

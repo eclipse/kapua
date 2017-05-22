@@ -22,7 +22,7 @@ public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
 
     private static final String API_SETTING_RESOURCE = "kapua-api-settings.properties";
 
-    private static final KapuaApiSetting instance = new KapuaApiSetting();
+    private static final KapuaApiSetting INSTANCE = new KapuaApiSetting();
 
     /**
      * Construct a new api setting reading settings from {@link KapuaApiSetting#API_SETTING_RESOURCE}
@@ -37,6 +37,6 @@ public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
      * @return
      */
     public static KapuaApiSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

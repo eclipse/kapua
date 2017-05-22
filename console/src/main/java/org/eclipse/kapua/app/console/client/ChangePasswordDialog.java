@@ -83,7 +83,7 @@ public class ChangePasswordDialog extends SimpleDialog {
             public void onFailure(Throwable caught) {
                 unmask();
 
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
                 m_status.hide();
                 

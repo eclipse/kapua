@@ -50,7 +50,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 @KapuaProvider
 public class DeviceBundleManagementServiceImpl implements DeviceBundleManagementService {
 
-    private static final Domain deviceManagementDomain = new DeviceManagementDomain();
+    private static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
     @Override
     public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -65,7 +65,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
 
         //
         // Prepare the request
@@ -143,7 +143,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
 
         //
         // Prepare the request
@@ -198,7 +198,7 @@ public class DeviceBundleManagementServiceImpl implements DeviceBundleManagement
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceManagementDomain, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
 
         //
         // Prepare the request

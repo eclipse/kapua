@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeviceExporterExcel extends DeviceExporter {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(DeviceExporterExcel.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceExporterExcel.class);
 
     private String m_account;
 
@@ -190,7 +190,7 @@ public class DeviceExporterExcel extends DeviceExporter {
             row.createCell(iColCount).setCellValue(device.getCustomAttribute5() != null ? truncate(device.getCustomAttribute5()) : BLANK);
 
             if (m_rowCount >= MAX_ROWS) {
-                s_logger.warn("Truncated file at {} rows. Max rows limit reached.", MAX_ROWS - 1);
+                logger.warn("Truncated file at {} rows. Max rows limit reached.", MAX_ROWS - 1);
                 return;
             }
         }

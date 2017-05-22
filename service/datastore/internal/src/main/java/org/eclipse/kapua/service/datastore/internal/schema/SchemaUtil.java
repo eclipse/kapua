@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
  */
 public class SchemaUtil {
 
-    final static JsonNodeFactory factory = JsonNodeFactory.instance;
+    final static JsonNodeFactory FACTORY = JsonNodeFactory.instance;
 
     private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
     private static final String NOT_VALID_OBJECT_TYPE_ERROR_MSG = "Cannot convert date [%s]";
@@ -91,7 +91,7 @@ public class SchemaUtil {
      * @throws DatamodelMappingException
      */
     public static ObjectNode getField(KeyValueEntry[] entries) throws DatamodelMappingException {
-        ObjectNode rootNode = factory.objectNode();
+        ObjectNode rootNode = FACTORY.objectNode();
         for (int i = 0; i < entries.length; i++) {
             appendField(rootNode, entries[i].getKey(), entries[i].getValue());
         }
@@ -107,7 +107,7 @@ public class SchemaUtil {
      * @throws DatamodelMappingException
      */
     public static ObjectNode getField(String name, Object value) throws DatamodelMappingException {
-        ObjectNode rootNode = factory.objectNode();
+        ObjectNode rootNode = FACTORY.objectNode();
         appendField(rootNode, name, value);
         return rootNode;
     }
@@ -122,29 +122,29 @@ public class SchemaUtil {
      */
     public static void appendField(ObjectNode node, String name, Object value) throws DatamodelMappingException {
         if (value instanceof String) {
-            node.set(name, factory.textNode((String) value));
+            node.set(name, FACTORY.textNode((String) value));
         } else if (value instanceof Boolean) {
-            node.set(name, factory.booleanNode((Boolean) value));
+            node.set(name, FACTORY.booleanNode((Boolean) value));
         } else if (value instanceof Integer) {
-            node.set(name, factory.numberNode((Integer) value));
+            node.set(name, FACTORY.numberNode((Integer) value));
         } else if (value instanceof Long) {
-            node.set(name, factory.numberNode((Long) value));
+            node.set(name, FACTORY.numberNode((Long) value));
         } else if (value instanceof Double) {
-            node.set(name, factory.numberNode((Double) value));
+            node.set(name, FACTORY.numberNode((Double) value));
         } else if (value instanceof Float) {
-            node.set(name, factory.numberNode((Float) value));
+            node.set(name, FACTORY.numberNode((Float) value));
         } else if (value instanceof byte[]) {
-            node.set(name, factory.binaryNode((byte[]) value));
+            node.set(name, FACTORY.binaryNode((byte[]) value));
         } else if (value instanceof byte[]) {
-            node.set(name, factory.binaryNode((byte[]) value));
+            node.set(name, FACTORY.binaryNode((byte[]) value));
         } else if (value instanceof Date) {
             try {
-                node.set(name, factory.textNode(KapuaDateUtils.formatDate((Date) value)));
+                node.set(name, FACTORY.textNode(KapuaDateUtils.formatDate((Date) value)));
             } catch (ParseException e) {
                 throw new DatamodelMappingException(String.format(NOT_VALID_OBJECT_TYPE_ERROR_MSG, value), e);
             }
         } else if (value instanceof StorableId) {
-            node.set(name, factory.textNode(((StorableId) value).toString()));
+            node.set(name, FACTORY.textNode(((StorableId) value).toString()));
         } else {
             throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, value.getClass()));
         }
@@ -156,7 +156,7 @@ public class SchemaUtil {
      * @return
      */
     public static ObjectNode getObjectNode() {
-        return factory.objectNode();
+        return FACTORY.objectNode();
     }
 
     /**
@@ -166,7 +166,7 @@ public class SchemaUtil {
      * @return
      */
     public static NumericNode getNumericNode(long number) {
-        return factory.numberNode(number);
+        return FACTORY.numberNode(number);
     }
 
     /**
@@ -175,7 +175,7 @@ public class SchemaUtil {
      * @return
      */
     public static ArrayNode getArrayNode() {
-        return factory.arrayNode();
+        return FACTORY.arrayNode();
     }
 
     /**
@@ -185,7 +185,7 @@ public class SchemaUtil {
      * @return
      */
     public static TextNode getTextNode(String value) {
-        return factory.textNode(value);
+        return FACTORY.textNode(value);
     }
 
     /**
@@ -195,7 +195,7 @@ public class SchemaUtil {
      * @return
      */
     public static ArrayNode getAsArrayNode(String[] fields) {
-        ArrayNode rootNode = factory.arrayNode(fields.length);
+        ArrayNode rootNode = FACTORY.arrayNode(fields.length);
         for (String str : fields) {
             rootNode.add(str);
         }

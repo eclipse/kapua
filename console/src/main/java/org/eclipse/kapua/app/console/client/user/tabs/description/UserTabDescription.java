@@ -27,7 +27,7 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser>{
     public UserTabDescription() {
     }
     
-    private static final GwtUserServiceAsync GwtUserServiceAsync = GWT.create(GwtUserService.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
     @Override
     protected RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy() {
        return new RpcProxy<ListLoadResult<GwtGroupedNVPair>>() {
@@ -35,7 +35,7 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser>{
         @Override
         protected void load(Object loadConfig,
                 AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-           GwtUserServiceAsync.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
+           GWT_USER_SERVICE.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
             
         }
     };

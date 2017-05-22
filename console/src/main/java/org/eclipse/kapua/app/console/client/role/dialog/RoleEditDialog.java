@@ -25,7 +25,7 @@ public class RoleEditDialog extends RoleAddDialog {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    private final static GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
+    private final static GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     private GwtRole selectedRole;
 
@@ -47,7 +47,7 @@ public class RoleEditDialog extends RoleAddDialog {
 
     private void loadRole() {
         maskDialog();
-        gwtRoleService.find(selectedRole.getScopeId(), selectedRole.getId(), new AsyncCallback<GwtRole>() {
+        GWT_ROLE_SERVICE.find(selectedRole.getScopeId(), selectedRole.getId(), new AsyncCallback<GwtRole>() {
 
             @Override
             public void onSuccess(GwtRole gwtRole) {
@@ -57,8 +57,8 @@ public class RoleEditDialog extends RoleAddDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
                 unmaskDialog();
                 hide();
             }
@@ -74,19 +74,19 @@ public class RoleEditDialog extends RoleAddDialog {
     public void submit() {
         selectedRole.setName(roleNameField.getValue());
 
-        gwtRoleService.update(xsrfToken, selectedRole, new AsyncCallback<GwtRole>() {
+        GWT_ROLE_SERVICE.update(xsrfToken, selectedRole, new AsyncCallback<GwtRole>() {
 
             @Override
             public void onSuccess(GwtRole arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogEditConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogEditConfirmation();
                 hide();
             }
 
             @Override
             public void onFailure(Throwable cause) {
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
             }
         });
 

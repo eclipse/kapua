@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GroupDeleteDialog extends EntityDeleteDialog {
 
-    private static final GwtGroupServiceAsync gwtGroupService = GWT.create(GwtGroupService.class);
+    private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private GwtGroup gwtGroup;
     private final static ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
@@ -36,21 +36,21 @@ public class GroupDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public void submit() {
-        gwtGroupService.delete(gwtGroup.getScopeId(), gwtGroup.getId(), new AsyncCallback<Void>() {
+        GWT_GROUP_SERVICE.delete(gwtGroup.getScopeId(), gwtGroup.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable arg0) {
                 FailureHandler.handle(arg0);
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogDeleteError(arg0.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogDeleteError(arg0.getLocalizedMessage());
                 hide();
 
             }
 
             @Override
             public void onSuccess(Void arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogDeleteConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogDeleteConfirmation();
                 hide();
             }
         });

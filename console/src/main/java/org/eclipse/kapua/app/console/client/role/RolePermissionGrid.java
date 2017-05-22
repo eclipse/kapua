@@ -43,7 +43,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     private static final ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
     private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
 
-    private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
+    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     RolePermissionToolbar rolePermissionToolBar;
     private GwtRole selectedRole;
@@ -70,7 +70,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtRolePermission>> callback) {
                 if (selectedRole != null) {
-                    gwtRoleService.getRolePermissions((PagingLoadConfig) loadConfig, selectedRole.getScopeId(), selectedRole.getId(), callback);
+                    GWT_ROLE_SERVICE.getRolePermissions((PagingLoadConfig) loadConfig, selectedRole.getScopeId(), selectedRole.getId(), callback);
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GwtRolePermission>(new ArrayList<GwtRolePermission>()));
                 }

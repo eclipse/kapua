@@ -46,13 +46,13 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
 
-    private static final Domain userDomain = new UserDomain();
+    private static final Domain USER_DOMAIN = new UserDomain();
 
     /**
      * Constructor
      */
     public UserServiceImpl() {
-        super(UserService.class.getName(), userDomain, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
+        super(UserService.class.getName(), USER_DOMAIN, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.write, userCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.write, userCreator.getScopeId()));
 
         return entityManagerSession.onTransactedInsert(em -> UserDAO.create(em, userCreator));
     }
@@ -107,7 +107,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.write, user.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.write, user.getScopeId()));
 
         //
         // Do update
@@ -136,7 +136,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.write, scopeId));
 
         // Do the delete
         entityManagerSession.onTransactedAction(em -> {
@@ -167,7 +167,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.read, accountId));
+        authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, accountId));
 
         // Do the find
         return entityManagerSession.onResult(em -> UserDAO.find(em, userId));
@@ -187,7 +187,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             if (user != null) {
                 AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
                 PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-                authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.read, user.getScopeId()));
+                authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, user.getScopeId()));
             }
             return user;
         });
@@ -205,7 +205,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> UserDAO.query(em, query));
     }
@@ -220,7 +220,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check Access
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(userDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> UserDAO.count(em, query));
     }

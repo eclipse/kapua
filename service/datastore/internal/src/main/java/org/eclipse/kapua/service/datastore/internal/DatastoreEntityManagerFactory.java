@@ -28,7 +28,7 @@ public class DatastoreEntityManagerFactory extends AbstractEntityManagerFactory 
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-datastore";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
     private static DatastoreEntityManagerFactory instance = new DatastoreEntityManagerFactory();
 
@@ -38,7 +38,7 @@ public class DatastoreEntityManagerFactory extends AbstractEntityManagerFactory 
     private DatastoreEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
-                s_uniqueConstraints);
+                UNIQUE_CONSTRAINTS);
     }
 
     /**

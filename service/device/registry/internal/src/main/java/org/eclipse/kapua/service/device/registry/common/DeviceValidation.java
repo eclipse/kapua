@@ -43,7 +43,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
  */
 public final class DeviceValidation {
 
-    private static final Domain deviceDomain = new DeviceDomain();
+    private static final Domain DEVICE_DOMAIN = new DeviceDomain();
 
     private static AuthorizationService authorizationService;
     private static GroupService groupService;
@@ -104,7 +104,7 @@ public final class DeviceValidation {
             ArgumentValidator.notNull(groupService.find(deviceCreator.getScopeId(), deviceCreator.getGroupId()), "deviceCreator.groupId");
         }
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, deviceCreator.getScopeId(), deviceCreator.getGroupId()));
 
         return deviceCreator;
     }
@@ -123,13 +123,13 @@ public final class DeviceValidation {
 
         // Check that current user can manage the current group of the device
         KapuaId currentGroupId = findCurrentGroupId(device.getScopeId(), device.getId());
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), currentGroupId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), currentGroupId));
 
         // Check that current user can manage the target group of the device
         if (device.getGroupId() != null) {
             ArgumentValidator.notNull(groupService.find(device.getScopeId(), device.getGroupId()), "device.groupId");
         }
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.write, device.getScopeId(), device.getGroupId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), device.getGroupId()));
 
         return device;
     }
@@ -146,7 +146,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(entityId, "entityId");
 
         KapuaId groupId = findCurrentGroupId(scopeId, entityId);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, scopeId, groupId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, scopeId, groupId));
     }
 
     /**
@@ -165,7 +165,7 @@ public final class DeviceValidation {
                 ArgumentValidator.match(fetchAttribute, regex, "fetchAttributes");
             }
         }
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId(), Group.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
 
     /**
@@ -178,7 +178,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.read, query.getScopeId(), Group.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
     }
 
     /**
@@ -193,7 +193,7 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(deviceId, "id");
 
         KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
-        authorizationService.checkPermission(permissionFactory.newPermission(deviceDomain, Actions.delete, scopeId, groupId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.delete, scopeId, groupId));
     }
 
     /**

@@ -43,7 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
-    private static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
@@ -77,7 +77,7 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
                 if (query.getScopeId() == null) {
                     callback.onSuccess(new BasePagingLoadResult<GwtUser>(new ArrayList<GwtUser>()));
                 } else {
-                    gwtUserService.query((PagingLoadConfig) loadConfig,
+                    GWT_USER_SERVICE.query((PagingLoadConfig) loadConfig,
                             query,
                             callback);
                 }

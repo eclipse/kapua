@@ -43,7 +43,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 @KapuaProvider
 public class AccessTokenServiceImpl extends AbstractKapuaService implements AccessTokenService {
 
-    private static final Domain accessTokenDomain = new AccessTokenDomain();
+    private static final Domain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
 
     /**
      * Constructor
@@ -68,7 +68,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.write, accessTokenCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessTokenCreator.getScopeId()));
 
         //
         // Do create
@@ -91,7 +91,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.write, accessToken.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
 
         //
         // Do update
@@ -117,7 +117,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -137,7 +137,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -157,7 +157,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -177,7 +177,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
 
         //
         // Do delete
@@ -203,7 +203,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Build query
@@ -233,7 +233,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.read, accessToken.getScopeId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
         }
 
         return accessToken;
@@ -251,7 +251,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(accessTokenDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find

@@ -17,13 +17,13 @@ public class ConsoleSetting extends AbstractKapuaSetting<ConsoleSettingKeys> {
 
     private static final String CONSOLE_SETTING_RESOURCE = "console-setting.properties";
 
-    private static final ConsoleSetting instance = new ConsoleSetting();
+    private static final ConsoleSetting INSTANCE = new ConsoleSetting();
 
     private ConsoleSetting() {
         super(CONSOLE_SETTING_RESOURCE);
     }
 
     public static ConsoleSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

@@ -27,7 +27,7 @@ import com.codahale.metrics.Counter;
  */
 public class ErrorMessageListener extends AbstractListener {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(ErrorMessageListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorMessageListener.class);
 
     private Counter metricError;
     private Counter metricErrorLifeCycleMessage;
@@ -76,17 +76,17 @@ public class ErrorMessageListener extends AbstractListener {
 
     private void logError(Exchange exchange, Object message, String serviceName) {
         Throwable t = ((Throwable) exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_EXCEPTION));
-        s_logger.warn("Processing error message for service {}... Message type {} - Endpoint {} - Error message {}",
+        logger.warn("Processing error message for service {}... Message type {} - Endpoint {} - Error message {}",
                 new Object[] {
                         serviceName,
                         (message != null ? message.getClass().getName() : null),
                         exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT),
                         t.getMessage() });
-        s_logger.warn("Exception: ", t);
+        logger.warn("Exception: ", t);
     }
 
     private void logUnmatched(Exchange exchange, Object message, String serviceName) {
-        s_logger.warn("Processing unmatched message for service {}... Message type {} - Endpoint {}",
+        logger.warn("Processing unmatched message for service {}... Message type {} - Endpoint {}",
                 new Object[] {
                         serviceName,
                         (message != null ? message.getClass().getName() : null),

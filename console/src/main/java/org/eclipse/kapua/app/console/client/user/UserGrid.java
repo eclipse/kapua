@@ -46,7 +46,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
     private GwtUserQuery query;
     private UserGridToolbar toolbar;
     
-    private static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
     
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
@@ -79,7 +79,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtUser>> callback) {
-                gwtUserService.query((PagingLoadConfig) loadConfig,
+                GWT_USER_SERVICE.query((PagingLoadConfig) loadConfig,
                         query,
                         callback);
             }

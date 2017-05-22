@@ -23,7 +23,7 @@ public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingK
 
     private static final String CRYPTO_CONFIG_RESOURCE = "kapua-crypto-setting.properties";
 
-    private static final KapuaCryptoSetting instance = new KapuaCryptoSetting();
+    private static final KapuaCryptoSetting INSTANCE = new KapuaCryptoSetting();
 
     /**
      * Construct a new crypto setting reading settings from {@link KapuaCryptoSetting#CRYPTO_CONFIG_RESOURCE}
@@ -38,6 +38,6 @@ public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingK
      * @return
      */
     public static KapuaCryptoSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

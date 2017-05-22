@@ -92,7 +92,7 @@ public class DeviceManagementDestinationBuilder<T> {
          * </p>
          * 
          */
-        private static final String requestTopicStringFormat = "%s/%s/%s/%s/%s%s";
+        private static final String REQUEST_TOPIC_STRING_FORMAT = "%s/%s/%s/%s/%s%s";
 
         private String method;
         private String[] resources;
@@ -127,7 +127,7 @@ public class DeviceManagementDestinationBuilder<T> {
         public String build() {
             String resourcesToString = buildResourcesString();
 
-            return String.format(requestTopicStringFormat,
+            return String.format(REQUEST_TOPIC_STRING_FORMAT,
                     topicPrefix,
                     accountName,
                     assetId,

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractKapuaResource {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(AbstractKapuaResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaResource.class);
 
     protected static final String DEFAULT_SCOPE_ID = "_"; // KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
@@ -44,7 +44,7 @@ public abstract class AbstractKapuaResource {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
         } else {
-            s_logger.error("Internal Error", t);
+            logger.error("Internal Error", t);
             throw newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }

@@ -23,7 +23,7 @@ public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthori
 
     private static final String AUTHORIZATION_SETTING_RESOURCE = "kapua-authorization-setting.properties";
 
-    private static final KapuaAuthorizationSetting instance = new KapuaAuthorizationSetting();
+    private static final KapuaAuthorizationSetting INSTANCE = new KapuaAuthorizationSetting();
 
     /**
      * Construct a new authorization setting reading settings from {@link KapuaAuthorizationSetting#AUTHORIZATION_SETTING_RESOURCE}
@@ -38,6 +38,6 @@ public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthori
      * @return
      */
     public static KapuaAuthorizationSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

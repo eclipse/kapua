@@ -44,10 +44,10 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 @KapuaProvider
 public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Role, RoleCreator, RoleService, RoleListResult, RoleQuery, RoleFactory> implements RoleService {
 
-    private static final Domain roleDomain = new RoleDomain();
+    private static final Domain ROLE_DOMAIN = new RoleDomain();
 
     public RoleServiceImpl() {
-        super(RoleService.class.getName(), roleDomain, AuthorizationEntityManagerFactory.getInstance(), RoleService.class, RoleFactory.class);
+        super(RoleService.class.getName(), ROLE_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), RoleService.class, RoleFactory.class);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
         //
         // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
@@ -107,7 +107,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, role.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.write, role.getScopeId()));
         return entityManagerSession.onTransactedInsert(em -> {
 
             Role currentRole = RoleDAO.find(em, role.getId());
@@ -125,7 +125,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
             if (RoleDAO.find(em, roleId) == null) {
@@ -147,7 +147,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.read, scopeId));
 
         return entityManagerSession.onResult(em -> RoleDAO.find(em, roleId));
     }
@@ -163,7 +163,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> RoleDAO.query(em, query));
     }
@@ -179,7 +179,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
     }

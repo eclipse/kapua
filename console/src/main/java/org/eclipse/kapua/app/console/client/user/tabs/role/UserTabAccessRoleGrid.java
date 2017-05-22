@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
-    private static final GwtAccessRoleServiceAsync gwtAccessRoleService = GWT.create(GwtAccessRoleService.class);
+    private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
@@ -51,7 +51,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtAccessRole>> callback) {
-                gwtAccessRoleService.findByUserId((PagingLoadConfig) loadConfig,
+                GWT_ACCESS_ROLE_SERVICE.findByUserId((PagingLoadConfig) loadConfig,
                         currentSession.getSelectedAccount().getId(),
                         userId,
                         callback);

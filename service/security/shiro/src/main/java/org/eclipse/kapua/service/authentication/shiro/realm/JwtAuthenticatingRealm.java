@@ -40,8 +40,6 @@ import org.eclipse.kapua.service.user.UserStatus;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link ApiKeyCredentials} based {@link AuthenticatingRealm} implementation.
@@ -50,9 +48,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class JwtAuthenticatingRealm extends AuthenticatingRealm {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(JwtAuthenticatingRealm.class);
 
     /**
      * Realm name

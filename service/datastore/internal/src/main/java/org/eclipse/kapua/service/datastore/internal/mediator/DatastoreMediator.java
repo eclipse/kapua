@@ -52,7 +52,7 @@ public class DatastoreMediator implements MessageStoreMediator,
         ChannelInfoRegistryMediator,
         MetricInfoRegistryMediator {
 
-    private final static DatastoreMediator instance;
+    private final static DatastoreMediator INSTANCE;
 
     private final Schema esSchema;
 
@@ -62,7 +62,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     private MetricInfoRegistryFacade metricInfoStoreFacade;
 
     static {
-        instance = new DatastoreMediator();
+        INSTANCE = new DatastoreMediator();
 
         // Be sure the data registry services are instantiated
         KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
@@ -81,7 +81,7 @@ public class DatastoreMediator implements MessageStoreMediator,
      * @since 1.0.0
      */
     public static DatastoreMediator getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**

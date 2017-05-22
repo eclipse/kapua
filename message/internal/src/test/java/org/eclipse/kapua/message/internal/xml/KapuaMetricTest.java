@@ -22,19 +22,19 @@ import org.junit.Test;
 
 public class KapuaMetricTest extends Assert {
 
-    private static final String newline = System.lineSeparator();
+    private static final String NEWLINE = System.lineSeparator();
 
     private static final byte[] BYTES = { 'b', 'y', 't', 'e', 's' };
 
     private static final String BASE64_BYTES = "Ynl0ZXM=";
 
     @SuppressWarnings("unused")
-    private static final String METRIC_XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
-            "<metric>" + newline +
-            "   <name>name</name>" + newline +
-            "   <type>string</type>" + newline +
-            "   <value>value</value>" + newline +
-            "</metric>" + newline;
+    private static final String METRIC_XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + NEWLINE +
+            "<metric>" + NEWLINE +
+            "   <name>name</name>" + NEWLINE +
+            "   <type>string</type>" + NEWLINE +
+            "   <value>value</value>" + NEWLINE +
+            "</metric>" + NEWLINE;
 
     @Before
     public void before() throws Exception {

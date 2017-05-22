@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeviceEventExporterExcel extends DeviceEventExporter {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(DeviceEventExporterExcel.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeviceEventExporterExcel.class);
 
     private String scopeId;
     private String accountName;
@@ -192,7 +192,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
             row.createCell(iColCount++).setCellValue(deviceEvent.getEventMessage() != null ? truncate(deviceEvent.getEventMessage()) : BLANK);
 
             if (rowCount >= MAX_ROWS) {
-                s_logger.warn("Truncated file at {} rows. Max rows limit reached.", MAX_ROWS - 1);
+                logger.warn("Truncated file at {} rows. Max rows limit reached.", MAX_ROWS - 1);
                 return;
             }
         }

@@ -35,12 +35,12 @@ import org.xml.sax.SAXException;
  */
 public class AssetResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {
 
-    private static final DeviceAssetFactory deviceAssetFactory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
-    private static final DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-    private static final String CHAR_ENCODING = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
+    private static final DeviceManagementSetting CONFIG = DeviceManagementSetting.getInstance();
+    private static final String CHAR_ENCODING = CONFIG.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     public DeviceAssets getDeviceAssets() throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException, UnsupportedEncodingException {
-        DeviceAssets deviceAssets = deviceAssetFactory.newAssetListResult();
+        DeviceAssets deviceAssets = DEVICE_ASSET_FACTORY.newAssetListResult();
         byte[] body = getBody();
         if (body != null && body.length > 0) {
             deviceAssets = XmlUtil.unmarshal(new String(body, CHAR_ENCODING), DeviceAssets.class);

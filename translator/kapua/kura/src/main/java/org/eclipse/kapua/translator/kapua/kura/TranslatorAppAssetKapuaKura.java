@@ -54,11 +54,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<AssetRequestChannel, AssetRequestPayload, AssetRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<DeviceAssetAppProperties, AssetMetrics> propertiesDictionary = new HashMap<>();
+    private static final Map<DeviceAssetAppProperties, AssetMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
 
     static {
-        propertiesDictionary.put(DeviceAssetAppProperties.APP_NAME, AssetMetrics.APP_ID);
-        propertiesDictionary.put(DeviceAssetAppProperties.APP_VERSION, AssetMetrics.APP_VERSION);
+        PROPERTIES_DICTIONARY.put(DeviceAssetAppProperties.APP_NAME, AssetMetrics.APP_ID);
+        PROPERTIES_DICTIONARY.put(DeviceAssetAppProperties.APP_VERSION, AssetMetrics.APP_VERSION);
     }
 
     protected KuraRequestChannel translateChannel(AssetRequestChannel kapuaChannel) throws KapuaException {
@@ -67,9 +67,9 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
 
         // Build appId
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(propertiesDictionary.get(DeviceAssetAppProperties.APP_NAME).getValue())
+        appIdSb.append(PROPERTIES_DICTIONARY.get(DeviceAssetAppProperties.APP_NAME).getValue())
                 .append("-")
-                .append(propertiesDictionary.get(DeviceAssetAppProperties.APP_VERSION).getValue());
+                .append(PROPERTIES_DICTIONARY.get(DeviceAssetAppProperties.APP_VERSION).getValue());
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));

@@ -32,7 +32,7 @@ public class MqttClientPoolSetting extends AbstractKapuaSetting<MqttClientPoolSe
      * 
      * @since 1.0.0
      */
-    private static final MqttClientPoolSetting instance = new MqttClientPoolSetting();
+    private static final MqttClientPoolSetting INSTANCE = new MqttClientPoolSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link MqttClientPoolSetting#MQTT_CLIENT_POOL_CONFIG_RESOURCE} value.
@@ -50,6 +50,6 @@ public class MqttClientPoolSetting extends AbstractKapuaSetting<MqttClientPoolSe
      * @since 1.0.0
      */
     public static MqttClientPoolSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

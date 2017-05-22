@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class KapuaPositionTest extends Assert {
 
-    private static final String newline = System.lineSeparator();
+    private static final String NEWLINE = System.lineSeparator();
 
     private static final String POSITION_DISPLAY_STR = "^latitude=.*~~longitude=.*~~altitude=.*" +
             "~~precision=.*~~heading=.*~~speed=.*~~timestamp=.*~~satellites=.*~~status=.*$";
@@ -37,18 +37,18 @@ public class KapuaPositionTest extends Assert {
     private static ZonedDateTime referenceDate = ZonedDateTime.of(2017, 1, 18, 12, 10, 46, 238000000, ZoneId.of(DateXmlAdapter.TIME_ZONE_UTC));
 
     private static final String POSITION_XML_STR = //
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
-                    "<position>" + newline +
-                    "   <longitude>45.1111</longitude>" + newline +
-                    "   <latitude>15.3333</latitude>" + newline +
-                    "   <altitude>430.3</altitude>" + newline +
-                    "   <precision>12.0</precision>" + newline +
-                    "   <heading>280.0</heading>" + newline +
-                    "   <speed>60.2</speed>" + newline +
-                    "   <timestamp>2017-01-18T12:10:46.238Z</timestamp>" + newline +
-                    "   <satellites>5</satellites>" + newline +
-                    "   <status>4</status>" + newline +
-                    "</position>" + newline;
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + NEWLINE +
+                    "<position>" + NEWLINE +
+                    "   <longitude>45.1111</longitude>" + NEWLINE +
+                    "   <latitude>15.3333</latitude>" + NEWLINE +
+                    "   <altitude>430.3</altitude>" + NEWLINE +
+                    "   <precision>12.0</precision>" + NEWLINE +
+                    "   <heading>280.0</heading>" + NEWLINE +
+                    "   <speed>60.2</speed>" + NEWLINE +
+                    "   <timestamp>2017-01-18T12:10:46.238Z</timestamp>" + NEWLINE +
+                    "   <satellites>5</satellites>" + NEWLINE +
+                    "   <status>4</status>" + NEWLINE +
+                    "</position>" + NEWLINE;
 
     @Before
     public void before() throws Exception {

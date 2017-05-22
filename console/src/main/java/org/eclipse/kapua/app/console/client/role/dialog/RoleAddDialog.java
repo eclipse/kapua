@@ -30,7 +30,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    private final static GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
+    private final static GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     protected TextField<String> roleNameField;
     protected RolePermissionNewGridField rolePermissionsGrid;
@@ -48,12 +48,12 @@ public class RoleAddDialog extends EntityAddEditDialog {
         gwtRoleCreator.setScopeId(currentSession.getSelectedAccount().getId());
         gwtRoleCreator.setName(roleNameField.getValue());
 
-        gwtRoleService.create(xsrfToken, gwtRoleCreator, new AsyncCallback<GwtRole>() {
+        GWT_ROLE_SERVICE.create(xsrfToken, gwtRoleCreator, new AsyncCallback<GwtRole>() {
 
             @Override
             public void onSuccess(GwtRole arg0) {
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
@@ -63,7 +63,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
                 m_status.hide();
                 m_formPanel.getButtonBar().enable();
                 unmask();
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
             }
         });

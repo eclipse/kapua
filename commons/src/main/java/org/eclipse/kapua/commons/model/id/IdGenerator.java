@@ -25,7 +25,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
  */
 public class IdGenerator {
 
-    private final static SecureRandom secureRandom = new SecureRandom();
+    private final static SecureRandom SECURE_RANDOM = new SecureRandom();
     private final static int ID_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
 
     private IdGenerator() {
@@ -39,7 +39,7 @@ public class IdGenerator {
      */
     public static BigInteger generate() {
         byte[] bytes = new byte[ID_SIZE];
-        secureRandom.nextBytes(bytes);
+        SECURE_RANDOM.nextBytes(bytes);
         return new BigInteger(bytes);
     }
 

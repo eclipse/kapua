@@ -56,16 +56,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
-    private static final DeviceAssetFactory deviceAssetFactory = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
+    private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
-    private static final Map<AssetMetrics, DeviceAssetAppProperties> metricsDictionary;
+    private static final Map<AssetMetrics, DeviceAssetAppProperties> METRICS_DICTIONARY;
 
     static {
-        metricsDictionary = new HashMap<>();
+        METRICS_DICTIONARY = new HashMap<>();
 
-        metricsDictionary.put(AssetMetrics.APP_ID, DeviceAssetAppProperties.APP_NAME);
-        metricsDictionary.put(AssetMetrics.APP_VERSION, DeviceAssetAppProperties.APP_VERSION);
+        METRICS_DICTIONARY.put(AssetMetrics.APP_ID, DeviceAssetAppProperties.APP_NAME);
+        METRICS_DICTIONARY.put(AssetMetrics.APP_VERSION, DeviceAssetAppProperties.APP_VERSION);
     }
 
     public TranslatorAppAssetKuraKapua() {
@@ -116,14 +116,14 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
 
                 JsonNode jsonNode = mapper.readTree(kuraPayload.getBody());
 
-                DeviceAssets deviceAssets = deviceAssetFactory.newAssetListResult();
+                DeviceAssets deviceAssets = DEVICE_ASSET_FACTORY.newAssetListResult();
                 KuraAssets kuraAssets = KuraAssets.readJsonNode(jsonNode);
                 for (KuraAsset kuraAsset : kuraAssets.getAssets()) {
-                    DeviceAsset deviceAsset = deviceAssetFactory.newDeviceAsset();
+                    DeviceAsset deviceAsset = DEVICE_ASSET_FACTORY.newDeviceAsset();
                     deviceAsset.setName(kuraAsset.getName());
 
                     for (KuraAssetChannel kuraAssetChannel : kuraAsset.getChannels()) {
-                        DeviceAssetChannel deviceAssetChannel = deviceAssetFactory.newDeviceAssetChannel();
+                        DeviceAssetChannel deviceAssetChannel = DEVICE_ASSET_FACTORY.newDeviceAssetChannel();
 
                         deviceAssetChannel.setName(kuraAssetChannel.getName());
                         KuraAssetChannelMode kuraChannelMode = kuraAssetChannel.getMode();

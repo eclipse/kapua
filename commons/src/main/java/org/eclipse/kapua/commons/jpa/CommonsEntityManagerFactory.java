@@ -25,7 +25,7 @@ public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-commons";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
-    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+    private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
     private static CommonsEntityManagerFactory instance = new CommonsEntityManagerFactory();
 
@@ -35,7 +35,7 @@ public class CommonsEntityManagerFactory extends AbstractEntityManagerFactory {
     private CommonsEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
-                s_uniqueConstraints);
+                UNIQUE_CONTRAINTS);
     }
 
     /**

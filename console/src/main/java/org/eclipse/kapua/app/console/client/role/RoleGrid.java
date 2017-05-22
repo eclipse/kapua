@@ -35,7 +35,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
     
-    private static final GwtRoleServiceAsync gwtRoleService = GWT.create(GwtRoleService.class);
+    private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
         
     private GwtRoleQuery query;
     
@@ -56,7 +56,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtRole>> callback) {
-                gwtRoleService.query((PagingLoadConfig) loadConfig,
+                GWT_ROLE_SERVICE.query((PagingLoadConfig) loadConfig,
                         query,
                         callback);
             }

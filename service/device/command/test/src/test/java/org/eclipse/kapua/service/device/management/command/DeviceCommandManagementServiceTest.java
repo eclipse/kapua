@@ -70,7 +70,7 @@ import org.junit.Test;
 @Ignore
 public class DeviceCommandManagementServiceTest extends Assert {
 
-    private static final Domain deviceLifecycleDomain = new DeviceLifecycleDomain();
+    private static final Domain DEVICE_LIFECYCLE_DOMAIN = new DeviceLifecycleDomain();
 
     protected static Random random = new Random();
     protected static KapuaLocator locator = KapuaLocator.getInstance();
@@ -147,7 +147,7 @@ public class DeviceCommandManagementServiceTest extends Assert {
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
         Set<Permission> permissions = new HashSet<>();
-        permissions.add(permissionFactory.newPermission(deviceLifecycleDomain, Actions.connect, account.getId()));
+        permissions.add(permissionFactory.newPermission(DEVICE_LIFECYCLE_DOMAIN, Actions.connect, account.getId()));
 
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(user.getId());

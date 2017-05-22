@@ -23,7 +23,7 @@ public class KapuaAuthenticationSetting extends AbstractKapuaSetting<KapuaAuthen
 
     private static final String AUTHENTICATION_CONFIG_RESOURCE = "kapua-authentication-setting.properties";
 
-    private static final KapuaAuthenticationSetting instance = new KapuaAuthenticationSetting();
+    private static final KapuaAuthenticationSetting INSTANCE = new KapuaAuthenticationSetting();
 
     /**
      * Construct a new authentication setting reading settings from {@link KapuaAuthenticationSetting#AUTHENTICATION_CONFIG_RESOURCE}
@@ -38,6 +38,6 @@ public class KapuaAuthenticationSetting extends AbstractKapuaSetting<KapuaAuthen
      * @return
      */
     public static KapuaAuthenticationSetting getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

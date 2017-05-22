@@ -52,8 +52,8 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     private static final long serialVersionUID = 1480557438886065675L;
 
-    private static final KapuaLocator locator = KapuaLocator.getInstance();
-    private static final AccountService accountService = locator.getService(AccountService.class);
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
 
     @Basic
     @Column(name = "domain", nullable = true, updatable = false)
@@ -267,7 +267,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
         Permission permission = (Permission) p;
 
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(permission.getTargetScopeId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(permission.getTargetScopeId()));
 
             if (account != null && account.getScopeId() != null) {
                 String parentAccountPath = account.getParentAccountPath();

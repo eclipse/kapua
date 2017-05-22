@@ -57,8 +57,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     protected CheckBox enabled;
     protected NumberField optlock;
 
-    protected static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
-    protected static final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    protected static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
+    protected static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
  
     public CredentialAddDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
@@ -144,7 +144,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         gwtCredentialCreator.setCredentialPlainKey(password.getValue());
         gwtCredentialCreator.setUserId(selectedUser.getId());
 
-        gwtCredentialService.create(xsrfToken, gwtCredentialCreator, new AsyncCallback<GwtCredential>() {
+        GWT_CREDENTIAL_SERVICE.create(xsrfToken, gwtCredentialCreator, new AsyncCallback<GwtCredential>() {
 
             @Override
             public void onSuccess(GwtCredential arg0) {
@@ -160,8 +160,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                     apiKeyConfirmationDialog.add(valueMessage);
                     apiKeyConfirmationDialog.show();
                 }
-                m_exitStatus = true;
-                m_exitMessage = MSGS.dialogAddConfirmation();
+                exitStatus = true;
+                exitMessage = MSGS.dialogAddConfirmation();
                 hide();
             }
 
@@ -169,12 +169,12 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             public void onFailure(Throwable cause) {
                 unmask();
 
-                m_submitButton.enable();
+                submitButton.enable();
                 m_cancelButton.enable();
                 m_status.hide();
 
-                m_exitStatus = false;
-                m_exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
+                exitStatus = false;
+                exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());
 
                 hide();
             }

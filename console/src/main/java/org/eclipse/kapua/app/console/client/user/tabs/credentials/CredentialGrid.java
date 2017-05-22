@@ -45,7 +45,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class CredentialGrid extends EntityGrid<GwtCredential> {
 
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
-    private static final GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
+    private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     private GwtCredentialQuery query;
     private GwtUser selectedUser;
 
@@ -66,7 +66,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
                 if (query.getUserId() == null) {
                     callback.onSuccess(new BasePagingLoadResult<GwtCredential>(new ArrayList<GwtCredential>()));
                 } else {
-                    gwtCredentialService.query((PagingLoadConfig) loadConfig,
+                    GWT_CREDENTIAL_SERVICE.query((PagingLoadConfig) loadConfig,
                             query,
                             callback);
                 }

@@ -33,26 +33,26 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
     private static final Logger logger = LoggerFactory.getLogger(GwtSettingsServiceImpl.class);
 
     private static final long serialVersionUID = -6876999298300071273L;
-    private static final ConsoleSetting settings = ConsoleSetting.getInstance();
+    private static final ConsoleSetting SETTINGS = ConsoleSetting.getInstance();
 
     @Override
     public GwtLoginInformation getLoginInformation() {
         final GwtLoginInformation result = new GwtLoginInformation();
-        result.setBackgroundCredits(settings.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS));
-        result.setInformationSnippet(settings.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET));
+        result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS));
+        result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET));
         return result;
     }
 
     @Override
     public String getSsoLoginUri() {
         try {
-            final URIBuilder uri = new URIBuilder(settings.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH));
+            final URIBuilder uri = new URIBuilder(SETTINGS.getString(ConsoleSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH));
 
             uri.addParameter("scope", "openid");
             uri.addParameter("response_type", "code");
-            uri.addParameter("client_id", settings.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID));
+            uri.addParameter("client_id", SETTINGS.getString(ConsoleSettingKeys.SSO_OPENID_CLIENT_ID));
             uri.addParameter("state", UUID.randomUUID().toString());
-            uri.addParameter("redirect_uri", settings.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI));
+            uri.addParameter("redirect_uri", SETTINGS.getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI));
 
             return uri.toString();
         } catch (Exception e) {
@@ -63,11 +63,11 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public boolean getSsoEnabled() {
-        return settings.getBoolean(ConsoleSettingKeys.SSO_ENABLE);
+        return SETTINGS.getBoolean(ConsoleSettingKeys.SSO_ENABLE);
     }
 
     @Override
     public String getHomeUri() {
-        return settings.getString(ConsoleSettingKeys.SITE_HOME_URI);
+        return SETTINGS.getString(ConsoleSettingKeys.SITE_HOME_URI);
     }
 }

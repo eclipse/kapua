@@ -36,6 +36,10 @@
 
         <module name="NeedBraces"/>
         <module name="LeftCurly"/>
+        
+        <module name="ConstantName">
+            <property name="format" value="^logger|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+        </module>
     </module>
 
     <module name="FileTabCharacter"/>

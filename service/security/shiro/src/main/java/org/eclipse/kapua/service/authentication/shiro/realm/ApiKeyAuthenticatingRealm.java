@@ -35,8 +35,6 @@ import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link ApiKeyCredentials} based {@link AuthenticatingRealm} implementation.
@@ -45,9 +43,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
-
-    @SuppressWarnings("unused")
-    private static final Logger s_logger = LoggerFactory.getLogger(ApiKeyAuthenticatingRealm.class);
 
     /**
      * Realm name

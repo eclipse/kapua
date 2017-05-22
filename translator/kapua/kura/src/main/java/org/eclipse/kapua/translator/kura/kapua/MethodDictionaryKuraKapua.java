@@ -30,16 +30,16 @@ public class MethodDictionaryKuraKapua {
     /**
      * Translations dictionary map
      */
-    private final static Map<KuraMethod, KapuaMethod> dictionary;
+    private final static Map<KuraMethod, KapuaMethod> DICTIONARY;
 
     static {
-        dictionary = new HashMap<>(5);
+        DICTIONARY = new HashMap<>(5);
 
-        dictionary.put(KuraMethod.GET, KapuaMethod.READ);
-        dictionary.put(KuraMethod.POST, KapuaMethod.CREATE);
-        dictionary.put(KuraMethod.PUT, KapuaMethod.WRITE);
-        dictionary.put(KuraMethod.DEL, KapuaMethod.DELETE);
-        dictionary.put(KuraMethod.EXEC, KapuaMethod.EXECUTE);
+        DICTIONARY.put(KuraMethod.GET, KapuaMethod.READ);
+        DICTIONARY.put(KuraMethod.POST, KapuaMethod.CREATE);
+        DICTIONARY.put(KuraMethod.PUT, KapuaMethod.WRITE);
+        DICTIONARY.put(KuraMethod.DEL, KapuaMethod.DELETE);
+        DICTIONARY.put(KuraMethod.EXEC, KapuaMethod.EXECUTE);
     }
 
     private MethodDictionaryKuraKapua () {
@@ -52,6 +52,6 @@ public class MethodDictionaryKuraKapua {
      * @return
      */
     public static KapuaMethod get(KuraMethod kuraMethod) {
-        return dictionary.get(kuraMethod);
+        return DICTIONARY.get(kuraMethod);
     }
 }
