@@ -54,7 +54,7 @@ public class ClientInfoRegistryFacade {
     private final ClientInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
     private final Object metadataUpdateSync = new Object();
-    private DatastoreClient client = null;
+    private DatastoreClient client;
 
     /**
      * Constructs the client info registry facade

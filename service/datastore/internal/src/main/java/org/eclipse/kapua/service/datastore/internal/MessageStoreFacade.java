@@ -79,7 +79,7 @@ public final class MessageStoreFacade {
 
     private final MessageStoreMediator mediator;
     private final ConfigurationProvider configProvider;
-    private DatastoreClient client = null;
+    private DatastoreClient client;
 
     /**
      * Constructs the message store facade

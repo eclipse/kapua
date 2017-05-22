@@ -40,6 +40,10 @@ public class DatastoreClientFactory {
         CLIENT_CLASS_NAME = config.getString(DatastoreSettingKey.CONFIG_CLIENT_CLASS);
     }
 
+    private DatastoreClientFactory() {
+
+    }
+
     /**
      * Return the client instance. The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
      * 

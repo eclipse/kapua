@@ -37,6 +37,10 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
  */
 public class ClientInfoSchema {
 
+    private ClientInfoSchema() {
+
+    }
+
     /**
      * Client information schema name
      */

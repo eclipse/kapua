@@ -35,6 +35,10 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
  */
 public class ChannelInfoSchema {
 
+    private ChannelInfoSchema() {
+
+    }
+
     /**
      * Channel information schema name
      */

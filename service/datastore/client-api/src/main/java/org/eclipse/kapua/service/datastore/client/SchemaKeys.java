@@ -18,6 +18,10 @@ package org.eclipse.kapua.service.datastore.client;
  */
 public class SchemaKeys {
 
+    private SchemaKeys() {
+
+    }
+
     /**
      * Query key
      */

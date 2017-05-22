@@ -47,6 +47,10 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
  */
 public class MessageSchema {
 
+    private MessageSchema() {
+
+    }
+
     /**
      * Message schema name
      */

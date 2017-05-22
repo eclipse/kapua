@@ -38,7 +38,7 @@ public class DatastoreUtils {
 
     private static final Logger s_logger = LoggerFactory.getLogger(DatastoreUtils.class);
 
-    private EsUtils() {
+    private DatastoreUtils() {
     }
 
     private static final char SPECIAL_DOT = '.';

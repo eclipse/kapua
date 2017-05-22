@@ -40,6 +40,10 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
  */
 public class MetricInfoSchema {
 
+    private MetricInfoSchema() {
+
+    }
+
     /**
      * Metric information schema name
      */

@@ -40,6 +40,10 @@ public class SchemaUtil {
     private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
     private static final String NOT_VALID_OBJECT_TYPE_ERROR_MSG = "Cannot convert date [%s]";
 
+    private SchemaUtil() {
+
+    }
+
     /**
      * Return a map of map. The contained map has, as entries, the couples subKeys-values.<br>
      * <b>NOTE! No arrays subKeys-values coherence will be done (length or null check)!</b>

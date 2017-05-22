@@ -57,7 +57,7 @@ public class MetricInfoRegistryFacade {
 
     private final MetricInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
-    private DatastoreClient client = null;
+    private DatastoreClient client;
 
     /**
      * Constructs the metric info registry facade
