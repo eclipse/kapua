@@ -14,7 +14,7 @@
 
 --changeset hekonsek:1
 
-CREATE TABLE act_account (
+CREATE TABLE tst_liquibase (
   id                         BIGINT(21) 	  UNSIGNED NOT NULL,
 
   PRIMARY KEY (id)
