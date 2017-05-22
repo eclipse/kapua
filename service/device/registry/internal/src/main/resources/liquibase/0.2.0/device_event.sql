@@ -42,7 +42,10 @@ CREATE TABLE dvc_device_event (
   attributes				 TEXT,
   properties                 TEXT,
 
-  PRIMARY KEY (scope_id, id)   -- primary key needs to include the partitioning key
+  PRIMARY KEY (scope_id, id),
+  
+  FOREIGN KEY (device_id) REFERENCES dvc_device(id) ON DELETE CASCADE
+  
 ) CHARSET=utf8;
 
 CREATE INDEX idx_device_event_id ON dvc_device_event (scope_id, device_id, resource, action);

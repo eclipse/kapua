@@ -28,7 +28,8 @@ CREATE TABLE athz_access_permission (
   group_id             	    BIGINT(21) 	  UNSIGNED,
     
   PRIMARY KEY (id),
---  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
+  
+  FOREIGN KEY (access_info_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
   
 ) DEFAULT CHARSET=utf8;
 

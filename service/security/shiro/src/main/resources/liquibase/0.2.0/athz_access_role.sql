@@ -24,9 +24,10 @@ CREATE TABLE athz_access_role (
   role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
     
   PRIMARY KEY (id),
---  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE,
---  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE RESTRICT
   
+  FOREIGN KEY (access_info_id) REFERENCES athz_access_info(id) ON DELETE CASCADE,
+  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE CASCADE
+
 ) DEFAULT CHARSET=utf8;
 
 CREATE UNIQUE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);

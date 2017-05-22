@@ -28,7 +28,9 @@ CREATE TABLE athz_role_permission (
   group_id             	    BIGINT(21) 	  UNSIGNED,
   
   PRIMARY KEY (id),
---  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE CASCADE
+  
+  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE CASCADE
+  
 ) DEFAULT CHARSET=utf8;
 
 CREATE UNIQUE INDEX idx_role_permission_scope_id ON athz_role_permission (role_id, domain, action, target_scope_id, group_id);
@@ -46,7 +48,7 @@ INSERT INTO athz_role_permission
 
 		(1,  7, NOW(), 1, 1, 'device_management',	null, null, null),
 
-		(1,  8, NOW(), 1, 1, 'datastore', 				null, null, null),
+		(1,  8, NOW(), 1, 1, 'datastore', 			null, null, null),
 
 		(1,  9, NOW(), 1, 1, 'credential',			null, null, null),
 		(1,	10, NOW(), 1, 1, 'access_token',		null, null, null),
@@ -58,7 +60,7 @@ INSERT INTO athz_role_permission
 
 		(1, 14, NOW(), 1, 1, 'domain',				null, null, null),
 
-		(1, 15, NOW(), 1, 1, 'group',       null, null, null);
+		(1, 15, NOW(), 1, 1, 'group',       		null, null, null);
 
 --changeset role_permission:2
 

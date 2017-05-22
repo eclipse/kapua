@@ -18,10 +18,11 @@ CREATE TABLE athz_domain_actions (
   domain_id                 BIGINT(21) 	  UNSIGNED NOT NULL,
   action					VARCHAR(255)  NOT NULL,
   
-  PRIMARY KEY (domain_id, action)
+  PRIMARY KEY (domain_id, action),
+  
+  FOREIGN KEY (domain_id) REFERENCES athz_domain(id) ON DELETE CASCADE
  
 ) DEFAULT CHARSET=utf8;
-
 
 INSERT INTO athz_domain_actions
 	VALUES
