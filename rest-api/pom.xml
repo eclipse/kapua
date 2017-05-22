@@ -23,7 +23,6 @@
 	</parent>
 
 	<artifactId>kapua-rest-api</artifactId>
-	<name>${project.artifactId}</name>
 	<packaging>war</packaging>
 
 	<properties>
@@ -195,7 +194,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>Create swagger ui</id>
+						<id>unpack-swagger-ui</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>unpack</goal>
@@ -209,22 +208,10 @@
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/tmp/swagger-ui</outputDirectory>
 								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-					<execution>
-						<id>Create swagger ui libs</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
 								<artifactItem>
 									<groupId>org.eclipse.kapua.external</groupId>
 									<artifactId>swagger-ui-lib</artifactId>
 									<version>${swagger-ui.version}</version>
-									<!-- <overWrite>true</overWrite> -->
 									<outputDirectory>${project.build.directory}/tmp/swagger-ui-lib</outputDirectory>
 								</artifactItem>
 							</artifactItems>
@@ -251,7 +238,6 @@
 									<fileset
 										dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
-
 								<echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
 								<copy
 									todir="${project.build.directory}/${project.build.finalName}/doc/lib">
