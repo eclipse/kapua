@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+                      
+    <include relativeToChangelogFile="true" file="./athz_access_info.sql" />
+    <include relativeToChangelogFile="true" file="./athz_access_permission.sql" />
+    <include relativeToChangelogFile="true" file="./athz_access_role.sql" />
+    
+    <include relativeToChangelogFile="true" file="./athz_domain_actions.sql" />
+    <include relativeToChangelogFile="true" file="./athz_domain.sql" />
+    
+    <include relativeToChangelogFile="true" file="./athz_group.sql" />
+    
+    <include relativeToChangelogFile="true" file="./athz_role_permission.sql" />
+    <include relativeToChangelogFile="true" file="./athz_role.sql" />
+    
+    <include relativeToChangelogFile="true" file="./athz_role-configuration.sql" />
+
+</databaseChangeLog>
