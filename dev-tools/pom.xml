@@ -25,4 +25,8 @@
     <artifactId>kapua-dev-tools</artifactId>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>cucumber-reports</module>
+    </modules>
+
 </project>

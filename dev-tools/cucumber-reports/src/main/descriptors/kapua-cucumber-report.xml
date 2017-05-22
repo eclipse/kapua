@@ -28,37 +28,37 @@
 
         <fileSet>
             <outputDirectory>shiro-authorization</outputDirectory>
-            <directory>../service/security/shiro/target/cucumber</directory>
+            <directory>../../service/security/shiro/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>account-service</outputDirectory>
-            <directory>../service/account/internal/target/cucumber</directory>
+            <directory>../../service/account/internal/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>user-service</outputDirectory>
-            <directory>../service/user/internal/target/cucumber</directory>
+            <directory>../../service/user/internal/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-registry-service</outputDirectory>
-            <directory>../service/device/registry/internal/target/cucumber</directory>
+            <directory>../../service/device/registry/internal/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>authorization-service</outputDirectory>
-            <directory>../service/security/shiro/target/cucumber</directory>
+            <directory>../../service/security/shiro/target/cucumber</directory>
         </fileSet>
         
         <fileSet>
             <outputDirectory>user-service-i9n</outputDirectory>
-            <directory>../qa/target/cucumber/UserServiceI9n</directory>
+            <directory>../../qa/target/cucumber/UserServiceI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-i9n</outputDirectory>
-            <directory>../qa/target/cucumber/DeviceBrokerI9n</directory>
+            <directory>../../qa/target/cucumber/DeviceBrokerI9n</directory>
         </fileSet>
     </fileSets>
 

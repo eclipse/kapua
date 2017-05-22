@@ -294,32 +294,6 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>kapua-cucumber-report</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/descriptors/kapua-cucumber-report.xml</descriptor>
-							</descriptors>
-							<finalName>kapua-cucumber-report</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<attach>false</attach><!-- unable to attach a directory -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
 	<profiles>
 		<profile>
 			<id>deploy</id>
