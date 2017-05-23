@@ -17,11 +17,11 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-docker</artifactId>
+        <artifactId>kapua-assembly</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-docker-jetty-base</artifactId>
+    <artifactId>kapua-assembly-java-base</artifactId>
     <name>${project.artifactId}</name>
 
     <properties>
@@ -45,38 +45,20 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${docker.account}/jetty-base</name>
+                                    <name>${docker.account}/java-base</name>
                                     <build>
-                                        <from>${docker.account}/java-base</from>
+                                        <from>${java.base.image}</from>
                                         <runCmds>
                                             <runCmd><![CDATA[
-									apk update && apk add bash && \
-									cd /home/kapua && \
-									curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
-									mkdir -p jetty && cd jetty && \
-									tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
-									rm ../jetty-distribution.tar.gz && \
-									chown -R kapua:kapua /home/kapua && \
-									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
-									chown kapua:kapua /var/lib/jetty && \
-									cd /var/lib/jetty && \
-									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
+									apk update && apk add curl tar && \
+									adduser -D -g "Eclipse Kapua" kapua && \
+									curl -s https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.3.4/jolokia-jvm-1.3.4-agent.jar -o /jolokia-jvm-agent.jar
 									]]></runCmd>
                                         </runCmds>
-                                        <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
-                                            <basedir>/</basedir>
-                                        </assembly>
-                                        <workdir>/var/lib/jetty</workdir>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/home/kapua/run-jetty</arg>
-                                            </exec>
-                                        </entryPoint>
-                                        <ports>
-                                            <port>8080</port>
-                                            <port>8778</port>
-                                        </ports>
+                                        <!--<tags>-->
+                                            <!--<tag>${project.version}</tag>-->
+                                            <!--<tag>${timestamp}</tag>-->
+                                        <!--</tags>-->
                                     </build>
                                 </image>
                             </images>

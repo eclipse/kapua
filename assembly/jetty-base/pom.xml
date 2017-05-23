@@ -17,11 +17,11 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-docker</artifactId>
+        <artifactId>kapua-assembly</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-docker-sql</artifactId>
+    <artifactId>kapua-assembly-jetty-base</artifactId>
     <name>${project.artifactId}</name>
 
     <properties>
@@ -45,37 +45,38 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${docker.account}/kapua-sql</name>
+                                    <name>${docker.account}/jetty-base</name>
                                     <build>
                                         <from>${docker.account}/java-base</from>
-                                        <assembly>
-                                            <descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
-                                            <basedir>/</basedir>
-                                        </assembly>
                                         <runCmds>
                                             <runCmd><![CDATA[
-									mkdir -p /var/h2/data && \
-									chown kapua:kapua /var/h2/data && \
-									chmod a+rw /var/h2/data && \
+									apk update && apk add bash && \
 									cd /home/kapua && \
-									mkdir tmp && chmod a+rwx tmp && \
-									curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
+									curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.2.v20170220/jetty-distribution-9.4.2.v20170220.tar.gz -o jetty-distribution.tar.gz && \
+									mkdir -p jetty && cd jetty && \
+									tar --strip=1 -xzf ../jetty-distribution.tar.gz && \
+									rm ../jetty-distribution.tar.gz && \
+									chown -R kapua:kapua /home/kapua && \
+									mkdir -p /var/lib/jetty/lib/ext /var/lib/jetty/start.d && \
+									chown kapua:kapua /var/lib/jetty && \
+									cd /var/lib/jetty && \
+									java -jar /home/kapua/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging-logback,jmx,stats
 									]]></runCmd>
                                         </runCmds>
-                                        <volumes>
-                                            <volume>/var/h2/data</volume>
-                                        </volumes>
-                                        <ports>
-                                            <port>3306</port>
-                                            <port>8181</port>
-                                            <port>8778</port>
-                                        </ports>
-                                        <user>kapua</user>
+                                        <assembly>
+                                            <descriptor>${basedir}/src/main/descriptors/jetty-base.xml</descriptor>
+                                            <basedir>/</basedir>
+                                        </assembly>
+                                        <workdir>/var/lib/jetty</workdir>
                                         <entryPoint>
                                             <exec>
-                                                <arg>/home/kapua/run-h2</arg>
+                                                <arg>/home/kapua/run-jetty</arg>
                                             </exec>
                                         </entryPoint>
+                                        <ports>
+                                            <port>8080</port>
+                                            <port>8778</port>
+                                        </ports>
                                     </build>
                                 </image>
                             </images>

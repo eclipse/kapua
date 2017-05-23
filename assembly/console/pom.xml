@@ -17,18 +17,18 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-docker</artifactId>
+        <artifactId>kapua-assembly</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-docker-console</artifactId>
+    <artifactId>kapua-assembly-console</artifactId>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-docker-java-base</artifactId>
+            <artifactId>kapua-assembly-java-base</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>

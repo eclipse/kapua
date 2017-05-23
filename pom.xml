@@ -871,7 +871,7 @@
         <module>simulator-kura</module>
 
         <!-- Assembly -->
-        <module>docker</module>
+        <module>assembly</module>
 
         <module>dev-tools</module>
     </modules>

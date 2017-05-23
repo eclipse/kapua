@@ -22,7 +22,7 @@
     </parent>
     <packaging>pom</packaging>
 
-    <artifactId>kapua-docker</artifactId>
+    <artifactId>kapua-assembly</artifactId>
     <name>${project.artifactId}</name>
 
     <properties>
