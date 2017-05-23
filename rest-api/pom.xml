@@ -227,16 +227,6 @@
 			<artifactId>percolator-client</artifactId>
 			<version>${elasticsearch-client-transport.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${elasticsearch-netty-4.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty</artifactId>
-			<version>${elasticsearch-netty-3.version}</version>
-		</dependency>
 		<!-- log4j2 for ES -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

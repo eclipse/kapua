@@ -179,7 +179,6 @@
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.slf4j:log4j-over-slf4j</include>
                 <include>org.apache.logging.log4j:log4j-to-slf4j</include>
-                <include>io.netty:netty-all</include>
                 <include>org.apache.httpcomponents:httpclient</include>
                 <include>org.apache.httpcomponents:httpcore</include>
                 <include>org.apache.lucene:*</include>
