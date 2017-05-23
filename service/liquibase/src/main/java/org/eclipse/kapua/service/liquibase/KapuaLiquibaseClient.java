@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -66,8 +67,15 @@ public class KapuaLiquibaseClient {
 
                     //
                     // Copy files to temporary directory
-                    File changelogTempDirectory = new File(getJavaIoTmpDir(), "kapua-liquibase");
-                    changelogTempDirectory.mkdir();
+                    String tmpDirectory = getJavaIoTmpDir().getAbsolutePath();
+
+                    File changelogTempDirectory = new File(tmpDirectory, "kapua-liquibase");
+
+                    if (changelogTempDirectory.exists()) {
+                        FileUtils.deleteDirectory(changelogTempDirectory);
+                    }
+
+                    changelogTempDirectory.mkdirs();
                     LOG.trace("Tmp dir: {}", changelogTempDirectory.getAbsolutePath());
 
                     Reflections reflections = new Reflections("liquibase", new ResourcesScanner());

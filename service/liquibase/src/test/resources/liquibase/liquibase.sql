@@ -12,7 +12,7 @@
 
 --liquibase formatted sql
 
---changeset hekonsek:1
+--changeset hekonsek:1 
 
 CREATE TABLE tst_liquibase (
   id                         BIGINT(21) 	  UNSIGNED NOT NULL,
