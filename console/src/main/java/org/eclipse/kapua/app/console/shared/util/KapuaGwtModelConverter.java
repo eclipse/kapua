@@ -626,7 +626,7 @@ public class KapuaGwtModelConverter {
     }
     
     public static GwtDatastoreAsset convertToAssets(ChannelInfo channelInfo) {
-        return new GwtDatastoreAsset(channelInfo.getName(), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
+        return new GwtDatastoreAsset(channelInfo.getName().substring(6), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
     }
 
     public static GwtHeader convertToHeader(MetricInfo metric) {

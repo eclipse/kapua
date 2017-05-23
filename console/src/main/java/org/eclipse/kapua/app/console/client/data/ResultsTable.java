@@ -282,7 +282,7 @@ public class ResultsTable extends LayoutContainer {
         }
 
         if (selectedAsset != null) {
-            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getAsset()));
+            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getTopick()));
         }
 
         if (selectedChannels != null && !selectedChannels.isEmpty()) {
