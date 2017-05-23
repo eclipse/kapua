@@ -25,11 +25,13 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
@@ -42,6 +44,7 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 public class RolePermissionServiceImpl extends AbstractKapuaService implements RolePermissionService {
 
     private static final Domain roleDomain = new RoleDomain();
+    private static final RoleService roleService = KapuaLocator.getInstance().getService(RoleService.class);
 
     public RolePermissionServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance());
@@ -60,6 +63,12 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, rolePermissionCreator.getScopeId()));
+
+        //
+        // Check role existence
+        if (roleService.find(rolePermissionCreator.getScopeId(), rolePermissionCreator.getRoleId()) == null) {
+            throw new KapuaEntityNotFoundException(Role.TYPE, rolePermissionCreator.getRoleId());
+        }
 
         //
         // If permission are created out of the role permission scope, check that the current user has the permission on the external scopeId.
