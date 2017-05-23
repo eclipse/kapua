@@ -76,7 +76,7 @@
 								</goals>
 								<configuration>
 									<executable>./deployScript/deploy-apps.sh</executable>
-									<workingDirectory>${basedir}/../dev-tools/src/main/vagrant/demo</workingDirectory>
+									<workingDirectory>${basedir}/../src/main/vagrant/demo</workingDirectory>
 								</configuration>
 							</execution>
 							<execution>
@@ -87,7 +87,7 @@
 								</goals>
 								<configuration>
 									<executable>./deployScript/deploy-broker.sh</executable>
-									<workingDirectory>${basedir}/../dev-tools/src/main/vagrant/demo</workingDirectory>
+									<workingDirectory>${basedir}/../src/main/vagrant/demo</workingDirectory>
 								</configuration>
 							</execution>
 						</executions>
