@@ -175,6 +175,13 @@
                 <include>org.elasticsearch.plugin:lang-mustache-client</include>
                 <include>org.elasticsearch.plugin:percolator-client</include>
                 <include>org.elasticsearch:securesm</include>
+                <include>io.netty:netty-buffer</include>
+                <include>io.netty:netty-codec</include>
+                <include>io.netty:netty-codec-http</include>
+                <include>io.netty:netty-common</include>
+                <include>io.netty:netty-handler</include>
+                <include>io.netty:netty-resolver</include>
+                <include>io.netty:netty-transport</include>
                 <include>org.apache.logging.log4j:log4j-api</include>
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.slf4j:log4j-over-slf4j</include>

@@ -13,7 +13,7 @@
 vagrant ssh -c "echo 'deploying the Kapua broker'
     cd /usr/local/kapua
     rm -rf apache-activemq*
-    tar -xvzf /kapua/docker/broker/target/kapua-broker*
+    tar -xvzf /kapua/assembly/broker/target/kapua-broker*
     mv kapua-broker* apache-activemq-${ACTIVEMQ_VERSION}
     cd apache-activemq-${ACTIVEMQ_VERSION}
     sed -i -E 's/console(.*)ch.qos.logback.core.ConsoleAppender(.*)/file\1ch.qos.logback.core.FileAppender\2\n\t\t<file>data\/kapua.log<\/file>/' conf/logback.xml
