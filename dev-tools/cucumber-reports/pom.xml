@@ -48,4 +48,53 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.1</version>
+						<configuration>
+							<environmentVariables>
+								<KAPUA_VERSION>${project.version}</KAPUA_VERSION>
+								<TOMCAT_VERSION>${tomcat.version}</TOMCAT_VERSION>
+								<ACTIVEMQ_VERSION>${activemq.version}</ACTIVEMQ_VERSION>
+							</environmentVariables>
+						</configuration>
+						<executions>
+							<execution>
+								<id>vagrant_console_deploy</id>
+								<phase>install</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>./deployScript/deploy-apps.sh</executable>
+									<workingDirectory>${basedir}/../dev-tools/src/main/vagrant/demo</workingDirectory>
+								</configuration>
+							</execution>
+							<execution>
+								<id>vagrant_broker_deploy</id>
+								<phase>install</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>./deployScript/deploy-broker.sh</executable>
+									<workingDirectory>${basedir}/../dev-tools/src/main/vagrant/demo</workingDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
