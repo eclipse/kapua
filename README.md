@@ -33,13 +33,13 @@ Before starting, check that your environment has the following prerequisites:
 
 ### Demo Setup
 
-The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](# More deployment info) to find more about creating your own images and/or alternative demo deployment scenarios.
+The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment scenarios.
 
 ***
 **Note :** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current milestone release 0.2.0-SNAPSHOT.
+Suppose the target is the current snapshot 0.2.0-SNAPSHOT.
 
 * Ensure the `vm.max_map_count` kernel setting contains a correct value in your host machine. Refer to [Elasticsearch Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.3/docker.html#docker-cli-run-prod-mode) for more informations
 * Run Docker
