@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,6 +81,16 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.write, accessInfoCreator.getScopeId()));
 
+        //
+        // If permission are created out of the access info scope, check that the current user has the permission on the external scopeId.
+        if (accessInfoCreator.getPermissions() != null) {
+            for (Permission p : accessInfoCreator.getPermissions()) {
+                if (p.getTargetScopeId() == null || !p.getTargetScopeId().equals(accessInfoCreator.getScopeId())) {
+                    authorizationService.checkPermission(p);
+                }
+            }
+        }
+
         RoleService roleService = locator.getService(RoleService.class);
         if (accessInfoCreator.getRoleIds() != null) {
             for (KapuaId roleId : accessInfoCreator.getRoleIds()) {
@@ -140,7 +150,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
 
         return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, accessInfoId));
     }
-    
+
     @Override
     public AccessInfo findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
@@ -28,6 +29,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
@@ -59,7 +61,25 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.write, accessPermissionCreator.getScopeId()));
-        return entityManagerSession.onTransactedInsert(em -> AccessPermissionDAO.create(em, accessPermissionCreator));
+
+        //
+        // If permission are created out of the access permission scope, check that the current user has the permission on the external scopeId.
+        Permission permission = accessPermissionCreator.getPermission();
+        if (permission.getTargetScopeId() == null || !permission.getTargetScopeId().equals(accessPermissionCreator.getScopeId())) {
+            authorizationService.checkPermission(permission);
+        }
+
+        return entityManagerSession.onTransactedInsert(em -> {
+            //
+            // Check that accessInfo exists
+            AccessInfo accessInfo = AccessInfoDAO.find(em, accessPermissionCreator.getAccessInfoId());
+
+            if (accessInfo == null) {
+                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
+            }
+
+            return AccessPermissionDAO.create(em, accessPermissionCreator);
+        });
     }
 
     @Override

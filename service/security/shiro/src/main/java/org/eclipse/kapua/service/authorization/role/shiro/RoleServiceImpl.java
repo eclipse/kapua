@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,6 +67,16 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
 
+        //
+        // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
+        if (roleCreator.getPermissions() != null) {
+            for (Permission p : roleCreator.getPermissions()) {
+                if (p.getTargetScopeId() == null || !p.getTargetScopeId().equals(roleCreator.getScopeId())) {
+                    authorizationService.checkPermission(p);
+                }
+            }
+        }
+
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
         }
@@ -76,6 +86,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             if (!roleCreator.getPermissions().isEmpty()) {
                 RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
                 for (Permission p : roleCreator.getPermissions()) {
+
                     RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(roleCreator.getScopeId());
 
                     rolePermissionCreator.setRoleId(role.getId());

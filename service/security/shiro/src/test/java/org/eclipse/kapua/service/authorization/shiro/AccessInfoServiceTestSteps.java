@@ -285,12 +285,16 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             throws KapuaException {
 
         assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessInfo);
+        assertNotNull(accessData.accessInfo.getId());
+        assertNotNull(accessData.role);
+        assertNotNull(accessData.role.getId());
 
         AccessRoleCreator tmpCreator = accessRoleFactory.newCreator(commonData.scopeId);
         assertNotNull(tmpCreator);
 
-        tmpCreator.setAccessInfoId(generateId());
-        tmpCreator.setRoleId(generateId());
+        tmpCreator.setAccessInfoId(accessData.accessInfo.getId());
+        tmpCreator.setRoleId(accessData.role.getId());
 
         try {
             commonData.exceptionCaught = false;
@@ -492,11 +496,13 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     public void createPermissionEntries()
             throws KapuaException {
         assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessInfo);
+        assertNotNull(accessData.accessInfo.getId());
         assertNotNull(accessData.permissions);
         assertFalse(accessData.permissions.isEmpty());
 
         accessData.accessPermissionCreator = accessPermissionFactory.newCreator(commonData.scopeId);
-        accessData.accessPermissionCreator.setAccessInfoId(generateId());
+        accessData.accessPermissionCreator.setAccessInfoId(accessData.accessInfo.getId());
 
         try {
             commonData.exceptionCaught = false;

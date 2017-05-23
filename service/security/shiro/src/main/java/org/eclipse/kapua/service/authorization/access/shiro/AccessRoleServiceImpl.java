@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,6 +21,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
@@ -29,7 +30,11 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
+import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
 
 /**
  * {@link AccessRole} service implementation.
@@ -59,7 +64,33 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(accessInfoDomain, Actions.write, accessRoleCreator.getScopeId()));
-        return entityManagerSession.onTransactedInsert(em -> AccessRoleDAO.create(em, accessRoleCreator));
+
+        //
+        // If role is not in the scope of the access info or does not exists throw an exception.
+        return entityManagerSession.onTransactedInsert(em -> {
+
+            //
+            // Check that accessInfo exists
+            AccessInfo accessInfo = AccessInfoDAO.find(em, accessRoleCreator.getAccessInfoId());
+
+            if (accessInfo == null) {
+                throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId());
+            }
+
+            //
+            // Check that role exists
+            Role role = RoleDAO.find(em, accessRoleCreator.getRoleId());
+
+            if (role == null) {
+                throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
+            }
+
+            if (!role.getScopeId().equals(accessRoleCreator.getScopeId())) {
+                throw new KapuaAuthorizationException(KapuaAuthorizationErrorCodes.ENTITY_SCOPE_MISSMATCH, null, accessRoleCreator.getScopeId());
+            }
+
+            return AccessRoleDAO.create(em, accessRoleCreator);
+        });
     }
 
     @Override
