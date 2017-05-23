@@ -275,8 +275,6 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-//        TermPredicate predicate = new TermPredicateImpl(MessageField.CLIENT_ID, device.getDevice());
-//        return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     	   ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(asset.getTopick());
            return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
