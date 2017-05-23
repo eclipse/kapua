@@ -138,7 +138,7 @@ public class ResultsTable extends LayoutContainer {
                     } else if (selectedDevice != null) {
                         dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
                     } else if (selectedAsset != null) {
-                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
+                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, selectedMetrics, startDate, endDate, callback);
                     }
                     
                 } else if (selectedDevice != null && selectedAsset != null && selectedChannels != null && !selectedChannels.isEmpty()) {

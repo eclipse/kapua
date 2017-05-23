@@ -196,20 +196,22 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String scopeId) throws GwtKapuaException {
         ChannelInfoRegistryService clientInfoService = locator.getService(ChannelInfoRegistryService.class);
-        List<GwtDatastoreAsset> devices = new ArrayList<GwtDatastoreAsset>();
+        List<GwtDatastoreAsset> asset = new ArrayList<GwtDatastoreAsset>();
         KapuaId convertedScopeId = GwtKapuaModelConverter.convert(scopeId);
         ChannelInfoQuery query = new ChannelInfoQueryImpl(convertedScopeId);
         try {
             ChannelInfoListResult result = clientInfoService.query(query);
             if (result != null && !result.isEmpty()) {
                 for (ChannelInfo client : result.getItems()) {
-                    devices.add(KapuaGwtModelConverter.convertToAssets(client));
+                    if (client.getName().startsWith("W1/A1")){
+                      asset.add(KapuaGwtModelConverter.convertToAssets(client));
+                    }
                 }
             }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
-        return new BaseListLoadResult<GwtDatastoreAsset>(devices);
+        return new BaseListLoadResult<GwtDatastoreAsset>(asset);
     }
 
     @Override
@@ -271,10 +273,12 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
     
     @Override
-    public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate)
+    public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-        TermPredicate predicate = new TermPredicateImpl(MessageField.CLIENT_ID, device.getDevice());
-        return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
+//        TermPredicate predicate = new TermPredicateImpl(MessageField.CLIENT_ID, device.getDevice());
+//        return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
+    	   ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(asset.getTopick());
+           return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
     @Override

@@ -112,11 +112,18 @@ public class MetricsTable extends LayoutContainer {
 
         CheckBoxSelectionModel<GwtHeader> selectionModel = new CheckBoxSelectionModel<GwtHeader>();
         configs.add(selectionModel.getColumn());
-
-        ColumnConfig column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
+        ColumnConfig column;
+        if(type == Type.ASSET) {
+        	column = new ColumnConfig("name", MSGS.metricsTableChannelHeader(), 100);
+        } else {
+            column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
+        }
         configs.add(column);
-
-        column = new ColumnConfig("type", MSGS.metricsTableMetricTypeHeader(), 100);
+        if(type == Type.ASSET) {
+        	column = new ColumnConfig("type", MSGS.metricsTableChannelTypeHeader(), 100);
+        } else {
+            column = new ColumnConfig("type", MSGS.metricsTableMetricTypeHeader(), 100);
+        }
         configs.add(column);
 
         RpcProxy<ListLoadResult<GwtHeader>> proxy = new RpcProxy<ListLoadResult<GwtHeader>>() {
@@ -172,6 +179,9 @@ public class MetricsTable extends LayoutContainer {
     public void refresh(GwtDatastoreDevice selectedDevice) {
         if (selectedDevice != null) {
             tableContainer.setHeading(MSGS.metricsTableHeaderDevice(selectedDevice.getDevice()));
+            if (selectedAsset != null) {
+                tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
+            }
             this.selectedDevice = selectedDevice;
         } else {
             tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
@@ -182,10 +192,10 @@ public class MetricsTable extends LayoutContainer {
     
     public void refresh(GwtDatastoreAsset selectedAsset) {
         if (selectedAsset != null) {
-            tableContainer.setHeading(MSGS.metricsTableHeaderDevice(selectedAsset.getAsset()));
+            tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
             this.selectedAsset = selectedAsset;
         } else {
-            tableContainer.setHeading(MSGS.metricsTableHeaderDevice(""));
+            tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
             this.selectedAsset = null;
         }
         refresh();
