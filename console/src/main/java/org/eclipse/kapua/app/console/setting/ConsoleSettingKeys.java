@@ -15,28 +15,30 @@ package org.eclipse.kapua.app.console.setting;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 public enum ConsoleSettingKeys implements SettingKey {
-    SKIN_RESOURCE_DIR("skin.resource.dir"), //
-    LOGIN_BACKGROUND_CREDITS("login.background.credits"), //
-    LOGIN_GENERIC_SNIPPET("login.generic.snippet"), //
+    SKIN_RESOURCE_DIR("console.skin.resource.dir"), //
 
-    DEVICE_CONFIGURATION_ICON_FOLDER("device.configuration.icon.folder"), //
-    DEVICE_CONFIGURATION_ICON_CACHE_TIME("device.configuration.icon.cache.time"), //
-    DEVICE_CONFIGURATION_ICON_SIZE_MAX("device.configuration.icon.size.max"),
+    LOGIN_BACKGROUND_CREDITS("console.login.background.credits"), //
+    LOGIN_GENERIC_SNIPPET("console.login.generic.snippet"), //
 
-    DEVICE_CONFIGURATION_SERVICE_IGNORE("device.configuration.service.ignore"),//
+    DEVICE_CONFIGURATION_ICON_FOLDER("console.device.configuration.icon.folder"), //
+    DEVICE_CONFIGURATION_ICON_CACHE_TIME("console.device.configuration.icon.cache.time"), //
+    DEVICE_CONFIGURATION_ICON_SIZE_MAX("console.device.configuration.icon.size.max"),
 
-    DEVICE_MAP_TILE_URI("device.map.tile.uri"), //
+    DEVICE_CONFIGURATION_SERVICE_IGNORE("console.device.configuration.service.ignore"),//
 
-    FILE_UPLOAD_SIZE_MAX("file.upload.size.max"), //
-    FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("file.upload.inmemory.size.threshold"), //
+    DEVICE_MAP_TILE_URI("console.device.map.tile.uri"), //
 
-    SITE_HOME_URI("site.home.uri"),
-    SSO_ENABLE("sso.enabled"),
-    SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.openid.server.endpoint.auth"),
-    SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.openid.server.endpoint.token"),
-    SSO_OPENID_CLIENT_ID("sso.openid.client.id"),
-    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"),
-    SSO_OPENID_REDIRECT_URI("sso.openid.redirect.uri"),
+    FILE_UPLOAD_SIZE_MAX("console.file.upload.size.max"), //
+    FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("console.file.upload.inmemory.size.threshold"), //
+
+    SITE_HOME_URI("console.site.home.uri"), //
+    SSO_ENABLE("console.sso.enabled"), //
+    SSO_OPENID_SERVER_ENDPOINT_AUTH("console.sso.openid.server.endpoint.auth"), //
+    SSO_OPENID_SERVER_ENDPOINT_TOKEN("console.sso.openid.server.endpoint.token"), //
+    SSO_OPENID_CLIENT_ID("console.sso.openid.client.id"), //
+    SSO_OPENID_CLIENT_SECRET("console.sso.openid.client.secret"), //
+    SSO_OPENID_REDIRECT_URI("console.sso.openid.redirect.uri"), //
+
     ;
 
     private String key;
