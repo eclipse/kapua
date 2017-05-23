@@ -10,10 +10,13 @@
 #     Eurotech - initial API and implementation
 #
 ###############################################################################
-
 Feature: Device Event CRUD tests
     The Device Event service is responsible for handling the incoming device 
     events.
+
+Background:
+	Given A "first" device 
+	And A "second" device 
 
 Scenario: Create a regular event
 	Create a regular event. The event should not be null and should 
@@ -22,7 +25,7 @@ Scenario: Create a regular event
 	
 	Given Scope 12
 	And User 5
-	And A "CREATE" event from device 16
+	And A "CREATE" event from device "first"
 	Then No exception is thrown
 	And The event matches the creator parameters
 
@@ -32,7 +35,7 @@ Scenario: Create an event with a null scope ID
 	
 	Given Null scope ID
 	And User 5
-	When A "CREATE" event from device 16
+	When A "CREATE" event from device "first"
 	Then An event exception is caught
 
 Scenario: Create an event with a null action
@@ -50,7 +53,7 @@ Scenario: Find an event by its ID
 	
 	Given Scope 12
 	And User 5
-	And A "CREATE" event from device 16
+	And A "CREATE" event from device "first"
 	When I search for an event with the remembered ID
 	Then The event matches the creator parameters
 
@@ -60,7 +63,7 @@ Scenario: Find a non existing event
 	
 	Given Scope 12
 	And User 5
-	And A "CREATE" event from device 16
+	And A "CREATE" event from device "first"
 	When I search for an event with a random ID
 	Then There is no such event
 
@@ -69,7 +72,7 @@ Scenario: Delete an existing event
 	
 	Given Scope 12
 	And User 5
-	And A "CREATE" event from device 16
+	And A "CREATE" event from device "first"
 	When I search for an event with the remembered ID
 	Then The event matches the creator parameters
 	When I delete the event with the remembered ID
@@ -82,7 +85,7 @@ Scenario: Delete a non existent event
 	
 	Given Scope 12
 	And User 5
-	And A "CREATE" event from device 16
+	And A "CREATE" event from device "first"
 	When  I delete an event with a random ID
 	Then An event exception is caught
 
@@ -92,9 +95,9 @@ Scenario: Count events in scope
 	
 	Given Scope 12
 	And User 5
-	And I have 15 "CREATE" events from device 16
+	And I have 15 "CREATE" events from device "first"
 	Given Scope 42
-	And I have 25 "READ" events from device 32
+	And I have 25 "READ" events from device "second"
 	When I count events for scope 12
 	Then There are 15 events
 
@@ -104,7 +107,7 @@ Scenario: Count events in empty scope
 	
 	Given Scope 12
 	And User 5
-	And I have 15 "CREATE" events from device 16
+	And I have 15 "CREATE" events from device "first"
 	When I count events for scope 42
 	Then There are 0 events
 
@@ -113,9 +116,9 @@ Scenario: Basic Device Event queries
 	
 	Given Scope 12
 	And User 5
-	And I have 10 "WRITE" events from device 16
-	And I have 15 "CREATE" events from device 16
-	And I have 20 "EXECUTE" events from device 16
+	And I have 10 "WRITE" events from device "first"
+	And I have 15 "CREATE" events from device "first"
+	And I have 20 "EXECUTE" events from device "first"
 	When I query for "CREATE" events
 	Then I find 15 events
 	When I query for "WRITE" events
