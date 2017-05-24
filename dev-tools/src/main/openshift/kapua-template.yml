@@ -21,7 +21,7 @@ parameters:
   value:            jolokia
 - name:           ELASTIC_SEARCH_MEMORY
   descrption:       The minimum and maximun Java heap space for Elasticsearch
-  value:            "-Xms512m -Xmx512m"
+  value:            '512m'
 
 objects:
 
@@ -380,10 +380,13 @@ objects:
         containers:
         - env:
           - name: ES_JAVA_OPTS
-            value: ${ELASTIC_SEARCH_MEMORY}
-          - name: ES_JAVA_OPTS
-            value: -Des.cluster.name=kapua-datastore
-          image: elasticsearch:5.3
+            value: "-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}"
+          image: elasticsearch:5.4
+          command:
+            - 'elasticsearch'
+            - '-Etransport.host=_site_'
+            - '-Ecluster.name=kapua-datastore'
+            - '-Ediscovery.type=single-node'
           imagePullPolicy: Always
           name: elasticsearch
           ports:
