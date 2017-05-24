@@ -41,14 +41,13 @@ The team maintains some docker images in a Docker Hub repository at [Kapua Repos
 
 Suppose the target is the current snapshot 0.2.0-SNAPSHOT.
 
-* Ensure the `vm.max_map_count` kernel setting contains a correct value in your host machine. Refer to [Elasticsearch Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/5.3/docker.html#docker-cli-run-prod-mode) for more informations
 * Run Docker
 * Open an OS shell
 * Execute the following command lines
 
 ```
 docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
-docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.3.0 -Ecluster.name=kapua-datastore -Ediscovery.zen.minimum_master_nodes=1 -Enetwork.host=0.0.0.0 -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
+docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
 docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es -p 1883:1883 -p 61614:61614 kapua/kapua-broker
 docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console
 docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api```
