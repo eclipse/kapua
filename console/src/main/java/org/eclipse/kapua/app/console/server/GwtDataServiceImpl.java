@@ -232,12 +232,12 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         return findHeaders(config, scopeId, predicate);
     }
     
-	@Override
-	public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName,
-			GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
+    @Override
+    public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName,
+            GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
         ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(gwtDatastoreAsset.getTopick());
         return findHeaders(config, accountName, predicate);
-	}
+    }
 
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByTopic(PagingLoadConfig loadConfig, String scopeId, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate)
@@ -275,7 +275,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-    	   ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(asset.getTopick());
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(asset.getTopick());
            return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 

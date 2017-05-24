@@ -97,8 +97,8 @@ public class MetricsTable extends LayoutContainer {
             break;
             
         case ASSET: 
-        	tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
-        	break;
+            tableContainer.setHeading(MSGS.metricsTableHeaderAssets());
+            break;
         default:
             break;
         }
@@ -114,13 +114,13 @@ public class MetricsTable extends LayoutContainer {
         configs.add(selectionModel.getColumn());
         ColumnConfig column;
         if(type == Type.ASSET) {
-        	column = new ColumnConfig("name", MSGS.metricsTableChannelHeader(), 100);
+            column = new ColumnConfig("name", MSGS.metricsTableChannelHeader(), 100);
         } else {
             column = new ColumnConfig("name", MSGS.metricsTableMetricHeader(), 100);
         }
         configs.add(column);
         if(type == Type.ASSET) {
-        	column = new ColumnConfig("type", MSGS.metricsTableChannelTypeHeader(), 100);
+            column = new ColumnConfig("type", MSGS.metricsTableChannelTypeHeader(), 100);
         } else {
             column = new ColumnConfig("type", MSGS.metricsTableMetricTypeHeader(), 100);
         }

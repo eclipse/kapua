@@ -93,7 +93,7 @@ public class AssetTabItem extends TabItem {
         assetTable = new AssetTable(currentSession);
         assetTable.addSelectionChangedListener(new SelectionChangedListener<GwtDatastoreAsset>() {
 
-        	   @Override
+               @Override
                public void selectionChanged(SelectionChangedEvent<GwtDatastoreAsset> selectedAsset) {
                    metricsTable.refresh(selectedAsset.getSelectedItem());
                }

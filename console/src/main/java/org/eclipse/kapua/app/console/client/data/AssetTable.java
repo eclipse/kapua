@@ -97,8 +97,8 @@ public class AssetTable extends LayoutContainer {
         column = new ColumnConfig("driver", MSGS.assetTableDriverHeader(), 100);
         configs.add(column);
         RpcProxy<ListLoadResult<GwtDatastoreAsset>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreAsset>>() {
-        	
-        	@Override
+            
+            @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtDatastoreAsset>> callback) {
                 if (selectedDevice != null) {
                 dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), callback);
