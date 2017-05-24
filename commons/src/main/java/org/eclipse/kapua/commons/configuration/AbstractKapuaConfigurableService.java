@@ -174,7 +174,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private static Properties toProperties(Map<String, Object> values) {
         Properties props = new Properties();
         for (Entry<String, Object> entry : values.entrySet()) {
-            props.setProperty(entry.getKey(), StringUtil.valueToString(entry.getValue()));
+            if (entry.getValue() != null) {
+                props.setProperty(entry.getKey(), StringUtil.valueToString(entry.getValue()));
+            }
         }
 
         return props;
