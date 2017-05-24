@@ -127,6 +127,16 @@
             to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-asset-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-asset-internal</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-bundle-api</artifactId>
             <scope>runtime</scope>
         </dependency>

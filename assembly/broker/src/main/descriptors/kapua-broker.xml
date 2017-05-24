@@ -204,6 +204,8 @@
                 <include>${pom.groupId}:kapua-security-shiro</include>
                 <include>${pom.groupId}:kapua-device-call-api</include>
                 <include>${pom.groupId}:kapua-device-call-kura</include>
+                <include>${pom.groupId}:kapua-device-asset-api</include>
+                <include>${pom.groupId}:kapua-device-asset-internal</include>
                 <include>${pom.groupId}:kapua-device-api</include>
                 <include>${pom.groupId}:kapua-device-bundle-api</include>
                 <include>${pom.groupId}:kapua-device-bundle-internal</include>
