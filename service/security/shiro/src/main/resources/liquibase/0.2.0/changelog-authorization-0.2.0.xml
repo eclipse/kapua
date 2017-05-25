@@ -10,6 +10,7 @@
     <include relativeToChangelogFile="true" file="./athz_domain_actions.sql" />
     
     <include relativeToChangelogFile="true" file="./athz_group.sql" />
+    <include relativeToChangelogFile="true" file="./athz_group-configuration.sql" />
     
     <include relativeToChangelogFile="true" file="./athz_role.sql" />
     <include relativeToChangelogFile="true" file="./athz_role_permission.sql" />

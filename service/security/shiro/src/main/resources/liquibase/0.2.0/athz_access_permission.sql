@@ -22,10 +22,11 @@ CREATE TABLE athz_access_permission (
   
   access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
   
-  domain					VARCHAR(64)	  NOT NULL,
+  domain					VARCHAR(64),
   action					VARCHAR(64),
   target_scope_id			BIGINT(21)	  UNSIGNED,
   group_id             	    BIGINT(21) 	  UNSIGNED,
+  forwardable 				BOOLEAN       NOT NULL DEFAULT FALSE,
     
   PRIMARY KEY (id),
   
@@ -37,14 +38,4 @@ CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId_groupId ON athz_ac
 
 INSERT INTO athz_access_permission
 	VALUES
-		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null); -- kapua-broker assigned of permission: broker:connect:1:*
-
---changeset access_permission:2
-
-ALTER TABLE athz_access_permission MODIFY COLUMN domain VARCHAR(64) NULL;
-
---changeset access_permission:3
-
-ALTER TABLE athz_access_permission ADD COLUMN forwardable BOOLEAN NOT NULL DEFAULT FALSE;
-
-UPDATE athz_access_permission SET forwardable = false WHERE id = 1;
+		(1, 1, NOW(), 1, 2, 'broker', 'connect', 1, null, false); -- kapua-broker assigned of NOT forwardable permission: broker:connect:1:*
