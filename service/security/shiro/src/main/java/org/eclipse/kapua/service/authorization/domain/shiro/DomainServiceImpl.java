@@ -94,7 +94,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, KapuaId.ANY));
 
         return entityManagerSession.onResult(em -> DomainDAO.find(em, domainId));
     }
@@ -109,7 +109,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, KapuaId.ANY));
 
         return entityManagerSession.onResult(em -> {
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
@@ -136,7 +136,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, KapuaId.ANY));
 
         return entityManagerSession.onResult(em -> DomainDAO.query(em, query));
     }
@@ -151,7 +151,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(domainDomain, Actions.read, KapuaId.ANY));
 
         return entityManagerSession.onResult(em -> DomainDAO.count(em, query));
     }
