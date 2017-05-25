@@ -13,6 +13,14 @@ package org.eclipse.kapua.service.datastore.internal.model;
 
 import org.eclipse.kapua.service.datastore.model.Metric;
 
+/**
+ * Metric base implementation
+ * 
+ * @param <T>
+ *            metric value type
+ * 
+ * @since 1.0
+ */
 public abstract class MetricImpl<T> implements Metric<T> {
 
     private String name;

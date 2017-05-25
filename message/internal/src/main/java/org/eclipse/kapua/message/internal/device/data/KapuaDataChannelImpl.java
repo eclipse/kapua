@@ -42,13 +42,4 @@ public class KapuaDataChannelImpl extends KapuaChannelImpl implements KapuaDataC
         this.clientId = clientId;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("semantic topic '");
-        strBuilder.append(super.toString());
-        strBuilder.append("'");
-        return strBuilder.toString();
-    }
-
 }

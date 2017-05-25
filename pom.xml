@@ -64,6 +64,15 @@
         <logback.version>1.1.8</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
+        <cucumber.version>1.2.4</cucumber.version>
+        <elasticsearch.version>5.3.0</elasticsearch.version>
+        <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
+        <elasticsearch-netty-3.version>3.10.6.Final</elasticsearch-netty-3.version>
+        <elasticsearch-netty-4.version>4.1.7.Final</elasticsearch-netty-4.version>
+        <jackson.version>2.8.6</jackson.version> <!-- same version used by elasticsearch -->
+        <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
+        <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
+        <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <tomcat.version>8.0.41</tomcat.version>
 
         <!-- Plugins versions -->
@@ -408,6 +417,26 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-datastore-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-embedded</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-client-rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -784,6 +813,11 @@
                 <version>${mockito.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
@@ -797,6 +831,16 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
+                <version>${log4j-to-slf4j.version}</version>
+            </dependency>
+            <dependency>
+            <groupId>de.dentrassi.elasticsearch</groupId>
+                <artifactId>log4j2-mock</artifactId>
+                <version>${log4j2-mock.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
@@ -817,6 +861,11 @@
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>transport</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>

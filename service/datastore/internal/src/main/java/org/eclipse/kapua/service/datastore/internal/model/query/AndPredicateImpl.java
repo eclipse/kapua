@@ -15,8 +15,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.BOOL_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.MUST_KEY;
 
 /**
  * Implementation of query "and" aggregation
@@ -68,6 +76,19 @@ public class AndPredicateImpl implements AndPredicate {
     public AndPredicate clearPredicates() {
         this.predicates.clear();
         return this;
+    }
+
+    @Override
+    public ObjectNode toSerializedMap() throws DatamodelMappingException {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode termNode = SchemaUtil.getObjectNode();
+        ArrayNode conditionsNode = SchemaUtil.getArrayNode();
+        for (StorablePredicate predicate : predicates) {
+            conditionsNode.add(predicate.toSerializedMap());
+        }
+        termNode.set(MUST_KEY, conditionsNode);
+        rootNode.set(BOOL_KEY, termNode);
+        return rootNode;
     }
 
 }

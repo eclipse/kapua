@@ -38,6 +38,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
 @XmlType(propOrder = { //
         "id", //
         "datastoreId", //
+        "timestamp", //
         "scopeId", //
         "deviceId", //
         "clientId", //
@@ -60,11 +61,25 @@ public interface DatastoreMessage extends Storable {
     public StorableId getDatastoreId();
 
     /**
+     * Stored message identifier
+     * 
+     */
+    public void setDatastoreId(StorableId storableId);
+
+    /**
      * Stored message timestamp
      * 
      * @return
      */
     public Date getTimestamp();
+
+    // TODO TOCHECK security for updates (the timestamp shouldn't updated outside datastore)
+    /**
+     * Stored message timestamp
+     * 
+     */
+    public void setTimestamp(Date timestamp);
+
 
     /**
      * Get the message identifier

@@ -15,8 +15,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.IdsPredicate;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.IDS_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.TYPE_KEY;
+import static org.eclipse.kapua.service.datastore.internal.model.query.PredicateConstants.VALUES_KEY;
 
 /**
  * Implementation of query predicate for matching identifier values fields
@@ -108,4 +116,31 @@ public class IdsPredicateImpl implements IdsPredicate {
         this.idSet.clear();
         return this;
     }
+
+    @Override
+    /**
+     * <pre>
+     *  {
+     *      "query": {
+     *          "ids" : {
+     *              "type" : "kapua_id",
+     *              "values" : ["abcdef1234", "abcdef1235", "zzzyyyy1234"]
+     *          }
+     *      }
+     *  }
+     * </pre>
+     */
+    public ObjectNode toSerializedMap() {
+        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode idsNode = SchemaUtil.getObjectNode();
+        ArrayNode idsList = SchemaUtil.getArrayNode();
+        for (StorableId id : idSet) {
+            idsList.add(id.toString());
+        }
+        idsNode.set(TYPE_KEY, SchemaUtil.getTextNode(type));
+        idsNode.set(VALUES_KEY, idsList);
+        rootNode.set(IDS_KEY, idsNode);
+        return rootNode;
+    }
+
 }

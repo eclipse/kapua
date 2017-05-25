@@ -53,6 +53,7 @@
                 <exclude>lib/activemq-web-*</exclude>
                 <exclude>lib/activemq-rar.txt</exclude>
                 <exclude>lib/geronimo-jta_1.0.1B_spec*</exclude>
+                <exclude>lib/slf4j*</exclude> <!-- pull in version 1.7.24 -->
                 <exclude>lib/optional/activeio-core-*</exclude>
                 <exclude>lib/optional/activemq-amqp-*</exclude>
                 <exclude>lib/optional/activemq-jdbc-store*</exclude>
@@ -79,12 +80,12 @@
                 <exclude>lib/optional/jettison-*</exclude>
                 <exclude>lib/optional/jmdns-*</exclude>
                 <exclude>lib/optional/leveldb*</exclude>
+                <exclude>lib/optional/log4*</exclude>
                 <exclude>lib/optional/org.apache.servicemix.bundles*</exclude>
                 <exclude>lib/optional/org.linkedin*</exclude>
                 <exclude>lib/optional/proton-j*</exclude>
                 <exclude>lib/optional/scala-library*</exclude>
                 <exclude>lib/optional/shiro*</exclude>
-                <exclude>lib/optional/slf4j*</exclude> <!-- pull in version 1.7.24 -->
                 <exclude>lib/optional/snappy-*</exclude>
                 <exclude>lib/optional/spring-oxm-*</exclude>
                 <exclude>lib/optional/velocity*</exclude>
@@ -167,18 +168,33 @@
                 <include>org.apache.shiro:shiro-core</include>
 
                 <include>org.elasticsearch:elasticsearch</include>
+                <include>org.elasticsearch.client:transport</include>
+                <include>org.elasticsearch.plugin:transport-netty3-client</include>
+                <include>org.elasticsearch.plugin:transport-netty4-client</include>
+                <include>org.elasticsearch.plugin:reindex-client</include>
+                <include>org.elasticsearch.plugin:lang-mustache-client</include>
+                <include>org.elasticsearch.plugin:percolator-client</include>
                 <include>org.elasticsearch:securesm</include>
+                <include>io.netty:netty-buffer</include>
+                <include>io.netty:netty-codec</include>
+                <include>io.netty:netty-codec-http</include>
+                <include>io.netty:netty-common</include>
+                <include>io.netty:netty-handler</include>
+                <include>io.netty:netty-resolver</include>
+                <include>io.netty:netty-transport</include>
+                <include>org.apache.logging.log4j:log4j-api</include>
+                <include>org.slf4j:slf4j-api</include>
+                <include>org.slf4j:log4j-over-slf4j</include>
+                <include>org.apache.logging.log4j:log4j-to-slf4j</include>
+                <include>org.apache.httpcomponents:httpclient</include>
+                <include>org.apache.httpcomponents:httpcore</include>
                 <include>org.apache.lucene:*</include>
-                <include>com.twitter:jsr166e</include>
                 <include>joda-time:joda-time</include>
-                <include>org.joda:joda-convert</include>
-                <include>com.spatial4j:spatial4j</include>
                 <include>com.fasterxml.jackson.core:*</include>
                 <include>com.fasterxml.jackson.dataformat:*</include>
                 <include>com.carrotsearch:hppc</include>
                 <include>com.tdunning:t-digest</include>
                 <include>org.hdrhistogram:HdrHistogram</include>
-                <include>com.ning:compress-lzf</include>
                 <include>io.netty:netty</include>
 
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
@@ -218,9 +234,13 @@
                 <include>${pom.groupId}:kapua-device-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
+                <include>${pom.groupId}:kapua-device-asset-api</include>
+                <include>${pom.groupId}:kapua-device-asset-internal</include>
                 <include>${pom.groupId}:kapua-user-api</include>
                 <include>${pom.groupId}:kapua-user-internal</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
+                <include>${pom.groupId}:kapua-datastore-client-api</include>
+                <include>${pom.groupId}:kapua-datastore-client-transport</include>
                 <include>${pom.groupId}:kapua-datastore-internal</include>
                 <include>${pom.groupId}:kapua-account-api</include>
                 <include>${pom.groupId}:kapua-account-internal</include>

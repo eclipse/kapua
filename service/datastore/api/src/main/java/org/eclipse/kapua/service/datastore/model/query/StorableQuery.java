@@ -78,7 +78,7 @@ public interface StorableQuery<S extends Object> {
      * @since 1.0.0
      */
     @XmlElement(name = "offset")
-    public int getOffset();
+    public Integer getOffset();
 
     /**
      * Set the query result list offset
@@ -87,7 +87,7 @@ public interface StorableQuery<S extends Object> {
      * 
      * @since 1.0.0
      */
-    public void setOffset(int offset);
+    public void setOffset(Integer offset);
 
     /**
      * Get the result list limit count
@@ -97,7 +97,7 @@ public interface StorableQuery<S extends Object> {
      * @since 1.0.0
      */
     @XmlElement(name = "limit")
-    public int getLimit();
+    public Integer getLimit();
 
     /**
      * Set the result list limit count
@@ -106,7 +106,7 @@ public interface StorableQuery<S extends Object> {
      * 
      * @since 1.0.0
      */
-    public void setLimit(int limit);
+    public void setLimit(Integer limit);
 
     /**
      * Get the ask for the total count matching query objects
@@ -165,12 +165,4 @@ public interface StorableQuery<S extends Object> {
      */
     public void setSortFields(List<SortField> sortFields);
 
-    /**
-     * Create (and keep it internally) a copy of the given query
-     * 
-     * @param query
-     * 
-     * @since 1.0.0
-     */
-    public void copy(StorableQuery<S> query);
 }

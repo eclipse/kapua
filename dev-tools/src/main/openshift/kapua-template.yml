@@ -21,7 +21,7 @@ parameters:
   value:            jolokia
 - name:           ELASTIC_SEARCH_MEMORY
   descrption:       The minimum and maximun Java heap space for Elasticsearch
-  value:            512m
+  value:            '512m'
 
 objects:
 
@@ -283,7 +283,7 @@ objects:
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
-          image: ${DOCKER_ACCOUNT}/kapua-console-jetty:${IMAGE_VERSION}
+          image: ${DOCKER_ACCOUNT}/kapua-console:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
           ports:
@@ -335,7 +335,7 @@ objects:
               -Dbroker.host=$KAPUA_BROKER_SERVICE_HOST
               -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
               -javaagent:/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
-          image: ${DOCKER_ACCOUNT}/kapua-api-jetty:${IMAGE_VERSION}
+          image: ${DOCKER_ACCOUNT}/kapua-api:${IMAGE_VERSION}
           imagePullPolicy: Always
           name: kapua-console
           ports:
@@ -379,11 +379,14 @@ objects:
       spec:
         containers:
         - env:
-          - name: ES_HEAP_SIZE
-            value: ${ELASTIC_SEARCH_MEMORY}
           - name: ES_JAVA_OPTS
-            value: -Des.cluster.name=kapua-datastore
-          image: elasticsearch:2.4
+            value: "-Xms${ELASTIC_SEARCH_MEMORY} -Xmx${ELASTIC_SEARCH_MEMORY}"
+          image: elasticsearch:5.4
+          command:
+            - 'elasticsearch'
+            - '-Etransport.host=_site_'
+            - '-Ecluster.name=kapua-datastore'
+            - '-Ediscovery.type=single-node'
           imagePullPolicy: Always
           name: elasticsearch
           ports:

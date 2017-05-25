@@ -13,8 +13,19 @@ package org.eclipse.kapua.service.datastore.internal.model;
 
 import org.eclipse.kapua.service.datastore.model.Metric;
 
+/**
+ * Binary metric implementation
+ * 
+ * @since 1.0
+ */
 public class BinaryMetric extends MetricImpl<Byte[]> implements Metric<Byte[]> {
 
+    /**
+     * Construct a binary metric with the provided name and value
+     * 
+     * @param name
+     * @param value
+     */
     public BinaryMetric(String name, Object value) {
         setName(name);
         setType(Byte[].class);

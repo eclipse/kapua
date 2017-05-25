@@ -25,10 +25,11 @@ import org.eclipse.kapua.service.datastore.model.StorableListResult;
  * @since 1.0.0
  *
  * @param <E>
+ *            storable list result type
  */
 public class AbstractStorableListResult<E extends Storable> implements StorableListResult<E> {
 
-    private static final long serialVersionUID = -1564062785138153586L;
+    private static final long serialVersionUID = -6792613517586602315L;
 
     private boolean limitExceeded;
     private ArrayList<E> items;
@@ -125,4 +126,14 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
     public Long getTotalCount() {
         return totalCount;
     }
+
+    /**
+     * Set the total count
+     * 
+     * @param totalCount
+     */
+    public void setTotalCount(Long totalCount) {
+        this.totalCount = totalCount;
+    }
+
 }

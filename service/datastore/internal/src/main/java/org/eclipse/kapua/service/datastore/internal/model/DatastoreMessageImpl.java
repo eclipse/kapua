@@ -35,11 +35,7 @@ public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPa
         return datastoreId;
     }
 
-    /**
-     * Set the datastore message identifier
-     * 
-     * @param id
-     */
+    @Override
     public void setDatastoreId(StorableId id) {
         this.datastoreId = id;
     }
@@ -57,4 +53,5 @@ public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaChannel, KapuaPa
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
 }

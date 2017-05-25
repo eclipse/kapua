@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 
@@ -25,6 +26,7 @@ public class DatastoreCacheManager {
 
     private static final DatastoreCacheManager instance = new DatastoreCacheManager();
 
+    private final LocalCache<String, Metadata> schemaCache;
     private final LocalCache<String, Boolean> channelsCache;
     private final LocalCache<String, Boolean> metricsCache;
     private final LocalCache<String, Boolean> clientsCache;
@@ -33,13 +35,14 @@ public class DatastoreCacheManager {
         DatastoreSettings config = DatastoreSettings.getInstance();
         int expireAfter = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
         int sizeMax = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
+        int sizeMaxMetadata = config.getInt(DatastoreSettingKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
         // TODO set expiration to happen frequently because the reset cache method will not get
         // called from service clients any more
-        // TODO wrap the caches into a Statically accessible method
         channelsCache = new LocalCache<>(sizeMax, expireAfter, false);
         metricsCache = new LocalCache<>(sizeMax, expireAfter, false);
         clientsCache = new LocalCache<>(sizeMax, expireAfter, false);
+        schemaCache = new LocalCache<>(sizeMaxMetadata, null);
     }
 
     /**
@@ -84,5 +87,16 @@ public class DatastoreCacheManager {
      */
     public LocalCache<String, Boolean> getClientsCache() {
         return clientsCache;
+    }
+
+    /**
+     * Get the metadata informations cache
+     * 
+     * @return
+     * 
+     * @since 1.0.0
+     */
+    public LocalCache<String, Metadata> getMetadataCache() {
+        return schemaCache;
     }
 }

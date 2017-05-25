@@ -13,12 +13,12 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import static java.util.Objects.requireNonNull;
-import static org.eclipse.kapua.service.datastore.internal.Elasticsearch.refreshAllIndices;
 import static org.eclipse.kapua.service.datastore.model.query.SortField.ascending;
 import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -54,16 +56,17 @@ import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ClientInfoField;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreMediator;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.ElasticsearchClient;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageStoreConfiguration;
-import org.eclipse.kapua.service.datastore.internal.elasticsearch.MetricInfoField;
+import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
+import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
+import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
+import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.MetricsIndexBy;
+import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
@@ -71,6 +74,10 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
+import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
+import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -97,8 +104,6 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -131,12 +136,116 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     @Before
     public void deleteAllIndices() throws Exception {
-        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(ElasticsearchClient.getInstance()).request();
-        request.indices("_all");
+        DatastoreMediator.getInstance().deleteAllIndexes();
+    }
 
-        ElasticsearchClient.getInstance().admin().indices().delete(request);
+    @Test
+    public void queryBeforeSchema() throws KapuaException {
+        Account account = getTestAccountCreator(adminScopeId);
+        assertNull(messageStoreService.find(account.getId(), new StorableIdImpl("fake-id"), StorableFetchStyle.SOURCE_FULL));
+        assertNull(channelInfoRegistryService.find(account.getId(), new StorableIdImpl("fake-id")));
+        assertNull(metricInfoRegistryService.find(account.getId(), new StorableIdImpl("fake-id")));
+        assertNull(clientInfoRegistryService.find(account.getId(), new StorableIdImpl("fake-id")));
 
-        DatastoreMediator.getInstance().clearCache();
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 1000);
+        assertTrue(messageStoreService.query(messageQuery).isEmpty());
+        assertEquals(messageStoreService.count(messageQuery), 0);
+        messageStoreService.delete(messageQuery);
+        messageStoreService.delete(account.getId(), new StorableIdImpl("fake-id"));
+
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        assertTrue(channelInfoRegistryService.query(channelInfoQuery).isEmpty());
+        assertEquals(channelInfoRegistryService.count(channelInfoQuery), 0);
+        channelInfoRegistryService.delete(channelInfoQuery);
+        channelInfoRegistryService.delete(account.getId(), new StorableIdImpl("fake-id"));
+
+        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+        assertTrue(metricInfoRegistryService.query(metricInfoQuery).isEmpty());
+        assertEquals(metricInfoRegistryService.count(metricInfoQuery), 0);
+        metricInfoRegistryService.delete(metricInfoQuery);
+        metricInfoRegistryService.delete(account.getId(), new StorableIdImpl("fake-id"));
+
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 10);
+        assertTrue(clientInfoRegistryService.query(clientInfoQuery).isEmpty());
+        assertEquals(clientInfoRegistryService.count(clientInfoQuery), 0);
+        clientInfoRegistryService.delete(clientInfoQuery);
+        clientInfoRegistryService.delete(account.getId(), new StorableIdImpl("fake-id"));
+    }
+
+    @Test
+    /**
+     * This test checks the coherence of the registry cache for the metrics info (so if, once the cache is erased, after a new metric insert the firstMessageId and firstMessageOn contain the previous
+     * value)
+     * 
+     * @throws Exception
+     */
+    public void checkRegistryCache() throws Exception {
+        Account account = getTestAccountCreator(adminScopeId);
+        String[] semanticTopic = new String[] {
+                "registry/cache/check"
+        };
+
+        KapuaDataMessage message = null;
+        String clientId = String.format("device-%d", new Date().getTime());
+        DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
+        Device device = deviceRegistryService.create(deviceCreator);
+
+        // leave the message index by as default (DEVICE_TIMESTAMP)
+        byte[] randomPayload = new byte[128];
+        random.nextBytes(randomPayload);
+        String stringPayload = "Hello first message on!";
+        byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
+
+        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+
+        Map<String, Object> metrics = new HashMap<String, Object>();
+        metrics.put("float", new Float((float) 0.01));
+        metrics.put("integer", new Integer(1));
+        metrics.put("double", (double) 0.01);
+        metrics.put("long", (long) (10000000000000l));
+        metrics.put("string_value", Integer.toString(1000));
+        messagePayload.setProperties(metrics);
+
+        messagePayload.setBody(payload);
+        Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
+        Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
+        Date capturedOn = receivedOn;
+        message = createMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
+        setChannel(message, semanticTopic[0]);
+        updatePayload(message, messagePayload);
+        KapuaPosition messagePosition = getPosition(10.00d, 12d, 1.123d, 2d, 0001d, 1000, 1d, 44, new Date());
+        message.setPosition(messagePosition);
+        List<StorableId> messageStoredIds = null;
+        DatastoreMessage firstMessage = null;
+        DatastoreMessage secondMessage = null;
+        try {
+            messageStoredIds = insertMessages(message);
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            firstMessage = messageStoreService.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL);
+            fullMessageCheck(account, firstMessage, message, messageStoredIds.get(0), firstMessage.getDatastoreId(), firstMessage.getTimestamp());
+        } catch (KapuaException e) {
+            logger.error("Exception: ", e.getMessage(), e);
+        }
+        // reset the cache
+        DatastoreCacheManager.getInstance().getChannelsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getClientsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getMetricsCache().invalidateAll();
+        DatastoreCacheManager.getInstance().getMetadataCache().invalidateAll();
+        receivedOn.setTime(receivedOn.getTime() + 5000);
+        sentOn.setTime(sentOn.getTime() + 5000);
+        // do a new insert
+        try {
+            messageStoredIds = insertMessages(message);
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            secondMessage = messageStoreService.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL);
+            fullMessageCheck(account, secondMessage, message, messageStoredIds.get(0), firstMessage.getDatastoreId(), firstMessage.getTimestamp());
+        } catch (KapuaException e) {
+            logger.error("Exception: ", e.getMessage(), e);
+        }
     }
 
     @Test
@@ -165,7 +274,20 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Device device = deviceRegistryService.create(deviceCreator);
 
         // leave the message index by as default (DEVICE_TIMESTAMP)
+        String metricDate = new String("01/04/2017 03:00:00");
         updateConfiguration(messageStoreService, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
+        DateFormat dfBrussels = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dfBrussels.setTimeZone(TimeZone.getTimeZone("Europe/Brussels"));
+        DateFormat dfLA = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dfLA.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        DateFormat dfHK = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dfHK.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
+        DateFormat dfSydney = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dfSydney.setTimeZone(TimeZone.getTimeZone("Australia/Sydney"));
+        Date dateBrussels = dfBrussels.parse(metricDate);
+        Date dateLA = dfLA.parse(metricDate);
+        Date dateHK = dfHK.parse(metricDate);
+        Date dateSydney = dfSydney.parse(metricDate);
 
         for (int i = 0; i < 12; i++) {
             byte[] randomPayload = new byte[128];
@@ -185,6 +307,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             metrics.put("long_int_1", (long) (1000 * (i + 1)));
             metrics.put("long_int_2", (long) (i + 1));
             metrics.put("string_value", Integer.toString((i + 1) * 1000));
+            metrics.put("date_value_brussels", dateBrussels);
+            metrics.put("date_value_ls", dateLA);
+            metrics.put("date_value_hk", dateHK);
+            metrics.put("date_value_sydney", dateSydney);
             messagePayload.setProperties(metrics);
 
             messagePayload.setBody(payload);
@@ -201,8 +327,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
                 messageStoredIds = insertMessages(message);
 
                 // Refresh indices before querying
-
-                refreshAllIndices(ElasticsearchClient.getInstance());
+                DatastoreMediator.getInstance().refreshAllIndexes();
 
                 // start queries
 
@@ -289,15 +414,14 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         }
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
-        sort.add(orderConstraint(descending(EsSchema.MESSAGE_SENT_ON), Date.class));
-        sort.add(orderConstraint(ascending(EsSchema.MESSAGE_TIMESTAMP), Date.class));
-        sort.add(orderConstraint(descending(EsSchema.MESSAGE_CLIENT_ID), String.class));
+        sort.add(orderConstraint(descending(MessageSchema.MESSAGE_SENT_ON), Date.class));
+        sort.add(orderConstraint(ascending(MessageSchema.MESSAGE_TIMESTAMP), Date.class));
+        sort.add(orderConstraint(descending(MessageSchema.MESSAGE_CLIENT_ID), String.class));
         MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), messagesCount + 1, sort);
         setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn1, capturedOn2));
 
@@ -338,12 +462,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         List<StorableId> messageStoredIds = insertMessages(message);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
-        MessageQuery messageQuery = getBaseMessageQuery(account.getId());
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 100);
         setMessageQueryBaseCriteria(messageQuery, null);
 
         MessageListResult result = messageStoreService.query(messageQuery);
@@ -385,12 +508,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         List<StorableId> messageStoredIds = insertMessages(message);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
-        MessageQuery messageQuery = getBaseMessageQuery(account.getId());
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 100);
         setMessageQueryBaseCriteria(messageQuery, null);
 
         MessageListResult result = messageStoreService.query(messageQuery);
@@ -401,7 +523,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMetricsSize(messageQueried, 0);
         checkPosition(messageQueried, null);
         checkMessageDate(messageQueried,
-                new Range<>("timestamp", messageTime, new Date(messageTime.getTime() + 10_000)),
+                new Range<>("timestamp", messageTime, new Date(messageTime.getTime() + 10000)),
                 new Range<>("sentOn", sentOn),
                 new Range<>("capturedOn", capturedOn),
                 new Range<>("receivedOn", messageTime));
@@ -448,8 +570,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2, message3, message4, message5, message6);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -499,8 +620,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2, message3, message4);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -562,8 +682,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2, message3, message4, message5, message6);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -615,8 +734,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2, message3, message4, message5, message6);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -663,8 +781,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -729,8 +846,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2, message3, message4);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -801,8 +917,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         insertMessages(message1, message2, message3);
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -898,13 +1013,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         }
 
         // Refresh indices before querying
-
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
-        sort.add(orderConstraint(ascending(EsSchema.METRIC_MTR_NAME_FULL), String.class));
+        sort.add(orderConstraint(ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL), String.class));
 
         MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
@@ -961,11 +1075,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // Refresh indices before querying
 
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
-        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 100);
         setClientInfoQueryBaseCriteria(clientInfoQuery, null);
 
         ClientInfoListResult clientList = clientInfoRegistryService.query(clientInfoQuery);
@@ -1014,11 +1128,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // Refresh indices before querying
 
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
-        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 100);
         setClientInfoQueryBaseCriteria(clientInfoQuery, new DateRange(capturedOn, capturedOnThirdMessage));
 
         ClientInfoListResult clientList = clientInfoRegistryService.query(clientInfoQuery);
@@ -1073,11 +1187,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // Refresh indices before querying
 
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
-        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId());
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 100);
         setClientInfoQueryBaseCriteria(clientInfoQuery, clientIds[0], null);
 
         ClientInfoListResult clientList = clientInfoRegistryService.query(clientInfoQuery);
@@ -1108,26 +1222,25 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             message1.setReceivedOn(messageTime);
             insertMessages(message1);
         }
-
         // Refresh indices before querying
 
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
-        ChannelInfoListResult channelList = doChannelInfoQuery(account, clientIds[0], "1/#", messageTime);
+        ChannelInfoListResult channelList = doChannelInfoQuery(account, clientIds[0], "1/#");
         checkChannelInfoClientIdsAndTopics(channelList, 0, null, null);
 
-        channelList = doChannelInfoQuery(account, clientIds[0], "tba_1/#", messageTime);
+        channelList = doChannelInfoQuery(account, clientIds[0], "tba_1/#");
         checkChannelInfoClientIdsAndTopics(channelList, 12, clientIds, Arrays.copyOfRange(semanticTopic, 0, 12));
 
-        channelList = doChannelInfoQuery(account, clientIds[0], "tba_2/#", messageTime);
+        channelList = doChannelInfoQuery(account, clientIds[0], "tba_2/#");
         checkChannelInfoClientIdsAndTopics(channelList, 12, clientIds, Arrays.copyOfRange(semanticTopic, 12, 24));
 
-        channelList = doChannelInfoQuery(account, clientIds[0], "tba_1/1/#", messageTime);
+        channelList = doChannelInfoQuery(account, clientIds[0], "tba_1/1/#");
         checkChannelInfoClientIdsAndTopics(channelList, 6, clientIds, Arrays.copyOfRange(semanticTopic, 0, 6));
 
-        channelList = doChannelInfoQuery(account, clientIds[0], "tba_2/1/1/#", messageTime);
+        channelList = doChannelInfoQuery(account, clientIds[0], "tba_2/1/1/#");
         checkChannelInfoClientIdsAndTopics(channelList, 3, clientIds, Arrays.copyOfRange(semanticTopic, 12, 15));
 
     }
@@ -1144,7 +1257,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         List<StorableId> storableIds = new ArrayList<>(messages.length);
         for (KapuaDataMessage message : messages) {
             try {
-                storableIds.add(messageStoreService.store(message));
+                InsertResponse response = messageStoreService.store(message);
+                storableIds.add(new StorableIdImpl(response.getId()));
             } catch (Exception e) {
                 logger.error("Message insert exception!", e);
                 fail("Store messages should have succeded");
@@ -1253,14 +1367,14 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @return
      */
-    private MessageQuery getBaseMessageQuery(KapuaId scopeId) {
+    private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit) {
         MessageQuery query = new MessageQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
-        query.setLimit(10);
+        query.setLimit(limit);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(MessageSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1277,15 +1391,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(ChannelInfoSchema.CHANNEL_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
 
-    private ChannelInfoListResult doChannelInfoQuery(Account account, String clientId, String channelFilter, Date queryDate) throws KapuaException {
+    private ChannelInfoListResult doChannelInfoQuery(Account account, String clientId, String channelFilter) throws KapuaException {
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
         channelInfoQuery.setLimit(100);
-        setChannelInfoQueryChannelPredicateCriteria(channelInfoQuery, clientId, channelFilter, null);
+        DatastoreChannel datastoreChannel = new DatastoreChannel(channelFilter);
+        setChannelInfoQueryChannelPredicateCriteria(channelInfoQuery, clientId, datastoreChannel, null);
         return channelInfoRegistryService.query(channelInfoQuery);
     }
 
@@ -1301,24 +1416,24 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(MetricInfoSchema.METRIC_MTR_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
 
     /**
-     * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Metric Info schema
+     * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Client Info schema
      *
      * @return
      */
-    private ClientInfoQuery getBaseClientInfoQuery(KapuaId scopeId) {
+    private ClientInfoQuery getBaseClientInfoQuery(KapuaId scopeId, int limit) {
         ClientInfoQuery query = new ClientInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
+        order.add(descending(ClientInfoSchema.CLIENT_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1405,7 +1520,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param channelInfoQuery
      * @param channelPredicate
      */
-    private void setChannelInfoQueryChannelPredicateCriteria(ChannelInfoQuery channelInfoQuery, String clientId, String channelPredicate, DateRange dateRange) {
+    private void setChannelInfoQueryChannelPredicateCriteria(ChannelInfoQuery channelInfoQuery, String clientId, DatastoreChannel channelPredicate, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
@@ -1415,7 +1530,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             RangePredicate timestampPredicate = new RangePredicateImpl(ChannelInfoField.TIMESTAMP, dateRange.getLowerBound(), dateRange.getUpperBound());
             andPredicate.getPredicates().add(timestampPredicate);
         }
-        ChannelMatchPredicate channelMatchPredicate = new ChannelMatchPredicateImpl(channelPredicate);
+        ChannelMatchPredicate channelMatchPredicate = new ChannelMatchPredicateImpl(channelPredicate.getChannelCleaned());
         andPredicate.getPredicates().add(channelMatchPredicate);
         channelInfoQuery.setPredicate(andPredicate);
     }
@@ -1517,7 +1632,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         } else {
             assertTrue("No result should be found!", result == null || result.getTotalCount() == null || result.getTotalCount() <= 0);
         }
-
         return messageQueried;
     }
 
@@ -1530,8 +1644,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private void checkMessageId(DatastoreMessage message, StorableId storableId) {
         if (storableId != null) {
             assertNotNull("Message is null", message);
-            assertNotNull("Message id doesn't match", message.getId());
-            assertEquals("Message id doesn't match", storableId.toString(), message.getId().toString());
+            assertNotNull("Message id is null", message.getDatastoreId());
+            assertEquals("Message id doesn't match", storableId.toString(), message.getDatastoreId().toString());
         }
     }
 
@@ -1783,11 +1897,63 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     private void checkMetricDateBound(MetricInfoListResult result, Date startDate, Date endDate) {
-        // TODO
+        for (MetricInfo metric : result.getItems()) {
+            assertTrue(String.format("Metric '[%s]' date is after upper bound", metric.getName()), !metric.getLastMessageOn().after(endDate));
+            assertTrue(String.format("Metric '[%s]' date is before lower bound", metric.getName()), !metric.getLastMessageOn().before(startDate));
+        }
     }
 
     private void checkMessagesDateBound(MessageListResult result, Date startDate, Date endDate) {
-        // TODO
+        for (DatastoreMessage message : result.getItems()) {
+            assertTrue(String.format("Message '[%s]' date is after upper bound", message.getDatastoreId()), !message.getTimestamp().after(endDate));
+            assertTrue(String.format("Message '[%s]' date is before lower bound", message.getDatastoreId()), !message.getTimestamp().before(startDate));
+        }
+    }
+
+    private void fullMessageCheck(Account account, DatastoreMessage messageToCheck, KapuaDataMessage correctMessage, StorableId correctId, StorableId firstPublishedMessage, Date firstPublishedOn)
+            throws KapuaException {
+        checkMessageId(messageToCheck, correctId);
+        checkTopic(messageToCheck, correctMessage.getChannel().toString());
+        checkMessageBody(messageToCheck, correctMessage.getPayload().getBody());
+        checkMetricsSize(messageToCheck, correctMessage.getPayload().getProperties().size());
+        checkMetrics(messageToCheck, correctMessage.getPayload().getProperties());
+        checkPosition(messageToCheck, correctMessage.getPosition());
+        checkMessageDate(messageToCheck, new Range<Date>("timestamp", correctMessage.getCapturedOn()), new Range<Date>("sentOn", correctMessage.getSentOn()),
+                new Range<Date>("capturedOn", correctMessage.getCapturedOn()),
+                new Range<Date>("receivedOn", correctMessage.getReceivedOn()));
+        checkChannelFirstMessageIdAndDate(account, correctMessage.getClientId(), firstPublishedMessage, firstPublishedOn);
+        checkClientFirstMessageIdAndDate(account, correctMessage.getClientId(), firstPublishedMessage, firstPublishedOn);
+        checkMetricFirstMessageIdAndDate(account, correctMessage.getClientId(), firstPublishedMessage, firstPublishedOn);
+    }
+
+    private void checkChannelFirstMessageIdAndDate(Account account, String clientId, StorableId firstPublishedMessage, Date firstPublishedOn) throws KapuaException {
+        ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+        setChannelInfoQueryBaseCriteria(channelInfoQuery, clientId, null);
+        ChannelInfoListResult channelInfoList = channelInfoRegistryService.query(channelInfoQuery);
+        assertNotNull("Cannot find the channel info registry!", channelInfoList);
+        assertNotNull("Cannot find the channel info registry!", channelInfoList.getFirstItem());
+        assertEquals("Wrong channel info message id!", channelInfoList.getFirstItem().getFirstMessageId(), firstPublishedMessage);
+        assertEquals("Wrong channel info message on!", channelInfoList.getFirstItem().getFirstMessageOn(), firstPublishedOn);
+    }
+
+    private void checkClientFirstMessageIdAndDate(Account account, String clientId, StorableId firstPublishedMessage, Date firstPublishedOn) throws KapuaException {
+        ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 100);
+        setClientInfoQueryBaseCriteria(clientInfoQuery, clientId, null);
+        ClientInfoListResult clientInfoList = clientInfoRegistryService.query(clientInfoQuery);
+        assertNotNull("Cannot find the client info registry!", clientInfoList);
+        assertNotNull("Cannot find the client info registry!", clientInfoList.getFirstItem());
+        assertEquals("Wrong client info message id!", clientInfoList.getFirstItem().getFirstMessageId(), firstPublishedMessage);
+        assertEquals("Wrong client info message on!", clientInfoList.getFirstItem().getFirstMessageOn(), firstPublishedOn);
+    }
+
+    private void checkMetricFirstMessageIdAndDate(Account account, String clientId, StorableId firstPublishedMessage, Date firstPublishedOn) throws KapuaException {
+        MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientId, null);
+        MetricInfoListResult metricInfoList = metricInfoRegistryService.query(metricInfoQuery);
+        assertNotNull("Cannot find the metric info registry!", metricInfoList);
+        assertNotNull("Cannot find the metric info registry!", metricInfoList.getFirstItem());
+        assertEquals("Wrong metric info message id!", metricInfoList.getFirstItem().getFirstMessageId(), firstPublishedMessage);
+        assertEquals("Wrong metric info message on!", metricInfoList.getFirstItem().getFirstMessageOn(), firstPublishedOn);
     }
 
     private static class OrderConstraint<T extends Comparable<T>> {
@@ -2087,7 +2253,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message.setChannel(channel);
 
         metrics.put("distance", 1L);
-        metrics.put("label", "pippo");
+        metrics.put("label", "goofy");
         messagePayload.setProperties(metrics);
 
         messagePosition.setAltitude(1.0);
@@ -2098,8 +2264,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message.setPayload(messagePayload);
         message.setClientId(clientId);
 
-        StorableId messageId = messageStoreService.store(message);
+        InsertResponse response = messageStoreService.store(message);
 
+        StorableId messageId = new StorableIdImpl(response.getId());
         //
         // A non empty message id must be returned
         assertNotNull(messageId);
@@ -2107,7 +2274,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         // Refresh indices before querying
 
-        refreshAllIndices(ElasticsearchClient.getInstance());
+        DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
 
@@ -2135,7 +2302,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         ClientInfoListResult clientInfos = clientInfoRegistry.query(clientInfoQuery);
 
         assertNotNull(clientInfos);
-        assertTrue(clientInfos.getSize() == 1);
+        assertEquals("Wrong client info registry size", 1, clientInfos.getSize());
 
         ClientInfo clientInfo = clientInfos.getItem(0);
 
@@ -2155,7 +2322,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         ChannelInfoListResult channelInfos = channelInfoRegistry.query(channelInfoQuery);
 
         assertNotNull(channelInfos);
-        assertTrue(channelInfos.getSize() == 1);
+        assertEquals("Wrong client info registry size", 1, channelInfos.getSize());
 
         ChannelInfo channelInfo = channelInfos.getItem(0);
 
@@ -2175,7 +2342,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         MetricInfoListResult metricInfos = metricInfoRegistry.query(metricInfoQuery);
 
         assertNotNull(metricInfos);
-        assertTrue(metricInfos.getSize() == 2);
+        assertEquals("Wrong client info registry size", 2, metricInfos.getSize());
 
         MetricInfo metricInfo = metricInfos.getItem(0);
 

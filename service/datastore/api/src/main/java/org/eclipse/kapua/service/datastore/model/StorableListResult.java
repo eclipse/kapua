@@ -146,4 +146,15 @@ public interface StorableListResult<E extends Storable> extends KapuaSerializabl
     @XmlElement(name = "totalCount")
     public Long getTotalCount();
 
+    /**
+     * Set the total count.<br>
+     * The total count may be higher that the result set since the extracted result set can be limited by the query (limit) parameter
+     * 
+     * @param totalCount
+     * 
+     * @since 1.0.0
+     */
+    @XmlElement(name = "totalCount")
+    public void setTotalCount(Long totalCount);
+
 }

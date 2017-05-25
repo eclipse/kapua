@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -29,16 +28,15 @@ import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
  * @since 1.0.0
  *
  * @param <S>
- *            persisted object type (such as messages, channeles information...)
+ *            persisted object type (such as messages, channels information...)
  */
 public abstract class AbstractStorableQuery<S extends Storable> implements StorableQuery<S> {
 
     private StorablePredicate predicate;
 
     private KapuaId scopeId;
-    private int limit;
-    private Object keyOffset;
-    private int indexOffset;
+    private Integer limit;
+    private Integer indexOffset;
     private boolean askTotalCount;
     private List<SortField> sortFields;
     private StorableFetchStyle fetchStyle;
@@ -53,7 +51,6 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
         fetchStyle = StorableFetchStyle.SOURCE_FULL;
         askTotalCount = false;
-        limit = 50;
     }
 
     /**
@@ -69,6 +66,29 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
         setScopeId(scopeId);
     }
+
+    /**
+     * Get the includes fields by fetchStyle
+     * 
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getIncludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the excludes fields by fetchStyle
+     * 
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getExcludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the fields list
+     * 
+     * @return
+     */
+    public abstract String[] getFields();
 
     @Override
     public KapuaId getScopeId() {
@@ -90,36 +110,23 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
         this.predicate = predicate;
     }
 
-    public Object getKeyOffset() {
-        return keyOffset;
-    }
-
-    public void setKeyOffset(Object offset) {
-        this.keyOffset = offset;
-    }
-
     @Override
-    public int getOffset() {
+    public Integer getOffset() {
         return indexOffset;
     }
 
     @Override
-    public void setOffset(int offset) {
+    public void setOffset(Integer offset) {
         this.indexOffset = offset;
     }
 
-    public int addIndexOffset(int delta) {
-        indexOffset += delta;
-        return indexOffset;
-    }
-
     @Override
-    public void setLimit(int limit) {
+    public void setLimit(Integer limit) {
         this.limit = limit;
     }
 
     @Override
-    public int getLimit() {
+    public Integer getLimit() {
         return limit;
     }
 
@@ -153,18 +160,4 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
         this.fetchStyle = fetchStyle;
     }
 
-    @Override
-    public void copy(StorableQuery<S> query) {
-        setAskTotalCount(query.isAskTotalCount());
-        setLimit(query.getLimit());
-        setOffset(query.getOffset());
-        setPredicate(query.getPredicate());
-        // TODO extend copy to predicate (not by ref as now)
-        setPredicate(query.getPredicate());
-        setFetchStyle(query.getFetchStyle());
-
-        if (query.getSortFields() != null) {
-            setSortFields(new ArrayList<>(query.getSortFields()));
-        }
-    }
 }

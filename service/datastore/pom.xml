@@ -28,6 +28,10 @@
     <modules>
         <module>api</module>
         <module>internal</module>
+        <module>client-api</module>
+        <module>client-embedded</module>
+        <module>client-rest</module>
+        <module>client-transport</module>
     </modules>
 
 </project>

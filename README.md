@@ -33,31 +33,25 @@ Before starting, check that your environment has the following prerequisites:
 
 ### Demo Setup
 
-Follow the steps below to setup and run a Kapua instance.
-
-* Choose the Kapua version you want to test.
-
-The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](# More deployment info) to find more about creating your own images and/or alternative demo deployment scenarios.
+The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment scenarios.
 
 ***
 **Note :** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current milestone release 0.2.0-M1.
+Suppose the target is the current snapshot 0.2.0-SNAPSHOT.
 
 * Run Docker
-
 * Open an OS shell
 * Execute the following command lines
 
 ```
-docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql:0.2.0-M1
-docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:2.4 -Dcluster.name=kapua-datastore -Ddiscovery.zen.minimum_master_nodes=1
-docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es -p 1883:1883 -p 61614:61614 kapua/kapua-broker:0.2.0-M1
-docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console-jetty:0.2.0-M1
-docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api-jetty:0.2.0-M1
+docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
+docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
+docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es -p 1883:1883 -p 61614:61614 kapua/kapua-broker
+docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console
+docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api```
 ```
-
 The command lines above start a Docker container for each of the services mentioned above.
 
 If the tag is not specified then the image tagged as _latest_ will be used by default.
@@ -74,10 +68,10 @@ The system will show the containers currently running:
 
 ```
 CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                                  NAMES
-f5e2b6ccabf3        kapua/kapua-api-jetty       "/home/kapua/run-j..."   8 minutes ago       Up 8 minutes        8778/tcp, 0.0.0.0:8081->8080/tcp                                       kapua-api
-47c973b1241e        kapua/kapua-console-jetty   "/home/kapua/run-c..."   19 minutes ago      Up 19 minutes       0.0.0.0:8080->8080/tcp, 8778/tcp                                       kapua-console
+f5e2b6ccabf3        kapua/kapua-api             "/home/kapua/run-j..."   8 minutes ago       Up 8 minutes        8778/tcp, 0.0.0.0:8081->8080/tcp                                       kapua-api
+47c973b1241e        kapua/kapua-console         "/home/kapua/run-c..."   19 minutes ago      Up 19 minutes       0.0.0.0:8080->8080/tcp, 8778/tcp                                       kapua-console
 915eeb9668d9        kapua/kapua-broker          "/maven/bin/active..."   19 minutes ago      Up 19 minutes       8778/tcp, 0.0.0.0:1883->1883/tcp, 0.0.0.0:61614->61614/tcp, 8883/tcp   kapua-broker
-dc682f7b1533        elasticsearch:2.4           "/docker-entrypoin..."   19 minutes ago      Up 19 minutes       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                         kapua-elasticsearch
+dc682f7b1533        elasticsearch:5.3.0         "/docker-entrypoin..."   19 minutes ago      Up 19 minutes       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                         kapua-elasticsearch
 42d408470cf0        kapua/kapua-sql             "/home/kapua/run-h2"     20 minutes ago      Up 20 minutes       0.0.0.0:3306->3306/tcp, 0.0.0.0:8181->8181/tcp, 8778/tcp               kapua-sql
 ```
 
