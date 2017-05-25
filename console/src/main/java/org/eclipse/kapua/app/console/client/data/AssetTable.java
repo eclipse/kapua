@@ -101,7 +101,7 @@ public class AssetTable extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtDatastoreAsset>> callback) {
                 if (selectedDevice != null) {
-                dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), callback);
+                dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
                 }
             }
         };

@@ -194,7 +194,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
     
     @Override
-    public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String scopeId) throws GwtKapuaException {
+    public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String scopeId, GwtDatastoreDevice selectedDevice) throws GwtKapuaException {
         ChannelInfoRegistryService clientInfoService = locator.getService(ChannelInfoRegistryService.class);
         List<GwtDatastoreAsset> asset = new ArrayList<GwtDatastoreAsset>();
         KapuaId convertedScopeId = GwtKapuaModelConverter.convert(scopeId);
@@ -203,7 +203,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             ChannelInfoListResult result = clientInfoService.query(query);
             if (result != null && !result.isEmpty()) {
                 for (ChannelInfo client : result.getItems()) {
-                    if (client.getName().startsWith("W1/A1")){
+                    if (client.getName().startsWith("W1/A1") && client.getClientId().contentEquals(selectedDevice.getDevice())){
                       asset.add(KapuaGwtModelConverter.convertToAssets(client));
                     }
                 }

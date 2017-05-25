@@ -59,7 +59,7 @@ public interface GwtDataService extends RemoteService {
     public ListLoadResult<GwtDatastoreDevice> findDevices(LoadConfig config, String accountName) throws GwtKapuaException;
 
     
-    public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String accountName) throws GwtKapuaException;
+    public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String accountName, GwtDatastoreDevice selectedDevice) throws GwtKapuaException;
 
 
     /**
