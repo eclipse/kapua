@@ -111,6 +111,12 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
     private ModelContext modelContext;
     private QueryConverter queryConverter;
 
+    /**
+     * Get the {@link TransportDatastoreClient} instance
+     *
+     * @return
+     * @throws ClientUnavailableException
+     */
     public static TransportDatastoreClient getInstance() throws ClientUnavailableException {
         if (instance == null) {
             synchronized (TransportDatastoreClient.class) {

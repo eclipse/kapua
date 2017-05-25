@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
 
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
@@ -39,11 +39,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_KEYWORD;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SHARD_NUMBER;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REFRESH_INTERVAL;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REPLICA_NUMBER;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FORMAT;
 
 /**
  * Datastore schema creation/update
@@ -154,57 +155,39 @@ public class Schema {
         if (esMetrics == null) {
             return null;
         }
-        final int METRIC_TERM = 0;
-        // It is assumed the mappings (key values) are all of the type
-        // metrics.metric_name.type
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode messageTypeNode = SchemaUtil.getObjectNode();// MESSAGE_TYPE_NAME
-        ObjectNode propertiesRootNode = SchemaUtil.getObjectNode();// properties
-        ObjectNode metricsNode = SchemaUtil.getObjectNode();// Schema.MESSAGE_METRICS
-        ObjectNode propertiesNode = SchemaUtil.getObjectNode();// propertiesNode
+        // metrics mapping container (to be added to message mapping)
+        ObjectNode typeNode = SchemaUtil.getObjectNode(); // root
+        ObjectNode messageNode = SchemaUtil.getObjectNode(); // message
+        ObjectNode typePropertiesNode = SchemaUtil.getObjectNode(); // properties
+        ObjectNode metricsNode = SchemaUtil.getObjectNode(); // metrics
+        ObjectNode metricsPropertiesNode = SchemaUtil.getObjectNode(); // properties (metric properties)
+        typeNode.set("message", messageNode);
+        messageNode.set("properties", typePropertiesNode);
+        typePropertiesNode.set("metrics", metricsNode);
+        metricsNode.set("properties", metricsPropertiesNode);
 
-        // TODO precondition for the loop: there are no two consecutive mappings for the same field with
-        // two different types (field are all different)
-        String[] prevKeySplit = new String[] { "", "" };
+        // metrics mapping
         Set<String> keys = esMetrics.keySet();
-        String metricName = null;
+        ObjectNode metricMapping;
         for (String key : keys) {
             Metric metric = esMetrics.get(key);
-            String[] keySplit = key.split(Pattern.quote("."));
-
-            if (!keySplit[METRIC_TERM].equals(prevKeySplit[METRIC_TERM])) {
-                if (!prevKeySplit[METRIC_TERM].isEmpty()) {
-                    metricsNode.set(FIELD_NAME_PROPERTIES, propertiesNode);
-                    propertiesRootNode.set(MessageSchema.MESSAGE_METRICS, metricsNode);
-                }
-                metricsNode = SchemaUtil.getObjectNode();
-                propertiesRootNode = SchemaUtil.getObjectNode();
-                metricName = metric.getName();
+            metricMapping = SchemaUtil.getField(new KeyValueEntry[] {
+                    new KeyValueEntry("dynamic", "true") });
+            ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
+            ObjectNode valueMappingNode;
+            if (metric.getType().equals(TYPE_STRING)) {
+                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, KEY_KEYWORD), new KeyValueEntry(KEY_INDEX, true) });
+            } else if (metric.getType().equals(TYPE_DATE)) {
+                valueMappingNode = SchemaUtil.getField(
+                        new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+            } else {
+                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, metric.getType()) });
             }
-            if (!keySplit[METRIC_TERM].equals(prevKeySplit[METRIC_TERM])) {
-                ObjectNode metricMapping = SchemaUtil.getObjectNode();
-                ObjectNode metricMappingContent = null;
-                if (metric.getType().equals(TYPE_STRING)) {
-                    metricMappingContent = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, KEY_KEYWORD), new KeyValueEntry(KEY_INDEX, true) });
-                } else {
-                    metricMappingContent = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, metric.getType()) });
-                }
-                metricMapping.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), metricMappingContent);
-                propertiesNode.set(FIELD_NAME_PROPERTIES, metricMapping);
-            }
-            prevKeySplit = keySplit;
+            matricMappingPropertiesNode.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
+            metricMapping.set("properties", matricMappingPropertiesNode);
+            metricsPropertiesNode.set(metric.getName(), metricMapping);
         }
-        if (keys.size() > 0) {
-            if (!prevKeySplit[METRIC_TERM].isEmpty()) {
-                metricsNode.set(FIELD_NAME_PROPERTIES, propertiesNode);
-                propertiesRootNode.set(metricName, metricsNode);
-            }
-        }
-        metricsNode.set(FIELD_NAME_PROPERTIES, propertiesNode); // Properties
-        propertiesRootNode.set(MessageSchema.MESSAGE_METRICS, metricsNode); // Metrics
-        messageTypeNode.set(FIELD_NAME_PROPERTIES, propertiesRootNode);// Properties
-        rootNode.set(MessageSchema.MESSAGE_TYPE_NAME, messageTypeNode);// Type
-        return rootNode;
+        return typeNode;
     }
 
     private Map<String, Metric> getMessageMappingDiffs(Metadata currentMetadata, Map<String, Metric> esMetrics) {
