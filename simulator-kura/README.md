@@ -17,4 +17,11 @@ the module was built by be executing e.g. (which will print out some basic help)
 
     java -jar target/kapua-simulator-kura-*-app.jar -?
 
-For more information see the [User manual](../docs/user-manual) , section "Simulator runner".
+For more information see the relevant [User manual](../docs/user-manual/en/simulator.md) section.
+
+
+## Simulating telemetry
+
+If you wish to easily simulate producing telemetry data to the platform, you can use simulation setup used in tests, like  
+
+    java -jar target/kapua-simulator-kura-*-app.jar -f src/test/resources/example1.json

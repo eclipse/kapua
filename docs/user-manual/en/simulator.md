@@ -404,3 +404,12 @@ The following generators are available out of the box.
 
 Generates a position on the map which will move straight east on the equator. Circling the earth every 80 days.
 Speed, number of satellites, precision and altitude will be sine curves.
+
+## Examples
+
+To start simulator with an example simulation configuration, run:
+
+```
+export KSIM_SIMULATION_CONFIGURATION=$(curl -s https://raw.githubusercontent.com/eclipse/kapua/develop/simulator-kura/src/test/resources/example1.json)
+java -jar target/kapua-simulator-kura-*-shaded.jar
+```
