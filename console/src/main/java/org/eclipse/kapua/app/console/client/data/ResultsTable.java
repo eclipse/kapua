@@ -137,7 +137,10 @@ public class ResultsTable extends LayoutContainer {
                         dataService.findMessagesByTopic((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedTopic, selectedMetrics, startDate, endDate, callback);
                     } else if (selectedDevice != null) {
                         dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
+                    } else if (selectedAsset != null) {
+                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedAsset, selectedMetrics, startDate, endDate, callback);
                     }
+                    
                 } else if (selectedDevice != null && selectedAsset != null && selectedChannels != null && !selectedChannels.isEmpty()) {
                     // TODO fetch data.
                 } else {
@@ -246,6 +249,11 @@ public class ResultsTable extends LayoutContainer {
         this.selectedDevice = device;
         refresh(headers);
     }
+    
+    public void refresh(GwtDatastoreAsset asset, List<GwtHeader> headers) {
+        this.selectedAsset = asset;
+        refresh(headers);
+    }
 
     public void refresh(GwtDatastoreDevice device, GwtDatastoreAsset asset, List<GwtDatastoreChannel> channels) {
         if (channelColumn == null) {
@@ -274,7 +282,7 @@ public class ResultsTable extends LayoutContainer {
         }
 
         if (selectedAsset != null) {
-            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getAsset()));
+            sbUrl.append("&asset=").append(URL.encodeQueryString(selectedAsset.getTopick()));
         }
 
         if (selectedChannels != null && !selectedChannels.isEmpty()) {

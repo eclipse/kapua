@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.shared.GwtKapuaException;
+import org.eclipse.kapua.app.console.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.shared.model.GwtKapuaChartResult;
@@ -191,6 +192,27 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         return new BaseListLoadResult<GwtDatastoreDevice>(devices);
     }
+    
+    @Override
+    public ListLoadResult<GwtDatastoreAsset> findAssets(LoadConfig config, String scopeId, GwtDatastoreDevice selectedDevice) throws GwtKapuaException {
+        ChannelInfoRegistryService clientInfoService = locator.getService(ChannelInfoRegistryService.class);
+        List<GwtDatastoreAsset> asset = new ArrayList<GwtDatastoreAsset>();
+        KapuaId convertedScopeId = GwtKapuaModelConverter.convert(scopeId);
+        ChannelInfoQuery query = new ChannelInfoQueryImpl(convertedScopeId);
+        try {
+            ChannelInfoListResult result = clientInfoService.query(query);
+            if (result != null && !result.isEmpty()) {
+                for (ChannelInfo client : result.getItems()) {
+                    if (client.getName().startsWith("W1/A1") && client.getClientId().contentEquals(selectedDevice.getDevice())){
+                      asset.add(KapuaGwtModelConverter.convertToAssets(client));
+                    }
+                }
+            }
+        } catch (KapuaException e) {
+            KapuaExceptionHandler.handle(e);
+        }
+        return new BaseListLoadResult<GwtDatastoreAsset>(asset);
+    }
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException {
@@ -208,6 +230,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtDatastoreDevice device) throws GwtKapuaException {
         TermPredicateImpl predicate = new TermPredicateImpl(MetricInfoField.CLIENT_ID, device.getDevice());
         return findHeaders(config, scopeId, predicate);
+    }
+    
+    @Override
+    public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName,
+            GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(gwtDatastoreAsset.getTopick());
+        return findHeaders(config, accountName, predicate);
     }
 
     @Override
@@ -241,6 +270,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             throws GwtKapuaException {
         TermPredicate predicate = new TermPredicateImpl(MessageField.CLIENT_ID, device.getDevice());
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
+    }
+    
+    @Override
+    public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate)
+            throws GwtKapuaException {
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(asset.getTopick());
+           return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
     @Override
@@ -315,5 +351,6 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         return messages;
     }
+
 
 }

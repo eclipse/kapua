@@ -23,9 +23,9 @@ import org.eclipse.kapua.app.console.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.shared.service.GwtDataServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.LoadConfig;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -51,6 +51,8 @@ public class AssetTable extends LayoutContainer {
     private List<SelectionChangedListener<GwtDatastoreAsset>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreAsset>>();
 
     private GwtDatastoreDevice selectedDevice;
+    private GwtDatastoreAsset selectedAsset;
+    
 
     public AssetTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -95,13 +97,11 @@ public class AssetTable extends LayoutContainer {
         column = new ColumnConfig("driver", MSGS.assetTableDriverHeader(), 100);
         configs.add(column);
         RpcProxy<ListLoadResult<GwtDatastoreAsset>> proxy = new RpcProxy<ListLoadResult<GwtDatastoreAsset>>() {
-
+            
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtDatastoreAsset>> callback) {
                 if (selectedDevice != null) {
-                    //TODO Fetch available assets.
-                } else {
-                    callback.onSuccess(new BaseListLoadResult<GwtDatastoreAsset>(new ArrayList<GwtDatastoreAsset>()));
+                dataService.findAssets((LoadConfig) loadConfig, currentSession.getSelectedAccount().getId(), selectedDevice, callback);
                 }
             }
         };
@@ -128,6 +128,11 @@ public class AssetTable extends LayoutContainer {
     
     public void refresh(GwtDatastoreDevice selectedDevice){
         this.selectedDevice = selectedDevice;
+        refresh();
+    }
+    
+    public void refresh(GwtDatastoreAsset selectedAsset){
+        this.selectedAsset = selectedAsset;
         refresh();
     }
     

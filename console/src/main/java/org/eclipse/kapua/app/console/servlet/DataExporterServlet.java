@@ -59,6 +59,7 @@ public class DataExporterServlet extends HttpServlet {
             String scopeIdString = request.getParameter("scopeIdString");
             String topic = request.getParameter("topic");
             String device = request.getParameter("device");
+            String asset = request.getParameter("asset");
             String[] headers = request.getParameterValues("headers");
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
@@ -71,6 +72,9 @@ public class DataExporterServlet extends HttpServlet {
             } else if (device != null) {
                 topicOrDevice = device;
                 predicate.getPredicates().add(new TermPredicateImpl(MessageField.CLIENT_ID, device));
+            } else if(asset != null) {
+                topicOrDevice = device;
+                predicate.getPredicates().add(new TermPredicateImpl(MessageField.CHANNEL, asset));
             } else {
                 throw new IllegalArgumentException("topic, device");
             }
