@@ -34,6 +34,9 @@ public class EsUtils {
 
     private static final Logger s_logger = LoggerFactory.getLogger(EsUtils.class);
 
+    private EsUtils() {
+    }
+
     private static final char SPECIAL_DOT = '.';
     private static final String SPECIAL_DOT_ESC = "$2e";
 
@@ -180,9 +183,7 @@ public class EsUtils {
     /**
      * Normalize the account index name and and the suffix '-*'
      *
-     * @param accountName
      * @return
-     * @since 1.0.0
      */
     public static String getDataIndexName(KapuaId scopeId) {
         String indexName = EsUtils.normalizedIndexName(scopeId.toStringId());
@@ -193,7 +194,6 @@ public class EsUtils {
     /**
      * Get the data index for the specified base name and timestamp
      *
-     * @param baseName
      * @param timestamp
      * @return
      */
@@ -207,10 +207,6 @@ public class EsUtils {
 
     /**
      * Get the Kapua index name for the specified base name
-     *
-     * @param baseName
-     * @return
-     * @since 1.0.0
      */
     public static String getKapuaIndexName(KapuaId scopeId) {
         String actualName = EsUtils.normalizedIndexName(scopeId.toStringId());
@@ -223,7 +219,6 @@ public class EsUtils {
      *
      * @param index
      * @return
-     * @since 1.0.0
      */
     public static String normalizedIndexName(String index) {
         return normalizeIndexName(index);
@@ -232,9 +227,7 @@ public class EsUtils {
     /**
      * Get the Elasticsearch metric type from the metric value type
      *
-     * @param value
      * @return
-     * @since 1.0.0
      */
     public static String getEsTypeFromClass(Class<?> clazz) {
 

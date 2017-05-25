@@ -27,22 +27,20 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
  * 
  * @since 1.0
  */
-public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessage>
-{
+public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessage> {
+
     @Override
     public KuraDataMessage translate(JmsMessage jmsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraDataChannel kuraChannel = translate(jmsMessage.getTopic());
         KuraDataPayload kuraPayload = translate(jmsMessage.getPayload());
         return new KuraDataMessage(kuraChannel,
-                                   jmsMessage.getReceivedOn(),
-                                   kuraPayload);
+                jmsMessage.getReceivedOn(),
+                kuraPayload);
     }
 
     private KuraDataChannel translate(JmsTopic jmsTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] mqttTopicTokens = jmsTopic.getSplittedTopic();
         KuraDataChannel kuraDataChannel = new KuraDataChannel();
         kuraDataChannel.setScope(mqttTopicTokens[0]);
@@ -52,8 +50,7 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
     }
 
     private KuraDataPayload translate(JmsPayload jmsPayload)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraDataPayload kuraPayload = null;
         if (jmsPayload.getBody() != null) {
             kuraPayload = new KuraDataPayload();
@@ -63,14 +60,12 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom()
-    {
+    public Class<JmsMessage> getClassFrom() {
         return JmsMessage.class;
     }
 
     @Override
-    public Class<KuraDataMessage> getClassTo()
-    {
+    public Class<KuraDataMessage> getClassTo() {
         return KuraDataMessage.class;
     }
 

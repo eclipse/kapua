@@ -33,6 +33,9 @@ package org.eclipse.kapua.app.console.shared;
  */
 public class FieldVerifier {
 
+    private FieldVerifier() {
+    }
+
     /**
      * Verifies that the specified name is valid for our service.
      *
@@ -41,7 +44,8 @@ public class FieldVerifier {
      * that usernames, passwords, email addresses, URLs, and other fields have the
      * proper syntax.
      *
-     * @param name the name to validate
+     * @param name
+     *            the name to validate
      * @return true if valid, false if invalid
      */
     public static boolean isValidName(String name) {

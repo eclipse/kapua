@@ -20,26 +20,22 @@ import org.eclipse.kapua.message.internal.KapuaChannelImpl;
  * @since 1.0
  *
  */
-public class KapuaNotifyChannelImpl extends KapuaChannelImpl implements KapuaNotifyChannel
-{
+public class KapuaNotifyChannelImpl extends KapuaChannelImpl implements KapuaNotifyChannel {
 
     private String clientId;
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("Client id '");
         strBuilder.append(clientId);

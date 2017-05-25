@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlElement;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KuraXmlConfigPropertiesAdapted
-{
-    @XmlElement(name="property")
+public class KuraXmlConfigPropertiesAdapted {
+
+    @XmlElement(name = "property")
     private XmlConfigPropertyAdapted[] properties;
 
     /**

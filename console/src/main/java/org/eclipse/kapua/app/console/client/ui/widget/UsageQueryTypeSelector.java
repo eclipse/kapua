@@ -22,22 +22,18 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
-public class UsageQueryTypeSelector extends LayoutContainer
-{
+public class UsageQueryTypeSelector extends LayoutContainer {
 
-    public enum QueryType
-    {
-        DAY,
-        HOUR
+    public enum QueryType {
+        DAY, HOUR
     }
 
-    private static final ConsoleMessages   MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private SimpleComboBox<String>         m_queryType;
+    private SimpleComboBox<String> m_queryType;
     private UsageQueryTypeSelectorListener m_listener;
 
-    protected void onRender(Element parent, int index)
-    {
+    protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
 
@@ -50,9 +46,9 @@ public class UsageQueryTypeSelector extends LayoutContainer
         m_queryType.setSimpleValue(MSGS.accountUsageQueryTypeDays());
 
         m_queryType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
+
             @Override
-            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se)
-            {
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
                 if (m_listener != null) {
                     m_listener.onUpdate();
                 }
@@ -62,26 +58,23 @@ public class UsageQueryTypeSelector extends LayoutContainer
         add(m_queryType);
     }
 
-    public UsageQueryTypeSelectorListener getListener()
-    {
+    public UsageQueryTypeSelectorListener getListener() {
         return m_listener;
     }
 
-    public void setListener(UsageQueryTypeSelectorListener listener)
-    {
+    public void setListener(UsageQueryTypeSelectorListener listener) {
         m_listener = listener;
     }
 
-    public QueryType getQueryType()
-    {
+    public QueryType getQueryType() {
 
         switch (m_queryType.getSelectedIndex()) {
-            case 0: // current billing cycle
-                return QueryType.DAY;
-            case 1: // last billing cycle
-                return QueryType.HOUR;
-            default: // default is current
-                return QueryType.DAY;
+        case 0: // current billing cycle
+            return QueryType.DAY;
+        case 1: // last billing cycle
+            return QueryType.HOUR;
+        default: // default is current
+            return QueryType.DAY;
         }
     }
 }

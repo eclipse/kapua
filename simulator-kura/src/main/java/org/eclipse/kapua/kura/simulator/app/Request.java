@@ -201,8 +201,7 @@ public class Request {
     }
 
     /**
-     * Send a
-     * <q>not found</q> reply
+     * Send a "not found" reply
      */
     public void replyNotFound() {
         reply(404).send(Collections.emptyMap());

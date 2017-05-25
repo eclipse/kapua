@@ -27,7 +27,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String m_buildNumber;
 
     // User info
-    private GwtUser m_gwtUser;
+    private GwtUser user;
     private GwtAccount m_gwtAccount;
     private GwtAccount m_rootAccount;
     private GwtAccount m_selectedAccount;
@@ -76,12 +76,12 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public GwtSession() {
     }
 
-    public GwtUser getGwtUser() {
-        return m_gwtUser;
+    public GwtUser getUser() {
+        return user;
     }
 
     public void setGwtUser(GwtUser gwtUser) {
-        this.m_gwtUser = gwtUser;
+        this.user = gwtUser;
     }
 
     public GwtAccount getGwtAccount() {

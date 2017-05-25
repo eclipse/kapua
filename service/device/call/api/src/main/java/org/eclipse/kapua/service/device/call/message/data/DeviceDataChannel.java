@@ -19,7 +19,6 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
  * @since 1.0
  *
  */
-public interface DeviceDataChannel extends DeviceChannel
-{
+public interface DeviceDataChannel extends DeviceChannel {
 
 }

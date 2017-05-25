@@ -21,6 +21,9 @@ public class KuraObjectTypeConverter {
     private static final String TYPE_BOOLEAN = "BOOLEAN";
     private static final String TYPE_BINARY = "BYTE_ARRAY";
 
+    private KuraObjectTypeConverter() {
+    }
+
     public static String toString(Class<?> clazz) {
         String value;
         if (clazz == String.class) {

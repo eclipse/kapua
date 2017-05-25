@@ -29,33 +29,30 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BrokerJAXBContextProvider implements JAXBContextProvider
-{
+public class BrokerJAXBContextProvider implements JAXBContextProvider {
 
     private static Logger logger = LoggerFactory.getLogger(BrokerJAXBContextProvider.class);
 
     private JAXBContext context;
 
     @Override
-    public JAXBContext getJAXBContext() throws KapuaException
-    {
+    public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
             Class<?>[] classes = new Class<?>[] {
-                                                  KapuaTmetadata.class,
-                                                  KapuaTocd.class,
-                                                  KapuaTad.class,
-                                                  KapuaTicon.class,
-                                                  TscalarImpl.class,
-                                                  KapuaToption.class,
-                                                  KapuaTdesignate.class,
-                                                  KapuaTobject.class,
-                                                  MetatypeXmlRegistry.class
+                    KapuaTmetadata.class,
+                    KapuaTocd.class,
+                    KapuaTad.class,
+                    KapuaTicon.class,
+                    TscalarImpl.class,
+                    KapuaToption.class,
+                    KapuaTdesignate.class,
+                    KapuaTobject.class,
+                    MetatypeXmlRegistry.class
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);
                 logger.debug("Broker JAXB context initialized!");
-            }
-            catch (JAXBException jaxbException) {
+            } catch (JAXBException jaxbException) {
                 throw KapuaException.internalError(jaxbException, "Error creating JAXBContext!");
             }
         }

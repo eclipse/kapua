@@ -81,9 +81,9 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     private static final Logger s_logger = LoggerFactory.getLogger(AccountServiceTestSteps.class);
 
     // Account creator object used for creating new accounts.
-    AccountCreator accountCreator = null;
-    AccountService accountService = null;
-    AccountFactory accountFactory = null;
+    AccountCreator accountCreator;
+    AccountService accountService;
+    AccountFactory accountFactory;
 
     // Simple account objects used for creation and checks of account operations.
     Account account;
@@ -91,16 +91,16 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     KapuaId accountId;
 
     // Check if exception was fired in step.
-    boolean exceptionCaught = false;
+    boolean exceptionCaught;
 
     // Currently executing scenario.
     Scenario scenario;
 
     // Metadata boolean value.
-    Boolean boolVal = null;
+    Boolean boolVal;
 
     // Metadata integer value.
-    Integer intVal = null;
+    Integer intVal;
 
     // Default constructor
     public AccountServiceTestSteps() {
@@ -576,9 +576,9 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     /**
      * Create a user creator object. The creator is pre-filled with default data.
      *
-     * @param parentId:
+     * @param parentId
      *            Id of the parent account
-     * @param name:
+     * @param name
      *            The name of the account
      * @return The newly created account creator object.
      */
@@ -604,7 +604,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     // *****************
 
     // Custom String tuple class for name/value pairs as given in the cucumber feature file
-    public class StringTuple {
+    static public class StringTuple {
 
         private String name;
         private String value;

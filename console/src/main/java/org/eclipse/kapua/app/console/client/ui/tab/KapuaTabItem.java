@@ -21,9 +21,9 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public abstract class KapuaTabItem<M extends GwtEntityModel> extends TabItem {
 
-    protected M selectedEntity = null;
+    protected M selectedEntity;
 
-    private boolean dirty = false;
+    private boolean dirty;
 
     public KapuaTabItem(String title, KapuaIcon tabIcon) {
         super(title, tabIcon);

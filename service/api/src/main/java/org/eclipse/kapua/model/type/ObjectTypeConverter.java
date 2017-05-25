@@ -25,6 +25,9 @@ public class ObjectTypeConverter {
     private static final String TYPE_DATE = "date";
     private static final String TYPE_BINARY = "binary";
 
+    private ObjectTypeConverter() {
+    }
+
     public static String toString(Class<?> clazz) {
         String value = null;
         if (clazz != null) {

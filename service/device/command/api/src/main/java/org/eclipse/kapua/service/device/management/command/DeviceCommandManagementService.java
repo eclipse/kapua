@@ -22,8 +22,7 @@ import org.eclipse.kapua.service.KapuaService;
  * @since 1.0
  *
  */
-public interface DeviceCommandManagementService extends KapuaService
-{
+public interface DeviceCommandManagementService extends KapuaService {
 
     /**
      * Execute the given device command with the provided options
@@ -31,10 +30,11 @@ public interface DeviceCommandManagementService extends KapuaService
      * @param scopeId
      * @param deviceId
      * @param commandInput
-     * @param timeout command timeout
+     * @param timeout
+     *            command timeout
      * @return
      * @throws KapuaException
      */
     public DeviceCommandOutput exec(KapuaId scopeId, KapuaId deviceId, DeviceCommandInput commandInput, Long timeout)
-        throws KapuaException;
+            throws KapuaException;
 }

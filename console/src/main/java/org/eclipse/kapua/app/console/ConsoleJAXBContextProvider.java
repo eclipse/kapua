@@ -30,6 +30,8 @@ import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -67,7 +69,11 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         KapuaToption.class,
                         KapuaTmetadata.class,
                         TscalarImpl.class,
-                        MetatypeXmlRegistry.class
+                        MetatypeXmlRegistry.class,
+                        
+                        // Device Management Assets
+                        DeviceAssets.class,
+                        DeviceAssetXmlRegistry.class,
                 }, null);
             }
             return context;

@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.registry;
  * @since 1.0
  * 
  */
-public enum DeviceCredentialsMode
-{
+public enum DeviceCredentialsMode {
     /**
      * Strategy to use will be picked up from the default value set for the current account.
      * 
@@ -47,13 +46,11 @@ public enum DeviceCredentialsMode
     /**
      * Constructor
      */
-    DeviceCredentialsMode()
-    {
+    DeviceCredentialsMode() {
         this(true);
     }
 
-    DeviceCredentialsMode(boolean usableAsAccountDefault)
-    {
+    DeviceCredentialsMode(boolean usableAsAccountDefault) {
         this.usableAsAccountDefault = usableAsAccountDefault;
     }
 
@@ -62,8 +59,7 @@ public enum DeviceCredentialsMode
      * 
      * @return true if it is usable, false if not
      */
-    public boolean isUsableAsAccountDefault()
-    {
+    public boolean isUsableAsAccountDefault() {
         return usableAsAccountDefault;
     }
 }

@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.shared.service.GwtCredentialServiceAsync;
 import org.eclipse.kapua.app.console.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.shared.service.GwtUserServiceAsync;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -152,7 +153,10 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                     apiKeyConfirmationDialog.setButtons(Dialog.OK);
                     apiKeyConfirmationDialog.setHideOnButtonClick(true);
                     apiKeyConfirmationDialog.setLayout(new FormLayout());
+                    apiKeyConfirmationDialog.setSize(450, 200);
+                    apiKeyConfirmationDialog.setScrollMode(Scroll.AUTO);
                     Label valueMessage = new Label(new SafeHtmlBuilder().appendEscapedLines(MSGS.dialogAddConfirmationApiKey(arg0.getCredentialKey())).toSafeHtml().asString());
+                    valueMessage.setStyleAttribute("font-size", "14px");
                     apiKeyConfirmationDialog.add(valueMessage);
                     apiKeyConfirmationDialog.show();
                 }

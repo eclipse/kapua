@@ -20,27 +20,25 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * @since 1.0
  *
  */
-public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys>
-{
+public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys> {
 
     /**
      * Resource file from which source properties.
      * 
      */
-    private static final String           USER_SETTING_RESOURCE = "kapua-user-setting.properties";
+    private static final String USER_SETTING_RESOURCE = "kapua-user-setting.properties";
 
     /**
-     * Singleton instance of this {@link class}.
+     * Singleton instance of this {@link Class}.
      * 
      */
-    private static final KapuaUserSetting instance              = new KapuaUserSetting();
+    private static final KapuaUserSetting instance = new KapuaUserSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaUserSettingKeys#USER_KEY} value.
      * 
      */
-    private KapuaUserSetting()
-    {
+    private KapuaUserSetting() {
         super(USER_SETTING_RESOURCE);
     }
 
@@ -49,8 +47,7 @@ public class KapuaUserSetting extends AbstractKapuaSetting<KapuaUserSettingKeys>
      * 
      * @return A singleton instance of JmsClientSetting.
      */
-    public static KapuaUserSetting getInstance()
-    {
+    public static KapuaUserSetting getInstance() {
         return instance;
     }
 }

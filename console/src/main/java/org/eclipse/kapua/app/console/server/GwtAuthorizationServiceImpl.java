@@ -43,7 +43,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
-import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
@@ -205,12 +204,12 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.read, kapuaSession.getScopeId()));
         boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasUserDelete = authorizationService.isPermitted(permissionFactory.newPermission(userDomain, Actions.delete, kapuaSession.getScopeId()));
-        
+
         boolean hasRoleCreate = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasRoleRead = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.read, kapuaSession.getScopeId()));
         boolean hasRoleUpdate = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasRoleDelete = authorizationService.isPermitted(permissionFactory.newPermission(roleDomain, Actions.delete, kapuaSession.getScopeId()));
-        
+
         boolean hasGroupCreate = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.write, kapuaSession.getScopeId()));
         boolean hasGroupRead = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.read, kapuaSession.getScopeId()));
         boolean hasGroupUpdate = authorizationService.isPermitted(permissionFactory.newPermission(groupDomain, Actions.write, kapuaSession.getScopeId()));
@@ -271,12 +270,12 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setUserReadPermission(hasUserRead);
         gwtSession.setUserUpdatePermission(hasUserUpdate);
         gwtSession.setUserDeletePermission(hasUserDelete);
-        
+
         gwtSession.setRoleCreatePermission(hasRoleCreate);
         gwtSession.setRoleReadPermission(hasRoleRead);
         gwtSession.setRoleUpdatePermission(hasRoleUpdate);
         gwtSession.setRoleDeletePermission(hasRoleDelete);
-        
+
         gwtSession.setGroupCreatePermission(hasGroupCreate);
         gwtSession.setGroupReadPermission(hasGroupRead);
         gwtSession.setGroupUpdatePermission(hasGroupUpdate);
@@ -286,7 +285,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setCredentialReadPermission(hasCredentialRead);
         gwtSession.setCredentialUpdatePermission(hasCredentialUpdate);
         gwtSession.setCredentialDeletePermission(hasCredentialDelete);
-        
+
         gwtSession.setConnectionCreatePermission(hasConnectionCreate);
         gwtSession.setConnectionReadPermission(hasConnectionRead);
         gwtSession.setConnectionUpdatePermission(hasConnectionUpdate);
@@ -299,29 +298,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         // session.setAttribute(SESSION_CURRENT_USER, user);
 
         return gwtSession;
-    }
-
-    /**
-     * Returns true if the currently connected user has the specified permission granted.
-     */
-    @Override
-    public Boolean hasAccess(String gwtPermission)
-            throws GwtKapuaException {
-        Boolean hasAccess = false;
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-
-            // Parse from string
-            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission permission = permissionFactory.parseString(gwtPermission);
-
-            // Check
-            hasAccess = authorizationService.isPermitted(permission);
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-        return hasAccess;
     }
 
     /**
@@ -343,4 +319,5 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             KapuaExceptionHandler.handle(t);
         }
     }
+
 }

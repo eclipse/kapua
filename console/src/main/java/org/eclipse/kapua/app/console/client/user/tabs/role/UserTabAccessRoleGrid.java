@@ -37,7 +37,7 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
     private final static ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
 
-    private String userId = null;
+    private String userId;
 
     private UserTabAccessRoleToolbar toolbar;
 

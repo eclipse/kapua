@@ -22,14 +22,12 @@ import org.eclipse.kapua.service.user.UserQuery;
  * @since 1.0
  * 
  */
-public class UserQueryImpl extends AbstractKapuaQuery<User> implements UserQuery
-{
+public class UserQueryImpl extends AbstractKapuaQuery<User> implements UserQuery {
 
     /**
      * Constructor
      */
-    private UserQueryImpl()
-    {
+    private UserQueryImpl() {
         super();
     }
 
@@ -38,8 +36,7 @@ public class UserQueryImpl extends AbstractKapuaQuery<User> implements UserQuery
      * 
      * @param scopeId
      */
-    public UserQueryImpl(KapuaId scopeId)
-    {
+    public UserQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }

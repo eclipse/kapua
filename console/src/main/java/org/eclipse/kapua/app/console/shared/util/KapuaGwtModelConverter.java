@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.shared.util;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
@@ -38,12 +39,17 @@ import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRole;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtRolePermission;
 import org.eclipse.kapua.app.console.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.util.SystemUtils;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountDomain;
@@ -68,6 +74,9 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -81,6 +90,9 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 
 public class KapuaGwtModelConverter {
+
+    private KapuaGwtModelConverter() {
+    }
 
     /**
      * Converts a {@link Role} into a {@link GwtRole} object for GWT usage.
@@ -192,6 +204,8 @@ public class KapuaGwtModelConverter {
             gwtAccessPermission.setPermissionGroupId("ALL");
         }
 
+        gwtAccessPermission.setPermissionForwardable(accessPermission.getPermission().getForwardable());
+
         //
         // Return converted entity
         return gwtAccessPermission;
@@ -242,6 +256,7 @@ public class KapuaGwtModelConverter {
         gwtRolePermission.setAction(gwtPermission.getAction());
         gwtRolePermission.setGroupId(gwtPermission.getGroupId());
         gwtRolePermission.setTargetScopeId(gwtPermission.getTargetScopeId());
+        gwtRolePermission.setForwardable(gwtPermission.getForwardable());
 
         //
         // Return converted entity
@@ -260,7 +275,8 @@ public class KapuaGwtModelConverter {
         return new GwtPermission(convertDomain(permission.getDomain()),
                 convert(permission.getAction()),
                 convert(permission.getTargetScopeId()),
-                convert(permission.getGroupId()));
+                convert(permission.getGroupId()),
+                permission.getForwardable());
     }
 
     /**
@@ -301,7 +317,7 @@ public class KapuaGwtModelConverter {
      *
      * @param group
      *            The {@link Group} to convert
-     * @return The converted {@link GwtGroup\}
+     * @return The converted {@link GwtGroup}
      * @since 1.0.0
      */
     public static GwtGroup convert(Group group) {
@@ -391,7 +407,7 @@ public class KapuaGwtModelConverter {
     /**
      * Converts a {@link KapuaId} into its {@link String} short id representation.
      * <p>
-     * Example: 1 => AQ
+     * Example: 1 =&gt; AQ
      * </p>
      *
      * @param kapuaId
@@ -564,7 +580,7 @@ public class KapuaGwtModelConverter {
 
         return gwtDeviceEvent;
     }
-    
+
     public static GwtDeviceConnection convert(DeviceConnection deviceConnection) {
         GwtDeviceConnection gwtDeviceConnection = new GwtDeviceConnection();
 
@@ -581,7 +597,7 @@ public class KapuaGwtModelConverter {
         gwtDeviceConnection.setProtocol(deviceConnection.getProtocol());
         gwtDeviceConnection.setConnectionStatus(convert(deviceConnection.getStatus()));
         gwtDeviceConnection.setOptlock(deviceConnection.getOptlock());
-        
+
         //
         // Return converted entity
         return gwtDeviceConnection;
@@ -686,4 +702,37 @@ public class KapuaGwtModelConverter {
         }
         return gwtMessage;
     }
+
+    public static GwtDeviceAssets convert(DeviceAssets assets) {
+        GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
+        List<GwtDeviceAsset> gwtAssetsList = new ArrayList<GwtDeviceAsset>();
+        for (DeviceAsset asset : assets.getAssets()) {
+            gwtAssetsList.add(convert(asset));
+        }
+        gwtAssets.setAssets(gwtAssetsList);
+        return gwtAssets;
+    }
+
+    public static GwtDeviceAsset convert(DeviceAsset asset) {
+        GwtDeviceAsset gwtAsset = new GwtDeviceAsset();
+        List<GwtDeviceAssetChannel> gwtChannelsList = new ArrayList<GwtDeviceAssetChannel>();
+        gwtAsset.setName(asset.getName());
+        for (DeviceAssetChannel channel : asset.getChannels()) {
+            gwtChannelsList.add(convert(channel));
+        }
+        gwtAsset.setChannels(gwtChannelsList);
+        return gwtAsset;
+    }
+
+    public static GwtDeviceAssetChannel convert(DeviceAssetChannel channel) {
+        GwtDeviceAssetChannel gwtChannel = new GwtDeviceAssetChannel();
+        gwtChannel.setName(channel.getName());
+        gwtChannel.setError(channel.getError());
+        gwtChannel.setTimestamp(channel.getTimestamp());
+        gwtChannel.setMode(channel.getMode().toString());
+        gwtChannel.setType(ObjectTypeConverter.toString(channel.getType()));
+        gwtChannel.setValue(ObjectValueConverter.toString(channel.getValue()));
+        return gwtChannel;
+    }
+
 }

@@ -15,24 +15,21 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
-import org.eclipse.kapua.app.console.servlet.KapuaHttpServlet;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsoleListener implements ServletContextListener
-{
+public class ConsoleListener implements ServletContextListener {
+
     private static final Logger logger = LoggerFactory.getLogger(ConsoleListener.class);
 
     @Override
-    public void contextDestroyed(ServletContextEvent arg0)
-    {
+    public void contextDestroyed(ServletContextEvent arg0) {
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent arg0)
-    {
+    public void contextInitialized(ServletContextEvent arg0) {
         logger.info("Initialize Console JABContext Provider");
         JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
         XmlUtil.setContextProvider(consoleProvider);

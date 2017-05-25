@@ -80,7 +80,7 @@ public class NorthView extends LayoutContainer {
 
         this.currentSession = currentSession;
         this.rootAccount = currentSession.getRootAccount();
-        this.user = currentSession.getGwtUser();
+        this.user = currentSession.getUser();
     }
 
     protected void onRender(Element parent, int index) {
@@ -125,9 +125,9 @@ public class NorthView extends LayoutContainer {
     }
 
     private Widget getUserActionMenu() {
-        
+
         userActionButton = new Button();
-       
+
         userActionButton.addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
 
             @Override
@@ -137,7 +137,6 @@ public class NorthView extends LayoutContainer {
                 if (currentSession.hasAccountReadPermission()) {
                     switchToAccountMenuItem = createAccountNavigationMenuItem();
                 }
-                
 
                 //
                 // Logout menu item
@@ -169,22 +168,33 @@ public class NorthView extends LayoutContainer {
                     userActionMenu.add(new SeparatorMenuItem());
                 }
 
+                KapuaMenuItem changePassword = new KapuaMenuItem();
+                changePassword.setText(MSGS.changePassword());
+                changePassword.setIcon(IconSet.KEY);
+                changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
+                        changePasswordDialog.show();
+                    }
+
+                });
+                userActionMenu.add(changePassword);
                 userActionMenu.add(new SeparatorMenuItem());
                 userActionMenu.add(userLogoutMenuItem);
                 userActionButton.setMenu(userActionMenu);
-                
+
             }
         });
         userActionButton.setId("header-button");
         userActionButton.addStyleName("x-btn-arrow-custom");
-        
-        
 
         updateUserActionButtonLabel();
 
         return userActionButton;
     }
-    
+
     /**
      * Creates an MenuItem with the list of all child accounts of the account of the current logged user,
      * and also add as first sub-MenuItem the name of the root account.
@@ -220,7 +230,7 @@ public class NorthView extends LayoutContainer {
      * 
      * @param menu
      *            the menu to fill
-     * @param account
+     * @param accountId
      *            the account of the current menu item.
      */
     private void populateNavigatorMenu(final Menu menu, final String accountId) {

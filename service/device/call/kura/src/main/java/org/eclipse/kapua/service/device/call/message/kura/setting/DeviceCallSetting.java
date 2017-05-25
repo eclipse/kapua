@@ -19,23 +19,21 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * @since 1.0
  *
  */
-public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKeys>
-{
+public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKeys> {
 
     /**
      * Resource file from which source properties.
      * 
      */
-    private static final String            DEVICE_CALL_SETTING_RESOURCE = "device-call-setting.properties";
+    private static final String DEVICE_CALL_SETTING_RESOURCE = "device-call-setting.properties";
 
-    private static final DeviceCallSetting instance              = new DeviceCallSetting();
+    private static final DeviceCallSetting instance = new DeviceCallSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link DeviceCallSetting#DEVICE_CALL_SETTING_RESOURCE} value.
      * 
      */
-    private DeviceCallSetting()
-    {
+    private DeviceCallSetting() {
         super(DEVICE_CALL_SETTING_RESOURCE);
     }
 
@@ -44,8 +42,7 @@ public class DeviceCallSetting extends AbstractKapuaSetting<DeviceCallSettingKey
      * 
      * @return A singleton instance of DeviceCallSetting.
      */
-    public static DeviceCallSetting getInstance()
-    {
+    public static DeviceCallSetting getInstance() {
         return instance;
     }
 }

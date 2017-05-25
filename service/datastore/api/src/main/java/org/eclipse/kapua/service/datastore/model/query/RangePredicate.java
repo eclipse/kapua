@@ -17,14 +17,14 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public interface RangePredicate extends StorablePredicate
-{
+public interface RangePredicate extends StorablePredicate {
+
     /**
      * Get the field to be compared
      * 
      * @return
      */
-    public StorableField getField();
+    public String getField();
 
     /**
      * Return the desired minimum value

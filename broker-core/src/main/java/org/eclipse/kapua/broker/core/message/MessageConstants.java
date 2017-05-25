@@ -18,6 +18,9 @@ package org.eclipse.kapua.broker.core.message;
  */
 public class MessageConstants {
 
+    private MessageConstants() {
+    }
+
     // used by login update info asynch
     public static final String METRIC_USERNAME = "username";
     public static final String METRIC_ACCOUNT = "account";

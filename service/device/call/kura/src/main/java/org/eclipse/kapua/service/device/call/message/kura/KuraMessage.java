@@ -21,17 +21,16 @@ import org.eclipse.kapua.service.device.call.message.DeviceMessage;
  * @since 1.0
  * 
  */
-public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implements DeviceMessage<C, P>
-{
-    protected C    channel;
+public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implements DeviceMessage<C, P> {
+
+    protected C channel;
     protected Date timestamp;
-    protected P    payload;
+    protected P payload;
 
     /**
      * Constructor
      */
-    public KuraMessage()
-    {
+    public KuraMessage() {
         super();
     }
 
@@ -42,8 +41,7 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
      * @param timestamp
      * @param payload
      */
-    public KuraMessage(C channel, Date timestamp, P payload)
-    {
+    public KuraMessage(C channel, Date timestamp, P payload) {
         this();
         this.channel = channel;
         this.timestamp = timestamp;
@@ -51,20 +49,17 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
     }
 
     @Override
-    public C getChannel()
-    {
+    public C getChannel() {
         return channel;
     }
 
     @Override
-    public P getPayload()
-    {
+    public P getPayload() {
         return payload;
     }
 
     @Override
-    public Date getTimestamp()
-    {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -73,8 +68,7 @@ public class KuraMessage<C extends KuraChannel, P extends KuraPayload> implement
      * 
      * @param timestamp
      */
-    public void setTimestamp(Date timestamp)
-    {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 }

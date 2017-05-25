@@ -26,20 +26,18 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
  * @since 1.0
  *
  */
-public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, KuraDisconnectMessage>
-{
+public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, KuraDisconnectMessage> {
+
     @Override
     public KuraDisconnectMessage translate(JmsMessage jmsMessage)
-        throws KapuaException
-    {
+            throws KapuaException {
         return new KuraDisconnectMessage(translate(jmsMessage.getTopic()),
-                                         jmsMessage.getReceivedOn(),
-                                         translate(jmsMessage.getPayload().getBody()));
+                jmsMessage.getReceivedOn(),
+                translate(jmsMessage.getPayload().getBody()));
     }
 
     private KuraDisconnectChannel translate(JmsTopic jmsTopic)
-        throws KapuaException
-    {
+            throws KapuaException {
         String[] topicTokens = jmsTopic.getSplittedTopic();
         // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
         // TODO check exception type
@@ -47,26 +45,23 @@ public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, Kura
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
         return new KuraDisconnectChannel(topicTokens[1],
-                                         topicTokens[2]);
+                topicTokens[2]);
     }
 
     private KuraDisconnectPayload translate(byte[] jmsBody)
-        throws KapuaException
-    {
+            throws KapuaException {
         KuraDisconnectPayload kuraDisconnectPayload = new KuraDisconnectPayload();
         kuraDisconnectPayload.readFromByteArray(jmsBody);
         return kuraDisconnectPayload;
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom()
-    {
+    public Class<JmsMessage> getClassFrom() {
         return JmsMessage.class;
     }
 
     @Override
-    public Class<KuraDisconnectMessage> getClassTo()
-    {
+    public Class<KuraDisconnectMessage> getClassTo() {
         return KuraDisconnectMessage.class;
     }
 

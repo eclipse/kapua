@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,9 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 
 public class CollisionEntityDAO {
+
+    private CollisionEntityDAO() {
+    }
 
     public static CollisionEntity create(EntityManager em, CollisionEntityCreator collisionEntityCreator)
             throws KapuaException {

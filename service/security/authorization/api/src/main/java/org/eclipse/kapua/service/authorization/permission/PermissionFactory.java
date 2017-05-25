@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
 
 /**
  * {@link Permission} object factory.
@@ -54,15 +54,20 @@ public interface PermissionFactory extends KapuaObjectFactory {
     public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId);
 
     /**
-     * Parse the {@link Permission} {@link String} representation to build a new {@link Permission}.
+     * Instantiate a new {@link Permission} implementing object with the provided parameters.
      * 
-     * @param stringPermission
-     *            The {@link String} {@link Permission} representation.
+     * @param domain
+     *            The {@link Domain} of the new {@link Permission}.
+     * @param action
+     *            The {@link Action} of the new {@link Permission}.
+     * @param targetScopeId
+     *            The target scope id of the new {@link Permission}.
+     * @param groupId
+     *            The {@link Group} id that this {@link Permission} gives access.
+     * @param forwardable
+     *            If the {@link Permission} is forward-able to children scopeIds
      * @return A instance of the implementing class of {@link Permission}.
-     * @throws KapuaException
-     *             If the given string permission cannot be parsed into a {@link Permission}.
      * @since 1.0.0
      */
-    public Permission parseString(String stringPermission)
-            throws KapuaException;
+    public Permission newPermission(Domain domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable);
 }

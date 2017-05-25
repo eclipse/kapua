@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,7 +124,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             RoleService roleService = locator.getService(RoleService.class);
             RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
             PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-            Permission adminPermission = permissionFactory.newPermission(null, null, account.getId());
+            Permission adminPermission = permissionFactory.newPermission(null, null, account.getId(), null, true);
             RoleCreator adminRoleCreator = roleFactory.newCreator(account.getId());
             Set<Permission> adminPermissions = new HashSet<Permission>();
             adminPermissions.add(adminPermission);
@@ -135,7 +134,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             roleService.create(adminRoleCreator);
 
             RoleCreator thingRoleCreator = roleFactory.newCreator(account.getId());
-            Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId());
+            Permission thingPermission = permissionFactory.newPermission(new BrokerDomain(), Actions.connect, account.getId(), null, false);
             Set<Permission> thingPermissions = new HashSet<Permission>();
             thingPermissions.add(thingPermission);
             thingRoleCreator.setName("thing");
@@ -470,8 +469,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         KapuaId kapuaParentId = GwtKapuaModelConverter.convert(parentId);
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            Class configurableServiceClass = Class.forName(configComponent.<String> get("componentId"));
-            KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);
+            AccountService configurableService = locator.getService(AccountService.class);
 
             // execute the update
             Map<String, Object> parameters = GwtKapuaModelConverter.convert(configComponent);
@@ -503,7 +501,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 // Tmp file name creation
                 String systemTmpDir = System.getProperty("java.io.tmpdir");
                 String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
-                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes(StandardCharsets.UTF_8)));
+                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
 
                 // Conversions needed got security reasons!
                 // On the file servlet we use the regex [0-9A-Za-z]{1,} to validate the given file id.

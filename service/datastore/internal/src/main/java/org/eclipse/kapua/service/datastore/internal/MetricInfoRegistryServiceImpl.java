@@ -8,8 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
+
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +31,6 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreMediator;
@@ -38,7 +40,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl
 import org.eclipse.kapua.service.datastore.internal.model.query.ExistsPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
@@ -49,9 +50,9 @@ import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     private final PermissionFactory permissionFactory;
     private final MetricInfoRegistryFacade metricInfoStoreFacade;
     private final MessageStoreService messageStoreService;
-    private final DatastoreObjectFactory datastoreObjectFactory;
+    private final StorablePredicateFactory storablePredicateFactory;
 
     /**
      * Default constructor
@@ -88,7 +89,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
-        datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+        storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
@@ -215,19 +216,11 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      * Update the last published date and last published message identifier for the specified metric info, so it gets the timestamp and the message identifier of the last published message for the
      * account/clientId in the metric info
      * 
-     * @param scopeId
-     * @param channelInfo
-     * 
      * @throws KapuaException
-     * 
-     * @since 1.0.0
      */
     private void updateLastPublishedFields(MetricInfo metricInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        SortField sortTimestamp = new SortFieldImpl();
-        sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sortTimestamp.setSortDirection(SortDirection.DESC);
-        sort.add(sortTimestamp);
+        sort.add(descending(EsSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(metricInfo.getScopeId());
         messageQuery.setAskTotalCount(true);
@@ -238,7 +231,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
 
         // TODO check if this field is correct (EsSchema.METRIC_MTR_TIMESTAMP)!
         RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.METRIC_MTR_TIMESTAMP), metricInfo.getFirstMessageOn(), null);
-        TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
+        TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
         ExistsPredicate metricPredicate = new ExistsPredicateImpl(MessageField.METRICS.field(), metricInfo.getName());
 
         AndPredicate andPredicate = new AndPredicateImpl();

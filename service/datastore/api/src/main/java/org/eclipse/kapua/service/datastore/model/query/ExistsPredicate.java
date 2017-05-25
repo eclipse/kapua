@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public interface ExistsPredicate extends StorablePredicate
-{
+public interface ExistsPredicate extends StorablePredicate {
 
     /**
      * Returns the field name to check

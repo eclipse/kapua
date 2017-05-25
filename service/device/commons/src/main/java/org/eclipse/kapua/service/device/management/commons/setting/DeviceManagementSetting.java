@@ -19,22 +19,20 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * @since 1.0
  *
  */
-public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey>
-{
+public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey> {
 
     /**
      * Resource file from which source properties.
      * 
      */
-    private static final String                  DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
+    private static final String DEVICE_MANAGEMENT_SETTING_RESOURCE = "device-management-setting.properties";
 
-    private static final DeviceManagementSetting instance                           = new DeviceManagementSetting();
+    private static final DeviceManagementSetting instance = new DeviceManagementSetting();
 
     /**
      * Constructor
      */
-    private DeviceManagementSetting()
-    {
+    private DeviceManagementSetting() {
         super(DEVICE_MANAGEMENT_SETTING_RESOURCE);
     }
 
@@ -43,8 +41,7 @@ public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManageme
      * 
      * @return
      */
-    public static DeviceManagementSetting getInstance()
-    {
+    public static DeviceManagementSetting getInstance() {
         return instance;
     }
 }

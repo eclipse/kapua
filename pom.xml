@@ -22,29 +22,33 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!-- Build properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Dependencies versions -->
-        <activemq.version>5.14.4</activemq.version>
+        <activemq.version>5.14.5</activemq.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
+        <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.9</commons-codec.version>
         <commons-configuration.version>1.9</commons-configuration.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
         <commons-pool.version>2.3</commons-pool.version>
-        <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <cucumber.version>1.2.4</cucumber.version>
         <dropwizard.version>3.1.2</dropwizard.version>
         <eclipselink.version>2.6.3</eclipselink.version>
+        <elasticsearch.version>2.3.4</elasticsearch.version>
         <findbugs.version>2.0.1</findbugs.version>
         <gson.version>2.7</gson.version>
         <guava.version>19.0</guava.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.192</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
+        <jackson.version>2.6.6</jackson.version>
         <javassist.version>3.19.0-GA</javassist.version>
         <joda.version>2.9.4</joda.version>
         <junit.version>4.11</junit.version>
@@ -56,19 +60,20 @@
         <protobuf.version>2.6.1</protobuf.version>
         <reflections.version>0.9.10</reflections.version>
         <shiro.version>1.3.2</shiro.version>
-        <slf4j.version>1.7.21</slf4j.version>
+        <slf4j.version>1.7.24</slf4j.version>
         <logback.version>1.1.8</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
-        <cucumber.version>1.2.4</cucumber.version>
-        <elasticsearch.version>2.3.4</elasticsearch.version>
-        <jackson.version>2.6.6</jackson.version>
+        <tomcat.version>8.0.41</tomcat.version>
+
         <!-- Plugins versions -->
         <checkstyle-maven-plugin.version>2.17</checkstyle-maven-plugin.version>
         <checkstyle.version>7.6.1</checkstyle.version>
+        <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <docker-maven-plugin.version>0.19.1</docker-maven-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
-        <maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -104,11 +109,21 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${maven-release-plugin.version}</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <releaseProfiles>deploy,release,docker-push</releaseProfiles>
+                        <releaseProfiles>javadoc,deploy,release,docker-push</releaseProfiles>
                         <goals>deploy</goals>
                     </configuration>
                 </plugin>
@@ -140,6 +155,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>1.4.1</version>
                     <executions>
@@ -161,6 +181,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
 
@@ -309,6 +335,9 @@
                     <configuration>
                         <configLocation>checkstyle/kapua.xml</configLocation>
                         <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
+
+                        <includeTestResources>true</includeTestResources>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     </configuration>
                 </plugin>
             </plugins>
@@ -634,6 +663,11 @@
                 <version>${h2.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.ning</groupId>
+                <artifactId>compress-lzf</artifactId>
+                <version>1.0.3</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>${commons-configuration.version}</version>
@@ -756,11 +790,6 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
@@ -821,6 +850,8 @@
     <modules>
         <module>build-tools</module>
 
+        <module>external</module>
+
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
@@ -869,15 +900,13 @@
             </build>
         </profile>
 
-        <!-- Profile used only during deploy. -->
         <profile>
-            <id>deploy</id>
+            <id>javadoc</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven-javadoc-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -887,6 +916,15 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Profile used only during deploy. -->
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -924,6 +962,7 @@
                 <module>dev-tools</module>
             </modules>
         </profile>
+
         <profile>
             <id>security-scan</id>
             <activation>
@@ -1029,11 +1068,6 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
             <distribution>repo</distribution>
         </license>
-        <license>
-            <name>Eclipse Distribution License (EDL), Version 1.0</name>
-            <url>http://www.eclipse.org/org/documents/edl-v10.html</url>
-            <distribution>repo</distribution>
-        </license>
     </licenses>
 
     <scm>
@@ -1049,8 +1083,8 @@
 
     <!-- Meta information required for release -->
 
-    <description>Kapua</description>
-    <url>https://github.com/eclipse/kapua</url>
+    <description>Eclipse Kapua™</description>
+    <url>https://eclipse.org/kapua</url>
 
     <developers>
         <developer>

@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.service.authorization.group.Group;
 
 /**
  * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Group} entity.
@@ -21,6 +22,9 @@ import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
  * 
  */
 public class GroupPredicates {
+
+    private GroupPredicates() {
+    }
 
     /**
      * {@link Group} name

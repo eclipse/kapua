@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public enum StorableFetchStyle
-{
+public enum StorableFetchStyle {
     /**
      * Only indexed fields
      */

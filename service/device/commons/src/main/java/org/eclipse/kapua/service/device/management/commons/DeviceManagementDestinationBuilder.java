@@ -17,11 +17,12 @@ package org.eclipse.kapua.service.device.management.commons;
  * 
  * @since 1.0
  *
- * @param <T> destination type
+ * @param <T>
+ *            destination type
  */
 @SuppressWarnings("unchecked")
-public class DeviceManagementDestinationBuilder<T>
-{
+public class DeviceManagementDestinationBuilder<T> {
+
     protected String topicPrefix;
     protected String accountName;
     protected String assetId;
@@ -33,8 +34,7 @@ public class DeviceManagementDestinationBuilder<T>
      * @param topicPrefix
      * @return
      */
-    public T withTopicPrefix(String topicPrefix)
-    {
+    public T withTopicPrefix(String topicPrefix) {
         this.topicPrefix = topicPrefix;
         return (T) this;
     }
@@ -45,8 +45,7 @@ public class DeviceManagementDestinationBuilder<T>
      * @param accountName
      * @return
      */
-    public T withAccountName(String accountName)
-    {
+    public T withAccountName(String accountName) {
         this.accountName = accountName;
         return (T) this;
     }
@@ -57,8 +56,7 @@ public class DeviceManagementDestinationBuilder<T>
      * @param assetId
      * @return
      */
-    public T withAssetId(String assetId)
-    {
+    public T withAssetId(String assetId) {
         this.assetId = assetId;
         return (T) this;
     }
@@ -69,8 +67,7 @@ public class DeviceManagementDestinationBuilder<T>
      * @param appId
      * @return
      */
-    public T withAppId(String appId)
-    {
+    public T withAppId(String appId) {
         this.appId = appId;
         return (T) this;
     }
@@ -81,8 +78,8 @@ public class DeviceManagementDestinationBuilder<T>
      * @since 1.0
      *
      */
-    public static class Request extends DeviceManagementDestinationBuilder<Request>
-    {
+    public static class Request extends DeviceManagementDestinationBuilder<Request> {
+
         /**
          * <p>
          * Topic format: <br/>
@@ -97,8 +94,8 @@ public class DeviceManagementDestinationBuilder<T>
          */
         private static final String requestTopicStringFormat = "%s/%s/%s/%s/%s%s";
 
-        private String              method;
-        private String[]            resources;
+        private String method;
+        private String[] resources;
 
         /**
          * Add the request method to the destination
@@ -106,8 +103,7 @@ public class DeviceManagementDestinationBuilder<T>
          * @param method
          * @return
          */
-        public Request withMethod(String method)
-        {
+        public Request withMethod(String method) {
             this.method = method;
             return this;
         }
@@ -118,8 +114,7 @@ public class DeviceManagementDestinationBuilder<T>
          * @param resources
          * @return
          */
-        public Request withResources(String[] resources)
-        {
+        public Request withResources(String[] resources) {
             this.resources = resources;
             return this;
         }
@@ -129,22 +124,20 @@ public class DeviceManagementDestinationBuilder<T>
          * 
          * @return
          */
-        public String build()
-        {
+        public String build() {
             String resourcesToString = buildResourcesString();
 
             return String.format(requestTopicStringFormat,
-                                 topicPrefix,
-                                 accountName,
-                                 assetId,
-                                 appId,
-                                 method,
-                                 resourcesToString);
+                    topicPrefix,
+                    accountName,
+                    assetId,
+                    appId,
+                    method,
+                    resourcesToString);
 
         }
 
-        private String buildResourcesString()
-        {
+        private String buildResourcesString() {
             StringBuilder sb = new StringBuilder();
             if (resources != null) {
                 for (String r : resources) {

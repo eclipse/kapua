@@ -8,8 +8,11 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
+
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +32,6 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema;
@@ -37,7 +39,6 @@ import org.eclipse.kapua.service.datastore.internal.elasticsearch.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -47,9 +48,9 @@ import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
     private final PermissionFactory permissionFactory;
     private final ChannelInfoRegistryFacade channelInfoStoreFacade;
     private final MessageStoreService messageStoreService;
-    private final DatastoreObjectFactory datastoreObjectFactory;
+    private final StorablePredicateFactory storablePredicateFactory;
 
     /**
      * Default constructor.
@@ -86,7 +87,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
-        datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
+        storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
@@ -194,7 +195,6 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * account/clientId in the
      * channel info
      * 
-     * @param scopeId
      * @param channelInfo
      * 
      * @throws KapuaException
@@ -203,10 +203,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      */
     private void updateLastPublishedFields(ChannelInfo channelInfo) throws KapuaException {
         List<SortField> sort = new ArrayList<>();
-        SortField sortTimestamp = new SortFieldImpl();
-        sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sortTimestamp.setSortDirection(SortDirection.DESC);
-        sort.add(sortTimestamp);
+        sort.add(descending(EsSchema.MESSAGE_TIMESTAMP));
 
         MessageQuery messageQuery = new MessageQueryImpl(channelInfo.getScopeId());
         messageQuery.setAskTotalCount(true);
@@ -216,8 +213,8 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
         messageQuery.setSortFields(sort);
 
         RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(EsSchema.CHANNEL_TIMESTAMP), channelInfo.getFirstMessageOn(), null);
-        TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
-        TermPredicate channelPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
+        TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
+        TermPredicate channelPredicate = storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
 
         AndPredicate andPredicate = new AndPredicateImpl();
         andPredicate.getPredicates().add(messageIdPredicate);

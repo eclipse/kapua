@@ -206,12 +206,12 @@
 			<artifactId>assertj-core</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-java</artifactId>
@@ -222,7 +222,12 @@
             <artifactId>cucumber-guice</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-    </dependencies>
+	</dependencies>
 
 </project>

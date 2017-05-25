@@ -68,9 +68,9 @@ Once the development machine has been created (or started manually as described 
 $ vagrant ssh
 ```
 
-***Note:*** to allow the database creation and seeding, before start both the broker and the Tomcat please run a full Kapua project build with sql profile from the project root directory outside of the vagrant box (see the command below)
+***Note:*** to allow the database creation and seeding the broker and the Tomcat. Please run a full Kapua project build from the project root directory outside of the vagrant box (see the command below)
 ```
-$ mvn clean install -Psql -DskipTests
+$ mvn clean install -DskipTests
 ```
 
 The broker installation directory is:
@@ -165,7 +165,7 @@ The fresh machine has both the ActiveMQ and Tomcat installed, but please don't u
 To start ***using properly the demo machine*** run a full Kapua build as follow:
 
 ```
-$ mvn clean install -Psql -Pdeploy -DskipTests
+$ mvn clean install -Pdeploy -DskipTests
 ```
 
 Once the full build is done, the machine has the broker with all the proper library and configuration installed in the directory

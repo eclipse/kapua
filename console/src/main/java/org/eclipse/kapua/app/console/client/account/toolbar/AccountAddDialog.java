@@ -38,23 +38,23 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
     protected static final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
-    
+
     private static final int LABEL_WIDTH_FORM = 190;
-    
+
     protected final FieldSet fieldSet = new FieldSet();
-    
-    //Account
+
+    // Account
     final LabelField parentAccountName = new LabelField();
     protected final LabelField accountNameLabel = new LabelField();
     protected final TextField<String> accountNameField = new TextField<String>();
     protected final TextField<String> accountPassword = new TextField<String>();
     protected final TextField<String> confirmPassword = new TextField<String>();
-    
-    //broker cluster
+
+    // broker cluster
     protected final NumberField optlock = new NumberField();
     protected final LabelField accountClusterLabel = new LabelField();
-    
-    //organization
+
+    // organization
     protected final TextField<String> organizationName = new TextField<String>();
     protected final TextField<String> organizationEmail = new TextField<String>();
     protected final TextField<String> organizationPersonName = new TextField<String>();
@@ -65,9 +65,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final TextField<String> organizationCity = new TextField<String>();
     protected final TextField<String> organizationStateProvinceCounty = new TextField<String>();
     protected final TextField<String> organizationCountry = new TextField<String>();
-    
-    
-    
+
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
         DialogUtils.resizeDialog(this, 600, 700);
@@ -76,7 +74,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         FormPanel accountFormPanel = new FormPanel(FORM_LABEL_WIDTH);
-        
+
         // //////////////////////////////////////////
         // Account Information field set
         // //////////////////////////////////////////
@@ -109,7 +107,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         fieldSet.add(accountNameField);
 
         accountFormPanel.add(fieldSet);
-        
+
         // //////////////////////////////////////////
         // Deployment Information field set
         // //////////////////////////////////////////
@@ -134,8 +132,8 @@ public class AccountAddDialog extends EntityAddEditDialog {
         fieldSetDeployment.add(optlock);
 
         // add the field set and reset
-//        accountFormPanel.add(fieldSetDeployment);
-        
+        // accountFormPanel.add(fieldSetDeployment);
+
         // //////////////////////////////////////////
         // Organization Information field set
         // //////////////////////////////////////////
@@ -216,7 +214,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         // add the field set and reset
         fieldSetOrg.add(organizationSubFieldSet);
         accountFormPanel.add(fieldSetOrg);
-        
+
         m_bodyPanel.add(accountFormPanel);
     }
 
@@ -238,12 +236,12 @@ public class AccountAddDialog extends EntityAddEditDialog {
         gwtAccountCreator.setOrganizationZipPostCode(organizationZipPostCode.getValue());
         gwtAccountCreator.setOrganizationStateProvinceCounty(organizationStateProvinceCounty.getValue());
         gwtAccountCreator.setOrganizationCountry(organizationCountry.getValue());
-        
+
         gwtAccountService.create(xsrfToken,
                 gwtAccountCreator,
                 new AsyncCallback<GwtAccount>() {
-                    public void onFailure(Throwable caught)
-                    {
+
+                    public void onFailure(Throwable caught) {
                         FailureHandler.handleFormException(m_formPanel, caught);
                         m_status.hide();
                         m_formPanel.getButtonBar().enable();
@@ -252,8 +250,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
                         m_cancelButton.enable();
                     }
 
-                    public void onSuccess(GwtAccount account)
-                    {
+                    public void onSuccess(GwtAccount account) {
                         ConsoleInfo.display(MSGS.info(), MSGS.accountCreatedConfirmation(account.getUnescapedName()));
                         hide();
                     }

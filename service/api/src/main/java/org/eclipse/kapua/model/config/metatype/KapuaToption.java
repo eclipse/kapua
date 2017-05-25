@@ -52,11 +52,8 @@ import javax.xml.namespace.QName;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "Toption", propOrder = {
         "any"
-},
-        factoryClass = MetatypeXmlRegistry.class,
-        factoryMethod = "newKapuaToption")
-public interface KapuaToption
-{
+}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaToption")
+public interface KapuaToption {
 
     /**
      * Gets the value of the any property.

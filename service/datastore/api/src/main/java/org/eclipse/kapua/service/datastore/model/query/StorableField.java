@@ -17,8 +17,8 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public interface StorableField
-{
+public interface StorableField {
+
     /**
      * Return the field name
      * 

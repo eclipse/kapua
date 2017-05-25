@@ -25,22 +25,21 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
  * @since 1.0
  *
  */
-public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory
-{
-    private static final String                       PERSISTENCE_UNIT_NAME = "kapua-authentication";
-    private static final String                       DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String>          s_uniqueConstraints   = new HashMap<>();
+public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
-    private static AuthenticationEntityManagerFactory instance              = new AuthenticationEntityManagerFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> s_uniqueConstraints = new HashMap<>();
+
+    private static AuthenticationEntityManagerFactory instance = new AuthenticationEntityManagerFactory();
 
     /**
      * Constructs a new entity manager factory and configure it to use the authentication persistence unit.
      */
-    private AuthenticationEntityManagerFactory()
-    {
+    private AuthenticationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
-              DATASOURCE_NAME,
-              s_uniqueConstraints);
+                DATASOURCE_NAME,
+                s_uniqueConstraints);
     }
 
     /**
@@ -50,8 +49,7 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
      * @throws KapuaException
      */
     public static EntityManager getEntityManager()
-        throws KapuaException
-    {
+            throws KapuaException {
         return instance.createEntityManager();
     }
 
@@ -60,8 +58,7 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
      * 
      * @return
      */
-    public static AuthenticationEntityManagerFactory getInstance()
-    {
+    public static AuthenticationEntityManagerFactory getInstance() {
         return instance;
     }
 

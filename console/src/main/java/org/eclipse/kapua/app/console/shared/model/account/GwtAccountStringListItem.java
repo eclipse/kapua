@@ -13,17 +13,15 @@ package org.eclipse.kapua.app.console.shared.model.account;
 
 import org.eclipse.kapua.app.console.shared.model.GwtStringListItem;
 
-public class GwtAccountStringListItem extends GwtStringListItem
-{
+public class GwtAccountStringListItem extends GwtStringListItem {
+
     private static final long serialVersionUID = 2825662240165195455L;
 
-    public void setHasChildAccount(boolean hasChildAccount)
-    {
+    public void setHasChildAccount(boolean hasChildAccount) {
         set("hasChildAccount", hasChildAccount);
     }
 
-    public boolean hasChildAccount()
-    {
+    public boolean hasChildAccount() {
         return (Boolean) get("hasChildAccount");
     }
 }

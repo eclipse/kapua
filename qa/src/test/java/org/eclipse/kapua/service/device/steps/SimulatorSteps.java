@@ -53,7 +53,6 @@ import org.eclipse.kapua.qa.steps.EmbeddedElasticsearch;
 import org.eclipse.kapua.qa.utils.Starting;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
-import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -93,7 +92,7 @@ public class SimulatorSteps {
 
     private static final Duration DEFAULT_PERIOD = Duration.ofSeconds(1);
 
-    private Map<String, List<AutoCloseable>> closables = new HashMap<>();
+    private final Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
     private List<DeviceBundle> bundles;
 
@@ -101,27 +100,29 @@ public class SimulatorSteps {
 
     private ScheduledExecutorService downloadExecutor;
 
-    private SimulatorDevice currentDevice;
+    private final SimulatorDevice currentDevice;
 
     private String brokerUri;
 
-    private LoginCredentials credentials;
+    private final Session session;
 
     @Inject
     public SimulatorSteps(
             /* dependency */ final EmbeddedBroker broker,
             /* dependency */ final EmbeddedElasticsearch elasticsearch,
             /* dependency */ final DBHelper dbHelper,
-            final SimulatorDevice currentDevice) {
+            final SimulatorDevice currentDevice,
+            final Session session) {
 
         this.currentDevice = currentDevice;
+        this.session = session;
     }
 
     @Before
     public void beforeScenario(final Scenario scenario) throws Exception {
         XmlUtil.setContextProvider(new TestJAXBContextProvider());
 
-        this.downloadExecutor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));
+        downloadExecutor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));
     }
 
     @After
@@ -133,13 +134,13 @@ public class SimulatorSteps {
         }
         closables.clear();
 
-        this.downloadExecutor.shutdown();
+        downloadExecutor.shutdown();
     }
 
     @Given("The account name is (.*) and the client ID is (.*)")
     public void setClientId(final String accountName, final String clientId) {
-        this.currentDevice.setAccountName(accountName);
-        this.currentDevice.setClientId(clientId);
+        currentDevice.setAccountName(accountName);
+        currentDevice.setClientId(clientId);
     }
 
     @Given("The broker URI is (.*)")
@@ -149,7 +150,7 @@ public class SimulatorSteps {
 
     @Given("My credentials are username \"(.*)\" and password \"(.*)\"")
     public void setUsernamePasswordCredentials(final String username, final String password) {
-        this.credentials = getInstance().getFactory(CredentialsFactory.class).newUsernamePasswordCredentials(username, password);
+        session.setCredentials(getInstance().getFactory(CredentialsFactory.class).newUsernamePasswordCredentials(username, password));
     }
 
     @When("I start the simulator")
@@ -170,7 +171,7 @@ public class SimulatorSteps {
             final Simulator simulator = new Simulator(configuration, transport, apps);
             starting.add(simulator);
 
-            this.closables.put("simulator/" + currentDevice.getClientId(), starting.started());
+            closables.put("simulator/" + currentDevice.getClientId(), starting.started());
         }
 
     }
@@ -185,14 +186,16 @@ public class SimulatorSteps {
     @Then("Device (.*) for account (.*) is registered after (\\d+) seconds?")
     public void deviceIsRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
         assertFor("Wait for connection state to become " + CONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
-            assertConnectionStatus(clientId, accountName, CONNECTED);
+            session.withLogin(() -> {
+                assertConnectionStatus(clientId, accountName, CONNECTED);
+            });
         });
     }
 
     @Then("Device (.*) for account (.*) is not registered after (\\d+) seconds?")
     public void deviceIsNotRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
         assertFor("Wait for connection state to become " + DISCONNECTED, ofSeconds(timeout), DEFAULT_PERIOD, () -> {
-            With.withLogin(credentials, () -> {
+            session.withLogin(() -> {
                 assertConnectionStatus(clientId, accountName, DISCONNECTED);
             });
         });
@@ -200,10 +203,12 @@ public class SimulatorSteps {
 
     @Then("I expect the device to report the applications")
     public void checkApplications(final List<String> applications) throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                final Set<String> apps = new HashSet<>(Arrays.asList(device.getApplicationIdentifiers().split(",")));
-                Assert.assertEquals(new HashSet<>(applications), apps);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    final Set<String> apps = new HashSet<>(Arrays.asList(device.getApplicationIdentifiers().split(",")));
+                    Assert.assertEquals(new HashSet<>(applications), apps);
+                });
             });
         });
     }
@@ -211,65 +216,73 @@ public class SimulatorSteps {
     @Then("The device should report simulator device information")
     public void checkDeviceInformation() throws Exception {
         final String clientId = currentDevice.getClientId();
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, clientId, device -> {
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, clientId, device -> {
 
-                Assert.assertNotNull(device);
+                    Assert.assertNotNull(device);
 
-                Assert.assertEquals("Kura Simulator (Display Name)", device.getDisplayName());
-                // Assert.assertEquals("Kura Simulator (Model Name)", device.getModelName());
-                Assert.assertEquals("kura-simulator-" + clientId, device.getModelId());
-                // Assert.assertEquals("ksim-part-123456-" + clientId, device.getPartNumber());
-                Assert.assertEquals("ksim-serial-123456-" + clientId, device.getSerialNumber());
-                // Assert.assertEquals( "1", device.getAvailableProcessors () );
-                // Assert.assertEquals( "640", device.getTotalMemory());
-                Assert.assertEquals("fw.v42", device.getFirmwareVersion());
-                Assert.assertEquals("bios.v42", device.getBiosVersion());
-                // Assert.assertEquals( "Kura Simulator (OS)", device.getOperatingSystem());
-                // Assert.assertEquals("ksim-os-v42", device.getOperatingSystemVersion());
-                // Assert.assertEquals("ksim-arch", device.getOperatingSystemArchitecture());
-                // Assert.assertEquals("Kura Simulator (Java)", device.getJvmName());
-                Assert.assertEquals("ksim-java-v42", device.getJvmVersion());
-                // Assert.assertEquals( "Kura Simulator (Java Profile)", device.getJvmProfile());
-                Assert.assertEquals("ksim-kura-v42", device.getApplicationFrameworkVersion());
-                // Assert.assertEquals("Kura Simulator (OSGi version)", device.getOsgiFrameworkName());
-                Assert.assertEquals("ksim-osgi-v42", device.getOsgiFrameworkVersion());
+                    Assert.assertEquals("Kura Simulator (Display Name)", device.getDisplayName());
+                    // Assert.assertEquals("Kura Simulator (Model Name)", device.getModelName());
+                    Assert.assertEquals("kura-simulator-" + clientId, device.getModelId());
+                    // Assert.assertEquals("ksim-part-123456-" + clientId, device.getPartNumber());
+                    Assert.assertEquals("ksim-serial-123456-" + clientId, device.getSerialNumber());
+                    // Assert.assertEquals( "1", device.getAvailableProcessors () );
+                    // Assert.assertEquals( "640", device.getTotalMemory());
+                    Assert.assertEquals("fw.v42", device.getFirmwareVersion());
+                    Assert.assertEquals("bios.v42", device.getBiosVersion());
+                    // Assert.assertEquals( "Kura Simulator (OS)", device.getOperatingSystem());
+                    // Assert.assertEquals("ksim-os-v42", device.getOperatingSystemVersion());
+                    // Assert.assertEquals("ksim-arch", device.getOperatingSystemArchitecture());
+                    // Assert.assertEquals("Kura Simulator (Java)", device.getJvmName());
+                    Assert.assertEquals("ksim-java-v42", device.getJvmVersion());
+                    // Assert.assertEquals( "Kura Simulator (Java Profile)", device.getJvmProfile());
+                    Assert.assertEquals("ksim-kura-v42", device.getApplicationFrameworkVersion());
+                    // Assert.assertEquals("Kura Simulator (OSGi version)", device.getOsgiFrameworkName());
+                    Assert.assertEquals("ksim-osgi-v42", device.getOsgiFrameworkVersion());
+                });
             });
         });
     }
 
     @When("I start the bundle (.*) with version (.*)")
     public void startBundle(final String bundleSymbolicName, final String version) throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                DeviceBundle bundle = findBundle(bundleSymbolicName, version);
-                DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    DeviceBundle bundle = findBundle(bundleSymbolicName, version);
+                    DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
+                    service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
+                });
             });
         });
     }
 
     @When("I stop the bundle (.*) with version (.*)")
     public void stopBundle(final String bundleSymbolicName, final String version) throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                DeviceBundle bundle = findBundle(bundleSymbolicName, version);
-                DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    DeviceBundle bundle = findBundle(bundleSymbolicName, version);
+                    DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
+                    service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
+                });
             });
         });
     }
 
     @When("I fetch the bundle states")
     public void fetchBundlesState() throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
-                DeviceBundles bundles = service.get(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    DeviceBundleManagementService service = getInstance().getService(DeviceBundleManagementService.class);
+                    DeviceBundles bundles = service.get(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
 
-                Assert.assertNotNull(bundles);
+                    Assert.assertNotNull(bundles);
 
-                this.bundles = bundles.getBundles();
+                    this.bundles = bundles.getBundles();
+                });
             });
         });
     }
@@ -299,15 +312,17 @@ public class SimulatorSteps {
 
     @When("I fetch the package states")
     public void fetchPackagesState() throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
 
-                final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+                    final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
 
-                Assert.assertNotNull(packages);
+                    Assert.assertNotNull(packages);
 
-                this.packages = packages.getPackages();
+                    this.packages = packages.getPackages();
+                });
             });
         });
     }
@@ -344,35 +359,39 @@ public class SimulatorSteps {
 
     @When("I start to download package \"(.+)\" with version (.+) from (.*)")
     public void downloadPackage(final String packageName, final String version, final URI uri) throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
 
-                final DevicePackageDownloadRequest request = getInstance().getFactory(DevicePackageFactory.class).newPackageDownloadRequest();
-                request.setInstall(true);
-                request.setName(packageName);
-                request.setVersion(version);
-                request.setURI(uri);
+                    final DevicePackageDownloadRequest request = getInstance().getFactory(DevicePackageFactory.class).newPackageDownloadRequest();
+                    request.setInstall(true);
+                    request.setName(packageName);
+                    request.setVersion(version);
+                    request.setURI(uri);
 
-                service.downloadExec(account.getId(), device.getId(), request, DEFAULT_REQUEST_TIMEOUT);
+                    service.downloadExec(account.getId(), device.getId(), request, DEFAULT_REQUEST_TIMEOUT);
+                });
             });
         });
     }
 
     @Then("The download state changes to (.+) in the next (\\d+) seconds?")
     public void assertDownloadState(final String state, int waitSeconds) throws Exception {
-        withUserAccount(currentDevice.getAccountName(), account -> {
-            withDevice(account, currentDevice.getClientId(), device -> {
-                final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
-                final DevicePackageDownloadStatus downloadState = DevicePackageDownloadStatus.valueOf(state);
+        session.withLogin(() -> {
+            withUserAccount(currentDevice.getAccountName(), account -> {
+                withDevice(account, currentDevice.getClientId(), device -> {
+                    final DevicePackageManagementService service = getInstance().getService(DevicePackageManagementService.class);
+                    final DevicePackageDownloadStatus downloadState = DevicePackageDownloadStatus.valueOf(state);
 
-                waitFor("Download state change", ofSeconds(waitSeconds), ofMillis(500), () -> {
-                    final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
-                    if (operation == null) {
-                        return false;
-                    }
+                    waitFor("Download state change", ofSeconds(waitSeconds), ofMillis(500), () -> {
+                        final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+                        if (operation == null) {
+                            return false;
+                        }
 
-                    return downloadState.equals(operation.getStatus());
+                        return downloadState.equals(operation.getStatus());
+                    });
                 });
             });
         });

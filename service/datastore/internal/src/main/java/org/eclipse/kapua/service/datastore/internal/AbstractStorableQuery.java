@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
@@ -16,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.model.Storable;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
@@ -33,7 +33,7 @@ import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
  */
 public abstract class AbstractStorableQuery<S extends Storable> implements StorableQuery<S> {
 
-    private StorablePredicate predicate = null;
+    private StorablePredicate predicate;
 
     private KapuaId scopeId;
     private int limit;
@@ -155,30 +155,16 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     @Override
     public void copy(StorableQuery<S> query) {
-        this.setAskTotalCount(query.isAskTotalCount());
-        this.setLimit(query.getLimit());
-        this.setOffset(query.getOffset());
-        this.setPredicate(query.getPredicate());
+        setAskTotalCount(query.isAskTotalCount());
+        setLimit(query.getLimit());
+        setOffset(query.getOffset());
+        setPredicate(query.getPredicate());
         // TODO extend copy to predicate (not by ref as now)
-        this.setPredicate(query.getPredicate());
-        this.setFetchStyle(query.getFetchStyle());
-        this.setSortFields(copy(query.getSortFields()));
-    }
+        setPredicate(query.getPredicate());
+        setFetchStyle(query.getFetchStyle());
 
-    private List<SortField> copy(List<SortField> sortFields) {
-        if (sortFields == null) {
-            return null;
-        } else {
-            List<SortField> copySortFields = new ArrayList<SortField>();
-            for (int i = 0; i < sortFields.size(); i++) {
-                SortField original = sortFields.get(i);
-                SortField copy = new SortFieldImpl();
-                copy.setField(original.getField());
-                copy.setSortDirection(original.getSortDirection());
-                copySortFields.add(copy);
-            }
-            return copySortFields;
+        if (query.getSortFields() != null) {
+            setSortFields(new ArrayList<>(query.getSortFields()));
         }
     }
-
 }

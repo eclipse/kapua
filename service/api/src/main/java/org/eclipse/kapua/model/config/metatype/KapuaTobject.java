@@ -26,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
-
 /**
  * <p>
  * Java class for Tobject complex type.
@@ -54,11 +53,11 @@ import org.w3c.dom.Element;
 @XmlRootElement(name = "Object", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "Tobject", propOrder = {
-                                         "attribute",
-                                         "any"
+        "attribute",
+        "any"
 }, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTobject")
-public interface KapuaTobject 
-{
+public interface KapuaTobject {
+
     /**
      * Gets the value of the attribute property.
      *
@@ -70,8 +69,9 @@ public interface KapuaTobject
      *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAttribute().add(newItem);
+     * getAttribute().add(newItem);
      * </pre>
      *
      *
@@ -95,8 +95,9 @@ public interface KapuaTobject
      *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAny().add(newItem);
+     * getAny().add(newItem);
      * </pre>
      *
      *
@@ -114,8 +115,8 @@ public interface KapuaTobject
      * Gets the value of the ocdref property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     @XmlAttribute(name = "ocdref", required = true)
@@ -125,8 +126,8 @@ public interface KapuaTobject
      * Sets the value of the ocdref property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setOcdref(String value);
@@ -143,7 +144,7 @@ public interface KapuaTobject
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     @XmlAnyAttribute
     public Map<QName, String> getOtherAttributes();

@@ -22,18 +22,17 @@ import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestCh
  * @since 1.0
  *
  */
-public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestChannel
-{
+public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestChannel {
+
     private KuraMethod method;
-    private String[]   resources;
-    private String     requestId;
-    private String     requesterClientId;
+    private String[] resources;
+    private String requestId;
+    private String requesterClientId;
 
     /**
      * Constructor
      */
-    public KuraRequestChannel()
-    {
+    public KuraRequestChannel() {
         super();
     }
 
@@ -43,8 +42,7 @@ public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestC
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraRequestChannel(String scopeNamespace, String clientId)
-    {
+    public KuraRequestChannel(String scopeNamespace, String clientId) {
         this(null, scopeNamespace, clientId);
     }
 
@@ -55,56 +53,47 @@ public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestC
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraRequestChannel(String controlDestinationPrefix, String scopeNamespace, String clientId)
-    {
+    public KuraRequestChannel(String controlDestinationPrefix, String scopeNamespace, String clientId) {
         super(controlDestinationPrefix, scopeNamespace, clientId);
     }
 
     @Override
-    public KuraMethod getMethod()
-    {
+    public KuraMethod getMethod() {
         return method;
     }
 
     @Override
-    public void setMethod(DeviceMethod method)
-    {
+    public void setMethod(DeviceMethod method) {
         this.method = (KuraMethod) method;
     }
 
     @Override
-    public String[] getResources()
-    {
+    public String[] getResources() {
         return resources;
     }
 
     @Override
-    public void setResources(String[] resources)
-    {
+    public void setResources(String[] resources) {
         this.resources = resources;
     }
 
     @Override
-    public String getRequestId()
-    {
+    public String getRequestId() {
         return requestId;
     }
 
     @Override
-    public void setRequestId(String requestId)
-    {
+    public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
 
     @Override
-    public String getRequesterClientId()
-    {
+    public String getRequesterClientId() {
         return requesterClientId;
     }
 
     @Override
-    public void setRequesterClientId(String requesterClientId)
-    {
+    public void setRequesterClientId(String requesterClientId) {
         this.requesterClientId = requesterClientId;
     }
 

@@ -19,6 +19,5 @@ import org.eclipse.kapua.message.KapuaChannel;
  * @since 1.0
  *
  */
-public interface KapuaDataChannel extends KapuaChannel
-{
+public interface KapuaDataChannel extends KapuaChannel {
 }

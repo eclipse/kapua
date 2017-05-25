@@ -26,25 +26,22 @@ import org.eclipse.kapua.service.user.UserQuery;
  *
  */
 @KapuaProvider
-public class UserFactoryImpl implements UserFactory
-{
+public class UserFactoryImpl implements UserFactory {
+
     @Override
-    public UserCreator newCreator(KapuaId scopeId, String name)
-    {
+    public UserCreator newCreator(KapuaId scopeId, String name) {
         UserCreator creator = newCreator(scopeId);
         creator.setName(name);
         return creator;
     }
-    
+
     @Override
-    public UserQuery newQuery(KapuaId scopeId)
-    {
+    public UserQuery newQuery(KapuaId scopeId) {
         return new UserQueryImpl(scopeId);
     }
 
     @Override
-    public UserListResult newListResult()
-    {
+    public UserListResult newListResult() {
         return new UserListResultImpl();
     }
 

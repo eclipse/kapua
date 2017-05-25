@@ -21,19 +21,17 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
  * 
  */
 public class AssetRequestMessage extends KapuaMessageImpl<AssetRequestChannel, AssetRequestPayload>
-                                         implements KapuaRequestMessage<AssetRequestChannel, AssetRequestPayload>
-{
+        implements KapuaRequestMessage<AssetRequestChannel, AssetRequestPayload> {
+
     @SuppressWarnings("unchecked")
     @Override
-    public Class<AssetRequestMessage> getRequestClass()
-    {
+    public Class<AssetRequestMessage> getRequestClass() {
         return AssetRequestMessage.class;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Class<AssetResponseMessage> getResponseClass()
-    {
+    public Class<AssetResponseMessage> getResponseClass() {
         return AssetResponseMessage.class;
     }
 

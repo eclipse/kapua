@@ -41,7 +41,6 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
     /**
      * Find the access token by the given tokenId.
      * 
-     * @param scopeId
      * @param tokenId
      * @return
      * @throws KapuaException
@@ -59,7 +58,6 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      *            The {@link KapuaId} scopeId of the {@link AccessToken} to delete.
      * @param id
      *            The {@link KapuaId} of the {@link AccessToken} to delete.
-     * @param kapuaId
      * 
      * @since 1.0
      */

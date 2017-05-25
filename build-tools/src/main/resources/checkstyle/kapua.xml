@@ -23,7 +23,19 @@
 
     <module name="TreeWalker">
         <module name="AvoidStarImport"/>
+        <module name="UnusedImports"/>
+
+        <module name="ExplicitInitialization"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="StringLiteralEquality"/>
+
+        <module name="FallThrough">
+           <property name="reliefPattern" value="\$FALL-THROUGH\$"/>
+        </module>
+        <module name="OneStatementPerLine"/>
+
         <module name="NeedBraces"/>
+        <module name="LeftCurly"/>
     </module>
 
     <module name="FileTabCharacter"/>

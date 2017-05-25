@@ -43,11 +43,22 @@ public class KapuaModule extends AbstractModule {
      */
     private static final String SERVICE_RESOURCE = "locator.xml";
 
+    private String resourceName;
+
+    
+    public KapuaModule() {
+        this(SERVICE_RESOURCE);
+    }
+    
+    public KapuaModule(final String resourceName) {
+        this.resourceName = resourceName;
+    }
+    
     @Override
     protected void configure() {
         try {
             // Find locator configuration file
-            List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(SERVICE_RESOURCE));
+            List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(resourceName));
             if (locatorConfigurations.isEmpty()) {
                 return;
             }
@@ -94,7 +105,6 @@ public class KapuaModule extends AbstractModule {
                 if (KapuaService.class.isAssignableFrom(kapuaObject)) {
                     for (Class<?> clazz : extendedClassInfo) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
-                            @SuppressWarnings("unchecked")
                             ServiceResolver<KapuaService, ?> resolver = ServiceResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getServiceClass()).to(resolver.getImplementationClass()).in(Singleton.class);
                             logger.info("Bind Kapua service {} to {}", kapuaObject, clazz);
@@ -113,7 +123,6 @@ public class KapuaModule extends AbstractModule {
                 if (KapuaObjectFactory.class.isAssignableFrom(kapuaObject)) {
                     for (Class<?> clazz : extendedClassInfo) {
                         if (kapuaObject.isAssignableFrom(clazz)) {
-                            @SuppressWarnings("unchecked")
                             FactoryResolver<KapuaObjectFactory, ?> resolver = FactoryResolver.newInstance(kapuaObject, clazz);
                             bind(resolver.getFactoryClass()).to(resolver.getImplementationClass()).in(Singleton.class);
                             logger.info("Bind Kapua factory {} to {}", kapuaObject, clazz);

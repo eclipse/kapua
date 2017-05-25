@@ -43,7 +43,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
 
-    private boolean m_initialized = false;
+    private boolean m_initialized;
     private boolean m_dirty = true;
 
     private DeviceTabPackages m_rootTabPanel;

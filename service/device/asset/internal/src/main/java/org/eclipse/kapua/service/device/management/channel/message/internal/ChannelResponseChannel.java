@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel
  * @since 1.0
  * 
  */
-public class ChannelResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel
-{
+public class ChannelResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
 
 }

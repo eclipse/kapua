@@ -22,13 +22,12 @@ import org.xml.sax.helpers.XMLFilterImpl;
  * @since 1.0
  *
  */
-public class XmlNamespaceFilter extends XMLFilterImpl
-{
+public class XmlNamespaceFilter extends XMLFilterImpl {
 
     /**
      * Namespace uri to be used in the mapping operations
      */
-    private String  usedNamespaceUri;
+    private String usedNamespaceUri;
 
     /**
      * Flag to choose if add or not the namespace uri
@@ -36,7 +35,7 @@ public class XmlNamespaceFilter extends XMLFilterImpl
     private boolean addNamespace;
 
     // State variable
-    private boolean addedNamespace = false;
+    private boolean addedNamespace;
 
     /**
      * Constructor
@@ -45,14 +44,12 @@ public class XmlNamespaceFilter extends XMLFilterImpl
      * @param addNamespace
      */
     public XmlNamespaceFilter(String namespaceUri,
-                              boolean addNamespace)
-    {
+            boolean addNamespace) {
         super();
 
         if (addNamespace) {
             this.usedNamespaceUri = namespaceUri;
-        }
-        else {
+        } else {
             this.usedNamespaceUri = "";
         }
         this.addNamespace = addNamespace;
@@ -60,8 +57,7 @@ public class XmlNamespaceFilter extends XMLFilterImpl
 
     @Override
     public void startDocument()
-        throws SAXException
-    {
+            throws SAXException {
         super.startDocument();
         if (addNamespace) {
             startControlledPrefixMapping();
@@ -70,31 +66,27 @@ public class XmlNamespaceFilter extends XMLFilterImpl
 
     @Override
     public void startElement(String arg0, String arg1, String arg2,
-                             Attributes arg3)
-        throws SAXException
-    {
+            Attributes arg3)
+            throws SAXException {
         super.startElement(usedNamespaceUri, arg1, arg2, arg3);
     }
 
     @Override
     public void endElement(String arg0, String arg1, String arg2)
-        throws SAXException
-    {
+            throws SAXException {
         super.endElement(usedNamespaceUri, arg1, arg2);
     }
 
     @Override
     public void startPrefixMapping(String prefix, String url)
-        throws SAXException
-    {
+            throws SAXException {
         if (addNamespace) {
             startControlledPrefixMapping();
         }
     }
 
     private void startControlledPrefixMapping()
-        throws SAXException
-    {
+            throws SAXException {
         if (addNamespace && !addedNamespace) {
             // We should add namespace since it is set and has not yet been done.
             super.startPrefixMapping("", usedNamespaceUri);

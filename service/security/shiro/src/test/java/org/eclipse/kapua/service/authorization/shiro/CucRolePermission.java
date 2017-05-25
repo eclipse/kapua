@@ -19,12 +19,12 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 
 public class CucRolePermission {
 
-    private Integer scopeId = null;
-    private Integer roleId = null;
-    private String actionName = null;
-    private KapuaId scope = null;
-    private KapuaId role = null;
-    private Actions action = null;
+    private Integer scopeId;
+    private Integer roleId;
+    private String actionName;
+    private KapuaId scope;
+    private KapuaId role;
+    private Actions action;
 
     public void doParse() {
         if (this.scopeId != null) {

@@ -39,7 +39,7 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
      * @param realmName
      * @param account
      * @param user
-     * @param credential
+     * @param credentials
      */
     public LoginAuthenticationInfo(String realmName,
             Account account,

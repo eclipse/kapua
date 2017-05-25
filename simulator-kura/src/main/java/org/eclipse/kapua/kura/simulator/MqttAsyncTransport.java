@@ -51,8 +51,8 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
 
         final MemoryPersistence persistence = new MemoryPersistence();
         final String plainBrokerUrl = plainUrl(configuration.getBrokerUrl());
-        client = new MqttAsyncClient(plainBrokerUrl, configuration.getClientId(), persistence);
-        client.setCallback(new MqttCallback() {
+        this.client = new MqttAsyncClient(plainBrokerUrl, configuration.getClientId(), persistence);
+        this.client.setCallback(new MqttCallback() {
 
             @Override
             public void messageArrived(final String topic, final MqttMessage message) throws Exception {
@@ -67,13 +67,13 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
                 handleDisconnected();
             }
         });
-        connectOptions = createConnectOptions(configuration.getBrokerUrl());
+        this.connectOptions = createConnectOptions(configuration.getBrokerUrl());
     }
 
     @Override
     public void connect() {
         try {
-            client.connect(connectOptions, null, new IMqttActionListener() {
+            this.client.connect(this.connectOptions, null, new IMqttActionListener() {
 
                 @Override
                 public void onSuccess(final IMqttToken asyncActionToken) {
@@ -93,7 +93,7 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
     @Override
     public void disconnect() {
         try {
-            client.disconnect(null, new IMqttActionListener() {
+            this.client.disconnect(null, new IMqttActionListener() {
 
                 @Override
                 public void onSuccess(final IMqttToken asyncActionToken) {
@@ -113,9 +113,9 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
     @Override
     public void close() throws MqttException {
         try {
-            client.disconnect(0).waitForCompletion();
+            this.client.disconnect(0).waitForCompletion();
         } finally {
-            client.close();
+            this.client.close();
         }
     }
 
@@ -124,7 +124,7 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
         requireNonNull(consumer);
 
         try {
-            client.subscribe(topic.render(topicContext), 0, null, null, new IMqttMessageListener() {
+            this.client.subscribe(topic.render(this.topicContext), 0, null, null, new IMqttMessageListener() {
 
                 @Override
                 public void messageArrived(final String topic, final MqttMessage mqttMessage) throws Exception {
@@ -143,7 +143,7 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
     @Override
     public void unsubscribe(final Topic topic) {
         try {
-            client.unsubscribe(topic.render(topicContext));
+            this.client.unsubscribe(topic.render(this.topicContext));
         } catch (final MqttException e) {
             if (e.getReasonCode() != MqttException.REASON_CODE_CLIENT_NOT_CONNECTED) {
                 logger.warn("Failed to unsubscribe: {}", topic, e);
@@ -153,23 +153,23 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
 
     @Override
     public void whenConnected(final Runnable runnable) {
-        onConnected = runnable;
+        this.onConnected = runnable;
     }
 
     @Override
     public void whenDisconnected(final Runnable runnable) {
-        onDisconnected = runnable;
+        this.onDisconnected = runnable;
     }
 
     protected void handleConnected() {
-        final Runnable runnable = onConnected;
+        final Runnable runnable = this.onConnected;
         if (runnable != null) {
             runnable.run();
         }
     }
 
     protected void handleDisconnected() {
-        final Runnable runnable = onDisconnected;
+        final Runnable runnable = this.onDisconnected;
         if (runnable != null) {
             runnable.run();
         }
@@ -182,12 +182,13 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
         }
 
         try {
-            final String fullTopic = topic.render(topicContext);
+            final String fullTopic = topic.render(this.topicContext);
             logger.debug("Full topic: {}", fullTopic);
 
-            client.publish(fullTopic, payload, 0, false);
+            this.client.publish(fullTopic, payload, 0, false);
         } catch (final Exception e) {
             logger.warn("Failed to send out message", e);
+            throw new RuntimeException(e);
         }
     }
 

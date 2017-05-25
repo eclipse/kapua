@@ -75,7 +75,6 @@ public class ClientInfoXContentBuilder {
     /**
      * Get the client key (return the hash code of the string obtained by concatenating the accountName and the clientName with the slash)
      *
-     * @param accountName
      * @param clientName
      * @return
      * @since 1.0.0
@@ -91,7 +90,6 @@ public class ClientInfoXContentBuilder {
      * @param clientId
      * @param msgId
      * @param msgTimestamp
-     * @param account
      * @return
      * @throws EsDocumentBuilderException
      * @since 1.0.0

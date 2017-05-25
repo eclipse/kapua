@@ -19,14 +19,15 @@ import org.eclipse.kapua.message.Message;
 /**
  * Device message definition.
  * 
- * @param <C> channel type
- * @param <P> payload type
+ * @param <C>
+ *            channel type
+ * @param <P>
+ *            payload type
  * 
  * @since 1.0
  * 
  */
-public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload> extends Message<C,P>
-{
+public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload> extends Message<C, P> {
 
     /**
      * Get the channel associated to the message

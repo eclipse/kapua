@@ -26,22 +26,21 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  *
  */
-public class UserEntityManagerFactory extends AbstractEntityManagerFactory
-{
+public class UserEntityManagerFactory extends AbstractEntityManagerFactory {
+
     @SuppressWarnings("unused")
-    private static final Logger              LOG                 = LoggerFactory.getLogger(UserEntityManagerFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserEntityManagerFactory.class);
 
-    private static final String              PERSISTENCE_UNIT_NAME = "kapua-user";
-    private static final String              DATASOURCE_NAME       = "kapua-dbpool";
-    private static final Map<String, String> uniqueConstraints   = new HashMap<>();
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-user";
+    private static final String DATASOURCE_NAME = "kapua-dbpool";
+    private static final Map<String, String> uniqueConstraints = new HashMap<>();
 
-    private static UserEntityManagerFactory  instance              = new UserEntityManagerFactory();
+    private static UserEntityManagerFactory instance = new UserEntityManagerFactory();
 
     /**
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
-    private UserEntityManagerFactory()
-    {
+    private UserEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, uniqueConstraints);
     }
 
@@ -50,8 +49,7 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory
      * 
      * @return
      */
-    public static EntityManagerFactory getInstance()
-    {
+    public static EntityManagerFactory getInstance() {
         return instance;
     }
 }

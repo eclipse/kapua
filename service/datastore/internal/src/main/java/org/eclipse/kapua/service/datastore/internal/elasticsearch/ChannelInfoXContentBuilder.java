@@ -59,7 +59,6 @@ public class ChannelInfoXContentBuilder {
     /**
      * Get the channel key (return the hash code of the string obtained by concatenating the accountName, clientId and channel with the slash)
      *
-     * @param accountName
      * @param clientId
      * @param channel
      * @return
@@ -90,7 +89,6 @@ public class ChannelInfoXContentBuilder {
      * <b>If the id is null then it is generated</b>
      *
      * @param id
-     * @param accountName
      * @param clientId
      * @param channel
      * @return
@@ -105,7 +103,7 @@ public class ChannelInfoXContentBuilder {
     }
 
     /**
-     * Get the channel identifier getting parameters from the metricInfoCreator. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel)}
+     * Get the channel identifier getting parameters from the metricInfoCreator. Then it calls {@link #getOrDeriveId(StorableId, KapuaId, String, String)}
      *
      * @param id
      * @param channelInfoCreator
@@ -120,7 +118,7 @@ public class ChannelInfoXContentBuilder {
     }
 
     /**
-     * Get the channel identifier getting parameters from the channelInfo. Then it calls {@link getOrDeriveId(StorableId id, String accountName, String clientId, String channel)}
+     * Get the channel identifier getting parameters from the channelInfo. Then it calls {@link #getOrDeriveId(StorableId, KapuaId, String, String)}
      *
      * @param id
      * @param channelInfo

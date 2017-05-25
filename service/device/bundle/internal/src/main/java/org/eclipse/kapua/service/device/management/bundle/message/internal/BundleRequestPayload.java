@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
  * @since 1.0
  * 
  */
-public class BundleRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload
-{
+public class BundleRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
 
 }

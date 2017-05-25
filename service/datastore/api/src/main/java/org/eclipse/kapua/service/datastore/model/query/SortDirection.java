@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public enum SortDirection
-{
+public enum SortDirection {
     /**
      * Ascending
      */

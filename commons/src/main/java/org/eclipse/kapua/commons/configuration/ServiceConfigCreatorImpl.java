@@ -25,8 +25,8 @@ import org.eclipse.kapua.model.id.KapuaId;
  *
  */
 public class ServiceConfigCreatorImpl extends AbstractKapuaEntityCreator<ServiceConfig>
-                                      implements ServiceConfigCreator
-{
+        implements ServiceConfigCreator {
+
     private static final long serialVersionUID = 7508550960304732465L;
 
     @XmlElement(name = "pid")
@@ -34,38 +34,33 @@ public class ServiceConfigCreatorImpl extends AbstractKapuaEntityCreator<Service
 
     @XmlElement(name = "configurations")
     private Properties configurations;
-    
+
     /**
      * Constructor
      * 
      * @param scopeId
      */
-    protected ServiceConfigCreatorImpl(KapuaId scopeId)
-    {
+    protected ServiceConfigCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     @Override
-    public String getPid()
-    {
+    public String getPid() {
         return pid;
     }
 
     @Override
-    public void setPid(String pid)
-    {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
     @Override
-    public Properties getConfigurations()
-    {
+    public Properties getConfigurations() {
         return this.configurations;
     }
 
     @Override
-    public void setConfigurations(Properties configurations)
-    {
+    public void setConfigurations(Properties configurations) {
         this.configurations = configurations;
     }
 }

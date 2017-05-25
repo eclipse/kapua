@@ -21,8 +21,7 @@ import org.eclipse.kapua.message.KapuaPayload;
  * @since 1.0
  *
  */
-public interface KapuaResponsePayload extends KapuaPayload
-{
+public interface KapuaResponsePayload extends KapuaPayload {
 
     /**
      * Get the exception message (if present)

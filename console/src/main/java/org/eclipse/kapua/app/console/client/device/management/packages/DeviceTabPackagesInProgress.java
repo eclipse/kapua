@@ -52,7 +52,7 @@ public class DeviceTabPackagesInProgress extends TabItem {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
 
-    private boolean componentInitialized = false;
+    private boolean componentInitialized;
     private boolean contentDirty = true;
 
     private DeviceTabPackages parentTabPanel;

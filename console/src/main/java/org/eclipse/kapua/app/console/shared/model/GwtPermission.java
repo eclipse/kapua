@@ -36,7 +36,7 @@ public class GwtPermission extends KapuaBaseModel {
         group, //
         role, //
         user, //
-        
+
         ALL; //
     }
 
@@ -49,7 +49,7 @@ public class GwtPermission extends KapuaBaseModel {
         delete, //
         connect, //
         execute,
-        
+
         ALL;
 
         @Override
@@ -80,17 +80,22 @@ public class GwtPermission extends KapuaBaseModel {
     /**
      * Gwt Permission constructor.
      *
-     * @param domain        The {@link GwtDomain} of the permission
-     * @param action        The {@link GwtAction} of the permission
-     * @param targetScopeId The target scope id of the permission
-     * @param groupId       The group id of the permission
+     * @param domain
+     *            The {@link GwtDomain} of the permission
+     * @param action
+     *            The {@link GwtAction} of the permission
+     * @param targetScopeId
+     *            The target scope id of the permission
+     * @param groupId
+     *            The group id of the permission
      */
-    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId, String groupId) {
+    public GwtPermission(GwtDomain domain, GwtAction action, String targetScopeId, String groupId, boolean forwardable) {
         this();
         setDomain(domain != null ? domain.name() : null);
         setAction(action != null ? action.name() : null);
         setTargetScopeId(targetScopeId);
         setGroupId(groupId);
+        setForwardable(forwardable);
     }
 
     /**
@@ -106,13 +111,13 @@ public class GwtPermission extends KapuaBaseModel {
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        
+
         if (getAction() != null) {
             sb.append(getDomainEnum().name());
         } else {
             sb.append("*");
         }
-        
+
         sb.append(":");
         if (getAction() != null) {
             sb.append(getActionEnum().name());
@@ -191,6 +196,14 @@ public class GwtPermission extends KapuaBaseModel {
 
     public void setGroupId(String groupId) {
         set("groupId", groupId);
+    }
+
+    public boolean getForwardable() {
+        return get("forwardable");
+    }
+
+    public void setForwardable(boolean forwardable) {
+        set("forwardable", forwardable);
     }
 
 }

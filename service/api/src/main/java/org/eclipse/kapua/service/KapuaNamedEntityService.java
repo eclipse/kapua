@@ -17,13 +17,13 @@ import org.eclipse.kapua.model.KapuaEntity;
 /**
  * Common interface for all KapuaService that are managing identifiable entities.
  *
- * @param <E> - Class of the KapuaEntity being managed by this Service
+ * @param <E>
+ *            - Class of the KapuaEntity being managed by this Service
  * 
  * @since 1.0
  * 
  */
-public interface KapuaNamedEntityService<E extends KapuaEntity> extends KapuaService
-{
+public interface KapuaNamedEntityService<E extends KapuaEntity> extends KapuaService {
 
     /**
      * Find the entity by name
@@ -33,5 +33,5 @@ public interface KapuaNamedEntityService<E extends KapuaEntity> extends KapuaSer
      * @throws KapuaException
      */
     public E findByName(String name)
-        throws KapuaException;
+            throws KapuaException;
 }

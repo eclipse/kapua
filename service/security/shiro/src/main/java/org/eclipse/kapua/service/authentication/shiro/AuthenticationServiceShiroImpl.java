@@ -295,6 +295,72 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return accessToken;
     }
 
+    @Override
+    public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
+        Date now = new Date();
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
+        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findAccessToken(tokenId));
+        if (expiredAccessToken == null ||
+                expiredAccessToken.getInvalidatedOn() != null && now.after(expiredAccessToken.getInvalidatedOn()) ||
+                !expiredAccessToken.getRefreshToken().equals(refreshToken) ||
+                expiredAccessToken.getRefreshExpiresOn() != null && now.after(expiredAccessToken.getRefreshExpiresOn())) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR);
+        }
+        KapuaSecurityUtils.doPrivileged(() -> {
+            accessTokenService.invalidate(expiredAccessToken.getScopeId(), expiredAccessToken.getId());
+            return null;
+        });
+        return createAccessToken((KapuaEid) expiredAccessToken.getScopeId(), (KapuaEid) expiredAccessToken.getUserId());
+    }
+
+    @Override
+    public boolean verifyCredentials(LoginCredentials loginCredentials) throws KapuaException {
+        //
+        // Parse login credentials
+        AuthenticationToken shiroAuthenticationToken;
+        if (loginCredentials instanceof UsernamePasswordCredentialsImpl) {
+            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(((UsernamePasswordCredentialsImpl) loginCredentials).getUsername(),
+                    ((UsernamePasswordCredentialsImpl) loginCredentials).getPassword());
+        } else {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
+        }
+
+        //
+        // Login the user
+        Subject currentUser = null;
+        try {
+            //
+            // Shiro login
+            currentUser = SecurityUtils.getSubject();
+            currentUser.login(shiroAuthenticationToken);
+        } catch (ShiroException se) {
+
+            KapuaAuthenticationException kae;
+            if (se instanceof UnknownAccountException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
+            } else if (se instanceof DisabledAccountException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
+            } else if (se instanceof LockedAccountException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
+            } else if (se instanceof IncorrectCredentialsException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, se, shiroAuthenticationToken.getPrincipal());
+            } else if (se instanceof ExpiredCredentialsException) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS, se, shiroAuthenticationToken.getPrincipal());
+            } else {
+                throw KapuaException.internalError(se);
+            }
+
+            if (currentUser != null) {
+                currentUser.logout();
+            }
+
+            throw kae;
+        }
+
+        return true;
+    }
+
     //
     // Private Methods
     //
@@ -428,22 +494,4 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return jwt;
     }
 
-    @Override
-    public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
-        Date now = new Date();
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
-        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findAccessToken(tokenId));
-        if (expiredAccessToken == null ||
-                expiredAccessToken.getInvalidatedOn() != null && now.after(expiredAccessToken.getInvalidatedOn()) ||
-                !expiredAccessToken.getRefreshToken().equals(refreshToken) ||
-                expiredAccessToken.getRefreshExpiresOn() != null && now.after(expiredAccessToken.getRefreshExpiresOn())) {
-            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR);
-        }
-        KapuaSecurityUtils.doPrivileged(() -> {
-            accessTokenService.invalidate(expiredAccessToken.getScopeId(), expiredAccessToken.getId());
-            return null;
-        });
-        return createAccessToken((KapuaEid) expiredAccessToken.getScopeId(), (KapuaEid) expiredAccessToken.getUserId());
-    }
 }

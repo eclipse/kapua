@@ -22,21 +22,19 @@ import org.eclipse.kapua.service.device.call.message.app.response.kura.KuraRespo
  * @since 1.0
  * 
  */
-public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> implements DeviceCallback<KuraResponseMessage>
-{
+public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> implements DeviceCallback<KuraResponseMessage> {
+
     private static final long serialVersionUID = -6909761350290400843L;
 
     /**
      * Constructor
      */
-    public KuraDeviceResponseContainer()
-    {
+    public KuraDeviceResponseContainer() {
         super();
     }
 
     @Override
-    public void responseReceived(KuraResponseMessage response)
-    {
+    public void responseReceived(KuraResponseMessage response) {
         synchronized (this) {
             add(response);
             notifyAll();
@@ -44,8 +42,7 @@ public class KuraDeviceResponseContainer extends ArrayList<KuraResponseMessage> 
     }
 
     @Override
-    public void timedOut()
-    {
+    public void timedOut() {
         synchronized (this) {
             notifyAll();
         }

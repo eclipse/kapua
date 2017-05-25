@@ -17,8 +17,7 @@ package org.eclipse.kapua.service.device.management.packages.model.download;
  * @since 1.0
  *
  */
-public enum DevicePackageDownloadStatus
-{
+public enum DevicePackageDownloadStatus {
     /**
      * In progress
      */

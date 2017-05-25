@@ -73,7 +73,7 @@ public interface GwtUserService extends RemoteService {
     /**
      * Returns the list of all User which belong to an account.
      * 
-     * @param scopeIdStirng
+     * @param scopeIdString
      * @return
      * @throws GwtKapuaException
      * 

@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.client.about.AboutView;
 import org.eclipse.kapua.app.console.client.account.AccountDetailsView;
 import org.eclipse.kapua.app.console.client.account.AccountView;
 import org.eclipse.kapua.app.console.client.connection.ConnectionView;
-import org.eclipse.kapua.app.console.client.credential.CredentialView;
 import org.eclipse.kapua.app.console.client.data.DataView;
 import org.eclipse.kapua.app.console.client.device.DevicesView;
 import org.eclipse.kapua.app.console.client.group.GroupView;
@@ -253,17 +252,6 @@ public class WestNavigationView extends LayoutContainer {
                     m_centerPanel.add(panel);
                     m_centerPanel.layout();
                     dashboardSelected = false;
-                } else if ("credential".equals(selectedId)) {
-
-                    panel.setIcon(new KapuaIcon(IconSet.KEY));
-                    panel.setHeading(MSGS.credentials());
-
-                    CredentialView userView = new CredentialView(m_currentSession);
-                    panel.add(userView);
-
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
-                    dashboardSelected = false;
                 } else if ("groups".equals(selectedId)) {
                     panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
                     panel.setHeading(MSGS.groups());
@@ -470,6 +458,7 @@ public class WestNavigationView extends LayoutContainer {
                     @Override
                     public void handleEvent(BaseEvent be) {
                         if (dashboardSelected) {
+                            // FIXME: seems to be dead code
                             m_welcomeView.refresh();
                         }
                     }

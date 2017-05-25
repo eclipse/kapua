@@ -17,36 +17,34 @@ import org.eclipse.kapua.app.console.client.messages.ValidationMessages;
 
 import com.google.gwt.core.client.GWT;
 
-public class MessageUtils
-{
+public class MessageUtils {
+
+    private MessageUtils() {
+    }
+
     private static final ValidationMessages VMSGS = GWT.create(ValidationMessages.class);
 
-    public static String get(String key)
-    {
+    public static String get(String key) {
         try {
             return VMSGS.getString(key);
-        }
-        catch (MissingResourceException mre) {
+        } catch (MissingResourceException mre) {
             return "";
         }
     }
 
-    public static String get(String key, Object... arguments)
-    {
+    public static String get(String key, Object... arguments) {
         try {
             String message = VMSGS.getString(key);
             if (arguments != null) {
                 message = doFormat(message, arguments);
             }
             return message;
-        }
-        catch (MissingResourceException mre) {
+        } catch (MissingResourceException mre) {
             return "";
         }
     }
 
-    private static String doFormat(String s, Object[] arguments)
-    {
+    private static String doFormat(String s, Object[] arguments) {
         // A very simple implementation of format
         int i = 0;
         while (i < arguments.length) {

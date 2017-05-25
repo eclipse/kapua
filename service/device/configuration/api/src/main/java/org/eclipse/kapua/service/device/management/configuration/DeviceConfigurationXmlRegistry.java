@@ -32,18 +32,16 @@ public class DeviceConfigurationXmlRegistry {
      * 
      * @return
      */
-    public DeviceConfiguration newConfiguration()
-    {
+    public DeviceConfiguration newConfiguration() {
         return factory.newConfigurationInstance();
     }
-    
+
     /**
      * Creates a new device component configuration
      * 
      * @return
      */
-    public DeviceComponentConfiguration newComponentConfiguration()
-    {
+    public DeviceComponentConfiguration newComponentConfiguration() {
         return factory.newComponentConfigurationInstance(null);
     }
 }

@@ -19,7 +19,6 @@ import org.eclipse.kapua.message.KapuaMessage;
  * @since 1.0
  *
  */
-public interface KapuaAppsMessage extends KapuaMessage<KapuaAppsChannel, KapuaAppsPayload>
-{
+public interface KapuaAppsMessage extends KapuaMessage<KapuaAppsChannel, KapuaAppsPayload> {
 
 }

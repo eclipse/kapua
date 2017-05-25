@@ -50,12 +50,12 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, updatedProps);
         if (availableChildEntitiesWithNewConfig < 0) {
             throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG);
-//            parentValidation = "you can't set limited entities if current limit is lower than actual child accounts count";
+            // parentValidation = "you can't set limited entities if current limit is lower than actual child accounts count";
         }
         int availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId);
         if (availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig < 0) {
             throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG);
-//            parentValidation = "parent account child entities limit is lower than the sum of his child entities and his children's assigned child entities";
+            // parentValidation = "parent account child entities limit is lower than the sum of his child entities and his children's assigned child entities";
         }
         return true;
     }
@@ -67,7 +67,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     /**
      * 
      * @param scopeId
-     *            The {@link ScopeId} of the account to be tested
+     *            The {@link KapuaId} of the account to be tested
      * @param configuration
      *            The configuration to be tested. If null will be read
      *            from the current service configuration; otherwise the passed configuration

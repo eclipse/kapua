@@ -25,12 +25,10 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "snapshot")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "id", 
-                      "timestamp" },
-        factoryClass = DeviceSnapshotXmlRegistry.class, 
-        factoryMethod = "newDeviceSnapshot")
+@XmlType(propOrder = { "id",
+        "timestamp" }, factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshot")
 public interface DeviceSnapshot {
-    
+
     /**
      * Get the snapshot identifier
      * 
@@ -38,7 +36,7 @@ public interface DeviceSnapshot {
      */
     @XmlElement(name = "id")
     public String getId();
-    
+
     /**
      * Set the snapshot identifier
      * 
@@ -53,7 +51,7 @@ public interface DeviceSnapshot {
      */
     @XmlElement(name = "timestamp")
     public Long getTimestamp();
-    
+
     /**
      * Set the snapshot timestamp
      * 

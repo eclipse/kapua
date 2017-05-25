@@ -11,12 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
+
 /**
  * ACL constants
  * 
  * @since 1.0
  */
 public class AclConstants {
+
+    private AclConstants() {
+    }
 
     public static final String VT_TOPIC_PREFIX_TEMPLATE = "VirtualTopic.{0}";
     public static final String VT_TOPIC_PREFIX = "VirtualTopic.";
@@ -36,9 +43,8 @@ public class AclConstants {
     public final static String ACL_DATA_ACC_CLI = "VirtualTopic.{0}.{1}.>";
     public final static String ACL_CTRL_ACC_NOTIFY = "VirtualTopic.$EDC.{0}.*.*.NOTIFY.{1}.>";
 
-    public final static String[] ACL_VT_DURABLE_PREFIX = new String[] {
-            "Consumer.{0}:AT_LEAST_ONCE.{1}",
-            "Consumer.{0}:EXACTLY_ONCE.{1}" };
+    public final static List<String> ACL_VT_DURABLE_PREFIX = ImmutableList.of(
+            "Consumer.{0}:AT_LEAST_ONCE.{1}", "Consumer.{0}:EXACTLY_ONCE.{1}");
 
     // full client id, with account prepended
     public final static String MULTI_ACCOUNT_CLIENT_ID = "{0}:{1}";

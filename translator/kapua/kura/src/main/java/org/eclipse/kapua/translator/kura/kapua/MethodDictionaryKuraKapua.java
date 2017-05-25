@@ -42,6 +42,9 @@ public class MethodDictionaryKuraKapua {
         dictionary.put(KuraMethod.EXEC, KapuaMethod.EXECUTE);
     }
 
+    private MethodDictionaryKuraKapua () {
+    }
+    
     /**
      * Returns the action translation from Kura domain to Kapua domain
      *

@@ -1,0 +1,100 @@
+<!--
+	Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+   
+	All rights reserved. This program and the accompanying materials
+	are made available under the terms of the Eclipse Public License v1.0
+	which accompanies this distribution, and is available at
+	http://www.eclipse.org/legal/epl-v10.html
+   
+	Contributors:
+	   Eurotech - initial API and implementation
+	   Red Hat Inc
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>kapua-dev-tools</artifactId>
+		<groupId>org.eclipse.kapua</groupId>
+		<version>0.2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>kapua-cucumber-reports</artifactId>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>kapua-cucumber-report</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/descriptors/kapua-cucumber-report.xml</descriptor>
+							</descriptors>
+							<finalName>kapua-cucumber-report</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<attach>false</attach><!-- unable to attach a directory -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.1</version>
+						<configuration>
+							<environmentVariables>
+								<KAPUA_VERSION>${project.version}</KAPUA_VERSION>
+								<TOMCAT_VERSION>${tomcat.version}</TOMCAT_VERSION>
+								<ACTIVEMQ_VERSION>${activemq.version}</ACTIVEMQ_VERSION>
+							</environmentVariables>
+						</configuration>
+						<executions>
+							<execution>
+								<id>vagrant_console_deploy</id>
+								<phase>install</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>./deployScript/deploy-apps.sh</executable>
+									<workingDirectory>${basedir}/../src/main/vagrant/demo</workingDirectory>
+								</configuration>
+							</execution>
+							<execution>
+								<id>vagrant_broker_deploy</id>
+								<phase>install</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>./deployScript/deploy-broker.sh</executable>
+									<workingDirectory>${basedir}/../src/main/vagrant/demo</workingDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

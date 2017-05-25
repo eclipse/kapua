@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.model.id;
 
@@ -24,20 +25,17 @@ public interface KapuaIdFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link KapuaId} starting the provided short identifier.<br>
-     * <b>This operation must be the inverse function of {@link KapuaId#getShortId} so, in other word, this code should't fail:
-     * </b>
+     * <p>
+     * <b>Note:</b> This operation must be the inverse function of {@link KapuaId#toCompactId()} so, in other word, this code should't fail:
+     * </p>
      * 
-     * <pre>
-     * 
-     * {
-     *     &#64;code
-     *     KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getService(KapuaIdFactory.class);
-     *     String shortId = "some well formed encoded short id";
-     *     KapuaId id = kapuaIdFactory.newKapuaId(shortId);
-     *     String shortIdConverted = id.getShortId();
-     *     AssertTrue(shortId.equals(shortIdConverted));
-     * }
-     * </pre>
+     * <pre>{@code
+     * KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getService(KapuaIdFactory.class);
+     * String shortId = "some well formed encoded short id";
+     * KapuaId id = kapuaIdFactory.newKapuaId(shortId);
+     * String shortIdConverted = id.getShortId();
+     * AssertTrue(shortId.equals(shortIdConverted));
+     * }</pre>
      * 
      * @param shortId
      *            The {@link KapuaId} short id to parse.

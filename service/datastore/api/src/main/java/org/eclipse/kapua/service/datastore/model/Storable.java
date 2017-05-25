@@ -16,7 +16,6 @@ package org.eclipse.kapua.service.datastore.model;
  * 
  * @since 1.0
  */
-public interface Storable
-{
+public interface Storable {
 
 }

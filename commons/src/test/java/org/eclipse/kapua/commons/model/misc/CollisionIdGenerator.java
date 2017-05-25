@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates
+ * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,7 @@ public class CollisionIdGenerator {
     private BigInteger startIncrementalValue;
     private int fixedValueGenerationCount;
 
-    private int extractedValues = 0;
+    private int extractedValues;
 
     public CollisionIdGenerator(String fixedValue, BigInteger startIncrementalValue, int fixedValueGenerationCount) {
         this.fixedValue = fixedValue;

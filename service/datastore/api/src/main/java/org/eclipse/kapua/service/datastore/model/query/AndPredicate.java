@@ -19,8 +19,7 @@ import java.util.List;
  * @since 1.0
  *
  */
-public interface AndPredicate extends StorablePredicate
-{
+public interface AndPredicate extends StorablePredicate {
 
     /**
      * Get the {@link StorablePredicate} list

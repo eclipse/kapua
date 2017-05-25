@@ -135,7 +135,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     }
 
     /**
-     * The {@link AbstractKapuaUpdatableEntity#prePersistAction} is overridden because the property {@link AbstractKapuaEntity#createdBy}
+     * The {@link AbstractKapuaUpdatableEntity#prePersistsAction()} is overridden because the property {@link AbstractKapuaEntity#getCreatedBy()}
      * must be set to the current userId instead of the user in session, which is not set at the time of the creation of this {@link AccessToken}.
      * 
      * @since 1.0.0

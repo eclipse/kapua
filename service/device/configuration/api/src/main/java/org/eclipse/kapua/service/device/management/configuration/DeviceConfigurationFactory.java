@@ -19,8 +19,7 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
  * @since 1.0
  * 
  */
-public interface DeviceConfigurationFactory extends KapuaObjectFactory
-{
+public interface DeviceConfigurationFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link DeviceComponentConfiguration} using the given component configuration identifier

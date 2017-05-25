@@ -73,7 +73,6 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
      * Constructor
      *
      * @param scopeId
-     * @param name
      */
     public AccountImpl(KapuaId scopeId) {
         super(scopeId);

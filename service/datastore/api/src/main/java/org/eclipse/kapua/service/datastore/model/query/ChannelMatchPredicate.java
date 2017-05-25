@@ -17,8 +17,8 @@ package org.eclipse.kapua.service.datastore.model.query;
  * @since 1.0
  *
  */
-public interface ChannelMatchPredicate extends StorablePredicate
-{
+public interface ChannelMatchPredicate extends StorablePredicate {
+
     /**
      * Get the channel expression (may use wildcard)
      * 

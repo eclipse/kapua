@@ -52,8 +52,8 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  */
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
-    private Domain domain = null;
-    private String pid = null;
+    private Domain domain;
+    private String pid;
 
     /**
      * Constructor
@@ -203,7 +203,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Create the service configuration entity
      *
-     * @param em
      * @param serviceConfig
      * @return
      * @throws KapuaException
@@ -217,7 +216,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Update the service configuration entity
      *
-     * @param em
      * @param serviceConfig
      * @return
      * @throws KapuaException

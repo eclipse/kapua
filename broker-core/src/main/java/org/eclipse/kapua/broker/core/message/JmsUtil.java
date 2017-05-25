@@ -43,6 +43,9 @@ public class JmsUtil {
 
     public static final Logger logger = LoggerFactory.getLogger(JmsUtil.class);
 
+    private JmsUtil() {
+    }
+
     /**
      * Return the topic for the message's destination
      *
@@ -100,8 +103,7 @@ public class JmsUtil {
      * @param jmsMessage
      * @throws JMSException
      * @throws KapuaException
-     * @throws KapuaInvalidTopicException
-     * @see {@link AbstractKapuaConverter}
+     * @see AbstractKapuaConverter
      */
 
     // TODO check the code with huge messages
@@ -161,7 +163,7 @@ public class JmsUtil {
 
         // second step.... from device dependent protocol (unknown) to Kapua
         Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = Translator.getTranslatorFor(deviceMessageType, kapuaMessageType);
-        KapuaMessage<?,?> message = translatorToKapua.translate(deviceMessage);
+        KapuaMessage<?, ?> message = translatorToKapua.translate(deviceMessage);
         message.setClientId(clientId);
         return message;
     }

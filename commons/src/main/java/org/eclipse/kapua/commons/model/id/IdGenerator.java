@@ -28,6 +28,9 @@ public class IdGenerator {
     private final static SecureRandom secureRandom = new SecureRandom();
     private final static int ID_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
 
+    private IdGenerator() {
+    }
+
     /**
      * Generate a {@link BigInteger} random value.<br>
      * For more detail refer to: {@link SystemSettingKey#KAPUA_KEY_SIZE}

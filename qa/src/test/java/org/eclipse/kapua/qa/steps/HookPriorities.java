@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2017 Red Hat Inc and others.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +18,9 @@ import cucumber.api.java.Before;
  * Priorities for the {@link Before} and {@link After} hook annotations
  */
 public final class HookPriorities {
+
+    private HookPriorities() {
+    }
 
     /*
      * Fire up the database first and shut it down last

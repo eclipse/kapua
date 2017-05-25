@@ -40,9 +40,7 @@ public class MetricInfoImpl implements MetricInfo {
     /**
      * Construct a metric information for the given scope
      * 
-     * @param scope
-     * 
-     * @since 1.0.0
+     * @param scopeId
      */
     public MetricInfoImpl(KapuaId scopeId) {
         setScopeId(scopeId);
@@ -51,10 +49,8 @@ public class MetricInfoImpl implements MetricInfo {
     /**
      * Construct a metric information for the given scope and storable identifier
      * 
-     * @param scope
+     * @param scopeId
      * @param id
-     * 
-     * @since 1.0.0
      */
     public MetricInfoImpl(KapuaId scopeId, StorableId id) {
         this(scopeId);

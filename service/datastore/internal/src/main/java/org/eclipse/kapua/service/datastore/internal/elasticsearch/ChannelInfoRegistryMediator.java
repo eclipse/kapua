@@ -39,13 +39,11 @@ public interface ChannelInfoRegistryMediator {
     /**
      * On before channel info delete event handler
      *
-     * @param scopeId
      * @param channelInfo
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException
      * @throws EsQueryConversionException
      * @throws EsClientUnavailableException
-     * @since 1.0.0
      */
     public void onBeforeChannelInfoDelete(ChannelInfo channelInfo)
             throws KapuaIllegalArgumentException,
@@ -56,9 +54,7 @@ public interface ChannelInfoRegistryMediator {
     /**
      * On after channel info delete event handler
      *
-     * @param scopeId
      * @param channelInfo
-     * @since 1.0.0
      */
     public void onAfterChannelInfoDelete(ChannelInfo channelInfo);
 }

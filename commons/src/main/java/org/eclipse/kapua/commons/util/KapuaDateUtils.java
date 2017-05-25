@@ -21,11 +21,11 @@ import java.util.Locale;
 
 /**
  * Date utilities
- *
- * @since 1.0
- *
  */
-public class KapuaDateUtils {
+public final class KapuaDateUtils {
+
+    private KapuaDateUtils() {
+    }
 
     private static final String DEFAULT_DATE_PATTERN = "MM/dd/yyyy h:mm a"; // example 24/01/2017 11:22 AM
 
@@ -41,13 +41,13 @@ public class KapuaDateUtils {
     public static Instant getKapuaSysDate() {
         return Instant.now();
     }
-    
-    public static ZoneId getTimeZone () {
+
+    public static ZoneId getTimeZone() {
         return ZoneOffset.UTC;
     }
 
     /**
-     * Parse the provided String using the default pattern {@value #DEFAULT_DATE_PATTERN} and the default locale {@link #getKapuaLocale() getKapuaLocale}
+     * Parse the provided String using the default pattern {@value #DEFAULT_DATE_PATTERN}
      *
      * @param date
      * @return

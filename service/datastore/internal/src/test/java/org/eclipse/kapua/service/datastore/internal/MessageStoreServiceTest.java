@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import static java.util.Objects.requireNonNull;
 import static org.eclipse.kapua.service.datastore.internal.Elasticsearch.refreshAllIndices;
+import static org.eclipse.kapua.service.datastore.model.query.SortField.ascending;
+import static org.eclipse.kapua.service.datastore.model.query.SortField.descending;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -69,7 +71,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -90,6 +91,7 @@ import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -107,13 +109,15 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
 
-    private static final DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
-    private static final DeviceFactory deviceFactory = KapuaLocator.getInstance().getFactory(DeviceFactory.class);
-    private static final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
-    private static final DatastoreObjectFactory datastoreObjectFactory = KapuaLocator.getInstance().getFactory(DatastoreObjectFactory.class);
-    private static final ChannelInfoRegistryService channelInfoRegistryService = KapuaLocator.getInstance().getService(ChannelInfoRegistryService.class);
-    private static final MetricInfoRegistryService metricInfoRegistryService = KapuaLocator.getInstance().getService(MetricInfoRegistryService.class);
-    private static final ClientInfoRegistryService clientInfoRegistryService = KapuaLocator.getInstance().getService(ClientInfoRegistryService.class);
+    private static final KapuaLocator locator = KapuaLocator.getInstance();
+    private static final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+    private static final DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
+    private static final MessageStoreService messageStoreService = locator.getService(MessageStoreService.class);
+    private static final DatastoreObjectFactory datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+    private static final StorablePredicateFactory storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
+    private static final ChannelInfoRegistryService channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
+    private static final MetricInfoRegistryService metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
+    private static final ClientInfoRegistryService clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);
 
     /**
      * This method deletes all indices of the current ES instance
@@ -291,18 +295,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
-        SortField sortSentOn = new SortFieldImpl();
-        sortSentOn.setField(EsSchema.MESSAGE_SENT_ON);
-        sortSentOn.setSortDirection(SortDirection.DESC);
-        sort.add(orderConstraint(sortSentOn, Date.class));
-        SortField sortTimestamp = new SortFieldImpl();
-        sortTimestamp.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sortTimestamp.setSortDirection(SortDirection.ASC);
-        sort.add(orderConstraint(sortTimestamp, Date.class));
-        SortField sortClientId = new SortFieldImpl();
-        sortClientId.setField(EsSchema.MESSAGE_CLIENT_ID);
-        sortClientId.setSortDirection(SortDirection.DESC);
-        sort.add(orderConstraint(sortClientId, String.class));
+        sort.add(orderConstraint(descending(EsSchema.MESSAGE_SENT_ON), Date.class));
+        sort.add(orderConstraint(ascending(EsSchema.MESSAGE_TIMESTAMP), Date.class));
+        sort.add(orderConstraint(descending(EsSchema.MESSAGE_CLIENT_ID), String.class));
         MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), messagesCount + 1, sort);
         setMessageQueryBaseCriteria(messageQuery, new DateRange(capturedOn1, capturedOn2));
 
@@ -909,10 +904,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         List<OrderConstraint<?>> sort = new ArrayList<>();
-        SortField sortMetricName = new SortFieldImpl();
-        sortMetricName.setField(EsSchema.METRIC_MTR_NAME_FULL);
-        sortMetricName.setSortDirection(SortDirection.ASC);
-        sort.add(orderConstraint(sortMetricName, String.class));
+        sort.add(orderConstraint(ascending(EsSchema.METRIC_MTR_NAME_FULL), String.class));
 
         MetricInfoQuery metricInfoQuery = getMetricInfoOrderedQuery(account.getId(), (6 + 1) * messagesCount, sort);
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
@@ -1164,7 +1156,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     /**
      * This method should create a new account for the test (temp implementation that return always the default kapua-sys account)
      *
-     * @param accountName
      * @param password
      * @return
      * @throws KapuaException
@@ -1179,7 +1170,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param clientId
      * @param scopeId
      * @param deviceId
-     * @param receiedOn
      * @param capturedOn
      * @param sentOn
      * @return
@@ -1270,10 +1260,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        SortField sf = new SortFieldImpl();
-        sf.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sf.setSortDirection(SortDirection.DESC);
-        order.add(sf);
+        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1290,10 +1277,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        SortField sf = new SortFieldImpl();
-        sf.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sf.setSortDirection(SortDirection.DESC);
-        order.add(sf);
+        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1317,10 +1301,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        SortField sf = new SortFieldImpl();
-        sf.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sf.setSortDirection(SortDirection.DESC);
-        order.add(sf);
+        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1337,10 +1318,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         query.setLimit(10);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
-        SortField sf = new SortFieldImpl();
-        sf.setField(EsSchema.MESSAGE_TIMESTAMP);
-        sf.setSortDirection(SortDirection.DESC);
-        order.add(sf);
+        order.add(descending(EsSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
         return query;
     }
@@ -1366,7 +1344,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp filter
      *
      * @param messageQuery
-     * @param accountName
      * @param dateRange
      */
     private void setMessageQueryBaseCriteria(MessageQuery messageQuery, DateRange dateRange) {
@@ -1377,14 +1354,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param messageQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
     private void setMessageQueryBaseCriteria(MessageQuery messageQuery, String clientId, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
-            TermPredicate clientPredicate = datastoreObjectFactory.newTermPredicate(MessageField.CLIENT_ID, clientId);
+            TermPredicate clientPredicate = storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientPredicate);
         }
         if (dateRange != null) {
@@ -1398,7 +1374,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp filter
      *
      * @param channelInfoQuery
-     * @param accountName
      * @param dateRange
      */
     private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, DateRange dateRange) {
@@ -1409,14 +1384,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param channelInfoQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
     private void setChannelInfoQueryBaseCriteria(ChannelInfoQuery channelInfoQuery, String clientId, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
-            TermPredicate clientPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+            TermPredicate clientPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientPredicate);
         }
         if (dateRange != null) {
@@ -1430,13 +1404,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @param channelInfoQuery
      * @param channelPredicate
-     * @param dateLowerBound
-     * @param dateUpperBound
      */
     private void setChannelInfoQueryChannelPredicateCriteria(ChannelInfoQuery channelInfoQuery, String clientId, String channelPredicate, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
-            TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
         if (dateRange != null) {
@@ -1469,7 +1441,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp id filter
      *
      * @param metricInfoQuery
-     * @param accountName
      * @param dateRange
      */
     private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, DateRange dateRange) {
@@ -1480,14 +1451,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param metricInfoQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
     private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String clientId, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
-            TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
         if (dateRange != null) {
@@ -1501,7 +1471,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account and message timestamp filter
      *
      * @param clientInfoQuery
-     * @param accountName
      * @param dateRange
      */
     private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, DateRange dateRange) {
@@ -1512,14 +1481,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Set the query account, message timestamp and client id filter
      *
      * @param clientInfoQuery
-     * @param accountName
      * @param clientId
      * @param dateRange
      */
     private void setClientInfoQueryBaseCriteria(ClientInfoQuery clientInfoQuery, String clientId, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
-            TermPredicate clientIdPredicate = datastoreObjectFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
         if (dateRange != null) {
@@ -1701,7 +1669,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Check if in the result set has the expected channel info client ids
      *
      * @param result
-     * @return
      */
     private void checkChannelInfoClientIdsAndTopics(ChannelInfoListResult result, int clientInfoCount, String[] clientIds, String[] topics) {
         checkChannelInfoCount(result, clientInfoCount);
@@ -1750,7 +1717,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * Check if in the result set has the expected metric info client ids
      *
      * @param result
-     * @return
      */
     private void checkMetricInfoClientIdsAndMetricNames(MetricInfoListResult result, int metricInfoCount, String[] clientIds, String[] metrics) {
         checkMetricInfoCount(result, metricInfoCount);
@@ -1863,8 +1829,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @param result
      * @param sortFieldList
-     * @param cleanComposedFieldName
-     *            takes only the field part after the last dot (useful for clean up the composed field name)
      */
     private static void checkListOrder(StorableListResult<?> result, List<OrderConstraint<?>> sortFieldList) {
         Object previousItem = null;
@@ -1902,9 +1866,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     /**
      * Return the value of the field name provided (assuming that this value is a Comparable)
      *
-     * @param message
      * @param field
-     * @param cleanComposedFieldName
      * @return
      */
     private static <T> T getValue(Object object, String field, Class<T> clazz) {
@@ -1937,7 +1899,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * It removes the _ and append the remaining part capitalizing the first letter (if capitalizeFirstLetter = true)
      *
      * @param field
-     * @param cleanComposedFieldName
      * @return
      */
     private static String getFieldName(String field, boolean capitalizeFirstLetter) {
@@ -1994,7 +1955,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      *
      * @param objectClass
      * @param field
-     * @param prefix
      * @return
      */
     private static Field getField(Class<?> objectClass, final String field) {
@@ -2163,7 +2123,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertTrue(device.getId().equals(retrievedMessage.getDeviceId()));
         assertTrue(device.getClientId().equals(retrievedMessage.getClientId()));
 
-        TermPredicate equalsMessageId = datastoreObjectFactory.newTermPredicate(ClientInfoField.MESSAGE_ID, messageId);
+        TermPredicate equalsMessageId = storablePredicateFactory.newTermPredicate(ClientInfoField.MESSAGE_ID, messageId);
 
         ClientInfoQuery clientInfoQuery = datastoreObjectFactory.newClientInfoQuery(account.getId());
         clientInfoQuery.setOffset(0);
@@ -2183,7 +2143,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertTrue(messageId.equals(clientInfo.getFirstMessageId()));
 
         // There must be a channel info entry in the registry
-        equalsMessageId = datastoreObjectFactory.newTermPredicate(ChannelInfoField.MESSAGE_ID, messageId);
+        equalsMessageId = storablePredicateFactory.newTermPredicate(ChannelInfoField.MESSAGE_ID, messageId);
 
         ChannelInfoQuery channelInfoQuery = datastoreObjectFactory.newChannelInfoQuery(account.getId());
         channelInfoQuery.setOffset(0);
@@ -2203,7 +2163,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertTrue(messageId.equals(channelInfo.getFirstMessageId()));
 
         // There must be two metric info entries in the registry
-        equalsMessageId = datastoreObjectFactory.newTermPredicate(MetricInfoField.MESSAGE_ID_FULL, messageId);
+        equalsMessageId = storablePredicateFactory.newTermPredicate(MetricInfoField.MESSAGE_ID_FULL, messageId);
 
         MetricInfoQuery metricInfoQuery = datastoreObjectFactory.newMetricInfoQuery(account.getId());
         metricInfoQuery.setOffset(0);

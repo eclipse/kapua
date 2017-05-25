@@ -48,7 +48,7 @@ public class DeviceTabPackages extends LayoutContainer {
     private GwtSession m_currentSession;
     private DeviceTabs m_deviceTabs;
 
-    private boolean componentInitialized = false;
+    private boolean componentInitialized;
     private GwtDevice selectedDevice;
 
     private ToolBar toolBar;

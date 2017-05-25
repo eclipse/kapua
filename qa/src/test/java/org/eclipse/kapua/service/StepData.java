@@ -35,6 +35,10 @@ public class StepData {
         stepDataMap = new HashMap<>();
     }
 
+    public void clear() {
+        stepDataMap.clear();
+    }
+
     public void put(String key, Object value) {
         stepDataMap.put(key, value);
     }

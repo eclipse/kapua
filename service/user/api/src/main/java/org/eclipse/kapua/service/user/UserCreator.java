@@ -91,7 +91,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
     /**
      * Set the user type
      *
-     * @param phoneNumber
+     * @param userType
      */
     public void setUserType(UserType userType);
 

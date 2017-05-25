@@ -20,9 +20,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,7 +32,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
-import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
 import org.eclipse.kapua.app.console.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
@@ -773,9 +770,6 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
      *
      * @param icon
      *            The icon from the OCD of the component configuration.
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws ImageReadException
      */
     private void checkIconResource(KapuaTicon icon) {
         ConsoleSetting config = ConsoleSetting.getInstance();
@@ -796,7 +790,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                 // Tmp file name creation
                 String systemTmpDir = System.getProperty("java.io.tmpdir");
                 String iconResourcesTmpDir = config.getString(ConsoleSettingKeys.DEVICE_CONFIGURATION_ICON_FOLDER);
-                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes(StandardCharsets.UTF_8)));
+                String tmpFileName = Base64.encodeBase64String(MessageDigest.getInstance("MD5").digest(iconResource.getBytes("UTF-8")));
 
                 // Conversions needed got security reasons!
                 // On the file servlet we use the regex [0-9A-Za-z]{1,} to validate the given file id.

@@ -25,6 +25,9 @@ import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
  */
 public class StringUtil {
 
+    private StringUtil () {
+    }
+    
     private static final char DELIMITER = ',';
     private static final char ESCAPE = '\\';
 

@@ -21,8 +21,7 @@ import org.eclipse.kapua.message.Position;
  * @since 1.0
  *
  */
-public interface DevicePosition extends Position
-{
+public interface DevicePosition extends Position {
 
     /**
      * Get the device position longitude

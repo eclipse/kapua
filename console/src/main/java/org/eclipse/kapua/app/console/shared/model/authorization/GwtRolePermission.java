@@ -86,7 +86,7 @@ public class GwtRolePermission extends GwtEntityModel {
     public void setTargetScopeId(String targetScopeId) {
         set("targetScopeId", targetScopeId == null ? "ALL" : targetScopeId);
     }
-    
+
     /**
      * @return the group id of this permission
      * @since 1.0.0
@@ -98,4 +98,13 @@ public class GwtRolePermission extends GwtEntityModel {
     public void setGroupId(String groupId) {
         set("groupId", groupId == null ? "ALL" : groupId);
     }
+
+    public boolean getForwardable() {
+        return get("forwardable");
+    }
+
+    public void setForwardable(boolean forwardable) {
+        set("forwardable", forwardable);
+    }
+
 }

@@ -113,7 +113,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
      *            If mqttMessage has no response message set, timeout will be ignore even if set.
      * @throws KapuaException
      *             FIXME [javadoc] document exception
-     * @see {@link MqttMessage#getResponseTopic()}
+     * @see MqttMessage#getResponseTopic()
      * @since 1.0.0.
      */
     private void sendInternal(MqttMessage mqttMessage, List<MqttMessage> responses, Long timeout)

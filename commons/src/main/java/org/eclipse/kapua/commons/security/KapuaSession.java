@@ -58,7 +58,7 @@ public class KapuaSession implements Serializable {
      * Trusted mode.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      */
-    private boolean trustedMode = false;
+    private boolean trustedMode;
 
     /**
      * Default constructor
@@ -109,7 +109,6 @@ public class KapuaSession implements Serializable {
      * Constructs a {@link KapuaSession} with given parameters
      *
      * @param accessToken
-     * @param runAsScopeId
      * @param scopeId
      * @param userId
      */
@@ -152,8 +151,6 @@ public class KapuaSession implements Serializable {
     /**
      * Set the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
-     *
-     * @return
      */
     final void setTrustedMode(boolean trustedMode) {
         this.trustedMode = trustedMode;

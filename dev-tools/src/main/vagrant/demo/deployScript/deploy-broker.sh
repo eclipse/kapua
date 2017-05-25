@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+# Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -61,7 +61,7 @@ vagrant ssh -c "echo 'deploying the Kapua broker'
 	sudo cp /kapua/transport/jms/target/kapua-*.jar lib/extra
 	sudo cp /kapua/transport/mqtt/target/kapua-*.jar lib/extra
 	echo 'copying Kapua configuration'
-	sudo cp /kapua/assembly/src/main/resources/conf/broker/activemq.xml conf/ 
-	sudo cp /kapua/assembly/src/main/resources/conf/broker/camel.xml conf/
+	sudo cp /kapua/assembly/broker/src/main/resources/conf/broker/activemq.xml conf/ 
+	sudo cp /kapua/assembly/broker/src/main/resources/conf/broker/camel.xml conf/
 	cd ..
 	sudo chown -R vagrant:vagrant apache-activemq-${ACTIVEMQ_VERSION}"

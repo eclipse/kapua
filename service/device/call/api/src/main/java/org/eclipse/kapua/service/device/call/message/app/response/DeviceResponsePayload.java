@@ -19,8 +19,7 @@ import org.eclipse.kapua.service.device.call.message.DevicePayload;
  * @since 1.0
  *
  */
-public interface DeviceResponsePayload extends DevicePayload
-{
+public interface DeviceResponsePayload extends DevicePayload {
 
     /**
      * Get the command response code

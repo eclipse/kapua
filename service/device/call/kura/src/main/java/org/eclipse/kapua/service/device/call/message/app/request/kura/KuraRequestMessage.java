@@ -22,14 +22,12 @@ import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
  * @since 1.0
  *
  */
-public class KuraRequestMessage extends KuraMessage<KuraRequestChannel, KuraRequestPayload> implements DeviceRequestMessage<KuraRequestChannel, KuraRequestPayload>
-{
+public class KuraRequestMessage extends KuraMessage<KuraRequestChannel, KuraRequestPayload> implements DeviceRequestMessage<KuraRequestChannel, KuraRequestPayload> {
 
     /**
      * Constructor
      */
-    public KuraRequestMessage()
-    {
+    public KuraRequestMessage() {
         super();
     }
 
@@ -40,8 +38,7 @@ public class KuraRequestMessage extends KuraMessage<KuraRequestChannel, KuraRequ
      * @param timestamp
      * @param payload
      */
-    public KuraRequestMessage(KuraRequestChannel channel, Date timestamp, KuraRequestPayload payload)
-    {
+    public KuraRequestMessage(KuraRequestChannel channel, Date timestamp, KuraRequestPayload payload) {
         super(channel, timestamp, payload);
     }
 

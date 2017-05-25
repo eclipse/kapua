@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
  * @since 1.0
  * 
  */
-public class BundleResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload
-{
+public class BundleResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {
 
 }

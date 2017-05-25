@@ -22,19 +22,17 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage
  * 
  */
 public class ChannelResponseMessage extends KapuaMessageImpl<ChannelResponseChannel, ChannelResponsePayload>
-                                          implements KapuaResponseMessage<ChannelResponseChannel, ChannelResponsePayload>
-{
+        implements KapuaResponseMessage<ChannelResponseChannel, ChannelResponsePayload> {
+
     private KapuaResponseCode responseCode;
 
     @Override
-    public KapuaResponseCode getResponseCode()
-    {
+    public KapuaResponseCode getResponseCode() {
         return responseCode;
     }
 
     @Override
-    public void setResponseCode(KapuaResponseCode responseCode)
-    {
+    public void setResponseCode(KapuaResponseCode responseCode) {
         this.responseCode = responseCode;
     }
 }

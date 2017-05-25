@@ -58,10 +58,4 @@ public class DashboardView extends LayoutContainer {
 
         add(mainLayoutContainer);
     }
-
-    public void refresh() {
-        if (rendered) {
-        }
-    }
-
 }

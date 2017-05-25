@@ -237,7 +237,6 @@ public final class MessageStoreFacade {
     /**
      * Find messages matching the given query
      *
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -277,7 +276,6 @@ public final class MessageStoreFacade {
     /**
      * Get messages count matching the given query
      *
-     * @param scopeId
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -316,7 +314,6 @@ public final class MessageStoreFacade {
     /**
      * Delete messages count matching the given query
      *
-     * @param scopeId
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws EsConfigurationException

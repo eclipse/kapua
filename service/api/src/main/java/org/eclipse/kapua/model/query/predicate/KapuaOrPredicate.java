@@ -19,8 +19,7 @@ import java.util.List;
  * @since 1.0
  * 
  */
-public interface KapuaOrPredicate extends KapuaPredicate
-{
+public interface KapuaOrPredicate extends KapuaPredicate {
 
     /**
      * Creates an "or predicate" from a generic predicate

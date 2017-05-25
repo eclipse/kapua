@@ -30,7 +30,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 public class CommonTestSteps extends AbstractKapuaSteps {
 
     // Scenario scoped common test data
-    CommonTestData commonData = null;
+    CommonTestData commonData;
 
     @Inject
     public CommonTestSteps(CommonTestData commonData) {

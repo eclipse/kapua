@@ -36,8 +36,7 @@ import com.codahale.metrics.Counter;
  * @since 1.0
  */
 @UriEndpoint(title = "device message processor", syntax = "bean:deviceMessageListener", scheme = "bean")
-public class DeviceMessageListener extends AbstractListener
-{
+public class DeviceMessageListener extends AbstractListener {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceMessageListener.class);
 
@@ -52,8 +51,7 @@ public class DeviceMessageListener extends AbstractListener
     private Counter metricDeviceUnmatchedMessage;
     private Counter metricDeviceErrorMessage;
 
-    public DeviceMessageListener()
-    {
+    public DeviceMessageListener() {
         super("deviceLifeCycle");
         metricDeviceBirthMessage = registerCounter("messages", "birth", "count");
         metricDeviceDisconnectMessage = registerCounter("messages", "dc", "count");
@@ -69,8 +67,7 @@ public class DeviceMessageListener extends AbstractListener
      * 
      * @param birthMessage
      */
-    public void processBirthMessage(CamelKapuaMessage<KapuaBirthMessage> birthMessage)
-    {
+    public void processBirthMessage(CamelKapuaMessage<KapuaBirthMessage> birthMessage) {
         try {
             deviceLifeCycleService.birth(birthMessage.getConnectionId(), birthMessage.getMessage());
             metricDeviceBirthMessage.inc();
@@ -100,8 +97,7 @@ public class DeviceMessageListener extends AbstractListener
             // logger.warn("Cannot send birth life cycle message {}! {}", new Object[]{birthMessage.getMessage().getChannel().toString(), t.getMessage()}, t);
             // return;
             // }
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device birth life-cycle event", e);
             return;
@@ -113,13 +109,11 @@ public class DeviceMessageListener extends AbstractListener
      * 
      * @param disconnectMessage
      */
-    public void processDisconnectMessage(CamelKapuaMessage<KapuaDisconnectMessage> disconnectMessage)
-    {
+    public void processDisconnectMessage(CamelKapuaMessage<KapuaDisconnectMessage> disconnectMessage) {
         try {
             deviceLifeCycleService.death(disconnectMessage.getConnectionId(), disconnectMessage.getMessage());
             metricDeviceDisconnectMessage.inc();
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device disconnect life-cycle event", e);
             return;
@@ -131,13 +125,11 @@ public class DeviceMessageListener extends AbstractListener
      * 
      * @param appsMessage
      */
-    public void processAppsMessage(CamelKapuaMessage<KapuaAppsMessage> appsMessage)
-    {
+    public void processAppsMessage(CamelKapuaMessage<KapuaAppsMessage> appsMessage) {
         try {
             deviceLifeCycleService.applications(appsMessage.getConnectionId(), appsMessage.getMessage());
             metricDeviceAppsMessage.inc();
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device apps life-cycle event", e);
             return;
@@ -149,13 +141,11 @@ public class DeviceMessageListener extends AbstractListener
      * 
      * @param missingMessage
      */
-    public void processMissingMessage(CamelKapuaMessage<KapuaMissingMessage> missingMessage)
-    {
+    public void processMissingMessage(CamelKapuaMessage<KapuaMissingMessage> missingMessage) {
         try {
             deviceLifeCycleService.missing(missingMessage.getConnectionId(), missingMessage.getMessage());
             metricDeviceMissingMessage.inc();
-        }
-        catch (KapuaException e) {
+        } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device missing life-cycle event", e);
             return;
@@ -167,10 +157,9 @@ public class DeviceMessageListener extends AbstractListener
      * 
      * @param notifyMessage
      */
-    public void processNotifyMessage(CamelKapuaMessage<KapuaNotifyMessage> notifyMessage)
-    {
+    public void processNotifyMessage(CamelKapuaMessage<KapuaNotifyMessage> notifyMessage) {
         logger.info("Received notify message from device channel: {}",
-                    new Object[] { notifyMessage.getMessage().getChannel().toString() });
+                new Object[] { notifyMessage.getMessage().getChannel().toString() });
         metricDeviceNotifyMessage.inc();
     }
 
@@ -179,10 +168,9 @@ public class DeviceMessageListener extends AbstractListener
      * 
      * @param unmatchedMessage
      */
-    public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage)
-    {
+    public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage) {
         logger.info("Received unmatched message from device channel: {}",
-                    new Object[] { unmatchedMessage.getMessage().getChannel().toString() });
+                new Object[] { unmatchedMessage.getMessage().getChannel().toString() });
         metricDeviceUnmatchedMessage.inc();
     }
 

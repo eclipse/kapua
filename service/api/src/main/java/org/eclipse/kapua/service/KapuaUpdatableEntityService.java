@@ -17,13 +17,13 @@ import org.eclipse.kapua.model.KapuaEntity;
 /**
  * Common interface for all KapuaService that are managing identifiable entities.
  *
- * @param <E> - Class of the KapuaEntity being managed by this Service
+ * @param <E>
+ *            - Class of the KapuaEntity being managed by this Service
  * 
  * @since 1.0
  * 
  */
-public interface KapuaUpdatableEntityService<E extends KapuaEntity> extends KapuaService
-{
+public interface KapuaUpdatableEntityService<E extends KapuaEntity> extends KapuaService {
 
     /**
      * Update the provided entity
@@ -33,5 +33,5 @@ public interface KapuaUpdatableEntityService<E extends KapuaEntity> extends Kapu
      * @throws KapuaException
      */
     public E update(E entity)
-        throws KapuaException;
+            throws KapuaException;
 }

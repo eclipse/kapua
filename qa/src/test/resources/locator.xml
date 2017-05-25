@@ -52,6 +52,7 @@
         <!-- datastore scope configuration -->
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
+        <api>org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory</api>
 
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>

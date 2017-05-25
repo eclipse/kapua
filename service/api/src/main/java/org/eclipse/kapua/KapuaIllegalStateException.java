@@ -17,8 +17,8 @@ package org.eclipse.kapua;
  * @since 1.0
  *
  */
-public class KapuaIllegalStateException extends KapuaRuntimeException
-{
+public class KapuaIllegalStateException extends KapuaRuntimeException {
+
     private static final long serialVersionUID = -912672615903975466L;
 
     /**
@@ -26,8 +26,7 @@ public class KapuaIllegalStateException extends KapuaRuntimeException
      * 
      * @param message
      */
-    public KapuaIllegalStateException(String message)
-    {
+    public KapuaIllegalStateException(String message) {
         super(KapuaErrorCodes.ILLEGAL_STATE, null, message);
     }
 

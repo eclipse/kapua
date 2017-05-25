@@ -23,6 +23,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.group.Group;
 
 /**
  * {@link Permission} definition.<br>
@@ -33,11 +34,15 @@ import org.eclipse.kapua.service.authorization.domain.Domain;
  */
 @XmlRootElement(name = "permission")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "domain",
-        "action",
-        "targetScopeId",
-        "groupId"
-}, factoryClass = PermissionXmlRegistry.class, factoryMethod = "newPermission")
+@XmlType(propOrder = { //
+        "domain", //
+        "action", //
+        "targetScopeId", //
+        "groupId", //
+        "forwardable" //
+}, //
+        factoryClass = PermissionXmlRegistry.class, //
+        factoryMethod = "newPermission")
 public interface Permission {
 
     public static final String WILDCARD = "*";
@@ -116,4 +121,26 @@ public interface Permission {
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getGroupId();
+
+    /**
+     * Sets whether or not this {@link Permission} is valid also for children scopeId.
+     * 
+     * @param forwardable
+     *            {@code true} if this {@link Permission} is forward-able to children scopeIds.
+     * 
+     * @since 1.0.0
+     */
+    public void setForwardable(boolean forwardable);
+
+    /**
+     * Gets whether or not this {@link Permission} is valid also for children scopeIds.
+     * If a {@link Permission} is forward-able to children, the {@link Permission} will be valid
+     * for all scopeIds of the {@link #getTargetScopeId()} scopeId.
+     * 
+     * @return {@code true} if this {@link Permission} is forward-able to children scopeIds.
+     * 
+     * @since 1.0.0
+     */
+    @XmlElement(name = "forwardable")
+    public boolean getForwardable();
 }

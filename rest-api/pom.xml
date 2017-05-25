@@ -12,8 +12,10 @@
 		Red Hat Inc
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.eclipse.kapua</groupId>
 		<artifactId>kapua</artifactId>
@@ -21,7 +23,6 @@
 	</parent>
 
 	<artifactId>kapua-rest-api</artifactId>
-	<name>${project.artifactId}</name>
 	<packaging>war</packaging>
 
 	<properties>
@@ -30,39 +31,22 @@
 		<swagger-ui.version>2.1.4</swagger-ui.version>
 	</properties>
 
-    <repositories>
-        <repository>
-            <!-- This repository is needed for GXT. We will remove it as 
-                soon as we migrate from GXT to some other UI framework. -->
-            <id>kapua_addons</id>
-            <name>Kapua Addons Maven Repository</name>
-            <url>https://raw.github.com/eurotech/kapua_addons/mvn-repo/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
 	<dependencies>
-		<!-- -->
-		<!-- Jersey -->
 
-		<!-- -->
 		<!-- Jersey -->
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet-core</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
-		<!-- -->
+
 		<!-- Swagger for apidoc -->
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-jersey2-jaxrs</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-		<!-- -->
+
 		<!-- Moxy for object marshalling unmarshalling -->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
@@ -83,14 +67,14 @@
 			<version>${shiro.version}</version>
 		</dependency>
 
-        <!-- Same version of the Servlet APIs supported in Apache Tomcat 
-            8.0.x -->
+		<!-- Same version of the Servlet APIs supported in Apache Tomcat 8.0.x -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- Internal dependencies -->
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
@@ -104,17 +88,17 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-account-internal</artifactId>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-internal</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-message-internal</artifactId>
-        </dependency>
-		
+
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-datastore-internal</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-message-internal</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-security-shiro</artifactId>
@@ -122,6 +106,10 @@
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-registry-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-asset-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
@@ -151,15 +139,15 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-transport-test</artifactId>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-internal</artifactId>
-        </dependency>
+
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-asset-internal</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-device-bundle-internal</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-command-internal</artifactId>
@@ -172,29 +160,29 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-packages-internal</artifactId>
 		</dependency>
-        
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-internal</artifactId>
-        </dependency>
-        
+
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-user-internal</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 		</dependency>
 		
-		<!-- use log4j only for testing -->
+		<!-- use logback only for testing -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<!-- <scope>test</scope> -->
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- re-declare as provided as our web container will provide this -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<!-- <scope>provided</scope> -->
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
@@ -206,7 +194,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>Create swagger ui</id>
+						<id>unpack-swagger-ui</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>unpack</goal>
@@ -214,39 +202,27 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>io.swagger</groupId>
+									<groupId>org.eclipse.kapua.external</groupId>
 									<artifactId>swagger-ui</artifactId>
 									<version>${swagger-ui.version}-CQ-10792</version>
 									<overWrite>true</overWrite>
-									<outputDirectory>${project.build.directory}/tmp/</outputDirectory>
+									<outputDirectory>${project.build.directory}/tmp/swagger-ui</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.eclipse.kapua.external</groupId>
+									<artifactId>swagger-ui-lib</artifactId>
+									<version>${swagger-ui.version}</version>
+									<outputDirectory>${project.build.directory}/tmp/swagger-ui-lib</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
-                    <execution>
-                        <id>Create swagger ui libs</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>io.swagger</groupId>
-                                    <artifactId>swagger-ui-lib</artifactId>
-                                    <version>${swagger-ui.version}</version>
-                                    <!-- <overWrite>true</overWrite> -->
-                                    <outputDirectory>${project.build.directory}/tmp/</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
 				<executions>
 					<execution>
 						<id>package swagger ui</id>
@@ -257,23 +233,45 @@
 						<configuration>
 							<target>
 								<echo>Swagger-ui: create doc dir</echo>
-                                <copy
-                                    todir="${project.build.directory}/${project.build.finalName}/doc">
-                                    <fileset
-                                        dir="${project.build.directory}/tmp/swagger-ui/" />
+								<copy
+									todir="${project.build.directory}/${project.build.finalName}/doc">
+									<fileset
+										dir="${project.build.directory}/tmp/swagger-ui/" />
 								</copy>
-								
-                                <echo>Swagger-ui-lib: create lib dir for
-                                    swagger-ui</echo>
-                                <copy
-                                    todir="${project.build.directory}/${project.build.finalName}/doc/lib">
-                                    <fileset
-                                        dir="${project.build.directory}/tmp/swagger-ui-lib/" />
-                                </copy>
+								<echo>Swagger-ui-lib: create lib dir for swagger-ui</echo>
+								<copy
+									todir="${project.build.directory}/${project.build.finalName}/doc/lib">
+									<fileset
+										dir="${project.build.directory}/tmp/swagger-ui-lib/" />
+								</copy>
 							</target>
 						</configuration>
 					</execution>
 				</executions>
+				
+			</plugin>
+
+			<!-- To help IntelliJ IDEA correctly recognize the source path when using Maven Auto Import -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>${basedir}</directory>
+							<includes>
+								<include>about.html</include>
+								<include>epl-v10.html</include>
+								<include>notice.html</include>
+							</includes>
+						</resource>
+					</webResources>
+					<!-- exclude slf4j-api and logback as the web container has to provide this -->
+					<packagingExcludes>
+						WEB-INF/lib/slf4j-api-*.jar,
+						WEB-INF/lib/logback*.jar
+					</packagingExcludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

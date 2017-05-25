@@ -44,8 +44,7 @@ public abstract class KapuaAppChannelImpl implements KapuaAppChannel {
     }
 
     @Override
-    public void setAppName(KapuaAppProperties appName) // do I have to keep it as a KapuaAppProperties?
-    {
+    public void setAppName(KapuaAppProperties appName) { // do I have to keep it as a KapuaAppProperties?
         this.appName = appName;
     }
 

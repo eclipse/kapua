@@ -36,13 +36,11 @@ import org.slf4j.LoggerFactory;
  * 
  * @since 1.0
  */
-public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProducerWrapper>
-{
+public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProducerWrapper> {
 
     private static Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerPool.class);
 
-    public enum DESTINATIONS
-    {
+    public enum DESTINATIONS {
         /**
          * Kapua service queue destination
          */
@@ -64,10 +62,10 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
         // pools.put(DESTINATIONS.KAPUA_SERVICE,
         // new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.SERVICE_QUEUE_NAME))));
         pools.put(DESTINATIONS.KAPUA_SERVICE,
-                  new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory("KapuaService")));
+                new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory("KapuaService")));
         s_logger.info("Create NoDestination pool...");
         pools.put(DESTINATIONS.NO_DESTINATION,
-                  new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
+                new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
         s_logger.info("Create pools... done.");
     }
 
@@ -76,8 +74,7 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      * 
      * @param factory
      */
-    protected JmsAssistantProducerPool(JmsAssistantProducerWrapperFactory factory)
-    {
+    protected JmsAssistantProducerPool(JmsAssistantProducerWrapperFactory factory) {
         super(factory);
         // TODO parameter to be added to configuration
         // int totalMaxSize = KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.POOL_TOTAL_MAX_SIZE);
@@ -107,24 +104,21 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      * @param destination
      * @return
      */
-    public static JmsAssistantProducerPool getIOnstance(DESTINATIONS destination)
-    {
+    public static JmsAssistantProducerPool getIOnstance(DESTINATIONS destination) {
         return pools.get(destination);
     }
 
     /**
      * Close all connection pools
      */
-    public static void closePools()
-    {
+    public static void closePools() {
         if (pools != null) {
             s_logger.info("Close Service pool...");
             pools.get(DESTINATIONS.KAPUA_SERVICE).close();
             s_logger.info("Close NoDestination pool...");
             pools.get(DESTINATIONS.NO_DESTINATION).close();
             s_logger.info("Close pools... done.");
-        }
-        else {
+        } else {
             s_logger.warn("Cannot close producer pools... Pools not initialized!");
         }
     }

@@ -20,8 +20,7 @@ import javax.xml.bind.annotation.XmlEnum;
  *
  */
 @XmlEnum
-public enum MetricsIndexBy
-{
+public enum MetricsIndexBy {
     /**
      * By timestamp.<br>
      * The message will be indexed by the timestamp of the device (capturedOn message field)

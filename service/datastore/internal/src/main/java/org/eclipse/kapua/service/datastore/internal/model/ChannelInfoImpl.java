@@ -48,10 +48,8 @@ public class ChannelInfoImpl implements ChannelInfo {
     /**
      * Construct a channel information for the given scope and storable identifier
      * 
-     * @param scope
+     * @param scopeId
      * @param id
-     * 
-     * @since 1.0.0
      */
     public ChannelInfoImpl(KapuaId scopeId, StorableId id) {
         this(scopeId);

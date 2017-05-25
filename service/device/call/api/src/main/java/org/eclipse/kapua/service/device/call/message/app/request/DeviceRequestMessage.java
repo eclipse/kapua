@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.device.call.message.DeviceMessage;
  * @since 1.0
  *
  */
-public interface DeviceRequestMessage<D extends DeviceRequestChannel, P extends DeviceRequestPayload> extends DeviceMessage<D, P>
-{
+public interface DeviceRequestMessage<D extends DeviceRequestChannel, P extends DeviceRequestPayload> extends DeviceMessage<D, P> {
 
 }

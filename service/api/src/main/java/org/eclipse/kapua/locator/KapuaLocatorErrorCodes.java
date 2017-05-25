@@ -19,8 +19,7 @@ import org.eclipse.kapua.KapuaErrorCode;
  * @since 1.0
  *
  */
-public enum KapuaLocatorErrorCodes implements KapuaErrorCode
-{
+public enum KapuaLocatorErrorCodes implements KapuaErrorCode {
     /**
      * Service unavailable
      */

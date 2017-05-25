@@ -91,7 +91,6 @@ public class KapuaCloudConsole implements EntryPoint {
          * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
          */
         Log.setUncaughtExceptionHandler();
-        System.out.println("---->");
 
         // Use deferred command to catch initialization exceptions in onModuleLoad2
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -189,7 +188,6 @@ public class KapuaCloudConsole implements EntryPoint {
         td.setHorizontalAlign(HorizontalAlignment.LEFT);
         TableData tdVersion = new TableData();
         tdVersion.setHorizontalAlign(HorizontalAlignment.RIGHT);
-
 
         Label copyright = new Label(MSGS.copyright(Integer.toString(Years.getCurrentYear())));
         copyright.setStyleName("x-form-label");
@@ -357,7 +355,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
             @Override
             public void onSuccess(final GwtSession gwtSession) {
-                logger.fine("User: " + gwtSession.getGwtUser());
+                logger.fine("User: " + gwtSession.getUser());
                 dlg.hide();
                 renderMainScreen(viewport, gwtSession);
             }
@@ -414,7 +412,7 @@ public class KapuaCloudConsole implements EntryPoint {
         currentSession = session;
 
         if (currentSession != null) {
-            String username = currentSession.getGwtUser().getUsername();
+            String username = currentSession.getUser().getUsername();
             if (username != null) {
 
                 //

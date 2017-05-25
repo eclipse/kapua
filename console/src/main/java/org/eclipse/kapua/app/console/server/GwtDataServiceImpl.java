@@ -8,10 +8,12 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.app.console.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +49,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryI
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.SortFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -73,7 +74,6 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.LoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.common.collect.Lists;
 
 public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements GwtDataService {
 
@@ -130,7 +130,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     previous.add(t);
                 }
             } else {
-                if (t.getTimestamp().before(channel.getLastMessageOn())) {
+                if (channel.getLastMessageOn() != null && t.getTimestamp().before(channel.getLastMessageOn())) {
                     t.setTimestamp(channel.getLastMessageOn());
                 }
             }
@@ -289,10 +289,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         andPredicate.getPredicates().add(dateRangePredicate);
         query.setPredicate(andPredicate);
         if (!StringUtils.isEmpty(loadConfig.getSortField())) {
-            SortField sortField = new SortFieldImpl();
-            sortField.setField(loadConfig.getSortField());
-            sortField.setSortDirection(SortDirection.valueOf(loadConfig.getSortDir().toString()));
-            query.setSortFields(Lists.newArrayList(sortField));
+            query.setSortFields(Collections.singletonList(SortField.of(SortDirection.valueOf(loadConfig.getSortDir().name()), loadConfig.getSortField())));
         }
         messages = getMessagesList(query, headers);
         try {

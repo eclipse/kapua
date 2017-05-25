@@ -24,19 +24,18 @@ import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSett
  * @since 1.0
  *
  */
-public class KuraChannel implements DeviceChannel
-{
+public class KuraChannel implements DeviceChannel {
+
     protected static final String DESTINATION_CONTROL_PREFIX = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_MESSAGE_CLASSIFIER);
 
-    protected String              messageClassification;
-    protected String              scopeNamespace;
-    protected String              clientId;
+    protected String messageClassification;
+    protected String scopeNamespace;
+    protected String clientId;
 
     /**
      * Constructor
      */
-    public KuraChannel()
-    {
+    public KuraChannel() {
     }
 
     /**
@@ -45,8 +44,7 @@ public class KuraChannel implements DeviceChannel
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraChannel(String scopeNamespace, String clientId)
-    {
+    public KuraChannel(String scopeNamespace, String clientId) {
         this(null, scopeNamespace, clientId);
     }
 
@@ -57,46 +55,39 @@ public class KuraChannel implements DeviceChannel
      * @param scopeNamespace
      * @param clientId
      */
-    public KuraChannel(String messageClassification, String scopeNamespace, String clientId)
-    {
+    public KuraChannel(String messageClassification, String scopeNamespace, String clientId) {
         this.messageClassification = messageClassification;
         this.scopeNamespace = scopeNamespace;
         this.clientId = clientId;
     }
 
     @Override
-    public String getMessageClassification()
-    {
+    public String getMessageClassification() {
         return messageClassification;
     }
 
     @Override
-    public void setMessageClassification(String messageClassification)
-    {
+    public void setMessageClassification(String messageClassification) {
         this.messageClassification = messageClassification;
     }
 
     @Override
-    public String getScope()
-    {
+    public String getScope() {
         return scopeNamespace;
     }
 
     @Override
-    public void setScope(String scope)
-    {
+    public void setScope(String scope) {
         this.scopeNamespace = scope;
     }
 
     @Override
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
     @Override
-    public void setClientId(String clientId)
-    {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -106,8 +97,7 @@ public class KuraChannel implements DeviceChannel
      * 
      * @return
      */
-    public List<String> getSemanticChannelParts()
-    {
+    public List<String> getSemanticChannelParts() {
         return new ArrayList<>();
     }
 }

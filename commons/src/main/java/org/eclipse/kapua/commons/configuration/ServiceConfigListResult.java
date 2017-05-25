@@ -19,6 +19,5 @@ import org.eclipse.kapua.model.query.KapuaListResult;
  * @since 1.0
  *
  */
-public interface ServiceConfigListResult extends KapuaListResult<ServiceConfig>
-{
+public interface ServiceConfigListResult extends KapuaListResult<ServiceConfig> {
 }

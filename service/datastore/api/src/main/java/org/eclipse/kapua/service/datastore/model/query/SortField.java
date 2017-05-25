@@ -8,44 +8,49 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
 /**
  * Sortable field definition
- * 
- * @since 1.0
  *
  */
-public interface SortField
-{
+public class SortField {
 
-    /**
-     * Get the field name
-     * 
-     * @return
-     */
-    public String getField();
+    private SortDirection sortDirection;
+    private String field;
 
-    /**
-     * Set the field name
-     * 
-     * @param field
-     */
-    public void setField(String field);
+    private SortField(final SortDirection direction, final String field) {
+        this.sortDirection = direction;
+        this.field = field;
+    }
 
-    /**
-     * Get the sort direction
-     * 
-     * @return
-     */
-    public SortDirection getSortDirection();
+    public String getField() {
+        return this.field;
+    }
 
-    /**
-     * Set the sort direction
-     * 
-     * @param sortDirection
-     */
-    public void setSortDirection(SortDirection sortDirection);
+    public SortDirection getSortDirection() {
+        return this.sortDirection;
+    }
 
+    public static SortField of(SortDirection direction, final String fieldName) {
+        if (fieldName == null || fieldName.isEmpty()) {
+            return null;
+        }
+
+        if (direction == null) {
+            direction = SortDirection.ASC;
+        }
+
+        return new SortField(direction, fieldName);
+    }
+
+    public static SortField ascending(final String fieldName) {
+        return of(SortDirection.ASC, fieldName);
+    }
+
+    public static SortField descending(final String fieldName) {
+        return of(SortDirection.DESC, fieldName);
+    }
 }

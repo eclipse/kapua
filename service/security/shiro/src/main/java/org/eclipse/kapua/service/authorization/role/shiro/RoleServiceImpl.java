@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,8 +55,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public Role create(RoleCreator roleCreator)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
         ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
@@ -67,7 +66,17 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(roleDomain, Actions.write, roleCreator.getScopeId()));
-        
+
+        //
+        // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
+        if (roleCreator.getPermissions() != null) {
+            for (Permission p : roleCreator.getPermissions()) {
+                if (p.getTargetScopeId() == null || !p.getTargetScopeId().equals(roleCreator.getScopeId())) {
+                    authorizationService.checkPermission(p);
+                }
+            }
+        }
+
         if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max roles reached");
         }
@@ -77,6 +86,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             if (!roleCreator.getPermissions().isEmpty()) {
                 RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
                 for (Permission p : roleCreator.getPermissions()) {
+
                     RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(roleCreator.getScopeId());
 
                     rolePermissionCreator.setRoleId(role.getId());
@@ -137,8 +147,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public Role find(KapuaId scopeId, KapuaId roleId)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(scopeId, "accountId");
         ArgumentValidator.notNull(roleId, "roleId");
 
@@ -154,8 +163,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public RoleListResult query(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -171,8 +179,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public long count(KapuaQuery<Role> query)
-        throws KapuaException
-    {
+            throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 

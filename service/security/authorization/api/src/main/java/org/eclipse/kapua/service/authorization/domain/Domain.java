@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -96,8 +95,6 @@ public interface Domain extends KapuaEntity {
      * 
      * @param actions
      *            The set of {@link Actions}.
-     * @throws KapuaException
-     *             If the given set is incompatible with the implementation-specific field.
      * @since 1.0.0
      */
     public void setActions(Set<Actions> actions);

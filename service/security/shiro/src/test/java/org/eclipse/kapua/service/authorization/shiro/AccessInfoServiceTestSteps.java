@@ -84,23 +84,23 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     private static final Domain testDomain = new TestDomain();
 
     // Test data scratchpads
-    private CommonTestData commonData = null;
-    private AccessInfoServiceTestData accessData = null;
+    private CommonTestData commonData;
+    private AccessInfoServiceTestData accessData;
 
     // Various Access service related service references
-    private AccessInfoService accessInfoService = null;
-    private AccessInfoFactory accessInfoFactory = null;
-    private AccessPermissionService accessPermissionService = null;
-    private AccessPermissionFactory accessPermissionFactory = null;
-    private AccessRoleService accessRoleService = null;
-    private AccessRoleFactory accessRoleFactory = null;
+    private AccessInfoService accessInfoService;
+    private AccessInfoFactory accessInfoFactory;
+    private AccessPermissionService accessPermissionService;
+    private AccessPermissionFactory accessPermissionFactory;
+    private AccessRoleService accessRoleService;
+    private AccessRoleFactory accessRoleFactory;
 
     // References to dependent services
-    private UserService userService = null;
-    private UserFactory userFactory = null;
-    private PermissionFactory permissionFactory = null;
-    private RoleService roleService = null;
-    private RoleFactory roleFactory = null;
+    private UserService userService;
+    private UserFactory userFactory;
+    private PermissionFactory permissionFactory;
+    private RoleService roleService;
+    private RoleFactory roleFactory;
 
     // Currently executing scenario.
     @SuppressWarnings("unused")
@@ -285,12 +285,16 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             throws KapuaException {
 
         assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessInfo);
+        assertNotNull(accessData.accessInfo.getId());
+        assertNotNull(accessData.role);
+        assertNotNull(accessData.role.getId());
 
         AccessRoleCreator tmpCreator = accessRoleFactory.newCreator(commonData.scopeId);
         assertNotNull(tmpCreator);
 
-        tmpCreator.setAccessInfoId(generateId());
-        tmpCreator.setRoleId(generateId());
+        tmpCreator.setAccessInfoId(accessData.accessInfo.getId());
+        tmpCreator.setRoleId(accessData.role.getId());
 
         try {
             commonData.exceptionCaught = false;
@@ -492,11 +496,13 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     public void createPermissionEntries()
             throws KapuaException {
         assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.accessInfo);
+        assertNotNull(accessData.accessInfo.getId());
         assertNotNull(accessData.permissions);
         assertFalse(accessData.permissions.isEmpty());
 
         accessData.accessPermissionCreator = accessPermissionFactory.newCreator(commonData.scopeId);
-        accessData.accessPermissionCreator.setAccessInfoId(generateId());
+        accessData.accessPermissionCreator.setAccessInfoId(accessData.accessInfo.getId());
 
         try {
             commonData.exceptionCaught = false;
@@ -613,8 +619,8 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         tmpAccPerm.setAccessInfoId(null);
         assertNull(tmpAccPerm.getAccessInfoId());
 
-        // No typo. This is by design. When an object permissions are null, when asked for them, a 
-        // new set of empty permissions is returned instead. 
+        // No typo. This is by design. When an object permissions are null, when asked for them, a
+        // new set of empty permissions is returned instead.
         tmpAccPerm.setPermission(null);
         assertNotNull(tmpAccPerm.getPermission());
     }

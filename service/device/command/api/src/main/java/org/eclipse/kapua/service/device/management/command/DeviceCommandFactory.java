@@ -19,8 +19,7 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
  * @since 1.0
  * 
  */
-public interface DeviceCommandFactory extends KapuaObjectFactory
-{
+public interface DeviceCommandFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link DeviceCommandInput}

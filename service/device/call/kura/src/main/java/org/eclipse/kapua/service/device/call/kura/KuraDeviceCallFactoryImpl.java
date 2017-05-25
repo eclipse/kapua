@@ -21,12 +21,10 @@ import org.eclipse.kapua.service.device.call.DeviceCallFactory;
  * 
  */
 @KapuaProvider
-public class KuraDeviceCallFactoryImpl implements DeviceCallFactory
-{
+public class KuraDeviceCallFactoryImpl implements DeviceCallFactory {
 
     @Override
-    public KuraDeviceCallImpl newDeviceCall()
-    {
+    public KuraDeviceCallImpl newDeviceCall() {
         return new KuraDeviceCallImpl();
     }
 

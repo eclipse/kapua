@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} scopeId.
  * <p>
- * If the {@link PathParam} is equals to "_" the scopeId used will be set to {@link KapuaSecurityUtils#getSession()#getId()},
+ * If the {@link PathParam} is equals to "_" the scopeId used will be set to {@link KapuaSession#getScopeId()} of {@link KapuaSecurityUtils#getSession()},
  * which means that the scope of the current request will be the same of the current session scope.
  *
  * @since 1.0.0

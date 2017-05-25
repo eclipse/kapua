@@ -37,6 +37,9 @@ public class ArgumentValidator {
     // The standard (IEEE 802) format for printing MAC-48 addresses in human-friendly
     public static final String MAC_ADDRESS_REGEXP = "^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$";
 
+    private ArgumentValidator() {
+    }
+
     /**
      * Throws KapuaIllegalArgumentException if the supplied argValue does not matches specified validation expression.
      *

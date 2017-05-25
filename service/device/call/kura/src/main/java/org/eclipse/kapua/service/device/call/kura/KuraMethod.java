@@ -20,8 +20,7 @@ import org.eclipse.kapua.service.device.call.DeviceMethod;
  * @since 1.0
  *
  */
-public enum KuraMethod implements DeviceMethod
-{
+public enum KuraMethod implements DeviceMethod {
     /**
      * Get command
      */

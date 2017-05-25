@@ -20,8 +20,6 @@ import org.eclipse.kapua.service.datastore.internal.elasticsearch.EsSchema.Metad
 
 /**
  * Message mediator definition
- *
- * @since 1.0.0
  */
 public interface MessageStoreMediator {
 
@@ -54,7 +52,6 @@ public interface MessageStoreMediator {
     /**
      * On after message store event handler
      *
-     * @param scopeId
      * @param docBuilder
      * @param message
      * @throws KapuaIllegalArgumentException

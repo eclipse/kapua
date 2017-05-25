@@ -52,12 +52,12 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
     private static final Logger s_logger = LoggerFactory.getLogger(GroupServiceTestSteps.class);
 
     // Test data scratchpads
-    CommonTestData commonData = null;
-    GroupServiceTestData groupData = null;
+    CommonTestData commonData ;
+    GroupServiceTestData groupData ;
 
     // Various domain related service references
-    GroupService groupService = null;
-    GroupFactory groupFactory = null;
+    GroupService groupService ;
+    GroupFactory groupFactory ;
 
     // Currently executing scenario.
     Scenario scenario;

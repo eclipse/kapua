@@ -20,8 +20,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * @since 1.0
  *
  */
-public class MetatypeXmlRegistry
-{
+public class MetatypeXmlRegistry {
 
     /**
      * Locator instance
@@ -38,8 +37,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaTocd newKapuaTocd()
-    {
+    public KapuaTocd newKapuaTocd() {
         return factory.newKapuaTocd();
     }
 
@@ -48,8 +46,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaTad newKapuaTad()
-    {
+    public KapuaTad newKapuaTad() {
         return factory.newKapuaTad();
     }
 
@@ -58,8 +55,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaTicon newKapuaTicon()
-    {
+    public KapuaTicon newKapuaTicon() {
         return factory.newKapuaTicon();
     }
 
@@ -78,8 +74,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaToption newKapuaToption()
-    {
+    public KapuaToption newKapuaToption() {
         return factory.newKapuaToption();
     }
 
@@ -88,8 +83,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaTmetadata newKapuaTmetadata()
-    {
+    public KapuaTmetadata newKapuaTmetadata() {
         return factory.newKapuaTmetadata();
     }
 
@@ -98,8 +92,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaTdesignate newKapuaTdesignate()
-    {
+    public KapuaTdesignate newKapuaTdesignate() {
         return factory.newKapuaTdesignate();
     }
 
@@ -108,8 +101,7 @@ public class MetatypeXmlRegistry
      * 
      * @return
      */
-    public KapuaTobject newKapuaTobject()
-    {
+    public KapuaTobject newKapuaTobject() {
         return factory.newKapuaTobject();
     }
 }

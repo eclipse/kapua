@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.client.user.tabs.permission;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.view.EntityView;
@@ -27,7 +28,11 @@ import org.eclipse.kapua.app.console.shared.service.GwtAccessPermissionServiceAs
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -35,9 +40,10 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
     private static final GwtAccessPermissionServiceAsync gwtAccessPermissionService = GWT.create(GwtAccessPermissionService.class);
 
-    private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
+    private static final ConsoleUserMessages USR_MSGS = GWT.create(ConsoleUserMessages.class);
+    private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
 
-    private String userId = null;
+    private String userId;
 
     private UserTabPermissionToolbar toolbar;
 
@@ -58,7 +64,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
             }
         };
     }
-    
+
     @Override
     protected void selectionChangedEvent(GwtAccessPermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
@@ -71,29 +77,39 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
     @Override
     protected List<ColumnConfig> getColumns() {
-        
+
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridAccessRoleColumnHeaderId(), 100);
+        ColumnConfig columnConfig = new ColumnConfig("id", USR_MSGS.gridAccessRoleColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionDomain", MSGS.gridAccessRoleColumnHeaderDomain(), 200);
+        columnConfig = new ColumnConfig("permissionDomain", USR_MSGS.gridAccessRoleColumnHeaderDomain(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionAction", MSGS.gridAccessRoleColumnHeaderAction(), 200);
+        columnConfig = new ColumnConfig("permissionAction", USR_MSGS.gridAccessRoleColumnHeaderAction(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionTargetScopeId", MSGS.gridAccessRoleColumnHeaderTargetScopeId(), 200);
+        columnConfig = new ColumnConfig("permissionTargetScopeId", USR_MSGS.gridAccessRoleColumnHeaderTargetScopeId(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("permissionGroupId", MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
+        columnConfig = new ColumnConfig("permissionGroupId", USR_MSGS.gridAccessRoleColumnHeaderGroupId(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("permissionForwardable", USR_MSGS.gridAccessRoleColumnHeaderForwardable(), 200);
+        columnConfig.setRenderer(new GridCellRenderer<GwtAccessPermission>() {
+
+            @Override
+            public Object render(GwtAccessPermission model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtAccessPermission> store, Grid<GwtAccessPermission> grid) {
+                return model.getPermissionForwardable() ? COMMONS_MSGS.yes() : COMMONS_MSGS.no();
+            }
+        });
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdOn", MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);
+        columnConfig = new ColumnConfig("createdBy", USR_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("createdOn", USR_MSGS.gridAccessRoleColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
@@ -124,5 +140,5 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         }
         return toolbar;
     }
-    
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
@@ -25,14 +26,15 @@ public class ServiceResolver<S extends KapuaService, I extends S> {
         this.implementationClass = implementation;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static ServiceResolver newInstance(Class<?> service, Class<?> implementation)
+    @SuppressWarnings("unchecked")
+    public static <S extends KapuaService, I extends S> ServiceResolver<S,I> newInstance(Class<?> service, Class<?> implementation)
             throws KapuaLocatorException {
+
         if (!service.isAssignableFrom(implementation)) {
             throw new KapuaLocatorException(KapuaLocatorErrorCodes.SERVICE_PROVIDER_INVALID, implementation, service);
         }
 
-        return new ServiceResolver(service, implementation);
+        return new ServiceResolver<S,I>((Class<S>)service, (Class<I>)implementation);
     }
 
     public Class<S> getServiceClass() {

@@ -19,6 +19,9 @@ package org.eclipse.kapua.service.authentication.token;
  */
 public class AccessTokenPredicates {
 
+    private AccessTokenPredicates() {
+    }
+
     public static final String TOKEN_ID = "tokenId";
     public static final String USER_ID = "userId";
 

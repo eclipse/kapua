@@ -18,7 +18,6 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
-
 /**
  * <p>
  * Java class for Tattribute complex type.
@@ -45,8 +44,8 @@ import org.w3c.dom.Element;
  * @since 1.0
  *
  */
-public interface KapuaTattribute 
-{
+public interface KapuaTattribute {
+
     /**
      * Gets the value of the value property.
      *
@@ -58,8 +57,9 @@ public interface KapuaTattribute
      *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getValue().add(newItem);
+     * getValue().add(newItem);
      * </pre>
      *
      *
@@ -82,8 +82,9 @@ public interface KapuaTattribute
      *
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAny().add(newItem);
+     * getAny().add(newItem);
      * </pre>
      *
      *
@@ -100,8 +101,8 @@ public interface KapuaTattribute
      * Gets the value of the adref property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getAdref();
@@ -110,8 +111,8 @@ public interface KapuaTattribute
      * Sets the value of the adref property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setAdref(String value);
@@ -120,8 +121,8 @@ public interface KapuaTattribute
      * Gets the value of the content property.
      *
      * @return
-     *     possible object is
-     *     {@link String }
+     *         possible object is
+     *         {@link String }
      *
      */
     public String getContent();
@@ -130,8 +131,8 @@ public interface KapuaTattribute
      * Sets the value of the content property.
      *
      * @param value
-     *     allowed object is
-     *     {@link String }
+     *            allowed object is
+     *            {@link String }
      *
      */
     public void setContent(String value);
@@ -148,7 +149,7 @@ public interface KapuaTattribute
      *
      *
      * @return
-     *     always non-null
+     *         always non-null
      */
     public Map<QName, String> getOtherAttributes();
 }

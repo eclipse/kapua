@@ -32,6 +32,9 @@ public class KapuaSecurityUtils {
 
     private static final ThreadLocal<KapuaSession> threadSession = new ThreadLocal<>();
 
+    private KapuaSecurityUtils() {
+    }
+
     /**
      * Return the {@link KapuaSession} associated to the current thread session.
      *
@@ -61,9 +64,8 @@ public class KapuaSecurityUtils {
      * Execute the {@link Runnable} in a privileged context.<br>
      * Trusted mode means that checks for permissions and role will pass.
      *
-     * @param privilegedAction
-     *            The {@link Runnable} action to be executed.
-     * @return The result of the {@link Runnable} action.
+     * @param runnable
+     *            The {@link ThrowingRunnable} action to be executed.
      * @throws KapuaException
      */
     public static void doPrivileged(final ThrowingRunnable runnable) throws KapuaException {
@@ -89,8 +91,6 @@ public class KapuaSecurityUtils {
      * @since 1.0.0
      */
     public static <T> T doPrivileged(Callable<T> privilegedAction) throws KapuaException {
-        T result = null;
-
         // get (and keep) the current session
         KapuaSession previousSession = getSession();
         KapuaSession currentSession = null;
@@ -106,7 +106,7 @@ public class KapuaSecurityUtils {
         setSession(currentSession);
 
         try {
-            result = privilegedAction.call();
+            return privilegedAction.call();
         } catch (KapuaException ke) {
             throw ke;
         } catch (Exception e) {
@@ -115,8 +115,6 @@ public class KapuaSecurityUtils {
             // restore the original session
             setSession(previousSession);
         }
-
-        return result;
     }
 
 }

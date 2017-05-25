@@ -113,8 +113,6 @@ public interface User extends KapuaNamedEntity {
 
     /**
      * Set the user type
-     *
-     * @param phoneNumber
      */
     public void setUserType(UserType userType);
 

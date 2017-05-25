@@ -17,8 +17,7 @@ package org.eclipse.kapua;
  * @since 1.0
  *
  */
-public enum KapuaRuntimeErrorCodes implements KapuaErrorCode
-{
+public enum KapuaRuntimeErrorCodes implements KapuaErrorCode {
     /**
      * Unavailable service locator
      */

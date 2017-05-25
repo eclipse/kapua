@@ -741,9 +741,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         return new DefaultAuthorizationMap(dme);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unused")
     private DefaultAuthorizationMap buildProvisioningAuthMap(List<String> authDestinations, KapuaPrincipal principal, String accountName, String fullClientId) {
-        ArrayList<DestinationMapEntry> dme = new ArrayList<DestinationMapEntry>();
+        @SuppressWarnings("rawtypes")
+        final List<DestinationMapEntry> dme = new ArrayList<>();
 
         String clientId = principal.getClientId();
         // Write reply to any client Id and any application
@@ -870,10 +871,10 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         if (read) {
             // logger.info("pattern {} - clientid {} - topic {} - evaluated {}", new Object[]{JmsConstants.ACL_VT_DURABLE_PREFIX[0], clientId, topic,
             // MessageFormat.format(JmsConstants.ACL_VT_DURABLE_PREFIX[0], fullClientId, topic)});
-            entries.add(createAuthorizationEntry(authDestinations, MessageFormat.format(AclConstants.ACL_VT_DURABLE_PREFIX[0], fullClientId, topic), principal));
+            entries.add(createAuthorizationEntry(authDestinations, MessageFormat.format(AclConstants.ACL_VT_DURABLE_PREFIX.get(0), fullClientId, topic), principal));
             // logger.info("pattern {} - clientid {} - topic {} - evaluated {}", new Object[]{JmsConstants.ACL_VT_DURABLE_PREFIX[1], clientId, topic,
             // MessageFormat.format(JmsConstants.ACL_VT_DURABLE_PREFIX[1], fullClientId, topic)});
-            entries.add(createAuthorizationEntry(authDestinations, MessageFormat.format(AclConstants.ACL_VT_DURABLE_PREFIX[1], fullClientId, topic), principal));
+            entries.add(createAuthorizationEntry(authDestinations, MessageFormat.format(AclConstants.ACL_VT_DURABLE_PREFIX.get(1), fullClientId, topic), principal));
         }
         return entries;
     }

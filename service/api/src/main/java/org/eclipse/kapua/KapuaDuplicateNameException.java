@@ -17,8 +17,8 @@ package org.eclipse.kapua;
  * @since 1.0
  * 
  */
-public class KapuaDuplicateNameException extends KapuaException 
-{
+public class KapuaDuplicateNameException extends KapuaException {
+
     private static final long serialVersionUID = -2761138212317761216L;
 
     /**

@@ -36,7 +36,7 @@ public interface GwtAuthorizationService extends RemoteService {
      * @since 1.0.0
      */
     public GwtSession login(GwtLoginCredential gwtLoginCredentials) throws GwtKapuaException;
-    
+
     /**
      * Logins a session based on the given access token. If the access token is correct a session is established and returned
      * 
@@ -58,21 +58,6 @@ public interface GwtAuthorizationService extends RemoteService {
      * @since 1.0.0
      */
     public GwtSession getCurrentSession()
-            throws GwtKapuaException;
-
-    /**
-     * Checks whether the current Subject is granted the supplied permission;
-     * returns true if access is granted, false otherwise.
-     * <b>The API does not perform any access control check and it is meant for internal use.</b>
-     *
-     * @param gwtPermission
-     *            The permission to check
-     * @return {@code true} if subject is authorized, {@code false otherwise}
-     * @throws GwtKapuaException
-     *             FIXME: document this
-     * @since 1.0.0
-     */
-    public Boolean hasAccess(String gwtPermission)
             throws GwtKapuaException;
 
     /**

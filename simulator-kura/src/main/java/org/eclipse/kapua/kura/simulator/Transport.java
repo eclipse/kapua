@@ -11,14 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator;
 
-import java.util.Map;
 import java.util.function.Consumer;
 
 import org.eclipse.kapua.kura.simulator.payload.Message;
-import org.eclipse.kapua.kura.simulator.payload.Metrics;
 import org.eclipse.kapua.kura.simulator.topic.Topic;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload;
-import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
 
 public interface Transport {
 
@@ -67,18 +63,11 @@ public interface Transport {
 
     /**
      * Send a message to a topic
-     * 
+     *
      * @param topic
      *            the topic to send the message to
      * @param payload
      *            the payload to send
      */
     public void sendMessage(Topic topic, byte[] payload);
-
-    @Deprecated
-    public default void sendMessage(final Topic topic, final Map<String, Object> metrics) {
-        final Builder payload = KuraPayload.newBuilder();
-        Metrics.buildMetrics(payload, metrics);
-        sendMessage(topic, payload.build().toByteArray());
-    }
 }

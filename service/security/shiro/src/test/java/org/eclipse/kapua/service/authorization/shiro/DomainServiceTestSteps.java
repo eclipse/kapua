@@ -57,17 +57,17 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     private static final Logger s_logger = LoggerFactory.getLogger(DomainServiceTestSteps.class);
 
     // Various domain related service references
-    DomainService domainService = null;
-    DomainFactory domainFactory = null;
-    GroupService groupService = null;
-    GroupFactory groupFactory = null;
+    DomainService domainService ;
+    DomainFactory domainFactory ;
+    GroupService groupService ;
+    GroupFactory groupFactory ;
 
     // Currently executing scenario.
     Scenario scenario;
 
     // Test data scratchpads
-    CommonTestData commonData = null;
-    DomainServiceTestData domainData = null;
+    CommonTestData commonData ;
+    DomainServiceTestData domainData ;
 
     @Inject
     public DomainServiceTestSteps(DomainServiceTestData domainData, CommonTestData commonData) {

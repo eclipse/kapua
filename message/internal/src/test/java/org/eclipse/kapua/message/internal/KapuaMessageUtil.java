@@ -34,6 +34,9 @@ import org.eclipse.kapua.message.KapuaPosition;
  */
 public class KapuaMessageUtil {
 
+    private KapuaMessageUtil() {
+    }
+
     /**
      * Prepare payload data that contains two metrics and simple byte payload.
      *
