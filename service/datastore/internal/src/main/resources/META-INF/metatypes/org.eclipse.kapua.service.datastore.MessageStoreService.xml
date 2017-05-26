@@ -19,11 +19,11 @@
 
         <Icon resource="OSGI-INF/message-store-service.png" size="32"/>
 
-		<AD id="enabled"
+		<AD id="expirationDate"
             name="messageStore.expirationDate"
             type="String"
             cardinality="0"
-            required="true"
+            required="false"
             description="Data storage expiration date (may differ from account expiration date).">
         </AD>
 

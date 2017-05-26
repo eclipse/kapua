@@ -76,10 +76,14 @@ import com.extjs.gxt.ui.client.data.LoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
-public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements GwtDataService {
+public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<MessageStoreService> implements GwtDataService {
 
     private static KapuaLocator locator = KapuaLocator.getInstance();
     private static final long serialVersionUID = -5518740923786017558L;
+
+    public GwtDataServiceImpl() {
+        super(locator.getService(MessageStoreService.class));
+    }
 
     @Override
     public List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException {
