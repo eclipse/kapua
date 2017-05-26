@@ -75,6 +75,8 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * 
      * @param scopeId
      *            The {@link KapuaId} of the account to be tested
+     * @param targetScopeId
+     *            Optional scopeId of the child account to be excluded when validating the new configuration for that scopeId.
      * @param configuration
      *            The configuration to be tested. If null will be read
      *            from the current service configuration; otherwise the passed configuration
