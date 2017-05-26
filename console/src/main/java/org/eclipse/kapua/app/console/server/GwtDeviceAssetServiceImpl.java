@@ -27,6 +27,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
@@ -49,7 +50,7 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
         //
         // Checking validity of the given XSRF Token
         checkXSRFToken(xsrfToken);
-        
+
         GwtDeviceAssets gwtAssets = new GwtDeviceAssets();
         List<GwtDeviceAsset> gwtAssetsList = new ArrayList<GwtDeviceAsset>();
         gwtAssetsList.add(gwtAsset);
@@ -57,7 +58,7 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
         try {
             KapuaId scopeId = GwtKapuaModelConverter.convert(scopeIdString);
             KapuaId deviceId = GwtKapuaModelConverter.convert(deviceIdString);
-    
+
             assetService.write(scopeId, deviceId, GwtKapuaModelConverter.convert(gwtAssets), null);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -72,13 +73,22 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
             KapuaId deviceId = GwtKapuaModelConverter.convert(deviceIdString);
             DeviceAssets assetsMetadata = assetService.get(scopeId, deviceId, GwtKapuaModelConverter.convert(deviceAssets), null);
             DeviceAssets assetsValues = assetService.read(scopeId, deviceId, GwtKapuaModelConverter.convert(deviceAssets), null);
+
             for (int assetIndex = 0; assetIndex < assetsMetadata.getAssets().size(); assetIndex++) {
-                DeviceAsset asset = assetsMetadata.getAssets().get(assetIndex);
-                for (int channelIndex = 0; channelIndex < asset.getChannels().size(); channelIndex++) {
-                    DeviceAssetChannel channel = asset.getChannels().get(channelIndex);
-                    channel.setValue(assetsValues.getAssets().get(assetIndex).getChannels().get(channelIndex).getValue());
+                DeviceAsset assetMetadata = assetsMetadata.getAssets().get(assetIndex);
+                DeviceAsset assetValues = assetsValues.getAssets().get(assetIndex);
+                for (DeviceAssetChannel channelMetadata : assetMetadata.getChannels()) {
+                    if (channelMetadata.getMode().equals(DeviceAssetChannelMode.READ) || channelMetadata.getMode().equals(DeviceAssetChannelMode.READ_WRITE)) {
+                        for (DeviceAssetChannel channelValue : assetValues.getChannels()) {
+                            if (channelValue.getName().equals(channelMetadata.getName())) {
+                                channelMetadata.setValue(channelValue.getValue());
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+
             gwtAssets = KapuaGwtModelConverter.convert(assetsMetadata);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
