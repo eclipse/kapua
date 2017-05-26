@@ -162,11 +162,6 @@ public enum SystemSettingKey implements SettingKey {
     METRICS_ENABLE_JMX("metrics.enable.jmx"),
 
     /**
-     * Tell if is running into ogsi container
-     */
-    OSGI_CONTEXT("commons.osgi.context"),
-
-    /**
      * Set the Kapua key size (the size is expressed in bits)
      */
     KAPUA_KEY_SIZE("commons.entity.key.size"),
