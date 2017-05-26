@@ -60,7 +60,7 @@ public final class AboutScanner {
             while ((entry = zis.getNextEntry()) != null) {
                 if ("META-INF/MANIFEST.MF".equals(entry.getName())) {
                     result = processOsgiManifest(result, entry, zis);
-                    result = processPlainManifest(result, url, entry, zis);
+                    result = processPlainManifest(result, url, zis);
                 } else if (entry.getName().startsWith("META-INF/maven/") && entry.getName().endsWith("/pom.properties")) {
                     result = processMavenProperties(result, entry, zis);
                 } else if ("META-INF/NOTICE.txt".equals(entry.getName())) {
@@ -82,8 +82,7 @@ public final class AboutScanner {
         return result;
     }
 
-    private static AboutEntry processPlainManifest(AboutEntry about, final URL url, final ZipEntry entry, final InputStream in) {
-
+    private static AboutEntry processPlainManifest(AboutEntry about, final URL url, final InputStream in) {
         try {
             final Manifest mf = new Manifest(in);
             final String name = mf.getMainAttributes().getValue("Specification-Title");
@@ -103,7 +102,6 @@ public final class AboutScanner {
 
         } catch (Exception e) {
         }
-
         return about;
     }
 
