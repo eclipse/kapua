@@ -65,55 +65,58 @@ public class KapuaLiquibaseClient {
         try {
             if (parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
                 try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
-
-                    //
-                    // Copy files to temporary directory
-                    String tmpDirectory = getJavaIoTmpDir().getAbsolutePath();
-
-                    File changelogTempDirectory = new File(tmpDirectory, "kapua-liquibase");
-
-                    if (changelogTempDirectory.exists()) {
-                        FileUtils.deleteDirectory(changelogTempDirectory);
-                    }
-
-                    changelogTempDirectory.mkdirs();
-                    LOG.trace("Tmp dir: {}", changelogTempDirectory.getAbsolutePath());
-
-                    Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
-                    Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.xml|.*\\.sql"));
-                    for (String script : changeLogs) {
-                        URL scriptUrl = getClass().getResource("/" + script);
-                        File changelogFile = new File(changelogTempDirectory, script.replaceFirst("liquibase/", ""));
-                        if (changelogFile.getParentFile() != null && !changelogFile.getParentFile().exists()) {
-                            LOG.trace("Creating parent dir: {}", changelogFile.getParentFile().getAbsolutePath());
-                            changelogFile.getParentFile().mkdirs();
-                        }
-                        IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
-                        LOG.trace("Copied file: {}", changelogFile.getAbsolutePath());
-                    }
-
-                    //
-                    // Find and execute all master scripts
-                    File[] masterChangelogs = changelogTempDirectory.listFiles((FilenameFilter) (dir, name) -> name.endsWith("-master.xml"));
-
-                    LOG.info("Master Liquibase files found: {}", masterChangelogs.length);
-
-                    for (File masterChangelog : masterChangelogs) {
-                        LOG.info("Excuting liquibase script: {}", masterChangelog.getAbsolutePath());
-                        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-                        if (schema.isPresent()) {
-                            database.setDefaultSchemaName(schema.get());
-                        }
-                        Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
-                        liquibase.update(null);
-
-                        LOG.debug("Excuted liquibase script: {}", masterChangelog.getAbsolutePath());
-                    }
+                    loadResourcesStatic(connection, schema);
                 }
             }
         } catch (LiquibaseException | SQLException | IOException e) {
             LOG.error("Error while running Liquibase scripts!", e);
             throw new RuntimeException(e);
+        }
+    }
+
+    protected static synchronized void loadResourcesStatic(Connection connection, Optional<String> schema) throws LiquibaseException, IOException {
+        //
+        // Copy files to temporary directory
+        String tmpDirectory = getJavaIoTmpDir().getAbsolutePath();
+
+        File changelogTempDirectory = new File(tmpDirectory, "kapua-liquibase");
+
+        if (changelogTempDirectory.exists()) {
+            FileUtils.deleteDirectory(changelogTempDirectory);
+        }
+
+        changelogTempDirectory.mkdirs();
+        LOG.trace("Tmp dir: {}", changelogTempDirectory.getAbsolutePath());
+
+        Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
+        Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.xml|.*\\.sql"));
+        for (String script : changeLogs) {
+            URL scriptUrl = KapuaLiquibaseClient.class.getResource("/" + script);
+            File changelogFile = new File(changelogTempDirectory, script.replaceFirst("liquibase/", ""));
+            if (changelogFile.getParentFile() != null && !changelogFile.getParentFile().exists()) {
+                LOG.trace("Creating parent dir: {}", changelogFile.getParentFile().getAbsolutePath());
+                changelogFile.getParentFile().mkdirs();
+            }
+            IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
+            LOG.trace("Copied file: {}", changelogFile.getAbsolutePath());
+        }
+
+        //
+        // Find and execute all master scripts
+        File[] masterChangelogs = changelogTempDirectory.listFiles((FilenameFilter) (dir, name) -> name.endsWith("-master.xml"));
+
+        LOG.info("Master Liquibase files found: {}", masterChangelogs.length);
+
+        for (File masterChangelog : masterChangelogs) {
+            LOG.info("Excuting liquibase script: {}", masterChangelog.getAbsolutePath());
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            if (schema.isPresent()) {
+                database.setDefaultSchemaName(schema.get());
+            }
+            Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
+            liquibase.update(null);
+
+            LOG.debug("Excuted liquibase script: {}", masterChangelog.getAbsolutePath());
         }
     }
 
