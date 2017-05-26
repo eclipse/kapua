@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Base64;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Kapua identifier object.<br>
  * This object it's used to identify each entity.<br>
@@ -24,6 +26,9 @@ import java.util.Base64;
  *
  */
 public interface KapuaId extends Serializable {
+
+    @XmlTransient
+    public static final KapuaId ANY = new KapuaIdStatic(BigInteger.ONE.negate());
 
     /**
      * Get the identifier

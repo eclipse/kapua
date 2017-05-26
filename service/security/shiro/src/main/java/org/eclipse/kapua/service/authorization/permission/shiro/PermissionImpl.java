@@ -218,6 +218,10 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
         Permission permission = (Permission) p;
 
+        if (KapuaId.ANY.equals(permission.getTargetScopeId())) {
+            setTargetScopeId(null);
+        }
+
         if (Group.ANY.equals(permission.getGroupId())) {
             setGroupId(null);
         }
