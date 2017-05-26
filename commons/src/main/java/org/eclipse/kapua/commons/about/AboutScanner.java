@@ -50,7 +50,7 @@ public final class AboutScanner {
     }
 
     private static AboutEntry map(URL url) {
-        
+
         AboutEntry result = null;
 
         try (InputStream in = url.openStream();
@@ -114,7 +114,7 @@ public final class AboutScanner {
 
         about = processNotice(about, url, in);
 
-        final List<String> keywords = Arrays.asList("epl","eclipse public license");
+        final List<String> keywords = Arrays.asList("epl", "eclipse public license");
         final String fileContent = about.getNotice();
 
         // Makes sure all the keywords are contained in the about.html file
@@ -125,7 +125,7 @@ public final class AboutScanner {
             about.setLicense(License.UNKNOWN);
         }
 
-        return  about;
+        return about;
     }
 
     /**

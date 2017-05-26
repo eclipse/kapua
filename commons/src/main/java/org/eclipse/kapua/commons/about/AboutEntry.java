@@ -32,7 +32,7 @@ public class AboutEntry {
             }
 
             APL2 = new License("Apache License 2.0", null, urlApache);
-            EPL =  new License("EPL","Eclipse Public License", urlEpl);
+            EPL = new License("EPL", "Eclipse Public License", urlEpl);
         }
 
         private final String name;
