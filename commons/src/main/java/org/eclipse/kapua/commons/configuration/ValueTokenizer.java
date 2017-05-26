@@ -204,7 +204,7 @@ public class ValueTokenizer {
             // Now inspect each token.
             for (String s : values) {
                 // If options were declared and the value does not match one of them, the value is not valid.
-                if (!ad.getOption().isEmpty() && !ad.getOption().contains(s)) {
+                if (!ad.getOption().isEmpty() && ad.getOption().stream().filter( option -> s.equals(option.getValue()) ).count() == 0) {
                     return MessageFormat.format(VALUE_OUT_OF_OPTION, s);
                 }
                 // Check the type. Also check the range if min or max were declared.
