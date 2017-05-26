@@ -38,11 +38,11 @@ import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
-import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
@@ -70,6 +70,8 @@ public class DataMessages extends AbstractKapuaResource {
      *            The client id to filter results.
      * @param channel
      *            The channel id to filter results. It allows '#' wildcard in last channel level.
+     * @param strictChannel
+     *            Restrict the search only to this channel ignoring its children. Only meaningful if channel is set.
      * @param startDateParam
      *            The start date to filter the results. Must come before endDate parameter.
      * @param endDateParam
@@ -91,7 +93,8 @@ public class DataMessages extends AbstractKapuaResource {
     public <V extends Comparable<V>> MessageListResult simpleQuery(  //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
-            @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
+            @ApiParam(value = "The channel to filter results.") @QueryParam("channel") String channel,
+            @ApiParam(value = "Restrict the search only to this channel ignoring its children. Only meaningful if channel is set.") @QueryParam("strictChannel") boolean strictChannel,
             @ApiParam(value = "The start date to filter the results. Must come before endDate parameter") @QueryParam("startDate") DateParam startDateParam,
             @ApiParam(value = "The end date to filter the results. Must come after startDate parameter") @QueryParam("endDate") DateParam endDateParam,
             @ApiParam(value = "The metric name to filter results") @QueryParam("metricName") String metricName, //
@@ -109,7 +112,12 @@ public class DataMessages extends AbstractKapuaResource {
             }
 
             if (!Strings.isNullOrEmpty(channel)) {
-                ChannelMatchPredicate channelPredicate = storablePredicateFactory.newChannelMatchPredicate(channel);
+                StorablePredicate channelPredicate = null;
+                if (strictChannel) {
+                    channelPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+                } else {
+                    channelPredicate = storablePredicateFactory.newChannelMatchPredicate(channel);
+                }
                 andPredicate.getPredicates().add(channelPredicate);
             }
 

@@ -216,7 +216,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException {
-        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(topic.getSemanticTopic());
+        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(topic.getSemanticTopic().replaceFirst("/#$", ""));
         return findHeaders(config, scopeId, predicate);
     }
 
