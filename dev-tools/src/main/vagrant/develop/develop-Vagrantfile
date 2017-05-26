@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
   #activemq
   config.vm.network "forwarded_port", guest: 1883, host: 1883
   config.vm.network "forwarded_port", guest: 8883, host: 8883
+  config.vm.network "forwarded_port", guest: 61614, host: 61614
   config.vm.network "forwarded_port", guest: 5005, host: 5005
 
   #elasticsearch
