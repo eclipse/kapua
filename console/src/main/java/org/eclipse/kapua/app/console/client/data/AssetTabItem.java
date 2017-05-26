@@ -45,10 +45,12 @@ public class AssetTabItem extends TabItem {
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
 
     private GwtSession currentSession;
-    private DeviceTable deviceTable;
-    private Button queryButton;
-    private ResultsTable resultsTable;
 
+    private DeviceTable deviceTable;
+
+    private Button queryButton;
+
+    private ResultsTable resultsTable;
     private AssetTable assetTable;
     private MetricsTable metricsTable;
 
@@ -62,7 +64,9 @@ public class AssetTabItem extends TabItem {
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
-        this.setWidth("100%");
+
+        setWidth("100%");
+
         BorderLayoutData messageLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.06f);
         messageLayout.setMargins(new Margins(5));
         Text welcomeMessage = new Text();
@@ -71,10 +75,11 @@ public class AssetTabItem extends TabItem {
 
         LayoutContainer tables = new LayoutContainer(new BorderLayout());
         BorderLayoutData tablesLayout = new BorderLayoutData(LayoutRegion.CENTER);
+        tablesLayout.setMargins(new Margins(0, 5, 0, 5));
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
 
-        BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.3f);
+        BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.33f);
         deviceTable = new DeviceTable(currentSession);
         deviceLayout.setMargins(new Margins(0, 5, 0, 0));
         deviceLayout.setSplit(true);
@@ -87,20 +92,20 @@ public class AssetTabItem extends TabItem {
         });
         tables.add(deviceTable, deviceLayout);
 
-        BorderLayoutData assetLayout = new BorderLayoutData(LayoutRegion.CENTER, 0.3f);
+        BorderLayoutData assetLayout = new BorderLayoutData(LayoutRegion.CENTER, 0.34f);
         assetLayout.setMargins(new Margins(0, 5, 0, 5));
         assetLayout.setSplit(true);
         assetTable = new AssetTable(currentSession);
         assetTable.addSelectionChangedListener(new SelectionChangedListener<GwtDatastoreAsset>() {
 
-               @Override
-               public void selectionChanged(SelectionChangedEvent<GwtDatastoreAsset> selectedAsset) {
-                   metricsTable.refresh(selectedAsset.getSelectedItem());
-               }
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GwtDatastoreAsset> selectedAsset) {
+                metricsTable.refresh(selectedAsset.getSelectedItem());
+            }
         });
         tables.add(assetTable, assetLayout);
 
-        BorderLayoutData channelLayout = new BorderLayoutData(LayoutRegion.EAST, 0.3f);
+        BorderLayoutData channelLayout = new BorderLayoutData(LayoutRegion.EAST, 0.33f);
         channelLayout.setMargins(new Margins(0, 0, 0, 5));
         channelLayout.setSplit(true);
         metricsTable = new MetricsTable(currentSession, MetricsTable.Type.ASSET);
@@ -108,7 +113,7 @@ public class AssetTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtHeader> se) {
-                if(!se.getSelection().isEmpty()){
+                if (!se.getSelection().isEmpty()) {
                     queryButton.enable();
                 } else {
                     queryButton.disable();
@@ -135,11 +140,14 @@ public class AssetTabItem extends TabItem {
         queryButtonContainer.add(queryButton, new TableData());
         tables.add(queryButtonContainer, queryButtonLayout);
 
-        BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH);
+        BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);
         resultsLayout.setSplit(true);
-        resultsLayout.setMargins(new Margins(5, 0, 0, 0));
 
         TabPanel resultsTabPanel = new TabPanel();
+        resultsTabPanel.setPlain(true);
+        resultsTabPanel.setBorders(false);
+        resultsTabPanel.setBodyBorder(false);
+
         resultsTable = new ResultsTable(currentSession);
         TabItem resultsTableTabItem = new TabItem(MSGS.resultsTableTabItemTitle(), new KapuaIcon(IconSet.TABLE));
         resultsTableTabItem.setLayout(new FitLayout());
