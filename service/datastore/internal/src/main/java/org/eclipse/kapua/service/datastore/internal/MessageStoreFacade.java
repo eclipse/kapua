@@ -148,8 +148,6 @@ public final class MessageStoreFacade {
         DatastoreMessage messageToStore = convertTo(message);
         messageToStore.setTimestamp(indexedOnDate);
         InsertRequest insertRequest = new InsertRequest(typeDescriptor, messageToStore);
-        InsertResponse insertResponse = client.insert(insertRequest);
-        messageToStore.setDatastoreId(new StorableIdImpl(insertResponse.getId()));
         // Possibly update the schema with new metric mappings
         Map<String, Metric> metrics = new HashMap<>();
         if (message.getPayload()!=null && message.getPayload().getProperties()!=null && message.getPayload().getProperties().size()>0) {
@@ -166,8 +164,11 @@ public final class MessageStoreFacade {
                 metrics.put(mappedName, metric);
             }
         }
-
         mediator.onUpdatedMappings(message.getScopeId(), indexedOn, metrics);
+
+        InsertResponse insertResponse = client.insert(insertRequest);
+        messageToStore.setDatastoreId(new StorableIdImpl(insertResponse.getId()));
+
         mediator.onAfterMessageStore(messageInfo, messageToStore);
         return insertResponse;
     }

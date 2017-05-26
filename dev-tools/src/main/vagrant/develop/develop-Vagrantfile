@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
      group: "vagrant",
      mount_options: ["dmode=775,fmode=664"]
 
-  config.vm.box = "trusty64/kapua-dev-box-0.3"
+  config.vm.box = "trusty64/kapua-dev-box-0.4"
 
   config.vm.box_check_update = false
 
@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
   #activemq
   config.vm.network "forwarded_port", guest: 1883, host: 1883
   config.vm.network "forwarded_port", guest: 8883, host: 8883
+  config.vm.network "forwarded_port", guest: 61614, host: 61614
   config.vm.network "forwarded_port", guest: 5005, host: 5005
 
   #elasticsearch
@@ -51,7 +52,7 @@ Vagrant.configure("2") do |config|
      export DEBIAN_FRONTEND=noninteractive
      export BINDING_IP="192.168.33.10"
 
-	 export ELASTICSEARCH_VERSION="5.3.0"
+	 export ELASTICSEARCH_VERSION="5.4.0"
 	 export H2DB_VERSION="1.4.192"
 	 export ACTIVEMQ_VERSION="5.14.5"
 	 export TOMCAT_VERSION="8.0.41"
@@ -137,7 +138,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", run: "always", inline: <<-SHELL
   	  export DEBIAN_FRONTEND=noninteractive
-	  export ELASTICSEARCH_VERSION="5.3.0"
+	  export ELASTICSEARCH_VERSION="5.4.0"
 	  export H2DB_VERSION="1.4.192"
 	  setsid su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
 	  setsid su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant

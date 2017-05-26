@@ -324,6 +324,16 @@ public class DatastoreUtils {
     }
 
     /**
+     * Check if the metric type is date
+     *
+     * @param acronym
+     * @return
+     */
+    public static boolean isDateMetric(String acronym) {
+        return CLIENT_METRIC_TYPE_DATE_ACRONYM.equals(acronym);
+    }
+
+    /**
      * Convert the metric value class type (Kapua side) to the proper string type description (client side)
      *
      * @param aClass
