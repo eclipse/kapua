@@ -38,9 +38,7 @@ public class IdGenerator {
      * @return
      */
     public static BigInteger generate() {
-        byte[] bytes = new byte[ID_SIZE];
-        SECURE_RANDOM.nextBytes(bytes);
-        return new BigInteger(bytes);
+        return new BigInteger(ID_SIZE, SECURE_RANDOM);
     }
 
 }
