@@ -35,7 +35,6 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
@@ -115,7 +114,7 @@ public class DataMessages extends AbstractKapuaResource {
             if (!Strings.isNullOrEmpty(channel)) {
                 StorablePredicate channelPredicate = null;
                 if (strictChannel) {
-                    channelPredicate = storablePredicateFactory.newTermPredicate(new StorableFieldImpl("channel"), channel);
+                    channelPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CHANNEL, channel);
                 } else {
                     channelPredicate = storablePredicateFactory.newChannelMatchPredicate(channel);
                 }
