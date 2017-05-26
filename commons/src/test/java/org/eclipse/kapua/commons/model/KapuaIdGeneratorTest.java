@@ -121,7 +121,7 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     public void testIdGeneratorBound() throws Exception {
         int idSize = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
         BigInteger upperLimit = BigInteger.valueOf(2).pow(idSize);
-        for (int i = 0; i < 100000000; i++) {
+        for (int i = 0; i < 1000; i++) {
             BigInteger generated = IdGenerator.generate();
             assertFalse("The generated id is out of the expected bounds!", generated.compareTo(BigInteger.ZERO) < 0 || generated.compareTo(upperLimit) != -1);
         }
