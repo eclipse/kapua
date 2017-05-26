@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.about;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Comparator.comparing;
+import com.google.common.io.CharStreams;
+import org.eclipse.kapua.commons.about.AboutEntry.License;
+import org.reflections.util.ClasspathHelper;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,12 +30,13 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.kapua.commons.about.AboutEntry.License;
-import org.reflections.util.ClasspathHelper;
-
-import com.google.common.io.CharStreams;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Comparator.comparing;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public final class AboutScanner {
+
+    private static final Logger LOG = getLogger(AboutScanner.class);
 
     private final List<AboutEntry> entries;
 
@@ -101,6 +104,7 @@ public final class AboutScanner {
             }
 
         } catch (Exception e) {
+            LOG.debug("Problem during archive processing:", e);
         }
         return about;
     }
