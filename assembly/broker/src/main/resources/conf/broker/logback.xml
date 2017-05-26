@@ -8,6 +8,8 @@
 		</encoder>
 	</appender>
 
+	<logger name="liquibase" level="WARN" />
+
 	<root level="info">
 		<appender-ref ref="console" />
 	</root>

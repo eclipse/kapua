@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+-- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -12,32 +12,10 @@
 
 --liquibase formatted sql
 
---changeset group:1
+--changeset device:1
 
-CREATE TABLE athz_group (
-  scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
-  id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL,
-  created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on               TIMESTAMP(3)  NOT NULL,
-  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
-
-  name 						VARCHAR(255)  NOT NULL,
-  
-  optlock                   INT UNSIGNED,
-  attributes				TEXT,
-  properties                TEXT,
-  
-  PRIMARY KEY (id)
-
-) DEFAULT CHARSET=utf8;
-
-CREATE UNIQUE INDEX idx_group_name ON athz_group (scope_id, name);
-
---changeset group:2
-
-  -- WARNING: to be kept in sync with kapua/commons/src/main/resources/liquibase/configuration.sql
-  CREATE TABLE IF NOT EXISTS sys_configuration (
+-- WARNING: to be kept in sync with kapua/commons/src/main/resources/liquibase/configuration.sql
+CREATE TABLE IF NOT EXISTS sys_configuration (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
   id                         BIGINT(21) 	  UNSIGNED NOT NULL,
   pid						 VARCHAR(255) 	  NOT NULL,
@@ -67,8 +45,8 @@ INSERT INTO sys_configuration (
   ATTRIBUTES,
   PROPERTIES)
 VALUES (1,
-        4,
-        'org.eclipse.kapua.service.authorization.group.GroupService',
+        3,
+        'org.eclipse.kapua.service.device.registry.DeviceRegistryService',
         CONCAT('#', CURRENT_TIMESTAMP(), CHAR(13), CHAR(10),
         'maxNumberChildEntities=0', CHAR(13), CHAR(10),
         'infiniteChildEntities=true'),
@@ -79,3 +57,4 @@ VALUES (1,
   0,
   null,
   null);
+

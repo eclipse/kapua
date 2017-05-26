@@ -10,7 +10,8 @@
 	</appender>
 
 	<logger name="org.eclipse.paho" level="INFO" />
-
+	<logger name="liquibase" level="WARN" />
+	
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
 	</root>

@@ -72,7 +72,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         } else {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "externalId");
         }
-        
+
         if (allowedChildEntities(userCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max users reached");
         }
@@ -140,17 +140,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         // Do the delete
         entityManagerSession.onTransactedAction(em -> {
-            // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
-            User userx = UserDAO.find(em, userId);
-            if (userx == null) {
+            User user = UserDAO.find(em, userId);
+            if (user == null) {
                 throw new KapuaEntityNotFoundException(User.TYPE, userId);
             }
-            User user = find(scopeId, userId);
             validateSystemUser(user.getName());
-
-            // Ensure this is not the last admin for the account
-            // FIXME-KAPUA: Ask the Authorization Service
-            // UserDAO.checkForLastAccountAdministratorDelete(em, userx);
 
             UserDAO.delete(em, userId);
         });

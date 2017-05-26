@@ -29,11 +29,8 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
@@ -133,12 +130,6 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         entityManagerSession.onTransactedAction(em -> {
             if (RoleDAO.find(em, roleId) == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
-            }
-
-            RolePermissionService rolePermissionService = locator.getService(RolePermissionService.class);
-            RolePermissionListResult rolePermissions = rolePermissionService.findByRoleId(scopeId, roleId);
-            for (RolePermission rp : rolePermissions.getItems()) {
-                RolePermissionDAO.delete(em, rp.getId());
             }
 
             RoleDAO.delete(em, roleId);

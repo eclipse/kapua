@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.security.acl.Permission;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
@@ -34,6 +35,10 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.KapuaMethod;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
@@ -41,6 +46,8 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
+import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
@@ -85,8 +92,15 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     Scenario scenario;
 
     // Various device registry related service references
+    DeviceRegistryService deviceService;
+    DeviceFactory deviceFactory;
     DeviceEventService eventService;
     DeviceEventFactory eventFactory;
+
+    // Background items
+    Device device;
+    KapuaId deviceId;
+    Set<Device> devices = new HashSet<>();
 
     // Device registry related objects
     DeviceEvent event;
@@ -149,6 +163,11 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
                 mockedPermissionFactory);
 
         // Inject actual device registry related services
+        deviceService = new DeviceRegistryServiceImpl();
+        mockLocator.setMockedService(org.eclipse.kapua.service.device.registry.DeviceRegistryService.class, deviceService);
+        deviceFactory = new DeviceFactoryImpl();
+        mockLocator.setMockedFactory(org.eclipse.kapua.service.device.registry.DeviceFactory.class, deviceFactory);
+
         eventService = new DeviceEventServiceImpl();
         mockLocator.setMockedService(org.eclipse.kapua.service.device.registry.event.DeviceEventService.class, eventService);
         eventFactory = new DeviceEventFactoryImpl();
@@ -172,6 +191,29 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
+    }
+
+    // The Cucumber test background
+    @Given("^A \"(.+)\" device$")
+    public void createDevice(String clientId)
+            throws KapuaException {
+        assertNotNull(clientId);
+        assertTrue(!clientId.isEmpty());
+
+        DeviceCreator deviceCreator = prepareRegularDeviceCreator(scopeId, clientId);
+        assertNotNull(deviceCreator);
+
+        try {
+            exceptionCaught = false;
+            device = deviceService.create(deviceCreator);
+            assertNotNull(device);
+            deviceId = device.getId();
+            assertNotNull(deviceId);
+
+            devices.add(device);
+        } catch (KapuaException ex) {
+            exceptionCaught = true;
+        }
     }
 
     // The Cucumber test steps
@@ -209,10 +251,10 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         eventCreator.setAction(null);
     }
 
-    @Given("^A \"(.+)\" event from device (\\d+)$")
-    public void createRegularEvent(String eventType, int device)
+    @Given("^A \"(.+)\" event from device \"(.+)\"$")
+    public void createRegularEvent(String eventType, String clientId)
             throws KapuaException {
-        KapuaId tmpDevId = new KapuaEid(BigInteger.valueOf(device));
+        KapuaId tmpDevId = getDeviceId(clientId);
         KapuaMethod tmpMeth = getMethodFromString(eventType);
 
         eventCreator = prepareRegularDeviceEventCreator(scopeId, tmpDevId);
@@ -230,10 +272,10 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         }
     }
 
-    @Given("^I have (\\d+) \"(.+)\" events? from device (\\d+)$")
-    public void createANumberOfEvents(int num, String eventType, int devId)
+    @Given("^I have (\\d+) \"(.+)\" events? from device \"(.+)\"$")
+    public void createANumberOfEvents(int num, String eventType, String clientId)
             throws KapuaException {
-        KapuaId tmpDevId = new KapuaEid(BigInteger.valueOf(devId));
+        KapuaId tmpDevId = getDeviceId(clientId);
         KapuaMethod tmpMeth = getMethodFromString(eventType);
         DeviceEventCreator tmpCreator = null;
         DeviceEvent tmpEvent = null;
@@ -385,6 +427,13 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     // *******************
 
     // Create a event creator object. The creator is pre-filled with default data.
+    private DeviceCreator prepareRegularDeviceCreator(KapuaId accountId, String clientId) {
+        DeviceCreator deviceCreator = deviceFactory.newCreator(accountId, clientId);
+
+        return deviceCreator;
+    }
+
+    // Create a event creator object. The creator is pre-filled with default data.
     private DeviceEventCreator prepareRegularDeviceEventCreator(KapuaId accountId, KapuaId deviceId) {
         DeviceEventCreatorImpl tmpCreator = new DeviceEventCreatorImpl(accountId);
         KapuaPosition tmpPosition = new KapuaPositionImpl();
@@ -440,6 +489,17 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         assertNotNull(tmpMeth);
 
         return tmpMeth;
+    }
+
+    private KapuaId getDeviceId(String clientId) {
+        assertNotNull(clientId);
+        for (Device d : devices) {
+            if (clientId.equals(d.getClientId())) {
+                return d.getId();
+            }
+        }
+        fail("Not foung device with clientId: " + clientId);
+        return null;
     }
 
     private KapuaId createRandomId() {

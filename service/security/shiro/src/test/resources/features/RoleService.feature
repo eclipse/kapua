@@ -8,9 +8,7 @@
 #
 # Contributors:
 #     Eurotech - initial API and implementation
-#
 ###############################################################################
-
 Feature: Role Service CRUD tests
 
 Scenario: Regular role creation
@@ -178,11 +176,14 @@ Scenario: Empty query results are supported
 	And I get 0 as result
 
 Scenario: Create some regular role permissions
-	Given I create the following role permissions
-	|scopeId |roleId |actionName |
-	|1       |15     |read       |
-	|1       |15     |write      |
-	|5       |8      |connect    |
+	Given I create the following role
+	|scopeId |name      |
+	|1       |test_role |
+	And I create the following role permissions
+	|scopeId |actionName | targetScopeId |
+	|1       |read       | 1             |
+	|1       |write      | 1             |
+	|1       |connect    | 3             |
 	Then No exception was thrown
 	When I search for the last created role permission
 	Then The correct role permission entry was found
@@ -190,9 +191,12 @@ Scenario: Create some regular role permissions
 Scenario: Delete role permissions
 	It must be possible to delete an existing role permission record from the database.
 	
-	Given I create the following role permission
-	|scopeId |roleId |actionName |
-	|1       |15     |read       |
+	Given I create the following role
+	|scopeId |name      |
+	|1       |test_role |
+	And I create the following role permission
+	|scopeId |actionName |
+	|1       |read       |
 	Then No exception was thrown
 	When I delete the last created role permission
 	And I search for the last created role permission
@@ -202,9 +206,12 @@ Scenario: Delete nonexisting role permission
 	An attempt to delete a non existing role permission from the database must result 
 	in an exception being thrown.
 	
-	Given I create the following role permission
-	|scopeId |roleId |actionName |
-	|1       |15     |read       |
+	Given I create the following role
+	|scopeId |name      |
+	|1       |test_role |
+	And  I create the following role permission
+	|scopeId |actionName |
+	|1       |read       |
 	Then No exception was thrown
 	When I delete the last created role permission
 	And I search for the last created role permission
@@ -217,21 +224,40 @@ Scenario: Count role permissions in specific scopes
 	there is no role permission for a specific domain a 0 should be returned. No error or 
 	exception is expected.
 	
-	Given I create the following role permissions
-	|scopeId  |roleId |actionName |
-	|10       |15     |read       |
-	|10       |16     |read       |
-	|10       |17     |read       |
-	|11       |18     |read       |
-	|11       |19     |read       |
-	|12       |20     |read       |
-	When I count the permission in scope 10
+	Given I create the following role
+	|scopeId |name        |
+	|2       |test_role_2 |
+	
+	And I create the following role permissions
+	|scopeId  |actionName |
+	|2        |read       |
+	|2        |read       |
+	|2        |read       |
+	
+	And I create the following role
+	|scopeId |name        |
+	|3       |test_role_3 |
+	
+	And I create the following role permissions
+	|scopeId  |actionName | targetScopeId |
+	|3        |read       | 3             |
+	|3        |read       | 10            |
+	
+	And I create the following role
+	|scopeId |name        |
+	|4       |test_role_4 |
+	
+	And I create the following role permissions
+	|scopeId  |actionName | targetScopeId |
+	|4        |read       | 4             |
+	
+	When I count the permission in scope 2
 	Then I get 3 as result
-	When I count the permission in scope 11
+	When I count the permission in scope 3
 	Then I get 2 as result
-	When I count the permission in scope 12
+	When I count the permission in scope 4
 	Then I get 1 as result
-	When I count the permission in scope 42
+	When I count the permission in scope 5
 	Then I get 0 as result
 
 Scenario: Role creator sanity checks

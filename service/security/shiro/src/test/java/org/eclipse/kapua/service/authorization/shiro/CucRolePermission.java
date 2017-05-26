@@ -19,12 +19,17 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 
 public class CucRolePermission {
 
-    private Integer scopeId;
-    private Integer roleId;
-    private String actionName;
     private KapuaId scope;
+    private Integer scopeId;
+
     private KapuaId role;
+    private Integer roleId;
+
     private Actions action;
+    private String actionName;
+
+    private KapuaId targetScope;
+    private Integer targetScopeId;
 
     public void doParse() {
         if (this.scopeId != null) {
@@ -52,6 +57,9 @@ public class CucRolePermission {
                 break;
             }
         }
+        if (this.targetScopeId != null) {
+            this.targetScope = new KapuaEid(BigInteger.valueOf(targetScopeId));
+        }
     }
 
     public void setScopeId(KapuaId id) {
@@ -76,5 +84,13 @@ public class CucRolePermission {
 
     public void setAction(Actions action) {
         this.action = action;
+    }
+
+    public KapuaId getTargetScopeId() {
+        return targetScope;
+    }
+
+    public void setTargetScopeId(KapuaId targetScope) {
+        this.targetScope = targetScope;
     }
 }

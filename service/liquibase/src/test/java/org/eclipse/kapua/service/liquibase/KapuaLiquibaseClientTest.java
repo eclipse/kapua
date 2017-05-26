@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.service.liquibase;
 
@@ -56,7 +57,7 @@ public class KapuaLiquibaseClientTest {
         while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
-        assertThat(tables).contains("act_account");
+        assertThat(tables).contains("tst_liquibase");
     }
 
     @Test
@@ -75,7 +76,7 @@ public class KapuaLiquibaseClientTest {
         while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
-        assertThat(tables).contains("act_account");
+        assertThat(tables).contains("tst_liquibase");
     }
 
     @Test

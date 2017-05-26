@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+-- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -12,29 +12,30 @@
 
 --liquibase formatted sql
 
---changeset access_token:1
+--changeset role_permission:1
 
-CREATE TABLE atht_access_token (
+CREATE TABLE athz_role_permission (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
   created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
-  modified_on            	TIMESTAMP(3),
-  modified_by            	BIGINT(21)    UNSIGNED,
+
+  role_id             	    BIGINT(21) 	  UNSIGNED,
   
-  user_id 					BIGINT(21) 	  UNSIGNED NOT NULL,
-  token_id					TEXT	      NOT NULL,
-  expires_on				TIMESTAMP(3)  NOT NULL,
-  refresh_token				TEXT	      NOT NULL,
-  refresh_expires_on		TIMESTAMP(3)  NOT NULL,
-  invalidated_on			TIMESTAMP(3),
+  domain					VARCHAR(64),
+  action					VARCHAR(64),
+  target_scope_id		    BIGINT(21)	  UNSIGNED,
+  group_id             	    BIGINT(21) 	  UNSIGNED,
+  forwardable 				BOOLEAN 	  NOT NULL,
   
-  optlock               	INT UNSIGNED,
-  attributes             	TEXT,  
-  properties             	TEXT,  
+  PRIMARY KEY (id),
   
-  PRIMARY KEY (id)
+  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE CASCADE
+  
 ) DEFAULT CHARSET=utf8;
 
-CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
-CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);
+CREATE UNIQUE INDEX idx_role_permission_scope_id ON athz_role_permission (role_id, domain, action, target_scope_id, group_id);
+
+INSERT INTO athz_role_permission
+	VALUES
+		(1,  1, NOW(), 1, 1, null, null, null, null, true);

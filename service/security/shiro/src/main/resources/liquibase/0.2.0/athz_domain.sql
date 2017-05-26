@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+-- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -39,7 +39,7 @@ INSERT INTO athz_domain
 		(NULL,  6, NOW(), 1, 'device_management',	'deviceManagementService'),
 		(NULL,  7, NOW(), 1, 'device_event',		'deviceEventService'),
 		(NULL,  8, NOW(), 1, 'device_lifecycle',	'deviceLifecycleService'),
-		(NULL,  9, NOW(), 1, 'datastore',				'datastoreService'),
+		(NULL,  9, NOW(), 1, 'datastore',			'datastoreService'),
 		(NULL, 10, NOW(), 1, 'domain',				'domainService'),
 		(NULL, 11, NOW(), 1, 'group',				'groupService'),
 		(NULL, 12, NOW(), 1, 'access_info',			'accessInfoService'),

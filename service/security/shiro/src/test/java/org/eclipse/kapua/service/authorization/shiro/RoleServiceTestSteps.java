@@ -64,27 +64,27 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     private static final Domain testDomain = new TestDomain();
 
     // Various Role related service references
-    RoleCreator roleCreator ;
-    RoleService roleService ;
-    RoleFactory roleFactory ;
-    RolePermissionCreator rolePermissionCreator ;
-    RolePermissionService rolePermissionService ;
-    RolePermissionFactory rolePermissionFactory ;
-    PermissionFactory permissionFactory ;
+    RoleCreator roleCreator;
+    RoleService roleService;
+    RoleFactory roleFactory;
+    RolePermissionCreator rolePermissionCreator;
+    RolePermissionService rolePermissionService;
+    RolePermissionFactory rolePermissionFactory;
+    PermissionFactory permissionFactory;
 
     // Currently executing scenario.
     Scenario scenario;
 
     // Test data scratchpads
-    CommonTestData commonData ;
-    RoleServiceTestData roleData ;
+    CommonTestData commonData;
+    RoleServiceTestData roleData;
 
     @Inject
     public RoleServiceTestSteps(RoleServiceTestData roleData, CommonTestData commonData, /* dependency */ DatabaseInstance databaseInstance) {
         this.roleData = roleData;
         this.commonData = commonData;
     }
-    
+
     // Setup and tear-down steps
     @Before
     public void beforeScenario(Scenario scenario)
@@ -103,7 +103,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         // test case executions!
         dropDatabase();
         setupDatabase();
-        
+
         // Clean up the test data scratchpads
         commonData.clearData();
         roleData.clearData();
@@ -170,23 +170,26 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     @Given("^I create the following role permission(?:|s)$")
     public void createAListOfRolePermissions(List<CucRolePermission> perms)
             throws KapuaException {
-        
-        TestDomain tmpDom = new TestDomain();
+
+        assertNotNull(roleData.role);
+        assertNotNull(roleData.role.getId());
         assertNotNull(perms);
         assertFalse(perms.isEmpty());
-        
-        for(CucRolePermission tmpCPerm : perms) {
+
+        TestDomain tmpDom = new TestDomain();
+        tmpDom.setName("test_domain");
+
+        for (CucRolePermission tmpCPerm : perms) {
             tmpCPerm.doParse();
             assertNotNull(tmpCPerm.getScopeId());
-            assertNotNull(tmpCPerm.getRoleId());
             assertNotNull(tmpCPerm.getAction());
 
             tmpDom.setScopeId(tmpCPerm.getScopeId());
 
             rolePermissionCreator = rolePermissionFactory.newCreator(tmpCPerm.getScopeId());
-            rolePermissionCreator.setRoleId(tmpCPerm.getRoleId());
-            rolePermissionCreator.setPermission(permissionFactory.newPermission(tmpDom, tmpCPerm.getAction(), tmpCPerm.getScopeId()));
-            
+            rolePermissionCreator.setRoleId(roleData.role.getId());
+            rolePermissionCreator.setPermission(permissionFactory.newPermission(tmpDom, tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
+
             KapuaSecurityUtils.doPrivileged(() -> {
                 try {
                     commonData.exceptionCaught = false;
@@ -199,7 +202,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
             });
         }
     }
-    
+
     @When("^I update the last created role name to \"(.+)\"$")
     public void updateRoleNameTo(String name)
             throws Exception {
@@ -246,7 +249,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
             return null;
         });
     }
-    
+
     @When("^I search for a random role ID$")
     public void searchForRandomId()
             throws KapuaException {
@@ -284,7 +287,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
             return null;
         });
     }
-    
+
     @When("^I count the roles in scope (\\d+)$")
     public void countRolesInScope(Integer scope)
             throws KapuaException {
@@ -312,40 +315,40 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
             return null;
         });
     }
-    
+
     @When("^I query for the role \"(.+)\" in scope (\\d+)$")
     public void queryForRoleInScope(String name, Integer scope)
-    throws KapuaException {
+            throws KapuaException {
         assertNotNull(scope);
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
         assertNotNull(tmpId);
         assertNotNull(name);
         assertNotEquals(0, name.length());
-        
+
         final RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
         tmpQuery.setPredicate(new AttributePredicate<String>(RolePredicates.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             roleData.roleList = roleService.query(tmpQuery);
             return null;
         });
-        
+
         assertNotNull(roleData.roleList);
         if (roleData.roleList.getSize() > 1) {
             fail("Query returned too many results!");
         }
-        
+
         if (!roleData.roleList.isEmpty()) {
             roleData.roleFound = roleData.roleList.getFirstItem();
         }
-        
+
         commonData.count = roleData.roleList.getSize();
     }
-    
+
     @Then("^I find no roles$")
     public void chackThatNothingWasFound() {
         assertNull(roleData.roleFound);
     }
-    
+
     @Then("^I find no permissions$")
     public void checkThatNoPermissionWasFound() {
         assertNull(roleData.rolePermissionFound);
@@ -462,11 +465,11 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         Role role1 = roleFactory.newEntity(rootScopeId);
         Role role2 = roleFactory.newEntity(rootScopeId);
         Integer miscObj = 10;
-        
+
         assertNotNull(role1);
         assertNotNull(role2);
         assertNotNull(miscObj);
-        
+
         assertTrue(role1.equals(role1));
         assertFalse(role1.equals(null));
         assertFalse(role1.equals(miscObj));
@@ -488,23 +491,23 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         Permission tmpPermission2 = permissionFactory.newPermission(testDomain, Actions.write, rootScopeId);
         KapuaId tmpRoleId1 = generateId();
         KapuaId tmpRoleId2 = generateId();
-        
+
         assertNotNull(perm1);
         assertNotNull(perm2);
         assertTrue(perm1.equals(perm1));
         assertFalse(perm1.equals(null));
         assertFalse(perm1.equals(miscObj));
         assertTrue(perm1.equals(perm2));
-        
+
         perm2.setPermission(tmpPermission2);
         assertFalse(perm1.equals(perm2));
-        
+
         perm1.setPermission(tmpPermission1);
         assertFalse(perm1.equals(perm2));
 
         perm2.setPermission(tmpPermission1);
         assertTrue(perm1.equals(perm2));
-        
+
         perm2.setRoleId(tmpRoleId1);
         assertFalse(perm1.equals(perm2));
         perm1.setRoleId(tmpRoleId1);
@@ -512,10 +515,10 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         perm2.setRoleId(tmpRoleId2);
         assertFalse(perm1.equals(perm2));
     }
-    
+
     @Then("^The role permission object constructors are sane$")
     public void checkRolePermissionConstructors() {
-        
+
         Permission tmpPermission = permissionFactory.newPermission(testDomain, Actions.read, rootScopeId);
         KapuaId tmpRoleId = generateId();
 

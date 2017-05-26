@@ -77,6 +77,11 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(deviceEventDomain, Actions.write, deviceEventCreator.getScopeId()));
 
+        // Check that device exists
+        if (deviceRegistryService.find(deviceEventCreator.getScopeId(), deviceEventCreator.getDeviceId()) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceEventCreator.getDeviceId());
+        }
+
         // Create the event
         DeviceEvent deviceEvent = entityManagerSession.onTransactedInsert(entityManager -> DeviceEventDAO.create(entityManager, deviceEventCreator));
 
@@ -152,6 +157,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
             if (DeviceEventDAO.find(em, deviceEventId) == null) {
                 throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
             }
+
             DeviceEventDAO.delete(em, deviceEventId);
         });
     }

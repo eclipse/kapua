@@ -1,5 +1,5 @@
 -- *******************************************************************************
--- Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+-- Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
 --
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
@@ -12,25 +12,29 @@
 
 --liquibase formatted sql
 
---changeset access_role:1
+--changeset access_info:1
 
-CREATE TABLE athz_access_role (
+CREATE TABLE athz_access_info (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
-  created_on             	TIMESTAMP(3)  NOT NULL, 
+  created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
+  modified_on               TIMESTAMP(3)  NOT NULL,
+  modified_by               BIGINT(21) 	  UNSIGNED NOT NULL,
   
-  access_info_id			BIGINT(21) 	  UNSIGNED NOT NULL,
-  role_id					BIGINT(21) 	  UNSIGNED NOT NULL,
-    
-  PRIMARY KEY (id),
---  FOREIGN KEY (access_id) REFERENCES athz_access_info(id) ON DELETE CASCADE,
---  FOREIGN KEY (role_id) REFERENCES athz_role(id) ON DELETE RESTRICT
+  user_id					BIGINT(21) 	  UNSIGNED NOT NULL,
+  
+  optlock                   INT UNSIGNED,
+  attributes				TEXT,
+  properties                TEXT,
+  
+  PRIMARY KEY (id)
   
 ) DEFAULT CHARSET=utf8;
 
-CREATE UNIQUE INDEX idx_scopeId_accessId_roleId ON athz_access_role (scope_id, access_info_id, role_id);
+CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, user_id);
 
-INSERT INTO athz_access_role
+INSERT INTO athz_access_info
 	VALUES
-		(1, 1, NOW(), 1, 1, 1); -- kapua-sys assigned of role admin
+		(1, 1, NOW(), 1, NOW(), 1, 1, 0, '', ''),
+		(1, 2, NOW(), 1, NOW(), 1, 2, 0, '', '');
