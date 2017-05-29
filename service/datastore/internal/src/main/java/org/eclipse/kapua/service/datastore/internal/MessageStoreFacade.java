@@ -467,6 +467,7 @@ public final class MessageStoreFacade {
      * @return
      * @since 1.0.0
      */
+    @SuppressWarnings("unused")
     private boolean isAnyAccount(String accountPart) {
         return DatastoreChannel.SINGLE_LEVEL_WCARD.equals(accountPart);
     }

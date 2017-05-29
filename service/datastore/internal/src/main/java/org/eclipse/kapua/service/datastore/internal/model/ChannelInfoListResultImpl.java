@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
  */
 public class ChannelInfoListResultImpl extends AbstractStorableListResult<ChannelInfo> implements ChannelInfoListResult {
 
+    private static final long serialVersionUID = 1L;
 
     /**
      * Construct a channel info result list

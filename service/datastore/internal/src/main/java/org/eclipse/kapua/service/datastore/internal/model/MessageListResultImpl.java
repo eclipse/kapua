@@ -24,6 +24,7 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
  */
 public class MessageListResultImpl extends AbstractStorableListResult<DatastoreMessage> implements MessageListResult {
 
+    private static final long serialVersionUID = 1L;
 
     /**
      * Construct a message result list
