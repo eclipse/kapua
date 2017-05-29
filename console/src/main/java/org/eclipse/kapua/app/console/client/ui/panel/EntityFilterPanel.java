@@ -32,29 +32,21 @@ import com.google.gwt.core.client.GWT;
 
 public abstract class EntityFilterPanel<M extends GwtEntityModel> extends ContentPanel {
 
-    private final EntityView<M> entityView;
-    private final GwtSession currentSession;
-    private final EntityGrid<M> entityGrid;
-    
     private final VerticalPanel fieldsPanel;
     private final Button searchButton;
     private final Button resetButton;
-    
-    private static final ConsoleMessages MSGS  = GWT.create(ConsoleMessages.class);
-    private final int                    WIDTH = 200;
-        
+
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final int WIDTH = 200;
+
     public EntityFilterPanel(EntityView<M> entityView, GwtSession currentSession) {
         super();
 
-        this.entityView = entityView;
-        this.currentSession = currentSession;
-        this.entityGrid = entityView.getEntityGrid(entityView, currentSession);
-        
         setScrollMode(Scroll.AUTOY);
         setBorders(false);
         setLayout(new RowLayout(Orientation.VERTICAL));
         setBodyStyle("background-color:#F0F0F0");
-        
+
         //
         // Top explanation
         final Text infoLabel = new Text(MSGS.deviceFilteringPanelInfo());
@@ -62,10 +54,10 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
         infoLabel.setStyleAttribute("margin", "5px");
 
         add(infoLabel);
-        
+
         fieldsPanel = new VerticalPanel();
         add(fieldsPanel);
-        
+
         HorizontalPanel buttonPanel = new HorizontalPanel();
         buttonPanel.setBorders(false);
         buttonPanel.setStyleAttribute("background-color", "#F0F0F0");
@@ -73,7 +65,7 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
         buttonPanel.setStyleAttribute("margin-top", "5px");
         buttonPanel.setHorizontalAlign(HorizontalAlignment.RIGHT);
         buttonPanel.setHeight(50);
-        
+
         // Search and Reset buttons
         resetButton = new Button(MSGS.deviceFilteringPanelReset());
         resetButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -82,9 +74,9 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
             public void handleEvent(BaseEvent be) {
                 resetFields();
             }
-            
+
         });
-        
+
         searchButton = new Button(MSGS.deviceFilteringPanelSearch());
         searchButton.setStyleAttribute("margin-left", "5px");
         searchButton.addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -93,24 +85,24 @@ public abstract class EntityFilterPanel<M extends GwtEntityModel> extends Conten
             public void handleEvent(BaseEvent be) {
                 doFilter();
             }
-            
+
         });
-        
+
         buttonPanel.add(resetButton);
         buttonPanel.add(searchButton);
-        
+
         add(buttonPanel);
     }
-    
+
     public VerticalPanel getFieldsPanel() {
         return fieldsPanel;
     }
 
-    public void setEntityGrid(EntityGrid entityTable) {
-        
+    public void setEntityGrid(EntityGrid<?> entityTable) {
+
     }
-    
+
     public abstract void resetFields();
-    
+
     public abstract void doFilter();
 }

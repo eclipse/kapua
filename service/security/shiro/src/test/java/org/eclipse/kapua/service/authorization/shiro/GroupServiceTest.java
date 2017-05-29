@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public class GroupServiceTest extends KapuaTest {
 
-    public static String DROP_FILTER = "athz_*_drop.sql";
+    public static final String DROP_FILTER = "athz_*_drop.sql";
 
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
 

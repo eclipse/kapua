@@ -95,7 +95,7 @@ public class PackageUninstallDialog extends SimpleDialog {
         operationRebootDelay.disable();
         operationOptionsForm.add(operationRebootDelay, formData);
 
-        m_bodyPanel.add(operationOptionsForm);
+        bodyPanel.add(operationOptionsForm);
     }
 
     @Override

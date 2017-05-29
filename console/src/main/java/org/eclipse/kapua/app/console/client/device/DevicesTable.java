@@ -86,7 +86,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class DevicesTable extends LayoutContainer {
 
-    private final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
@@ -94,37 +94,37 @@ public class DevicesTable extends LayoutContainer {
 
     private static final int DEVICE_PAGE_SIZE = 250;
 
-    private GwtSession m_currentSession;
-    private GwtDevice m_selectedDevice;
+    private GwtSession currentSession;
+    private GwtDevice selectedDevice;
 
-    private DevicesView m_devicesView;
-    private ContentPanel m_tableContainer;
-    private ToolBar m_devicesToolBar;
+    private DevicesView devicesView;
+    private ContentPanel tableContainer;
+    private ToolBar devicesToolBar;
 
-    private Button m_addDeviceButton;
-    private Button m_editDeviceButton;
+    private Button addDeviceButton;
+    private Button editDeviceButton;
 
-    private Button m_refreshButton;
+    private Button refreshButton;
     private boolean refreshProcess;
-    private Button m_deleteDeviceButton;
-    private SplitButton m_export;
+    private Button deleteDeviceButton;
+    private SplitButton export;
 
-    private ToggleButton m_toggleFilter;
+    private ToggleButton toggleFilter;
 
-    private ContentPanel m_filterPanel;
+    private ContentPanel filterPanel;
 
-    private Grid<GwtDevice> m_devicesGrid;
-    private PagingToolBar m_pagingToolBar;
-    private BasePagingLoader<PagingLoadResult<GwtDevice>> m_loader;
-    private GwtDeviceQueryPredicates m_filterPredicates;
+    private Grid<GwtDevice> devicesGrid;
+    private PagingToolBar pagingToolBar;
+    private BasePagingLoader<PagingLoadResult<GwtDevice>> loader;
+    private GwtDeviceQueryPredicates filterPredicates;
 
     public DevicesTable(DevicesView deviceView,
             GwtSession currentSession,
             ContentPanel filterPanel) {
-        m_devicesView = deviceView;
-        m_currentSession = currentSession;
-        m_filterPredicates = new GwtDeviceQueryPredicates();
-        m_filterPanel = filterPanel;
+        devicesView = deviceView;
+        this.currentSession = currentSession;
+        filterPredicates = new GwtDeviceQueryPredicates();
+        this.filterPanel = filterPanel;
     }
 
     protected void onRender(final Element parent, int index) {
@@ -136,7 +136,7 @@ public class DevicesTable extends LayoutContainer {
 
         // init tab content
         initDevicesTable();
-        add(m_tableContainer);
+        add(tableContainer);
     }
 
     // --------------------------------------------------------------------------------------
@@ -150,52 +150,52 @@ public class DevicesTable extends LayoutContainer {
         initDevicesToolBar();
         initDevicesGrid();
 
-        m_tableContainer = new ContentPanel();
-        m_tableContainer.setBorders(false);
-        m_tableContainer.setBodyBorder(false);
-        m_tableContainer.setHeaderVisible(false);
-        m_tableContainer.setScrollMode(Scroll.AUTO);
-        m_tableContainer.setLayout(new FitLayout());
-        m_tableContainer.setTopComponent(m_devicesToolBar);
-        m_tableContainer.add(m_devicesGrid);
-        m_tableContainer.setBottomComponent(m_pagingToolBar);
+        tableContainer = new ContentPanel();
+        tableContainer.setBorders(false);
+        tableContainer.setBodyBorder(false);
+        tableContainer.setHeaderVisible(false);
+        tableContainer.setScrollMode(Scroll.AUTO);
+        tableContainer.setLayout(new FitLayout());
+        tableContainer.setTopComponent(devicesToolBar);
+        tableContainer.add(devicesGrid);
+        tableContainer.setBottomComponent(pagingToolBar);
     }
 
     private void initDevicesToolBar() {
 
-        m_devicesToolBar = new ToolBar();
+        devicesToolBar = new ToolBar();
 
         // Edit Device Button
-        if (m_currentSession.hasDeviceCreatePermission()) {
-            m_addDeviceButton = new AddButton(new SelectionListener<ButtonEvent>() {
+        if (currentSession.hasDeviceCreatePermission()) {
+            addDeviceButton = new AddButton(new SelectionListener<ButtonEvent>() {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    DeviceForm deviceForm = new DeviceForm(m_currentSession);
+                    DeviceForm deviceForm = new DeviceForm(currentSession);
                     deviceForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
                         public void handleEvent(ComponentEvent be) {
-                            refresh(m_filterPredicates);
+                            refresh(filterPredicates);
                         }
                     });
                     deviceForm.show();
                 }
 
             });
-            m_devicesToolBar.add(m_addDeviceButton);
-            m_devicesToolBar.add(new SeparatorToolItem());
+            devicesToolBar.add(addDeviceButton);
+            devicesToolBar.add(new SeparatorToolItem());
         }
 
         //
         // Edit User Button
-        m_editDeviceButton = new EditButton(new SelectionListener<ButtonEvent>() {
+        editDeviceButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (m_devicesGrid != null) {
-                    final GwtDevice gwtDevice = m_devicesGrid.getSelectionModel().getSelectedItem();
+                if (devicesGrid != null) {
+                    final GwtDevice gwtDevice = devicesGrid.getSelectionModel().getSelectedItem();
                     if (gwtDevice != null) {
-                        DeviceForm deviceForm = new DeviceForm(gwtDevice, m_currentSession);
+                        DeviceForm deviceForm = new DeviceForm(gwtDevice, currentSession);
                         deviceForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
                             public void handleEvent(ComponentEvent be) {
@@ -209,33 +209,33 @@ public class DevicesTable extends LayoutContainer {
 
         });
 
-        m_editDeviceButton.setEnabled(false);
-        m_devicesToolBar.add(m_editDeviceButton);
-        m_devicesToolBar.add(new SeparatorToolItem());
+        editDeviceButton.setEnabled(false);
+        devicesToolBar.add(editDeviceButton);
+        devicesToolBar.add(new SeparatorToolItem());
 
         //
         // Refresh Button
-        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
                     refreshProcess = true;
 
-                    refresh(m_filterPredicates);
+                    refresh(filterPredicates);
 
                     refreshProcess = false;
                 }
             }
         });
-        m_refreshButton.setEnabled(true);
-        m_devicesToolBar.add(m_refreshButton);
-        m_devicesToolBar.add(new SeparatorToolItem());
+        refreshButton.setEnabled(true);
+        devicesToolBar.add(refreshButton);
+        devicesToolBar.add(new SeparatorToolItem());
 
         //
         // Export
         Menu menu = new Menu();
-        menu.add(new KapuaMenuItem(MSGS.exportToExcel(),IconSet.FILE_EXCEL_O,
+        menu.add(new KapuaMenuItem(MSGS.exportToExcel(), IconSet.FILE_EXCEL_O,
                 new SelectionListener<MenuEvent>() {
 
                     @Override
@@ -252,20 +252,20 @@ public class DevicesTable extends LayoutContainer {
                     }
                 }));
 
-        m_export = new ExportButton();
-        m_export.setMenu(menu);
+        export = new ExportButton();
+        export.setMenu(menu);
 
-        m_devicesToolBar.add(m_export);
-        m_devicesToolBar.add(new SeparatorToolItem());
+        devicesToolBar.add(export);
+        devicesToolBar.add(new SeparatorToolItem());
 
         //
         // Delete Device Button
-        m_deleteDeviceButton = new DeleteButton(new SelectionListener<ButtonEvent>() {
+        deleteDeviceButton = new DeleteButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (m_devicesGrid != null) {
-                    final GwtDevice gwtDevice = m_devicesGrid.getSelectionModel().getSelectedItem();
+                if (devicesGrid != null) {
+                    final GwtDevice gwtDevice = devicesGrid.getSelectionModel().getSelectedItem();
                     if (gwtDevice != null) {
                         // delete the selected device
                         // ask for confirmation
@@ -284,27 +284,27 @@ public class DevicesTable extends LayoutContainer {
                 }
             }
         });
-        m_deleteDeviceButton.setEnabled(false);
-        m_devicesToolBar.add(m_deleteDeviceButton);
-        m_devicesToolBar.add(new FillToolItem());
+        deleteDeviceButton.setEnabled(false);
+        devicesToolBar.add(deleteDeviceButton);
+        devicesToolBar.add(new FillToolItem());
 
         //
         // Live Button
-        m_toggleFilter = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
+        toggleFilter = new ToggleButton(MSGS.deviceTableToolbarCloseFilter(), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (m_toggleFilter.isPressed()) {
-                    m_filterPanel.show();
-                    m_toggleFilter.setText(MSGS.deviceTableToolbarCloseFilter());
+                if (toggleFilter.isPressed()) {
+                    filterPanel.show();
+                    toggleFilter.setText(MSGS.deviceTableToolbarCloseFilter());
                 } else {
-                    m_filterPanel.hide();
-                    m_toggleFilter.setText(MSGS.deviceTableToolbarOpenFilter());
+                    filterPanel.hide();
+                    toggleFilter.setText(MSGS.deviceTableToolbarOpenFilter());
                 }
             }
         });
-        m_toggleFilter.toggle(true);
-        m_devicesToolBar.add(m_toggleFilter);
+        toggleFilter.toggle(true);
+        devicesToolBar.add(toggleFilter);
     }
 
     private void initDevicesGrid() {
@@ -481,17 +481,17 @@ public class DevicesTable extends LayoutContainer {
                 PagingLoadConfig pagingConfig = (BasePagingLoadConfig) loadConfig;
                 ((BasePagingLoadConfig) pagingConfig).setLimit(DEVICE_PAGE_SIZE);
                 gwtDeviceService.findDevices(pagingConfig,
-                        m_currentSession.getSelectedAccount().getId(),
-                        m_filterPredicates,
+                        currentSession.getSelectedAccount().getId(),
+                        filterPredicates,
                         callback);
             }
         };
-        m_loader = new BasePagingLoader<PagingLoadResult<GwtDevice>>(proxy);
-        m_loader.setSortDir(SortDir.ASC);
-        m_loader.setSortField("clientId");
-        m_loader.setRemoteSort(true);
+        loader = new BasePagingLoader<PagingLoadResult<GwtDevice>>(proxy);
+        loader.setSortDir(SortDir.ASC);
+        loader.setSortField("clientId");
+        loader.setRemoteSort(true);
 
-        SwappableListStore<GwtDevice> store = new SwappableListStore<GwtDevice>(m_loader);
+        SwappableListStore<GwtDevice> store = new SwappableListStore<GwtDevice>(loader);
         store.setKeyProvider(new ModelKeyProvider<GwtDevice>() {
 
             public String getKey(GwtDevice device) {
@@ -499,91 +499,91 @@ public class DevicesTable extends LayoutContainer {
             }
         });
 
-        m_devicesGrid = new Grid<GwtDevice>(store, new ColumnModel(configs));
-        m_devicesGrid.setBorders(false);
-        m_devicesGrid.setStateful(false);
-        m_devicesGrid.setLoadMask(true);
-        m_devicesGrid.setStripeRows(true);
-        m_devicesGrid.setAutoExpandColumn("displayName");
-        m_devicesGrid.getView().setAutoFill(true);
-        m_devicesGrid.getView().setEmptyText(MSGS.deviceTableNoDevices());
-        m_devicesGrid.disableTextSelection(false);
-        m_devicesGrid.addListener(Events.HeaderClick, new Listener<GridEvent<GwtDevice>>() {
+        devicesGrid = new Grid<GwtDevice>(store, new ColumnModel(configs));
+        devicesGrid.setBorders(false);
+        devicesGrid.setStateful(false);
+        devicesGrid.setLoadMask(true);
+        devicesGrid.setStripeRows(true);
+        devicesGrid.setAutoExpandColumn("displayName");
+        devicesGrid.getView().setAutoFill(true);
+        devicesGrid.getView().setEmptyText(MSGS.deviceTableNoDevices());
+        devicesGrid.disableTextSelection(false);
+        devicesGrid.addListener(Events.HeaderClick, new Listener<GridEvent<GwtDevice>>() {
 
             @Override
             public void handleEvent(GridEvent<GwtDevice> be) {
 
                 if (be.getColIndex() == 1) {
 
-                    if (m_filterPredicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.CLIENT_ID.name())) {
-                        if (m_filterPredicates.getSortOrderEnum().equals(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING)) {
-                            m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.DESCENDING.name());
+                    if (filterPredicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.CLIENT_ID.name())) {
+                        if (filterPredicates.getSortOrderEnum().equals(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING)) {
+                            filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.DESCENDING.name());
 
                         } else {
-                            m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
+                            filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
                         }
                     } else {
-                        m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
+                        filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
                     }
-                    m_filterPredicates.setSortAttribute(GwtDeviceQueryPredicates.GwtSortAttribute.CLIENT_ID.name());
+                    filterPredicates.setSortAttribute(GwtDeviceQueryPredicates.GwtSortAttribute.CLIENT_ID.name());
 
                 } else if (be.getColIndex() == 2) {
-                    if (m_filterPredicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.DISPLAY_NAME.name())) {
-                        if (m_filterPredicates.getSortOrderEnum().equals(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING)) {
-                            m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.DESCENDING.name());
+                    if (filterPredicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.DISPLAY_NAME.name())) {
+                        if (filterPredicates.getSortOrderEnum().equals(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING)) {
+                            filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.DESCENDING.name());
                         } else {
-                            m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
+                            filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
                         }
                     } else {
-                        m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
+                        filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
                     }
-                    m_filterPredicates.setSortAttribute(GwtDeviceQueryPredicates.GwtSortAttribute.DISPLAY_NAME.name());
+                    filterPredicates.setSortAttribute(GwtDeviceQueryPredicates.GwtSortAttribute.DISPLAY_NAME.name());
 
                 } else if (be.getColIndex() == 3) {
-                    if (m_filterPredicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.LAST_EVENT_ON.name())) {
-                        if (m_filterPredicates.getSortOrderEnum().equals(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING)) {
-                            m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.DESCENDING.name());
+                    if (filterPredicates.getSortAttribute().equals(GwtDeviceQueryPredicates.GwtSortAttribute.LAST_EVENT_ON.name())) {
+                        if (filterPredicates.getSortOrderEnum().equals(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING)) {
+                            filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.DESCENDING.name());
                         } else {
-                            m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
+                            filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
                         }
                     } else {
-                        m_filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
+                        filterPredicates.setSortOrder(GwtDeviceQueryPredicates.GwtSortOrder.ASCENDING.name());
                     }
-                    m_filterPredicates.setSortAttribute(GwtDeviceQueryPredicates.GwtSortAttribute.LAST_EVENT_ON.name());
+                    filterPredicates.setSortAttribute(GwtDeviceQueryPredicates.GwtSortAttribute.LAST_EVENT_ON.name());
 
                 } else {
                     return;
                 }
 
-                refresh(m_filterPredicates);
+                refresh(filterPredicates);
             }
         });
 
-        m_loader.addLoadListener(new DataLoadListener(m_devicesGrid));
+        loader.addLoadListener(new DataLoadListener(devicesGrid));
 
-        m_pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
-        m_pagingToolBar.bind(m_loader);
-        m_pagingToolBar.enable();
+        pagingToolBar = new PagingToolBar(DEVICE_PAGE_SIZE);
+        pagingToolBar.bind(loader);
+        pagingToolBar.enable();
 
         GridSelectionModel<GwtDevice> selectionModel = new GridSelectionModel<GwtDevice>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
-        m_devicesGrid.setSelectionModel(selectionModel);
-        m_devicesGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtDevice>() {
+        devicesGrid.setSelectionModel(selectionModel);
+        devicesGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtDevice>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDevice> se) {
-                m_selectedDevice = se.getSelectedItem();
-                if (m_selectedDevice != null) {
-                    if (m_currentSession.hasDeviceUpdatePermission()) {
-                        m_deleteDeviceButton.setEnabled(true);
+                selectedDevice = se.getSelectedItem();
+                if (selectedDevice != null) {
+                    if (currentSession.hasDeviceUpdatePermission()) {
+                        deleteDeviceButton.setEnabled(true);
                     }
-                    if (m_currentSession.hasDeviceDeletePermission()) {
-                        m_editDeviceButton.setEnabled(true);
+                    if (currentSession.hasDeviceDeletePermission()) {
+                        editDeviceButton.setEnabled(true);
                     }
-                    m_devicesView.setDevice(m_selectedDevice);
+                    devicesView.setDevice(selectedDevice);
                 } else {
-                    m_editDeviceButton.setEnabled(false);
-                    m_deleteDeviceButton.setEnabled(false);
+                    editDeviceButton.setEnabled(false);
+                    deleteDeviceButton.setEnabled(false);
                 }
             }
         });
@@ -596,20 +596,20 @@ public class DevicesTable extends LayoutContainer {
     // --------------------------------------------------------------------------------------
 
     public void refreshAll(GwtDeviceQueryPredicates predicates) {
-        m_loader.setSortDir(SortDir.ASC);
-        m_loader.setSortField("clientId");
+        loader.setSortDir(SortDir.ASC);
+        loader.setSortField("clientId");
         refresh(predicates);
     }
 
     public void refresh(GwtDeviceQueryPredicates predicates) {
-        m_filterPredicates = predicates;
-        m_loader.load();
-        m_pagingToolBar.enable();
+        filterPredicates = predicates;
+        loader.load();
+        pagingToolBar.enable();
     }
 
     public void refresh() {
-        m_loader.load();
-        m_pagingToolBar.enable();
+        loader.load();
+        pagingToolBar.enable();
     };
 
     private void deleteDevice(GwtDevice device) {
@@ -627,7 +627,7 @@ public class DevicesTable extends LayoutContainer {
             @Override
             public void onSuccess(GwtXSRFToken token) {
                 gwtDeviceService.deleteDevice(token,
-                        m_currentSession.getSelectedAccount().getId(),
+                        currentSession.getSelectedAccount().getId(),
                         toDeleteDevice.getClientId(),
                         new AsyncCallback<Void>() {
 
@@ -636,7 +636,7 @@ public class DevicesTable extends LayoutContainer {
                             }
 
                             public void onSuccess(Void arg0) {
-                                refresh(m_filterPredicates);
+                                refresh(filterPredicates);
                             }
                         });
             }
@@ -650,101 +650,101 @@ public class DevicesTable extends LayoutContainer {
         sbUrl.append("format=")
                 .append(format)
                 .append("&scopeIdString=")
-                .append(URL.encodeQueryString(m_currentSession.getSelectedAccount().getId()));
+                .append(URL.encodeQueryString(currentSession.getSelectedAccount().getId()));
 
         //
         // Adding filtering parameter if specified
-        Long tag = m_filterPredicates.getTag();
+        Long tag = filterPredicates.getTag();
         if (tag != null) {
             sbUrl.append("&tag=")
                     .append(tag);
         }
 
-        String clientId = m_filterPredicates.getClientId();
+        String clientId = filterPredicates.getClientId();
         if (clientId != null && !clientId.isEmpty()) {
             sbUrl.append("&clientId=")
                     .append(clientId);
         }
 
-        String displayName = m_filterPredicates.getDisplayName();
+        String displayName = filterPredicates.getDisplayName();
         if (displayName != null && !displayName.isEmpty()) {
             sbUrl.append("&displayName=")
                     .append(displayName);
         }
 
-        String serialNumber = m_filterPredicates.getSerialNumber();
+        String serialNumber = filterPredicates.getSerialNumber();
         if (serialNumber != null && !serialNumber.isEmpty()) {
             sbUrl.append("&serialNumber=")
                     .append(serialNumber);
         }
 
-        String deviceStatus = m_filterPredicates.getDeviceStatus();
+        String deviceStatus = filterPredicates.getDeviceStatus();
         if (deviceStatus != null && !deviceStatus.isEmpty()) {
             sbUrl.append("&deviceStatus=")
                     .append(deviceStatus);
         }
 
-        String deviceConnectionStatus = m_filterPredicates.getDeviceConnectionStatus();
+        String deviceConnectionStatus = filterPredicates.getDeviceConnectionStatus();
         if (deviceConnectionStatus != null && !deviceConnectionStatus.isEmpty()) {
             sbUrl.append("&deviceConnectionStatus=")
                     .append(deviceConnectionStatus);
         }
 
-        String esfVersion = m_filterPredicates.getIotFrameworkVersion();
+        String esfVersion = filterPredicates.getIotFrameworkVersion();
         if (esfVersion != null && !esfVersion.isEmpty()) {
             sbUrl.append("&esfVersion=")
                     .append(esfVersion);
         }
 
-        String applicationIdentifiers = m_filterPredicates.getApplicationIdentifiers();
+        String applicationIdentifiers = filterPredicates.getApplicationIdentifiers();
         if (applicationIdentifiers != null && !applicationIdentifiers.isEmpty()) {
             sbUrl.append("&applicationIdentifiers=")
                     .append(applicationIdentifiers);
         }
 
-        String imei = m_filterPredicates.getImei();
+        String imei = filterPredicates.getImei();
         if (imei != null && !imei.isEmpty()) {
             sbUrl.append("&imei=")
                     .append(imei);
         }
 
-        String imsi = m_filterPredicates.getImsi();
+        String imsi = filterPredicates.getImsi();
         if (imsi != null && !imsi.isEmpty()) {
             sbUrl.append("&imsi=")
                     .append(imsi);
         }
 
-        String iccid = m_filterPredicates.getIccid();
+        String iccid = filterPredicates.getIccid();
         if (iccid != null && !iccid.isEmpty()) {
             sbUrl.append("&iccid=")
                     .append(iccid);
         }
 
-        String customAttribute1 = m_filterPredicates.getCustomAttribute1();
+        String customAttribute1 = filterPredicates.getCustomAttribute1();
         if (customAttribute1 != null && !customAttribute1.isEmpty()) {
             sbUrl.append("&customAttribute1=")
                     .append(customAttribute1);
         }
 
-        String customAttribute2 = m_filterPredicates.getCustomAttribute2();
+        String customAttribute2 = filterPredicates.getCustomAttribute2();
         if (customAttribute2 != null && !customAttribute2.isEmpty()) {
             sbUrl.append("&customAttribute2=")
                     .append(customAttribute2);
         }
 
-        Long signedCertificateId = m_filterPredicates.getSignedCertificateId();
+        Long signedCertificateId = filterPredicates.getSignedCertificateId();
         if (signedCertificateId != null) {
             sbUrl.append("&signedCertificateId=")
                     .append(signedCertificateId);
         }
 
-        String sortOrder = m_filterPredicates.getSortOrder();
+        String sortOrder = filterPredicates.getSortOrder();
         if (sortOrder != null && !sortOrder.isEmpty()) {
             sbUrl.append("&sortOrder=")
                     .append(sortOrder);
         }
 
-        String sortAttribute = m_filterPredicates.getSortAttribute();
+        String sortAttribute = filterPredicates.getSortAttribute();
         if (sortAttribute != null && !sortAttribute.isEmpty()) {
             sbUrl.append("&sortAttribute=")
                     .append(sortAttribute);
@@ -761,16 +761,16 @@ public class DevicesTable extends LayoutContainer {
 
     private class DataLoadListener extends KapuaLoadListener {
 
-        private Grid<GwtDevice> m_devicesGrid;
-        private GwtDevice m_selectedDevice;
+        private Grid<GwtDevice> devicesGrid;
+        private GwtDevice selectedDevice;
 
         public DataLoadListener(Grid<GwtDevice> devicesGrid) {
-            m_devicesGrid = devicesGrid;
-            m_selectedDevice = null;
+            this.devicesGrid = devicesGrid;
+            this.selectedDevice = null;
         }
 
         public void loaderBeforeLoad(LoadEvent le) {
-            m_selectedDevice = m_devicesGrid.getSelectionModel().getSelectedItem();
+            this.selectedDevice = this.devicesGrid.getSelectionModel().getSelectedItem();
         }
 
         public void loaderLoad(LoadEvent le) {
@@ -778,14 +778,14 @@ public class DevicesTable extends LayoutContainer {
                 FailureHandler.handle(le.exception);
             }
 
-            if (m_selectedDevice != null) {
-                ListStore<GwtDevice> store = m_devicesGrid.getStore();
-                GwtDevice modelDevice = store.findModel(m_selectedDevice.getScopeId() + ":" + m_selectedDevice.getClientId());
+            if (this.selectedDevice != null) {
+                ListStore<GwtDevice> store = this.devicesGrid.getStore();
+                GwtDevice modelDevice = store.findModel(this.selectedDevice.getScopeId() + ":" + this.selectedDevice.getClientId());
                 if (modelDevice != null) {
-                    m_devicesGrid.getSelectionModel().select(modelDevice, false);
-                    m_devicesGrid.getView().focusRow(store.indexOf(modelDevice));
+                    this.devicesGrid.getSelectionModel().select(modelDevice, false);
+                    this.devicesGrid.getView().focusRow(store.indexOf(modelDevice));
                 } else {
-                    m_devicesView.setDevice(null);
+                    devicesView.setDevice(null);
                 }
             }
         }

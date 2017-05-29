@@ -179,10 +179,10 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     }
 
     @When("^I query for domains with the service name \"(.+)\"$")
-    public void queryForDomainsWithServiceName(String service_name)
+    public void queryForDomainsWithServiceName(String serviceName)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, service_name));
+        query.setPredicate(new AttributePredicate<>(DomainPredicates.SERVICE_NAME, serviceName));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainService.query(query);
             return null;
@@ -202,7 +202,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Then("^This is the initial count$")
     public void setInitialCount() {
-        domainData.initial_count = commonData.count;
+        domainData.initialCount = commonData.count;
     }
 
     @Then("^A domain was created$")
@@ -303,6 +303,6 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     @Then("^(\\d+) more domains (?:was|were) created$")
     public void checkIncreasedCountResult(int cnt) {
-        assertEquals(cnt, commonData.count - domainData.initial_count);
+        assertEquals(cnt, commonData.count - domainData.initialCount);
     }
 }

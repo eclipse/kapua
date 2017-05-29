@@ -37,20 +37,20 @@ public class DateRangeSelectorChart extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private Date m_endDate;
-    private SplitButton m_dateRange;
-    private DateRangeSelectorListener m_listener;
+    private Date endDate;
+    private SplitButton dateRange;
+    private DateRangeSelectorListener listener;
 
-    private int m_currentIndex;
+    private int currentIndex;
 
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
 
-        m_dateRange = new SplitButton();
-        m_dateRange.setMinWidth(120);
-        m_dateRange.setStyleAttribute("border", "1px solid thistle");
-        m_dateRange.setStyleAttribute("background-color", "white");
+        dateRange = new SplitButton();
+        dateRange.setMinWidth(120);
+        dateRange.setStyleAttribute("border", "1px solid thistle");
+        dateRange.setStyleAttribute("background-color", "white");
         Menu menu = new Menu();
         menu.add(new MenuItem(MSGS.dataEndNow(),
                 new SelectionListener<MenuEvent>() {
@@ -112,31 +112,31 @@ public class DateRangeSelectorChart extends LayoutContainer {
                     }
                 }));
 
-        m_dateRange.setMenu(menu);
+        dateRange.setMenu(menu);
 
         // initialize with the last 24 hours
         onMenuItemSelected(0, null);
-        add(m_dateRange);
+        add(dateRange);
     }
 
     public void nextRange() {
         long delta = getDelta();
-        if (m_endDate == null) {
-            m_endDate = new Date();
+        if (endDate == null) {
+            endDate = new Date();
         }
-        m_endDate = new Date(m_endDate.getTime() + delta);
+        endDate = new Date(endDate.getTime() + delta);
     }
 
     public void previousRange() {
         long delta = getDelta();
-        if (m_endDate == null) {
-            m_endDate = new Date();
+        if (endDate == null) {
+            endDate = new Date();
         }
-        m_endDate = new Date(m_endDate.getTime() - delta);
+        endDate = new Date(endDate.getTime() - delta);
     }
 
     private long getDelta() {
-        switch (m_currentIndex) {
+        switch (currentIndex) {
         case 1: // last 1h
             return 1L * 60L * 60L * 1000L;
         case 2: // last 12h
@@ -152,57 +152,57 @@ public class DateRangeSelectorChart extends LayoutContainer {
     }
 
     public DateRangeSelectorListener getListener() {
-        return m_listener;
+        return listener;
     }
 
     public void setListener(DateRangeSelectorListener listener) {
-        m_listener = listener;
+        this.listener = listener;
     }
 
     private void onMenuItemSelected(int index, MenuEvent me) {
-        m_currentIndex = index;
+        currentIndex = index;
         Date now = new Date();
         long nowTime = now.getTime();
         switch (index) {
         case 0: // now
-            m_endDate = new Date(nowTime);
-            m_dateRange.setText(MSGS.dataEndNow());
+            endDate = new Date(nowTime);
+            dateRange.setText(MSGS.dataEndNow());
             break;
         case 1: // last 1h
-            m_endDate = new Date(nowTime - 1L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataEndHour());
+            endDate = new Date(nowTime - 1L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataEndHour());
             break;
         case 2: // last 12h
-            m_endDate = new Date(nowTime - 12L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataEnd12Hour());
+            endDate = new Date(nowTime - 12L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataEnd12Hour());
             break;
         case 3: // last 24h
-            m_endDate = new Date(nowTime - 24L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataEndDay());
+            endDate = new Date(nowTime - 24L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataEndDay());
             break;
         case 4: // last week
-            m_endDate = new Date(nowTime - 7L * 24L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataEndWeek());
+            endDate = new Date(nowTime - 7L * 24L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataEndWeek());
             break;
         case 5: // last month
-            m_endDate = new Date(nowTime - (long) 30L * 24L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataEndMonth());
+            endDate = new Date(nowTime - (long) 30L * 24L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataEndMonth());
             break;
         }
-        if (me != null && m_listener != null) {
-            m_listener.onUpdate();
+        if (me != null && listener != null) {
+            listener.onUpdate();
         }
     }
 
     public Date getEndDate() {
-        if (m_endDate == null) {
+        if (endDate == null) {
             return new Date();
         }
-        return m_endDate;
+        return endDate;
     }
 
     private void showCustomDateRangeDialog() {
-        Date end = m_endDate;
+        Date end = endDate;
         if (end == null) {
             end = new Date();
         }
@@ -245,16 +245,16 @@ public class DateRangeSelectorChart extends LayoutContainer {
                 if (form.isValid()) {
                     long lEndDate = endDateField.getValue().getTime();
                     lEndDate = lEndDate + (long) endTimeField.getValue().getHour() * 60L * 60L * 1000L + (long) endTimeField.getValue().getMinutes() * 60L * 1000L;
-                    m_endDate = new Date(lEndDate);
+                    endDate = new Date(lEndDate);
 
                     DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT);
                     StringBuilder sb = new StringBuilder();
-                    sb.append(dtf.format(m_endDate));
-                    m_dateRange.setText(sb.toString());
+                    sb.append(dtf.format(endDate));
+                    dateRange.setText(sb.toString());
 
                     dialog.hide();
-                    if (m_listener != null) {
-                        m_listener.onUpdate();
+                    if (listener != null) {
+                        listener.onUpdate();
                     }
                 }
             }

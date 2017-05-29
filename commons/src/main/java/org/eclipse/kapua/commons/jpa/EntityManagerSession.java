@@ -57,7 +57,7 @@ public class EntityManagerSession {
      * @throws KapuaException
      */
     public <T> void onAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException {
-        _onAction(entityManagerActionCallback, notTransacted);
+        internalOnAction(entityManagerActionCallback, notTransacted);
     }
 
     /**
@@ -70,10 +70,10 @@ public class EntityManagerSession {
      * @throws KapuaException
      */
     public <T> void onTransactedAction(EntityManagerActionCallback entityManagerActionCallback) throws KapuaException {
-        _onAction(entityManagerActionCallback, transacted);
+        internalOnAction(entityManagerActionCallback, transacted);
     }
 
-    private <T> void _onAction(EntityManagerActionCallback entityManagerActionCallback, TransactionManager transactionManager) throws KapuaException {
+    private <T> void internalOnAction(EntityManagerActionCallback entityManagerActionCallback, TransactionManager transactionManager) throws KapuaException {
         EntityManager manager = null;
         try {
             manager = entityManagerFactory.createEntityManager();
@@ -104,7 +104,7 @@ public class EntityManagerSession {
      * @throws KapuaException
      */
     public <T> T onResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException {
-        return _onResult(entityManagerResultCallback, notTransacted);
+        return internalOnResult(entityManagerResultCallback, notTransacted);
     }
 
     /**
@@ -118,10 +118,10 @@ public class EntityManagerSession {
      * @throws KapuaException
      */
     public <T> T onTransactedResult(EntityManagerResultCallback<T> entityManagerResultCallback) throws KapuaException {
-        return _onResult(entityManagerResultCallback, transacted);
+        return internalOnResult(entityManagerResultCallback, transacted);
     }
 
-    private <T> T _onResult(EntityManagerResultCallback<T> entityManagerResultCallback, TransactionManager transactionManager) throws KapuaException {
+    private <T> T internalOnResult(EntityManagerResultCallback<T> entityManagerResultCallback, TransactionManager transactionManager) throws KapuaException {
         EntityManager manager = null;
         try {
             manager = entityManagerFactory.createEntityManager();
@@ -155,7 +155,7 @@ public class EntityManagerSession {
      * @throws KapuaException
      */
     public <T> T onInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback) throws KapuaException {
-        return _onInsert(entityManagerInsertCallback, notTransacted);
+        return internalOnInsert(entityManagerInsertCallback, notTransacted);
     }
 
     /**
@@ -171,10 +171,10 @@ public class EntityManagerSession {
      * @throws KapuaException
      */
     public <T> T onTransactedInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback) throws KapuaException {
-        return _onInsert(entityManagerInsertCallback, transacted);
+        return internalOnInsert(entityManagerInsertCallback, transacted);
     }
 
-    private <T> T _onInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback, TransactionManager transactionManager) throws KapuaException {
+    private <T> T internalOnInsert(EntityManagerInsertCallback<T> entityManagerInsertCallback, TransactionManager transactionManager) throws KapuaException {
         boolean succeeded = false;
         int retry = 0;
         EntityManager manager = entityManagerFactory.createEntityManager();

@@ -24,34 +24,34 @@ public class TextFieldValidator implements Validator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    protected FieldType m_textFieldType;
-    protected TextField<String> m_textField;
+    protected FieldType textFieldType;
+    protected TextField<String> textField;
 
     public TextFieldValidator(TextField<String> textField, FieldType textFieldType) {
 
-        m_textField = textField;
-        m_textFieldType = textFieldType;
+        this.textField = textField;
+        this.textFieldType = textFieldType;
 
         // initialize the field for its validation
-        if (m_textFieldType.getRegex() != null) {
-            m_textField.setRegex(m_textFieldType.getRegex());
+        if (this.textFieldType.getRegex() != null) {
+            this.textField.setRegex(this.textFieldType.getRegex());
         }
-        if (m_textFieldType.getToolTipMessage() != null) {
-            m_textField.setToolTip(m_textFieldType.getToolTipMessage());
+        if (this.textFieldType.getToolTipMessage() != null) {
+            this.textField.setToolTip(this.textFieldType.getToolTipMessage());
         }
-        if (m_textFieldType.getRequiredMessage() != null) {
-            m_textField.getMessages().setBlankText(m_textFieldType.getRequiredMessage());
+        if (this.textFieldType.getRequiredMessage() != null) {
+            this.textField.getMessages().setBlankText(this.textFieldType.getRequiredMessage());
         }
-        if (m_textFieldType.getRegexMessage() != null) {
-            m_textField.getMessages().setRegexText(m_textFieldType.getRegexMessage());
+        if (this.textFieldType.getRegexMessage() != null) {
+            this.textField.getMessages().setRegexText(this.textFieldType.getRegexMessage());
         }
     }
 
     public String validate(Field<?> field, String value) {
 
         String result = null;
-        if (!value.matches(m_textFieldType.getRegex())) {
-            result = m_textFieldType.getRegexMessage();
+        if (!value.matches(textFieldType.getRegex())) {
+            result = textFieldType.getRegexMessage();
         }
         return result;
     }
@@ -64,32 +64,32 @@ public class TextFieldValidator implements Validator {
                                 "^(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$"), ALPHABET(
                                         "alphabet", "^[a-zA-Z_]+$"), ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"), NUMERIC("numeric", "^[+0-9.]+$");
 
-        private String m_name;
-        private String m_regex;
-        private String m_regexMsg;
-        private String m_toolTipMsg;
-        private String m_requiredMsg;
+        private String name;
+        private String regex;
+        private String regexMsg;
+        private String toolTipMsg;
+        private String requiredMsg;
 
         FieldType(String name, String regex) {
 
-            m_name = name;
-            m_regex = regex;
-            m_regexMsg = name + "RegexMsg";
-            m_toolTipMsg = name + "ToolTipMsg";
-            m_requiredMsg = name + "RequiredMsg";
+            this.name = name;
+            this.regex = regex;
+            regexMsg = name + "RegexMsg";
+            toolTipMsg = name + "ToolTipMsg";
+            requiredMsg = name + "RequiredMsg";
         }
 
         public String getName() {
-            return m_name;
+            return name;
         }
 
         public String getRegex() {
-            return m_regex;
+            return regex;
         }
 
         public String getRegexMessage() {
             try {
-                return MSGS.getString(m_regexMsg);
+                return MSGS.getString(regexMsg);
             } catch (MissingResourceException mre) {
                 return null;
             }
@@ -97,7 +97,7 @@ public class TextFieldValidator implements Validator {
 
         public String getToolTipMessage() {
             try {
-                return MSGS.getString(m_toolTipMsg);
+                return MSGS.getString(toolTipMsg);
             } catch (MissingResourceException mre) {
                 return null;
             }
@@ -105,7 +105,7 @@ public class TextFieldValidator implements Validator {
 
         public String getRequiredMessage() {
             try {
-                return MSGS.getString(m_requiredMsg);
+                return MSGS.getString(requiredMsg);
             } catch (MissingResourceException mre) {
                 return null;
             }

@@ -41,28 +41,28 @@ public class DevicesView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private GwtSession m_currentSession;
+    private GwtSession currentSession;
 
-    private TabPanel m_tabsPanel;
-    private TabItem m_tabTable;
-    private TabItem m_tabMap;
-    private DeviceFilterPanel m_deviceFilterPanel;
-    private DevicesTable m_deviceTable;
-    private DevicesMap m_deviceMap;
-    private DeviceTabs m_deviceTabs;
+    private TabPanel tabsPanel;
+    private TabItem tabTable;
+    private TabItem tabMap;
+    private DeviceFilterPanel deviceFilterPanel;
+    private DevicesTable deviceTable;
+    private DevicesMap deviceMap;
+    private DeviceTabs deviceTabs;
 
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
 
     public DevicesView(GwtSession currentSession) {
-        m_currentSession = currentSession;
+        this.currentSession = currentSession;
     }
 
     public void setDevice(GwtDevice device) {
-        m_deviceTabs.setDevice(device);
+        this.deviceTabs.setDevice(device);
     }
 
     public DeviceTabs getDeviceTabs() {
-        return m_deviceTabs;
+        return deviceTabs;
     }
 
     protected void onRender(final Element parent, int index) {
@@ -82,14 +82,14 @@ public class DevicesView extends LayoutContainer {
         eastData.setCollapsible(false);
         eastData.setSplit(false);
 
-        m_deviceFilterPanel = new DeviceFilterPanel(m_currentSession);
+        deviceFilterPanel = new DeviceFilterPanel(currentSession);
 
         ContentPanel panel = new ContentPanel();
         panel.setLayout(new FitLayout());
         panel.setBorders(false);
         panel.setBodyBorder(false);
         panel.setHeading(MSGS.deviceFilteringPanelHeading());
-        panel.add(m_deviceFilterPanel);
+        panel.add(deviceFilterPanel);
         mf.add(panel, eastData);
 
         // Center Main panel:
@@ -104,25 +104,25 @@ public class DevicesView extends LayoutContainer {
 
         //
         // North Panel: Devices Table and Map Tabs
-        m_deviceTable = new DevicesTable(this, m_currentSession, panel);
-        m_deviceFilterPanel.setDeviceTable(m_deviceTable);
+        deviceTable = new DevicesTable(this, currentSession, panel);
+        deviceFilterPanel.setDeviceTable(deviceTable);
 
-        m_tabsPanel = new TabPanel();
-        m_tabsPanel.setPlain(false);
-        m_tabsPanel.setBorders(false);
-        m_tabsPanel.setBodyBorder(true);
+        tabsPanel = new TabPanel();
+        tabsPanel.setPlain(false);
+        tabsPanel.setBorders(false);
+        tabsPanel.setBodyBorder(true);
 
-        m_tabTable = new TabItem(MSGS.tabTable(), new KapuaIcon(IconSet.HDD_O));
-        m_tabTable.setBorders(false);
-        m_tabTable.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabTable = new TabItem(MSGS.tabTable(), new KapuaIcon(IconSet.HDD_O));
+        tabTable.setBorders(false);
+        tabTable.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_deviceTable.refresh(new GwtDeviceQueryPredicates());
+                deviceTable.refresh(new GwtDeviceQueryPredicates());
             }
         });
-        m_tabTable.setLayout(new FitLayout());
-        m_tabTable.add(m_deviceTable);
-        m_tabsPanel.add(m_tabTable);
+        tabTable.setLayout(new FitLayout());
+        tabTable.add(deviceTable);
+        tabsPanel.add(tabTable);
 
         GWT_DEVICE_SERVICE.isMapEnabled(new AsyncCallback<Boolean>() {
 
@@ -134,20 +134,20 @@ public class DevicesView extends LayoutContainer {
             @Override
             public void onSuccess(Boolean result) {
                 if (result) {
-                    m_deviceMap = new DevicesMap(DevicesView.this, m_currentSession);
+                    deviceMap = new DevicesMap(DevicesView.this, currentSession);
 
-                    m_tabMap = new TabItem(MSGS.tabMap(), new KapuaIcon(IconSet.MAP_O));
-                    m_tabMap.setBorders(false);
-                    m_tabMap.addListener(Events.Select, new Listener<ComponentEvent>() {
+                    tabMap = new TabItem(MSGS.tabMap(), new KapuaIcon(IconSet.MAP_O));
+                    tabMap.setBorders(false);
+                    tabMap.addListener(Events.Select, new Listener<ComponentEvent>() {
 
                         public void handleEvent(ComponentEvent be) {
-                            m_deviceMap.refresh(new GwtDeviceQueryPredicates());
+                            deviceMap.refresh(new GwtDeviceQueryPredicates());
                         }
                     });
-                    m_tabMap.setLayout(new FitLayout());
-                    m_tabMap.add(m_deviceMap);
+                    tabMap.setLayout(new FitLayout());
+                    tabMap.add(deviceMap);
 
-                    m_tabsPanel.add(m_tabMap);
+                    tabsPanel.add(tabMap);
                 }
             }
 
@@ -157,7 +157,7 @@ public class DevicesView extends LayoutContainer {
         northData.setMargins(new Margins(0, 0, 0, 0));
         northData.setSplit(true);
         northData.setMinSize(0);
-        resultContainer.add(m_tabsPanel, northData);
+        resultContainer.add(tabsPanel, northData);
 
         //
         // Center Panel: Profile and History Tabs
@@ -167,8 +167,8 @@ public class DevicesView extends LayoutContainer {
         centerData.setHideCollapseTool(true);
         centerData.setSplit(true);
 
-        m_deviceTabs = new DeviceTabs(m_deviceTable, m_deviceFilterPanel, m_currentSession);
-        resultContainer.add(m_deviceTabs, centerData);
+        deviceTabs = new DeviceTabs(deviceTable, deviceFilterPanel, currentSession);
+        resultContainer.add(deviceTabs, centerData);
 
         add(mf);
     }

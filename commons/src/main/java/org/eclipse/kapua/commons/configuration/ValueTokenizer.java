@@ -48,11 +48,11 @@ public class ValueTokenizer {
     /**
      * Constructs a tokenizer for a string
      *
-     * @param values_str
+     * @param valuesStr
      */
-    public ValueTokenizer(String values_str) {
+    public ValueTokenizer(String valuesStr) {
 
-        if (values_str == null) {
+        if (valuesStr == null) {
             return;
         }
         // The trick is to strip out unescaped whitespace characters before and
@@ -64,8 +64,8 @@ public class ValueTokenizer {
         StringBuffer buffer = new StringBuffer();
         // Loop over the characters within the input string and extract each
         // value token.
-        for (int i = 0; i < values_str.length(); i++) {
-            char c1 = values_str.charAt(i);
+        for (int i = 0; i < valuesStr.length(); i++) {
+            char c1 = valuesStr.charAt(i);
             switch (c1) {
             case DELIMITER:
                 // When the delimiter is encountered, add the extracted
@@ -80,8 +80,8 @@ public class ValueTokenizer {
                 // input has been reached. Note this will result in loop
                 // counter 'i' being incremented twice, once here and once
                 // at the end of the loop.
-                if (i + 1 < values_str.length()) {
-                    buffer.append(values_str.charAt(++i));
+                if (i + 1 < valuesStr.length()) {
+                    buffer.append(valuesStr.charAt(++i));
                 } else {
                     // If the ESCAPE character occurs as the last character
                     // of the string, log the error and ignore it.
@@ -103,22 +103,22 @@ public class ValueTokenizer {
                     // forward, starting with the next character, to see if
                     // it's in the middle or at the end. Unescaped
                     // whitespace in the middle is okay.
-                    for (int j = i + 1; j < values_str.length(); j++) {
+                    for (int j = i + 1; j < valuesStr.length(); j++) {
                         // Keep looping until the end of the string is
                         // reached or a non-whitespace character other than
                         // the escape is seen.
-                        char c2 = values_str.charAt(j);
+                        char c2 = valuesStr.charAt(j);
                         if (!Character.isWhitespace(c2)) {
                             // If the current character is not the DELIMITER, all whitespace
                             // characters are significant and should be added to the token.
                             // Otherwise, they're at the end and should be ignored. But watch
                             // out for an escape character at the end of the input. Ignore it
                             // and any previous insignificant whitespace if it exists.
-                            if (c2 == ESCAPE && j + 1 >= values_str.length()) {
+                            if (c2 == ESCAPE && j + 1 >= valuesStr.length()) {
                                 continue;
                             }
                             if (c2 != DELIMITER) {
-                                buffer.append(values_str.substring(i, j));
+                                buffer.append(valuesStr.substring(i, j));
                             }
                             // Let loop counter i catch up with the inner loop but keep in
                             // mind it will still be incremented at the end of the outer loop.

@@ -53,7 +53,7 @@ public interface DeviceComponentConfiguration {
      * 
      * @param Id
      */
-    public void setId(String Id);
+    public void setId(String id);
 
     /**
      * Get device configuration component name

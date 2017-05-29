@@ -42,7 +42,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final int ENTITY_PAGE_SIZE = 100;
+    private static final int ENTITY_PAGE_SIZE = 100;
 
     protected GwtSession currentSession;
     protected EntityView<M> parentEntityView;

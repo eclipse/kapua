@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.account;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.ui.tab.KapuaTabItem;
@@ -22,23 +21,15 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 
 public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
 
-    @SuppressWarnings("unused")
-    private final ConsoleMessages msgs = GWT.create(ConsoleMessages.class);
-
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
-
-    private AccountConfigComponents m_configComponents;
+    private AccountConfigComponents configComponents;
 
     public AccountTabConfiguration(GwtSession currentSession) {
         super("Settings", new KapuaIcon(IconSet.COG));
-        m_currentSession = currentSession;
-        m_configComponents = new AccountConfigComponents(currentSession, this);
+        configComponents = new AccountConfigComponents(currentSession, this);
         setBorders(false);
         setLayout(new FitLayout());
         addListener(Events.Select, new Listener<ComponentEvent>() {
@@ -52,12 +43,12 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
     @Override
     public void setEntity(GwtAccount selectedAccount) {
         super.setEntity(selectedAccount);
-        m_configComponents.setAccount(selectedAccount);
+        configComponents.setAccount(selectedAccount);
     }
 
     @Override
     protected void doRefresh() {
-        m_configComponents.refresh();
+        configComponents.refresh();
     }
 
     protected void onRender(Element parent, int index) {
@@ -67,6 +58,6 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
         setId("AccountTabsContainer");
         setLayout(new FitLayout());
 
-        add(m_configComponents);
+        add(configComponents);
     }
 }

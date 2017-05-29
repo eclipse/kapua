@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.client.device;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.shared.model.GwtChannel;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
@@ -36,19 +35,15 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ConfigurationPanelTable extends LayoutContainer {
 
-    private GwtSession currentSession;
     private ContentPanel tableContainer;
     private ToolBar toolBar;
-    private ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     public ConfigurationPanelTable(GwtSession currentSession) {
-        this.currentSession = currentSession;
     }
 
     private void initConfigurationPanelTable() {

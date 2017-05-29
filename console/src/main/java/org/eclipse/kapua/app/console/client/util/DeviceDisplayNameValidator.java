@@ -22,12 +22,12 @@ public class DeviceDisplayNameValidator implements Validator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    private TextField<String> m_deviceDisplayNameField;
+    private TextField<String> deviceDisplayNameField;
     private String regex = ".{3,}";
 
     public DeviceDisplayNameValidator(TextField<String> deviceDisplayNameField) {
-        m_deviceDisplayNameField = deviceDisplayNameField;
-        m_deviceDisplayNameField.setRegex(regex);
+        this.deviceDisplayNameField = deviceDisplayNameField;
+        this.deviceDisplayNameField.setRegex(regex);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class DeviceDisplayNameValidator implements Validator {
             result = MSGS.deviceFormDisplayNameValidationMessage();
         }
 
-        if (!value.trim().matches(m_deviceDisplayNameField.getRegex())) {
+        if (!value.trim().matches(deviceDisplayNameField.getRegex())) {
             result = MSGS.deviceFormDisplayNameValidationMessage();
         }
         return result;

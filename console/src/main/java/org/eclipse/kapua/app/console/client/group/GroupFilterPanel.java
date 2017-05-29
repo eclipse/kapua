@@ -25,7 +25,7 @@ import com.google.gwt.core.client.GWT;
 
 public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
 
-    private final int WIDTH = 200;
+    private static final int WIDTH = 200;
     private final EntityGrid<GwtGroup> entityGrid;
     private final GwtSession currentSession;
     private final TextField<String> nameField;

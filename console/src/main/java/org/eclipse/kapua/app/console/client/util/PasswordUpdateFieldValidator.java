@@ -31,7 +31,7 @@ public class PasswordUpdateFieldValidator extends PasswordFieldValidator {
     public String validate(Field<?> field, String value) {
         
         if(value == null || value.equals("")){
-            m_textField.setRegex(null);
+            textField.setRegex(null);
             return null;
         }
         

@@ -159,7 +159,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         forwardableChecboxGroup.add(forwardableChecbox);
         formPanel.add(forwardableChecboxGroup);
 
-        m_bodyPanel.add(formPanel);
+        bodyPanel.add(formPanel);
     }
 
     private void refreshActions() {

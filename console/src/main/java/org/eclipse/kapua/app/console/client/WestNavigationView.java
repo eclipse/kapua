@@ -64,9 +64,9 @@ public class WestNavigationView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private final LayoutContainer m_centerPanel;
+    private final LayoutContainer centerPanel;
     private ContentPanel cloudResourcesPanel;
-    private ContentPanel m_accordionPanel;
+    private ContentPanel accordionPanel;
     private ContentPanel accountManagementPanel;
 
     private TreeStore<ModelData> cloudResourcesTreeStore;
@@ -76,27 +76,27 @@ public class WestNavigationView extends LayoutContainer {
 
     private boolean dashboardSelected;
     private KapuaIcon imgRefreshLabel;
-    private WelcomeView m_welcomeView;
+    private WelcomeView welcomeView;
 
-    private final GwtSession m_currentSession;
+    private final GwtSession currentSession;
 
     public WestNavigationView(GwtSession currentSession, LayoutContainer center) {
-        m_currentSession = currentSession;
+        this.currentSession = currentSession;
 
-        m_welcomeView = new WelcomeView(m_currentSession);
+        welcomeView = new WelcomeView(this.currentSession);
 
         ContentPanel panel = new ContentPanel(new FitLayout());
         panel.setBodyBorder(true);
         panel.setHeaderVisible(true);
         panel.setIcon(new KapuaIcon(IconSet.INFO));
         panel.setHeading(MSGS.welcome());
-        panel.add(m_welcomeView);
+        panel.add(welcomeView);
 
         // set initial view
 
-        m_centerPanel = center;
-        m_centerPanel.add(panel);
-        m_centerPanel.layout();
+        centerPanel = center;
+        centerPanel.add(panel);
+        centerPanel.layout();
 
         dashboardSelected = true;
     }
@@ -113,11 +113,11 @@ public class WestNavigationView extends LayoutContainer {
         AccordionLayout accordionLayout = new AccordionLayout();
         accordionLayout.setFill(true);
 
-        m_accordionPanel = new ContentPanel(accordionLayout);
-        m_accordionPanel.setBorders(false);
-        m_accordionPanel.setBodyBorder(false);
-        m_accordionPanel.setHeaderVisible(false);
-        add(m_accordionPanel);
+        accordionPanel = new ContentPanel(accordionLayout);
+        accordionPanel.setBorders(false);
+        accordionPanel.setBodyBorder(false);
+        accordionPanel.setHeaderVisible(false);
+        add(accordionPanel);
 
         //
         // Top managing panel
@@ -171,7 +171,7 @@ public class WestNavigationView extends LayoutContainer {
 
                 accountManagementTreeGrid.getSelectionModel().deselectAll();
 
-                m_centerPanel.removeAll();
+                centerPanel.removeAll();
 
                 ContentPanel panel = new ContentPanel(new FitLayout());
                 panel.setBorders(false);
@@ -180,15 +180,15 @@ public class WestNavigationView extends LayoutContainer {
                 String selectedId = (String) selected.get("id");
                 if ("welcome".equals(selectedId)) {
 
-                    m_welcomeView = new WelcomeView(m_currentSession);
+                    welcomeView = new WelcomeView(currentSession);
 
                     panel.setBodyBorder(true);
                     panel.setIcon(new KapuaIcon(IconSet.INFO));
                     panel.setHeading(MSGS.welcome());
-                    panel.add(m_welcomeView);
+                    panel.add(welcomeView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else  if ("about".equals(selectedId)) {
                     AboutView aboutView = new AboutView();
@@ -198,46 +198,46 @@ public class WestNavigationView extends LayoutContainer {
                     panel.setHeading(MSGS.about());
                     panel.add(aboutView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("devices".equals(selectedId)) {
-                    DevicesView deviceView = new DevicesView(m_currentSession);
+                    DevicesView deviceView = new DevicesView(currentSession);
 
                     panel.setHeaderVisible(false);
                     panel.add(deviceView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("connection".equals(selectedId)) {
-                    ConnectionView connectionView = new ConnectionView(m_currentSession);
+                    ConnectionView connectionView = new ConnectionView(currentSession);
 
                     panel.setHeaderVisible(false);
                     panel.add(connectionView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("data".equals(selectedId)) {
-                    DataView dataView = new DataView(m_currentSession);
+                    DataView dataView = new DataView(currentSession);
                     panel.setHeaderVisible(false);
                     panel.add(dataView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("user".equals(selectedId)) {
 
-                    UserView userView = new UserView(m_currentSession);
+                    UserView userView = new UserView(currentSession);
                     // userView.setAccount(m_currentSession.getSelectedAccount());
 
                     panel.setIcon(new KapuaIcon(IconSet.USERS));
                     panel.setHeading(MSGS.users());
                     panel.add(userView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
 
                     // userView.refresh();
@@ -246,33 +246,33 @@ public class WestNavigationView extends LayoutContainer {
                     panel.setIcon(new KapuaIcon(IconSet.STREET_VIEW));
                     panel.setHeading(MSGS.roles());
 
-                    RoleView userView = new RoleView(m_currentSession);
+                    RoleView userView = new RoleView(currentSession);
                     panel.add(userView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("groups".equals(selectedId)) {
                     panel.setIcon(new KapuaIcon(IconSet.OBJECT_GROUP));
                     panel.setHeading(MSGS.groups());
 
-                    GroupView groupView = new GroupView(m_currentSession);
+                    GroupView groupView = new GroupView(currentSession);
                     panel.add(groupView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
                     dashboardSelected = false;
                 } else if ("mysettings".equals(selectedId)) {
 
-                    AccountDetailsView settingView = new AccountDetailsView(null, m_currentSession);
-                    settingView.setAccount(m_currentSession.getSelectedAccount());
+                    AccountDetailsView settingView = new AccountDetailsView(null, currentSession);
+                    settingView.setAccount(currentSession.getSelectedAccount());
 
                     panel.setIcon(new KapuaIcon(IconSet.COG));
                     panel.setHeading(MSGS.settings());
                     panel.add(settingView);
 
-                    m_centerPanel.add(panel);
-                    m_centerPanel.layout();
+                    centerPanel.add(panel);
+                    centerPanel.layout();
 
                     settingView.refresh();
                 }
@@ -303,14 +303,14 @@ public class WestNavigationView extends LayoutContainer {
 
                 cloudResourcesTreeGrid.getSelectionModel().deselectAll();
 
-                m_centerPanel.removeAll();
+                centerPanel.removeAll();
                 ContentPanel panel = new ContentPanel(new FitLayout());
                 panel.setBorders(false);
                 panel.setBodyBorder(false);
 
                 String selectedId = (String) selected.get("id");
                 if ("childaccounts".equals(selectedId)) {
-                    AccountView accountView = new AccountView(m_currentSession);
+                    AccountView accountView = new AccountView(currentSession);
 
                     panel.setIcon(new KapuaIcon(IconSet.SITEMAP));
                     panel.setHeading(MSGS.childaccounts());
@@ -320,8 +320,8 @@ public class WestNavigationView extends LayoutContainer {
                 }
                 // imgRefreshLabel.setVisible(dashboardSelected);
 
-                m_centerPanel.add(panel);
-                m_centerPanel.layout();
+                centerPanel.add(panel);
+                centerPanel.layout();
             }
         });
 
@@ -331,7 +331,7 @@ public class WestNavigationView extends LayoutContainer {
 
         cloudResourcesTreeGrid.getSelectionModel().select(0, false);
 
-        m_accordionPanel.add(cloudResourcesPanel);
+        accordionPanel.add(cloudResourcesPanel);
     }
 
     public void addMenuItems() {
@@ -346,37 +346,37 @@ public class WestNavigationView extends LayoutContainer {
         cloudResourcesTreeStore.removeAll();
         accountManagementTreeStore.removeAll();
 
-        GwtAccount selectedAccount = m_currentSession.getSelectedAccount();
+        GwtAccount selectedAccount = currentSession.getSelectedAccount();
 
         if (selectedAccount != null) {
 
             cloudResourcesTreeStore.add(newItem("welcome", MSGS.welcome(), IconSet.INFO), false);
 
-            if (m_currentSession.hasDeviceReadPermission()) {
+            if (currentSession.hasDeviceReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("devices", MSGS.devices(), IconSet.HDD_O), false);
             }
-            if (m_currentSession.hasConnectionReadPermission()) {
+            if (currentSession.hasConnectionReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("connection", MSGS.connections(), IconSet.PLUG), false);
             }
-            if (m_currentSession.hasDataReadPermission()) {
+            if (currentSession.hasDataReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
             }
-            if (m_currentSession.hasUserReadPermission()) {
+            if (currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);
             }
-            if (m_currentSession.hasRoleReadPermission()) {
+            if (currentSession.hasRoleReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("role", MSGS.roles(), IconSet.STREET_VIEW), false);
             }
-            if (m_currentSession.hasAccountReadPermission()) {
+            if (currentSession.hasAccountReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("mysettings", MSGS.settings(), IconSet.COG), false);
             }
-            if (m_currentSession.hasGroupReadPermission()) {
+            if (currentSession.hasGroupReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("groups", MSGS.groups(), IconSet.OBJECT_GROUP), false);
             }
 
             //
             // Cloud menu
-            if (m_currentSession.hasAccountReadPermission()) {
+            if (currentSession.hasAccountReadPermission()) {
                 accountManagementTreeStore.add(newItem("childaccounts", MSGS.childaccounts(), IconSet.SITEMAP), false);
             }
             
@@ -459,7 +459,7 @@ public class WestNavigationView extends LayoutContainer {
                     public void handleEvent(BaseEvent be) {
                         if (dashboardSelected) {
                             // FIXME: seems to be dead code
-                            m_welcomeView.refresh();
+                            welcomeView.refresh();
                         }
                     }
                 });

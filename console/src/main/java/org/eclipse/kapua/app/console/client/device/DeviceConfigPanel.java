@@ -68,20 +68,20 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private GwtConfigComponent m_configComponent;
-    private FormPanel m_actionFormPanel;
-    private FieldSet m_actionFieldSet;
+    private GwtConfigComponent configComponent;
+    private FormPanel actionFormPanel;
+    private FieldSet actionFieldSet;
 
-    private ComponentPlugin m_infoPlugin;
-    private ComponentPlugin m_dirtyPlugin;
+    private ComponentPlugin infoPlugin;
+    private ComponentPlugin dirtyPlugin;
 
     public DeviceConfigPanel(GwtConfigComponent configComponent) {
         super(new FitLayout());
         setScrollMode(Scroll.AUTO);
         setBorders(false);
 
-        m_configComponent = configComponent;
-        m_infoPlugin = new ComponentPlugin() {
+        this.configComponent = configComponent;
+        infoPlugin = new ComponentPlugin() {
 
             public void init(Component component) {
                 component.addListener(Events.Render, new Listener<ComponentEvent>() {
@@ -98,7 +98,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         };
 
         final DeviceConfigPanel thePanel = this;
-        m_dirtyPlugin = new ComponentPlugin() {
+        dirtyPlugin = new ComponentPlugin() {
 
             public void init(Component component) {
                 component.addListener(Events.Change, new Listener<ComponentEvent>() {
@@ -123,26 +123,26 @@ public class DeviceConfigPanel extends LayoutContainer {
     }
 
     public boolean isValid() {
-        return FormUtils.isValid(m_actionFieldSet);
+        return FormUtils.isValid(actionFieldSet);
     }
 
     public boolean isDirty() {
-        return FormUtils.isDirty(m_actionFieldSet);
+        return FormUtils.isDirty(actionFieldSet);
     }
 
     public GwtConfigComponent getConfiguration() {
-        return m_configComponent;
+        return configComponent;
     }
 
     public GwtConfigComponent getUpdatedConfiguration() {
 
-        List<Component> fields = m_actionFieldSet.getItems();
+        List<Component> fields = actionFieldSet.getItems();
         for (int i = 0; i < fields.size(); i++) {
             if (fields.get(i) instanceof Field<?>) {
 
                 Field<?> field = (Field<?>) fields.get(i);
                 String fieldName = field.getItemId();
-                GwtConfigParameter param = m_configComponent.getParameter(fieldName);
+                GwtConfigParameter param = configComponent.getParameter(fieldName);
                 if (param == null) {
                     System.err.println(field);
                 }
@@ -170,7 +170,7 @@ public class DeviceConfigPanel extends LayoutContainer {
                 }
             }
         }
-        return m_configComponent;
+        return configComponent;
     }
 
     private String getUpdatedFieldConfiguration(GwtConfigParameter param, Field<?> field) {
@@ -272,18 +272,18 @@ public class DeviceConfigPanel extends LayoutContainer {
         formData.setMargins(new Margins(0, 10, 0, 0));
 
         if (!UserAgentUtils.isIE()) {
-            m_actionFormPanel = new FormPanel();
-            m_actionFormPanel.setFrame(false);
-            m_actionFormPanel.setBodyBorder(false);
-            m_actionFormPanel.setHeaderVisible(false);
-            m_actionFormPanel.setLabelWidth(Constants.LABEL_WIDTH_CONFIG_FORM);
-            m_actionFormPanel.setStyleAttribute("padding", "0px");
-            m_actionFormPanel.setScrollMode(Scroll.AUTO);
-            m_actionFormPanel.setLayout(new FlowLayout());
-            m_actionFormPanel.addListener(Events.Render, new Listener<BaseEvent>() {
+            actionFormPanel = new FormPanel();
+            actionFormPanel.setFrame(false);
+            actionFormPanel.setBodyBorder(false);
+            actionFormPanel.setHeaderVisible(false);
+            actionFormPanel.setLabelWidth(Constants.LABEL_WIDTH_CONFIG_FORM);
+            actionFormPanel.setStyleAttribute("padding", "0px");
+            actionFormPanel.setScrollMode(Scroll.AUTO);
+            actionFormPanel.setLayout(new FlowLayout());
+            actionFormPanel.addListener(Events.Render, new Listener<BaseEvent>() {
 
                 public void handleEvent(BaseEvent be) {
-                    NodeList<Element> nl = m_actionFormPanel.getElement().getElementsByTagName("form");
+                    NodeList<Element> nl = actionFormPanel.getElement().getElementsByTagName("form");
                     if (nl.getLength() > 0) {
                         Element elemForm = nl.getItem(0);
                         elemForm.setAttribute("autocomplete", "off");
@@ -292,36 +292,36 @@ public class DeviceConfigPanel extends LayoutContainer {
             });
         }
 
-        m_actionFieldSet = new FieldSet();
-        m_actionFieldSet.setId("configuration-form");
-        m_actionFieldSet.setBorders(false);
-        m_actionFieldSet.setStyleAttribute("padding", "0px");
-        m_actionFieldSet.setScrollMode(Scroll.AUTO);
-        if (m_configComponent.getComponentDescription() != null &&
-                m_configComponent.getComponentDescription().trim().length() > 0) {
-            m_actionFieldSet.addText(KapuaSafeHtmlUtils.htmlEscape(m_configComponent.getComponentDescription()));
+        actionFieldSet = new FieldSet();
+        actionFieldSet.setId("configuration-form");
+        actionFieldSet.setBorders(false);
+        actionFieldSet.setStyleAttribute("padding", "0px");
+        actionFieldSet.setScrollMode(Scroll.AUTO);
+        if (configComponent.getComponentDescription() != null &&
+                configComponent.getComponentDescription().trim().length() > 0) {
+            actionFieldSet.addText(KapuaSafeHtmlUtils.htmlEscape(configComponent.getComponentDescription()));
         }
 
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(Constants.LABEL_WIDTH_CONFIG_FORM);
-        m_actionFieldSet.setLayout(layout);
+        actionFieldSet.setLayout(layout);
 
         Field<?> field = null;
-        for (GwtConfigParameter param : m_configComponent.getParameters()) {
+        for (GwtConfigParameter param : configComponent.getParameters()) {
 
             if (param.getCardinality() == 0 || param.getCardinality() == 1 || param.getCardinality() == -1) {
                 field = paintConfigParameter(param);
             } else {
                 field = paintMultiFieldConfigParameter(param);
             }
-            m_actionFieldSet.add(field, formData);
+            actionFieldSet.add(field, formData);
         }
 
         if (!UserAgentUtils.isIE()) {
-            m_actionFormPanel.add(m_actionFieldSet, formData);
-            lcAction.add(m_actionFormPanel, centerData);
+            actionFormPanel.add(actionFieldSet, formData);
+            lcAction.add(actionFormPanel, centerData);
         } else {
-            lcAction.add(m_actionFieldSet, centerData);
+            lcAction.add(actionFieldSet, centerData);
         }
     }
 
@@ -331,7 +331,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         multiField.setName(param.getId());
         multiField.setItemId(param.getId());
         multiField.setFieldLabel(param.getName());
-        multiField.addPlugin(m_dirtyPlugin);
+        multiField.addPlugin(dirtyPlugin);
         multiField.setOrientation(Orientation.VERTICAL);
         if (param.isRequired()) {
             multiField.setFieldLabel("* " + param.getName());
@@ -430,7 +430,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         field.setValue((String) param.getValue());
         field.setAllowBlank(true);
         field.setFieldLabel(param.getName());
-        field.addPlugin(m_dirtyPlugin);
+        field.addPlugin(dirtyPlugin);
 
         if (param.isRequired()) {
             field.setAllowBlank(false);
@@ -465,7 +465,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         field.setAllowBlank(true);
         field.setPassword(true);
         field.setFieldLabel(param.getName());
-        field.addPlugin(m_dirtyPlugin);
+        field.addPlugin(dirtyPlugin);
         if (param.isRequired()) {
             field.setAllowBlank(false);
             field.setFieldLabel("* " + param.getName());
@@ -490,7 +490,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         field.setName(param.getId());
         field.setAllowBlank(true);
         field.setFieldLabel(param.getName());
-        field.addPlugin(m_dirtyPlugin);
+        field.addPlugin(dirtyPlugin);
         if (validator != null) {
             field.setValidator(validator);
         }
@@ -562,7 +562,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         field.setTriggerAction(TriggerAction.ALL);
         field.setFieldLabel(param.getName());
         field.setEditable(false);
-        field.addPlugin(m_dirtyPlugin);
+        field.addPlugin(dirtyPlugin);
         if (param.isRequired()) {
             field.setAllowBlank(false);
             field.setFieldLabel("* " + param.getName());
@@ -631,7 +631,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             radioGroup.setFieldLabel("* " + param.getName());
         }
 
-        radioGroup.addPlugin(m_dirtyPlugin);
+        radioGroup.addPlugin(dirtyPlugin);
 
         applyDescription(param, radioGroup);
 
@@ -658,7 +658,7 @@ public class DeviceConfigPanel extends LayoutContainer {
     private void applyDescription(GwtConfigParameter param, Field<?> field) {
         String description = extractDescription(param);
         if (description != null && !description.isEmpty()) {
-            field.addPlugin(m_infoPlugin);
+            field.addPlugin(infoPlugin);
             field.setData("text", description);
         }
     }
@@ -733,22 +733,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class IntegerValidator implements Validator {
 
-        private Integer m_minValue;
-        private Integer m_maxValue;
+        private Integer minValue;
+        private Integer maxValue;
 
         public IntegerValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Integer.valueOf(minValue);
+                    this.minValue = Integer.valueOf(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Integer.valueOf(maxValue);
+                    this.maxValue = Integer.valueOf(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -763,14 +763,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (intValue != null) {
-                if (m_minValue != null) {
-                    if (intValue.intValue() < m_minValue.intValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.intValue());
+                if (minValue != null) {
+                    if (intValue.intValue() < minValue.intValue()) {
+                        return MessageUtils.get("configMinValue", minValue.intValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (intValue.intValue() > m_maxValue.intValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.intValue());
+                if (maxValue != null) {
+                    if (intValue.intValue() > maxValue.intValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.intValue());
                     }
                 }
             }
@@ -780,22 +780,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class LongValidator implements Validator {
 
-        private Long m_minValue;
-        private Long m_maxValue;
+        private Long minValue;
+        private Long maxValue;
 
         public LongValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Long.valueOf(minValue);
+                    this.minValue = Long.valueOf(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Long.valueOf(maxValue);
+                    this.maxValue = Long.valueOf(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -810,14 +810,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (longValue != null) {
-                if (m_minValue != null) {
-                    if (longValue.longValue() < m_minValue.longValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.longValue());
+                if (minValue != null) {
+                    if (longValue.longValue() < minValue.longValue()) {
+                        return MessageUtils.get("configMinValue", minValue.longValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (longValue.longValue() > m_maxValue.longValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.longValue());
+                if (maxValue != null) {
+                    if (longValue.longValue() > maxValue.longValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.longValue());
                     }
                 }
             }
@@ -827,22 +827,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class DoubleValidator implements Validator {
 
-        private Double m_minValue;
-        private Double m_maxValue;
+        private Double minValue;
+        private Double maxValue;
 
         public DoubleValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Double.valueOf(minValue);
+                    this.minValue = Double.valueOf(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Double.valueOf(maxValue);
+                    this.maxValue = Double.valueOf(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -857,14 +857,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (doubleValue != null) {
-                if (m_minValue != null) {
-                    if (doubleValue.doubleValue() < m_minValue.doubleValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.doubleValue());
+                if (minValue != null) {
+                    if (doubleValue.doubleValue() < minValue.doubleValue()) {
+                        return MessageUtils.get("configMinValue", minValue.doubleValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (doubleValue.doubleValue() > m_maxValue.doubleValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.doubleValue());
+                if (maxValue != null) {
+                    if (doubleValue.doubleValue() > maxValue.doubleValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.doubleValue());
                     }
                 }
             }
@@ -874,22 +874,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class FloatValidator implements Validator {
 
-        private Float m_minValue;
-        private Float m_maxValue;
+        private Float minValue;
+        private Float maxValue;
 
         public FloatValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Float.valueOf(minValue);
+                    this.minValue = Float.valueOf(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Float.valueOf(maxValue);
+                    this.maxValue = Float.valueOf(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -904,14 +904,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (floatValue != null) {
-                if (m_minValue != null) {
-                    if (floatValue.floatValue() < m_minValue.floatValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.floatValue());
+                if (minValue != null) {
+                    if (floatValue.floatValue() < minValue.floatValue()) {
+                        return MessageUtils.get("configMinValue", minValue.floatValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (floatValue.floatValue() > m_maxValue.floatValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.floatValue());
+                if (maxValue != null) {
+                    if (floatValue.floatValue() > maxValue.floatValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.floatValue());
                     }
                 }
             }
@@ -921,22 +921,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class ShortValidator implements Validator {
 
-        private Short m_minValue;
-        private Short m_maxValue;
+        private Short minValue;
+        private Short maxValue;
 
         public ShortValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Short.valueOf(minValue);
+                    this.minValue = Short.valueOf(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Short.valueOf(maxValue);
+                    this.maxValue = Short.valueOf(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -951,14 +951,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (shortValue != null) {
-                if (m_minValue != null) {
-                    if (shortValue.shortValue() < m_minValue.shortValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.shortValue());
+                if (minValue != null) {
+                    if (shortValue.shortValue() < minValue.shortValue()) {
+                        return MessageUtils.get("configMinValue", minValue.shortValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (shortValue.shortValue() > m_maxValue.shortValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.shortValue());
+                if (maxValue != null) {
+                    if (shortValue.shortValue() > maxValue.shortValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.shortValue());
                     }
                 }
             }
@@ -968,22 +968,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class ByteValidator implements Validator {
 
-        private Byte m_minValue;
-        private Byte m_maxValue;
+        private Byte minValue;
+        private Byte maxValue;
 
         public ByteValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Byte.valueOf(minValue);
+                    this.minValue = Byte.valueOf(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Byte.valueOf(maxValue);
+                    this.maxValue = Byte.valueOf(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -998,14 +998,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (byteValue != null) {
-                if (m_minValue != null) {
-                    if (byteValue.byteValue() < m_minValue.byteValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.byteValue());
+                if (minValue != null) {
+                    if (byteValue.byteValue() < minValue.byteValue()) {
+                        return MessageUtils.get("configMinValue", minValue.byteValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (byteValue.byteValue() > m_maxValue.byteValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.byteValue());
+                if (maxValue != null) {
+                    if (byteValue.byteValue() > maxValue.byteValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.byteValue());
                     }
                 }
             }
@@ -1015,22 +1015,22 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class CharValidator implements Validator {
 
-        private Character m_minValue;
-        private Character m_maxValue;
+        private Character minValue;
+        private Character maxValue;
 
         public CharValidator(String minValue, String maxValue) {
-            m_minValue = null;
+            this.minValue = null;
             if (minValue != null) {
                 try {
-                    m_minValue = Character.valueOf(minValue.charAt(0));
+                    this.minValue = Character.valueOf(minValue.charAt(0));
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
-            m_maxValue = null;
+            this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    m_maxValue = Character.valueOf(maxValue.charAt(0));
+                    this.maxValue = Character.valueOf(maxValue.charAt(0));
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -1045,14 +1045,14 @@ public class DeviceConfigPanel extends LayoutContainer {
                 return nfe.getMessage();
             }
             if (charValue != null) {
-                if (m_minValue != null) {
-                    if (charValue.charValue() < m_minValue.charValue()) {
-                        return MessageUtils.get("configMinValue", m_minValue.charValue());
+                if (minValue != null) {
+                    if (charValue.charValue() < minValue.charValue()) {
+                        return MessageUtils.get("configMinValue", minValue.charValue());
                     }
                 }
-                if (m_maxValue != null) {
-                    if (charValue.charValue() > m_maxValue.charValue()) {
-                        return MessageUtils.get("configMaxValue", m_maxValue.charValue());
+                if (maxValue != null) {
+                    if (charValue.charValue() > maxValue.charValue()) {
+                        return MessageUtils.get("configMaxValue", maxValue.charValue());
                     }
                 }
             }
@@ -1062,20 +1062,20 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static class StringValidator implements Validator {
 
-        private int m_minValue;
-        private int m_maxValue = 255;
+        private int minValue;
+        private int maxValue = 255;
 
         public StringValidator(String minValue, String maxValue) {
             if (minValue != null) {
                 try {
-                    m_minValue = Integer.parseInt(minValue);
+                    this.minValue = Integer.parseInt(minValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
             if (maxValue != null) {
                 try {
-                    m_maxValue = Integer.parseInt(maxValue);
+                    this.maxValue = Integer.parseInt(maxValue);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -1083,11 +1083,11 @@ public class DeviceConfigPanel extends LayoutContainer {
         }
 
         public String validate(Field<?> field, String value) {
-            if (value.length() > m_maxValue) {
-                return MessageUtils.get("configMaxValue", (m_maxValue + 1));
+            if (value.length() > maxValue) {
+                return MessageUtils.get("configMaxValue", (maxValue + 1));
             }
-            if (value.length() < m_minValue) {
-                return MessageUtils.get("configMinValue", m_minValue);
+            if (value.length() < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
             return null;
         }

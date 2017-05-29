@@ -68,7 +68,7 @@ public class GwtAccountCreator extends GwtEntityCreator {
     // SSL Auth
     private boolean simpleConnection;
     private boolean sslConnection;
-    private boolean MutualSslConnection;
+    private boolean mutualSslConnection;
 
     public GwtAccountCreator() {
     }
@@ -354,11 +354,11 @@ public class GwtAccountCreator extends GwtEntityCreator {
     }
 
     public boolean isMutualSslConnection() {
-        return MutualSslConnection;
+        return mutualSslConnection;
     }
 
     public void setMutualSslConnection(boolean mutualSslConnection) {
-        MutualSslConnection = mutualSslConnection;
+        this.mutualSslConnection = mutualSslConnection;
     }
 
     public long getMqttThreshold() {

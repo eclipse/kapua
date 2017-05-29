@@ -100,9 +100,9 @@ public class AccountEditDialog extends AccountAddDialog {
                 new AsyncCallback<GwtAccount>() {
 
                     public void onFailure(Throwable caught) {
-                        FailureHandler.handleFormException(m_formPanel, caught);
-                        m_status.hide();
-                        m_formPanel.getButtonBar().enable();
+                        FailureHandler.handleFormException(formPanel, caught);
+                        status.hide();
+                        formPanel.getButtonBar().enable();
                     }
 
                     public void onSuccess(GwtAccount account) {

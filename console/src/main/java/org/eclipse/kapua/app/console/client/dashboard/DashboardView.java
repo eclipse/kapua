@@ -24,12 +24,9 @@ import com.google.gwt.user.client.Element;
 
 public class DashboardView extends LayoutContainer {
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
     private ContentPanel centerPanel;
 
     public DashboardView(GwtSession currentSession) {
-        m_currentSession = currentSession;
     }
 
     protected void onRender(final Element parent, int index) {
@@ -50,7 +47,6 @@ public class DashboardView extends LayoutContainer {
         centerPanel.setBorders(false);
         centerPanel.setLayout(new FitLayout());
         centerPanel.setHeaderVisible(false);
-
 
         LayoutContainer mainLayoutContainer = new LayoutContainer();
         mainLayoutContainer.setLayout(new BorderLayout());

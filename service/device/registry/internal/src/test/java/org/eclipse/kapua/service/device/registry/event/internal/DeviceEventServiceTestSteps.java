@@ -75,10 +75,10 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
 
-    public static String DEFAULT_PATH = "src/main/sql/H2";
-    public static String DEFAULT_COMMONS_PATH = "../../../commons";
-    public static String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
-    public static String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
+    public static final String DEFAULT_PATH = "src/main/sql/H2";
+    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    public static final String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
+    public static final String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
     KapuaId sysUserId = new KapuaEid(BigInteger.ONE);

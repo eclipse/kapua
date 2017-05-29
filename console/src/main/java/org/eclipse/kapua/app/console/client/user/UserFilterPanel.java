@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user;
 
-import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.client.ui.panel.EntityFilterPanel;
@@ -25,28 +24,26 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 
-
 public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
-    private static final ConsoleMessages     MSGS      = GWT.create(ConsoleMessages.class);
     private final static ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
-    private final int                        WIDTH = 200;
-    
+    private final static int WIDTH = 200;
+
     private final EntityGrid<GwtUser> entityGrid;
     private final GwtSession currentSession;
 
     private final TextField<String> nameField;
-    
+
     public UserFilterPanel(EntityView<GwtUser> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
-        
+
         entityGrid = entityView.getEntityGrid(entityView, currentSession);
         this.currentSession = currentSession;
-        
+
         setHeading(USER_MSGS.filterHeader());
-        
+
         VerticalPanel fieldsPanel = getFieldsPanel();
-        
+
         final Label clientIdLabel = new Label(USER_MSGS.filterFieldUsernameLabel());
         clientIdLabel.setWidth(WIDTH);
         clientIdLabel.setStyleAttribute("margin", "5px");
@@ -74,7 +71,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
     @Override
     public void doFilter() {
         GwtUserQuery query = new GwtUserQuery();
-        query.setName(nameField.getValue());            
+        query.setName(nameField.getValue());
         query.setScopeId(currentSession.getSelectedAccount().getId());
         entityGrid.refresh(query);
     }

@@ -275,9 +275,9 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     }
 
     @When("^I change the account \"(.*)\" name to \"(.*)\"$")
-    public void changeAccountName(String acc_name, String name)
+    public void changeAccountName(String accName, String name)
             throws KapuaException {
-        Account tmpAcc = accountService.findByName(acc_name);
+        Account tmpAcc = accountService.findByName(accName);
 
         tmpAcc.setName(name);
         try {

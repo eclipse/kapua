@@ -39,18 +39,15 @@ import com.google.gwt.user.client.Element;
 public class DeviceFilterPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private final int WIDTH = 200;
+    private static final int WIDTH = 200;
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
-    private DevicesTable m_deviceTable;
+    private DevicesTable devicesTable;
 
     public DeviceFilterPanel(GwtSession gwtSession) {
-        m_currentSession = gwtSession;
     }
 
     public void setDeviceTable(DevicesTable devicesTable) {
-        m_deviceTable = devicesTable;
+        this.devicesTable = devicesTable;
     }
 
     protected void onRender(final Element parent, int index) {
@@ -286,7 +283,7 @@ public class DeviceFilterPanel extends LayoutContainer {
                     predicates.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
                 }
 
-                m_deviceTable.refreshAll(predicates);
+                devicesTable.refreshAll(predicates);
             }
         });
 
@@ -306,7 +303,7 @@ public class DeviceFilterPanel extends LayoutContainer {
                 customAttribute1Field.setValue("");
                 customAttribute2Field.setValue("");
 
-                m_deviceTable.refreshAll(new GwtDeviceQueryPredicates());
+                devicesTable.refreshAll(new GwtDeviceQueryPredicates());
             }
         });
 

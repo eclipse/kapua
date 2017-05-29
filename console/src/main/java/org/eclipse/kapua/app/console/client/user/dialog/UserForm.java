@@ -63,18 +63,18 @@ public class UserForm extends Window {
     protected final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
     protected final GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
-    protected String m_accountId;
-    protected GwtSession m_currentSession;
-    protected GwtUser m_existingUser;
+    protected String accountId;
+    protected GwtSession currentSession;
+    protected GwtUser existingUser;
     protected FormData formData;
-    protected UserForm m_userForm;
-    protected FormPanel m_formPanel;
-    protected Status m_status;
+    protected UserForm userForm;
+    protected FormPanel formPanel;
+    protected Status status;
 
-    protected TabPanel m_tabsPanel;
+    protected TabPanel tabsPanel;
     protected int preselectedTabIndex;
-    private TabItem m_tabUserInfo;
-    protected TabItem m_tab2FA;
+    private TabItem tabUserInfo;
+    protected TabItem tab2FA;
 
     protected FieldSet statusFieldSet;
 
@@ -106,8 +106,8 @@ public class UserForm extends Window {
      * @param accountId
      */
     protected UserForm(String accountId) {
-        m_accountId = accountId;
-        m_userForm = this;
+        this.accountId = accountId;
+        userForm = this;
 
         setModal(true);
         setLayout(new FitLayout());
@@ -121,11 +121,11 @@ public class UserForm extends Window {
     public UserForm(String accountId, GwtUser existingUser, GwtSession session) {
         this(accountId);
 
-        m_existingUser = existingUser;
-        if (m_existingUser != null) {
-            setHeading(MSGS.userFormUpdate(m_existingUser.getUsername()));
+        this.existingUser = existingUser;
+        if (this.existingUser != null) {
+            setHeading(MSGS.userFormUpdate(this.existingUser.getUsername()));
         }
-        m_currentSession = session;
+        currentSession = session;
     }
 
     protected void onRender(Element parent, int index) {
@@ -134,19 +134,19 @@ public class UserForm extends Window {
         FormData formData = new FormData("0");
 
         // Create separate tabs
-        m_tabsPanel = new TabPanel();
-        m_tabsPanel.setPlain(true);
-        m_tabsPanel.setBorders(false);
-        m_tabsPanel.setBodyBorder(false);
+        tabsPanel = new TabPanel();
+        tabsPanel.setPlain(true);
+        tabsPanel.setBorders(false);
+        tabsPanel.setBodyBorder(false);
 
-        m_formPanel = new FormPanel();
-        m_formPanel.setFrame(false);
-        m_formPanel.setBorders(false);
-        m_formPanel.setBodyBorder(false);
-        m_formPanel.setHeaderVisible(false);
-        m_formPanel.setLayout(new FitLayout());
-        m_formPanel.setPadding(0);
-        m_formPanel.add(m_tabsPanel);
+        formPanel = new FormPanel();
+        formPanel.setFrame(false);
+        formPanel.setBorders(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setHeaderVisible(false);
+        formPanel.setLayout(new FitLayout());
+        formPanel.setPadding(0);
+        formPanel.add(tabsPanel);
 
         //
         // User info tab
@@ -236,32 +236,32 @@ public class UserForm extends Window {
         statusCombo.setSimpleValue(MessageUtils.get(GwtUserStatus.ENABLED.name()));
         statusFieldSet.add(statusCombo, formData);
 
-        m_tabUserInfo = new TabItem(MSGS.userFormInformation());
-        m_tabUserInfo.setBorders(false);
-        m_tabUserInfo.setStyleAttribute("background-color", "#E8E8E8");
-        m_tabUserInfo.setScrollMode(Scroll.AUTOY);
-        m_tabUserInfo.add(infoFieldSet);
-        m_tabUserInfo.add(statusFieldSet);
+        tabUserInfo = new TabItem(MSGS.userFormInformation());
+        tabUserInfo.setBorders(false);
+        tabUserInfo.setStyleAttribute("background-color", "#E8E8E8");
+        tabUserInfo.setScrollMode(Scroll.AUTOY);
+        tabUserInfo.add(infoFieldSet);
+        tabUserInfo.add(statusFieldSet);
 
-        m_tabsPanel.add(m_tabUserInfo);
+        tabsPanel.add(tabUserInfo);
 
         // button bar
-        m_status = new Status();
-        m_status.setBusy(MSGS.waitMsg());
-        m_status.hide();
-        m_status.setAutoWidth(true);
+        status = new Status();
+        status.setBusy(MSGS.waitMsg());
+        status.hide();
+        status.setAutoWidth(true);
 
         submitButton = new Button(MSGS.submitButton(), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (!m_formPanel.isValid()) {
+                if (!formPanel.isValid()) {
                     return;
                 }
 
                 // Hold the dialog until the action comes back
-                m_status.show();
-                m_formPanel.getButtonBar().disable();
+                status.show();
+                formPanel.getButtonBar().disable();
 
                 submitAccount();
             }
@@ -275,15 +275,15 @@ public class UserForm extends Window {
             }
         });
 
-        m_formPanel.getButtonBar().add(m_status);
-        m_formPanel.getButtonBar().add(new FillToolItem());
-        m_formPanel.setButtonAlign(HorizontalAlignment.CENTER);
-        m_formPanel.addButton(submitButton);
-        m_formPanel.addButton(cancelButton);
+        formPanel.getButtonBar().add(status);
+        formPanel.getButtonBar().add(new FillToolItem());
+        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel.addButton(submitButton);
+        formPanel.addButton(cancelButton);
 
         loadUser();
 
-        add(m_formPanel);
+        add(formPanel);
 
         setEditability();
     }
@@ -303,8 +303,8 @@ public class UserForm extends Window {
 
     protected void loadUser() {
         // populate if necessary
-        if (m_existingUser != null) {
-            gwtUserService.find(m_accountId, m_existingUser.getId(), new AsyncCallback<GwtUser>() {
+        if (existingUser != null) {
+            gwtUserService.find(accountId, existingUser.getId(), new AsyncCallback<GwtUser>() {
 
                 public void onFailure(Throwable caught) {
                     FailureHandler.handle(caught);
@@ -351,13 +351,13 @@ public class UserForm extends Window {
 
     protected void submitAccount() {
         // update
-        m_existingUser.setUsername(username.getValue());
-        m_existingUser.setDisplayName(displayName.getValue());
-        m_existingUser.setEmail(email.getValue());
-        m_existingUser.setPhoneNumber(phoneNumber.getValue());
-        m_existingUser.setStatus((GwtUserStatus.values()[statusCombo.getSelectedIndex()]).name());
+        existingUser.setUsername(username.getValue());
+        existingUser.setDisplayName(displayName.getValue());
+        existingUser.setEmail(email.getValue());
+        existingUser.setPhoneNumber(phoneNumber.getValue());
+        existingUser.setStatus((GwtUserStatus.values()[statusCombo.getSelectedIndex()]).name());
 
-        m_existingUser.setOptlock(optlock.getValue().intValue());
+        existingUser.setOptlock(optlock.getValue().intValue());
 
         gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -374,12 +374,12 @@ public class UserForm extends Window {
     }
 
     protected void updateCall(GwtXSRFToken token) {
-        gwtUserService.update(token, m_existingUser, new AsyncCallback<GwtUser>() {
+        gwtUserService.update(token, existingUser, new AsyncCallback<GwtUser>() {
 
             public void onFailure(Throwable caught) {
-                FailureHandler.handleFormException(m_formPanel, caught);
-                m_status.hide();
-                m_formPanel.getButtonBar().enable();
+                FailureHandler.handleFormException(formPanel, caught);
+                status.hide();
+                formPanel.getButtonBar().enable();
             }
 
             public void onSuccess(GwtUser user) {
@@ -390,7 +390,7 @@ public class UserForm extends Window {
     }
 
     private boolean hasSelfManage() {
-        return m_currentSession != null && m_currentSession.hasUserUpdatePermission();
+        return currentSession != null && currentSession.hasUserUpdatePermission();
     }
 
     public void show(int tabIndex) {

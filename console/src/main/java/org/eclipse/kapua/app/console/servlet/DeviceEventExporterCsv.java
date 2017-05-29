@@ -65,7 +65,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
         writer = new CSVWriter(osw);
 
         List<String> cols = new ArrayList<String>();
-        for (String property : s_deviceProperties) {
+        for (String property : DEVICE_PROPERTIES) {
             cols.add(property);
         }
         writer.writeNext(cols.toArray(new String[] {}));

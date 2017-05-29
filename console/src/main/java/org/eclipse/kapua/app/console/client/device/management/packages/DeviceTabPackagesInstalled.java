@@ -43,12 +43,12 @@ public class DeviceTabPackagesInstalled extends TabItem {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
 
-    private boolean m_initialized;
-    private boolean m_dirty = true;
+    private boolean initialized;
+    private boolean dirty = true;
 
-    private DeviceTabPackages m_rootTabPanel;
-    private TreeGrid<ModelData> m_treeGrid;
-    private TreeStore<ModelData> m_treeStore = new TreeStore<ModelData>();
+    private DeviceTabPackages rootTabPanel;
+    private TreeGrid<ModelData> treeGrid;
+    private TreeStore<ModelData> treeStore = new TreeStore<ModelData>();
 
     public DeviceTabPackagesInstalled(DeviceTabPackages rootTabPanel) {
         super(MSGS.deviceInstallTabInstalled(), null);
@@ -57,11 +57,11 @@ public class DeviceTabPackagesInstalled extends TabItem {
         icon.setColor(Color.GREEN);
         setIcon(icon);
 
-        m_rootTabPanel = rootTabPanel;
+        this.rootTabPanel = rootTabPanel;
     }
 
     public GwtDeploymentPackage getSelectedDeploymentPackage() {
-        ModelData selectedItem = m_treeGrid.getSelectionModel().getSelectedItem();
+        ModelData selectedItem = treeGrid.getSelectionModel().getSelectedItem();
 
         if (selectedItem instanceof GwtDeploymentPackage) {
             return (GwtDeploymentPackage) selectedItem;
@@ -70,11 +70,11 @@ public class DeviceTabPackagesInstalled extends TabItem {
     }
 
     private GwtDevice getSelectedDevice() {
-        return m_rootTabPanel.getSelectedDevice();
+        return rootTabPanel.getSelectedDevice();
     }
 
     public void setDirty(boolean isDirty) {
-        m_dirty = isDirty;
+        dirty = isDirty;
     }
 
     protected void onRender(Element parent, int index) {
@@ -88,16 +88,16 @@ public class DeviceTabPackagesInstalled extends TabItem {
 
         ColumnModel cm = new ColumnModel(Arrays.asList(name, version));
 
-        m_treeGrid = new TreeGrid<ModelData>(m_treeStore, cm);
-        m_treeGrid.setBorders(false);
-        m_treeGrid.setLoadMask(true);
-        m_treeGrid.setAutoExpandColumn("name");
-        m_treeGrid.setTrackMouseOver(false);
-        m_treeGrid.getAriaSupport().setLabelledBy(getHeader().getId() + "-label");
-        m_treeGrid.getView().setAutoFill(true);
-        m_treeGrid.getView().setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
+        treeGrid = new TreeGrid<ModelData>(treeStore, cm);
+        treeGrid.setBorders(false);
+        treeGrid.setLoadMask(true);
+        treeGrid.setAutoExpandColumn("name");
+        treeGrid.setTrackMouseOver(false);
+        treeGrid.getAriaSupport().setLabelledBy(getHeader().getId() + "-label");
+        treeGrid.getView().setAutoFill(true);
+        treeGrid.getView().setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
 
-        m_treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
+        treeGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<ModelData>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<ModelData> se) {
@@ -105,63 +105,63 @@ public class DeviceTabPackagesInstalled extends TabItem {
 
                 // Check if it's a package or a bundle
                 if (selectedItem instanceof GwtDeploymentPackage) {
-                    m_rootTabPanel.getUninstallButton().enable();
+                    rootTabPanel.getUninstallButton().enable();
                 } else {
-                    m_rootTabPanel.getUninstallButton().disable();
+                    rootTabPanel.getUninstallButton().disable();
                 }
             }
         });
 
-        add(m_treeGrid);
+        add(treeGrid);
 
-        m_initialized = true;
+        initialized = true;
     }
 
     public void refresh() {
 
-        if (m_dirty && m_initialized) {
+        if (dirty && initialized) {
 
             GwtDevice selectedDevice = getSelectedDevice();
             if (selectedDevice == null || !selectedDevice.isOnline()) {
-                m_treeStore.removeAll();
-                m_treeGrid.unmask();
-                m_treeGrid.getView().setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
+                treeStore.removeAll();
+                treeGrid.unmask();
+                treeGrid.getView().setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
             } else {
-                m_treeGrid.mask(MSGS.loading());
+                treeGrid.mask(MSGS.loading());
 
                 gwtDeviceManagementService.findDevicePackages(selectedDevice.getScopeId(), selectedDevice.getId(), new AsyncCallback<List<GwtDeploymentPackage>>() {
 
                     @Override
                     public void onSuccess(List<GwtDeploymentPackage> packages) {
-                        m_treeStore.removeAll();
+                        treeStore.removeAll();
                         if (packages != null && !packages.isEmpty()) {
                             for (GwtDeploymentPackage pkg : packages) {
-                                m_treeStore.add(pkg, false);
+                                treeStore.add(pkg, false);
 
                                 if (pkg.getBundleInfos() != null) {
                                     for (GwtBundleInfo bundle : pkg.getBundleInfos()) {
-                                        m_treeStore.add(pkg, bundle, false);
+                                        treeStore.add(pkg, bundle, false);
                                     }
                                 }
                             }
                         } else {
-                            m_rootTabPanel.getUninstallButton().disable();
-                            m_treeGrid.getView().setEmptyText(MSGS.deviceNoPackagesInstalled());
-                            m_treeGrid.getView().refresh(false);
+                            rootTabPanel.getUninstallButton().disable();
+                            treeGrid.getView().setEmptyText(MSGS.deviceNoPackagesInstalled());
+                            treeGrid.getView().refresh(false);
                         }
 
-                        m_treeGrid.unmask();
+                        treeGrid.unmask();
                     }
 
                     @Override
                     public void onFailure(Throwable caught) {
                         FailureHandler.handle(caught);
-                        m_treeGrid.unmask();
+                        treeGrid.unmask();
                     }
                 });
             }
 
-            m_dirty = false;
+            dirty = false;
         }
     }
 }

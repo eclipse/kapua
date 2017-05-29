@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class JmsProducerWrapper {
 
-    private static Logger s_logger = LoggerFactory.getLogger(JmsProducerWrapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsProducerWrapper.class);
 
     protected String destination;
     protected Connection connection;
@@ -69,7 +69,7 @@ public abstract class JmsProducerWrapper {
         try {
             connection.close();
         } catch (JMSException e) {
-            s_logger.error("Exception on connection close close {}", e.getMessage(), e);
+            logger.error("Exception on connection close close {}", e.getMessage(), e);
         }
     }
 
@@ -91,7 +91,7 @@ public abstract class JmsProducerWrapper {
      * @throws KapuaException
      */
     public void sendRawMessage(CamelKapuaMessage<?> message) throws JMSException, KapuaException {
-        s_logger.error("Feature not implemented yet!");
+        logger.error("Feature not implemented yet!");
         throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
     }
 

@@ -26,9 +26,9 @@ public abstract class AbstractCommonServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractCommonServiceTest.class);
 
-    public static String DEFAULT_TEST_PATH = "./src/test/sql/H2/";
-    public static String DEFAULT_COMMONS_PATH = "../commons";
-    public static String DROP_TEST_FILTER = "test_*_drop.sql";
+    public static final String DEFAULT_TEST_PATH = "./src/test/sql/H2/";
+    public static final String DEFAULT_COMMONS_PATH = "../commons";
+    public static final String DROP_TEST_FILTER = "test_*_drop.sql";
 
     public static void scriptSession(String path, String fileFilter) {
         EntityManager em = null;

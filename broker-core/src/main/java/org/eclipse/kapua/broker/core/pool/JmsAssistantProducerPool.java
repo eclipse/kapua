@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProducerWrapper> {
 
-    private static Logger s_logger = LoggerFactory.getLogger(JmsAssistantProducerPool.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmsAssistantProducerPool.class);
 
     public enum DESTINATIONS {
         /**
@@ -56,17 +56,17 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
 
     static {
         pools = new HashMap<JmsAssistantProducerPool.DESTINATIONS, JmsAssistantProducerPool>();
-        s_logger.info("Create pools for broker assistants (kapua server instance)");
-        s_logger.info("Create Service pool...");
+        logger.info("Create pools for broker assistants (kapua server instance)");
+        logger.info("Create Service pool...");
         // TODO parameter to be added to configuration
         // pools.put(DESTINATIONS.KAPUA_SERVICE,
         // new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(KapuaEnvironmentConfig.getInstance().getString(KapuaEnvironmentConfigKeys.SERVICE_QUEUE_NAME))));
         pools.put(DESTINATIONS.KAPUA_SERVICE,
                 new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory("KapuaService")));
-        s_logger.info("Create NoDestination pool...");
+        logger.info("Create NoDestination pool...");
         pools.put(DESTINATIONS.NO_DESTINATION,
                 new JmsAssistantProducerPool(new JmsAssistantProducerWrapperFactory(null)));
-        s_logger.info("Create pools... done.");
+        logger.info("Create pools... done.");
     }
 
     /**
@@ -88,11 +88,11 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
         jmsPoolConfig.setMaxTotal(totalMaxSize);
         jmsPoolConfig.setMaxIdle(maxSize);
         jmsPoolConfig.setMinIdle(minSize);
-        s_logger.info("Set test on return to true for JmsAssistantProducerPool");
+        logger.info("Set test on return to true for JmsAssistantProducerPool");
         jmsPoolConfig.setTestOnReturn(true);
-        s_logger.info("Set test on borrow to true for JmsAssistantProducerPool");
+        logger.info("Set test on borrow to true for JmsAssistantProducerPool");
         jmsPoolConfig.setTestOnBorrow(true);
-        s_logger.info("Set block when exausted to true for JmsAssistantProducerPool");
+        logger.info("Set block when exausted to true for JmsAssistantProducerPool");
         jmsPoolConfig.setBlockWhenExhausted(true);
 
         setConfig(jmsPoolConfig);
@@ -113,13 +113,13 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      */
     public static void closePools() {
         if (pools != null) {
-            s_logger.info("Close Service pool...");
+            logger.info("Close Service pool...");
             pools.get(DESTINATIONS.KAPUA_SERVICE).close();
-            s_logger.info("Close NoDestination pool...");
+            logger.info("Close NoDestination pool...");
             pools.get(DESTINATIONS.NO_DESTINATION).close();
-            s_logger.info("Close pools... done.");
+            logger.info("Close pools... done.");
         } else {
-            s_logger.warn("Cannot close producer pools... Pools not initialized!");
+            logger.warn("Cannot close producer pools... Pools not initialized!");
         }
     }
 

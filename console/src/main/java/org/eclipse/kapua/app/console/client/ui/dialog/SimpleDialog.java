@@ -16,7 +16,7 @@ import com.google.gwt.user.client.Element;
 
 public abstract class SimpleDialog extends ActionDialog {
 
-    protected ContentPanel m_bodyPanel;
+    protected ContentPanel bodyPanel;
 
     public SimpleDialog() {
         super();
@@ -28,22 +28,22 @@ public abstract class SimpleDialog extends ActionDialog {
 
         //
         // Body setup
-        m_bodyPanel = new ContentPanel();
-        m_bodyPanel.setBorders(false);
-        m_bodyPanel.setHeight(1000);
-        m_bodyPanel.setBodyBorder(false);
-        m_bodyPanel.setHeaderVisible(false);
-        m_bodyPanel.setStyleAttribute("background-color", "#F0F0F0");
-        m_bodyPanel.setBodyStyle("background-color:transparent");
+        bodyPanel = new ContentPanel();
+        bodyPanel.setBorders(false);
+        bodyPanel.setHeight(1000);
+        bodyPanel.setBodyBorder(false);
+        bodyPanel.setHeaderVisible(false);
+        bodyPanel.setStyleAttribute("background-color", "#F0F0F0");
+        bodyPanel.setBodyStyle("background-color:transparent");
 
         createBody();
 
-        m_formPanel.add(m_bodyPanel);
+        formPanel.add(bodyPanel);
     }
 
     @Override
     protected void preSubmit() {
-        if (m_formPanel.isValid()) {
+        if (formPanel.isValid()) {
             super.preSubmit();
         }
     }

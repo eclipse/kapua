@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractAuthorizationServiceTest extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuthorizationServiceTest.class);
-    private static String DEFAULT_PATH = "../../../dev-tools/src/main/database";
-    private static String DROP_ALL_TABLES = "all_drop.sql";
+    private static final String DEFAULT_PATH = "../../../dev-tools/src/main/database";
+    private static final String DROP_ALL_TABLES = "all_drop.sql";
 
     protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     protected static final KapuaId ROOT_SCOPE_ID = new KapuaEid(BigInteger.ONE);

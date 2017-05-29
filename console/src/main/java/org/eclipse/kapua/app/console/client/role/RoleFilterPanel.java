@@ -27,7 +27,7 @@ import com.google.gwt.core.client.GWT;
 public class RoleFilterPanel extends EntityFilterPanel<GwtRole> {
 
     private final static ConsoleRoleMessages ROLE_MSGS = GWT.create(ConsoleRoleMessages.class);
-    private final int WIDTH = 200;
+    private final static int WIDTH = 200;
 
     private final EntityGrid<GwtRole> entityGrid;
     private final GwtSession currentSession;

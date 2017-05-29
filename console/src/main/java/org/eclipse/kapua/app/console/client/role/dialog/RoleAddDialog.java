@@ -59,12 +59,12 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                FailureHandler.handleFormException(m_formPanel, cause);
-                m_status.hide();
-                m_formPanel.getButtonBar().enable();
+                FailureHandler.handleFormException(formPanel, cause);
+                status.hide();
+                formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
-                m_cancelButton.enable();
+                cancelButton.enable();
             }
         });
 
@@ -92,7 +92,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         roleFormPanel.add(roleNameField);
 
-        m_bodyPanel.add(roleFormPanel);
+        bodyPanel.add(roleFormPanel);
     }
 
     protected RolePermissionNewGridField getRolePermissionNewGridField(GwtSession currentSession) {

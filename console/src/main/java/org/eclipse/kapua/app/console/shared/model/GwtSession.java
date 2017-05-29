@@ -22,16 +22,16 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private static final long serialVersionUID = -4511854889803351914L;
 
     // Console info
-    private String m_version;
-    private String m_buildVersion;
-    private String m_buildNumber;
+    private String version;
+    private String buildVersion;
+    private String buildNumber;
 
     // User info
     private GwtUser user;
-    private GwtAccount m_gwtAccount;
-    private GwtAccount m_rootAccount;
-    private GwtAccount m_selectedAccount;
-    private Set<String> m_permissions;
+    private GwtAccount gwtAccount;
+    private GwtAccount rootAccount;
+    private GwtAccount selectedAccount;
+    private Set<String> permissions;
 
     // Static loaded permission
     private boolean hasAccountCreatePermission;
@@ -57,7 +57,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasRoleReadPermission;
     private boolean hasRoleUpdatePermission;
     private boolean hasRoleDeletePermission;
-    
+
     private boolean hasGroupCreatePermission;
     private boolean hasGroupReadPermission;
     private boolean hasGroupUpdatePermission;
@@ -67,7 +67,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean hasCredentialReadPermission;
     private boolean hasCredentialUpdatePermission;
     private boolean hasCredentialDeletePermission;
-    
+
     private boolean hasConnectionCreatePermission;
     private boolean hasConnectionReadPermission;
     private boolean hasConnectionUpdatePermission;
@@ -85,59 +85,59 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     }
 
     public GwtAccount getGwtAccount() {
-        return m_gwtAccount;
+        return gwtAccount;
     }
 
     public void setGwtAccount(GwtAccount gwtAccount) {
-        this.m_gwtAccount = gwtAccount;
+        this.gwtAccount = gwtAccount;
     }
 
     public void setRootAccount(GwtAccount rootAccount) {
-        this.m_rootAccount = rootAccount;
+        this.rootAccount = rootAccount;
     }
 
     public GwtAccount getRootAccount() {
-        return m_rootAccount;
+        return rootAccount;
     }
 
     public void setSelectedAccount(GwtAccount selectedAccount) {
-        this.m_selectedAccount = selectedAccount;
+        this.selectedAccount = selectedAccount;
     }
 
     public GwtAccount getSelectedAccount() {
-        return m_selectedAccount;
+        return selectedAccount;
     }
 
     public Set<String> getPermissions() {
-        return m_permissions;
+        return permissions;
     }
 
     public void setPermissions(Set<String> permissions) {
-        this.m_permissions = permissions;
+        this.permissions = permissions;
     }
 
     public String getVersion() {
-        return m_version;
+        return version;
     }
 
     public void setVersion(String version) {
-        m_version = version;
+        this.version = version;
     }
 
     public String getBuildVersion() {
-        return m_buildVersion;
+        return buildVersion;
     }
 
     public void setBuildVersion(String buildVersion) {
-        m_buildVersion = buildVersion;
+        this.buildVersion = buildVersion;
     }
 
     public String getBuildNumber() {
-        return m_buildNumber;
+        return buildNumber;
     }
 
     public void setBuildNumber(String buildNumber) {
-        m_buildNumber = buildNumber;
+        this.buildNumber = buildNumber;
     }
 
     public boolean hasAccountCreatePermission() {
@@ -219,7 +219,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setUserDeletePermission(boolean hasUserDeletePermission) {
         this.hasUserDeletePermission = hasUserDeletePermission;
     }
-    
+
     public boolean hasRoleReadPermission() {
         return hasRoleReadPermission;
     }
@@ -251,7 +251,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setRoleDeletePermission(boolean hasRoleDeletePermission) {
         this.hasRoleDeletePermission = hasRoleDeletePermission;
     }
-    
+
     public boolean hasGroupReadPermission() {
         return hasGroupReadPermission;
     }
@@ -355,7 +355,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setCredentialDeletePermission(boolean hasCredentialDeletePermission) {
         this.hasCredentialDeletePermission = hasCredentialDeletePermission;
     }
-    
+
     public boolean hasConnectionCreatePermission() {
         return hasConnectionCreatePermission;
     }

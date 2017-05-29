@@ -25,11 +25,11 @@ public class InfoDialog extends KapuaDialog {
         SUCCESS, INFO, ERROR;
     }
 
-    private String m_headerMessage;
-    private KapuaIcon m_infoIcon;
-    private String m_infoMessage;
+    private String headerMessage;
+    private KapuaIcon infoIcon;
+    private String infoMessage;
 
-    private Button m_submitButton;
+    private Button submitButton;
 
     public InfoDialog(InfoDialogType infoDialogType,
             String infoMessage) {
@@ -37,23 +37,23 @@ public class InfoDialog extends KapuaDialog {
 
         switch (infoDialogType) {
         case SUCCESS: {
-            m_headerMessage = MSGS.success();
-            m_infoIcon = new KapuaIcon(IconSet.CHECK_CIRCLE);
+            this.headerMessage = MSGS.success();
+            this.infoIcon = new KapuaIcon(IconSet.CHECK_CIRCLE);
         }
             break;
         case INFO: {
-            m_headerMessage = MSGS.information();
-            m_infoIcon = new KapuaIcon(IconSet.INFO_CIRCLE);
+            this.headerMessage = MSGS.information();
+            this.infoIcon = new KapuaIcon(IconSet.INFO_CIRCLE);
         }
             break;
         case ERROR: {
-            m_headerMessage = MSGS.error();
-            m_infoIcon = new KapuaIcon(IconSet.EXCLAMATION_CIRCLE);
+            this.headerMessage = MSGS.error();
+            this.infoIcon = new KapuaIcon(IconSet.EXCLAMATION_CIRCLE);
         }
             break;
         }
 
-        m_infoMessage = infoMessage;
+        this.infoMessage = infoMessage;
     }
 
     public InfoDialog(ImageResource headerIcon,
@@ -62,34 +62,34 @@ public class InfoDialog extends KapuaDialog {
             String infoMessage) {
         super();
 
-        m_headerMessage = headerMessage;
-        m_infoMessage = infoMessage;
+        this.headerMessage = headerMessage;
+        this.infoMessage = infoMessage;
 
         setWidth(450);
     }
 
     @Override
     public String getHeaderMessage() {
-        return m_headerMessage;
+        return headerMessage;
     }
 
     @Override
     public KapuaIcon getInfoIcon() {
-        return m_infoIcon;
+        return infoIcon;
     }
 
     @Override
     public String getInfoMessage() {
-        return m_infoMessage;
+        return infoMessage;
     }
 
     @Override
     public void createButtons() {
         super.createButtons();
 
-        m_submitButton = new Button(MSGS.ok());
-        m_submitButton.setSize(60, 25);
-        m_submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        submitButton = new Button(MSGS.ok());
+        submitButton.setSize(60, 25);
+        submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -97,6 +97,6 @@ public class InfoDialog extends KapuaDialog {
             }
         });
 
-        addButton(m_submitButton);
+        addButton(submitButton);
     }
 }

@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
 
-    public static String DEFAULT_TEST_FILTER = "test_*.sql";
+    public static final String DEFAULT_TEST_FILTER = "test_*.sql";
 
     @BeforeClass
     public static void tearUp()

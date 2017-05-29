@@ -32,9 +32,9 @@ public class KapuaConfigurableServiceSchemaUtils {
     private KapuaConfigurableServiceSchemaUtils() {
     }
 
-    public static String DEFAULT_PATH = "src/main/sql/H2";
-    public static String DEFAULT_FILTER = "sys_*.sql";
-    public static String DROP_FILTER = "sys_*_drop.sql";
+    public static final String DEFAULT_PATH = "src/main/sql/H2";
+    public static final String DEFAULT_FILTER = "sys_*.sql";
+    public static final String DROP_FILTER = "sys_*_drop.sql";
 
     /**
      * Executes the database scripts in the specified path matching the specified filter

@@ -89,29 +89,29 @@ public class AccountConfigComponents extends LayoutContainer {
     private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
-    private GwtSession m_currentSession;
+    private GwtSession currentSession;
 
-    private boolean m_dirty;
-    private boolean m_initialized;
-    private GwtAccount m_selectedAccount;
-    private AccountTabConfiguration m_tabConfig;
+    private boolean dirty;
+    private boolean initialized;
+    private GwtAccount selectedAccount;
+    private AccountTabConfiguration tabConfig;
 
-    private ToolBar m_toolBar;
+    private ToolBar toolBar;
 
-    private Button m_refreshButton;
+    private Button refreshButton;
     private boolean refreshProcess;
 
-    private Button m_apply;
-    private Button m_reset;
+    private Button apply;
+    private Button reset;
 
-    private ContentPanel m_configPanel;
-    private AccountConfigPanel m_devConfPanel;
-    private BorderLayoutData m_centerData;
+    private ContentPanel configPanel;
+    private AccountConfigPanel devConfPanel;
+    private BorderLayoutData centerData;
 
     @SuppressWarnings("rawtypes")
-    private BaseTreeLoader m_loader;
-    private TreeStore<ModelData> m_treeStore;
-    private TreePanel<ModelData> m_tree;
+    private BaseTreeLoader loader;
+    private TreeStore<ModelData> treeStore;
+    private TreePanel<ModelData> tree;
 
     private boolean resetProcess;
 
@@ -121,27 +121,27 @@ public class AccountConfigComponents extends LayoutContainer {
 
         public void onFailure(Throwable caught) {
             FailureHandler.handle(caught);
-            m_dirty = true;
+            dirty = true;
             refresh();
         }
 
         public void onSuccess(Void arg0) {
-            m_dirty = true;
+            dirty = true;
             refresh();
         }
     };
 
     AccountConfigComponents(GwtSession currentSession,
             AccountTabConfiguration tabConfig) {
-        m_currentSession = currentSession;
-        m_tabConfig = tabConfig;
-        m_dirty = false;
-        m_initialized = false;
+        this.currentSession = currentSession;
+        this.tabConfig = tabConfig;
+        dirty = false;
+        initialized = false;
     }
 
     public void setAccount(GwtAccount selectedAccount) {
-        m_dirty = true;
-        m_selectedAccount = selectedAccount;
+        dirty = true;
+        this.selectedAccount = selectedAccount;
     }
 
     protected void onRender(Element parent, int index) {
@@ -159,95 +159,95 @@ public class AccountConfigComponents extends LayoutContainer {
         accountConfigurationPanel.setHeaderVisible(false);
         accountConfigurationPanel.setLayout(new FitLayout());
         accountConfigurationPanel.setScrollMode(Scroll.AUTO);
-        accountConfigurationPanel.setTopComponent(m_toolBar);
-        accountConfigurationPanel.add(m_configPanel);
+        accountConfigurationPanel.setTopComponent(toolBar);
+        accountConfigurationPanel.add(configPanel);
 
         add(accountConfigurationPanel);
-        m_initialized = true;
+        initialized = true;
     }
 
     private void initToolBar() {
-        m_toolBar = new ToolBar();
-        m_toolBar.setBorders(false);
+        toolBar = new ToolBar();
+        toolBar.setBorders(false);
 
         //
         // Refresh Button
-        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
                     refreshProcess = true;
-                    m_refreshButton.setEnabled(false);
+                    refreshButton.setEnabled(false);
 
-                    m_dirty = true;
+                    dirty = true;
                     refresh();
 
-                    m_refreshButton.setEnabled(true);
+                    refreshButton.setEnabled(true);
                     refreshProcess = false;
                 }
             }
         });
 
-        m_refreshButton.setEnabled(true);
-        m_toolBar.add(m_refreshButton);
-        m_toolBar.add(new SeparatorToolItem());
+        refreshButton.setEnabled(true);
+        toolBar.add(refreshButton);
+        toolBar.add(new SeparatorToolItem());
 
-        m_apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
+        apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!applyProcess) {
                     applyProcess = true;
-                    m_apply.setEnabled(false);
+                    apply.setEnabled(false);
 
                     apply();
 
-                    m_apply.setEnabled(true);
+                    apply.setEnabled(true);
                     applyProcess = false;
                 }
             }
         });
 
-        m_reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
+        reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!resetProcess) {
                     resetProcess = true;
-                    m_reset.setEnabled(false);
+                    reset.setEnabled(false);
 
                     reset();
 
-                    m_reset.setEnabled(true);
+                    reset.setEnabled(true);
                     resetProcess = false;
                 }
             }
         });
 
-        m_apply.setEnabled(false);
-        m_reset.setEnabled(false);
+        apply.setEnabled(false);
+        reset.setEnabled(false);
 
-        m_toolBar.add(m_apply);
-        m_toolBar.add(new SeparatorToolItem());
-        m_toolBar.add(m_reset);
+        toolBar.add(apply);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(reset);
     }
 
     @SuppressWarnings("unchecked")
     private void initConfigPanel() {
-        m_configPanel = new ContentPanel();
-        m_configPanel.setBorders(false);
-        m_configPanel.setBodyBorder(false);
-        m_configPanel.setHeaderVisible(false);
-        m_configPanel.setStyleAttribute("background-color", "white");
-        m_configPanel.setScrollMode(Scroll.AUTO);
+        configPanel = new ContentPanel();
+        configPanel.setBorders(false);
+        configPanel.setBodyBorder(false);
+        configPanel.setHeaderVisible(false);
+        configPanel.setStyleAttribute("background-color", "white");
+        configPanel.setScrollMode(Scroll.AUTO);
 
         BorderLayout borderLayout = new BorderLayout();
-        m_configPanel.setLayout(borderLayout);
+        configPanel.setLayout(borderLayout);
 
         // center
-        m_centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        m_centerData.setMargins(new Margins(0));
+        centerData = new BorderLayoutData(LayoutRegion.CENTER);
+        centerData.setMargins(new Margins(0));
 
         // west
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 200);
@@ -260,33 +260,33 @@ public class AccountConfigComponents extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
-                if (m_selectedAccount != null) {
-                    m_tree.mask(MSGS.loading());
-                    GWT_ACCOUNT_SERVICE.findServiceConfigurations(m_selectedAccount.getId(), callback);
-                    m_dirty = false;
+                if (selectedAccount != null) {
+                    tree.mask(MSGS.loading());
+                    GWT_ACCOUNT_SERVICE.findServiceConfigurations(selectedAccount.getId(), callback);
+                    dirty = false;
                 }
             }
         };
 
-        m_loader = new BaseTreeLoader<GwtConfigComponent>(proxy);
-        m_loader.addLoadListener(new DataLoadListener());
+        loader = new BaseTreeLoader<GwtConfigComponent>(proxy);
+        loader.addLoadListener(new DataLoadListener());
 
-        m_treeStore = new TreeStore<ModelData>(m_loader);
+        treeStore = new TreeStore<ModelData>(loader);
 
-        m_tree = new TreePanel<ModelData>(m_treeStore);
-        m_tree.setWidth(200);
-        m_tree.setDisplayProperty("componentName");
-        m_tree.setBorders(true);
-        m_tree.setLabelProvider(modelStringProvider);
-        m_tree.setAutoSelect(true);
-        m_tree.setStyleAttribute("background-color", "white");
+        tree = new TreePanel<ModelData>(treeStore);
+        tree.setWidth(200);
+        tree.setDisplayProperty("componentName");
+        tree.setBorders(true);
+        tree.setLabelProvider(modelStringProvider);
+        tree.setAutoSelect(true);
+        tree.setStyleAttribute("background-color", "white");
 
-        m_configPanel.add(m_tree, westData);
+        configPanel.add(tree, westData);
 
         //
         // Selection Listener for the component
         // make sure the form is not dirty before switching.
-        m_tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
+        tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
 
             @SuppressWarnings("rawtypes")
             @Override
@@ -295,7 +295,7 @@ public class AccountConfigComponents extends LayoutContainer {
                 SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
-                if (m_devConfPanel != null && m_devConfPanel.isDirty()) {
+                if (devConfPanel != null && devConfPanel.isDirty()) {
 
                     // cancel the event first
                     be.setCancelled(true);
@@ -303,9 +303,9 @@ public class AccountConfigComponents extends LayoutContainer {
                     // need to reselect the current entry
                     // as the BeforeSelect event cleared it
                     // we need to do this without raising events
-                    TreePanelSelectionModel selectionModel = m_tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
-                    selectionModel.select(false, m_devConfPanel.getConfiguration());
+                    selectionModel.select(false, devConfPanel.getConfiguration());
                     selectionModel.setFiresEvents(true);
 
                     // ask for confirmation before switching
@@ -317,9 +317,9 @@ public class AccountConfigComponents extends LayoutContainer {
                                     // if confirmed, delete
                                     Dialog dialog = ce.getDialog();
                                     if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
-                                        m_devConfPanel.removeFromParent();
-                                        m_devConfPanel = null;
-                                        m_tree.getSelectionModel().select(false, componentToSwitchTo);
+                                        devConfPanel.removeFromParent();
+                                        devConfPanel = null;
+                                        tree.getSelectionModel().select(false, componentToSwitchTo);
                                     }
                                 }
                             });
@@ -329,7 +329,7 @@ public class AccountConfigComponents extends LayoutContainer {
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
                     // to avoid an infinite loop as BeforeSelect would be invoked again.
-                    TreePanelSelectionModel selectionModel = m_tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, componentToSwitchTo);
 
@@ -341,52 +341,52 @@ public class AccountConfigComponents extends LayoutContainer {
     }
 
     public void refresh() {
-        if (m_dirty && m_initialized) {
+        if (dirty && initialized) {
 
             // clear the tree and disable the toolbar
-            m_apply.setEnabled(false);
-            m_reset.setEnabled(false);
-            m_refreshButton.setEnabled(false);
+            apply.setEnabled(false);
+            reset.setEnabled(false);
+            refreshButton.setEnabled(false);
 
-            m_treeStore.removeAll();
+            treeStore.removeAll();
 
             // clear the panel
-            if (m_devConfPanel != null) {
-                m_devConfPanel.removeAll();
-                m_devConfPanel.removeFromParent();
-                m_devConfPanel = null;
-                m_configPanel.layout();
+            if (devConfPanel != null) {
+                devConfPanel.removeAll();
+                devConfPanel.removeFromParent();
+                devConfPanel = null;
+                configPanel.layout();
             }
 
-            m_loader.load();
+            loader.load();
         }
     }
 
     private void refreshConfigPanel(GwtConfigComponent configComponent) {
-        m_apply.setEnabled(false);
-        m_reset.setEnabled(false);
+        apply.setEnabled(false);
+        reset.setEnabled(false);
 
-        if (m_devConfPanel != null) {
-            m_devConfPanel.removeFromParent();
+        if (devConfPanel != null) {
+            devConfPanel.removeFromParent();
         }
         if (configComponent != null) {
 
-            m_devConfPanel = new AccountConfigPanel(configComponent, m_currentSession, m_tabConfig.getSelectedEntity());
-            m_devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
+            devConfPanel = new AccountConfigPanel(configComponent, currentSession, tabConfig.getSelectedEntity());
+            devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
                 public void handleEvent(BaseEvent be) {
-                    m_apply.setEnabled(true);
-                    m_reset.setEnabled(true);
+                    apply.setEnabled(true);
+                    reset.setEnabled(true);
                 }
             });
-            m_configPanel.add(m_devConfPanel, m_centerData);
-            m_configPanel.layout();
+            configPanel.add(devConfPanel, centerData);
+            configPanel.layout();
         }
     }
 
     private void apply() {
-        if (!m_devConfPanel.isValid()) {
+        if (!devConfPanel.isValid()) {
             MessageBox mb = new MessageBox();
             mb.setIcon(MessageBox.ERROR);
             mb.setMessage(MSGS.deviceConfigError());
@@ -395,7 +395,7 @@ public class AccountConfigComponents extends LayoutContainer {
         }
 
         // ask for confirmation
-        String componentName = m_devConfPanel.getConfiguration().getComponentName();
+        String componentName = devConfPanel.getConfiguration().getComponentName();
         String message = MSGS.deviceConfigConfirmation(componentName);
 
         MessageBox.confirm(MSGS.confirm(),
@@ -410,13 +410,13 @@ public class AccountConfigComponents extends LayoutContainer {
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
                             // mark the whole config panel dirty and for reload
-                            m_tabConfig.setEntity(m_selectedAccount);
+                            tabConfig.setEntity(selectedAccount);
 
-                            m_devConfPanel.mask(MSGS.applying());
-                            m_tree.mask();
-                            m_apply.setEnabled(false);
-                            m_reset.setEnabled(false);
-                            m_refreshButton.setEnabled(false);
+                            devConfPanel.mask(MSGS.applying());
+                            tree.mask();
+                            apply.setEnabled(false);
+                            reset.setEnabled(false);
+                            refreshButton.setEnabled(false);
 
                             //
                             // Getting XSRF token
@@ -429,23 +429,23 @@ public class AccountConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
+                                    final GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
 
                                     if ("AccountService".equals(configComponent.getComponentName())) {
-                                        GWT_ACCOUNT_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_ACCOUNT_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("CredentialService".equals(configComponent.getComponentName())) {
-                                        GWT_CREDENTIAL_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent,
+                                        GWT_CREDENTIAL_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent,
                                                 applyConfigCallback);
                                     } else if ("DeviceRegistryService".equals(configComponent.getComponentName())) {
-                                        GWT_DEVICE_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_DEVICE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("GroupService".equals(configComponent.getComponentName())) {
-                                        GWT_GROUP_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_GROUP_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("RoleService".equals(configComponent.getComponentName())) {
-                                        GWT_ROLE_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_ROLE_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("MessageStoreService".equals(configComponent.getComponentName())) {
-                                        GWT_DATA_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_DATA_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     } else if ("UserService".equals(configComponent.getComponentName())) {
-                                        GWT_USER_SERVICE.updateComponentConfiguration(token, m_selectedAccount.getId(), m_selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
+                                        GWT_USER_SERVICE.updateComponentConfiguration(token, selectedAccount.getId(), selectedAccount.getParentAccountId(), configComponent, applyConfigCallback);
                                     }
                                 }
                             });
@@ -457,8 +457,8 @@ public class AccountConfigComponents extends LayoutContainer {
     }
 
     public void reset() {
-        final GwtConfigComponent comp = (GwtConfigComponent) m_tree.getSelectionModel().getSelectedItem();
-        if (m_devConfPanel != null && comp != null && m_devConfPanel.isDirty()) {
+        final GwtConfigComponent comp = (GwtConfigComponent) tree.getSelectionModel().getSelectedItem();
+        if (devConfPanel != null && comp != null && devConfPanel.isDirty()) {
             MessageBox.confirm(MSGS.confirm(),
                     MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
@@ -541,8 +541,8 @@ public class AccountConfigComponents extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
-            m_tree.unmask();
-            m_refreshButton.setEnabled(true);
+            tree.unmask();
+            refreshButton.setEnabled(true);
         }
 
         public void loaderLoadException(LoadEvent le) {
@@ -557,10 +557,10 @@ public class AccountConfigComponents extends LayoutContainer {
             comp.setName(MSGS.deviceNoComponents());
             comp.setDescription(MSGS.deviceNoConfigSupported());
             comps.add(comp);
-            m_treeStore.removeAll();
-            m_treeStore.add(comps, false);
+            treeStore.removeAll();
+            treeStore.add(comps, false);
 
-            m_tree.unmask();
+            tree.unmask();
         }
     }
 }

@@ -31,14 +31,14 @@ public class SimpleSqlScriptExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleSqlScriptExecutor.class);
 
-    private static String WILDCAR_ANY = "*";
+    private static final String WILDCAR_ANY = "*";
 
-    private static String RUN_SCRIPT_CMD = "RUNSCRIPT FROM '%s'";
+    private static final String RUN_SCRIPT_CMD = "RUNSCRIPT FROM '%s'";
 
     /**
      * Default sql scripts path
      */
-    private static String DEFAULT_SCRIPTS_PATH = "src/main/sql/H2";
+    private static final String DEFAULT_SCRIPTS_PATH = "src/main/sql/H2";
 
     // Members
 

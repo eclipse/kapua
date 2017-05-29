@@ -21,19 +21,19 @@ public class ConfirmPasswordFieldValidator extends PasswordFieldValidator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    private TextField<String> m_passwordField;
+    private TextField<String> passwordField;
 
     public ConfirmPasswordFieldValidator(TextField<String> confirmPasswordField, TextField<String> passwordField) {
         super(confirmPasswordField);
 
-        m_passwordField = passwordField;
+        this.passwordField = passwordField;
     }
 
     public String validate(Field<?> field, String value) {
 
         String result = super.validate(field, value);
         if (result == null) {
-            if (!value.equals(m_passwordField.getValue())) {
+            if (!value.equals(passwordField.getValue())) {
                 result = MSGS.passwordDoesNotMatch();
             }
         }

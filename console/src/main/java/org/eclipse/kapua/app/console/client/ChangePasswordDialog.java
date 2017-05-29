@@ -68,7 +68,7 @@ public class ChangePasswordDialog extends SimpleDialog {
         confirmPassword.setPassword(true);
         credentialFormPanel.add(confirmPassword);
         
-        m_bodyPanel.add(credentialFormPanel);
+        bodyPanel.add(credentialFormPanel);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class ChangePasswordDialog extends SimpleDialog {
                 unmask();
 
                 submitButton.enable();
-                m_cancelButton.enable();
-                m_status.hide();
+                cancelButton.enable();
+                status.hide();
                 
                 ConsoleInfo.display("Error", MSGS.changePasswordError(caught.getLocalizedMessage()));
             }

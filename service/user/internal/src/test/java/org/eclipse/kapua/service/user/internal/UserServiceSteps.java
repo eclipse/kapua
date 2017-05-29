@@ -75,10 +75,10 @@ public class UserServiceSteps extends AbstractKapuaSteps {
      */
     private UserFactory userFactory;
 
-    public static String DEFAULT_COMMONS_PATH = "../../../commons/";
-    public static String DROP_FILTER = "usr_*_drop.sql";
+    public static final String DEFAULT_COMMONS_PATH = "../../../commons/";
+    public static final String DROP_FILTER = "usr_*_drop.sql";
 
-    private static int DEFAULT_SCOPE_ID = 42;
+    private static final int DEFAULT_SCOPE_ID = 42;
 
     /**
      * User creator object used for creating new users.

@@ -23,7 +23,7 @@ public abstract class DeviceExporter {
 
     protected static final String BLANK = "";
 
-    protected static String[] s_deviceProperties = {
+    protected static final String[] DEVICE_PROPERTIES = {
             "Id",
             "Account",
             "Client ID",
@@ -60,10 +60,10 @@ public abstract class DeviceExporter {
             // "Optlock"
     };
 
-    protected HttpServletResponse m_response;
+    protected HttpServletResponse response;
 
     protected DeviceExporter(HttpServletResponse response) {
-        m_response = response;
+        this.response = response;
     }
 
     public abstract void init(String account)

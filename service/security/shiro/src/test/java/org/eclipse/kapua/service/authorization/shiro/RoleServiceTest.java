@@ -46,7 +46,7 @@ import org.junit.Test;
 
 public class RoleServiceTest extends KapuaTest {
 
-    public static String DROP_FILTER = "athz_*_drop.sql";
+    public static final String DROP_FILTER = "athz_*_drop.sql";
 
     private static final Domain TEST_DOMAIN = new TestDomain();
 

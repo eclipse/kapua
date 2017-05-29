@@ -63,40 +63,37 @@ public class DeviceTabCommand extends LayoutContainer {
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
     private HiddenField<String> xsrfTokenField;
 
-    /**
-     * 
-     */
-    private boolean m_dirty;
-    private boolean m_initialized;
-    private GwtDevice m_selectedDevice;
+    private boolean dirty;
+    private boolean initialized;
+    private GwtDevice selectedDevice;
 
-    private LayoutContainer m_commandInput;
-    private FormPanel m_formPanel;
-    private HiddenField<String> m_accountField;
-    private HiddenField<String> m_deviceIdField;
-    private HiddenField<Integer> m_timeoutField;
+    private LayoutContainer commandInput;
+    private FormPanel formPanel;
+    private HiddenField<String> accountField;
+    private HiddenField<String> deviceIdField;
+    private HiddenField<Integer> timeoutField;
 
-    private FileUploadField m_fileUploadField;
-    private TextField<String> m_commandField;
-    private TextField<String> m_passwordField;
+    private FileUploadField fileUploadField;
+    private TextField<String> commandField;
+    private TextField<String> passwordField;
 
-    private ButtonBar m_buttonBar;
-    private Button m_executeButton;
-    private Button m_resetButton;
+    private ButtonBar buttonBar;
+    private Button executeButton;
+    private Button resetButton;
 
-    private LayoutContainer m_commandOutput;
-    private TextArea m_result;
+    private LayoutContainer commandOutput;
+    private TextArea result;
 
     protected boolean resetProcess;
 
     public DeviceTabCommand(GwtSession currentSession) {
-        m_dirty = false;
-        m_initialized = false;
+        dirty = false;
+        initialized = false;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        m_dirty = true;
-        m_selectedDevice = selectedDevice;
+        dirty = true;
+        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -116,11 +113,11 @@ public class DeviceTabCommand extends LayoutContainer {
         devicesCommandPanel.setScrollMode(Scroll.AUTO);
         devicesCommandPanel.setLayout(new FitLayout());
 
-        devicesCommandPanel.setTopComponent(m_commandInput);
-        devicesCommandPanel.add(m_commandOutput);
+        devicesCommandPanel.setTopComponent(commandInput);
+        devicesCommandPanel.add(commandOutput);
 
         add(devicesCommandPanel);
-        m_initialized = true;
+        initialized = true;
     }
 
     private void initCommandInput() {
@@ -135,19 +132,19 @@ public class DeviceTabCommand extends LayoutContainer {
         fieldSet.setStyleAttribute("margin", "0px");
         fieldSet.setStyleAttribute("padding", "0px");
 
-        m_formPanel = new FormPanel();
-        m_formPanel.setFrame(true);
-        m_formPanel.setHeaderVisible(false);
-        m_formPanel.setBorders(false);
-        m_formPanel.setBodyBorder(false);
-        m_formPanel.setAction(SERVLET_URL);
-        m_formPanel.setEncoding(Encoding.MULTIPART);
-        m_formPanel.setMethod(Method.POST);
-        m_formPanel.add(fieldSet);
-        m_formPanel.addListener(Events.Render, new Listener<BaseEvent>() {
+        formPanel = new FormPanel();
+        formPanel.setFrame(true);
+        formPanel.setHeaderVisible(false);
+        formPanel.setBorders(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setAction(SERVLET_URL);
+        formPanel.setEncoding(Encoding.MULTIPART);
+        formPanel.setMethod(Method.POST);
+        formPanel.add(fieldSet);
+        formPanel.addListener(Events.Render, new Listener<BaseEvent>() {
 
             public void handleEvent(BaseEvent be) {
-                NodeList<com.google.gwt.dom.client.Element> nl = m_formPanel.getElement().getElementsByTagName("form");
+                NodeList<com.google.gwt.dom.client.Element> nl = formPanel.getElement().getElementsByTagName("form");
                 if (nl.getLength() > 0) {
                     com.google.gwt.dom.client.Element elemForm = nl.getItem(0);
                     elemForm.setAttribute("autocomplete", "off");
@@ -155,20 +152,20 @@ public class DeviceTabCommand extends LayoutContainer {
             }
         });
 
-        m_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
-        m_buttonBar = m_formPanel.getButtonBar();
+        formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
+        buttonBar = formPanel.getButtonBar();
         initButtonBar();
 
-        m_formPanel.addListener(Events.BeforeSubmit, new Listener<BaseEvent>() {
+        formPanel.addListener(Events.BeforeSubmit, new Listener<BaseEvent>() {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                if (!m_selectedDevice.isOnline()) {
+                if (!selectedDevice.isOnline()) {
                     MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
 
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
-                            m_commandInput.unmask();
+                            commandInput.unmask();
                         }
                     });
                     be.setCancelled(true);
@@ -176,7 +173,7 @@ public class DeviceTabCommand extends LayoutContainer {
             }
         });
 
-        m_formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+        formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
 
             @Override
             public void handleEvent(FormEvent be) {
@@ -194,7 +191,7 @@ public class DeviceTabCommand extends LayoutContainer {
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
                     MessageBox.alert(MSGS.error(), MSGS.fileUploadFailure() + ":<br/>" + errorMessage, null);
-                    m_commandInput.unmask();
+                    commandInput.unmask();
                 } else {
                     int outputMessageStartIndex = htmlResult.indexOf("<pre");
                     outputMessageStartIndex = htmlResult.indexOf(">", outputMessageStartIndex) + 1;
@@ -202,23 +199,23 @@ public class DeviceTabCommand extends LayoutContainer {
 
                     String output = htmlResult.substring(outputMessageStartIndex, outputMessageEndIndex);
 
-                    m_result.setValue(KapuaSafeHtmlUtils.htmlUnescape(output));
-                    m_commandInput.unmask();
+                    result.setValue(KapuaSafeHtmlUtils.htmlUnescape(output));
+                    commandInput.unmask();
                 }
             }
         });
 
-        m_accountField = new HiddenField<String>();
-        m_accountField.setName("scopeIdString");
-        fieldSet.add(m_accountField);
+        accountField = new HiddenField<String>();
+        accountField.setName("scopeIdString");
+        fieldSet.add(accountField);
 
-        m_deviceIdField = new HiddenField<String>();
-        m_deviceIdField.setName("deviceIdString");
-        fieldSet.add(m_deviceIdField);
+        deviceIdField = new HiddenField<String>();
+        deviceIdField.setName("deviceIdString");
+        fieldSet.add(deviceIdField);
 
-        m_timeoutField = new HiddenField<Integer>();
-        m_timeoutField.setName("timeout");
-        fieldSet.add(m_timeoutField);
+        timeoutField = new HiddenField<Integer>();
+        timeoutField.setName("timeout");
+        fieldSet.add(timeoutField);
 
         //
         // xsrfToken Hidden field
@@ -229,45 +226,45 @@ public class DeviceTabCommand extends LayoutContainer {
         xsrfTokenField.setValue("");
         fieldSet.add(xsrfTokenField);
 
-        m_commandField = new TextField<String>();
-        m_commandField.setName("command");
-        m_commandField.setAllowBlank(false);
-        m_commandField.setFieldLabel("* " + MSGS.deviceCommandExecute());
-        m_commandField.setLayoutData(layout);
-        fieldSet.add(m_commandField, formData);
+        commandField = new TextField<String>();
+        commandField.setName("command");
+        commandField.setAllowBlank(false);
+        commandField.setFieldLabel("* " + MSGS.deviceCommandExecute());
+        commandField.setLayoutData(layout);
+        fieldSet.add(commandField, formData);
 
-        m_fileUploadField = new FileUploadField();
-        m_fileUploadField.setAllowBlank(true);
-        m_fileUploadField.setName("file");
-        m_fileUploadField.setLayoutData(layout);
-        m_fileUploadField.setFieldLabel(MSGS.deviceCommandFile());
-        fieldSet.add(m_fileUploadField, formData);
+        fileUploadField = new FileUploadField();
+        fileUploadField.setAllowBlank(true);
+        fileUploadField.setName("file");
+        fileUploadField.setLayoutData(layout);
+        fileUploadField.setFieldLabel(MSGS.deviceCommandFile());
+        fieldSet.add(fileUploadField, formData);
 
-        m_passwordField = new TextField<String>();
-        m_passwordField.setName("password");
-        m_passwordField.setFieldLabel(MSGS.deviceCommandPassword());
-        m_passwordField.setToolTip(MSGS.deviceCommandPasswordTooltip());
-        m_passwordField.setPassword(true);
-        m_passwordField.setLayoutData(layout);
-        fieldSet.add(m_passwordField, formData);
+        passwordField = new TextField<String>();
+        passwordField.setName("password");
+        passwordField.setFieldLabel(MSGS.deviceCommandPassword());
+        passwordField.setToolTip(MSGS.deviceCommandPasswordTooltip());
+        passwordField.setPassword(true);
+        passwordField.setLayoutData(layout);
+        fieldSet.add(passwordField, formData);
 
-        m_commandInput = m_formPanel;
+        commandInput = formPanel;
 
-        m_commandInput.mask(MSGS.deviceNoDeviceSelected());
+        commandInput.mask(MSGS.deviceNoDeviceSelected());
     }
 
     private void initButtonBar() {
-        m_executeButton = new Button(MSGS.deviceCommandExecute());
-        m_executeButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        executeButton = new Button(MSGS.deviceCommandExecute());
+        executeButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (m_formPanel.isValid()) {
-                    m_result.clear();
-                    m_commandInput.mask(MSGS.deviceCommandExecuting());
-                    m_accountField.setValue(m_selectedDevice.getScopeId());
-                    m_deviceIdField.setValue(m_selectedDevice.getId());
-                    m_timeoutField.setValue(COMMAND_TIMEOUT_SECS);
+                if (formPanel.isValid()) {
+                    result.clear();
+                    commandInput.mask(MSGS.deviceCommandExecuting());
+                    accountField.setValue(selectedDevice.getScopeId());
+                    deviceIdField.setValue(selectedDevice.getId());
+                    timeoutField.setValue(COMMAND_TIMEOUT_SECS);
 
                     gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
 
@@ -279,46 +276,46 @@ public class DeviceTabCommand extends LayoutContainer {
                         @Override
                         public void onSuccess(GwtXSRFToken token) {
                             xsrfTokenField.setValue(token.getToken());
-                            m_formPanel.submit();
+                            formPanel.submit();
                         }
                     });
                 }
             }
         });
 
-        m_resetButton = new Button(MSGS.reset());
-        m_resetButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        resetButton = new Button(MSGS.reset());
+        resetButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!resetProcess) {
                     resetProcess = true;
-                    m_resetButton.setEnabled(false);
+                    resetButton.setEnabled(false);
 
-                    m_formPanel.reset();
+                    formPanel.reset();
 
-                    m_resetButton.setEnabled(true);
+                    resetButton.setEnabled(true);
                     resetProcess = false;
                 }
             }
         });
 
-        m_buttonBar.add(m_resetButton);
-        m_buttonBar.add(m_executeButton);
+        buttonBar.add(resetButton);
+        buttonBar.add(executeButton);
     }
 
     private void initCommandOutput() {
-        m_commandOutput = new LayoutContainer();
-        m_commandOutput.setBorders(false);
-        m_commandOutput.setWidth("99.5%");
-        m_commandOutput.setLayout(new FitLayout());
+        commandOutput = new LayoutContainer();
+        commandOutput.setBorders(false);
+        commandOutput.setWidth("99.5%");
+        commandOutput.setLayout(new FitLayout());
 
-        m_result = new TextArea();
-        m_result.setBorders(false);
-        m_result.setReadOnly(true);
-        m_result.setEmptyText(MSGS.deviceCommandNoOutput());
-        m_result.setBorders(false);
-        m_commandOutput.add(m_result);
+        result = new TextArea();
+        result.setBorders(false);
+        result.setReadOnly(true);
+        result.setEmptyText(MSGS.deviceCommandNoOutput());
+        result.setBorders(false);
+        commandOutput.add(result);
     }
 
     // --------------------------------------------------------------------------------------
@@ -328,11 +325,11 @@ public class DeviceTabCommand extends LayoutContainer {
     // --------------------------------------------------------------------------------------
 
     public void refresh() {
-        if (m_dirty && m_initialized) {
-            m_dirty = false;
+        if (dirty && initialized) {
+            dirty = false;
 
-            if (m_selectedDevice != null) {
-                m_commandInput.unmask();
+            if (selectedDevice != null) {
+                commandInput.unmask();
             }
         }
     }

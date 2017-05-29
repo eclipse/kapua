@@ -111,52 +111,52 @@ public class MiscAuthorizationTestSteps extends AbstractAuthorizationServiceTest
     public void checkPermissionComparison()
             throws KapuaException {
 
-        Permission perm_1 = new PermissionImpl("test_domain_1", Actions.read, generateId(10), generateId(100));
-        Permission perm_2 = new PermissionImpl("test_domain_1", Actions.read, generateId(10), generateId(100));
+        Permission perm1 = new PermissionImpl("test_domain_1", Actions.read, generateId(10), generateId(100));
+        Permission perm2 = new PermissionImpl("test_domain_1", Actions.read, generateId(10), generateId(100));
 
-        assertTrue(perm_1.equals(perm_1));
-        assertFalse(perm_1.equals(null));
-        assertFalse(perm_1.equals(Integer.valueOf(10)));
+        assertTrue(perm1.equals(perm1));
+        assertFalse(perm1.equals(null));
+        assertFalse(perm1.equals(Integer.valueOf(10)));
 
-        assertTrue(perm_1.equals(perm_2));
+        assertTrue(perm1.equals(perm2));
 
-        perm_1.setDomain(null);
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setDomain(null);
-        assertTrue(perm_1.equals(perm_2));
-        perm_1.setDomain("test_1");
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setDomain("test_2");
-        assertFalse(perm_1.equals(perm_2));
+        perm1.setDomain(null);
+        assertFalse(perm1.equals(perm2));
+        perm2.setDomain(null);
+        assertTrue(perm1.equals(perm2));
+        perm1.setDomain("test_1");
+        assertFalse(perm1.equals(perm2));
+        perm2.setDomain("test_2");
+        assertFalse(perm1.equals(perm2));
 
-        perm_1.setDomain("test");
-        perm_2.setDomain("test");
+        perm1.setDomain("test");
+        perm2.setDomain("test");
 
-        perm_1.setTargetScopeId(null);
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setTargetScopeId(null);
-        assertTrue(perm_1.equals(perm_2));
-        perm_1.setTargetScopeId(generateId(10));
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setTargetScopeId(generateId(15));
-        assertFalse(perm_1.equals(perm_2));
+        perm1.setTargetScopeId(null);
+        assertFalse(perm1.equals(perm2));
+        perm2.setTargetScopeId(null);
+        assertTrue(perm1.equals(perm2));
+        perm1.setTargetScopeId(generateId(10));
+        assertFalse(perm1.equals(perm2));
+        perm2.setTargetScopeId(generateId(15));
+        assertFalse(perm1.equals(perm2));
 
-        perm_1.setTargetScopeId(generateId(10));
-        perm_2.setTargetScopeId(generateId(10));
+        perm1.setTargetScopeId(generateId(10));
+        perm2.setTargetScopeId(generateId(10));
 
-        perm_1.setGroupId(null);
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setGroupId(null);
-        assertTrue(perm_1.equals(perm_2));
-        perm_1.setGroupId(generateId(100));
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setGroupId(generateId(101));
-        assertFalse(perm_1.equals(perm_2));
-        perm_2.setGroupId(generateId(100));
-        assertTrue(perm_1.equals(perm_2));
+        perm1.setGroupId(null);
+        assertFalse(perm1.equals(perm2));
+        perm2.setGroupId(null);
+        assertTrue(perm1.equals(perm2));
+        perm1.setGroupId(generateId(100));
+        assertFalse(perm1.equals(perm2));
+        perm2.setGroupId(generateId(101));
+        assertFalse(perm1.equals(perm2));
+        perm2.setGroupId(generateId(100));
+        assertTrue(perm1.equals(perm2));
 
-        perm_1.setAction(Actions.read);
-        perm_2.setAction(Actions.write);
-        assertFalse(perm_1.equals(perm_2));
+        perm1.setAction(Actions.read);
+        perm2.setAction(Actions.write);
+        assertFalse(perm1.equals(perm2));
     }
 }

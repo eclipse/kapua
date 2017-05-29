@@ -46,7 +46,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CredentialAddDialog extends EntityAddEditDialog {
 
-    protected final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
+    protected static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
     protected GwtUser selectedUser;
     protected SimpleComboBox<GwtCredentialType> credentialType;
@@ -131,7 +131,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         optlock.setVisible(false);
         credentialFormPanel.add(optlock);
 
-        m_bodyPanel.add(credentialFormPanel);
+        bodyPanel.add(credentialFormPanel);
     }
 
     @Override
@@ -170,8 +170,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 unmask();
 
                 submitButton.enable();
-                m_cancelButton.enable();
-                m_status.hide();
+                cancelButton.enable();
+                status.hide();
 
                 exitStatus = false;
                 exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());

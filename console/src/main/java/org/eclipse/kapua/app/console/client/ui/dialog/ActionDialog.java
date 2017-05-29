@@ -37,12 +37,12 @@ public abstract class ActionDialog extends KapuaDialog {
 
     protected GwtXSRFToken xsrfToken;
 
-    protected static int FORM_LABEL_WIDTH = 120;
-    protected FormPanel m_formPanel;
+    protected static final int FORM_LABEL_WIDTH = 120;
+    protected FormPanel formPanel;
 
     protected Button submitButton;
-    protected Button m_cancelButton;
-    protected Status m_status;
+    protected Button cancelButton;
+    protected Status status;
 
     protected Boolean exitStatus;
     protected String exitMessage;
@@ -58,19 +58,19 @@ public abstract class ActionDialog extends KapuaDialog {
         FormLayout formLayout = new FormLayout();
         formLayout.setLabelWidth(FORM_LABEL_WIDTH);
 
-        m_formPanel = new FormPanel();
-        m_formPanel.setPadding(0);
-        m_formPanel.setFrame(false);
-        m_formPanel.setHeaderVisible(false);
-        m_formPanel.setBodyBorder(false);
-        m_formPanel.setBorders(false);
-        m_formPanel.setLayout(formLayout);
-        m_formPanel.setEncoding(Encoding.MULTIPART);
-        m_formPanel.setMethod(Method.POST);
+        formPanel = new FormPanel();
+        formPanel.setPadding(0);
+        formPanel.setFrame(false);
+        formPanel.setHeaderVisible(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setBorders(false);
+        formPanel.setLayout(formLayout);
+        formPanel.setEncoding(Encoding.MULTIPART);
+        formPanel.setMethod(Method.POST);
 
         addListeners();
 
-        add(m_formPanel);
+        add(formPanel);
 
         //
         // Buttons setup
@@ -88,11 +88,11 @@ public abstract class ActionDialog extends KapuaDialog {
     public void createButtons() {
         super.createButtons();
 
-        m_status = new Status();
-        m_status.setBusy(MSGS.waitMsg());
-        m_status.hide();
-        m_status.setAutoWidth(true);
-        getButtonBar().add(m_status);
+        status = new Status();
+        status.setBusy(MSGS.waitMsg());
+        status.hide();
+        status.setAutoWidth(true);
+        getButtonBar().add(status);
 
         getButtonBar().add(new FillToolItem());
 
@@ -107,10 +107,10 @@ public abstract class ActionDialog extends KapuaDialog {
             }
         });
 
-        m_cancelButton = new Button(getCancelButtonText());
-        m_cancelButton.setSize(60, 25);
-        m_cancelButton.setStyleAttribute("margin-left", "3px");
-        m_cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        cancelButton = new Button(getCancelButtonText());
+        cancelButton.setSize(60, 25);
+        cancelButton.setStyleAttribute("margin-left", "3px");
+        cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -120,7 +120,7 @@ public abstract class ActionDialog extends KapuaDialog {
         });
 
         addButton(submitButton);
-        addButton(m_cancelButton);
+        addButton(cancelButton);
     }
 
     protected String getSubmitButtonText() {
@@ -145,8 +145,8 @@ public abstract class ActionDialog extends KapuaDialog {
 
                 mask();
                 submitButton.disable();
-                m_cancelButton.disable();
-                m_status.show();
+                cancelButton.disable();
+                status.show();
 
                 submit();
             }
@@ -168,10 +168,10 @@ public abstract class ActionDialog extends KapuaDialog {
     }
 
     public void maskDialog() {
-        m_formPanel.mask(MSGS.loading());
+        formPanel.mask(MSGS.loading());
     }
 
     public void unmaskDialog() {
-        m_formPanel.unmask();
+        formPanel.unmask();
     }
 }

@@ -19,10 +19,10 @@ public class GwtConfigComponent extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = -6388356998309026758L;
 
-    private List<GwtConfigParameter> m_parameters;
+    private List<GwtConfigParameter> parameters;
 
     public GwtConfigComponent() {
-        m_parameters = new ArrayList<GwtConfigParameter>();
+        parameters = new ArrayList<GwtConfigParameter>();
     }
 
     public String getComponentId() {
@@ -66,15 +66,15 @@ public class GwtConfigComponent extends KapuaBaseModel implements Serializable {
     }
 
     public List<GwtConfigParameter> getParameters() {
-        return m_parameters;
+        return parameters;
     }
 
     public void setParameters(List<GwtConfigParameter> parameters) {
-        m_parameters = parameters;
+        this.parameters = parameters;
     }
 
     public GwtConfigParameter getParameter(String id) {
-        for (GwtConfigParameter param : m_parameters) {
+        for (GwtConfigParameter param : parameters) {
             if (param.getId().equals(id)) {
                 return param;
             }

@@ -45,7 +45,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
         groupNameField.setFieldLabel(MSGS.dialogAddFieldName());
         groupNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         groupFormPanel.add(groupNameField);
-        m_bodyPanel.add(groupFormPanel);
+        bodyPanel.add(groupFormPanel);
     }
 
     @Override
@@ -64,12 +64,12 @@ public class GroupAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable arg0) {
-                FailureHandler.handleFormException(m_formPanel, arg0);
-                m_status.hide();
-                m_formPanel.getButtonBar().enable();
+                FailureHandler.handleFormException(formPanel, arg0);
+                status.hide();
+                formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
-                m_cancelButton.enable();
+                cancelButton.enable();
             }
         });
 

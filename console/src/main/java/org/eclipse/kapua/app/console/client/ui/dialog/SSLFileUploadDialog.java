@@ -49,19 +49,19 @@ public class SSLFileUploadDialog extends Dialog {
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
     private HiddenField<String> xsrfTokenField;
 
-    private FormPanel m_formPanel;
-    private FileUploadField m_fileUploadFieldKey;
-    private FileUploadField m_fileUploadFieldCert;
-    private List<HiddenField<?>> m_hiddenFields;
-    private Button m_submitButton;
-    private Button m_cancelButton;
-    private Status m_status;
-    private String m_url;
+    private FormPanel formPanel;
+    private FileUploadField fileUploadFieldKey;
+    private FileUploadField fileUploadFieldCert;
+    private List<HiddenField<?>> hiddenFields;
+    private Button submitButton;
+    private Button cancelButton;
+    private Status status;
+    private String url;
 
     public SSLFileUploadDialog(String url, List<HiddenField<?>> hiddenFields) {
         super();
-        m_url = url;
-        m_hiddenFields = hiddenFields;
+        this.url = url;
+        this.hiddenFields = hiddenFields;
         setButtonAlign(HorizontalAlignment.RIGHT);
     }
 
@@ -76,16 +76,16 @@ public class SSLFileUploadDialog extends Dialog {
         setScrollMode(Scroll.AUTO);
         setHideOnButtonClick(false);
 
-        m_formPanel = new FormPanel();
-        m_formPanel.setFrame(false);
-        m_formPanel.setHeaderVisible(false);
-        m_formPanel.setBodyBorder(false);
-        m_formPanel.setAction(m_url);
-        m_formPanel.setEncoding(Encoding.MULTIPART);
-        m_formPanel.setMethod(Method.POST);
-        m_formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel = new FormPanel();
+        formPanel.setFrame(false);
+        formPanel.setHeaderVisible(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setAction(url);
+        formPanel.setEncoding(Encoding.MULTIPART);
+        formPanel.setMethod(Method.POST);
+        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
 
-        m_formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+        formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
 
             HiddenField<Boolean> success = new HiddenField<Boolean>();
 
@@ -96,7 +96,7 @@ public class SSLFileUploadDialog extends Dialog {
                     success = new HiddenField<Boolean>();
                     success.setName("success");
                     success.setValue(true);
-                    m_hiddenFields.set(0, success);
+                    hiddenFields.set(0, success);
                 } else {
                     String errMsg = htmlResponse;
                     int startIdx = htmlResponse.indexOf("<pre>");
@@ -108,27 +108,27 @@ public class SSLFileUploadDialog extends Dialog {
                     success = new HiddenField<Boolean>();
                     success.setName("success");
                     success.setValue(false);
-                    m_hiddenFields.set(0, success);
+                    hiddenFields.set(0, success);
                 }
                 hide();
             }
         });
 
-        m_fileUploadFieldCert = new FileUploadField();
-        m_fileUploadFieldCert.setAllowBlank(false);
-        m_fileUploadFieldCert.setName("uploadedSSLCert");
-        m_fileUploadFieldCert.setFieldLabel("SSL Certificate");
-        m_formPanel.add(m_fileUploadFieldCert);
+        fileUploadFieldCert = new FileUploadField();
+        fileUploadFieldCert.setAllowBlank(false);
+        fileUploadFieldCert.setName("uploadedSSLCert");
+        fileUploadFieldCert.setFieldLabel("SSL Certificate");
+        formPanel.add(fileUploadFieldCert);
 
-        m_fileUploadFieldKey = new FileUploadField();
-        m_fileUploadFieldKey.setAllowBlank(false);
-        m_fileUploadFieldKey.setName("uploadedSSLKey");
-        m_fileUploadFieldKey.setFieldLabel("SSL Key");
-        m_formPanel.add(m_fileUploadFieldKey);
+        fileUploadFieldKey = new FileUploadField();
+        fileUploadFieldKey.setAllowBlank(false);
+        fileUploadFieldKey.setName("uploadedSSLKey");
+        fileUploadFieldKey.setFieldLabel("SSL Key");
+        formPanel.add(fileUploadFieldKey);
 
-        if (m_hiddenFields != null) {
-            for (HiddenField<?> hf : m_hiddenFields) {
-                m_formPanel.add(hf);
+        if (hiddenFields != null) {
+            for (HiddenField<?> hf : hiddenFields) {
+                formPanel.add(hf);
             }
         }
 
@@ -154,25 +154,25 @@ public class SSLFileUploadDialog extends Dialog {
         xsrfTokenField.setValue("");
 
         // Add the xsrf hidden field to the form panel
-        m_formPanel.add(xsrfTokenField);
+        formPanel.add(xsrfTokenField);
 
-        add(m_formPanel);
+        add(formPanel);
     }
 
     @Override
     protected void createButtons() {
         super.createButtons();
 
-        m_status = new Status();
-        m_status.setBusy(MSGS.waitMsg());
-        m_status.hide();
-        m_status.setAutoWidth(true);
-        getButtonBar().add(m_status);
+        status = new Status();
+        status.setBusy(MSGS.waitMsg());
+        status.hide();
+        status.setAutoWidth(true);
+        getButtonBar().add(status);
 
         getButtonBar().add(new FillToolItem());
 
-        m_submitButton = new Button(MSGS.uploadButton());
-        m_submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        submitButton = new Button(MSGS.uploadButton());
+        submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -180,32 +180,32 @@ public class SSLFileUploadDialog extends Dialog {
             }
         });
 
-        m_cancelButton = new Button(MSGS.cancelButton());
-        m_cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        cancelButton = new Button(MSGS.cancelButton());
+        cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 HiddenField<Boolean> success = new HiddenField<Boolean>();
                 success.setName("success");
                 success.setValue(false);
-                m_hiddenFields.set(0, success);
+                hiddenFields.set(0, success);
                 hide();
             }
         });
 
-        addButton(m_cancelButton);
-        addButton(m_submitButton);
+        addButton(cancelButton);
+        addButton(submitButton);
     }
 
     private void submit() {
-        if (!m_formPanel.isValid()) {
+        if (!formPanel.isValid()) {
             return;
         }
 
-        m_submitButton.disable();
-        m_cancelButton.disable();
-        m_status.show();
-        m_formPanel.submit();
+        submitButton.disable();
+        cancelButton.disable();
+        status.show();
+        formPanel.submit();
     }
 
 }

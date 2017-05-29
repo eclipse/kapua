@@ -25,13 +25,13 @@ public class DomainServiceTestData {
     DomainCreator domainCreator;
     DomainListResult domainList;
     KapuaId domainId;
-    long initial_count;
+    long initialCount;
 
     public void clearData() {
         domain = null;
         domainCreator = null;
         domainList = null;
         domainId = null;
-        initial_count = 0;
+        initialCount = 0;
     }
 }

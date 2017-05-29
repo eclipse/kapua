@@ -35,21 +35,21 @@ public class GwtUserPermission extends KapuaBaseModel implements Serializable {
         create, read, update, delete, connect, all;
     }
 
-    private Domain m_domain;
-    private Action m_action;
-    private String m_scopeId;
+    private Domain domain;
+    private Action action;
+    private String scopeId;
 
     public GwtUserPermission(Domain domain, Action action, String accountId, boolean enabled) {
 
-        m_domain = domain;
-        m_action = action;
-        m_scopeId = accountId;
+        this.domain = domain;
+        this.action = action;
+        this.scopeId = accountId;
 
         StringBuilder sbAccountPermission = new StringBuilder();
-        sbAccountPermission.append(m_domain.name());
-        if (m_action != null) {
+        sbAccountPermission.append(this.domain.name());
+        if (this.action != null) {
             sbAccountPermission.append(":")
-                    .append(m_action.name());
+                    .append(this.action.name());
         }
 
         setEnabled(enabled);
@@ -91,14 +91,14 @@ public class GwtUserPermission extends KapuaBaseModel implements Serializable {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(m_domain.name());
-        if (m_action != null) {
+        sb.append(domain.name());
+        if (action != null) {
             sb.append(":")
-                    .append(m_action.name());
+                    .append(action.name());
         }
-        if (m_scopeId != null) {
+        if (scopeId != null) {
             sb.append(":")
-                    .append(String.valueOf(m_scopeId));
+                    .append(String.valueOf(scopeId));
         }
         return sb.toString();
     }

@@ -39,21 +39,21 @@ public class DateRangeSelector extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private Date m_startDate;
-    private Date m_endDate;
-    private SplitButton m_dateRange;
-    private DateRangeSelectorListener m_listener;
+    private Date startDate;
+    private Date endDate;
+    private SplitButton dateRange;
+    private DateRangeSelectorListener listener;
 
-    private int m_currentIndex;
+    private int currentIndex;
 
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
 
-        m_dateRange = new SplitButton();
-        m_dateRange.setMinWidth(120);
-        m_dateRange.setStyleAttribute("border", "1px solid thistle");
-        m_dateRange.setStyleAttribute("background-color", "white");
+        dateRange = new SplitButton();
+        dateRange.setMinWidth(120);
+        dateRange.setStyleAttribute("border", "1px solid thistle");
+        dateRange.setStyleAttribute("background-color", "white");
         Menu menu = new Menu();
         menu.add(new MenuItem(MSGS.dataDateRangeLastHour(),
                 new SelectionListener<MenuEvent>() {
@@ -107,33 +107,33 @@ public class DateRangeSelector extends LayoutContainer {
                     }
                 }));
 
-        m_dateRange.setMenu(menu);
+        dateRange.setMenu(menu);
 
         // initialize with the last 24 hours
         onMenuItemSelected(2, null);
-        add(m_dateRange);
+        add(dateRange);
     }
 
     public void nextRange() {
         long delta = getDelta();
-        if (m_endDate == null) {
-            m_endDate = new Date();
+        if (endDate == null) {
+            endDate = new Date();
         }
-        m_endDate = new Date(m_endDate.getTime() + delta);
-        m_startDate = new Date(m_startDate.getTime() + delta);
+        endDate = new Date(endDate.getTime() + delta);
+        startDate = new Date(startDate.getTime() + delta);
     }
 
     public void previousRange() {
         long delta = getDelta();
-        if (m_endDate == null) {
-            m_endDate = new Date();
+        if (endDate == null) {
+            endDate = new Date();
         }
-        m_endDate = new Date(m_endDate.getTime() - delta);
-        m_startDate = new Date(m_startDate.getTime() - delta);
+        endDate = new Date(endDate.getTime() - delta);
+        startDate = new Date(startDate.getTime() - delta);
     }
 
     private long getDelta() {
-        switch (m_currentIndex) {
+        switch (currentIndex) {
         case 0: // last 1h
             return 1L * 60L * 60L * 1000L;
         case 1: // last 12h
@@ -149,67 +149,67 @@ public class DateRangeSelector extends LayoutContainer {
     }
 
     public DateRangeSelectorListener getListener() {
-        return m_listener;
+        return listener;
     }
 
     public void setListener(DateRangeSelectorListener listener) {
-        m_listener = listener;
+        this.listener = listener;
     }
 
     private void onMenuItemSelected(int index, MenuEvent me) {
-        m_currentIndex = index;
+        currentIndex = index;
         Date now = new Date();
         long nowTime = now.getTime();
         switch (index) {
         case 0: // last 1h
-            m_endDate = null;
-            m_startDate = new Date(nowTime - 1L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataDateRangeLastHour());
+            endDate = null;
+            startDate = new Date(nowTime - 1L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataDateRangeLastHour());
             break;
         case 1: // last 12h
-            m_endDate = null;
-            m_startDate = new Date(nowTime - 12L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataDateRangeLast12Hours());
+            endDate = null;
+            startDate = new Date(nowTime - 12L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataDateRangeLast12Hours());
             break;
         case 2: // last 24h
-            m_endDate = null;
-            m_startDate = new Date(nowTime - 24L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataDateRangeLast24Hours());
+            endDate = null;
+            startDate = new Date(nowTime - 24L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataDateRangeLast24Hours());
             break;
         case 3: // last week
-            m_endDate = null;
-            m_startDate = new Date(nowTime - 7L * 24L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataDateRangeLastWeek());
+            endDate = null;
+            startDate = new Date(nowTime - 7L * 24L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataDateRangeLastWeek());
             break;
         case 4: // last month
-            m_endDate = null;
-            m_startDate = new Date(nowTime - (long) 30L * 24L * 60L * 60L * 1000L);
-            m_dateRange.setText(MSGS.dataDateRangeLastMonth());
+            endDate = null;
+            startDate = new Date(nowTime - (long) 30L * 24L * 60L * 60L * 1000L);
+            dateRange.setText(MSGS.dataDateRangeLastMonth());
             break;
         }
-        if (me != null && m_listener != null) {
-            m_listener.onUpdate();
+        if (me != null && listener != null) {
+            listener.onUpdate();
         }
     }
 
     public Date getStartDate() {
         long nowTime = new Date().getTime();
-        if (m_startDate == null) {
+        if (startDate == null) {
             return new Date(nowTime - 24L * 60L * 60L * 1000L);
         }
-        return m_startDate;
+        return startDate;
     }
 
     public Date getEndDate() {
-        if (m_endDate == null) {
+        if (endDate == null) {
             return new Date();
         }
-        return m_endDate;
+        return endDate;
     }
 
     private void showCustomDateRangeDialog() {
-        Date end = m_endDate;
-        Date start = m_startDate;
+        Date end = endDate;
+        Date start = startDate;
         if (end == null) {
             end = new Date();
         }
@@ -313,22 +313,22 @@ public class DateRangeSelector extends LayoutContainer {
                 if (form.isValid()) {
                     long lStartDate = startDateField.getValue().getTime();
                     lStartDate = lStartDate + (long) startTimeField.getValue().getHour() * 60L * 60L * 1000L + (long) startTimeField.getValue().getMinutes() * 60L * 1000L;
-                    m_startDate = new Date(lStartDate);
+                    startDate = new Date(lStartDate);
 
                     long lEndDate = endDateField.getValue().getTime();
                     lEndDate = lEndDate + (long) endTimeField.getValue().getHour() * 60L * 60L * 1000L + (long) endTimeField.getValue().getMinutes() * 60L * 1000L;
-                    m_endDate = new Date(lEndDate);
+                    endDate = new Date(lEndDate);
 
                     DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT);
                     StringBuilder sb = new StringBuilder();
-                    sb.append(dtf.format(m_startDate))
+                    sb.append(dtf.format(startDate))
                             .append(" - ")
-                            .append(dtf.format(m_endDate));
-                    m_dateRange.setText(sb.toString());
+                            .append(dtf.format(endDate));
+                    dateRange.setText(sb.toString());
 
                     dialog.hide();
-                    if (m_listener != null) {
-                        m_listener.onUpdate();
+                    if (listener != null) {
+                        listener.onUpdate();
                     }
                 }
             }

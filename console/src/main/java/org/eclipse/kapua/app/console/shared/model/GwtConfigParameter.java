@@ -36,115 +36,115 @@ public class GwtConfigParameter implements Serializable {
         }
     }
 
-    private String m_id;
-    private String m_name;
-    private String m_description;
-    private GwtConfigParameterType m_type;
-    private boolean m_required;
-    private String m_default;
-    private int m_cardinality;
-    private Map<String, String> m_options;
-    private String m_min;
-    private String m_max;
-    private String m_value;      // used for fields with single cardinality
-    private String[] m_values;     // used for fields with multiple cardinality
+    private String id;
+    private String name;
+    private String description;
+    private GwtConfigParameterType type;
+    private boolean required;
+    private String defaultValue;
+    private int cardinality;
+    private Map<String, String> options;
+    private String min;
+    private String max;
+    private String value;      // used for fields with single cardinality
+    private String[] values;     // used for fields with multiple cardinality
 
     public GwtConfigParameter() {
     }
 
     public String getId() {
-        return m_id;
+        return id;
     }
 
     public void setId(String id) {
-        m_id = id;
+        this.id = id;
     }
 
     public String getName() {
-        return m_name;
+        return name;
     }
 
     public void setName(String name) {
-        m_name = name;
+        this.name = name;
     }
 
     public String getDescription() {
-        return m_description;
+        return description;
     }
 
     public void setDescription(String description) {
-        m_description = description;
+        this.description = description;
     }
 
     public GwtConfigParameterType getType() {
-        return m_type;
+        return type;
     }
 
     public void setType(GwtConfigParameterType type) {
-        m_type = type;
+        this.type = type;
     }
 
     public boolean isRequired() {
-        return m_required;
+        return required;
     }
 
     public void setRequired(boolean required) {
-        m_required = required;
+        this.required = required;
     }
 
     public String getDefault() {
-        return m_default;
+        return defaultValue;
     }
 
     public void setDefault(String default1) {
-        m_default = default1;
+        this.defaultValue = default1;
     }
 
     public int getCardinality() {
-        return m_cardinality;
+        return cardinality;
     }
 
     public void setCardinality(int cardinality) {
-        m_cardinality = cardinality;
+        this.cardinality = cardinality;
     }
 
     public Map<String, String> getOptions() {
-        return m_options;
+        return options;
     }
 
     public void setOptions(Map<String, String> options) {
-        m_options = options;
+        this.options = options;
     }
 
     public String getMin() {
-        return m_min;
+        return min;
     }
 
     public void setMin(String min) {
-        m_min = min;
+        this.min = min;
     }
 
     public String getMax() {
-        return m_max;
+        return max;
     }
 
     public void setMax(String max) {
-        m_max = max;
+        this.max = max;
     }
 
     public String getValue() {
-        return m_value;
+        return value;
     }
 
     public void setValue(String value) {
-        m_value = value;
+        this.value = value;
     }
 
     public String[] getValues() {
-        return m_values;
+        return values;
     }
 
     public void setValues(String[] values) {
-        m_values = values;
+        this.values = values;
     }
 }

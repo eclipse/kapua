@@ -24,19 +24,19 @@ public class DateRangeValidator implements Validator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    private DateField m_startDateField;
-    private DateField m_endDateField;
+    private DateField startDateField;
+    private DateField endDateField;
 
     public DateRangeValidator(DateField startDateField, DateField endDateField) {
-        m_startDateField = startDateField;
-        m_endDateField = endDateField;
+        this.startDateField = startDateField;
+        this.endDateField = endDateField;
     }
 
     public String validate(Field<?> field, String value) {
         String result = null;
 
-        Date currentDate = m_startDateField.getValue();
-        Date endDate = m_endDateField.getValue();
+        Date currentDate = startDateField.getValue();
+        Date endDate = endDateField.getValue();
 
         if (currentDate == null) {
             currentDate = new Date();

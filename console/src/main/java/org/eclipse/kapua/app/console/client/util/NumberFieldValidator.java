@@ -22,7 +22,7 @@ public class NumberFieldValidator implements Validator {
 
     private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
 
-    protected NumberField m_numberField;
+    protected NumberField numberField;
 
     protected Long minValue;
     protected Long maxValue;

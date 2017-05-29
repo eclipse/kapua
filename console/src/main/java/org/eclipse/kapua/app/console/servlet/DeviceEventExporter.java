@@ -23,7 +23,7 @@ public abstract class DeviceEventExporter {
 
     protected static final String BLANK = "";
 
-    protected static String[] s_deviceProperties = {
+    protected static final String[] DEVICE_PROPERTIES = {
             "Account ID",
             "Account Name",
             "Event ID",

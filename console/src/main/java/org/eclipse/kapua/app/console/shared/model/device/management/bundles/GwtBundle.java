@@ -24,8 +24,8 @@ public class GwtBundle extends KapuaBaseModel {
     @SuppressWarnings("unchecked")
     public <X> X get(String property) {
         if ("statusLoc".equals(property)) {
-            ValidationMessages MSGS = GWT.create(ValidationMessages.class);
-            return (X) MSGS.getString(getStatus());
+            ValidationMessages msgs = GWT.create(ValidationMessages.class);
+            return (X) msgs.getString(getStatus());
         }
         return super.get(property);
     }

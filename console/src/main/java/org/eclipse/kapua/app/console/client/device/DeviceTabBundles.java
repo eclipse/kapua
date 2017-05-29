@@ -66,37 +66,34 @@ public class DeviceTabBundles extends LayoutContainer {
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
-    private DeviceTabs m_deviceTabs;
+    private DeviceTabs deviceTabs;
 
-    private boolean m_dirty;
-    private boolean m_initialized;
-    private GwtDevice m_selectedDevice;
+    private boolean dirty;
+    private boolean initialized;
+    private GwtDevice selectedDevice;
 
-    private ToolBar m_toolBar;
+    private ToolBar toolBar;
 
-    private Button m_refreshButton;
-    private Button m_startButton;
-    private Button m_stopButton;
+    private Button refreshButton;
+    private Button startButton;
+    private Button stopButton;
 
-    private Grid<GwtBundle> m_grid;
-    private ListStore<GwtBundle> m_store;
-    private BaseListLoader<ListLoadResult<GwtBundle>> m_loader;
+    private Grid<GwtBundle> grid;
+    private ListStore<GwtBundle> store;
+    private BaseListLoader<ListLoadResult<GwtBundle>> loader;
 
     protected boolean refreshProcess;
 
     public DeviceTabBundles(GwtSession currentSession,
             DeviceTabs deviceTabs) {
-        m_currentSession = currentSession;
-        m_deviceTabs = deviceTabs;
-        m_dirty = true;
-        m_initialized = false;
+        this.deviceTabs = deviceTabs;
+        dirty = true;
+        initialized = false;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        m_dirty = true;
-        m_selectedDevice = selectedDevice;
+        dirty = true;
+        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -113,28 +110,28 @@ public class DeviceTabBundles extends LayoutContainer {
         devicesBundlesPanel.setHeaderVisible(false);
         devicesBundlesPanel.setLayout(new FitLayout());
         devicesBundlesPanel.setScrollMode(Scroll.AUTO);
-        devicesBundlesPanel.setTopComponent(m_toolBar);
-        devicesBundlesPanel.add(m_grid);
+        devicesBundlesPanel.setTopComponent(toolBar);
+        devicesBundlesPanel.add(grid);
 
         add(devicesBundlesPanel);
-        m_initialized = true;
+        initialized = true;
     }
 
     private void initToolBar() {
-        m_toolBar = new ToolBar();
+        toolBar = new ToolBar();
 
         //
         // Refresh Button
-        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
                     refreshProcess = true;
 
-                    if (m_selectedDevice.isOnline()) {
-                        m_toolBar.disable();
-                        m_dirty = true;
+                    if (selectedDevice.isOnline()) {
+                        toolBar.disable();
+                        dirty = true;
                         refresh();
 
                         refreshProcess = false;
@@ -144,7 +141,7 @@ public class DeviceTabBundles extends LayoutContainer {
 
                                     @Override
                                     public void handleEvent(MessageBoxEvent be) {
-                                        m_grid.unmask();
+                                        grid.unmask();
 
                                         refreshProcess = false;
                                     }
@@ -154,34 +151,34 @@ public class DeviceTabBundles extends LayoutContainer {
             }
         });
 
-        m_refreshButton.setEnabled(true);
-        m_toolBar.add(m_refreshButton);
-        m_toolBar.add(new SeparatorToolItem());
+        refreshButton.setEnabled(true);
+        toolBar.add(refreshButton);
+        toolBar.add(new SeparatorToolItem());
 
         final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 
             public void onFailure(Throwable caught) {
                 FailureHandler.handle(caught);
-                m_dirty = true;
+                dirty = true;
             }
 
             public void onSuccess(Void arg0) {
                 // mark this panel dirty and also all the other pier panels
-                m_deviceTabs.setDevice(m_selectedDevice);
-                m_dirty = true;
+                deviceTabs.setDevice(selectedDevice);
+                dirty = true;
                 refresh();
             }
         };
 
         //
         // Start Button
-        m_startButton = new BundleStartButton(new SelectionListener<ButtonEvent>() {
+        startButton = new BundleStartButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (m_selectedDevice.isOnline()) {
-                    m_toolBar.disable();
-                    m_grid.mask(MSGS.loading());
+                if (selectedDevice.isOnline()) {
+                    toolBar.disable();
+                    grid.mask(MSGS.loading());
 
                     //
                     // Getting XSRF token
@@ -195,8 +192,8 @@ public class DeviceTabBundles extends LayoutContainer {
                         @Override
                         public void onSuccess(GwtXSRFToken token) {
                             gwtDeviceManagementService.startBundle(token,
-                                    m_selectedDevice,
-                                    m_grid.getSelectionModel().getSelectedItem(),
+                                    selectedDevice,
+                                    grid.getSelectionModel().getSelectedItem(),
                                     callback);
                         }
                     });
@@ -206,24 +203,24 @@ public class DeviceTabBundles extends LayoutContainer {
 
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
-                                    m_grid.unmask();
+                                    grid.unmask();
                                 }
                             });
                 }
             }
         });
-        m_startButton.setEnabled(true);
-        m_toolBar.add(m_startButton);
-        m_toolBar.add(new SeparatorToolItem());
+        startButton.setEnabled(true);
+        toolBar.add(startButton);
+        toolBar.add(new SeparatorToolItem());
 
         //
         // Stop Button
-        m_stopButton = new BundleStopButton(new SelectionListener<ButtonEvent>() {
+        stopButton = new BundleStopButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (m_selectedDevice.isOnline()) {
-                    final GwtBundle gwtBundle = m_grid.getSelectionModel().getSelectedItem();
+                if (selectedDevice.isOnline()) {
+                    final GwtBundle gwtBundle = grid.getSelectionModel().getSelectedItem();
                     String bundleName = gwtBundle.getName();
                     MessageBox.confirm(MSGS.confirm(),
                             MSGS.deviceStopBundle(bundleName),
@@ -233,8 +230,8 @@ public class DeviceTabBundles extends LayoutContainer {
                                     // if confirmed, stop
                                     Dialog dialog = ce.getDialog();
                                     if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
-                                        m_toolBar.disable();
-                                        m_grid.mask(MSGS.loading());
+                                        toolBar.disable();
+                                        grid.mask(MSGS.loading());
                                         //
                                         // Getting XSRF token
                                         gwtXSRFService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
@@ -247,7 +244,7 @@ public class DeviceTabBundles extends LayoutContainer {
                                             @Override
                                             public void onSuccess(GwtXSRFToken token) {
                                                 gwtDeviceManagementService.stopBundle(token,
-                                                        m_selectedDevice,
+                                                        selectedDevice,
                                                         gwtBundle,
                                                         callback);
                                             }
@@ -261,17 +258,17 @@ public class DeviceTabBundles extends LayoutContainer {
 
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
-                                    m_grid.unmask();
+                                    grid.unmask();
                                 }
                             });
                 }
             }
         });
-        m_stopButton.setEnabled(true);
-        m_toolBar.add(m_stopButton);
-        m_toolBar.add(new SeparatorToolItem());
+        stopButton.setEnabled(true);
+        toolBar.add(stopButton);
+        toolBar.add(new SeparatorToolItem());
 
-        m_toolBar.disable();
+        toolBar.disable();
     }
 
     private void initGrid() {
@@ -279,20 +276,20 @@ public class DeviceTabBundles extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtBundle>> callback) {
-                if (m_selectedDevice != null) {
-                    if (m_selectedDevice.isOnline()) {
-                        gwtDeviceManagementService.findBundles(m_selectedDevice, callback);
+                if (selectedDevice != null) {
+                    if (selectedDevice.isOnline()) {
+                        gwtDeviceManagementService.findBundles(selectedDevice, callback);
                     } else {
-                        m_grid.getStore().removeAll();
-                        m_grid.unmask();
+                        grid.getStore().removeAll();
+                        grid.unmask();
                     }
                 }
             }
         };
-        m_loader = new BaseListLoader<ListLoadResult<GwtBundle>>(proxy);
-        m_loader.addLoadListener(new DataLoadListener());
+        loader = new BaseListLoader<ListLoadResult<GwtBundle>>(proxy);
+        loader.addLoadListener(new DataLoadListener());
 
-        m_store = new ListStore<GwtBundle>(m_loader);
+        store = new ListStore<GwtBundle>(loader);
 
         ColumnConfig id = new ColumnConfig("id", MSGS.deviceBndId(), 10);
         ColumnConfig name = new ColumnConfig("name", MSGS.deviceBndName(), 50);
@@ -314,24 +311,24 @@ public class DeviceTabBundles extends LayoutContainer {
         GridSelectionModel<GwtBundle> selectionModel = new GridSelectionModel<GwtBundle>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
-        m_grid = new Grid<GwtBundle>(m_store, cm);
-        m_grid.setView(view);
-        m_grid.setBorders(false);
-        m_grid.setLoadMask(true);
-        m_grid.setStripeRows(true);
-        m_grid.setSelectionModel(selectionModel);
-        m_grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtBundle>() {
+        grid = new Grid<GwtBundle>(store, cm);
+        grid.setView(view);
+        grid.setBorders(false);
+        grid.setLoadMask(true);
+        grid.setStripeRows(true);
+        grid.setSelectionModel(selectionModel);
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtBundle>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtBundle> se) {
-                if (m_grid.getSelectionModel().getSelectedItem() != null) {
-                    GwtBundle selectedBundle = m_grid.getSelectionModel().getSelectedItem();
+                if (grid.getSelectionModel().getSelectedItem() != null) {
+                    GwtBundle selectedBundle = grid.getSelectionModel().getSelectedItem();
                     if ("bndActive".equals(selectedBundle.getStatus())) {
-                        m_startButton.disable();
-                        m_stopButton.enable();
+                        startButton.disable();
+                        stopButton.enable();
                     } else {
-                        m_stopButton.disable();
-                        m_startButton.enable();
+                        stopButton.disable();
+                        startButton.enable();
                     }
                 }
             }
@@ -339,24 +336,24 @@ public class DeviceTabBundles extends LayoutContainer {
     }
 
     public void refresh() {
-        if (m_dirty && m_initialized) {
+        if (dirty && initialized) {
 
-            m_dirty = false;
-            if (m_selectedDevice != null) {
-                m_loader.load();
-                m_toolBar.enable();
-                m_startButton.disable();
-                m_stopButton.disable();
+            dirty = false;
+            if (selectedDevice != null) {
+                loader.load();
+                toolBar.enable();
+                startButton.disable();
+                stopButton.disable();
             } else {
-                m_grid.getStore().removeAll();
-                m_toolBar.disable();
+                grid.getStore().removeAll();
+                toolBar.disable();
             }
         }
     }
 
     public void reload() {
-        if (m_selectedDevice != null) {
-            m_loader.load();
+        if (selectedDevice != null) {
+            loader.load();
         }
     }
 
@@ -372,16 +369,16 @@ public class DeviceTabBundles extends LayoutContainer {
         }
 
         public void loaderBeforeLoad(LoadEvent le) {
-            m_grid.mask(MSGS.loading());
+            grid.mask(MSGS.loading());
         }
 
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
-            m_startButton.disable();
-            m_stopButton.disable();
-            m_grid.unmask();
+            startButton.disable();
+            stopButton.disable();
+            grid.unmask();
         }
 
         public void loaderLoadException(LoadEvent le) {
@@ -389,9 +386,9 @@ public class DeviceTabBundles extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
-            m_startButton.disable();
-            m_stopButton.disable();
-            m_grid.unmask();
+            startButton.disable();
+            stopButton.disable();
+            grid.unmask();
         }
     }
 }

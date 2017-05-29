@@ -65,14 +65,14 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
 
-    public static String DEFAULT_PATH = "src/main/sql/H2";
-    public static String DEFAULT_COMMONS_PATH = "../../../commons";
-    public static String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
-    public static String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
+    public static final String DEFAULT_PATH = "src/main/sql/H2";
+    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    public static final String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
+    public static final String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
 
-    public static String CLIENT_NAME = "test_client";
-    public static String CLIENT_IP = "127.1.1.10";
-    public static String SERVER_IP = "127.1.1.100";
+    public static final String CLIENT_NAME = "test_client";
+    public static final String CLIENT_IP = "127.1.1.10";
+    public static final String SERVER_IP = "127.1.1.100";
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
     KapuaId rootUserId = new KapuaEid(BigInteger.ONE);

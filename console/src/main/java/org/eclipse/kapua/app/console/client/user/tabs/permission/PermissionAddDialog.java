@@ -125,8 +125,8 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 unmask();
 
                 submitButton.enable();
-                m_cancelButton.enable();
-                m_status.hide();
+                cancelButton.enable();
+                status.hide();
 
                 exitStatus = false;
                 exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
@@ -265,7 +265,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
         //
         // Add form panel to body
-        m_bodyPanel.add(permissionFormPanel);
+        bodyPanel.add(permissionFormPanel);
     }
 
     @Override

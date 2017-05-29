@@ -43,8 +43,8 @@ public class CredentialEditDialog extends CredentialAddDialog {
                 unmask();
 
                 submitButton.enable();
-                m_cancelButton.enable();
-                m_status.hide();
+                cancelButton.enable();
+                status.hide();
 
                 exitStatus = false;
                 exitMessage = MSGS.dialogEditError(caught.getLocalizedMessage());

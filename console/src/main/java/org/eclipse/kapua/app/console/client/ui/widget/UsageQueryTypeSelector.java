@@ -30,45 +30,45 @@ public class UsageQueryTypeSelector extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private SimpleComboBox<String> m_queryType;
-    private UsageQueryTypeSelectorListener m_listener;
+    private SimpleComboBox<String> queryType;
+    private UsageQueryTypeSelectorListener listener;
 
     protected void onRender(Element parent, int index) {
 
         super.onRender(parent, index);
 
-        m_queryType = new SimpleComboBox<String>();
-        m_queryType.setEditable(false);
-        m_queryType.setTypeAhead(true);
-        m_queryType.setTriggerAction(TriggerAction.ALL);
-        m_queryType.add(MSGS.accountUsageQueryTypeDays());
-        m_queryType.add(MSGS.accountUsageQueryTypeHour());
-        m_queryType.setSimpleValue(MSGS.accountUsageQueryTypeDays());
+        queryType = new SimpleComboBox<String>();
+        queryType.setEditable(false);
+        queryType.setTypeAhead(true);
+        queryType.setTriggerAction(TriggerAction.ALL);
+        queryType.add(MSGS.accountUsageQueryTypeDays());
+        queryType.add(MSGS.accountUsageQueryTypeHour());
+        queryType.setSimpleValue(MSGS.accountUsageQueryTypeDays());
 
-        m_queryType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
+        queryType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
-                if (m_listener != null) {
-                    m_listener.onUpdate();
+                if (listener != null) {
+                    listener.onUpdate();
                 }
             }
         });
 
-        add(m_queryType);
+        add(queryType);
     }
 
     public UsageQueryTypeSelectorListener getListener() {
-        return m_listener;
+        return listener;
     }
 
     public void setListener(UsageQueryTypeSelectorListener listener) {
-        m_listener = listener;
+        this.listener = listener;
     }
 
     public QueryType getQueryType() {
 
-        switch (m_queryType.getSelectedIndex()) {
+        switch (queryType.getSelectedIndex()) {
         case 0: // current billing cycle
             return QueryType.DAY;
         case 1: // last billing cycle

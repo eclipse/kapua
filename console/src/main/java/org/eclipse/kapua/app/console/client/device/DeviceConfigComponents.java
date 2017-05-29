@@ -76,30 +76,27 @@ public class DeviceConfigComponents extends LayoutContainer {
     private final GwtDeviceManagementServiceAsync gwtDeviceManagementService = GWT.create(GwtDeviceManagementService.class);
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
+    private boolean dirty;
+    private boolean initialized;
+    private GwtDevice selectedDevice;
+    private DeviceTabConfiguration tabConfig;
 
-    private boolean m_dirty;
-    private boolean m_initialized;
-    private GwtDevice m_selectedDevice;
-    private DeviceTabConfiguration m_tabConfig;
+    private ToolBar toolBar;
 
-    private ToolBar m_toolBar;
-
-    private Button m_refreshButton;
+    private Button refreshButton;
     private boolean refreshProcess;
 
-    private Button m_apply;
-    private Button m_reset;
+    private Button apply;
+    private Button reset;
 
-    private ContentPanel m_configPanel;
-    private DeviceConfigPanel m_devConfPanel;
-    private BorderLayoutData m_centerData;
+    private ContentPanel configPanel;
+    private DeviceConfigPanel devConfPanel;
+    private BorderLayoutData centerData;
 
     @SuppressWarnings("rawtypes")
-    private BaseTreeLoader m_loader;
-    private TreeStore<ModelData> m_treeStore;
-    private TreePanel<ModelData> m_tree;
+    private BaseTreeLoader loader;
+    private TreeStore<ModelData> treeStore;
+    private TreePanel<ModelData> tree;
 
     protected boolean resetProcess;
 
@@ -107,15 +104,14 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     public DeviceConfigComponents(GwtSession currentSession,
             DeviceTabConfiguration tabConfig) {
-        m_currentSession = currentSession;
-        m_tabConfig = tabConfig;
-        m_dirty = false;
-        m_initialized = false;
+        this.tabConfig = tabConfig;
+        dirty = false;
+        initialized = false;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        m_dirty = true;
-        m_selectedDevice = selectedDevice;
+        dirty = true;
+        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -133,95 +129,95 @@ public class DeviceConfigComponents extends LayoutContainer {
         devicesConfigurationPanel.setHeaderVisible(false);
         devicesConfigurationPanel.setLayout(new FitLayout());
         devicesConfigurationPanel.setScrollMode(Scroll.AUTO);
-        devicesConfigurationPanel.setTopComponent(m_toolBar);
-        devicesConfigurationPanel.add(m_configPanel);
+        devicesConfigurationPanel.setTopComponent(toolBar);
+        devicesConfigurationPanel.add(configPanel);
 
         add(devicesConfigurationPanel);
-        m_initialized = true;
+        initialized = true;
     }
 
     private void initToolBar() {
-        m_toolBar = new ToolBar();
-        m_toolBar.setBorders(false);
+        toolBar = new ToolBar();
+        toolBar.setBorders(false);
 
         //
         // Refresh Button
-        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!refreshProcess) {
                     refreshProcess = true;
-                    m_refreshButton.setEnabled(false);
+                    refreshButton.setEnabled(false);
 
-                    m_dirty = true;
+                    dirty = true;
                     refresh();
 
-                    m_refreshButton.setEnabled(true);
+                    refreshButton.setEnabled(true);
                     refreshProcess = false;
                 }
             }
         });
 
-        m_refreshButton.setEnabled(true);
-        m_toolBar.add(m_refreshButton);
-        m_toolBar.add(new SeparatorToolItem());
+        refreshButton.setEnabled(true);
+        toolBar.add(refreshButton);
+        toolBar.add(new SeparatorToolItem());
 
-        m_apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
+        apply = new ConfigSaveButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!applyProcess) {
                     applyProcess = true;
-                    m_apply.setEnabled(false);
+                    apply.setEnabled(false);
 
                     apply();
 
-                    m_apply.setEnabled(true);
+                    apply.setEnabled(true);
                     applyProcess = false;
                 }
             }
         });
 
-        m_reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
+        reset = new ConfigDiscardButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (!resetProcess) {
                     resetProcess = true;
-                    m_reset.setEnabled(false);
+                    reset.setEnabled(false);
 
                     reset();
 
-                    m_reset.setEnabled(true);
+                    reset.setEnabled(true);
                     resetProcess = false;
                 }
             }
         });
 
-        m_apply.setEnabled(false);
-        m_reset.setEnabled(false);
+        apply.setEnabled(false);
+        reset.setEnabled(false);
 
-        m_toolBar.add(m_apply);
-        m_toolBar.add(new SeparatorToolItem());
-        m_toolBar.add(m_reset);
+        toolBar.add(apply);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(reset);
     }
 
     @SuppressWarnings("unchecked")
     private void initConfigPanel() {
-        m_configPanel = new ContentPanel();
-        m_configPanel.setBorders(false);
-        m_configPanel.setBodyBorder(false);
-        m_configPanel.setHeaderVisible(false);
-        m_configPanel.setStyleAttribute("background-color", "white");
-        m_configPanel.setScrollMode(Scroll.AUTO);
+        configPanel = new ContentPanel();
+        configPanel.setBorders(false);
+        configPanel.setBodyBorder(false);
+        configPanel.setHeaderVisible(false);
+        configPanel.setStyleAttribute("background-color", "white");
+        configPanel.setScrollMode(Scroll.AUTO);
 
         BorderLayout borderLayout = new BorderLayout();
-        m_configPanel.setLayout(borderLayout);
+        configPanel.setLayout(borderLayout);
 
         // center
-        m_centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        m_centerData.setMargins(new Margins(0));
+        centerData = new BorderLayoutData(LayoutRegion.CENTER);
+        centerData.setMargins(new Margins(0));
 
         // west
         BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 200);
@@ -234,10 +230,10 @@ public class DeviceConfigComponents extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
-                if (m_selectedDevice != null && m_dirty && m_initialized) {
-                    if (m_selectedDevice.isOnline()) {
-                        m_tree.mask(MSGS.loading());
-                        gwtDeviceManagementService.findDeviceConfigurations(m_selectedDevice, callback);
+                if (selectedDevice != null && dirty && initialized) {
+                    if (selectedDevice.isOnline()) {
+                        tree.mask(MSGS.loading());
+                        gwtDeviceManagementService.findDeviceConfigurations(selectedDevice, callback);
                     } else {
                         List<GwtConfigComponent> comps = new ArrayList<GwtConfigComponent>();
                         GwtConfigComponent comp = new GwtConfigComponent();
@@ -256,29 +252,29 @@ public class DeviceConfigComponents extends LayoutContainer {
                     comps.add(comp);
                     callback.onSuccess(comps);
                 }
-                m_dirty = false;
+                dirty = false;
             }
         };
 
-        m_loader = new BaseTreeLoader<GwtConfigComponent>(proxy);
-        m_loader.addLoadListener(new DataLoadListener());
+        loader = new BaseTreeLoader<GwtConfigComponent>(proxy);
+        loader.addLoadListener(new DataLoadListener());
 
-        m_treeStore = new TreeStore<ModelData>(m_loader);
+        treeStore = new TreeStore<ModelData>(loader);
 
-        m_tree = new TreePanel<ModelData>(m_treeStore);
-        m_tree.setWidth(200);
-        m_tree.setDisplayProperty("componentName");
-        m_tree.setBorders(true);
-        m_tree.setLabelProvider(modelStringProvider);
-        m_tree.setAutoSelect(true);
-        m_tree.setStyleAttribute("background-color", "white");
+        tree = new TreePanel<ModelData>(treeStore);
+        tree.setWidth(200);
+        tree.setDisplayProperty("componentName");
+        tree.setBorders(true);
+        tree.setLabelProvider(modelStringProvider);
+        tree.setAutoSelect(true);
+        tree.setStyleAttribute("background-color", "white");
 
-        m_configPanel.add(m_tree, westData);
+        configPanel.add(tree, westData);
 
         //
         // Selection Listener for the component
         // make sure the form is not dirty before switching.
-        m_tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
+        tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
 
             @SuppressWarnings("rawtypes")
             @Override
@@ -288,7 +284,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                 SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
-                if (m_devConfPanel != null && m_devConfPanel.isDirty()) {
+                if (devConfPanel != null && devConfPanel.isDirty()) {
 
                     // cancel the event first
                     theEvent.setCancelled(true);
@@ -296,9 +292,9 @@ public class DeviceConfigComponents extends LayoutContainer {
                     // need to reselect the current entry
                     // as the BeforeSelect event cleared it
                     // we need to do this without raising events
-                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) m_tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
-                    selectionModel.select(false, m_devConfPanel.getConfiguration());
+                    selectionModel.select(false, devConfPanel.getConfiguration());
                     selectionModel.setFiresEvents(true);
 
                     // ask for confirmation before switching
@@ -310,9 +306,9 @@ public class DeviceConfigComponents extends LayoutContainer {
                                     // if confirmed, delete
                                     Dialog dialog = ce.getDialog();
                                     if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
-                                        m_devConfPanel.removeFromParent();
-                                        m_devConfPanel = null;
-                                        m_tree.getSelectionModel().select(false, componentToSwitchTo);
+                                        devConfPanel.removeFromParent();
+                                        devConfPanel = null;
+                                        tree.getSelectionModel().select(false, componentToSwitchTo);
                                     }
                                 }
                             });
@@ -322,7 +318,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
                     // to avoid an infinite loop as BeforeSelect would be invoked again.
-                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) m_tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, componentToSwitchTo);
 
@@ -339,22 +335,23 @@ public class DeviceConfigComponents extends LayoutContainer {
     //
     // --------------------------------------------------------------------------------------
 
+    private static final int PERIOD_MILLIS = 1000;
+
     public void refreshWhenOnline() {
-        final int PERIOD_MILLIS = 1000;
 
         Timer timer = new Timer() {
 
-            private int TIMEOUT_MILLIS = 30000;
+            private static final int TIMEOUT_MILLIS = 30000;
             private int countdownMillis = TIMEOUT_MILLIS;
 
             public void run() {
-                if (m_selectedDevice != null) {
+                if (selectedDevice != null) {
                     countdownMillis -= PERIOD_MILLIS;
 
                     //
                     // Poll the current status of the device until is online again or timeout.
-                    gwtDeviceService.findDevice(m_selectedDevice.getScopeId(),
-                            m_selectedDevice.getUnescapedClientId(),
+                    gwtDeviceService.findDevice(selectedDevice.getScopeId(),
+                            selectedDevice.getUnescapedClientId(),
                             new AsyncCallback<GwtDevice>() {
 
                                 @Override
@@ -374,65 +371,65 @@ public class DeviceConfigComponents extends LayoutContainer {
                                 private void done() {
                                     cancel();
                                     refresh();
-                                    if (m_devConfPanel != null) {
-                                        m_devConfPanel.unmask();
+                                    if (devConfPanel != null) {
+                                        devConfPanel.unmask();
                                     }
                                 }
                             });
                 }
             }
         };
-        m_devConfPanel.mask(MSGS.waiting());
+        devConfPanel.mask(MSGS.waiting());
         timer.scheduleRepeating(PERIOD_MILLIS);
     }
 
     public void refresh() {
-        if (m_dirty && m_initialized) {
+        if (dirty && initialized) {
 
             // clear the tree and disable the toolbar
-            m_apply.setEnabled(false);
-            m_reset.setEnabled(false);
-            m_refreshButton.setEnabled(false);
+            apply.setEnabled(false);
+            reset.setEnabled(false);
+            refreshButton.setEnabled(false);
 
-            m_treeStore.removeAll();
+            treeStore.removeAll();
 
             // clear the panel
-            if (m_devConfPanel != null) {
-                m_devConfPanel.removeAll();
-                m_devConfPanel.removeFromParent();
-                m_devConfPanel = null;
-                m_configPanel.layout();
+            if (devConfPanel != null) {
+                devConfPanel.removeAll();
+                devConfPanel.removeFromParent();
+                devConfPanel = null;
+                configPanel.layout();
             }
 
-            m_loader.load();
+            loader.load();
         }
     }
 
     public void refreshConfigPanel(GwtConfigComponent configComponent) {
-        m_apply.setEnabled(false);
-        m_reset.setEnabled(false);
+        apply.setEnabled(false);
+        reset.setEnabled(false);
 
-        if (m_devConfPanel != null) {
-            m_devConfPanel.removeFromParent();
+        if (devConfPanel != null) {
+            devConfPanel.removeFromParent();
         }
         if (configComponent != null) {
 
-            m_devConfPanel = new DeviceConfigPanel(configComponent);
-            m_devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
+            devConfPanel = new DeviceConfigPanel(configComponent);
+            devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
                 public void handleEvent(BaseEvent be) {
-                    m_apply.setEnabled(true);
-                    m_reset.setEnabled(true);
+                    apply.setEnabled(true);
+                    reset.setEnabled(true);
                 }
             });
-            m_configPanel.add(m_devConfPanel, m_centerData);
-            m_configPanel.layout();
+            configPanel.add(devConfPanel, centerData);
+            configPanel.layout();
         }
     }
 
     public void apply() {
-        if (!m_devConfPanel.isValid()) {
+        if (!devConfPanel.isValid()) {
             MessageBox mb = new MessageBox();
             mb.setIcon(MessageBox.ERROR);
             mb.setMessage(MSGS.deviceConfigError());
@@ -441,7 +438,7 @@ public class DeviceConfigComponents extends LayoutContainer {
         }
 
         // ask for confirmation
-        String componentName = m_devConfPanel.getConfiguration().getComponentName();
+        String componentName = devConfPanel.getConfiguration().getComponentName();
         String message = MSGS.deviceConfigConfirmation(componentName);
         final boolean isCloudUpdate = "CloudService".equals(componentName);
         if (isCloudUpdate) {
@@ -460,13 +457,13 @@ public class DeviceConfigComponents extends LayoutContainer {
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
                             // mark the whole config panel dirty and for reload
-                            m_tabConfig.setDevice(m_selectedDevice);
+                            tabConfig.setDevice(selectedDevice);
 
-                            m_devConfPanel.mask(MSGS.applying());
-                            m_tree.mask();
-                            m_apply.setEnabled(false);
-                            m_reset.setEnabled(false);
-                            m_refreshButton.setEnabled(false);
+                            devConfPanel.mask(MSGS.applying());
+                            tree.mask();
+                            apply.setEnabled(false);
+                            reset.setEnabled(false);
+                            refreshButton.setEnabled(false);
 
                             //
                             // Getting XSRF token
@@ -479,19 +476,19 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
-                                    final GwtConfigComponent configComponent = m_devConfPanel.getUpdatedConfiguration();
+                                    final GwtConfigComponent configComponent = devConfPanel.getUpdatedConfiguration();
                                     gwtDeviceManagementService.updateComponentConfiguration(token,
-                                            m_selectedDevice,
+                                            selectedDevice,
                                             configComponent,
                                             new AsyncCallback<Void>() {
 
                                                 public void onFailure(Throwable caught) {
                                                     FailureHandler.handle(caught);
-                                                    m_dirty = true;
+                                                    dirty = true;
                                                 }
 
                                                 public void onSuccess(Void arg0) {
-                                                    m_dirty = true;
+                                                    dirty = true;
                                                     if (isCloudUpdate) {
                                                         refreshWhenOnline();
                                                     } else {
@@ -509,8 +506,8 @@ public class DeviceConfigComponents extends LayoutContainer {
     }
 
     public void reset() {
-        final GwtConfigComponent comp = (GwtConfigComponent) m_tree.getSelectionModel().getSelectedItem();
-        if (m_devConfPanel != null && comp != null && m_devConfPanel.isDirty()) {
+        final GwtConfigComponent comp = (GwtConfigComponent) tree.getSelectionModel().getSelectedItem();
+        if (devConfPanel != null && comp != null && devConfPanel.isDirty()) {
             MessageBox.confirm(MSGS.confirm(),
                     MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
@@ -593,8 +590,8 @@ public class DeviceConfigComponents extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
-            m_tree.unmask();
-            m_refreshButton.setEnabled(true);
+            tree.unmask();
+            refreshButton.setEnabled(true);
         }
 
         public void loaderLoadException(LoadEvent le) {
@@ -609,10 +606,10 @@ public class DeviceConfigComponents extends LayoutContainer {
             comp.setName(MSGS.deviceNoComponents());
             comp.setDescription(MSGS.deviceNoConfigSupported());
             comps.add(comp);
-            m_treeStore.removeAll();
-            m_treeStore.add(comps, false);
+            treeStore.removeAll();
+            treeStore.add(comps, false);
 
-            m_tree.unmask();
+            tree.unmask();
         }
     }
 }

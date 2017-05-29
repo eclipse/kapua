@@ -93,8 +93,8 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                 unmask();
 
                 submitButton.enable();
-                m_cancelButton.enable();
-                m_status.hide();
+                cancelButton.enable();
+                status.hide();
 
                 exitStatus = false;
                 exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
@@ -145,7 +145,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
         //
         // Add form panel to body
-        m_bodyPanel.add(roleFormPanel);
+        bodyPanel.add(roleFormPanel);
     }
 
     @Override

@@ -32,37 +32,33 @@ public class DeviceTabConfiguration extends LayoutContainer {
 
     private final ConsoleMessages msgs = GWT.create(ConsoleMessages.class);
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
+    private TabPanel tabsPanel;
+    private TabItem tabComponents;
+    private TabItem tabSnapshots;
 
-    private TabPanel m_tabsPanel;
-    private TabItem m_tabComponents;
-    private TabItem m_tabSnapshots;
-
-    private DeviceConfigComponents m_configComponents;
-    private DeviceConfigSnapshots m_configSnapshots;
+    private DeviceConfigComponents configComponents;
+    private DeviceConfigSnapshots configSnapshots;
 
     public DeviceTabConfiguration(GwtSession currentSession) {
-        m_currentSession = currentSession;
-        m_configComponents = new DeviceConfigComponents(currentSession, this);
-        m_configSnapshots = new DeviceConfigSnapshots(currentSession, this);
+        configComponents = new DeviceConfigComponents(currentSession, this);
+        configSnapshots = new DeviceConfigSnapshots(currentSession, this);
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        m_configComponents.setDevice(selectedDevice);
-        m_configSnapshots.setDevice(selectedDevice);
+        configComponents.setDevice(selectedDevice);
+        configSnapshots.setDevice(selectedDevice);
     }
 
     public void refresh() {
 
-        if (m_tabsPanel == null) {
+        if (tabsPanel == null) {
             return;
         }
 
-        if (m_tabsPanel.getSelectedItem() == m_tabComponents) {
-            m_configComponents.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabSnapshots) {
-            m_configSnapshots.refresh();
+        if (tabsPanel.getSelectedItem() == tabComponents) {
+            configComponents.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabSnapshots) {
+            configSnapshots.refresh();
         }
     }
 
@@ -73,35 +69,35 @@ public class DeviceTabConfiguration extends LayoutContainer {
         setId("DeviceTabsContainer");
         setLayout(new FitLayout());
 
-        m_tabsPanel = new TabPanel();
-        m_tabsPanel.setPlain(true);
-        m_tabsPanel.setBorders(false);
-        m_tabsPanel.setTabPosition(TabPosition.BOTTOM);
+        tabsPanel = new TabPanel();
+        tabsPanel.setPlain(true);
+        tabsPanel.setBorders(false);
+        tabsPanel.setTabPosition(TabPosition.BOTTOM);
 
-        m_tabComponents = new TabItem(msgs.deviceConfigComponents(), new KapuaIcon(IconSet.PUZZLE_PIECE));
-        m_tabComponents.setBorders(false);
-        m_tabComponents.setLayout(new FitLayout());
-        m_tabComponents.add(m_configComponents);
-        m_tabComponents.addListener(Events.Select, new Listener<ComponentEvent>() {
-
-            public void handleEvent(ComponentEvent be) {
-                m_configComponents.refresh();
-            }
-        });
-        m_tabsPanel.add(m_tabComponents);
-
-        m_tabSnapshots = new TabItem(msgs.deviceConfigSnapshots(), new KapuaIcon(IconSet.ARCHIVE));
-        m_tabSnapshots.setBorders(false);
-        m_tabSnapshots.setLayout(new FitLayout());
-        m_tabSnapshots.add(m_configSnapshots);
-        m_tabSnapshots.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabComponents = new TabItem(msgs.deviceConfigComponents(), new KapuaIcon(IconSet.PUZZLE_PIECE));
+        tabComponents.setBorders(false);
+        tabComponents.setLayout(new FitLayout());
+        tabComponents.add(configComponents);
+        tabComponents.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_configSnapshots.refresh();
+                configComponents.refresh();
             }
         });
-        m_tabsPanel.add(m_tabSnapshots);
+        tabsPanel.add(tabComponents);
 
-        add(m_tabsPanel);
+        tabSnapshots = new TabItem(msgs.deviceConfigSnapshots(), new KapuaIcon(IconSet.ARCHIVE));
+        tabSnapshots.setBorders(false);
+        tabSnapshots.setLayout(new FitLayout());
+        tabSnapshots.add(configSnapshots);
+        tabSnapshots.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            public void handleEvent(ComponentEvent be) {
+                configSnapshots.refresh();
+            }
+        });
+        tabsPanel.add(tabSnapshots);
+
+        add(tabsPanel);
     }
 }

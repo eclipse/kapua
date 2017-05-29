@@ -50,29 +50,22 @@ public class DeviceTabProfile extends LayoutContainer {
 
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
-    @SuppressWarnings("unused")
-    private DeviceFilterPanel m_deviceFilterPanel;
+    private boolean dirty;
+    private boolean initialized;
+    private GwtDevice selectedDevice;
 
-    private boolean m_dirty;
-    private boolean m_initialized;
-    private GwtDevice m_selectedDevice;
-
-    private Grid<GwtGroupedNVPair> m_grid;
-    private GroupingStore<GwtGroupedNVPair> m_store;
-    private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
+    private Grid<GwtGroupedNVPair> grid;
+    private GroupingStore<GwtGroupedNVPair> store;
+    private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> loader;
 
     public DeviceTabProfile(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
-        m_deviceFilterPanel = deviceFilterPanel;
-        m_currentSession = currentSession;
-        m_dirty = true;
-        m_initialized = false;
+        dirty = true;
+        initialized = false;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        m_dirty = true;
-        m_selectedDevice = selectedDevice;
+        dirty = true;
+        this.selectedDevice = selectedDevice;
     }
 
     protected void onRender(Element parent, int index) {
@@ -90,17 +83,17 @@ public class DeviceTabProfile extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig, final AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                if (m_selectedDevice != null) {
-                    gwtDeviceService.findDeviceProfile(m_selectedDevice.getScopeId(), m_selectedDevice.getClientId(), callback);
+                if (selectedDevice != null) {
+                    gwtDeviceService.findDeviceProfile(selectedDevice.getScopeId(), selectedDevice.getClientId(), callback);
                 }
             }
         };
 
-        m_loader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
-        m_loader.addLoadListener(new DataLoadListener());
+        loader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
+        loader.addLoadListener(new DataLoadListener());
 
-        m_store = new GroupingStore<GwtGroupedNVPair>(m_loader);
-        m_store.groupBy("groupLoc");
+        store = new GroupingStore<GwtGroupedNVPair>(loader);
+        store.groupBy("groupLoc");
 
         ColumnConfig name = new ColumnConfig("nameLoc", MSGS.devicePropName(), 50);
         ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
@@ -133,26 +126,26 @@ public class DeviceTabProfile extends LayoutContainer {
         view.setForceFit(true);
         view.setEmptyText(MSGS.deviceNoDeviceSelected());
 
-        m_grid = new Grid<GwtGroupedNVPair>(m_store, cm);
-        m_grid.setView(view);
-        m_grid.setBorders(false);
-        m_grid.setLoadMask(true);
-        m_grid.setStripeRows(true);
-        m_grid.disableTextSelection(false);
+        grid = new Grid<GwtGroupedNVPair>(store, cm);
+        grid.setView(view);
+        grid.setBorders(false);
+        grid.setLoadMask(true);
+        grid.setStripeRows(true);
+        grid.disableTextSelection(false);
 
-        tabProfileContentPanel.add(m_grid);
+        tabProfileContentPanel.add(grid);
 
         add(tabProfileContentPanel);
-        m_initialized = true;
+        initialized = true;
     }
 
     public void refresh() {
-        if (m_dirty && m_initialized) {
-            m_dirty = false;
-            if (m_selectedDevice != null) {
-                m_loader.load();
+        if (dirty && initialized) {
+            dirty = false;
+            if (selectedDevice != null) {
+                loader.load();
             } else {
-                m_grid.getStore().removeAll();
+                grid.getStore().removeAll();
             }
         }
     }

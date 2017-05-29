@@ -590,13 +590,13 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             throws Exception {
         Context sendTimeContext = metricPublishTime.time();
         try {
-            _send(producerExchange, messageSend);
+            internalSend(producerExchange, messageSend);
         } finally {
             sendTimeContext.stop();
         }
     }
 
-    private void _send(ProducerBrokerExchange producerExchange, Message messageSend)
+    private void internalSend(ProducerBrokerExchange producerExchange, Message messageSend)
             throws Exception {
         if (!StringUtils.containsNone(messageSend.getDestination().getPhysicalName(), new char[] { '+', '#' })) {
             String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {}",
@@ -653,13 +653,13 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             throws Exception {
         Context subscribeTimeContext = subscribeTime.time();
         try {
-            return _addConsumer(context, info);
+            return internalAddConsumer(context, info);
         } finally {
             subscribeTimeContext.stop();
         }
     }
 
-    private Subscription _addConsumer(ConnectionContext context, ConsumerInfo info)
+    private Subscription internalAddConsumer(ConnectionContext context, ConsumerInfo info)
             throws Exception {
         info.setClientId(context.getClientId());
         if (!isBrokerContext(context)) {

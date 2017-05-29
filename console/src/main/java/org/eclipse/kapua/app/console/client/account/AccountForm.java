@@ -60,15 +60,15 @@ public class AccountForm extends Window {
 
     private static final int LABEL_WIDTH_FORM = 190;
 
-    private GwtSession m_currentSession;
-    private GwtAccount m_newAccount;
-    private GwtAccount m_existingAccount;
-    private FormPanel m_formPanel;
-    private Status m_status;
+    private GwtSession currentSession;
+    private GwtAccount newAccount;
+    private GwtAccount existingAccount;
+    private FormPanel formPanel;
+    private Status status;
 
     public AccountForm(GwtSession session) {
-        m_currentSession = session;
-        m_newAccount = null;
+        currentSession = session;
+        newAccount = null;
 
         setModal(true);
         setLayout(new FitLayout());
@@ -81,18 +81,18 @@ public class AccountForm extends Window {
 
     public AccountForm(GwtSession session, GwtAccount existingAccount) {
         this(session);
-        m_existingAccount = existingAccount;
-        if (m_existingAccount != null) {
-            setHeading(MSGS.accountFormUpdate(m_existingAccount.getName()));
+        this.existingAccount = existingAccount;
+        if (this.existingAccount != null) {
+            setHeading(MSGS.accountFormUpdate(this.existingAccount.getName()));
         }
     }
 
     public GwtAccount getNewAccount() {
-        return m_newAccount;
+        return newAccount;
     }
 
     public GwtAccount getExistingAccount() {
-        return m_existingAccount;
+        return existingAccount;
     }
 
     protected void onRender(Element parent, int index) {
@@ -100,12 +100,12 @@ public class AccountForm extends Window {
 
         FormData formData = new FormData("-30");
 
-        m_formPanel = new FormPanel();
-        m_formPanel.setFrame(false);
-        m_formPanel.setBodyBorder(true);
-        m_formPanel.setHeaderVisible(false);
-        m_formPanel.setScrollMode(Scroll.AUTOY);
-        m_formPanel.setLayout(new FlowLayout());
+        formPanel = new FormPanel();
+        formPanel.setFrame(false);
+        formPanel.setBodyBorder(true);
+        formPanel.setHeaderVisible(false);
+        formPanel.setScrollMode(Scroll.AUTOY);
+        formPanel.setLayout(new FlowLayout());
 
         // //////////////////////////////////////////
         // Account Information field set
@@ -163,7 +163,7 @@ public class AccountForm extends Window {
         confirmPassword.setPassword(true);
         fieldSet.add(confirmPassword, formData);
 
-        m_formPanel.add(fieldSet);
+        formPanel.add(fieldSet);
 
         // //////////////////////////////////////////
         // Deployment Information field set
@@ -190,7 +190,7 @@ public class AccountForm extends Window {
         fieldSetDeployment.add(optlock, formData);
 
         // add the field set and reset
-        m_formPanel.add(fieldSetDeployment);
+        formPanel.add(fieldSetDeployment);
 
         // //////////////////////////////////////////
         // Organization Information field set
@@ -281,12 +281,12 @@ public class AccountForm extends Window {
 
         // add the field set and reset
         fieldSetOrg.add(organizationSubFieldSet);
-        m_formPanel.add(fieldSetOrg);
+        formPanel.add(fieldSetOrg);
 
         //
         // If is a new account
         //
-        if (m_existingAccount == null) {
+        if (existingAccount == null) {
             // Show editable name, password, confirm password
             accountNameLabel.setVisible(false);
             accountClusterLabel.setVisible(false);
@@ -301,25 +301,25 @@ public class AccountForm extends Window {
             confirmPassword.setVisible(false);
         }
 
-        m_status = new Status();
-        m_status.setBusy(MSGS.waitMsg());
-        m_status.hide();
-        m_status.setAutoWidth(true);
+        status = new Status();
+        status.setBusy(MSGS.waitMsg());
+        status.hide();
+        status.setAutoWidth(true);
 
-        m_formPanel.setButtonAlign(HorizontalAlignment.LEFT);
-        m_formPanel.getButtonBar().add(m_status);
-        m_formPanel.getButtonBar().add(new FillToolItem());
+        formPanel.setButtonAlign(HorizontalAlignment.LEFT);
+        formPanel.getButtonBar().add(status);
+        formPanel.getButtonBar().add(new FillToolItem());
 
         //
         // Behave of Submit Button
         //
-        m_formPanel.addButton(new Button(MSGS.submitButton(), new SelectionListener<ButtonEvent>() {
+        formPanel.addButton(new Button(MSGS.submitButton(), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
 
                 // make sure all visible fields are valid before performing the action
-                for (Field<?> field : m_formPanel.getFields()) {
+                for (Field<?> field : formPanel.getFields()) {
                     if (field.isVisible() && !field.isValid()) {
                         MessageBox.alert(MSGS.error(), MSGS.formErrors(), null);
                         return;
@@ -328,16 +328,16 @@ public class AccountForm extends Window {
 
                 //
                 // Hold the dialog until the action comes back
-                m_status.show();
-                m_formPanel.getButtonBar().disable();
+                status.show();
+                formPanel.getButtonBar().disable();
 
                 //
                 // Create new account
                 //
-                if (m_existingAccount == null) {
+                if (existingAccount == null) {
 
                     final GwtAccountCreator gwtAccountCreator = new GwtAccountCreator();
-                    gwtAccountCreator.setParentAccountId(m_currentSession.getSelectedAccount().getId());
+                    gwtAccountCreator.setParentAccountId(currentSession.getSelectedAccount().getId());
                     gwtAccountCreator.setAccountName(accountNameField.getValue());
                     gwtAccountCreator.setAccountPassword(accountPassword.getValue());
 
@@ -370,14 +370,14 @@ public class AccountForm extends Window {
                                     new AsyncCallback<GwtAccount>() {
 
                                         public void onFailure(Throwable caught) {
-                                            FailureHandler.handleFormException(m_formPanel, caught);
-                                            m_status.hide();
-                                            m_formPanel.getButtonBar().enable();
+                                            FailureHandler.handleFormException(formPanel, caught);
+                                            status.hide();
+                                            formPanel.getButtonBar().enable();
                                         }
 
                                         public void onSuccess(GwtAccount account) {
                                             ConsoleInfo.display(MSGS.info(), MSGS.accountCreatedConfirmation(account.getUnescapedName()));
-                                            m_newAccount = account;
+                                            newAccount = account;
                                             // gwtAccountUtils.loadChildAccounts();
                                             hide();
                                         }
@@ -402,7 +402,7 @@ public class AccountForm extends Window {
                     gwtOrganization.setCity(organizationCity.getValue());
                     gwtOrganization.setStateProvinceCounty(organizationStateProvinceCounty.getValue());
                     gwtOrganization.setCountry(organizationCountry.getValue());
-                    m_existingAccount.setGwtOrganization(gwtOrganization);
+                    existingAccount.setGwtOrganization(gwtOrganization);
 
                     //
                     // Call to update the account
@@ -417,18 +417,18 @@ public class AccountForm extends Window {
                         @Override
                         public void onSuccess(GwtXSRFToken token) {
                             gwtAccountService.update(token,
-                                    m_existingAccount,
+                                    existingAccount,
                                     new AsyncCallback<GwtAccount>() {
 
                                         public void onFailure(Throwable caught) {
-                                            FailureHandler.handleFormException(m_formPanel, caught);
-                                            m_status.hide();
-                                            m_formPanel.getButtonBar().enable();
+                                            FailureHandler.handleFormException(formPanel, caught);
+                                            status.hide();
+                                            formPanel.getButtonBar().enable();
                                         }
 
                                         public void onSuccess(GwtAccount account) {
                                             ConsoleInfo.display(MSGS.info(), MSGS.accountUpdatedConfirmation(account.getUnescapedName()));
-                                            m_existingAccount = account;
+                                            existingAccount = account;
                                             hide();
                                         }
                                     });
@@ -442,21 +442,21 @@ public class AccountForm extends Window {
         //
         // Cancel Button
         //
-        m_formPanel.addButton(new Button(MSGS.cancelButton(), new SelectionListener<ButtonEvent>() {
+        formPanel.addButton(new Button(MSGS.cancelButton(), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
                 hide();
             }
         }));
-        m_formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
 
         //
         // Populate field if necessary
         //
-        parentAccountName.setValue(m_currentSession.getSelectedAccount().getName());
-        if (m_existingAccount != null) {
-            gwtAccountService.find(m_existingAccount.getId(), new AsyncCallback<GwtAccount>() {
+        parentAccountName.setValue(currentSession.getSelectedAccount().getName());
+        if (existingAccount != null) {
+            gwtAccountService.find(existingAccount.getId(), new AsyncCallback<GwtAccount>() {
 
                 public void onFailure(Throwable caught) {
                     FailureHandler.handle(caught);
@@ -505,6 +505,6 @@ public class AccountForm extends Window {
             });
         }
 
-        add(m_formPanel);
+        add(formPanel);
     }
 }

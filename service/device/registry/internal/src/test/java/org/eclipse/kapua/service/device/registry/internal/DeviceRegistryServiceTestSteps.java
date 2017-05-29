@@ -70,15 +70,15 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
 
-    public static String DEFAULT_PATH = "src/main/sql/H2";
-    public static String DEFAULT_COMMONS_PATH = "../../../commons";
-    public static String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
-    public static String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
+    public static final String DEFAULT_PATH = "src/main/sql/H2";
+    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    public static final String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
+    public static final String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
 
-    public static String TEST_DEVICE_NAME = "test_name";
-    public static String TEST_BIOS_VERSION_1 = "bios_version_1";
-    public static String TEST_BIOS_VERSION_2 = "bios_version_2";
-    public static String TEST_BIOS_VERSION_3 = "bios_version_3";
+    public static final String TEST_DEVICE_NAME = "test_name";
+    public static final String TEST_BIOS_VERSION_1 = "bios_version_1";
+    public static final String TEST_BIOS_VERSION_2 = "bios_version_2";
+    public static final String TEST_BIOS_VERSION_3 = "bios_version_3";
 
     // Strings for client ID character set and length checks
     public static String simpleClientId = "simpleClientIdWith64Chars_12345678901234567890123456789012345678";

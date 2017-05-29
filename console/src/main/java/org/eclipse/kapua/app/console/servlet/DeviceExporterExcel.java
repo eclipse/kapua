@@ -37,12 +37,12 @@ public class DeviceExporterExcel extends DeviceExporter {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceExporterExcel.class);
 
-    private String m_account;
+    private String account;
 
-    private Workbook m_workbook;
-    private Sheet m_sheet;
-    private CellStyle m_dateStyle;
-    private short m_rowCount;
+    private Workbook workbook;
+    private Sheet sheet;
+    private CellStyle dateStyle;
+    private short rowCount;
 
     private static final int MAX_ROWS = 65535;
     private static final int MAX_CHAR = 32767;
@@ -54,22 +54,22 @@ public class DeviceExporterExcel extends DeviceExporter {
     @Override
     public void init(String account)
             throws ServletException, IOException {
-        m_account = account;
+        this.account = account;
 
         // workbook
-        m_workbook = new HSSFWorkbook();
-        m_sheet = m_workbook.createSheet();
-        CreationHelper createHelper = m_workbook.getCreationHelper();
-        m_dateStyle = m_workbook.createCellStyle();
-        m_dateStyle.setDataFormat(createHelper.createDataFormat().getFormat("mm/dd/yyyy hh:mm:ss.0"));
+        this.workbook = new HSSFWorkbook();
+        this.sheet = this.workbook.createSheet();
+        CreationHelper createHelper = this.workbook.getCreationHelper();
+        this.dateStyle = this.workbook.createCellStyle();
+        this.dateStyle.setDataFormat(createHelper.createDataFormat().getFormat("mm/dd/yyyy hh:mm:ss.0"));
 
         // headers
-        m_rowCount = 0;
-        Row row = m_sheet.createRow(m_rowCount++);
+        this.rowCount = 0;
+        Row row = this.sheet.createRow(this.rowCount++);
 
         int iColCount = 0;
-        for (String property : s_deviceProperties) {
-            m_sheet.setColumnWidth(iColCount, 18 * 256);
+        for (String property : DEVICE_PROPERTIES) {
+            this.sheet.setColumnWidth(iColCount, 18 * 256);
             row.createCell(iColCount++).setCellValue(truncate(property));
         }
     }
@@ -81,7 +81,7 @@ public class DeviceExporterExcel extends DeviceExporter {
         AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
         Account account = null;
         try {
-            account = accountService.find(KapuaEid.parseCompactId(m_account));
+            account = accountService.find(KapuaEid.parseCompactId(this.account));
         } catch (KapuaException e) {
             KapuaException.internalError(e);
         }
@@ -91,10 +91,10 @@ public class DeviceExporterExcel extends DeviceExporter {
         for (Device device : devices.getItems()) {
 
             int iColCount = 0;
-            row = m_sheet.createRow(m_rowCount++);
+            row = this.sheet.createRow(this.rowCount++);
 
             // Account id
-            row.createCell(iColCount++).setCellValue(truncate(m_account));
+            row.createCell(iColCount++).setCellValue(truncate(this.account));
 
             // Account name
             row.createCell(iColCount++).setCellValue(truncate(account.getName()));
@@ -111,7 +111,7 @@ public class DeviceExporterExcel extends DeviceExporter {
             // Created on
             if (device.getCreatedOn() != null) {
                 cell = row.createCell(iColCount++);
-                cell.setCellStyle(m_dateStyle);
+                cell.setCellStyle(this.dateStyle);
                 cell.setCellValue(device.getCreatedOn());
             } else {
                 row.createCell(iColCount++).setCellValue(BLANK);
@@ -120,7 +120,7 @@ public class DeviceExporterExcel extends DeviceExporter {
             // Last event on
             if (device.getLastEvent() != null) {
                 cell = row.createCell(iColCount++);
-                cell.setCellStyle(m_dateStyle);
+                cell.setCellStyle(this.dateStyle);
                 cell.setCellValue(device.getLastEvent().getReceivedOn());
             } else {
                 row.createCell(iColCount++).setCellValue(BLANK);
@@ -189,7 +189,7 @@ public class DeviceExporterExcel extends DeviceExporter {
             // Custom attribute 5
             row.createCell(iColCount).setCellValue(device.getCustomAttribute5() != null ? truncate(device.getCustomAttribute5()) : BLANK);
 
-            if (m_rowCount >= MAX_ROWS) {
+            if (this.rowCount >= MAX_ROWS) {
                 logger.warn("Truncated file at {} rows. Max rows limit reached.", MAX_ROWS - 1);
                 return;
             }
@@ -200,11 +200,11 @@ public class DeviceExporterExcel extends DeviceExporter {
     public void close()
             throws ServletException, IOException {
         // Write the output
-        m_response.setContentType("application/vnd.ms-excel");
-        m_response.setHeader("Content-Disposition", "attachment; filename=" + m_account + "_devices.xls");
-        m_response.setHeader("Cache-Control", "no-transform, max-age=0");
+        this.response.setContentType("application/vnd.ms-excel");
+        this.response.setHeader("Content-Disposition", "attachment; filename=" + this.account + "_devices.xls");
+        this.response.setHeader("Cache-Control", "no-transform, max-age=0");
 
-        m_workbook.write(m_response.getOutputStream());
+        this.workbook.write(this.response.getOutputStream());
     }
 
     private String truncate(String cellValue) {

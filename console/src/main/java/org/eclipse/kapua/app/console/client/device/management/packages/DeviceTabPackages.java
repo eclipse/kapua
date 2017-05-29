@@ -44,17 +44,15 @@ public class DeviceTabPackages extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    @SuppressWarnings("unused")
-    private GwtSession m_currentSession;
-    private DeviceTabs m_deviceTabs;
+    private DeviceTabs deviceTabs;
 
     private boolean componentInitialized;
     private GwtDevice selectedDevice;
 
     private ToolBar toolBar;
-    private Button m_refreshButton;
-    private Button m_installButton;
-    private Button m_uninstallButton;
+    private Button refreshButton;
+    private Button installButton;
+    private Button uninstallButton;
 
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
@@ -62,8 +60,7 @@ public class DeviceTabPackages extends LayoutContainer {
 
     public DeviceTabPackages(GwtSession currentSession,
             DeviceTabs deviceTabs) {
-        m_currentSession = currentSession;
-        m_deviceTabs = deviceTabs;
+        this.deviceTabs = deviceTabs;
     }
 
     public void setDevice(GwtDevice selectedDevice) {
@@ -109,7 +106,7 @@ public class DeviceTabPackages extends LayoutContainer {
     private void initToolBar() {
         toolBar = new ToolBar();
 
-        m_refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -123,7 +120,7 @@ public class DeviceTabPackages extends LayoutContainer {
             }
         });
 
-        m_installButton = new PackageInstallButton(new SelectionListener<ButtonEvent>() {
+        installButton = new PackageInstallButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -136,7 +133,7 @@ public class DeviceTabPackages extends LayoutContainer {
             }
         });
 
-        m_uninstallButton = new PackageUninstallButton(new SelectionListener<ButtonEvent>() {
+        uninstallButton = new PackageUninstallButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -149,11 +146,11 @@ public class DeviceTabPackages extends LayoutContainer {
             }
         });
 
-        toolBar.add(m_refreshButton);
+        toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(m_installButton);
+        toolBar.add(installButton);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(m_uninstallButton);
+        toolBar.add(uninstallButton);
 
         toolBar.disable();
     }
@@ -230,8 +227,8 @@ public class DeviceTabPackages extends LayoutContainer {
 
                     exitDialog.show();
 
-                    m_uninstallButton.disable();
-                    m_deviceTabs.setDevice(selectedDevice);
+                    uninstallButton.disable();
+                    deviceTabs.setDevice(selectedDevice);
                 }
             }
         });
@@ -274,8 +271,8 @@ public class DeviceTabPackages extends LayoutContainer {
 
                         exitDialog.show();
 
-                        m_uninstallButton.disable();
-                        m_deviceTabs.setDevice(selectedDevice);
+                        uninstallButton.disable();
+                        deviceTabs.setDevice(selectedDevice);
                     }
                 }
             });
@@ -307,7 +304,7 @@ public class DeviceTabPackages extends LayoutContainer {
         // Manage buttons
         if (selectedDevice != null && selectedDevice.isOnline()) {
             toolBar.enable();
-            m_uninstallButton.disable();
+            uninstallButton.disable();
         } else {
             toolBar.disable();
         }
@@ -329,7 +326,7 @@ public class DeviceTabPackages extends LayoutContainer {
     }
 
     public Button getUninstallButton() {
-        return m_uninstallButton;
+        return uninstallButton;
     }
 
 }

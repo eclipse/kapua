@@ -79,7 +79,7 @@ public class DeviceEventExporterExcel extends DeviceEventExporter {
         Row row = sheet.createRow(rowCount++);
 
         int iColCount = 0;
-        for (String property : s_deviceProperties) {
+        for (String property : DEVICE_PROPERTIES) {
             sheet.setColumnWidth(iColCount, 18 * 256);
             row.createCell(iColCount++).setCellValue(truncate(property));
         }

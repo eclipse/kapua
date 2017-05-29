@@ -17,7 +17,7 @@ import com.google.gwt.user.client.Element;
 
 public abstract class TabbedDialog extends ActionDialog {
 
-    protected TabPanel m_tabsPanel;
+    protected TabPanel tabsPanel;
 
     public TabbedDialog() {
         super();
@@ -29,20 +29,20 @@ public abstract class TabbedDialog extends ActionDialog {
 
         //
         // Tabs setup
-        m_tabsPanel = new TabPanel();
-        m_tabsPanel.setPlain(true);
-        m_tabsPanel.setBorders(false);
-        m_tabsPanel.setHeight(1000);
-        m_tabsPanel.setBodyBorder(false);
+        tabsPanel = new TabPanel();
+        tabsPanel.setPlain(true);
+        tabsPanel.setBorders(false);
+        tabsPanel.setHeight(1000);
+        tabsPanel.setBodyBorder(false);
 
         createTabItems();
 
         // Color tab items background
-        for (TabItem t : m_tabsPanel.getItems()) {
+        for (TabItem t : tabsPanel.getItems()) {
             t.setStyleAttribute("background-color", "#E8E8E8");
         }
 
-        m_formPanel.add(m_tabsPanel);
+        formPanel.add(tabsPanel);
     }
 
     public abstract void createTabItems();

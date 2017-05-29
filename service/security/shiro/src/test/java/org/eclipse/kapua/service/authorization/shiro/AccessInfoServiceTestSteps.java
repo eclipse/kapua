@@ -568,20 +568,20 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             AccessInfoCreator tmpCreator = new AccessInfoCreatorImpl(generateId());
             assertNotNull(tmpCreator);
             tmpCreator.setUserId(generateId());
-            AccessInfoCreator tmpCreator_2 = new AccessInfoCreatorImpl(tmpCreator);
-            assertNotNull(tmpCreator_2);
-            assertEquals(tmpCreator.getUserId(), tmpCreator_2.getUserId());
+            AccessInfoCreator tmpCreator2 = new AccessInfoCreatorImpl(tmpCreator);
+            assertNotNull(tmpCreator2);
+            assertEquals(tmpCreator.getUserId(), tmpCreator2.getUserId());
 
             AccessInfo tmpAccInfo = new AccessInfoImpl(generateId());
             assertNotNull(tmpAccInfo);
             tmpAccInfo.setUserId(generateId());
 
-            AccessInfo tmpAccInfo_2 = new AccessInfoImpl(tmpAccInfo);
-            assertNotNull(tmpAccInfo_2);
-            assertNotNull(tmpAccInfo_2.getUserId());
+            AccessInfo tmpAccInfo2 = new AccessInfoImpl(tmpAccInfo);
+            assertNotNull(tmpAccInfo2);
+            assertNotNull(tmpAccInfo2.getUserId());
 
-            tmpAccInfo_2.setUserId(null);
-            assertNull(tmpAccInfo_2.getUserId());
+            tmpAccInfo2.setUserId(null);
+            assertNull(tmpAccInfo2.getUserId());
         } catch (KapuaException ex) {
             commonData.exceptionCaught = true;
         }
@@ -606,10 +606,10 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         tmpAccPerm.setAccessInfoId(generateId());
         tmpAccPerm.setPermission(new PermissionImpl("test_domain", Actions.read, generateId(), generateId()));
 
-        AccessPermission tmpAccPerm_2 = new AccessPermissionImpl(tmpAccPerm);
-        assertNotNull(tmpAccPerm_2);
-        assertEquals(tmpAccPerm.getAccessInfoId(), tmpAccPerm_2.getAccessInfoId());
-        assertEquals(tmpAccPerm.getPermission(), tmpAccPerm_2.getPermission());
+        AccessPermission tmpAccPerm2 = new AccessPermissionImpl(tmpAccPerm);
+        assertNotNull(tmpAccPerm2);
+        assertEquals(tmpAccPerm.getAccessInfoId(), tmpAccPerm2.getAccessInfoId());
+        assertEquals(tmpAccPerm.getPermission(), tmpAccPerm2.getPermission());
 
         tmpAccPerm.setAccessInfoId(null);
         assertNull(tmpAccPerm.getAccessInfoId());
@@ -639,10 +639,10 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             assertNotNull(tmpRole);
             tmpRole.setAccessInfoId(generateId());
             tmpRole.setRoleId(generateId());
-            AccessRole tmpRole_2 = new AccessRoleImpl(tmpRole);
-            assertNotNull(tmpRole_2);
-            assertEquals(tmpRole.getRoleId(), tmpRole_2.getRoleId());
-            assertEquals(tmpRole.getAccessInfoId(), tmpRole_2.getAccessInfoId());
+            AccessRole tmpRole2 = new AccessRoleImpl(tmpRole);
+            assertNotNull(tmpRole2);
+            assertEquals(tmpRole.getRoleId(), tmpRole2.getRoleId());
+            assertEquals(tmpRole.getAccessInfoId(), tmpRole2.getAccessInfoId());
 
             tmpRole.setAccessInfoId(null);
             assertNull(tmpRole.getAccessInfoId());
@@ -725,34 +725,34 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     public void checkAccessRoleComparison()
             throws KapuaException {
 
-        AccessRoleImpl accRole_1 = new AccessRoleImpl(generateId());
-        AccessRoleImpl accRole_2 = new AccessRoleImpl(generateId());
+        AccessRoleImpl accRole1 = new AccessRoleImpl(generateId());
+        AccessRoleImpl accRole2 = new AccessRoleImpl(generateId());
 
-        assertTrue(accRole_1.equals(accRole_1));
-        assertFalse(accRole_1.equals(null));
-        assertFalse(accRole_1.equals(Integer.valueOf(15)));
+        assertTrue(accRole1.equals(accRole1));
+        assertFalse(accRole1.equals(null));
+        assertFalse(accRole1.equals(Integer.valueOf(15)));
 
-        assertTrue(accRole_1.equals(accRole_2));
+        assertTrue(accRole1.equals(accRole2));
 
-        accRole_2.setAccessInfoId(generateId());
-        assertFalse(accRole_1.equals(accRole_2));
+        accRole2.setAccessInfoId(generateId());
+        assertFalse(accRole1.equals(accRole2));
 
-        accRole_1.setAccessInfoId(generateId());
-        accRole_2.setAccessInfoId(null);
-        assertFalse(accRole_1.equals(accRole_2));
+        accRole1.setAccessInfoId(generateId());
+        accRole2.setAccessInfoId(null);
+        assertFalse(accRole1.equals(accRole2));
 
-        accRole_2.setAccessInfoId(accRole_1.getAccessInfoId());
-        assertTrue(accRole_1.equals(accRole_2));
+        accRole2.setAccessInfoId(accRole1.getAccessInfoId());
+        assertTrue(accRole1.equals(accRole2));
 
-        accRole_2.setRoleId(generateId());
-        assertFalse(accRole_1.equals(accRole_2));
+        accRole2.setRoleId(generateId());
+        assertFalse(accRole1.equals(accRole2));
 
-        accRole_1.setRoleId(generateId());
-        accRole_2.setRoleId(null);
-        assertFalse(accRole_1.equals(accRole_2));
+        accRole1.setRoleId(generateId());
+        accRole2.setRoleId(null);
+        assertFalse(accRole1.equals(accRole2));
 
-        accRole_2.setRoleId(accRole_1.getRoleId());
-        assertTrue(accRole_1.equals(accRole_2));
+        accRole2.setRoleId(accRole1.getRoleId());
+        assertTrue(accRole1.equals(accRole2));
     }
 
     // The following test step is more of a filler. The only purpose is to achieve some coverage
@@ -762,45 +762,45 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     public void checkAccessPermissionComparison()
             throws KapuaException {
 
-        AccessPermissionImpl accPerm_1 = new AccessPermissionImpl(generateId());
-        AccessPermissionImpl accPerm_2 = new AccessPermissionImpl(generateId());
-        Permission tmpPerm_1 = new PermissionImpl("test_domain", Actions.read, ROOT_SCOPE_ID, generateId());
-        Permission tmpPerm_2 = new PermissionImpl("test_domain", Actions.write, ROOT_SCOPE_ID, generateId());
+        AccessPermissionImpl accPerm1 = new AccessPermissionImpl(generateId());
+        AccessPermissionImpl accPerm2 = new AccessPermissionImpl(generateId());
+        Permission tmpPerm1 = new PermissionImpl("test_domain", Actions.read, ROOT_SCOPE_ID, generateId());
+        Permission tmpPerm2 = new PermissionImpl("test_domain", Actions.write, ROOT_SCOPE_ID, generateId());
 
-        assertTrue(accPerm_1.equals(accPerm_1));
-        assertFalse(accPerm_1.equals(null));
-        assertFalse(accPerm_1.equals(Integer.valueOf(15)));
+        assertTrue(accPerm1.equals(accPerm1));
+        assertFalse(accPerm1.equals(null));
+        assertFalse(accPerm1.equals(Integer.valueOf(15)));
 
-        assertTrue(accPerm_1.equals(accPerm_2));
+        assertTrue(accPerm1.equals(accPerm2));
 
-        accPerm_1.setAccessInfoId(null);
-        accPerm_2.setAccessInfoId(generateId());
-        assertFalse(accPerm_1.equals(accPerm_2));
+        accPerm1.setAccessInfoId(null);
+        accPerm2.setAccessInfoId(generateId());
+        assertFalse(accPerm1.equals(accPerm2));
 
-        accPerm_1.setAccessInfoId(generateId());
-        accPerm_2.setAccessInfoId(null);
-        assertFalse(accPerm_1.equals(accPerm_2));
+        accPerm1.setAccessInfoId(generateId());
+        accPerm2.setAccessInfoId(null);
+        assertFalse(accPerm1.equals(accPerm2));
 
-        accPerm_1.setAccessInfoId(generateId());
-        accPerm_2.setAccessInfoId(generateId());
-        assertFalse(accPerm_1.equals(accPerm_2));
+        accPerm1.setAccessInfoId(generateId());
+        accPerm2.setAccessInfoId(generateId());
+        assertFalse(accPerm1.equals(accPerm2));
 
-        accPerm_2.setAccessInfoId(accPerm_1.getAccessInfoId());
-        assertTrue(accPerm_1.equals(accPerm_2));
+        accPerm2.setAccessInfoId(accPerm1.getAccessInfoId());
+        assertTrue(accPerm1.equals(accPerm2));
 
-        accPerm_1.setPermission(null);
-        accPerm_2.setPermission(tmpPerm_2);
-        assertFalse(accPerm_1.equals(accPerm_2));
+        accPerm1.setPermission(null);
+        accPerm2.setPermission(tmpPerm2);
+        assertFalse(accPerm1.equals(accPerm2));
 
-        accPerm_1.setPermission(tmpPerm_1);
-        accPerm_2.setPermission(null);
-        assertFalse(accPerm_1.equals(accPerm_2));
+        accPerm1.setPermission(tmpPerm1);
+        accPerm2.setPermission(null);
+        assertFalse(accPerm1.equals(accPerm2));
 
-        accPerm_1.setPermission(tmpPerm_1);
-        accPerm_2.setPermission(tmpPerm_2);
-        assertFalse(accPerm_1.equals(accPerm_2));
+        accPerm1.setPermission(tmpPerm1);
+        accPerm2.setPermission(tmpPerm2);
+        assertFalse(accPerm1.equals(accPerm2));
 
-        accPerm_2.setPermission(accPerm_1.getPermission());
-        assertTrue(accPerm_1.equals(accPerm_2));
+        accPerm2.setPermission(accPerm1.getPermission());
+        assertTrue(accPerm1.equals(accPerm2));
     }
 }

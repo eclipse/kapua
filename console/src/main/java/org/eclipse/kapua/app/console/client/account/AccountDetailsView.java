@@ -59,30 +59,30 @@ public class AccountDetailsView extends LayoutContainer {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
-    private GwtSession m_currentSession;
-    private AccountView m_centerAccountView;
+    private GwtSession currentSession;
+    private AccountView centerAccountView;
 
     private GwtAccount selectedAccount;
-    private Button m_editButton;
+    private Button editButton;
 
-    private boolean m_dirty;
-    private boolean m_initialized;
+    private boolean dirty;
+    private boolean initialized;
 
-    private FormPanel m_formPanel;
-    private Grid<GwtGroupedNVPair> m_grid;
-    private GroupingStore<GwtGroupedNVPair> m_store;
-    private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> m_loader;
+    private FormPanel formPanel;
+    private Grid<GwtGroupedNVPair> grid;
+    private GroupingStore<GwtGroupedNVPair> store;
+    private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> loader;
 
     public AccountDetailsView(AccountView centerAccountView, GwtSession currentSession) {
-        m_centerAccountView = centerAccountView;
-        m_currentSession = currentSession;
+        this.centerAccountView = centerAccountView;
+        this.currentSession = currentSession;
 
-        m_dirty = true;
-        m_initialized = false;
+        dirty = true;
+        initialized = false;
     }
 
     public void setAccount(GwtAccount selectedAccount) {
-        m_dirty = true;
+        dirty = true;
         this.selectedAccount = selectedAccount;
     }
 
@@ -92,19 +92,19 @@ public class AccountDetailsView extends LayoutContainer {
         // Borderlayout that expands to the whole screen
         setLayout(new FitLayout());
 
-        LayoutContainer m_bodyLayoutContainer = new LayoutContainer();
-        m_bodyLayoutContainer.setBorders(true);
-        m_bodyLayoutContainer.setLayout(new BorderLayout());
-        m_bodyLayoutContainer.setScrollMode(Scroll.AUTO);
-        m_bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
-        m_bodyLayoutContainer.setStyleAttribute("padding", "0px");
+        LayoutContainer bodyLayoutContainer = new LayoutContainer();
+        bodyLayoutContainer.setBorders(true);
+        bodyLayoutContainer.setLayout(new BorderLayout());
+        bodyLayoutContainer.setScrollMode(Scroll.AUTO);
+        bodyLayoutContainer.setStyleAttribute("background-color", "#F0F0F0");
+        bodyLayoutContainer.setStyleAttribute("padding", "0px");
 
         //
         // Toolbar
         BorderLayoutData northData = new BorderLayoutData(LayoutRegion.NORTH, 27.0F);
         northData.setMargins(new Margins(0, 0, 0, 0));
         northData.setSplit(false);
-        m_bodyLayoutContainer.add(getAccountsToolBar(), northData);
+        bodyLayoutContainer.add(getAccountsToolBar(), northData);
 
         //
         // Center View
@@ -113,7 +113,7 @@ public class AccountDetailsView extends LayoutContainer {
         centerData.setSplit(false);
 
         createGrid(parent);
-        m_bodyLayoutContainer.add(m_grid, centerData);
+        bodyLayoutContainer.add(grid, centerData);
 
         //
         // South View
@@ -123,17 +123,17 @@ public class AccountDetailsView extends LayoutContainer {
         southData.setHideCollapseTool(true);
         southData.setSplit(true);
         southData.setMargins(new Margins(5, 0, 0, 0));
-        TabPanel m_tabPanel = new TabPanel();
-        m_tabPanel.setPlain(true);
-        m_tabPanel.setBorders(false);
-        m_tabPanel.setBodyBorder(false);
-        AccountTabConfiguration settingsTabItem = new AccountTabConfiguration(m_currentSession);
+        TabPanel tabPanel = new TabPanel();
+        tabPanel.setPlain(true);
+        tabPanel.setBorders(false);
+        tabPanel.setBodyBorder(false);
+        AccountTabConfiguration settingsTabItem = new AccountTabConfiguration(currentSession);
         settingsTabItem.setEntity(selectedAccount);
-        m_tabPanel.add(settingsTabItem);
-        m_bodyLayoutContainer.add(m_tabPanel, southData);
+        tabPanel.add(settingsTabItem);
+        bodyLayoutContainer.add(tabPanel, southData);
 
-        add(m_bodyLayoutContainer);
-        m_initialized = true;
+        add(bodyLayoutContainer);
+        initialized = true;
 
     }
 
@@ -146,11 +146,11 @@ public class AccountDetailsView extends LayoutContainer {
             }
         };
 
-        m_loader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
-        m_loader.addLoadListener(new DataLoadListener());
+        loader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
+        loader.addLoadListener(new DataLoadListener());
 
-        m_store = new GroupingStore<GwtGroupedNVPair>(m_loader);
-        m_store.groupBy("groupLoc");
+        store = new GroupingStore<GwtGroupedNVPair>(loader);
+        store.groupBy("groupLoc");
 
         ColumnConfig name = new ColumnConfig("nameLoc", MSGS.devicePropName(), 50);
         ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
@@ -165,35 +165,35 @@ public class AccountDetailsView extends LayoutContainer {
         view.setForceFit(true);
         view.setEmptyText(MSGS.accountNoSelectedAccount());
 
-        m_grid = new Grid<GwtGroupedNVPair>(m_store, cm);
-        m_grid.setView(view);
-        m_grid.setBorders(false);
-        m_grid.setLoadMask(true);
-        m_grid.setStripeRows(true);
-        m_grid.setTrackMouseOver(false);
-        m_grid.disableTextSelection(false);
+        grid = new Grid<GwtGroupedNVPair>(store, cm);
+        grid.setView(view);
+        grid.setBorders(false);
+        grid.setLoadMask(true);
+        grid.setStripeRows(true);
+        grid.setTrackMouseOver(false);
+        grid.disableTextSelection(false);
 
-        add(m_grid);
+        add(grid);
     }
 
     private ToolBar getAccountsToolBar() {
         ToolBar accountsToolBar = new ToolBar();
         accountsToolBar.setHeight("27px");
-        if (m_currentSession.hasAccountUpdatePermission()) {
+        if (currentSession.hasAccountUpdatePermission()) {
             //
             // Edit Account Button
-            m_editButton = new EditButton(new SelectionListener<ButtonEvent>() {
+            editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     if (selectedAccount != null) {
-                        final AccountForm accountForm = new AccountForm(m_currentSession, selectedAccount);
+                        final AccountForm accountForm = new AccountForm(currentSession, selectedAccount);
                         accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
 
                             public void handleEvent(ComponentEvent be) {
 
                                 // reload the account and update the grid
-                                if (m_centerAccountView != null) {
+                                if (centerAccountView != null) {
                                     //m_centerAccountView.updateAccountGrid(accountForm.getExistingAccount());
                                 }
                                 setAccount(accountForm.getExistingAccount());
@@ -204,9 +204,9 @@ public class AccountDetailsView extends LayoutContainer {
                     }
                 }
             });
-            m_editButton.setEnabled(false);
+            editButton.setEnabled(false);
 
-            accountsToolBar.add(m_editButton);
+            accountsToolBar.add(editButton);
             accountsToolBar.add(new SeparatorToolItem());
         }
 
@@ -214,26 +214,26 @@ public class AccountDetailsView extends LayoutContainer {
     }
 
     public void refresh() {
-        if (m_initialized && m_dirty && selectedAccount != null) {
+        if (initialized && dirty && selectedAccount != null) {
             updateAccountInfo();
-            m_dirty = false;
+            dirty = false;
         }
         if (selectedAccount != null) {
-            if (m_formPanel != null) {
-                m_formPanel.show();
+            if (formPanel != null) {
+                formPanel.show();
             }
-            m_editButton.setEnabled(true);
+            editButton.setEnabled(true);
         } else {
-            if (m_formPanel != null) {
-                m_formPanel.hide();
+            if (formPanel != null) {
+                formPanel.hide();
             }
-            m_editButton.setEnabled(false);
+            editButton.setEnabled(false);
         }
     }
 
     private void updateAccountInfo() {
-        m_store.removeAll();
-        m_loader.load();
+        store.removeAll();
+        loader.load();
     }
 
     // --------------------------------------------------------------------------------------

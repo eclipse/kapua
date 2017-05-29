@@ -33,135 +33,135 @@ public class DeviceTabs extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private GwtSession m_currentSession;
-    private DevicesTable m_devicesTable;
-    private DeviceFilterPanel m_deviceFilterPanel;
+    private GwtSession currentSession;
+    private DevicesTable devicesTable;
+    private DeviceFilterPanel deviceFilterPanel;
 
-    private TabPanel m_tabsPanel;
-    private TabItem m_tabProfile;
-    private TabItem m_tabHistory;
-    private TabItem m_tabPackages;
-    private TabItem m_tabBundles;
-    private TabItem m_tabConfiguration;
-    private TabItem m_tabAssets;
+    private TabPanel tabsPanel;
+    private TabItem tabProfile;
+    private TabItem tabHistory;
+    private TabItem tabPackages;
+    private TabItem tabBundles;
+    private TabItem tabConfiguration;
+    private TabItem tabAssets;
 
-    private TabItem m_tabCommand;
+    private TabItem tabCommand;
 
-    private DeviceTabProfile m_deviceProfileTab;
-    private DeviceTabHistory m_deviceHistoryTab;
-    private DeviceTabPackages m_devicePackagesTab;
-    private DeviceTabBundles m_deviceBundlesTab;
-    private DeviceTabConfiguration m_deviceConfigTab;
-    private DeviceTabCommand m_deviceCommandTab;
-    private DeviceTabAssets m_deviceAssetsTab;
+    private DeviceTabProfile deviceProfileTab;
+    private DeviceTabHistory deviceHistoryTab;
+    private DeviceTabPackages devicePackagesTab;
+    private DeviceTabBundles deviceBundlesTab;
+    private DeviceTabConfiguration deviceConfigTab;
+    private DeviceTabCommand deviceCommandTab;
+    private DeviceTabAssets deviceAssetsTab;
 
     public DeviceTabs(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
-        m_devicesTable = devicesTable;
-        m_deviceFilterPanel = deviceFilterPanel;
-        m_currentSession = currentSession;
+        this.devicesTable = devicesTable;
+        this.deviceFilterPanel = deviceFilterPanel;
+        this.currentSession = currentSession;
 
-        m_deviceProfileTab = new DeviceTabProfile(m_devicesTable, m_deviceFilterPanel, m_currentSession);
-        m_deviceHistoryTab = new DeviceTabHistory(m_currentSession);
-        m_devicePackagesTab = new DeviceTabPackages(m_currentSession, this);
-        m_deviceBundlesTab = new DeviceTabBundles(m_currentSession, this);
-        m_deviceConfigTab = new DeviceTabConfiguration(m_currentSession);
-        m_deviceAssetsTab = new DeviceTabAssets(m_currentSession);
+        deviceProfileTab = new DeviceTabProfile(this.devicesTable, this.deviceFilterPanel, this.currentSession);
+        deviceHistoryTab = new DeviceTabHistory(this.currentSession);
+        devicePackagesTab = new DeviceTabPackages(this.currentSession, this);
+        deviceBundlesTab = new DeviceTabBundles(this.currentSession, this);
+        deviceConfigTab = new DeviceTabConfiguration(this.currentSession);
+        deviceAssetsTab = new DeviceTabAssets(this.currentSession);
 
-        m_deviceCommandTab = new DeviceTabCommand(m_currentSession);
+        deviceCommandTab = new DeviceTabCommand(this.currentSession);
     }
 
     public void setDevice(GwtDevice selectedDevice) {
         // configure the tabs based on the available applications and user permissions
-        if (m_currentSession.hasDeviceReadPermission()) {
-            m_tabHistory.enable();
+        if (currentSession.hasDeviceReadPermission()) {
+            tabHistory.enable();
         } else {
-            m_tabHistory.disable();
-            m_tabHistory.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
-            if (m_tabsPanel.getSelectedItem() == m_tabHistory) {
-                m_tabsPanel.setSelection(m_tabProfile);
+            tabHistory.disable();
+            tabHistory.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
+            if (tabsPanel.getSelectedItem() == tabHistory) {
+                tabsPanel.setSelection(tabProfile);
             }
         }
 
         boolean hasConfigApp = selectedDevice != null && selectedDevice.hasApplication(GwtDeviceApplication.APP_CONFIGURATION);
         if (hasConfigApp) {// && m_currentSession.hasDeviceManagePermission()) {
-            m_tabConfiguration.enable();
+            tabConfiguration.enable();
         } else {
-            m_tabConfiguration.disable();
-            m_tabConfiguration.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
-            if (m_tabsPanel.getSelectedItem() == m_tabConfiguration) {
-                m_tabsPanel.setSelection(m_tabProfile);
+            tabConfiguration.disable();
+            tabConfiguration.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
+            if (tabsPanel.getSelectedItem() == tabConfiguration) {
+                tabsPanel.setSelection(tabProfile);
             }
         }
 
         boolean hasCmdApp = selectedDevice != null && selectedDevice.hasApplication(GwtDeviceApplication.APP_COMMAND);
         if (hasCmdApp) {// && m_currentSession.hasDeviceManagePermission()) {
-            m_tabCommand.enable();
+            tabCommand.enable();
         } else {
-            m_tabCommand.disable();
-            m_tabCommand.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
-            if (m_tabsPanel.getSelectedItem() == m_tabCommand) {
-                m_tabsPanel.setSelection(m_tabProfile);
+            tabCommand.disable();
+            tabCommand.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
+            if (tabsPanel.getSelectedItem() == tabCommand) {
+                tabsPanel.setSelection(tabProfile);
 
             }
         }
 
         boolean hasPkgApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V1) ||
                 selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
-        if (hasPkgApp && m_currentSession.hasDeviceManagePermission()) {
-            m_tabPackages.enable();
+        if (hasPkgApp && currentSession.hasDeviceManagePermission()) {
+            tabPackages.enable();
         } else {
-            m_tabPackages.disable();
-            m_tabPackages.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
-            if (m_tabsPanel.getSelectedItem() == m_tabPackages) {
-                m_tabsPanel.setSelection(m_tabProfile);
+            tabPackages.disable();
+            tabPackages.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
+            if (tabsPanel.getSelectedItem() == tabPackages) {
+                tabsPanel.setSelection(tabProfile);
             }
         }
 
         boolean hasBundleApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V1) ||
                 selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
-        if (hasBundleApp && m_currentSession.hasDeviceManagePermission()) {
-            m_tabBundles.enable();
+        if (hasBundleApp && currentSession.hasDeviceManagePermission()) {
+            tabBundles.enable();
         } else {
-            m_tabBundles.disable();
-            m_tabBundles.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
-            if (m_tabsPanel.getSelectedItem() == m_tabBundles) {
-                m_tabsPanel.setSelection(m_tabProfile);
+            tabBundles.disable();
+            tabBundles.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
+            if (tabsPanel.getSelectedItem() == tabBundles) {
+                tabsPanel.setSelection(tabProfile);
             }
         }
-        
+
         boolean hasAssetApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_ASSET_V1));
-        if (hasAssetApp && m_currentSession.hasDeviceManagePermission()) {
-            m_tabAssets.enable();
+        if (hasAssetApp && currentSession.hasDeviceManagePermission()) {
+            tabAssets.enable();
         } else {
-            m_tabAssets.disable();
-            m_tabAssets.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
-            if (m_tabsPanel.getSelectedItem() == m_tabAssets) {
-                m_tabsPanel.setSelection(m_tabProfile);
+            tabAssets.disable();
+            tabAssets.getHeader().setTitle(MSGS.youDontHavePermissionTo("view", "tab", "device:manage"));
+            if (tabsPanel.getSelectedItem() == tabAssets) {
+                tabsPanel.setSelection(tabProfile);
             }
         }
 
-        m_deviceProfileTab.setDevice(selectedDevice);
-        m_deviceHistoryTab.setDevice(selectedDevice);
-        m_devicePackagesTab.setDevice(selectedDevice);
-        m_deviceBundlesTab.setDevice(selectedDevice);
-        m_deviceConfigTab.setDevice(selectedDevice);
-        m_deviceCommandTab.setDevice(selectedDevice);
-        m_deviceAssetsTab.setDevice(selectedDevice);
+        deviceProfileTab.setDevice(selectedDevice);
+        deviceHistoryTab.setDevice(selectedDevice);
+        devicePackagesTab.setDevice(selectedDevice);
+        deviceBundlesTab.setDevice(selectedDevice);
+        deviceConfigTab.setDevice(selectedDevice);
+        deviceCommandTab.setDevice(selectedDevice);
+        deviceAssetsTab.setDevice(selectedDevice);
 
-        if (m_tabsPanel.getSelectedItem() == m_tabProfile) {
-            m_deviceProfileTab.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabHistory) {
-            m_deviceHistoryTab.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabConfiguration) {
-            m_deviceConfigTab.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabCommand) {
-            m_deviceCommandTab.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabPackages) {
-            m_devicePackagesTab.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabBundles) {
-            m_deviceBundlesTab.refresh();
-        } else if (m_tabsPanel.getSelectedItem() == m_tabAssets) {
-            m_deviceAssetsTab.refresh();
+        if (tabsPanel.getSelectedItem() == tabProfile) {
+            deviceProfileTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabHistory) {
+            deviceHistoryTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabConfiguration) {
+            deviceConfigTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabCommand) {
+            deviceCommandTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabPackages) {
+            devicePackagesTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabBundles) {
+            deviceBundlesTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabAssets) {
+            deviceAssetsTab.refresh();
         }
     }
 
@@ -172,97 +172,97 @@ public class DeviceTabs extends LayoutContainer {
         setId("DeviceTabsContainer");
         setLayout(new FitLayout());
 
-        m_tabsPanel = new TabPanel();
-        m_tabsPanel.setPlain(true);
-        m_tabsPanel.setBorders(false);
-        m_tabsPanel.setBodyBorder(false);
-        m_tabsPanel.setStyleAttribute("padding-top", "5px");
+        tabsPanel = new TabPanel();
+        tabsPanel.setPlain(true);
+        tabsPanel.setBorders(false);
+        tabsPanel.setBodyBorder(false);
+        tabsPanel.setStyleAttribute("padding-top", "5px");
 
-        m_tabProfile = new TabItem(MSGS.deviceTabDescription(), new KapuaIcon(IconSet.INFO));
-        m_tabProfile.setBorders(true);
-        m_tabProfile.setLayout(new FitLayout());
-        m_tabProfile.add(m_deviceProfileTab);
-        m_tabProfile.addListener(Events.Select, new Listener<ComponentEvent>() {
-
-            public void handleEvent(ComponentEvent be) {
-                m_deviceProfileTab.refresh();
-            }
-        });
-        m_tabsPanel.add(m_tabProfile);
-
-        m_tabHistory = new TabItem(MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
-        m_tabHistory.setBorders(true);
-        m_tabHistory.setLayout(new FitLayout());
-        m_tabHistory.add(m_deviceHistoryTab);
-        m_tabHistory.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabProfile = new TabItem(MSGS.deviceTabDescription(), new KapuaIcon(IconSet.INFO));
+        tabProfile.setBorders(true);
+        tabProfile.setLayout(new FitLayout());
+        tabProfile.add(deviceProfileTab);
+        tabProfile.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_deviceHistoryTab.refresh();
+                deviceProfileTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabHistory);
+        tabsPanel.add(tabProfile);
 
-        m_tabPackages = new TabItem(MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
-        m_tabPackages.setBorders(true);
-        m_tabPackages.setLayout(new FitLayout());
-        m_tabPackages.add(m_devicePackagesTab);
-        m_tabPackages.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabHistory = new TabItem(MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
+        tabHistory.setBorders(true);
+        tabHistory.setLayout(new FitLayout());
+        tabHistory.add(deviceHistoryTab);
+        tabHistory.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_devicePackagesTab.refresh();
+                deviceHistoryTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabPackages);
+        tabsPanel.add(tabHistory);
 
-        m_tabBundles = new TabItem(MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
-        m_tabBundles.setBorders(true);
-        m_tabBundles.setLayout(new FitLayout());
-        m_tabBundles.add(m_deviceBundlesTab);
-        m_tabBundles.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabPackages = new TabItem(MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
+        tabPackages.setBorders(true);
+        tabPackages.setLayout(new FitLayout());
+        tabPackages.add(devicePackagesTab);
+        tabPackages.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_deviceBundlesTab.refresh();
+                devicePackagesTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabBundles);
+        tabsPanel.add(tabPackages);
 
-        m_tabConfiguration = new TabItem(MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
-        m_tabConfiguration.setBorders(true);
-        m_tabConfiguration.setLayout(new FitLayout());
-        m_tabConfiguration.add(m_deviceConfigTab);
-        m_tabConfiguration.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabBundles = new TabItem(MSGS.tabBundles(), new KapuaIcon(IconSet.CUBES));
+        tabBundles.setBorders(true);
+        tabBundles.setLayout(new FitLayout());
+        tabBundles.add(deviceBundlesTab);
+        tabBundles.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_deviceConfigTab.refresh();
+                deviceBundlesTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabConfiguration);
+        tabsPanel.add(tabBundles);
 
-        m_tabCommand = new TabItem(MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
-        m_tabCommand.setBorders(false);
-        m_tabCommand.setLayout(new FitLayout());
-        m_tabCommand.add(m_deviceCommandTab);
-        m_tabCommand.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabConfiguration = new TabItem(MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
+        tabConfiguration.setBorders(true);
+        tabConfiguration.setLayout(new FitLayout());
+        tabConfiguration.add(deviceConfigTab);
+        tabConfiguration.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_deviceCommandTab.refresh();
+                deviceConfigTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabCommand);
-        
-        m_tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
-        m_tabAssets.setBorders(false);
-        m_tabAssets.setLayout(new FitLayout());
-        m_tabAssets.add(m_deviceAssetsTab);
-        m_tabAssets.addListener(Events.Select, new Listener<ComponentEvent>() {
+        tabsPanel.add(tabConfiguration);
+
+        tabCommand = new TabItem(MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
+        tabCommand.setBorders(false);
+        tabCommand.setLayout(new FitLayout());
+        tabCommand.add(deviceCommandTab);
+        tabCommand.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
-                m_deviceAssetsTab.refresh();
+                deviceCommandTab.refresh();
             }
         });
-        m_tabsPanel.add(m_tabAssets);
+        tabsPanel.add(tabCommand);
 
-        add(m_tabsPanel);
+        tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
+        tabAssets.setBorders(false);
+        tabAssets.setLayout(new FitLayout());
+        tabAssets.add(deviceAssetsTab);
+        tabAssets.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            public void handleEvent(ComponentEvent be) {
+                deviceAssetsTab.refresh();
+            }
+        });
+        tabsPanel.add(tabAssets);
+
+        add(tabsPanel);
     }
 
 }

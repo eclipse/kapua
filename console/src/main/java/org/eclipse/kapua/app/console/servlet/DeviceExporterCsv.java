@@ -35,9 +35,9 @@ import com.opencsv.CSVWriter;
 
 public class DeviceExporterCsv extends DeviceExporter {
 
-    private String m_account;
-    private DateFormat m_dateFormat;
-    private CSVWriter m_writer;
+    private String account;
+    private DateFormat dateFormat;
+    private CSVWriter writer;
 
     public DeviceExporterCsv(HttpServletResponse response) {
         super(response);
@@ -46,17 +46,17 @@ public class DeviceExporterCsv extends DeviceExporter {
     @Override
     public void init(String account)
             throws ServletException, IOException {
-        m_account = account;
-        m_dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        this.account = account;
+        dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
-        OutputStreamWriter osw = new OutputStreamWriter(m_response.getOutputStream(), Charset.forName("UTF-8"));
-        m_writer = new CSVWriter(osw);
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+        writer = new CSVWriter(osw);
 
         List<String> cols = new ArrayList<String>();
-        for (String property : s_deviceProperties) {
+        for (String property : DEVICE_PROPERTIES) {
             cols.add(property);
         }
-        m_writer.writeNext(cols.toArray(new String[] {}));
+        writer.writeNext(cols.toArray(new String[] {}));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DeviceExporterCsv extends DeviceExporter {
         AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
         Account account = null;
         try {
-            account = accountService.find(KapuaEid.parseCompactId(m_account));
+            account = accountService.find(KapuaEid.parseCompactId(this.account));
         } catch (KapuaException e) {
             KapuaException.internalError(e);
         }
@@ -76,7 +76,7 @@ public class DeviceExporterCsv extends DeviceExporter {
             List<String> cols = new ArrayList<String>();
 
             // Account id
-            cols.add(m_account);
+            cols.add(this.account);
 
             // Account name
             cols.add(account.getName());
@@ -91,10 +91,10 @@ public class DeviceExporterCsv extends DeviceExporter {
             cols.add(device.getConnection() != null ? device.getConnection().getStatus().name() : BLANK);
 
             // Created on
-            cols.add(device.getCreatedOn() != null ? m_dateFormat.format(device.getCreatedOn()) : BLANK);
+            cols.add(device.getCreatedOn() != null ? dateFormat.format(device.getCreatedOn()) : BLANK);
 
             // Last event on
-            cols.add(device.getLastEvent() != null ? m_dateFormat.format(device.getLastEvent().getReceivedOn()) : BLANK);
+            cols.add(device.getLastEvent() != null ? dateFormat.format(device.getLastEvent().getReceivedOn()) : BLANK);
 
             // Last event type
             cols.add(device.getLastEvent() != null ? device.getLastEvent().getResource() : BLANK);
@@ -159,20 +159,20 @@ public class DeviceExporterCsv extends DeviceExporter {
             // Custom attribute 5
             cols.add(device.getCustomAttribute5() != null ? device.getCustomAttribute5() : BLANK);
 
-            m_writer.writeNext(cols.toArray(new String[] {}));
+            writer.writeNext(cols.toArray(new String[] {}));
         }
     }
 
     @Override
     public void close()
             throws ServletException, IOException {
-        m_response.setContentType("text/csv");
-        m_response.setCharacterEncoding("UTF-8");
-        m_response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(m_account, "UTF-8") + "_devices.csv");
-        m_response.setHeader("Cache-Control", "no-transform, max-age=0");
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(account, "UTF-8") + "_devices.csv");
+        response.setHeader("Cache-Control", "no-transform, max-age=0");
 
-        m_writer.flush();
+        writer.flush();
 
-        m_writer.close();
+        writer.close();
     }
 }

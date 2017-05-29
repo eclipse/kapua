@@ -29,45 +29,45 @@ public class UsageDateRangeSelector extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private SimpleComboBox<String> m_dateRange;
-    private UsageDateRangeSelectorListener m_listener;
+    private SimpleComboBox<String> dateRange;
+    private UsageDateRangeSelectorListener listener;
 
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
-        m_dateRange = new SimpleComboBox<String>();
-        m_dateRange.setEditable(false);
-        m_dateRange.setTypeAhead(true);
-        m_dateRange.setTriggerAction(TriggerAction.ALL);
-        m_dateRange.add(MSGS.accountUsageBillingCurrent());
-        m_dateRange.add(MSGS.accountUsageBillingLast());
-        m_dateRange.setSimpleValue(MSGS.accountUsageBillingCurrent());
+        dateRange = new SimpleComboBox<String>();
+        dateRange.setEditable(false);
+        dateRange.setTypeAhead(true);
+        dateRange.setTriggerAction(TriggerAction.ALL);
+        dateRange.add(MSGS.accountUsageBillingCurrent());
+        dateRange.add(MSGS.accountUsageBillingLast());
+        dateRange.setSimpleValue(MSGS.accountUsageBillingCurrent());
 
-        m_dateRange.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
+        dateRange.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<String>>() {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<String>> se) {
-                if (m_listener != null) {
-                    m_listener.onUpdate();
+                if (listener != null) {
+                    listener.onUpdate();
                 }
             }
         });
 
-        add(m_dateRange);
+        add(dateRange);
     }
 
     public UsageDateRangeSelectorListener getListener() {
-        return m_listener;
+        return listener;
     }
 
     public void setListener(UsageDateRangeSelectorListener listener) {
-        m_listener = listener;
+        this.listener = listener;
     }
 
     public Date getStartDate() {
         Date startDate = null;
 
-        if (m_dateRange == null) {
+        if (dateRange == null) {
             startDate = new Date();
             startDate = DateUtils.setDayOfMonth(startDate, 1);
             startDate = DateUtils.setHour(startDate, 0);
@@ -78,7 +78,7 @@ public class UsageDateRangeSelector extends LayoutContainer {
         }
 
         try {
-            switch (m_dateRange.getSelectedIndex()) {
+            switch (dateRange.getSelectedIndex()) {
             case 0: // current billing cycle
                 startDate = new Date();
                 startDate = DateUtils.setDayOfMonth(startDate, 1);
@@ -132,12 +132,12 @@ public class UsageDateRangeSelector extends LayoutContainer {
     public Date getEndDate() {
         Date endDate = new Date();
 
-        if (m_dateRange == null) {
+        if (dateRange == null) {
             return endDate;
         }
 
         try {
-            switch (m_dateRange.getSelectedIndex()) {
+            switch (dateRange.getSelectedIndex()) {
             case 1: // last billing cycle
                 endDate = new Date();
                 if (DateUtils.getMonth(endDate) == 0) {

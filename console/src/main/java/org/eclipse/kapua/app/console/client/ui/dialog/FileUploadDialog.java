@@ -49,18 +49,18 @@ public class FileUploadDialog extends Dialog {
     private final GwtSecurityTokenServiceAsync gwtXSRFService = GWT.create(GwtSecurityTokenService.class);
     private HiddenField<String> xsrfTokenField;
 
-    private FormPanel m_formPanel;
-    private FileUploadField m_fileUploadField;
-    private List<HiddenField<?>> m_hiddenFields;
-    private Button m_submitButton;
-    private Button m_cancelButton;
-    private Status m_status;
-    private String m_url;
+    private FormPanel formPanel;
+    private FileUploadField fileUploadField;
+    private List<HiddenField<?>> hiddenFields;
+    private Button submitButton;
+    private Button cancelButton;
+    private Status status;
+    private String url;
 
     public FileUploadDialog(String url, List<HiddenField<?>> hiddenFields) {
         super();
-        m_url = url;
-        m_hiddenFields = hiddenFields;
+        this.url = url;
+        this.hiddenFields = hiddenFields;
         setButtonAlign(HorizontalAlignment.RIGHT);
     }
 
@@ -77,16 +77,16 @@ public class FileUploadDialog extends Dialog {
         setScrollMode(Scroll.AUTO);
         setHideOnButtonClick(false);
 
-        m_formPanel = new FormPanel();
-        m_formPanel.setFrame(false);
-        m_formPanel.setHeaderVisible(false);
-        m_formPanel.setBodyBorder(false);
-        m_formPanel.setAction(m_url);
-        m_formPanel.setEncoding(Encoding.MULTIPART);
-        m_formPanel.setMethod(Method.POST);
-        m_formPanel.setButtonAlign(HorizontalAlignment.CENTER);
+        formPanel = new FormPanel();
+        formPanel.setFrame(false);
+        formPanel.setHeaderVisible(false);
+        formPanel.setBodyBorder(false);
+        formPanel.setAction(url);
+        formPanel.setEncoding(Encoding.MULTIPART);
+        formPanel.setMethod(Method.POST);
+        formPanel.setButtonAlign(HorizontalAlignment.CENTER);
 
-        m_formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
+        formPanel.addListener(Events.Submit, new Listener<FormEvent>() {
 
             @Override
             public void handleEvent(FormEvent be) {
@@ -106,15 +106,15 @@ public class FileUploadDialog extends Dialog {
             }
         });
 
-        m_fileUploadField = new FileUploadField();
-        m_fileUploadField.setAllowBlank(false);
-        m_fileUploadField.setName("uploadedFile");
-        m_fileUploadField.setFieldLabel("File");
+        fileUploadField = new FileUploadField();
+        fileUploadField.setAllowBlank(false);
+        fileUploadField.setName("uploadedFile");
+        fileUploadField.setFieldLabel("File");
 
-        m_formPanel.add(m_fileUploadField);
-        if (m_hiddenFields != null) {
-            for (HiddenField<?> hf : m_hiddenFields) {
-                m_formPanel.add(hf);
+        formPanel.add(fileUploadField);
+        if (hiddenFields != null) {
+            for (HiddenField<?> hf : hiddenFields) {
+                formPanel.add(hf);
             }
         }
 
@@ -139,26 +139,26 @@ public class FileUploadDialog extends Dialog {
         xsrfTokenField.setName("xsrfToken");
         xsrfTokenField.setValue("");
 
-        m_formPanel.add(xsrfTokenField);
+        formPanel.add(xsrfTokenField);
         //
 
-        add(m_formPanel);
+        add(formPanel);
     }
 
     @Override
     protected void createButtons() {
         super.createButtons();
 
-        m_status = new Status();
-        m_status.setBusy(MSGS.waitMsg());
-        m_status.hide();
-        m_status.setAutoWidth(true);
-        getButtonBar().add(m_status);
+        status = new Status();
+        status.setBusy(MSGS.waitMsg());
+        status.hide();
+        status.setAutoWidth(true);
+        getButtonBar().add(status);
 
         getButtonBar().add(new FillToolItem());
 
-        m_submitButton = new Button(MSGS.uploadButton());
-        m_submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        submitButton = new Button(MSGS.uploadButton());
+        submitButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -166,8 +166,8 @@ public class FileUploadDialog extends Dialog {
             }
         });
 
-        m_cancelButton = new Button(MSGS.cancelButton());
-        m_cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        cancelButton = new Button(MSGS.cancelButton());
+        cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -175,17 +175,17 @@ public class FileUploadDialog extends Dialog {
             }
         });
 
-        addButton(m_cancelButton);
-        addButton(m_submitButton);
+        addButton(cancelButton);
+        addButton(submitButton);
     }
 
     private void submit() {
-        if (!m_formPanel.isValid()) {
+        if (!formPanel.isValid()) {
             return;
         }
-        m_submitButton.disable();
-        m_cancelButton.disable();
-        m_status.show();
-        m_formPanel.submit();
+        submitButton.disable();
+        cancelButton.disable();
+        status.show();
+        formPanel.submit();
     }
 }

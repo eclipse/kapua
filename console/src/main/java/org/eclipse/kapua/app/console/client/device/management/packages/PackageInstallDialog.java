@@ -160,24 +160,24 @@ public class PackageInstallDialog extends TabbedDialog {
         packageInfoTab.setBorders(false);
         packageInfoTab.setLayout(new FormLayout());
         packageInfoTab.add(packageInfoForm);
-        m_tabsPanel.add(packageInfoTab);
+        tabsPanel.add(packageInfoTab);
 
         operationOptionsTab = new TabItem(MSGS.packageInstallOperationTabTitle());
         operationOptionsTab.setBorders(false);
         operationOptionsTab.setLayout(new FormLayout());
         operationOptionsTab.add(operationOptionsForm);
-        m_tabsPanel.add(operationOptionsTab);
+        tabsPanel.add(operationOptionsTab);
     }
 
     @Override
     public void preSubmit() {
         if (!packageInfoForm.isValid()) {
-            m_tabsPanel.setSelection(packageInfoTab);
+            tabsPanel.setSelection(packageInfoTab);
             return;
         }
 
         if (!operationOptionsForm.isValid()) {
-            m_tabsPanel.setSelection(operationOptionsTab);
+            tabsPanel.setSelection(operationOptionsTab);
             return;
         }
 

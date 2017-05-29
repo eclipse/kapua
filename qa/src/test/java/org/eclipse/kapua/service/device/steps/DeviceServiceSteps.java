@@ -321,14 +321,14 @@ public class DeviceServiceSteps extends KapuaTest {
     }
 
     @When("^I search for the device \"(.+)\" in account \"(.+)\"$")
-    public void searchForDeviceWithClientID(String clientId, String Account)
+    public void searchForDeviceWithClientID(String clientId, String account)
             throws KapuaException {
 
         Account tmpAcc;
         Device tmpDev;
         DeviceListResult tmpList = new DeviceListResultImpl();
 
-        tmpAcc = KapuaLocator.getInstance().getService(AccountService.class).findByName(Account);
+        tmpAcc = KapuaLocator.getInstance().getService(AccountService.class).findByName(account);
         assertNotNull(tmpAcc);
         assertNotNull(tmpAcc.getId());
 
@@ -343,7 +343,7 @@ public class DeviceServiceSteps extends KapuaTest {
     }
 
     @When("^I search for events from device \"(.+)\" in account \"(.+)\"$")
-    public void searchForEventsFromDeviceWithClientID(String clientId, String Account)
+    public void searchForEventsFromDeviceWithClientID(String clientId, String account)
             throws KapuaException {
 
         DeviceEventQuery tmpQuery;
@@ -351,7 +351,7 @@ public class DeviceServiceSteps extends KapuaTest {
         DeviceEventListResult tmpList;
         Account tmpAcc;
 
-        tmpAcc = KapuaLocator.getInstance().getService(AccountService.class).findByName(Account);
+        tmpAcc = KapuaLocator.getInstance().getService(AccountService.class).findByName(account);
         assertNotNull(tmpAcc);
         assertNotNull(tmpAcc.getId());
 

@@ -19,21 +19,21 @@ public class PasswordFieldValidator extends TextFieldValidator {
     public PasswordFieldValidator(TextField<String> passwordField) {
 
         super (passwordField, FieldType.PASSWORD);
-        m_textField.setRegex(null);
+        textField.setRegex(null);
     }
 
     public String validate(Field<?> field, String value) {
 
         // if the field is not dirty, ignore the validation
         // this is needed for the update flow, in which we do not show the whole password
-        boolean isDirty = m_textField.isDirty();
+        boolean isDirty = textField.isDirty();
         if (!isDirty) {
-            m_textField.setRegex(null);
+            textField.setRegex(null);
             return null;
         }
 
-        if (m_textFieldType.getRegex() != null) {
-            m_textField.setRegex(m_textFieldType.getRegex());
+        if (textFieldType.getRegex() != null) {
+            textField.setRegex(textFieldType.getRegex());
         }
 
         return super.validate(field, value);

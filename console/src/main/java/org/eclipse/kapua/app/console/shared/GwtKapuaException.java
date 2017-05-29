@@ -30,9 +30,9 @@ public class GwtKapuaException extends Exception {
 
     private static final long serialVersionUID = -2843620194094802461L;
 
-    protected GwtKapuaErrorCode m_errorCode;
-    protected String[]        m_arguments;
-    protected Integer         m_remainingLoginAttempts;
+    protected GwtKapuaErrorCode errorCode;
+    protected String[] arguments;
+    protected Integer remainingLoginAttempts;
 
     @SuppressWarnings("unused")
     private GwtKapuaException() {
@@ -62,14 +62,14 @@ public class GwtKapuaException extends Exception {
      */
     public GwtKapuaException(GwtKapuaErrorCode errorCode, Throwable cause, Integer remainingLoginAttempts) {
         super(cause);
-        this.m_errorCode = errorCode;
-        this.m_remainingLoginAttempts = remainingLoginAttempts;
+        this.errorCode = errorCode;
+        this.remainingLoginAttempts = remainingLoginAttempts;
     }
 
     public GwtKapuaException(GwtKapuaErrorCode errorCode, Throwable cause, String... arguments) {
         super(cause);
-        m_errorCode = errorCode;
-        m_arguments = arguments;
+        this.errorCode = errorCode;
+        this.arguments = arguments;
     }
 
     /**
@@ -94,7 +94,7 @@ public class GwtKapuaException extends Exception {
     }
 
     public GwtKapuaErrorCode getCode() {
-        return m_errorCode;
+        return errorCode;
     }
 
     public String getMessage() {
@@ -103,22 +103,22 @@ public class GwtKapuaException extends Exception {
 
     public String getLocalizedMessage() {
 
-        String msg = m_errorCode.toString();
+        String msg = errorCode.toString();
         try {
-            ValidationMessages MSGS = GWT.create(ValidationMessages.class);
-            String msgPattern = MSGS.getString(m_errorCode.name());
+            ValidationMessages msgs = GWT.create(ValidationMessages.class);
+            String msgPattern = msgs.getString(errorCode.name());
             if (msgPattern != null) {
-                msg = format(msgPattern, (Object[]) m_arguments);
+                msg = format(msgPattern, (Object[]) arguments);
             }
 
-            if (m_remainingLoginAttempts != null) {
-                if (m_remainingLoginAttempts > 0) {
-                    msgPattern = MSGS.getString(m_errorCode.name() + "_LOGIN_ATTEMPTS");
+            if (remainingLoginAttempts != null) {
+                if (remainingLoginAttempts > 0) {
+                    msgPattern = msgs.getString(errorCode.name() + "_LOGIN_ATTEMPTS");
                     if (msgPattern != null) {
-                        msg += " " + format(msgPattern, new Object[] { m_remainingLoginAttempts });
+                        msg += " " + format(msgPattern, new Object[] { remainingLoginAttempts });
                     }
                 } else {
-                    msg += " " + MSGS.getString(m_errorCode.name() + "_USER_LOCKED");
+                    msg += " " + msgs.getString(errorCode.name() + "_USER_LOCKED");
                 }
             }
         } catch (MissingResourceException e) {
@@ -128,7 +128,7 @@ public class GwtKapuaException extends Exception {
     }
 
     public String[] getArguments() {
-        return m_arguments;
+        return arguments;
     }
 
     private String format(String s, Object[] arguments) {

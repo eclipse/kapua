@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserAddDialog extends EntityAddEditDialog {
 
-    protected final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
+    protected static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
 
     protected FieldSet infoFieldSet;
 
@@ -133,7 +133,7 @@ public class UserAddDialog extends EntityAddEditDialog {
 
         userFormPanel.add(infoFieldSet);
         
-        m_bodyPanel.add(userFormPanel);
+        bodyPanel.add(userFormPanel);
     }
 
     @Override
@@ -162,8 +162,8 @@ public class UserAddDialog extends EntityAddEditDialog {
                 unmask();
                 
                 submitButton.enable();
-                m_cancelButton.enable();
-                m_status.hide();
+                cancelButton.enable();
+                status.hide();
                 
                 exitStatus = false;
                 exitMessage = MSGS.dialogAddError(cause.getLocalizedMessage());

@@ -68,7 +68,7 @@ public class TadImpl implements KapuaTad {
     protected Integer cardinality;
     protected String min;
     protected String max;
-    protected String _default;
+    protected String defaultValue;
     protected Boolean required;
     private Map<QName, String> otherAttributes = new HashMap<>();
 
@@ -315,7 +315,7 @@ public class TadImpl implements KapuaTad {
      *         {@link String }
      */
     public String getDefault() {
-        return _default;
+        return defaultValue;
     }
 
     /**
@@ -326,7 +326,7 @@ public class TadImpl implements KapuaTad {
      *            {@link String }
      */
     public void setDefault(String value) {
-        this._default = value;
+        this.defaultValue = value;
     }
 
     /**

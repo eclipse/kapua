@@ -46,10 +46,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class UserManageForm extends UserForm {
 
-    private EditorGrid<GwtUserPermission> m_permisssionGrid;
-    private ColumnModel m_columnModel;
+    private EditorGrid<GwtUserPermission> permisssionGrid;
+    private ColumnModel columnModel;
 
-    private TabItem m_tabUserPermission;
+    private TabItem tabUserPermission;
     private FieldSet permissionsFieldSet;
 
     public UserManageForm(String accountId) {
@@ -60,11 +60,11 @@ public class UserManageForm extends UserForm {
     public UserManageForm(String accountId, GwtUser existingUser, GwtSession session) {
         this(accountId);
 
-        m_existingUser = existingUser;
-        if (m_existingUser != null) {
-            setHeading(MSGS.userFormUpdate(m_existingUser.getUsername()));
+        this.existingUser = existingUser;
+        if (this.existingUser != null) {
+            setHeading(MSGS.userFormUpdate(this.existingUser.getUsername()));
         }
-        m_currentSession = session;
+        this.currentSession = session;
     }
 
     protected void onRender(Element parent, int index) {
@@ -90,42 +90,42 @@ public class UserManageForm extends UserForm {
         configs.add(column);
 
         // Permissions table
-        m_columnModel = new ColumnModel(configs);
+        columnModel = new ColumnModel(configs);
 
         //
         // Initial empty values
-        List<GwtUserPermission> gwtUserPermissions = GwtUserPermission.getAllPermissions(m_accountId);
+        List<GwtUserPermission> gwtUserPermissions = GwtUserPermission.getAllPermissions(accountId);
         MemoryProxy<List<GwtUserPermission>> proxy = new MemoryProxy<List<GwtUserPermission>>(gwtUserPermissions);
         ListLoader<ListLoadResult<ModelData>> loader = new BaseListLoader<ListLoadResult<ModelData>>(proxy);
         ListStore<GwtUserPermission> permissions = new ListStore<GwtUserPermission>(loader);
         loader.load();
 
         // Grid
-        m_permisssionGrid = new EditorGrid<GwtUserPermission>(permissions, m_columnModel);
-        m_permisssionGrid.setBorders(true);
-        m_permisssionGrid.setStripeRows(true);
-        m_permisssionGrid.getView().setAutoFill(true);
-        m_permisssionGrid.setWidth(440);
-        m_permisssionGrid.setHeight(374);
-        m_permisssionGrid.setAutoExpandColumn("accountPermission");
-        m_permisssionGrid.setSelectionModel(sm);
-        m_permisssionGrid.addPlugin(sm);
+        permisssionGrid = new EditorGrid<GwtUserPermission>(permissions, columnModel);
+        permisssionGrid.setBorders(true);
+        permisssionGrid.setStripeRows(true);
+        permisssionGrid.getView().setAutoFill(true);
+        permisssionGrid.setWidth(440);
+        permisssionGrid.setHeight(374);
+        permisssionGrid.setAutoExpandColumn("accountPermission");
+        permisssionGrid.setSelectionModel(sm);
+        permisssionGrid.addPlugin(sm);
 
         LabelField permissionsField = new LabelField();
         permissionsField.setFieldLabel(MSGS.userFormPermissions());
         permissionsFieldSet.add(permissionsField, formData);
-        permissionsFieldSet.add(m_permisssionGrid, formData);
+        permissionsFieldSet.add(permisssionGrid, formData);
 
-        m_tabUserPermission = new TabItem(MSGS.userFormAccess());
-        m_tabUserPermission.setBorders(false);
-        m_tabUserPermission.setStyleAttribute("background-color", "#E8E8E8");
-        m_tabUserPermission.setScrollMode(Scroll.AUTOY);
-        m_tabUserPermission.add(permissionsFieldSet);
-        m_tabUserPermission.setLayout(new FitLayout());
+        tabUserPermission = new TabItem(MSGS.userFormAccess());
+        tabUserPermission.setBorders(false);
+        tabUserPermission.setStyleAttribute("background-color", "#E8E8E8");
+        tabUserPermission.setScrollMode(Scroll.AUTOY);
+        tabUserPermission.add(permissionsFieldSet);
+        tabUserPermission.setLayout(new FitLayout());
 
-        m_tabsPanel.add(m_tabUserPermission);
+        tabsPanel.add(tabUserPermission);
 
-        add(m_formPanel);
+        add(formPanel);
     }
 
     protected void setEditability() {
@@ -134,8 +134,8 @@ public class UserManageForm extends UserForm {
 
     protected void loadUser() {
         // populate if necessary
-        if (m_existingUser != null) {
-            gwtUserService.find(m_accountId, m_existingUser.getId(), new AsyncCallback<GwtUser>() {
+        if (existingUser != null) {
+            gwtUserService.find(accountId, existingUser.getId(), new AsyncCallback<GwtUser>() {
 
                 public void onFailure(Throwable caught) {
                     FailureHandler.handle(caught);
@@ -155,7 +155,7 @@ public class UserManageForm extends UserForm {
         StringBuilder sb = new StringBuilder();
 
         CheckBoxSelectionModel<GwtUserPermission> sm = null;
-        sm = (CheckBoxSelectionModel<GwtUserPermission>) m_permisssionGrid.getSelectionModel();
+        sm = (CheckBoxSelectionModel<GwtUserPermission>) permisssionGrid.getSelectionModel();
         List<GwtUserPermission> selectedPermissions = sm.getSelectedItems();
         for (GwtUserPermission p : selectedPermissions) {
             if (sb.length() != 0) {
@@ -172,9 +172,9 @@ public class UserManageForm extends UserForm {
 
     protected void submitAccount() {
         // New account
-        if (m_existingUser == null) {
+        if (existingUser == null) {
             final GwtUserCreator gwtUserCreator = new GwtUserCreator();
-            gwtUserCreator.setScopeId(m_accountId);
+            gwtUserCreator.setScopeId(accountId);
             gwtUserCreator.setUsername(username.getValue());
             gwtUserCreator.setPassword(password.getValue());
             gwtUserCreator.setDisplayName(displayName.getValue());
@@ -195,9 +195,9 @@ public class UserManageForm extends UserForm {
                     gwtUserService.create(token, gwtUserCreator, new AsyncCallback<GwtUser>() {
 
                         public void onFailure(Throwable caught) {
-                            FailureHandler.handleFormException(m_formPanel, caught);
-                            m_status.hide();
-                            m_formPanel.getButtonBar().enable();
+                            FailureHandler.handleFormException(formPanel, caught);
+                            status.hide();
+                            formPanel.getButtonBar().enable();
                         }
 
                         public void onSuccess(GwtUser user) {
@@ -213,12 +213,12 @@ public class UserManageForm extends UserForm {
     }
 
     protected void updateCall(GwtXSRFToken token) {
-        gwtUserService.update(token, m_existingUser, new AsyncCallback<GwtUser>() {
+        gwtUserService.update(token, existingUser, new AsyncCallback<GwtUser>() {
 
             public void onFailure(Throwable caught) {
-                FailureHandler.handleFormException(m_formPanel, caught);
-                m_status.hide();
-                m_formPanel.getButtonBar().enable();
+                FailureHandler.handleFormException(formPanel, caught);
+                status.hide();
+                formPanel.getButtonBar().enable();
             }
 
             public void onSuccess(GwtUser user) {
