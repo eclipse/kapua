@@ -13,11 +13,13 @@
 package org.eclipse.kapua.commons.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.misc.CollisionEntity;
 import org.eclipse.kapua.commons.model.misc.CollisionIdGenerator;
 import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
@@ -107,6 +109,21 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
         } catch (KapuaException e) {
             assertEquals("The generated random identifiers count is wrong!", SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_INSERT_MAX_RETRY) + 3,
                     collisionIdGenerator.getGeneretedValuesCount());
+        }
+    }
+
+    @Test
+    /**
+     * Just generate few ids and check if the numbers are fitted into the expected limits
+     * 
+     * @throws Exception
+     */
+    public void testIdGeneratorBound() throws Exception {
+        int idSize = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
+        BigInteger upperLimit = BigInteger.valueOf(2).pow(idSize);
+        for (int i = 0; i < 1000; i++) {
+            BigInteger generated = IdGenerator.generate();
+            assertFalse("The generated id is out of the expected bounds!", generated.compareTo(BigInteger.ZERO) < 0 || generated.compareTo(upperLimit) != -1);
         }
     }
 }
