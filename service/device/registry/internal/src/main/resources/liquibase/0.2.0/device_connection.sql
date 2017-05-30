@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset device_connection:1
+-- changeset device_connection:1
 
 CREATE TABLE dvc_device_connection (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,

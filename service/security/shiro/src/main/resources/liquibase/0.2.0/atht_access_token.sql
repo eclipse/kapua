@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset access_token:1
+-- changeset access_token:1
 
 CREATE TABLE atht_access_token (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
