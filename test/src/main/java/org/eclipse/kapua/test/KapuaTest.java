@@ -50,12 +50,12 @@ public class KapuaTest extends Assert {
 
     @Before
     public void setUp() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
-
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
-
         logger.debug("Setting up test...");
         try {
+            connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
+
+            new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+
             //
             // Login
             String username = "kapua-sys";
