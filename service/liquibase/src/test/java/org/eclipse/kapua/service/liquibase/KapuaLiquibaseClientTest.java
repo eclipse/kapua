@@ -94,7 +94,7 @@ public class KapuaLiquibaseClientTest {
         assertThat(sqlResults.next()).isFalse();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = Exception.class)
     public void shouldCreateAttempToUseCustomSchema() throws Exception {
         // Given
         System.setProperty("LIQUIBASE_ENABLED", "true");
@@ -102,7 +102,7 @@ public class KapuaLiquibaseClientTest {
         // When
         try {
             new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "", "", Optional.of("foo")).update();
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             // Then
             assertThat(e).hasMessageContaining("Schema \"FOO\" not found");
             throw e;
