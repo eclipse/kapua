@@ -10,7 +10,6 @@
 #     Eurotech - initial API and implementation
 #
 ###############################################################################
-
 Feature: Domain Service CRUD tests
 
 Scenario: Count domains in a blank database
