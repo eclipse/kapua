@@ -43,12 +43,6 @@ function downloadCss(elementSrc, elementId) {
 }
 
 //
-// Adds Openlayers script
-function downloadJsOpenlayers() {
-	downloadJs("openlayers/2.13.1/OpenLayers.js", "openlayersScript");
-}
-
-//
 // Adds console css
 function downloadCssConsole() {
 	downloadCss("css/console.css", "consoleCss")
@@ -57,9 +51,6 @@ function downloadCssConsole() {
 //
 // Downloads all necessary resources asynchronously
 function deferResourcesDownload() {
-
-	// Openlayers JS resources
-	downloadJsOpenlayers();
 
 	// Custom Kapua CSS
 	downloadCssConsole();
