@@ -547,3 +547,17 @@ objects:
       name: kapua-api
     port:
       targetPort: http
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: mqtt-ingress
+  spec:
+    ports:
+    - name: mqtt-tcp
+      port: 1883
+      nodePort: 31883
+    type: NodePort
+    selector:
+      app: kapua-broker
+      deploymentconfig: kapua-broker
