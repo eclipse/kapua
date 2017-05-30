@@ -8,9 +8,7 @@
 #
 # Contributors:
 #     Eurotech - initial API and implementation
-#
 ###############################################################################
-
 Feature: User Service Integration
   User Service integration scenarios
 
