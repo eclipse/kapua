@@ -33,8 +33,6 @@
         <gwt.version>2.4.0</gwt.version>
 
         <gxt.version>2.2.5</gxt.version>
-
-        <openlayers.version>2.13.1</openlayers.version>
     </properties>
 
     <repositories>
@@ -216,11 +214,6 @@
             <artifactId>opencsv</artifactId>
             <version>3.7</version>
         </dependency>
-        <dependency>
-            <groupId>org.gwtopenmaps.openlayers</groupId>
-            <artifactId>gwt-openlayers-client</artifactId>
-            <version>0.9</version>
-        </dependency>
 
         <!-- use logback only for testing -->
         <dependency>
@@ -353,68 +346,6 @@
                                     <outputDirectory>${project.build.directory}/Kapua/</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>Create openlayers resources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.webjars</groupId>
-                                    <artifactId>openlayers</artifactId>
-                                    <version>${openlayers.version}</version>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/tmp/openlayers-${openlayers.version}</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>Copy resources to webapp output folder</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <echo>Openlayers: copy resources to webapp output folder</echo>
-                                <copy
-                                        todir="${project.build.directory}/Kapua">
-                                    <fileset
-                                            dir="${project.build.directory}/tmp/openlayers-${openlayers.version}/META-INF/resources/webjars/">
-                                        <exclude name="**/OpenLayers.*.js"/>
-                                    </fileset>
-                                </copy>
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>Customize openlayers ImgPath variable</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <echo>Openlayers: customize openlayers 'ImgPath' variable</echo>
-                                <replaceregexp byline="true"
-                                               file="${project.build.directory}/Kapua/openlayers/${openlayers.version}/OpenLayers.js"
-                                               match="ImgPath:&quot;&quot;"
-                                               replace="ImgPath:&quot;openlayers/${openlayers.version}/img/&quot;"/>
-                            </target>
                         </configuration>
                     </execution>
                 </executions>
