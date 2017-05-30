@@ -13,13 +13,14 @@
 package org.eclipse.kapua.service.liquibase;
 
 import static java.lang.Boolean.parseBoolean;
-import static org.apache.commons.lang3.SystemUtils.getJavaIoTmpDir;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -62,28 +63,21 @@ public class KapuaLiquibaseClient {
     }
 
     public void update() {
-        try {
-            if (parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
-                try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
+        if (parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
+            try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
 
-                    //
-                    // Copy files to temporary directory
-                    String tmpDirectory = getJavaIoTmpDir().getAbsolutePath();
+                //
+                // Copy files to temporary directory
+                Path changelogTempDirectory = Files.createTempDirectory("kapua-liquibase");
+                try {
 
-                    File changelogTempDirectory = new File(tmpDirectory, "kapua-liquibase");
-
-                    if (changelogTempDirectory.exists()) {
-                        FileUtils.deleteDirectory(changelogTempDirectory);
-                    }
-
-                    changelogTempDirectory.mkdirs();
-                    LOG.trace("Tmp dir: {}", changelogTempDirectory.getAbsolutePath());
+                    LOG.trace("Tmp dir: {}", changelogTempDirectory);
 
                     Reflections reflections = new Reflections("liquibase", new ResourcesScanner());
                     Set<String> changeLogs = reflections.getResources(Pattern.compile(".*\\.xml|.*\\.sql"));
                     for (String script : changeLogs) {
                         URL scriptUrl = getClass().getResource("/" + script);
-                        File changelogFile = new File(changelogTempDirectory, script.replaceFirst("liquibase/", ""));
+                        File changelogFile = new File(changelogTempDirectory.toFile(), script.replaceFirst("liquibase/", ""));
                         if (changelogFile.getParentFile() != null && !changelogFile.getParentFile().exists()) {
                             LOG.trace("Creating parent dir: {}", changelogFile.getParentFile().getAbsolutePath());
                             changelogFile.getParentFile().mkdirs();
@@ -94,7 +88,7 @@ public class KapuaLiquibaseClient {
 
                     //
                     // Find and execute all master scripts
-                    File[] masterChangelogs = changelogTempDirectory.listFiles((FilenameFilter) (dir, name) -> name.endsWith("-master.xml"));
+                    File[] masterChangelogs = changelogTempDirectory.toFile().listFiles((FilenameFilter) (dir, name) -> name.endsWith("-master.xml"));
 
                     LOG.info("Master Liquibase files found: {}", masterChangelogs.length);
 
@@ -109,11 +103,15 @@ public class KapuaLiquibaseClient {
 
                         LOG.debug("Excuted liquibase script: {}", masterChangelog.getAbsolutePath());
                     }
+
+                } finally {
+                    FileUtils.deleteDirectory(changelogTempDirectory.toFile());
                 }
+
+            } catch (LiquibaseException | SQLException | IOException e) {
+                LOG.error("Error while running Liquibase scripts!", e);
+                throw new RuntimeException(e);
             }
-        } catch (LiquibaseException | SQLException | IOException e) {
-            LOG.error("Error while running Liquibase scripts!", e);
-            throw new RuntimeException(e);
         }
     }
 
