@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset configurarion:1
+-- changeset configurarion:1
 
 CREATE TABLE IF NOT EXISTS sys_configuration (
   scope_id          		 BIGINT(21) 	  UNSIGNED,

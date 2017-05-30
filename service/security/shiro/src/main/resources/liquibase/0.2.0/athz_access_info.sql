@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset access_info:1
+-- changeset access_info:1
 
 CREATE TABLE athz_access_info (
   scope_id             	    BIGINT(21) 	  UNSIGNED NOT NULL,

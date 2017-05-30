@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset role:1
+-- changeset role:1
 
 -- WARNING: to be kept in sync with kapua/commons/src/main/resources/liquibase/configuration.sql
 CREATE TABLE IF NOT EXISTS sys_configuration (

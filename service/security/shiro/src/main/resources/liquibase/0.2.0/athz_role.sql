@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset role:1
+-- changeset role:1
 
 CREATE TABLE athz_role (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,

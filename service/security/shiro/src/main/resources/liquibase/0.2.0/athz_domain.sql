@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset domain:1
+-- changeset domain:1
 
 CREATE TABLE athz_domain (
   scope_id             		BIGINT(21) 	  UNSIGNED,

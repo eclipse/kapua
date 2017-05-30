@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset user:1
+-- changeset user:1
 
 CREATE TABLE usr_user (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,

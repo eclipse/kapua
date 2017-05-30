@@ -10,9 +10,9 @@
 --     Eurotech - initial API and implementation
 -- *******************************************************************************
 
---liquibase formatted sql
+-- liquibase formatted sql
 
---changeset account:1
+-- changeset account:1
 
 CREATE TABLE act_account (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
