@@ -44,9 +44,9 @@ public class DeviceTabs extends LayoutContainer {
     private TabItem tabBundles;
     private TabItem tabConfiguration;
     private TabItem tabAssets;
-
     private TabItem tabCommand;
-
+    private TabItem tabLog;
+    
     private DeviceTabProfile deviceProfileTab;
     private DeviceTabHistory deviceHistoryTab;
     private DeviceTabPackages devicePackagesTab;
@@ -54,6 +54,7 @@ public class DeviceTabs extends LayoutContainer {
     private DeviceTabConfiguration deviceConfigTab;
     private DeviceTabCommand deviceCommandTab;
     private DeviceTabAssets deviceAssetsTab;
+    private DeviceTabLog deviceLogTab;
 
     public DeviceTabs(DevicesTable devicesTable, DeviceFilterPanel deviceFilterPanel, GwtSession currentSession) {
         this.devicesTable = devicesTable;
@@ -66,12 +67,13 @@ public class DeviceTabs extends LayoutContainer {
         deviceBundlesTab = new DeviceTabBundles(this.currentSession, this);
         deviceConfigTab = new DeviceTabConfiguration(this.currentSession);
         deviceAssetsTab = new DeviceTabAssets(this.currentSession);
-
+        deviceLogTab = new DeviceTabLog();
         deviceCommandTab = new DeviceTabCommand(this.currentSession);
     }
 
     public void setDevice(GwtDevice selectedDevice) {
-        // configure the tabs based on the available applications and user permissions
+        // configure the tabs based on the available applications and user
+        // permissions
         if (currentSession.hasDeviceReadPermission()) {
             tabHistory.enable();
         } else {
@@ -82,7 +84,8 @@ public class DeviceTabs extends LayoutContainer {
             }
         }
 
-        boolean hasConfigApp = selectedDevice != null && selectedDevice.hasApplication(GwtDeviceApplication.APP_CONFIGURATION);
+        boolean hasConfigApp = selectedDevice != null
+                && selectedDevice.hasApplication(GwtDeviceApplication.APP_CONFIGURATION);
         if (hasConfigApp) {// && m_currentSession.hasDeviceManagePermission()) {
             tabConfiguration.enable();
         } else {
@@ -105,8 +108,8 @@ public class DeviceTabs extends LayoutContainer {
             }
         }
 
-        boolean hasPkgApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V1) ||
-                selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
+        boolean hasPkgApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V1)
+                || selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
         if (hasPkgApp && currentSession.hasDeviceManagePermission()) {
             tabPackages.enable();
         } else {
@@ -117,8 +120,9 @@ public class DeviceTabs extends LayoutContainer {
             }
         }
 
-        boolean hasBundleApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V1) ||
-                selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
+        boolean hasBundleApp = selectedDevice != null
+                && (selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V1)
+                        || selectedDevice.hasApplication(GwtDeviceApplication.APP_DEPLOY_V2));
         if (hasBundleApp && currentSession.hasDeviceManagePermission()) {
             tabBundles.enable();
         } else {
@@ -129,6 +133,7 @@ public class DeviceTabs extends LayoutContainer {
             }
         }
 
+        tabLog.enable();
         boolean hasAssetApp = selectedDevice != null && (selectedDevice.hasApplication(GwtDeviceApplication.APP_ASSET_V1));
         if (hasAssetApp && currentSession.hasDeviceManagePermission()) {
             tabAssets.enable();
@@ -147,6 +152,7 @@ public class DeviceTabs extends LayoutContainer {
         deviceConfigTab.setDevice(selectedDevice);
         deviceCommandTab.setDevice(selectedDevice);
         deviceAssetsTab.setDevice(selectedDevice);
+        deviceLogTab.setDevice(selectedDevice);
 
         if (tabsPanel.getSelectedItem() == tabProfile) {
             deviceProfileTab.refresh();
@@ -162,6 +168,8 @@ public class DeviceTabs extends LayoutContainer {
             deviceBundlesTab.refresh();
         } else if (tabsPanel.getSelectedItem() == tabAssets) {
             deviceAssetsTab.refresh();
+        } else if (tabsPanel.getSelectedItem() == tabLog) {
+            deviceLogTab.refresh();
         }
     }
 
@@ -250,6 +258,20 @@ public class DeviceTabs extends LayoutContainer {
         });
         tabsPanel.add(tabCommand);
 
+        tabLog = new TabItem(MSGS.taskLog(), new KapuaIcon(IconSet.TASKS));
+        tabLog.setBorders(false);
+        tabLog.setLayout(new FitLayout());
+        tabLog.add(deviceLogTab);
+        tabLog.addListener(Events.Select, new Listener<ComponentEvent>() {
+        
+
+            public void handleEvent(ComponentEvent be) {
+                deviceLogTab.refresh();
+            }
+        });
+        tabsPanel.add(tabLog);
+        
+        tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.AMAZON));
         tabAssets = new TabItem(MSGS.asset(), new KapuaIcon(IconSet.RETWEET));
         tabAssets.setBorders(false);
         tabAssets.setLayout(new FitLayout());
