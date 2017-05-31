@@ -23,8 +23,8 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_FIELD_INDEXING_NOT_ANALYZED;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
 
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 
@@ -86,19 +86,19 @@ public class ChannelInfoSchema {
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
         ObjectNode channelScopeId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(CHANNEL_SCOPE_ID, channelScopeId);
         ObjectNode channelClientId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(CHANNEL_CLIENT_ID, channelClientId);
         ObjectNode channelName = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(CHANNEL_NAME, channelName);
         ObjectNode channelTimestamp = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         propertiesNode.set(CHANNEL_TIMESTAMP, channelTimestamp);
         ObjectNode channelMessageId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(CHANNEL_MESSAGE_ID, channelMessageId);
         channelNode.set("properties", propertiesNode);
         rootNode.set(CHANNEL_TYPE_NAME, channelNode);

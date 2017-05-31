@@ -36,15 +36,20 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_KEYWORD;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_MESSAGE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_METRICS;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_DYNAMIC;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_INDEX;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SHARD_NUMBER;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REFRESH_INTERVAL;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_REPLICA_NUMBER;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_FORMAT;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
 
 /**
  * Datastore schema creation/update
@@ -161,10 +166,10 @@ public class Schema {
         ObjectNode typePropertiesNode = SchemaUtil.getObjectNode(); // properties
         ObjectNode metricsNode = SchemaUtil.getObjectNode(); // metrics
         ObjectNode metricsPropertiesNode = SchemaUtil.getObjectNode(); // properties (metric properties)
-        typeNode.set("message", messageNode);
-        messageNode.set("properties", typePropertiesNode);
-        typePropertiesNode.set("metrics", metricsNode);
-        metricsNode.set("properties", metricsPropertiesNode);
+        typeNode.set(FIELD_NAME_MESSAGE, messageNode);
+        messageNode.set(FIELD_NAME_PROPERTIES, typePropertiesNode);
+        typePropertiesNode.set(FIELD_NAME_METRICS, metricsNode);
+        metricsNode.set(FIELD_NAME_PROPERTIES, metricsPropertiesNode);
 
         // metrics mapping
         Set<String> keys = esMetrics.keySet();
@@ -172,11 +177,11 @@ public class Schema {
         for (String key : keys) {
             Metric metric = esMetrics.get(key);
             metricMapping = SchemaUtil.getField(new KeyValueEntry[] {
-                    new KeyValueEntry("dynamic", "true") });
+                    new KeyValueEntry(KEY_DYNAMIC, VALUE_TRUE) });
             ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
             if (metric.getType().equals(TYPE_STRING)) {
-                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, KEY_KEYWORD), new KeyValueEntry(KEY_INDEX, true) });
+                valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
             } else if (metric.getType().equals(TYPE_DATE)) {
                 valueMappingNode = SchemaUtil.getField(
                         new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
@@ -184,7 +189,7 @@ public class Schema {
                 valueMappingNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, metric.getType()) });
             }
             matricMappingPropertiesNode.set(DatastoreUtils.getClientMetricFromAcronym(metric.getType()), valueMappingNode);
-            metricMapping.set("properties", matricMappingPropertiesNode);
+            metricMapping.set(FIELD_NAME_PROPERTIES, matricMappingPropertiesNode);
             metricsPropertiesNode.set(metric.getName(), metricMapping);
         }
         return typeNode;
