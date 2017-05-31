@@ -4,26 +4,26 @@ The section describes how Eclipse Kapua docker images can be used.
 
 ### Build
 
-    mvn install
+    mvn -Pdocker install
 
 If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
 force it to use only locally present artifacts with the argument `-nsu`:
 
-    mvn install -nsu
+    mvn -Pdocker install -nsu
 
 ### Pushing
 
 Pushing with default settings:
 
-    mvn deploy
+    mvn -Pdocker deploy
 
 Pushing to a specific docker registry:
 
-    mvn deploy -Ddocker.push.registry=registry.hub.docker.com
+    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com
 
 Pushing to a specific docker registry under a specific account:
 
-    mvn deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
+    mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
 
 ### Run
 
