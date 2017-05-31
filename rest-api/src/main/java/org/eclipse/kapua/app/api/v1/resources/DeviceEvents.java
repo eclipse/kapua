@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.api.v1.resources;
 import static org.eclipse.kapua.model.KapuaEntityPredicates.ENTITY_ID;
 import static org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates.DEVICE_ID;
 
-import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -219,11 +218,6 @@ public class DeviceEvents extends AbstractKapuaResource {
     public Response deleteDeviceEvent(@PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Device in which to delete the event.", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The id of the DeviceEvent to be deleted", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
-        DeviceEvent deviceEvent = find(scopeId, deviceId, deviceEventId);
-        if (deviceEvent == null) {
-            throw new EntityNotFoundException();
-        }
-
         deviceEventService.delete(scopeId, deviceEventId);
 
         return returnOk();

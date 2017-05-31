@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.v1.resources;
 
-import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -223,11 +222,6 @@ public class AccessRoles extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the AccessRole to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Specifies the AccessInfoId for the requested AccessPermission", required = true) @PathParam("accessInfoId") EntityId accessInfoId,
             @ApiParam(value = "The id of the AccessRole to be deleted", required = true) @PathParam("accessRoleId") EntityId accessRoleId) throws Exception {
-        AccessRole accessRole = find(scopeId, accessInfoId, accessRoleId);
-        if (accessRole == null) {
-            throw new EntityNotFoundException();
-        }
-
         accessRoleService.delete(scopeId, accessRoleId);
 
         return returnOk();
