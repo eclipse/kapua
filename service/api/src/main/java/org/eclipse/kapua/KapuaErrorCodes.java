@@ -56,11 +56,15 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     UNAUTHENTICATED,
     /**
+     * Operation not supported
+     */
+    OPERATION_NOT_SUPPORTED,
+    /**
      * Internal error
      */
     INTERNAL_ERROR,
     /**
-     * Operation not supported
+     * Something very very bad! An error that the system does not expect at all and that is unmanaged.
      */
-    OPERATION_NOT_SUPPORTED
+    SEVERE_INTERNAL_ERROR,
 }
