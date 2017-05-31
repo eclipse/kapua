@@ -28,7 +28,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
-import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
@@ -83,35 +82,29 @@ public class DataMetrics extends AbstractKapuaResource {
             @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
             @ApiParam(value = "The metric name to filter results") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        MetricInfoListResult metricInfoListResult = DATASTORE_OBJECT_FACTORY.newMetricInfoListResult();
-        try {
-            AndPredicate andPredicate = new AndPredicateImpl();
-            if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
-                andPredicate.getPredicates().add(clientIdPredicate);
-            }
-
-            if (!Strings.isNullOrEmpty(channel)) {
-                ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
-                andPredicate.getPredicates().add(channelPredicate);
-            }
-
-            if (!Strings.isNullOrEmpty(name)) {
-                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.NAME_FULL, name);
-                andPredicate.getPredicates().add(clientIdPredicate);
-            }
-
-            MetricInfoQuery query = DATASTORE_OBJECT_FACTORY.newMetricInfoQuery(scopeId);
-            query.setPredicate(andPredicate);
-            query.setOffset(offset);
-            query.setLimit(limit);
-
-            metricInfoListResult = query(scopeId, query);
-        } catch (Throwable t) {
-            handleException(t);
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        if (!Strings.isNullOrEmpty(clientId)) {
+            TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+            andPredicate.getPredicates().add(clientIdPredicate);
         }
-        return metricInfoListResult;
+
+        if (!Strings.isNullOrEmpty(channel)) {
+            ChannelMatchPredicate channelPredicate = new ChannelMatchPredicateImpl(channel);
+            andPredicate.getPredicates().add(channelPredicate);
+        }
+
+        if (!Strings.isNullOrEmpty(name)) {
+            TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.NAME_FULL, name);
+            andPredicate.getPredicates().add(clientIdPredicate);
+        }
+
+        MetricInfoQuery query = DATASTORE_OBJECT_FACTORY.newMetricInfoQuery(scopeId);
+        query.setPredicate(andPredicate);
+        query.setOffset(offset);
+        query.setLimit(limit);
+
+        return query(scopeId, query);
     }
 
     /**
@@ -134,15 +127,10 @@ public class DataMetrics extends AbstractKapuaResource {
             responseContainer = "MetricInfoListResult")
     public MetricInfoListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The MetricInfoQuery to use to filter results", required = true) MetricInfoQuery query) {
-        MetricInfoListResult metricInfoListResult = null;
-        try {
-            query.setScopeId(scopeId);
-            metricInfoListResult = METRIC_INFO_REGISTRY_SERVICE.query(query);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(metricInfoListResult);
+            @ApiParam(value = "The MetricInfoQuery to use to filter results", required = true) MetricInfoQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return METRIC_INFO_REGISTRY_SERVICE.query(query);
     }
 
     /**
@@ -164,15 +152,10 @@ public class DataMetrics extends AbstractKapuaResource {
             response = CountResult.class)
     public CountResult count( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The MetricInfoQuery to use to filter count results", required = true) MetricInfoQuery query) {
-        CountResult countResult = null;
-        try {
-            query.setScopeId(scopeId);
-            countResult = new CountResult(METRIC_INFO_REGISTRY_SERVICE.count(query));
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(countResult);
+            @ApiParam(value = "The MetricInfoQuery to use to filter count results", required = true) MetricInfoQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return new CountResult(METRIC_INFO_REGISTRY_SERVICE.count(query));
     }
 
     /**
@@ -190,13 +173,9 @@ public class DataMetrics extends AbstractKapuaResource {
             response = MetricInfo.class)
     public MetricInfo find( //
             @ApiParam(value = "The ScopeId of the requested MetricInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the requested MetricInfo", required = true) @PathParam("metricInfoId") StorableEntityId metricInfoId) {
-        MetricInfo metricInfo = null;
-        try {
-            metricInfo = METRIC_INFO_REGISTRY_SERVICE.find(scopeId, metricInfoId);
-        } catch (Throwable t) {
-            handleException(t);
-        }
+            @ApiParam(value = "The id of the requested MetricInfo", required = true) @PathParam("metricInfoId") StorableEntityId metricInfoId) throws Exception {
+        MetricInfo metricInfo = METRIC_INFO_REGISTRY_SERVICE.find(scopeId, metricInfoId);
+
         return returnNotNullEntity(metricInfo);
     }
 }

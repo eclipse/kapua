@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
@@ -50,6 +51,9 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -57,14 +61,8 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets get(
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) {
-        DeviceAssets deviceAssets = null;
-        try {
-            deviceAssets = get(scopeId, deviceId, timeout, deviceAssetFilter.newAssetListResult());
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(deviceAssets);
+            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) throws Exception {
+        return get(scopeId, deviceId, timeout, deviceAssetFilter.newAssetListResult());
     }
 
     /**
@@ -77,6 +75,9 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -85,14 +86,8 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The filter of the request") DeviceAssets deviceAssetFilter) {
-        DeviceAssets deviceAssets = null;
-        try {
-            deviceAssets = deviceManagementAssetService.get(scopeId, deviceId, deviceAssetFilter, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(deviceAssets);
+            @ApiParam(value = "The filter of the request") DeviceAssets deviceAssetFilter) throws Exception {
+        return deviceManagementAssetService.get(scopeId, deviceId, deviceAssetFilter, timeout);
     }
 
     /**
@@ -105,6 +100,9 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Path("_read")
@@ -114,14 +112,8 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The filter of the read request") DeviceAssets deviceAssetFilter) {
-        DeviceAssets deviceAssets = null;
-        try {
-            deviceAssets = deviceManagementAssetService.read(scopeId, deviceId, deviceAssetFilter, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(deviceAssets);
+            @ApiParam(value = "The filter of the read request") DeviceAssets deviceAssetFilter) throws Exception {
+        return deviceManagementAssetService.read(scopeId, deviceId, deviceAssetFilter, timeout);
     }
 
     /**
@@ -134,6 +126,9 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Path("_write")
@@ -143,14 +138,8 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The values to write to the asset channels") DeviceAssets deviceAssetFilter) {
-        DeviceAssets deviceAssets = null;
-        try {
-            deviceAssets = deviceManagementAssetService.write(scopeId, deviceId, deviceAssetFilter, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(deviceAssets);
+            @ApiParam(value = "The values to write to the asset channels") DeviceAssets deviceAssetFilter) throws Exception {
+        return deviceManagementAssetService.write(scopeId, deviceId, deviceAssetFilter, timeout);
     }
 
 }
