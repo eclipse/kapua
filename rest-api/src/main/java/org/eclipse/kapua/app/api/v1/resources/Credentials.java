@@ -233,7 +233,7 @@ public class Credentials extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Credential to be deleted", required = true) @PathParam("credentialId") EntityId credentialId) throws Exception {
         credentialService.delete(scopeId, credentialId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 
 }

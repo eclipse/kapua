@@ -232,6 +232,6 @@ public class AccessRoles extends AbstractKapuaResource {
 
         accessRoleService.delete(scopeId, accessRoleId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

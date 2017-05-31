@@ -244,6 +244,6 @@ public class Users extends AbstractKapuaResource {
             @ApiParam(value = "The id of the User to be deleted", required = true) @PathParam("userId") EntityId userId) throws Exception {
         userService.delete(scopeId, userId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

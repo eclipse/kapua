@@ -228,6 +228,6 @@ public class AccessInfos extends AbstractKapuaResource {
             @ApiParam(value = "The id of the AccessInfo to delete", required = true) @PathParam("accessInfoId") EntityId accessInfoId) throws Exception {
         accessInfoService.delete(scopeId, accessInfoId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

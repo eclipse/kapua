@@ -255,6 +255,6 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Device to be deleted", required = true) @PathParam("deviceId") EntityId deviceId) throws Exception {
         deviceService.delete(scopeId, deviceId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

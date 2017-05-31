@@ -252,6 +252,6 @@ public class AccessPermissions extends AbstractKapuaResource {
 
         accessPermissionService.delete(scopeId, accessPermissionId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

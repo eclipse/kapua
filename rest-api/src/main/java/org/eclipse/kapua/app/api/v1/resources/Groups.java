@@ -241,6 +241,6 @@ public class Groups extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Group to be deleted", required = true) @PathParam("groupId") EntityId groupId) throws Exception {
         groupService.delete(scopeId, groupId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

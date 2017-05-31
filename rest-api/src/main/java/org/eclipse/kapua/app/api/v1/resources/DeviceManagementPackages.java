@@ -94,7 +94,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
             throws Exception {
         packageService.downloadExec(scopeId, deviceId, packageDownloadRequest, timeout);
 
-        return Response.ok().build();
+        return returnOk();
     }
 
     /**
@@ -124,7 +124,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
             @ApiParam(value = "Mandatory object with all the informations needed to uninstall a package", required = true) DevicePackageUninstallRequest packageUninstallRequest) throws Exception {
         packageService.uninstallExec(scopeId, deviceId, packageUninstallRequest, timeout);
 
-        return Response.ok().build();
+        return returnOk();
     }
 
 }

@@ -257,7 +257,7 @@ public class Accounts extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Account to be deleted", required = true) @PathParam("accountId") EntityId accountId) throws Exception {
         accountService.delete(scopeId, accountId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 
 }

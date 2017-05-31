@@ -89,7 +89,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) throws Exception {
         bundleService.start(scopeId, deviceId, bundleId, timeout);
 
-        return Response.ok().build();
+        return returnOk();
     }
 
     /**
@@ -114,6 +114,6 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) throws Exception {
         bundleService.stop(scopeId, deviceId, bundleId, timeout);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

@@ -91,7 +91,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @ApiParam(value = "The configuration to send to the device", required = true) DeviceConfiguration deviceConfiguration) throws Exception {
         configurationService.put(scopeId, deviceId, deviceConfiguration, timeout);
 
-        return Response.ok().build();
+        return returnOk();
     }
 
     /**
@@ -166,6 +166,6 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
 
         configurationService.put(scopeId, deviceId, deviceComponentConfiguration, timeout);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

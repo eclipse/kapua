@@ -226,6 +226,6 @@ public class DeviceEvents extends AbstractKapuaResource {
 
         deviceEventService.delete(scopeId, deviceEventId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

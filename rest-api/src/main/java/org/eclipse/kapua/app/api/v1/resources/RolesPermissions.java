@@ -266,6 +266,6 @@ public class RolesPermissions extends AbstractKapuaResource {
 
         rolePermissionService.delete(scopeId, rolePermissionId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }

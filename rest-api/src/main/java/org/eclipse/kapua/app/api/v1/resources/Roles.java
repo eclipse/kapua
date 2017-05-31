@@ -244,6 +244,6 @@ public class Roles extends AbstractKapuaResource {
             @ApiParam(value = "The id of the Role to be deleted", required = true) @PathParam("roleId") EntityId roleId) throws Exception {
         roleService.delete(scopeId, roleId);
 
-        return Response.ok().build();
+        return returnOk();
     }
 }
