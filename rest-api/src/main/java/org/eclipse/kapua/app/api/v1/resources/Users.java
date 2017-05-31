@@ -164,9 +164,7 @@ public class Users extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new User to be created", required = true) UserCreator userCreator) throws Exception {
         userCreator.setScopeId(scopeId);
 
-        User user = userService.create(userCreator);
-
-        return returnNotNullEntity(user);
+        return userService.create(userCreator);
     }
 
     /**
@@ -219,9 +217,7 @@ public class Users extends AbstractKapuaResource {
         ((UserImpl) user).setScopeId(scopeId);
         user.setId(userId);
 
-        User userUpdated = userService.update(user);
-
-        return returnNotNullEntity(userUpdated);
+        return userService.update(user);
     }
 
     /**

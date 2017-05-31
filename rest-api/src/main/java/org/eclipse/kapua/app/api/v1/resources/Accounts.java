@@ -174,9 +174,7 @@ public class Accounts extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new Account to be created", required = true) AccountCreator accountCreator) throws Exception {
         accountCreator.setScopeId(scopeId);
 
-        Account account = accountService.create(accountCreator);
-
-        return returnNotNullEntity(account);
+        return accountService.create(accountCreator);
     }
 
     /**

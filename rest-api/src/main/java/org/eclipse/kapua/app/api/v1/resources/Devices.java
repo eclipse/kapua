@@ -177,9 +177,7 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new Device to be created", required = true) DeviceCreator deviceCreator) throws Exception {
         deviceCreator.setScopeId(scopeId);
 
-        Device device = deviceService.create(deviceCreator);
-
-        return returnNotNullEntity(device);
+        return deviceService.create(deviceCreator);
     }
 
     /**

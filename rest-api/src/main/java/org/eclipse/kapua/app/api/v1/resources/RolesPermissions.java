@@ -192,9 +192,7 @@ public class RolesPermissions extends AbstractKapuaResource {
         rolePermissionCreator.setScopeId(scopeId);
         rolePermissionCreator.setRoleId(roleId);
 
-        RolePermission rolePermission = rolePermissionService.create(rolePermissionCreator);
-
-        return returnNotNullEntity(rolePermission);
+        return rolePermissionService.create(rolePermissionCreator);
     }
 
     /**

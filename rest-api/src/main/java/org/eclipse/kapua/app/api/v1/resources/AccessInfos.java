@@ -177,9 +177,7 @@ public class AccessInfos extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new AccessInfo to be created", required = true) AccessInfoCreator accessInfoCreator) throws Exception {
         accessInfoCreator.setScopeId(scopeId);
 
-        AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
-
-        return returnNotNullEntity(accessInfo);
+        return accessInfoService.create(accessInfoCreator);
     }
 
     /**

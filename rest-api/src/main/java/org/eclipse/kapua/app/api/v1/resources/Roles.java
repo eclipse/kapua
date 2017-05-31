@@ -164,9 +164,7 @@ public class Roles extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new Role to be created", required = true) RoleCreator roleCreator) throws Exception {
         roleCreator.setScopeId(scopeId);
 
-        Role role = roleService.create(roleCreator);
-
-        return returnNotNullEntity(role);
+        return roleService.create(roleCreator);
     }
 
     /**
@@ -219,9 +217,7 @@ public class Roles extends AbstractKapuaResource {
         ((RoleImpl) role).setScopeId(scopeId);
         role.setId(roleId);
 
-        Role roleUpdated = roleService.update(role);
-
-        return returnNotNullEntity(roleUpdated);
+        return roleService.update(role);
     }
 
     /**

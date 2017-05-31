@@ -163,9 +163,7 @@ public class AccessRoles extends AbstractKapuaResource {
         accessRoleCreator.setScopeId(scopeId);
         accessRoleCreator.setAccessInfoId(accessInfoId);
 
-        AccessRole accessRole = accessRoleService.create(accessRoleCreator);
-
-        return returnNotNullEntity(accessRole);
+        return accessRoleService.create(accessRoleCreator);
     }
 
     /**

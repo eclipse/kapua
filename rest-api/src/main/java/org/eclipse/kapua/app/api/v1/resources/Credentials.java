@@ -160,9 +160,7 @@ public class Credentials extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new Credential to be created", required = true) CredentialCreator credentialCreator) throws Exception {
         credentialCreator.setScopeId(scopeId);
 
-        Credential credential = credentialService.create(credentialCreator);
-
-        return returnNotNullEntity(credential);
+        return credentialService.create(credentialCreator);
     }
 
     /**

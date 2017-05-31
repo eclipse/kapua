@@ -161,9 +161,7 @@ public class Groups extends AbstractKapuaResource {
             @ApiParam(value = "Provides the information for the new Group to be created", required = true) GroupCreator groupCreator) throws Exception {
         groupCreator.setScopeId(scopeId);
 
-        Group group = groupService.create(groupCreator);
-
-        return returnNotNullEntity(group);
+        return groupService.create(groupCreator);
     }
 
     /**
@@ -216,9 +214,7 @@ public class Groups extends AbstractKapuaResource {
         ((GroupImpl) group).setScopeId(scopeId);
         group.setId(groupId);
 
-        Group groupUpdated = groupService.update(group);
-
-        return returnNotNullEntity(groupUpdated);
+        return groupService.update(group);
     }
 
     /**

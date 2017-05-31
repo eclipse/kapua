@@ -178,9 +178,7 @@ public class AccessPermissions extends AbstractKapuaResource {
         accessPermissionCreator.setScopeId(scopeId);
         accessPermissionCreator.setAccessInfoId(accessInfoId);
 
-        AccessPermission accessPermission = accessPermissionService.create(accessPermissionCreator);
-
-        return returnNotNullEntity(accessPermission);
+        return accessPermissionService.create(accessPermissionCreator);
     }
 
     /**
