@@ -52,7 +52,7 @@ objects:
           name: "java.lang:type=Memory#HeapMemoryUsage#used"
           tags:
             kapuaComponent: generic
-            kapuaMetricType: javaHeapMemoryUsed
+            kapuaMetricType: javaMemoryUsage
           type: gauge
           description: Heap Memory Used
           units: B
