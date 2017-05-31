@@ -146,7 +146,7 @@ public class SchemaUtil {
         } else if (value instanceof StorableId) {
             node.set(name, FACTORY.textNode(((StorableId) value).toString()));
         } else {
-            throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, value.getClass()));
+            throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, value != null ? value.getClass() : "null"));
         }
     }
 

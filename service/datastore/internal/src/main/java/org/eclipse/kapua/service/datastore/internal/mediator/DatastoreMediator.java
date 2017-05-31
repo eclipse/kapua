@@ -32,9 +32,6 @@ import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
@@ -124,7 +121,6 @@ public class DatastoreMediator implements MessageStoreMediator,
         this.metricInfoStoreFacade = metricInfoStoreFacade;
     }
 
-
     /*
      * 
      * Message Store Mediator methods
@@ -192,7 +188,6 @@ public class DatastoreMediator implements MessageStoreMediator,
         metricInfoStoreFacade.upstore(messageMetrics);
     }
 
-
     /*
      * 
      * ClientInfo Store Mediator methods
@@ -202,9 +197,10 @@ public class DatastoreMediator implements MessageStoreMediator,
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
-        messageStoreFacade.delete(scopeId, clientInfo.getFirstMessageId());
+        // nothing to do at the present
+        // the datastore coherence will be guarantee by a periodic task that will scan the datastore looking for a no more referenced info registry record
+        // otherwise the computational cost for each delete operation will be too high
     }
-
 
     /*
      * 
@@ -216,20 +212,16 @@ public class DatastoreMediator implements MessageStoreMediator,
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ChannelMatchPredicateImpl predicate = new ChannelMatchPredicateImpl(channelInfo.getName());
-
-        MessageQueryImpl messageQuery = new MessageQueryImpl(channelInfo.getScopeId());
-        messageQuery.setPredicate(predicate);
-        messageStoreFacade.delete(messageQuery);
-
-        MetricInfoQueryImpl metricInfoQuery = new MetricInfoQueryImpl(channelInfo.getScopeId());
-        metricInfoQuery.setPredicate(predicate);
-        metricInfoStoreFacade.delete(metricInfoQuery);
+        // nothing to do at the present
+        // the datastore coherence will be guarantee by a periodic task that will scan the datastore looking for a no more referenced info registry record
+        // otherwise the computational cost for each delete operation will be too high
     }
 
     @Override
     public void onAfterChannelInfoDelete(ChannelInfo channelInfo) {
-        // to be implemented
+        // nothing to do at the present
+        // the datastore coherence will be guarantee by a periodic task that will scan the datastore looking for a no more referenced info registry record
+        // otherwise the computational cost for each delete operation will be too high
     }
 
     /*
@@ -238,7 +230,9 @@ public class DatastoreMediator implements MessageStoreMediator,
      */
     @Override
     public void onAfterMetricInfoDelete(KapuaId scopeId, MetricInfo metricInfo) {
-     // to be implemented
+        // nothing to do at the present
+        // the datastore coherence will be guarantee by a periodic task that will scan the datastore looking for a no more referenced info registry record
+        // otherwise the computational cost for each delete operation will be too high
     }
 
     public void refreshAllIndexes() throws ClientException {

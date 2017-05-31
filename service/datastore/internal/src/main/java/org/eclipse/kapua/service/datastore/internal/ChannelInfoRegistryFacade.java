@@ -127,7 +127,9 @@ public class ChannelInfoRegistryFacade {
     }
 
     /**
-     * Delete channel information by identifier
+     * Delete channel information by identifier.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the channel info registry entry by id without checking the consistency of the others registries or the message store.</b>
      * 
      * @param scopeId
      * @param id
@@ -253,7 +255,9 @@ public class ChannelInfoRegistryFacade {
     }
 
     /**
-     * Delete channels informations count matching the given query
+     * Delete channels informations count matching the given query.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the channel info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
      * 
      * @param query
      * @throws KapuaIllegalArgumentException
