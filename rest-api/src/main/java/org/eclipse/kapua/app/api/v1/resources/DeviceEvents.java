@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -193,11 +194,11 @@ public class DeviceEvents extends AbstractKapuaResource {
 
         DeviceEventListResult results = deviceEventService.query(query);
 
-        DeviceEvent deviceEvent = null;
         if (!results.isEmpty()) {
-            deviceEvent = results.getFirstItem();
+            return results.getFirstItem();
+        } else {
+            throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
         }
-        return returnNotNullEntity(deviceEvent);
     }
 
     /**

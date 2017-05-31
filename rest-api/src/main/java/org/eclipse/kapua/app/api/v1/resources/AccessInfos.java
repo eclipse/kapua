@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -203,7 +204,11 @@ public class AccessInfos extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested AccessInfo", required = true) @PathParam("accessInfoId") EntityId accessInfoId) throws Exception {
         AccessInfo accessInfo = accessInfoService.find(scopeId, accessInfoId);
 
-        return returnNotNullEntity(accessInfo);
+        if (accessInfo == null) {
+            throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId);
+        }
+
+        return accessInfo;
     }
 
     /**

@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -188,7 +189,11 @@ public class Roles extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested Role", required = true) @PathParam("roleId") EntityId roleId) throws Exception {
         Role role = roleService.find(scopeId, roleId);
 
-        return returnNotNullEntity(role);
+        if (role == null) {
+            throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
+        }
+
+        return role;
     }
 
     /**

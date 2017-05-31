@@ -26,6 +26,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -201,7 +202,11 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested Device", required = true) @PathParam("deviceId") EntityId deviceId) throws Exception {
         Device device = deviceService.find(scopeId, deviceId);
 
-        return returnNotNullEntity(device);
+        if (device != null) {
+            return device;
+        } else {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
     }
 
     /**

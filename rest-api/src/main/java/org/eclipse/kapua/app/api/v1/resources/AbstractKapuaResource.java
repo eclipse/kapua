@@ -24,7 +24,7 @@ public abstract class AbstractKapuaResource {
     protected static final String DEFAULT_SCOPE_ID = "_"; // KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
     /**
-     * Checks if the given entity is {@code null}. 
+     * Checks if the given entity is {@code null}.
      * If it is {@code null} a Responde
      * @param entity
      * @return The entity given if not {@code null}.
@@ -32,7 +32,7 @@ public abstract class AbstractKapuaResource {
      */
     protected <T> T returnNotNullEntity(T entity) {
         if (entity == null) {
-            throw new WebApplicationException(Response..Status.NOT_FOUND);
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         return entity;
     }

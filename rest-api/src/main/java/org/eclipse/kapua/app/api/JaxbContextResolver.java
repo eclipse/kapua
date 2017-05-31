@@ -19,8 +19,9 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import javax.xml.bind.JAXBContext;
 
+import org.eclipse.kapua.app.api.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.app.api.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.v1.resources.model.ErrorBean;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -156,9 +157,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
     public JaxbContextResolver() {
         try {
             jaxbContext = JAXBContextFactory.createContext(new Class[] {
-                    // REST API stuff
-                    ErrorBean.class,
+                    // REST API utility models
                     CountResult.class,
+
+                    // REST API exception models
+                    ThrowableInfo.class,
+                    EntityNotFoundExceptionInfo.class,
 
                     // Tocds
                     KapuaTocd.class,

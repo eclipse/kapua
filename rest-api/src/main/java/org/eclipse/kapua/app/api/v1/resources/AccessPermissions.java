@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -214,11 +215,11 @@ public class AccessPermissions extends AbstractKapuaResource {
 
         AccessPermissionListResult results = accessPermissionService.query(query);
 
-        AccessPermission accessPermission = null;
-        if (!results.isEmpty()) {
-            accessPermission = results.getFirstItem();
+        if (results.isEmpty()) {
+            throw new KapuaEntityNotFoundException(AccessPermission.TYPE, accessPermissionId);
         }
-        return returnNotNullEntity(accessPermission);
+
+        return results.getFirstItem();
     }
 
     /**

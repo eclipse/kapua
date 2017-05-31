@@ -23,6 +23,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -197,12 +198,11 @@ public class AccessRoles extends AbstractKapuaResource {
 
         AccessRoleListResult results = accessRoleService.query(query);
 
-        AccessRole accessRole = null;
-        if (!results.isEmpty()) {
-            accessRole = results.getFirstItem();
+        if (results.isEmpty()) {
+            throw new KapuaEntityNotFoundException(AccessRole.TYPE, accessRoleId);
         }
 
-        return returnNotNullEntity(accessRole);
+        return results.getFirstItem();
     }
 
     /**

@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
@@ -154,6 +155,10 @@ public class Domains extends AbstractKapuaResource {
             @ApiParam(value = "The id of the requested Domain", required = true) @PathParam("domainId") EntityId domainId) throws Exception {
         Domain domain = domainService.find(scopeId, domainId);
 
-        return returnNotNullEntity(domain);
+        if (domain == null) {
+            throw new KapuaEntityNotFoundException(Domain.TYPE, domainId);
+        }
+
+        return domain;
     }
 }
