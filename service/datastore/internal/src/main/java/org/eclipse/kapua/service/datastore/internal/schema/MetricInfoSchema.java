@@ -26,9 +26,9 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_TYPE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DATE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_OBJECT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_FIELD_INDEXING_NOT_ANALYZED;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
 
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -127,13 +127,13 @@ public class MetricInfoSchema {
 
         ObjectNode propertiesNode = SchemaUtil.getObjectNode();
         ObjectNode metricAccount = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(METRIC_SCOPE_ID, metricAccount);
         ObjectNode metricClientId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(METRIC_CLIENT_ID, metricClientId);
         ObjectNode metricChannel = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(METRIC_CHANNEL, metricChannel);
 
         ObjectNode metricMtrNode = SchemaUtil.getField(
@@ -141,19 +141,19 @@ public class MetricInfoSchema {
                         new KeyValueEntry(KEY_DYNAMIC, false), new KeyValueEntry(KEY_INCLUDE_IN_ALL, false) });
         ObjectNode metricMtrPropertiesNode = SchemaUtil.getObjectNode();
         ObjectNode metricMtrNameNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_NAME, metricMtrNameNode);
         ObjectNode metricMtrTypeNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_TYPE, metricMtrTypeNode);
         ObjectNode metricMtrValueNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_VALUE, metricMtrValueNode);
         ObjectNode metricMtrTimestampNode = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
         metricMtrPropertiesNode.set(METRIC_MTR_TIMESTAMP, metricMtrTimestampNode);
         ObjectNode metricMtrMsgIdNode = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         metricMtrPropertiesNode.set(METRIC_MTR_MSG_ID, metricMtrMsgIdNode);
         metricMtrNode.set(FIELD_NAME_PROPERTIES, metricMtrPropertiesNode);
         propertiesNode.set(METRIC_MTR, metricMtrNode);

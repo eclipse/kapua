@@ -31,10 +31,10 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_DOUBLE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_GEO_POINT;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_INTEGER;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_IP;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_KEYWORD;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_OBJECT;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.TYPE_STRING;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_NO;
-import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_FIELD_INDEXING_NOT_ANALYZED;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_FALSE;
+import static org.eclipse.kapua.service.datastore.client.SchemaKeys.VALUE_TRUE;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_POSITION;
 import static org.eclipse.kapua.service.datastore.client.SchemaKeys.FIELD_NAME_PROPERTIES;
 
@@ -211,16 +211,16 @@ public class MessageSchema {
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_IP) });
         propertiesNode.set(MESSAGE_IP_ADDRESS, messageIp);
         ObjectNode messageScopeId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(MESSAGE_SCOPE_ID, messageScopeId);
         ObjectNode messageDeviceId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(MESSAGE_DEVICE_ID, messageDeviceId);
         ObjectNode messageClientId = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(MESSAGE_CLIENT_ID, messageClientId);
         ObjectNode messageChannel = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_STRING), new KeyValueEntry(KEY_INDEX, VALUE_FIELD_INDEXING_NOT_ANALYZED) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_KEYWORD), new KeyValueEntry(KEY_INDEX, VALUE_TRUE) });
         propertiesNode.set(MESSAGE_CHANNEL, messageChannel);
         ObjectNode messageCapturedOn = SchemaUtil.getField(
                 new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_DATE), new KeyValueEntry(KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
@@ -268,7 +268,7 @@ public class MessageSchema {
         propertiesNode.set(MESSAGE_METRICS, messageMetrics);
 
         ObjectNode messageBody = SchemaUtil.getField(
-                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_BINARY), new KeyValueEntry(KEY_INDEX, VALUE_NO) });
+                new KeyValueEntry[] { new KeyValueEntry(KEY_TYPE, TYPE_BINARY), new KeyValueEntry(KEY_INDEX, VALUE_FALSE) });
         propertiesNode.set(MESSAGE_BODY, messageBody);
 
         return messageNode;

@@ -64,10 +64,6 @@ public class SchemaKeys {
      */
     public final static String KEY_FORMAT = "format";
     /**
-     * Keyword key
-     */
-    public final static String KEY_KEYWORD = "keyword";
-    /**
      * Index ky
      */
     public final static String KEY_INDEX = "index";
@@ -124,13 +120,20 @@ public class SchemaKeys {
      */
     public final static String TYPE_STRING = "string";
     /**
-     * Not analyzed field value
+     * Object keyword type (Structured string that can be indexed with new ES version)<br>
+     * <b>Please leave the "index" property for the keyword fields to false (default value) otherwise the value will be analyzed and indexed for the search operation)<br>
+     * (see https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html)</b>
      */
-    public final static String VALUE_FIELD_INDEXING_NOT_ANALYZED = "not_analyzed";
+    public final static String TYPE_KEYWORD = "keyword";
+
     /**
-     * "No" field value
+     * "false" field value
      */
-    public final static String VALUE_NO = "no";
+    public final static String VALUE_FALSE = "false";
+    /**
+     * "true" field value
+     */
+    public final static String VALUE_TRUE = "true";
 
     /**
      * Refresh interval (for schema definition)
@@ -145,6 +148,14 @@ public class SchemaKeys {
      */
     public final static String KEY_REPLICA_NUMBER = "number_of_replicas";
 
+    /**
+     * Message field
+     */
+    public final static String FIELD_NAME_MESSAGE = "message";
+    /**
+     * Metrics field
+     */
+    public final static String FIELD_NAME_METRICS = "metrics";
     /**
      * Position field
      */
