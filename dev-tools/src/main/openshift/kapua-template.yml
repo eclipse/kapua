@@ -552,6 +552,10 @@ objects:
   kind: Service
   metadata:
     name: mqtt-ingress
+    labels:
+      app: kapua-broker
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "kapua-broker", "kind": "Service"}]'
   spec:
     ports:
     - name: mqtt-tcp
