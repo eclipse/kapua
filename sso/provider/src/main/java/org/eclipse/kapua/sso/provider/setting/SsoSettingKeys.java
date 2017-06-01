@@ -15,7 +15,11 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 
 public enum SsoSettingKeys implements SettingKey {
     SSO_PROVIDER("sso.provider"), //
-    SSO_REDIRECT_URI("sso.openid.redirect.uri");
+    SSO_OPENID_REDIRECT_URI("sso.openid.redirect.uri"), //
+    
+    SSO_OPENID_CLIENT_ID("sso.openid.client.id"), //
+    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"), //
+    ;
 
     private final String key;
 

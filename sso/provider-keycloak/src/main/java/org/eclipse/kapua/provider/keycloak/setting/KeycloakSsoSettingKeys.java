@@ -16,10 +16,8 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum KeycloakSsoSettingKeys implements SettingKey {
 
     KEYCLOAK_URI("sso.keycloak.uri"), //
-
     KEYCLOAK_REALM("sso.keycloak.realm"), //
-    KEYCLOAK_CLIENT_ID("sso.keycloak.client.id"), //
-    KEYCLOAK_CLIENT_SECRET("sso.keycloak.client.secret");
+    ;
 
     private final String key;
 
