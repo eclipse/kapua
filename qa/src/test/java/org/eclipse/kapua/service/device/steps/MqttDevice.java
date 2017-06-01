@@ -1,0 +1,217 @@
+/*******************************************************************************
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech
+ *******************************************************************************/
+package org.eclipse.kapua.service.device.steps;
+
+import org.eclipse.kapua.qa.utils.Suppressed;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
+/**
+ * Device that connects to MQTT broker and listens for messages as kapua-sys user
+ * and allows another client to connect and publish and subscribe to messages.
+ * <p>
+ * Used in Cucumber for writing Gherkin scenarios for broker service.
+ */
+public class MqttDevice {
+
+    /**
+     * Logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(MqttDevice.class);
+
+    /**
+     * URI of mqtt broker.
+     */
+    private static final String BROKER_URI = "tcp://localhost:1883";
+
+    /**
+     * Listening mqtt client name.
+     */
+    private static final java.lang.String LISTENER_NAME = "ListenerClient";
+
+    /**
+     * System user under which Device is listening for messages.
+     */
+    private static final String SYS_USER = "kapua-sys";
+
+    /**
+     * System user password while connecting to broker.
+     */
+    private static final String SYS_PASSWORD = "kapua-password";
+
+    /**
+     * Default quality of service - mqtt.
+     */
+    private static final int DEFAULT_QOS = 0;
+
+    /**
+     * Default retain flag is false.
+     */
+    private static final boolean DEFAULT_RETAIN = false;
+
+    /**
+     * No filter on topic.
+     */
+    private static final String NO_TOPIC_FILTER = "#";
+
+    /**
+     * Mqtt client for sending messages.
+     */
+    private MqttClient mqttClient;
+
+    /**
+     * Mqtt client for listening from messages.
+     */
+    private MqttClient subscribedClient;
+
+    /**
+     * Map for storing received messages that client is listening to.
+     */
+    private Map<String, String> clientReceivedMqttMessage;
+
+    /**
+     * Connect subscriber to mqtt broker.
+     */
+    public void mqttSubscriberConnect() {
+
+        MqttConnectOptions subscriberOpts = new MqttConnectOptions();
+        subscriberOpts.setUserName(SYS_USER);
+        subscriberOpts.setPassword(SYS_PASSWORD.toCharArray());
+        try {
+            subscribedClient = new MqttClient(BROKER_URI, LISTENER_NAME,
+                    new MemoryPersistence());
+            subscribedClient.connect(subscriberOpts);
+            subscribedClient.subscribe(NO_TOPIC_FILTER, DEFAULT_QOS);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        subscribedClient.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable throwable) {
+                logger.info("Listener connection to broker lost.");
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+                logger.info("Message arrived in Listener with topic: " + topic);
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                logger.info("Listener message delivery complete.");
+            }
+        });
+    }
+
+    /**
+     * Disconnect Device mqtt subscriber that listens on mqtt broker.
+     */
+    public void mqttSubscriberDisconnect() {
+
+        try {
+            try (final Suppressed<Exception> s = Suppressed.withException()) {
+                s.run(subscribedClient::disconnect);
+                s.run(subscribedClient::close);
+            }
+        } catch (final Exception e) {
+            logger.warn("Failed during cleanup of subscriber Paho resources", e);
+        }
+    }
+
+
+    /**
+     * Connect mqtt client that sends and listens to messages.
+     *
+     * @param clientId    mqtt client identifier
+     * @param userName    user with which client connects to broker
+     * @param password    password for connection
+     * @param topicFilter filter for topics client is listening to
+     */
+    public void mqttClientConnect(String clientId, String userName, String password, String topicFilter) {
+
+        MqttConnectOptions clientOpts = new MqttConnectOptions();
+        clientOpts.setUserName(userName);
+        clientOpts.setPassword(password.toCharArray());
+        try {
+            mqttClient = new MqttClient(BROKER_URI, clientId,
+                    new MemoryPersistence());
+            mqttClient.connect(clientOpts);
+            mqttClient.subscribe(topicFilter, DEFAULT_QOS);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        mqttClient.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable throwable) {
+                logger.info("Client connection to broker lost.");
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+                logger.info("Message arrived in client with topic: " + topic);
+
+                clientReceivedMqttMessage.clear();
+                clientReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                logger.info("Client message delivery complete.");
+            }
+        });
+    }
+
+    /**
+     * Disconnect Device mqtt client that listens and sends messages to mqtt broker.
+     */
+    public void mqttClientDisconnect() {
+
+        try {
+            try (final Suppressed<Exception> s = Suppressed.withException()) {
+                s.run(mqttClient::disconnect);
+                s.run(mqttClient::close);
+            }
+        } catch (final Exception e) {
+            logger.warn("Failed during cleanup of client Paho resources", e);
+        }
+    }
+
+    /**
+     * Send string message to topic, also provide map where message received
+     * from broker is stored.
+     *
+     * @param payload     simple string payload
+     * @param topic       topic described as string e.g. /foo/bar
+     * @param mqttMessage object where received message is stored
+     */
+    public void mqttClientPublishString(String payload, String topic, Map<String, String> mqttMessage) {
+
+        this.clientReceivedMqttMessage = mqttMessage;
+        try {
+            mqttClient.publish(topic, payload.getBytes(), DEFAULT_QOS, DEFAULT_RETAIN);
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
