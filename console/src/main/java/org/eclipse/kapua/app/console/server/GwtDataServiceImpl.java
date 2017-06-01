@@ -302,20 +302,20 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
         if (predicate != null) {
             query.setPredicate(predicate);
         }
-        List<GwtHeader> metrics = new ArrayList<GwtHeader>();
+        Map<String, GwtHeader> metrics = new HashMap<String, GwtHeader>();
 
         try {
             MetricInfoListResult result = metricService.query(query);
             if (result != null && !result.isEmpty()) {
                 for (MetricInfo metric : result.getItems()) {
-                    metrics.add(KapuaGwtModelConverter.convertToHeader(metric));
+                    metrics.put(metric.getName(), KapuaGwtModelConverter.convertToHeader(metric));
                 }
             }
 
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
-        return new BaseListLoadResult<GwtHeader>(metrics);
+        return new BaseListLoadResult<GwtHeader>(new ArrayList<GwtHeader>(metrics.values()));
     }
 
     private PagingLoadResult<GwtMessage> findMessages(PagingLoadConfig loadConfig, String scopeId, List<GwtHeader> headers, Date startDate, Date endDate, StorablePredicate predicate)
