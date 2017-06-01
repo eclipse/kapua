@@ -38,94 +38,6 @@ public class DateUtils {
         return DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(d, utcTimeZione);
     }
 
-    /**
-     * formatDate takes a date an return its string representation with only the date
-     */
-    public static String formatDate(Date d) {
-        if (d == null) {
-            return MSGS.none();
-        }
-
-        Date dNow = new Date();
-
-        DateTimeFormat dtf1 = DateTimeFormat.getFormat("yyyy.MM.dd 00:00:00.000 ZZZZ");
-        DateTimeFormat dtf2 = DateTimeFormat.getFormat("yyyy.MM.dd HH:mm:ss.SSS ZZZZ");
-        String today = dtf1.format(dNow);
-        Date dToday = dtf2.parse(today);
-
-        String date = null;
-        @SuppressWarnings("unused")
-        long lSecDiff = (dNow.getTime() - d.getTime()) / 1000;
-        double dDayDiff = ((double) (d.getTime() - dToday.getTime())) / (86400000); // 1000 * 60 * 60 * 24
-
-        // if more in the future than tomorrow than format the date
-        // even if it's just 2 days from today at midnight (day diff of 2 exactly)
-        if (dDayDiff >= 2) {
-
-            DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
-            date = dtf.format(d);
-        }
-
-        // if the modification time is still tomorrow, or
-        // exactly at midnight tomorrow, then
-        // return something like "Tomorrow 10:30 am"
-        else if (dDayDiff >= 1) {
-
-            DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
-            date = MSGS.tomorrow(dtf.format(d));
-        }
-
-        // if the time difference is less than 1 hour
-        // return something like "30 minutes ago"
-        // else if (lSecDiff >= 0 && lSecDiff < 3600) {
-        //
-        // if ((lSecDiff / 60) < 1) {
-        // date = lCtx.format(LocaleContext.RB.STR_LESS_THAN_ONE_MIN_AGO);
-        // } else {
-        // String mins = String.valueOf(lSecDiff / 60);
-        // date = lCtx.format(LocaleContext.RB.STR_N_MIN_AGO, mins);
-        // }
-        // }
-
-        // if the modification time is still today, or it is midnight
-        // this same day (this morning), then
-        // return something like "Today 10:30 am"
-        else if (dDayDiff >= 0) {
-
-            DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
-            date = MSGS.today(dtf.format(d));
-        }
-
-        // if the modification time is yesterday,
-        // or exactly 1 day ago at midnight, then
-        // return something like "Yesterday 10:30 am"
-        else if (dDayDiff >= -1) {
-
-            DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
-            date = MSGS.yesterday(dtf.format(d));
-        } else {
-
-            DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_MEDIUM);
-            date = dtf.format(d);
-        }
-
-        return date;
-    }
-
-    /**
-     * formatDate takes a date an return its string representation with only the time
-     */
-    public static String formatTime(Date d) {
-        if (d == null) {
-            return MSGS.none();
-        }
-
-        DateTimeFormat dtf = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.TIME_MEDIUM);
-        String date = null;
-        date = dtf.format(d);
-        return date;
-    }
-
     public static int getYear(Date date) {
         return Integer.parseInt(DateTimeFormat.getFormat("yyyy").format(date));
     }
@@ -133,26 +45,6 @@ public class DateUtils {
     public static int getMonth(Date date) {
         // NB: The month in DateTimeFormat is not zero based [unlike Date() & Calendar()] so we need to subtract one when getting !!!
         return Integer.parseInt(DateTimeFormat.getFormat("MM").format(date)) - 1;
-    }
-
-    public static int getDayOfMonth(Date date) {
-        return Integer.parseInt(DateTimeFormat.getFormat("dd").format(date));
-    }
-
-    public static int getHour(Date date) {
-        return Integer.parseInt(DateTimeFormat.getFormat("HH").format(date));
-    }
-
-    public static int getMinute(Date date) {
-        return Integer.parseInt(DateTimeFormat.getFormat("mm").format(date));
-    }
-
-    public static int getSecond(Date date) {
-        return Integer.parseInt(DateTimeFormat.getFormat("ss").format(date));
-    }
-
-    public static int getMillisecond(Date date) {
-        return Integer.parseInt(DateTimeFormat.getFormat("SSS").format(date));
     }
 
     public static Date setYear(Date date, int year) {
@@ -301,10 +193,6 @@ public class DateUtils {
     }
 
     private static boolean isLeapYear(int year) {
-        if (year % 4 == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return year % 4 == 0;
     }
 }
