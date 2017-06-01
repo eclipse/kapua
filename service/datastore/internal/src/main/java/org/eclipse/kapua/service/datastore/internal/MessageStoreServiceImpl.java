@@ -52,7 +52,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final AccountService accountService = LOCATOR.getService(AccountService.class);
     private final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     private final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    private final static Integer MAX_ENTRYES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    private final static Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     private final MessageStoreFacade messageStoreFacade;
 
@@ -141,7 +141,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
-        ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRYES_ON_DELETE, "limit");
+        ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRIES_ON_DELETE, "limit");
         
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
