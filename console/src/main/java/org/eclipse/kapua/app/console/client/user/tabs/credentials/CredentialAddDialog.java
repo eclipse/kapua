@@ -63,7 +63,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     public CredentialAddDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
-        DialogUtils.resizeDialog(this, 400, 400);
+        DialogUtils.resizeDialog(this, 400, 230);
     }
 
     @Override
