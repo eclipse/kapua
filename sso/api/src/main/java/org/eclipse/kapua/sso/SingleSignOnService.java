@@ -12,6 +12,7 @@
 package org.eclipse.kapua.sso;
 
 import java.io.IOException;
+import java.net.URI;
 
 import javax.json.JsonObject;
 
@@ -19,7 +20,7 @@ public interface SingleSignOnService {
 
     public boolean isEnabled();
 
-    public String getLoginUri(final String state);
+    public String getLoginUri(String state, URI redirectUri);
 
-    public JsonObject getAccessToken(final String authCode) throws IOException;
+    public JsonObject getAccessToken(String authCode, URI redirectUri) throws IOException;
 }

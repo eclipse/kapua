@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.provider.keycloak;
+package org.eclipse.kapua.sso.provider.keycloak;
 
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider;
 
@@ -17,7 +17,7 @@ public class ProviderImpl implements SingleSignOnProvider {
 
     @Override
     public String getId() {
-        return "generic";
+        return "keycloak";
     }
 
     @Override

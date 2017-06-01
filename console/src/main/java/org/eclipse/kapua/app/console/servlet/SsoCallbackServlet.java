@@ -13,6 +13,7 @@
 package org.eclipse.kapua.app.console.servlet;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.json.JsonObject;
@@ -23,16 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.eclipse.kapua.app.console.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.server.util.SsoLocator;
-import org.eclipse.kapua.app.console.setting.ConsoleSetting;
-import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.sso.SingleSignOnLocator;
 
 public class SsoCallbackServlet extends HttpServlet {
 
     private static final long serialVersionUID = -4854037814597039013L;
-
-    private final ConsoleSetting settings = ConsoleSetting.getInstance();
 
     private SingleSignOnLocator locator;
 
@@ -46,11 +44,13 @@ public class SsoCallbackServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String authCode = req.getParameter("code");
 
-        final JsonObject jsonObject = locator.getService().getAccessToken(authCode);
+        final URI redirectUri = SsoHelper.getRedirectUri();
+
+        final JsonObject jsonObject = locator.getService().getAccessToken(authCode, redirectUri);
 
         // Get and clean jwks_uri property
         final String accessToken = jsonObject.getString("access_token");
-        final String homeUri = settings.getString(ConsoleSettingKeys.SITE_HOME_URI);
+        final String homeUri = SsoHelper.getHomeUri();
 
         try {
             final URIBuilder redirect = new URIBuilder(homeUri);

@@ -9,11 +9,11 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.provider.keycloak;
+package org.eclipse.kapua.sso.provider.keycloak;
 
-import org.eclipse.kapua.provider.keycloak.setting.KeycloakSsoSetting;
-import org.eclipse.kapua.provider.keycloak.setting.KeycloakSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.AbstractSingleSignOnService;
+import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSetting;
+import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 
 public class KeycloakSingleSignOnService extends AbstractSingleSignOnService {

@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.server;
 
 import java.util.UUID;
 
+import org.eclipse.kapua.app.console.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.setting.ConsoleSettingKeys;
@@ -40,7 +41,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
 
     @Override
     public String getSsoLoginUri() {
-        return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString());
+        return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString(), SsoHelper.getRedirectUri());
     }
 
     @Override

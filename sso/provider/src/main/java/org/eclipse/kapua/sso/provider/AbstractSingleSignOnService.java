@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +54,6 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
         return true;
     }
 
-    protected String getRedirectUri() {
-        return ssoSettings.getString(SsoSettingKeys.SSO_OPENID_REDIRECT_URI);
-    }
-
     protected String getClientId() {
         return ssoSettings.getString(SsoSettingKeys.SSO_OPENID_CLIENT_ID);
     }
@@ -66,7 +63,7 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     @Override
-    public String getLoginUri(final String state) {
+    public String getLoginUri(final String state, final URI redirectUri) {
         try {
             final URIBuilder uri = new URIBuilder(getAuthUri());
 
@@ -74,7 +71,7 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
             uri.addParameter("response_type", "code");
             uri.addParameter("client_id", getClientId());
             uri.addParameter("state", state);
-            uri.addParameter("redirect_uri", getRedirectUri());
+            uri.addParameter("redirect_uri", redirectUri.toString());
 
             return uri.toString();
         } catch (Exception e) {
@@ -84,7 +81,7 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     @Override
-    public JsonObject getAccessToken(final String authCode) throws IOException {
+    public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws IOException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
         final URL url = new URL(getTokenUri());
@@ -103,7 +100,8 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
             parameters.add(new BasicNameValuePair("client_secret", clientSecret));
         }
 
-        parameters.add(new BasicNameValuePair("redirect_uri", getRedirectUri()));
+        parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
+
         final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 
         // Send post request

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.internal;
 
+import java.net.URI;
+
 import javax.json.JsonObject;
 
 import org.eclipse.kapua.sso.SingleSignOnService;
@@ -28,12 +30,12 @@ public class DisabledLocator implements ProviderLocator {
         }
 
         @Override
-        public String getLoginUri(final String state) {
+        public String getLoginUri(final String state, final URI redirectUri) {
             return null;
         }
 
         @Override
-        public JsonObject getAccessToken(final String authCode) {
+        public JsonObject getAccessToken(final String authCode, final URI redirectUri) {
             return null;
         }
     };

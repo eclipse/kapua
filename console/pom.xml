@@ -55,10 +55,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-internal</artifactId>
         </dependency>
         <dependency>
@@ -136,6 +132,17 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-sso-provider-generic</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-sso-provider-keycloak</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- External dependencies -->

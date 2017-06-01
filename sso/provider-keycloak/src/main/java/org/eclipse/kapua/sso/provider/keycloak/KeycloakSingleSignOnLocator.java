@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others
+ * Copyright (c) 2017 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,24 +9,20 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.provider.keycloak.setting;
+package org.eclipse.kapua.sso.provider.keycloak;
 
-import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.sso.SingleSignOnService;
+import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 
-public enum KeycloakSsoSettingKeys implements SettingKey {
+public class KeycloakSingleSignOnLocator implements ProviderLocator {
 
-    KEYCLOAK_URI("sso.keycloak.uri"), //
-    KEYCLOAK_REALM("sso.keycloak.realm"), //
-    ;
-
-    private final String key;
-
-    private KeycloakSsoSettingKeys(final String key) {
-        this.key = key;
+    @Override
+    public SingleSignOnService getService() {
+        return new KeycloakSingleSignOnService ();
     }
 
     @Override
-    public String key() {
-        return key;
+    public void close() throws Exception {
     }
+
 }

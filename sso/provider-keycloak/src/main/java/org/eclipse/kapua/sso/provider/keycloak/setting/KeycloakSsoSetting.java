@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.provider.keycloak.setting;
+package org.eclipse.kapua.sso.provider.keycloak.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
