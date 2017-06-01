@@ -48,7 +48,7 @@ objects:
         tls:
           skip_certificate_validation: true
         metrics:
-        - id: broker.javaHeapUsed
+        - id: generic.javaHeapUsed
           name: "java.lang:type=Memory#HeapMemoryUsage#used"
           tags:
             kapuaComponent: generic
