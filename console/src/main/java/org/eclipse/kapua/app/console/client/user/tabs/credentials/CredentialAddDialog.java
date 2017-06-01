@@ -118,12 +118,14 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
         expirationDate = new DateField();
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
-        credentialFormPanel.add(expirationDate);
+        // FIXME add again when supported in backend
+        //credentialFormPanel.add(expirationDate);
 
         enabled = new CheckBox();
         enabled.setFieldLabel(MSGS.dialogAddFieldEnabled());
         enabled.setBoxLabel("");    // Align to the left
-        credentialFormPanel.add(enabled);
+        // FIXME add again when supported in backend
+        //credentialFormPanel.add(enabled);
 
         optlock = new NumberField();
         optlock.setName("optlock");
