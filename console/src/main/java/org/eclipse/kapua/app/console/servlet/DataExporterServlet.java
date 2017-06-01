@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.servlet;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.servlet.ServletException;
@@ -34,6 +34,8 @@ import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImp
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortDirection;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,8 @@ public class DataExporterServlet extends HttpServlet {
             String[] headers = request.getParameterValues("headers");
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
+            String sortField = request.getParameter("sortField");
+            String sortDir = request.getParameter("sortDir");
             String topicOrDevice;
 
             AndPredicate predicate = new AndPredicateImpl();
@@ -103,10 +107,14 @@ public class DataExporterServlet extends HttpServlet {
             KapuaLocator locator = KapuaLocator.getInstance();
             MessageStoreService messageService = locator.getService(MessageStoreService.class);
             MessageQuery query = new MessageQueryImpl(GwtKapuaModelConverter.convert(scopeIdString));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-            Date start = dateFormat.parse(startDate);
-            Date end = dateFormat.parse(endDate);
+            Date start = new Date(Long.valueOf(startDate));
+            Date end = new Date(Long.valueOf(endDate));
             predicate.getPredicates().add(new RangePredicateImpl(MessageField.TIMESTAMP, start, end));
+
+            if (sortField != null && sortDir != null) {
+                query.setSortFields(Collections.singletonList(SortField.of(SortDirection.valueOf(sortDir), sortField)));
+            }
+
             query.setPredicate(predicate);
             MessageListResult result; 
             int offset = 0;

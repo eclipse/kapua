@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.shared.model;
 
+import org.eclipse.kapua.app.console.client.util.DateUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,8 +24,22 @@ public class GwtMessage extends KapuaBaseModel implements Serializable {
         setAllowNestedValues(false);
     }
 
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <X> X get(String property) {
+        if ("timestampFormatted".equals(property)) {
+            return (X) (DateUtils.formatDateTime(getTimestamp()));
+        } else {
+            return super.get(property);
+        }
+    }
+
     public Date getTimestamp() {
         return get("timestamp");
+    }
+
+    public String getTimestampFormatted() {
+        return get("timestampFormatted");
     }
 
     public void setTimestamp(Date timestamp) {
