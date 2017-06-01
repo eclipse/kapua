@@ -298,12 +298,25 @@ public class ResultsTable extends LayoutContainer {
         }
 
         if (startDate != null) {
-            sbUrl.append("&startDate=").append(URL.encodeQueryString(startDate.toString()));
+            sbUrl.append("&startDate=").append(startDate.getTime());
         }
 
         if (endDate != null) {
-            sbUrl.append("&endDate=").append(URL.encodeQueryString(endDate.toString()));
+            sbUrl.append("&endDate=").append(endDate.getTime());
         }
+
+        String sortField = resultsGrid.getStore().getSortField();
+        if (sortField != null && !sortField.trim().equals("")) {
+            sbUrl.append("&sortField=").append(resultsGrid.getStore().getSortField());
+
+            if (resultsGrid.getStore().getSortDir() == SortDir.ASC) {
+                sbUrl.append("&sortDir=").append(SortDir.ASC.toString());
+            } else {
+                sbUrl.append("&sortDir=").append(SortDir.DESC.toString());
+            }
+        }
+
+
         Window.open(sbUrl.toString(), "_blank", "location=no");
     }
 
