@@ -127,7 +127,9 @@ public class ClientInfoRegistryFacade {
     }
 
     /**
-     * Delete client information by identifier
+     * Delete client information by identifier.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the client info registry entry by id without checking the consistency of the others registries or the message store.</b>
      * 
      * @param scopeId
      * @param id
@@ -149,7 +151,7 @@ public class ClientInfoRegistryFacade {
             return;
         }
 
-        String indexName = SchemaUtil.getDataIndexName(scopeId);
+        String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
         client.delete(typeDescriptor, id.toString());
     }
@@ -247,7 +249,9 @@ public class ClientInfoRegistryFacade {
     }
 
     /**
-     * Delete clients informations count matching the given query
+     * Delete clients informations count matching the given query.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the client info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
      * 
      * @param query
      * @throws KapuaIllegalArgumentException

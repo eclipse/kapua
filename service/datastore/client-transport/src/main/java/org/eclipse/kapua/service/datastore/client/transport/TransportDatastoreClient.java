@@ -385,7 +385,6 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     .setVersion(true)
                     .setScroll(scrollTimeout)
                     .setSource(toSearchSourceBuilder(queryMap))
-                    .setSize(100)
                     .get(queryTimeout);
         } catch (IndexNotFoundException infe) {
             logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
@@ -406,8 +405,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                 for (SearchHit hit : scrollResponse.getHits().hits()) {
                     DeleteRequest delete = new DeleteRequest().index(hit.index())
                             .type(hit.type())
-                            .id(hit.id())
-                            .version(hit.version());
+                            .id(hit.id());
                     bulkRequest.add(delete);
                 }
 

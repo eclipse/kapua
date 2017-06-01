@@ -174,7 +174,9 @@ public final class MessageStoreFacade {
     }
 
     /**
-     * Delete message by identifier
+     * Delete message by identifier.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the message by id without checking the consistency of the registries.</b>
      *
      * @param scopeId
      * @param id
@@ -197,9 +199,17 @@ public final class MessageStoreFacade {
             return;
         }
 
-        String indexName = SchemaUtil.getDataIndexName(scopeId);
-        TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        client.delete(typeDescriptor, id.toString());
+        // get the index by finding the object by id
+        DatastoreMessage messageToBeDeleted = find(scopeId, id, StorableFetchStyle.FIELDS);
+        if (messageToBeDeleted != null) {
+            Metadata schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
+            String indexName = schemaMetadata.getDataIndexName();
+            TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
+            client.delete(typeDescriptor, id.toString());
+        } else {
+            logger.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
+        }
+        // otherwise no message to be deleted found
     }
 
     /**
@@ -297,7 +307,9 @@ public final class MessageStoreFacade {
     }
 
     /**
-     * Delete messages count matching the given query
+     * Delete messages count matching the given query.<br>
+     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
+     * It just deletes the messages that matching the query without checking the consistency of the registries.</b>
      * 
      * @param query
      * @throws KapuaIllegalArgumentException

@@ -67,24 +67,4 @@ public interface MetricInfoRegistryService extends KapuaService,
     public long count(MetricInfoQuery query)
             throws KapuaException;
 
-    /**
-     * Delete metric information by identifier
-     * 
-     * @param scopeId
-     * @param id
-     * @throws KapuaException
-     * 
-     * @since 1.0.0
-     */
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException;
-
-    /**
-     * Delete metrics informations matching the given query
-     * 
-     * @param query
-     * @throws KapuaException
-     */
-    public void delete(MetricInfoQuery query)
-            throws KapuaException;
 }

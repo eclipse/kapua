@@ -98,20 +98,6 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     }
 
     @Override
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(id, "id");
-
-        checkAccess(scopeId, Actions.delete);
-        try {
-            clientInfoRegistryFacade.delete(scopeId, id);
-        } catch (Exception e) {
-            throw KapuaException.internalError(e);
-        }
-    }
-
-    @Override
     public ClientInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -165,8 +151,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         }
     }
 
-    @Override
-    public void delete(ClientInfoQuery query)
+    void delete(ClientInfoQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -174,6 +159,19 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkAccess(query.getScopeId(), Actions.delete);
         try {
             clientInfoRegistryFacade.delete(query);
+        } catch (Exception e) {
+            throw KapuaException.internalError(e);
+        }
+    }
+
+    void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkAccess(scopeId, Actions.delete);
+        try {
+            clientInfoRegistryFacade.delete(scopeId, id);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }

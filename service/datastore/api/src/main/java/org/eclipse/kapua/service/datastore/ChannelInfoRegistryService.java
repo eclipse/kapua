@@ -65,26 +65,4 @@ public interface ChannelInfoRegistryService extends KapuaService, KapuaConfigura
     public long count(ChannelInfoQuery query)
             throws KapuaException;
 
-    /**
-     * Delete channel information by identifier
-     * 
-     * @param scopeId
-     * @param id
-     * @throws KapuaException
-     * 
-     * @since 1.0.0
-     */
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException;
-
-    /**
-     * Delete channels informations matching the given query
-     * 
-     * @param query
-     * @throws KapuaException
-     * 
-     * @since 1.0.0
-     */
-    public void delete(ChannelInfoQuery query)
-            throws KapuaException;
 }

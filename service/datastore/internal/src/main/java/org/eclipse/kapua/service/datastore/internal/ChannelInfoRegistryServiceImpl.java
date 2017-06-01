@@ -98,20 +98,6 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
     }
 
     @Override
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(id, "id");
-
-        checkDataAccess(scopeId, Actions.delete);
-        try {
-            channelInfoRegistryFacade.delete(scopeId, id);
-        } catch (Exception e) {
-            throw KapuaException.internalError(e);
-        }
-    }
-
-    @Override
     public ChannelInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -165,8 +151,20 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
         }
     }
 
-    @Override
-    public void delete(ChannelInfoQuery query)
+    void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkDataAccess(scopeId, Actions.delete);
+        try {
+            channelInfoRegistryFacade.delete(scopeId, id);
+        } catch (Exception e) {
+            throw KapuaException.internalError(e);
+        }
+    }
+
+    void delete(ChannelInfoQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");

@@ -100,20 +100,6 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
     }
 
     @Override
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(id, "id");
-
-        checkDataAccess(scopeId, Actions.delete);
-        try {
-            metricInfoRegistryFacade.delete(scopeId, id);
-        } catch (Exception e) {
-            throw KapuaException.internalError(e);
-        }
-    }
-
-    @Override
     public MetricInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -168,8 +154,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         }
     }
 
-    @Override
-    public void delete(MetricInfoQuery query)
+    void delete(MetricInfoQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
@@ -177,6 +162,19 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
             metricInfoRegistryFacade.delete(query);
+        } catch (Exception e) {
+            throw KapuaException.internalError(e);
+        }
+    }
+
+    void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException {
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(id, "id");
+
+        checkDataAccess(scopeId, Actions.delete);
+        try {
+            metricInfoRegistryFacade.delete(scopeId, id);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }

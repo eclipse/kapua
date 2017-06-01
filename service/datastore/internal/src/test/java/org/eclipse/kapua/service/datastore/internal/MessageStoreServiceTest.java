@@ -19,7 +19,9 @@ import static org.eclipse.kapua.service.datastore.model.query.SortField.descendi
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -120,6 +122,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
     private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    // for the registries the locator should return the Impls that provide the deletes method. But I prefer to explicitly cast the service instance to the impl when I call the deletes
     private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
     private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
@@ -140,6 +143,263 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
+    public void deleteById() throws KapuaException, ParseException, InterruptedException {
+        Account account = getTestAccountCreator(adminScopeId);
+        String[] semanticTopic = new String[] {
+                "delete/by/id/test"
+        };
+
+        KapuaDataMessage message = null;
+        String clientId = String.format("device-%d", new Date().getTime());
+        DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
+        Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
+
+        // leave the message index by as default (DEVICE_TIMESTAMP)
+        byte[] randomPayload = new byte[128];
+        random.nextBytes(randomPayload);
+        String stringPayload = "Hello delete by id message!";
+        byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
+
+        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+
+        Map<String, Object> metrics = new HashMap<String, Object>();
+        metrics.put("float", new Float((float) 0.01));
+        metrics.put("integer", new Integer(1));
+        metrics.put("double", (double) 0.01);
+        metrics.put("long", (long) (10000000000000l));
+        metrics.put("string_value", Integer.toString(1000));
+        messagePayload.setProperties(metrics);
+
+        messagePayload.setBody(payload);
+        Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
+        Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
+        Date capturedOn = receivedOn;
+        message = createMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
+        setChannel(message, semanticTopic[0]);
+        updatePayload(message, messagePayload);
+        KapuaPosition messagePosition = getPosition(10.00d, 12d, 1.123d, 2d, 0001d, 1000, 1d, 44, new Date());
+        message.setPosition(messagePosition);
+        List<StorableId> messageStoredIds = null;
+        DatastoreMessage storedMessage = null;
+        try {
+            messageStoredIds = insertMessages(message);
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            storedMessage = MESSAGE_STORE_SERVICE.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL);
+            fullMessageCheck(account, storedMessage, message, messageStoredIds.get(0), storedMessage.getDatastoreId(), storedMessage.getTimestamp());
+
+            // delete the message
+            MESSAGE_STORE_SERVICE.delete(account.getId(), messageStoredIds.get(0));
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertNull(MESSAGE_STORE_SERVICE.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL));
+
+            // check for the mappings
+
+            // channel
+            ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+            ChannelInfoListResult channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery);
+            assertEquals("Wrong channel info size", 1, channelInfo.getSize());
+            // delete the channel info registry
+            ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(account.getId(), channelInfo.getFirstItem().getId());
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertEquals(CHANNEL_INFO_REGISTRY_SERVICE.count(channelInfoQuery), 0);
+
+            // metric
+            MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+            MetricInfoListResult metricInfoList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
+            assertEquals("Wrong metric info size", 5, metricInfoList.getSize());
+            // delete the metric info registry
+            for (MetricInfo metricInfo : metricInfoList.getItems()) {
+                ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(account.getId(), metricInfo.getId());
+            }
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertEquals(METRIC_INFO_REGISTRY_SERVICE.count(metricInfoQuery), 0);
+
+            // client
+            ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 10);
+            ClientInfoListResult clientInfo = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
+            assertEquals("Wrong client info size", 1, clientInfo.getSize());
+            // delete the client info registry
+            ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(account.getId(), clientInfo.getFirstItem().getId());
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertEquals(CLIENT_INFO_REGISTRY_SERVICE.count(clientInfoQuery), 0);
+        } catch (KapuaException e) {
+            logger.error("Exception: ", e.getMessage(), e);
+        }
+    }
+
+    @Test
+    public void deleteByQuery() throws KapuaException, ParseException, InterruptedException {
+        Account account = getTestAccountCreator(adminScopeId);
+        String[] semanticTopic = new String[] {
+                "delete/by/query/test/1",
+                "delete/by/query/test/2",
+                "delete/by/query/test/3"
+        };
+        long clientIdSuffix = new Date().getTime();
+        KapuaDataMessage[] messages = new KapuaDataMessage[semanticTopic.length];
+        for (int i = 0; i < semanticTopic.length; i++) {
+            String clientId = String.format("device-%d", clientIdSuffix + 1000 * i);
+            KapuaDataMessage message = null;
+            DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
+            Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
+
+            // leave the message index by as default (DEVICE_TIMESTAMP)
+            byte[] randomPayload = new byte[128];
+            random.nextBytes(randomPayload);
+            String stringPayload = "Hello delete by query message!";
+            byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
+
+            KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+
+            Map<String, Object> metrics = new HashMap<String, Object>();
+            metrics.put("float", new Float((float) 0.01));
+            metrics.put("integer", new Integer(1));
+            metrics.put("double", (double) 0.01);
+            metrics.put("long", (long) (10000000000000l));
+            metrics.put("string_value", Integer.toString(1000));
+            messagePayload.setProperties(metrics);
+
+            messagePayload.setBody(payload);
+            Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
+            Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
+            Date capturedOn = receivedOn;
+            message = createMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
+            setChannel(message, semanticTopic[i]);
+            updatePayload(message, messagePayload);
+            KapuaPosition messagePosition = getPosition(10.00d, 12d, 1.123d, 2d, 0001d, 1000, 1d, 44, new Date());
+            message.setPosition(messagePosition);
+            messages[i] = message;
+        }
+        List<StorableId> messageStoredIds = null;
+        DatastoreMessage storedMessage = null;
+        try {
+            messageStoredIds = insertMessages(messages);
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            storedMessage = MESSAGE_STORE_SERVICE.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL);
+            fullMessageCheck(account, storedMessage, messages[0], messageStoredIds.get(0), storedMessage.getDatastoreId(), storedMessage.getTimestamp());
+
+            // delete the message
+            MESSAGE_STORE_SERVICE.delete(account.getId(), messageStoredIds.get(0));
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertNull(MESSAGE_STORE_SERVICE.find(account.getId(), messageStoredIds.get(0), StorableFetchStyle.SOURCE_FULL));
+
+            // check for the mappings
+
+            // channel
+            ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
+            ChannelInfoListResult channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery);
+            assertEquals("Wrong channel info size", semanticTopic.length, channelInfo.getSize());
+            // delete the channel info registry
+            ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(account.getId(), channelInfo.getFirstItem().getId());
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertEquals(CHANNEL_INFO_REGISTRY_SERVICE.count(channelInfoQuery), semanticTopic.length - 1);
+
+            // metric
+            MetricInfoQuery metricInfoQueryFull = getBaseMetricInfoQuery(account.getId());
+            MetricInfoListResult metricInfoListFull = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQueryFull);
+            assertEquals("Wrong metric info size", 5 * semanticTopic.length, metricInfoListFull.getSize());
+            MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
+            setMetricInfoQueryBaseCriteria(metricInfoQuery, semanticTopic[0]);
+            MetricInfoListResult metricInfoList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
+            assertEquals("Wrong metric info size", 5, metricInfoList.getSize());
+            // delete the metric info registry
+            for (MetricInfo metricInfo : metricInfoList.getItems()) {
+                ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(account.getId(), metricInfo.getId());
+            }
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertEquals(5 * (semanticTopic.length - 1), METRIC_INFO_REGISTRY_SERVICE.count(metricInfoQueryFull));
+            assertEquals(0, METRIC_INFO_REGISTRY_SERVICE.count(metricInfoQuery));
+
+            // client
+            ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 10);
+            ClientInfoListResult clientInfo = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
+            assertEquals("Wrong client info size", semanticTopic.length, clientInfo.getSize());
+            // delete the client info registry
+            ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(account.getId(), clientInfo.getFirstItem().getId());
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            assertEquals(semanticTopic.length - 1, CLIENT_INFO_REGISTRY_SERVICE.count(clientInfoQuery));
+        } catch (KapuaException e) {
+            logger.error("Exception: ", e.getMessage(), e);
+        }
+    }
+
+    @Test
+    public void checkMappingForSameMetricNameAndDifferentType() throws KapuaException, ParseException, InterruptedException {
+        Account account = getTestAccountCreator(adminScopeId);
+        String[] semanticTopic = new String[] {
+                "same/metric/name/different/type/1",
+                "same/metric/name/different/type/2"
+        };
+        long clientIdSuffix = new Date().getTime();
+        KapuaDataMessage[] messages = new KapuaDataMessage[semanticTopic.length];
+        Instant capturedOnDate = KapuaDateUtils.getKapuaSysDate();
+        for (int i = 0; i < semanticTopic.length; i++) {
+            String clientId = String.format("device-%d", clientIdSuffix);
+            KapuaDataMessage message = null;
+            DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
+            Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
+
+            // leave the message index by as default (DEVICE_TIMESTAMP)
+            byte[] randomPayload = new byte[128];
+            random.nextBytes(randomPayload);
+            String stringPayload = "Hello delete by query message!";
+            byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
+
+            KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+            messagePayload.setProperties(getMetrics(message, i));
+            messagePayload.setBody(payload);
+            Date receivedOn = Date.from(capturedOnDate.plusMillis(i * 1000));
+            Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
+            Date capturedOn = receivedOn;
+            message = createMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
+            setChannel(message, semanticTopic[i]);
+            updatePayload(message, messagePayload);
+            KapuaPosition messagePosition = getPosition(10.00d, 12d, 1.123d, 2d, 0001d, 1000, 1d, 44, new Date());
+            message.setPosition(messagePosition);
+            messages[i] = message;
+        }
+        List<StorableId> messageStoredIds = null;
+        try {
+            messageStoredIds = insertMessages(messages);
+
+            // Refresh indices before querying
+            DatastoreMediator.getInstance().refreshAllIndexes();
+            List<OrderConstraint<?>> sort = new ArrayList<>();
+            sort.add(orderConstraint(ascending(MessageSchema.MESSAGE_TIMESTAMP), Date.class));
+            MessageQuery messageQuery = getMessageOrderedQuery(account.getId(), 100, sort);
+
+            MessageListResult messageList = MESSAGE_STORE_SERVICE.query(messageQuery);
+            checkMessagesCount(messageList, semanticTopic.length);
+            for (int i = 0; i < messageList.getSize(); i++) {
+                 DatastoreMessage message = messageList.getItems().get(i);
+                KapuaDataMessage messageToCompare = messages[i];
+                checkMessageId(message, messageStoredIds.get(i));
+                 checkTopic(message, messageToCompare.getChannel().toString());
+                 checkMessageBody(message, messageToCompare.getPayload().getBody());
+                 checkMetricsSize(message, messageToCompare.getPayload().getProperties().size());
+                 checkMetrics(message, messageToCompare.getPayload().getProperties());
+                 checkPosition(message, messageToCompare.getPosition());
+             }
+        } catch (KapuaException e) {
+            logger.error("Exception: ", e.getMessage(), e);
+        }
+    }
+
+    @Test
     public void queryBeforeSchema() throws KapuaException {
         Account account = getTestAccountCreator(adminScopeId);
         assertNull(MESSAGE_STORE_SERVICE.find(account.getId(), new StorableIdImpl("fake-id"), StorableFetchStyle.SOURCE_FULL));
@@ -147,7 +407,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertNull(METRIC_INFO_REGISTRY_SERVICE.find(account.getId(), new StorableIdImpl("fake-id")));
         assertNull(CLIENT_INFO_REGISTRY_SERVICE.find(account.getId(), new StorableIdImpl("fake-id")));
 
-        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 1000);
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 100);
         assertTrue(MESSAGE_STORE_SERVICE.query(messageQuery).isEmpty());
         assertEquals(MESSAGE_STORE_SERVICE.count(messageQuery), 0);
         MESSAGE_STORE_SERVICE.delete(messageQuery);
@@ -156,20 +416,20 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
         assertTrue(CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery).isEmpty());
         assertEquals(CHANNEL_INFO_REGISTRY_SERVICE.count(channelInfoQuery), 0);
-        CHANNEL_INFO_REGISTRY_SERVICE.delete(channelInfoQuery);
-        CHANNEL_INFO_REGISTRY_SERVICE.delete(account.getId(), new StorableIdImpl("fake-id"));
+        ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(channelInfoQuery);
+        ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(account.getId(), new StorableIdImpl("fake-id"));
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
         assertTrue(METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery).isEmpty());
         assertEquals(METRIC_INFO_REGISTRY_SERVICE.count(metricInfoQuery), 0);
-        METRIC_INFO_REGISTRY_SERVICE.delete(metricInfoQuery);
-        METRIC_INFO_REGISTRY_SERVICE.delete(account.getId(), new StorableIdImpl("fake-id"));
+        ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(metricInfoQuery);
+        ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(account.getId(), new StorableIdImpl("fake-id"));
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 10);
         assertTrue(CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery).isEmpty());
         assertEquals(CLIENT_INFO_REGISTRY_SERVICE.count(clientInfoQuery), 0);
-        CLIENT_INFO_REGISTRY_SERVICE.delete(clientInfoQuery);
-        CLIENT_INFO_REGISTRY_SERVICE.delete(account.getId(), new StorableIdImpl("fake-id"));
+        ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(clientInfoQuery);
+        ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(account.getId(), new StorableIdImpl("fake-id"));
     }
 
     @Test
@@ -784,9 +1044,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DatastoreMediator.getInstance().refreshAllIndexes();
 
         // start queries
-
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, null);
+        // setMetricInfoQueryBaseCriteria(metricInfoQuery, null);
 
         MetricInfoListResult metricList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, clientIds, metrics);
@@ -922,7 +1181,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         // start queries
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], null);
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], null, null);
 
         MetricInfoListResult metricList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
         checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[] { clientIds[0] }, metrics);
@@ -1358,6 +1617,32 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         return messagePosition;
     }
 
+    private Map<String, Object> getMetrics(KapuaDataMessage message, int profile) {
+        Map<String, Object> metrics = new HashMap<String, Object>();
+        for (int i = 0; i < 6; i++) {
+            metrics.put("metric_" + i, getMetricValue(profile + i));
+        }
+        return metrics;
+    }
+
+    private Object getMetricValue(int number) {
+        int choiche = number % 6;
+        switch (choiche) {
+        case 0:
+            return new Double(1 * Math.E);
+        case 1:
+            return new Float(2);
+        case 2:
+            return new Integer(3);
+        case 3:
+            return new Long(4);
+        case 4:
+            return new String("string_value");
+        default:
+            return new Date();
+        }
+    }
+
     //
     // Utility methods to help to to create message queries
     //
@@ -1413,7 +1698,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         MetricInfoQuery query = new MetricInfoQueryImpl(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
-        query.setLimit(10);
+        query.setLimit(100);
         query.setOffset(0);
         List<SortField> order = new ArrayList<>();
         order.add(descending(MetricInfoSchema.METRIC_MTR_TIMESTAMP));
@@ -1559,7 +1844,17 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param dateRange
      */
     private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, DateRange dateRange) {
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, null, dateRange);
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, null, null, dateRange);
+    }
+
+    /**
+     * Set the query account and message timestamp id filter
+     *
+     * @param metricInfoQuery
+     * @param dateRange
+     */
+    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String channel) {
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, null, channel, null);
     }
 
     /**
@@ -1569,7 +1864,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param clientId
      * @param dateRange
      */
-    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String clientId, DateRange dateRange) {
+    private void setMetricInfoQueryBaseCriteria(MetricInfoQuery metricInfoQuery, String clientId, String channel, DateRange dateRange) {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
@@ -1578,6 +1873,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         if (dateRange != null) {
             RangePredicate timestampPredicate = new RangePredicateImpl(MetricInfoField.TIMESTAMP_FULL, dateRange.getLowerBound(), dateRange.getUpperBound());
             andPredicate.getPredicates().add(timestampPredicate);
+        }
+        if (channel != null) {
+            TermPredicate channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CHANNEL, channel);
+            andPredicate.getPredicates().add(channelPredicate);
         }
         metricInfoQuery.setPredicate(andPredicate);
     }
@@ -1730,6 +2029,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Iterator<String> metricsKeys = metrics.keySet().iterator();
         while (metricsKeys.hasNext()) {
             String key = metricsKeys.next();
+            logger.debug("metric retrieved type '{}' - value '{}' - original metric type '{}' - value '{}' ",
+                    metrics.get(key) != null ? metrics.get(key).getClass() : "null", metrics.get(key),
+                    messageProperties.get(key) != null ? messageProperties.get(key).getClass() : "null", messageProperties.get(key));
+            assertEquals(String.format("Metric type is different for metric [%s]!", key),
+                    metrics.get(key) != null ? metrics.get(key).getClass() : "null",
+                    messageProperties.get(key) != null ? messageProperties.get(key).getClass() : "null");
             assertEquals(String.format("Metric [%s] differs!", key), metrics.get(key), messageProperties.get(key));
         }
     }
@@ -1948,7 +2253,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private void checkMetricFirstMessageIdAndDate(Account account, String clientId, StorableId firstPublishedMessage, Date firstPublishedOn) throws KapuaException {
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
-        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientId, null);
+        setMetricInfoQueryBaseCriteria(metricInfoQuery, clientId, null, null);
         MetricInfoListResult metricInfoList = METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery);
         assertNotNull("Cannot find the metric info registry!", metricInfoList);
         assertNotNull("Cannot find the metric info registry!", metricInfoList.getFirstItem());
