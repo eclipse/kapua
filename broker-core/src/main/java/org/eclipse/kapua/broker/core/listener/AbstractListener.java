@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.listener;
 
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.metric.MetricsService;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
@@ -26,7 +26,7 @@ public abstract class AbstractListener {
 
     // metrics
     private String metricComponentName = "listener";
-    private final static MetricsService METRICS_SERVICE = KapuaLocator.getInstance().getService(MetricsService.class);
+    private final static MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
     protected String name;
 
