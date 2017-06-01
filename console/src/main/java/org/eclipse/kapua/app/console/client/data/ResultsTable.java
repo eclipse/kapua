@@ -204,7 +204,9 @@ public class ResultsTable extends LayoutContainer {
         resultsToolBar.add(new FillToolItem());
 
         Label label = new Label(MSGS.dateRange());
+        Label emptySpace = new Label("&nbsp;&nbsp;&nbsp;");
         resultsToolBar.add(label);
+        resultsToolBar.add(emptySpace);
 
         dateRangeSelector = new DateRangeSelector();
         dateRangeSelector.setListener(new DateRangeSelectorListener() {
