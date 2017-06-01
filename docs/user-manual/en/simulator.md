@@ -355,7 +355,7 @@ name of the topic. The available field then are:
 <dl>
 <dt>bodyGenerator</dt><dd>The name of the generator providing the body (BLOB) content</dd>
 <dt>positionGenerator</dt><dd>The name of the generator providing the position information</dd>
-<dt>metrics></dt><dd>A map for mapping generator values to metric entries</dd>
+<dt>metrics</dt><dd>A map for mapping generator values to metric entries</dd>
 </dl>
 
 Each metric mapping again has a key (which is used a metric name) and the reference to the
@@ -409,7 +409,7 @@ Speed, number of satellites, precision and altitude will be sine curves.
 
 To start simulator with an example simulation configuration, run:
 
-```
-export KSIM_SIMULATION_CONFIGURATION=$(curl -s https://raw.githubusercontent.com/eclipse/kapua/develop/simulator-kura/src/test/resources/example1.json)
-java -jar target/kapua-simulator-kura-*-app.jar
-```
+
+    export KSIM_SIMULATION_CONFIGURATION=$(curl -s https://raw.githubusercontent.com/eclipse/kapua/develop/simulator-kura/src/test/resources/example1.json)
+    java -jar target/kapua-simulator-kura-*-app.jar
+
