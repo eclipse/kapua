@@ -65,26 +65,4 @@ public interface ClientInfoRegistryService extends KapuaService, KapuaConfigurab
     public long count(ClientInfoQuery query)
             throws KapuaException;
 
-    /**
-     * Delete client information by identifier
-     * 
-     * @param scopeId
-     * @param id
-     * @throws KapuaException
-     * 
-     * @since 1.0.0
-     */
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException;
-
-    /**
-     * Delete clients informations matching the given query
-     * 
-     * @param query
-     * @throws KapuaException
-     * 
-     * @since 1.0.0
-     */
-    public void delete(ClientInfoQuery query)
-            throws KapuaException;
 }

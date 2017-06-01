@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -121,6 +122,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
     private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    // for the registries the locator should return the Impls that provide the deletes method. But I prefer to explicitly cast the service instance to the impl when I call the deletes
     private static final ChannelInfoRegistryService CHANNEL_INFO_REGISTRY_SERVICE = LOCATOR.getService(ChannelInfoRegistryService.class);
     private static final MetricInfoRegistryService METRIC_INFO_REGISTRY_SERVICE = LOCATOR.getService(MetricInfoRegistryService.class);
     private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
@@ -201,7 +203,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             ChannelInfoListResult channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery);
             assertEquals("Wrong channel info size", 1, channelInfo.getSize());
             // delete the channel info registry
-            CHANNEL_INFO_REGISTRY_SERVICE.delete(account.getId(), channelInfo.getFirstItem().getId());
+            ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(account.getId(), channelInfo.getFirstItem().getId());
             // Refresh indices before querying
             DatastoreMediator.getInstance().refreshAllIndexes();
             assertEquals(CHANNEL_INFO_REGISTRY_SERVICE.count(channelInfoQuery), 0);
@@ -212,7 +214,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             assertEquals("Wrong metric info size", 5, metricInfoList.getSize());
             // delete the metric info registry
             for (MetricInfo metricInfo : metricInfoList.getItems()) {
-                METRIC_INFO_REGISTRY_SERVICE.delete(account.getId(), metricInfo.getId());
+                ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(account.getId(), metricInfo.getId());
             }
             // Refresh indices before querying
             DatastoreMediator.getInstance().refreshAllIndexes();
@@ -223,7 +225,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             ClientInfoListResult clientInfo = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
             assertEquals("Wrong client info size", 1, clientInfo.getSize());
             // delete the client info registry
-            CLIENT_INFO_REGISTRY_SERVICE.delete(account.getId(), clientInfo.getFirstItem().getId());
+            ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(account.getId(), clientInfo.getFirstItem().getId());
             // Refresh indices before querying
             DatastoreMediator.getInstance().refreshAllIndexes();
             assertEquals(CLIENT_INFO_REGISTRY_SERVICE.count(clientInfoQuery), 0);
@@ -299,7 +301,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             ChannelInfoListResult channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery);
             assertEquals("Wrong channel info size", semanticTopic.length, channelInfo.getSize());
             // delete the channel info registry
-            CHANNEL_INFO_REGISTRY_SERVICE.delete(account.getId(), channelInfo.getFirstItem().getId());
+            ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(account.getId(), channelInfo.getFirstItem().getId());
             // Refresh indices before querying
             DatastoreMediator.getInstance().refreshAllIndexes();
             assertEquals(CHANNEL_INFO_REGISTRY_SERVICE.count(channelInfoQuery), semanticTopic.length - 1);
@@ -314,7 +316,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             assertEquals("Wrong metric info size", 5, metricInfoList.getSize());
             // delete the metric info registry
             for (MetricInfo metricInfo : metricInfoList.getItems()) {
-                METRIC_INFO_REGISTRY_SERVICE.delete(account.getId(), metricInfo.getId());
+                ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(account.getId(), metricInfo.getId());
             }
             // Refresh indices before querying
             DatastoreMediator.getInstance().refreshAllIndexes();
@@ -326,7 +328,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             ClientInfoListResult clientInfo = CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery);
             assertEquals("Wrong client info size", semanticTopic.length, clientInfo.getSize());
             // delete the client info registry
-            CLIENT_INFO_REGISTRY_SERVICE.delete(account.getId(), clientInfo.getFirstItem().getId());
+            ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(account.getId(), clientInfo.getFirstItem().getId());
             // Refresh indices before querying
             DatastoreMediator.getInstance().refreshAllIndexes();
             assertEquals(semanticTopic.length - 1, CLIENT_INFO_REGISTRY_SERVICE.count(clientInfoQuery));
@@ -344,8 +346,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         };
         long clientIdSuffix = new Date().getTime();
         KapuaDataMessage[] messages = new KapuaDataMessage[semanticTopic.length];
+        Instant capturedOnDate = KapuaDateUtils.getKapuaSysDate();
         for (int i = 0; i < semanticTopic.length; i++) {
-            String clientId = String.format("device-%d", clientIdSuffix + 1000 * i);
+            String clientId = String.format("device-%d", clientIdSuffix);
             KapuaDataMessage message = null;
             DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(account.getId(), clientId);
             Device device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
@@ -359,7 +362,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
             messagePayload.setProperties(getMetrics(message, i));
             messagePayload.setBody(payload);
-            Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
+            Date receivedOn = Date.from(capturedOnDate.plusMillis(i * 1000));
             Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
             Date capturedOn = receivedOn;
             message = createMessage(clientId, account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
@@ -370,7 +373,6 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             messages[i] = message;
         }
         List<StorableId> messageStoredIds = null;
-        DatastoreMessage storedMessage = null;
         try {
             messageStoredIds = insertMessages(messages);
 
@@ -382,13 +384,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
             MessageListResult messageList = MESSAGE_STORE_SERVICE.query(messageQuery);
             checkMessagesCount(messageList, semanticTopic.length);
-            // for
-            // checkMessageId(messageQueried, messageStoredIds.get(0));
-            // checkTopic(messageQueried, semanticTopic[i % semanticTopic.length]);
-            // checkMessageBody(messageQueried, message.getPayload().getBody());
-            // checkMetricsSize(messageQueried, metrics.size());
-            // checkMetrics(messageQueried, metrics);
-            // checkPosition(messageQueried, messagePosition);
+            for (int i = 0; i < messageList.getSize(); i++) {
+                 DatastoreMessage message = messageList.getItems().get(i);
+                KapuaDataMessage messageToCompare = messages[i];
+                checkMessageId(message, messageStoredIds.get(i));
+                 checkTopic(message, messageToCompare.getChannel().toString());
+                 checkMessageBody(message, messageToCompare.getPayload().getBody());
+                 checkMetricsSize(message, messageToCompare.getPayload().getProperties().size());
+                 checkMetrics(message, messageToCompare.getPayload().getProperties());
+                 checkPosition(message, messageToCompare.getPosition());
+             }
         } catch (KapuaException e) {
             logger.error("Exception: ", e.getMessage(), e);
         }
@@ -402,7 +407,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         assertNull(METRIC_INFO_REGISTRY_SERVICE.find(account.getId(), new StorableIdImpl("fake-id")));
         assertNull(CLIENT_INFO_REGISTRY_SERVICE.find(account.getId(), new StorableIdImpl("fake-id")));
 
-        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 1000);
+        MessageQuery messageQuery = getBaseMessageQuery(account.getId(), 100);
         assertTrue(MESSAGE_STORE_SERVICE.query(messageQuery).isEmpty());
         assertEquals(MESSAGE_STORE_SERVICE.count(messageQuery), 0);
         MESSAGE_STORE_SERVICE.delete(messageQuery);
@@ -411,20 +416,20 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         ChannelInfoQuery channelInfoQuery = getBaseChannelInfoQuery(account.getId());
         assertTrue(CHANNEL_INFO_REGISTRY_SERVICE.query(channelInfoQuery).isEmpty());
         assertEquals(CHANNEL_INFO_REGISTRY_SERVICE.count(channelInfoQuery), 0);
-        CHANNEL_INFO_REGISTRY_SERVICE.delete(channelInfoQuery);
-        CHANNEL_INFO_REGISTRY_SERVICE.delete(account.getId(), new StorableIdImpl("fake-id"));
+        ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(channelInfoQuery);
+        ((ChannelInfoRegistryServiceImpl) CHANNEL_INFO_REGISTRY_SERVICE).delete(account.getId(), new StorableIdImpl("fake-id"));
 
         MetricInfoQuery metricInfoQuery = getBaseMetricInfoQuery(account.getId());
         assertTrue(METRIC_INFO_REGISTRY_SERVICE.query(metricInfoQuery).isEmpty());
         assertEquals(METRIC_INFO_REGISTRY_SERVICE.count(metricInfoQuery), 0);
-        METRIC_INFO_REGISTRY_SERVICE.delete(metricInfoQuery);
-        METRIC_INFO_REGISTRY_SERVICE.delete(account.getId(), new StorableIdImpl("fake-id"));
+        ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(metricInfoQuery);
+        ((MetricInfoRegistryServiceImpl) METRIC_INFO_REGISTRY_SERVICE).delete(account.getId(), new StorableIdImpl("fake-id"));
 
         ClientInfoQuery clientInfoQuery = getBaseClientInfoQuery(account.getId(), 10);
         assertTrue(CLIENT_INFO_REGISTRY_SERVICE.query(clientInfoQuery).isEmpty());
         assertEquals(CLIENT_INFO_REGISTRY_SERVICE.count(clientInfoQuery), 0);
-        CLIENT_INFO_REGISTRY_SERVICE.delete(clientInfoQuery);
-        CLIENT_INFO_REGISTRY_SERVICE.delete(account.getId(), new StorableIdImpl("fake-id"));
+        ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(clientInfoQuery);
+        ((ClientInfoRegistryServiceImpl) CLIENT_INFO_REGISTRY_SERVICE).delete(account.getId(), new StorableIdImpl("fake-id"));
     }
 
     @Test
@@ -2024,6 +2029,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         Iterator<String> metricsKeys = metrics.keySet().iterator();
         while (metricsKeys.hasNext()) {
             String key = metricsKeys.next();
+            logger.debug("metric retrieved type '{}' - value '{}' - original metric type '{}' - value '{}' ",
+                    metrics.get(key) != null ? metrics.get(key).getClass() : "null", metrics.get(key),
+                    messageProperties.get(key) != null ? messageProperties.get(key).getClass() : "null", messageProperties.get(key));
+            assertEquals(String.format("Metric type is different for metric [%s]!", key),
+                    metrics.get(key) != null ? metrics.get(key).getClass() : "null",
+                    messageProperties.get(key) != null ? messageProperties.get(key).getClass() : "null");
             assertEquals(String.format("Metric [%s] differs!", key), metrics.get(key), messageProperties.get(key));
         }
     }

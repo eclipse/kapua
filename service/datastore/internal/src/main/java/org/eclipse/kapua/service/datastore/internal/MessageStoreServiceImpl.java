@@ -29,6 +29,8 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -50,6 +52,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     private final AccountService accountService = LOCATOR.getService(AccountService.class);
     private final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     private final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
+    private final static Integer MAX_ENTRYES_ON_DELETE = DatastoreSettings.getInstance().get(Integer.class, DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     private final MessageStoreFacade messageStoreFacade;
 
@@ -138,7 +141,8 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
-
+        ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRYES_ON_DELETE, "limit");
+        
         checkDataAccess(query.getScopeId(), Actions.delete);
         try {
             messageStoreFacade.delete(query);

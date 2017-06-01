@@ -265,7 +265,7 @@ public class ChannelInfoRegistryFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public void delete(ChannelInfoQuery query)
+    void delete(ChannelInfoQuery query)
             throws KapuaIllegalArgumentException,
             QueryMappingException,
             ConfigurationException,

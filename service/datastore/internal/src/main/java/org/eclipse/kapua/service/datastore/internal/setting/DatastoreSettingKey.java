@@ -57,7 +57,11 @@ public enum DatastoreSettingKey implements SettingKey {
     /**
      * Replicas count
      */
-    INDEX_REPLICA_NUMBER("datastore.index.number_of_replicas");
+    INDEX_REPLICA_NUMBER("datastore.index.number_of_replicas"),
+    /**
+     * Elasticsearch index refresh interval (the data is available for a search operation only if it is indexed)
+     */
+    CONFIG_MAX_ENTRIES_ON_DELETE("datastore.delete.max_entries_on_delete");
 
     private String key;
 

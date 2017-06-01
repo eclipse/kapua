@@ -385,7 +385,6 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     .setVersion(true)
                     .setScroll(scrollTimeout)
                     .setSource(toSearchSourceBuilder(queryMap))
-                    .setSize(100)
                     .get(queryTimeout);
         } catch (IndexNotFoundException infe) {
             logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
