@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.metric;
 
+/**
+ * {@link MetricsService} factory.
+ * 
+ * @since 1.0
+ */
 public class MetricServiceFactory {
 
     private static MetricsService instance;
