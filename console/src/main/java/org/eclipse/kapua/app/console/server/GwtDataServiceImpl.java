@@ -250,7 +250,7 @@ public class GwtDataServiceImpl extends KapuaConfigurableRemoteServiceServlet<Me
     public PagingLoadResult<GwtMessage> findMessagesByTopic(PagingLoadConfig loadConfig, String scopeId, GwtTopic topic, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
 
-        StorablePredicate channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replace("/#$", ""));
+        StorablePredicate channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", ""));
 
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, channelPredicate);
     }
