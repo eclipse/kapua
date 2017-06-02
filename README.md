@@ -45,11 +45,13 @@ Suppose the target is the current snapshot 0.2.0-SNAPSHOT.
 * Open an OS shell
 * Execute the following command lines
 
-    docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
-    docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
-    docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es -p 1883:1883 -p 61614:61614 kapua/kapua-broker
-    docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console
-    docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api
+```
+docker run -td --name kapua-sql -p 8181:8181 -p 3306:3306 kapua/kapua-sql
+docker run -td --name kapua-elasticsearch -p 9200:9200 -p 9300:9300 elasticsearch:5.4.0 -Ecluster.name=kapua-datastore -Ediscovery.type=single-node -Etransport.host=_site_ -Etransport.ping_schedule=-1 -Etransport.tcp.connect_timeout=30s
+docker run -td --name kapua-broker --link kapua-sql:db --link kapua-elasticsearch:es -p 1883:1883 -p 61614:61614 kapua/kapua-broker
+docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console
+docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api
+```
 
 The command lines above start a Docker container for each of the services mentioned above.
 
@@ -63,12 +65,14 @@ You can check if every container is ok by typing the following command:
 
 The system will show the containers currently running:
 
-    CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                                  NAMES
-    f5e2b6ccabf3        kapua/kapua-api             "/home/kapua/run-j..."   8 minutes ago       Up 8 minutes        8778/tcp, 0.0.0.0:8081->8080/tcp                                       kapua-api
-    47c973b1241e        kapua/kapua-console         "/home/kapua/run-c..."   19 minutes ago      Up 19 minutes       0.0.0.0:8080->8080/tcp, 8778/tcp                                       kapua-console
-    915eeb9668d9        kapua/kapua-broker          "/maven/bin/active..."   19 minutes ago      Up 19 minutes       8778/tcp, 0.0.0.0:1883->1883/tcp, 0.0.0.0:61614->61614/tcp, 8883/tcp   kapua-broker
-    dc682f7b1533        elasticsearch:5.3.0         "/docker-entrypoin..."   19 minutes ago      Up 19 minutes       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                         kapua-elasticsearch
-    42d408470cf0        kapua/kapua-sql             "/home/kapua/run-h2"     20 minutes ago      Up 20 minutes       0.0.0.0:3306->3306/tcp, 0.0.0.0:8181->8181/tcp, 8778/tcp               kapua-sql
+```
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                                                  NAMES
+f5e2b6ccabf3        kapua/kapua-api             "/home/kapua/run-j..."   8 minutes ago       Up 8 minutes        8778/tcp, 0.0.0.0:8081->8080/tcp                                       kapua-api
+47c973b1241e        kapua/kapua-console         "/home/kapua/run-c..."   19 minutes ago      Up 19 minutes       0.0.0.0:8080->8080/tcp, 8778/tcp                                       kapua-console
+915eeb9668d9        kapua/kapua-broker          "/maven/bin/active..."   19 minutes ago      Up 19 minutes       8778/tcp, 0.0.0.0:1883->1883/tcp, 0.0.0.0:61614->61614/tcp, 8883/tcp   kapua-broker
+dc682f7b1533        elasticsearch:5.3.0         "/docker-entrypoin..."   19 minutes ago      Up 19 minutes       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp                         kapua-elasticsearch
+42d408470cf0        kapua/kapua-sql             "/home/kapua/run-h2"     20 minutes ago      Up 20 minutes       0.0.0.0:3306->3306/tcp, 0.0.0.0:8181->8181/tcp, 8778/tcp               kapua-sql
+```
 
 **Note:** in subsequent runs, before launching the new containers, ensure that there are no other containers already running.
 
@@ -99,20 +103,23 @@ In order to get access a REST resource through an API, an authentication token i
 * Select item _/authentication/user_
 * Using the test feature run 'POST /authentication/user' by specifying the following body:
 
-    {
-      "password" : [ "kapua-password" ],
-      "username": "kapua-sys"
-    }
-
+```
+{
+  "password" : [ "kapua-password" ],
+  "username": "kapua-sys"
+}
+```
 
 **Note:** as an alternative to the previous, if curl is available on your machine, execute the following from the shell:
 
-    curl -X POST  'http://localhost:8081/v1/authentication/user' --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
-      "password": [
-        "kapua-password"
-      ],
-     "username": "kapua-sys"
-   }'
+```
+curl -X POST  'http://localhost:8081/v1/authentication/user' --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
+  "password": [
+    "kapua-password"
+  ],
+  "username": "kapua-sys"
+}'
+```
 
 The system will return a JSON object.
 
