@@ -137,7 +137,7 @@ The credentials for the user kapua-broker are the following:
 
 #### Simulation
 
-Kapua comes with a framework that you can use to simulate Kura gateways. It can be used to test your Kapua deployments easily. See [Simulator documentation](docs/user-manual/en/simulator.md) for more info. 
+Kapua comes with a framework that you can use to simulate Kura gateways. It can be used to test your Kapua deployments easily. See [Simulator documentation](docs/user-manual/en/simulator.md) for more info.
 
 #### More deployment info
 Installing and running a demo using Docker is easy but it's not the only way. There are other scenarios that the users may be interested to. We provide advanced setup scenarios in the following guides:
