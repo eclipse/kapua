@@ -34,12 +34,10 @@ public abstract class AbstractMqttTransport implements Transport {
 
     protected MqttConnectOptions createConnectOptions(final String brokerUrl) {
         try {
-            final URIBuilder u = new URIBuilder(brokerUrl);
-
             final MqttConnectOptions result = new MqttConnectOptions();
             result.setAutomaticReconnect(true);
 
-            final String ui = u.getUserInfo();
+            final String ui = (new URIBuilder(brokerUrl)).getUserInfo();
             if (ui != null && !ui.isEmpty()) {
                 final String[] toks = ui.split("\\:", 2);
                 if (toks.length == 2) {
