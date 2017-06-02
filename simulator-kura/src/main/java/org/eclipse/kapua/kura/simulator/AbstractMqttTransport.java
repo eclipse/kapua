@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Anastasiya Lazarenko - minor performance issue
  *******************************************************************************/
 package org.eclipse.kapua.kura.simulator;
 

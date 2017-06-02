@@ -9,6 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
+ *     Anastasiya Lazarenko - minor performance issue
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
