@@ -22,17 +22,16 @@ if [ -n "$KEYCLOAK_URL" -a -n "$KAPUA_URL" ]; then
    : KEYCLOAK_REALM=${KEYCLOAK_REALM:=kapua}
    : KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID:=console}
    
-   JAVA_OPTS="$JAVA_OPTS -Dsso.enabled=true"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.provider=keycloak"
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.id=${KEYCLOAK_CLIENT_ID}"
    
    test -n "$KEYCLOAK_CLIENT_SECRET" && JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.secret=${KEYCLOAK_CLIENT_SECRET}"
    
-   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.server.endpoint.auth=${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth"
-   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.server.endpoint.token=${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.uri=${KEYCLOAK_URL}"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.realm=${KEYCLOAK_REALM}"
    JAVA_OPTS="$JAVA_OPTS -Dauthentication.credential.jwt.issuer.allowed=${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}"
    
    JAVA_OPTS="$JAVA_OPTS -Dsite.home.uri=${KAPUA_URL}"
-   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.redirect.uri=${KAPUA_URL}/sso/callback"
    
    export JAVA_OPTS
 fi

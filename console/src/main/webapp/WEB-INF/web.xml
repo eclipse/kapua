@@ -21,8 +21,12 @@
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
     </listener>
 
-	<listener>
+    <listener>
         <listener-class>org.eclipse.kapua.app.console.server.util.ConsoleListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.eclipse.kapua.app.console.server.util.SsoLocatorListener</listener-class>
     </listener>
 
     <filter>

@@ -125,6 +125,25 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-broker-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-sso-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-sso-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-sso-provider-generic</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-sso-provider-keycloak</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
