@@ -97,7 +97,9 @@ public class KapuaLiquibaseClient {
                 LOG.trace("Creating parent dir: {}", changelogFile.getParentFile().getAbsolutePath());
                 changelogFile.getParentFile().mkdirs();
             }
-            IOUtils.write(IOUtils.toString(scriptUrl), new FileOutputStream(changelogFile));
+            try (FileOutputStream tmpStream = new FileOutputStream(changelogFile)) {
+                IOUtils.write(IOUtils.toString(scriptUrl), tmpStream);
+            }
             LOG.trace("Copied file: {}", changelogFile.getAbsolutePath());
         }
 
