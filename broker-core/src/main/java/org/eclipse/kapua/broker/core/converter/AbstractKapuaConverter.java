@@ -30,9 +30,9 @@ import org.eclipse.kapua.broker.core.message.JmsUtil;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
-import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public abstract class AbstractKapuaConverter {
 
     // metrics
     protected final static String METRIC_COMPONENT_NAME = "converter";
-    protected final static MetricsService METRICS_SERVICE = KapuaLocator.getInstance().getService(MetricsService.class);
+    protected final static MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
     private final Counter metricConverterJmsMessage;
     private final Counter metricConverterJmsErrorMessage;

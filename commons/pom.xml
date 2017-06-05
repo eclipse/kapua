@@ -65,6 +65,12 @@
             <artifactId>h2</artifactId>
         </dependency>
 
+        <!-- metrics -->
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+        </dependency>
+
         <!-- Testing dependencies -->
         <dependency>
             <groupId>junit</groupId>
