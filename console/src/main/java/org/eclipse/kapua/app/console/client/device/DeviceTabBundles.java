@@ -84,7 +84,8 @@ public class DeviceTabBundles extends LayoutContainer {
 
     protected boolean refreshProcess;
 
-    public DeviceTabBundles(GwtSession currentSession, DeviceTabs deviceTabs) {
+    public DeviceTabBundles(GwtSession currentSession,
+            DeviceTabs deviceTabs) {
         this.deviceTabs = deviceTabs;
         dirty = true;
         initialized = false;
@@ -135,15 +136,16 @@ public class DeviceTabBundles extends LayoutContainer {
 
                         refreshProcess = false;
                     } else {
-                        MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
+                        MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(),
+                                new Listener<MessageBoxEvent>() {
 
                                     @Override
                                     public void handleEvent(MessageBoxEvent be) {
                                         grid.unmask();
 
-                                refreshProcess = false;
-                            }
-                        });
+                                        refreshProcess = false;
+                                    }
+                                });
                     }
                 }
             }
@@ -196,7 +198,8 @@ public class DeviceTabBundles extends LayoutContainer {
                         }
                     });
                 } else {
-                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
+                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(),
+                            new Listener<MessageBoxEvent>() {
 
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
@@ -219,7 +222,8 @@ public class DeviceTabBundles extends LayoutContainer {
                 if (selectedDevice.isOnline()) {
                     final GwtBundle gwtBundle = grid.getSelectionModel().getSelectedItem();
                     String bundleName = gwtBundle.getName();
-                    MessageBox.confirm(MSGS.confirm(), MSGS.deviceStopBundle(bundleName),
+                    MessageBox.confirm(MSGS.confirm(),
+                            MSGS.deviceStopBundle(bundleName),
                             new Listener<MessageBoxEvent>() {
 
                                 public void handleEvent(MessageBoxEvent ce) {
@@ -249,7 +253,8 @@ public class DeviceTabBundles extends LayoutContainer {
                                 }
                             });
                 } else {
-                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(), new Listener<MessageBoxEvent>() {
+                    MessageBox.alert(MSGS.dialogAlerts(), MSGS.deviceOffline(),
+                            new Listener<MessageBoxEvent>() {
 
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
