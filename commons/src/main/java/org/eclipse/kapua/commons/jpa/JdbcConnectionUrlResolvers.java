@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
@@ -30,8 +31,10 @@ public final class JdbcConnectionUrlResolvers {
         LOG.debug("The following JDBC connection URL resolver type will be used: {}", connectionUrlResolverType);
         if (connectionUrlResolverType.equals("DEFAULT")) {
             return new DefaultConfigurableJdbcConnectionUrlResolver().connectionUrl();
-        } else if (connectionUrlResolverType.equals("H2")) {
+        } else if ("H2".equals(connectionUrlResolverType)) {
             return new H2JdbcConnectionUrlResolver().connectionUrl();
+        } else if ("MariaDB".equals(connectionUrlResolverType)) {
+            return new MariaDBJdbcConnectionUrlResolver().connectionUrl();
         } else {
             throw new IllegalArgumentException("Unknown JDBC connection URL resolver type: " + connectionUrlResolverType);
         }
