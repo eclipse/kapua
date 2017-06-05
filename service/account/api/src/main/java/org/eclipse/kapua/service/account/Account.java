@@ -31,7 +31,7 @@ import org.eclipse.kapua.model.KapuaNamedEntity;
         "parentAccountPath" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccount")
 public interface Account extends KapuaNamedEntity {
 
-    public static final String TYPE = "acct";
+    public static final String TYPE = "account";
 
     default public String getType() {
         return TYPE;
