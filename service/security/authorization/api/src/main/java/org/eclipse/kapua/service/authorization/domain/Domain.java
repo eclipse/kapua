@@ -37,9 +37,7 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 @XmlType(propOrder = { "name",
         "serviceName",
         "actions" })
-public interface Domain extends 2
-
-{
+public interface Domain extends KapuaEntity {
 
     public static final String TYPE = "domain";
 

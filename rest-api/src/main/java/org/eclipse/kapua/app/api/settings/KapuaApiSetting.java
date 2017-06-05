@@ -34,7 +34,7 @@ public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
     /**
      * Return the api setting instance (singleton)
      *
-     * @return
+     * @return A singleton instance of {@link KapuaApiSetting}
      */
     public static KapuaApiSetting getInstance() {
         return INSTANCE;

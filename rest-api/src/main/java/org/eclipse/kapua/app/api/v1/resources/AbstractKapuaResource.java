@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.api.v1.resources;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.eclipse.kapua.model.KapuaEntity;
 
 /**
  * 
@@ -25,10 +28,14 @@ public abstract class AbstractKapuaResource {
 
     /**
      * Checks if the given entity is {@code null}.
-     * If it is {@code null} a Responde
+     * If it is <code>null</code> a {@link WebApplicationException} is raised.
+     * 
      * @param entity
-     * @return The entity given if not {@code null}.
-     * @throws
+     *            The {@link KapuaEntity} to check.
+     * @return The entity given if not <code>null</code>.
+     * @throws WebApplicationException
+     *             with {@link Status#NOT_FOUND} if the entity is <code>null</code>.
+     * @since 1.0.0
      */
     protected <T> T returnNotNullEntity(T entity) {
         if (entity == null) {
@@ -38,7 +45,7 @@ public abstract class AbstractKapuaResource {
     }
 
     /**
-     * Builds a 204 HTTP Response.
+     * Builds a 200 HTTP Response.
      * 
      * <pre>
      * return javax.ws.rs.core.Response.ok().build();
