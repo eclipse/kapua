@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 import org.apache.http.HttpHost;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
-import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientProvider;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
@@ -46,9 +45,8 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! please call initi method before use it!";
     private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! closing it before initialize the new one!";
     private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
-    private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch transport";
-
-    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_LOG = "Cannot close ElasticSearch rest client. Client is already stopped or not initialized!";
+    private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch rest client";
+    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch rest client. Client is already stopped or not initialized!";
 
     private static final int DEFAULT_PORT = 9200;
 
@@ -81,13 +79,12 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * 
      * @throws ClientException
      */
-    public static void init() throws ClientException {
+    public static void init() throws ClientUnavailableException {
         synchronized (EsRestClientProvider.class) {
-            if (instance != null) {
-                logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
-                close();
-            }
+            logger.info(">>> Initializing ES rest client...");
+            closeIfInstanceInitialized();
             instance = new EsRestClientProvider();
+            logger.info(">>> Initializing ES rest client... DONE");
         }
     }
 
@@ -102,11 +99,10 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      */
     public static void init(AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientException {
         synchronized (EsRestClientProvider.class) {
-            if (instance != null) {
-                logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
-                close();
-            }
+            logger.info(">>> Initializing ES rest client...");
+            closeIfInstanceInitialized();
             instance = new EsRestClientProvider(settings);
+            logger.info(">>> Initializing ES rest client... DONE");
         }
     }
 
@@ -121,11 +117,17 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      */
     public static void init(List<InetSocketAddress> addresses) throws ClientException {
         synchronized (EsRestClientProvider.class) {
-            if (instance != null) {
-                logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
-                close();
-            }
+            logger.info(">>> Initializing ES rest client...");
+            closeIfInstanceInitialized();
             instance = new EsRestClientProvider(addresses);
+            logger.info(">>> Initializing ES rest client... DONE");
+        }
+    }
+
+    private static void closeIfInstanceInitialized() throws ClientUnavailableException {
+        if (instance != null) {
+            logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
+            close();
         }
     }
 
@@ -134,16 +136,16 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * 
      * @throws ClientException
      */
-    public static void close() throws ClientException {
+    public static void close() throws ClientUnavailableException {
         synchronized (EsRestClientProvider.class) {
             if (instance != null) {
                 try {
                     instance.closeClient();
                 } catch (IOException e) {
-                    throw new ClientException(ClientErrorCodes.CLIENT_UNAVAILABLE, e.getMessage());
+                    throw new ClientUnavailableException(PROVIDER_CANNOT_CLOSE_CLIENT_MSG, e);
                 }
             } else {
-                logger.warn(PROVIDER_CANNOT_CLOSE_CLIENT_LOG);
+                logger.warn(PROVIDER_CANNOT_CLOSE_CLIENT_MSG);
             }
         }
     }
@@ -159,7 +161,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     }
 
     /**
-     * Create the Elasticsearch transport client based on the default configuration settings ({@link ClientSettingsKey})
+     * Create the Elasticsearch rest client based on the default configuration settings ({@link ClientSettingsKey})
      *
      * @throws ClientUnavailableException
      */

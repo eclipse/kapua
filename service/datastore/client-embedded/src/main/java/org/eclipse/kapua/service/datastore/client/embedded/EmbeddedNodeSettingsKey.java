@@ -9,47 +9,43 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.rest;
+package org.eclipse.kapua.service.datastore.client.embedded;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
- * Datastore Elasticsearch rest client setting keys.
+ * Datastore ES embedded node embedded node setting keys.
  * 
  * @since 1.0
  *
  */
-public enum ClientSettingsKey implements SettingKey {
+public enum EmbeddedNodeSettingsKey implements SettingKey {
 
-    /**
-     * Elasticsearch nodes count
-     */
-    ELASTICSEARCH_NODES("datastore.elasticsearch.nodes"),
-    /**
-     * Elasticsearch node map
-     */
-    ELASTICSEARCH_NODE("datastore.elasticsearch.node"),
-    /**
-     * Elasticsearch port
-     */
-    ELASTICSEARCH_PORT("datastore.elasticsearch.port"),
     /**
      * Elasticsearch cluster name
      */
     ELASTICSEARCH_CLUSTER("datastore.elasticsearch.cluster"),
     /**
-     * Query timeout
+     * Elasticsearch transport node
      */
-    QUERY_TIMEOUT("datastore.query.timeout"),
+    ELASTICSEARCH_TRANSPORT_NODE("datastore.elasticsearch.transport.node"),
     /**
-     * Scroll timeout
+     * Elasticsearch transport port
      */
-    SCROLL_TIMEOUT("datastore.scroll.timeout");
+    ELASTICSEARCH_TRANSPORT_PORT("datastore.elasticsearch.transport.port"),
+    /**
+     * Elasticsearch rest node
+     */
+    ELASTICSEARCH_REST_NODE("datastore.elasticsearch.rest.node"),
+    /**
+     * Elasticsearch rest port
+     */
+    ELASTICSEARCH_REST_PORT("datastore.elasticsearch.rest.port");
 
 
     private String key;
 
-    private ClientSettingsKey(String key) {
+    private EmbeddedNodeSettingsKey(String key) {
         this.key = key;
     }
 
