@@ -44,7 +44,7 @@ CREATE TABLE dvc_device_event (
 
   PRIMARY KEY (scope_id, id),
   
-  FOREIGN KEY (device_id) REFERENCES dvc_device(id) ON DELETE CASCADE
+  FOREIGN KEY (scope_id, device_id) REFERENCES dvc_device(scope_id, id) ON DELETE CASCADE
   
 ) CHARSET=utf8;
 

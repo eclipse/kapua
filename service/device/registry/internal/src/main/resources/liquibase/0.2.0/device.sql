@@ -58,11 +58,13 @@ CREATE TABLE dvc_device (
   attributes             	TEXT,  
   properties             	TEXT,   
   
-  PRIMARY KEY (scope_id, id),   -- primary key needs to include the partitioning key
+  PRIMARY KEY (scope_id, id),
+  
   CONSTRAINT uc_clientId UNIQUE (scope_id, client_id),
   CONSTRAINT uc_imei UNIQUE (scope_id, imei),
   CONSTRAINT uc_imsi UNIQUE (scope_id, imsi),
   CONSTRAINT uc_iccid UNIQUE (scope_id, iccid)
+  
 ) DEFAULT CHARSET=utf8;
 
 CREATE INDEX idx_device_connection_id ON dvc_device (scope_id, connection_id);
