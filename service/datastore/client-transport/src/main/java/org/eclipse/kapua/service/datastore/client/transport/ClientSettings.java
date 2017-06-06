@@ -29,7 +29,7 @@ public class ClientSettings extends AbstractKapuaSetting<ClientSettingsKey> {
     }
 
     /**
-     * Get the datastore setting instance
+     * Get the datastore settings instance
      * 
      * @return
      */

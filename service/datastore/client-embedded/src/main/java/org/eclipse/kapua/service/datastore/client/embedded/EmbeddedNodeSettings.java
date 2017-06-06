@@ -9,31 +9,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.rest;
+package org.eclipse.kapua.service.datastore.client.embedded;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
- * Datastore settings implementation
+ * Datastore ES embedded node settings implementation
  * 
  * @since 1.0
  */
-public class ClientSettings extends AbstractKapuaSetting<ClientSettingsKey> {
+public class EmbeddedNodeSettings extends AbstractKapuaSetting<EmbeddedNodeSettingsKey> {
 
-    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-rest-client-setting.properties";
+    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-embedded-client-setting.properties";
 
-    private static final ClientSettings INSTANCE = new ClientSettings();
+    private static final EmbeddedNodeSettings INSTANCE = new EmbeddedNodeSettings();
 
-    private ClientSettings() {
+    private EmbeddedNodeSettings() {
         super(DATASTORE_CONFIG_RESOURCE);
     }
 
     /**
-     * Get the datastore settings instance
+     * Get the datastore ES embedded node settings instance
      * 
      * @return
      */
-    public static ClientSettings getInstance() {
+    public static EmbeddedNodeSettings getInstance() {
         return INSTANCE;
     }
 }
