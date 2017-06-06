@@ -269,4 +269,12 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         set("defaultPki", value);
     }
 
+    public String getGroupId() {
+        return get("groupId");
+    }
+
+    public void setGroupId(String groupId) {
+        set("groupId", groupId);
+    }
+
 }

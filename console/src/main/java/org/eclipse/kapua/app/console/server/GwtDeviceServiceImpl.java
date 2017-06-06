@@ -239,9 +239,11 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             if (predicates.getCustomAttribute2() != null) {
                 andPred = andPred.and(new AttributePredicate<String>(DevicePredicates.CUSTOM_ATTRIBUTE_2, predicates.getCustomAttribute2()));
             }
-
             if (predicates.getDeviceConnectionStatus() != null) {
                 andPred = andPred.and(new AttributePredicate<DeviceConnectionStatus>(DevicePredicates.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(predicates.getDeviceConnectionStatus())));
+            }
+            if (predicates.getGroupId() != null) {
+                andPred = andPred.and(new AttributePredicate<KapuaId>(DevicePredicates.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));
             }
 
             if (predicates.getSortAttribute() != null) {
