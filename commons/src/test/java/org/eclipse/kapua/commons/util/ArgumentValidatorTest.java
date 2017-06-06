@@ -116,23 +116,64 @@ public class ArgumentValidatorTest extends Assert {
                 "A1B","A b", "A-ab1","A_1","ab-","___","---","   ", "_- ","ab ","12 ","12_","2-1","abcd1234-_ "};
         int sizeOfPermittedStrings = listOfPermittedStringsNameSpace.length;
         for (int i = 0; i < sizeOfFalseStrings; i++) {
-            try{
+            try {
                 ArgumentValidator.match(listOfFalseStringsNameSpace[i], argRegExprNameSpace, "NAME_SPACE_REGEXP_test_case");
                 fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
             }
         }
-        for(int i=0;i<sizeOfPermittedStrings;i++){
-            try{
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
                 ArgumentValidator.match(listOfPermittedStringsNameSpace[i], argRegExprNameSpace, "NAME_SPACE_REGEXP_test_case");
-            }
-            catch(Exception ex){
+            } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
             }
         }
     }
-    
+
+    @Test
+    public void testIllegalCharacterPasswordRegExp() throws Exception {
+        String argRegExprPasswordRegExp = "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$";
+        String permittedSymbols="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-_@#$%^&+=!~|";
+        String[] listOfFalseStringsPasswordRegExp= new String[] {"abcd1234ABCD\"","abcd1234ABCD?","abcd1234ABCD*",
+                "abcd1234ABCD;","abcd1234ABCD:","abcd1234ABCD<","abcd1234ABCD>","abcd1234ABCD[","abcd1234ABCD]",
+                "abcd1234ABCD{","abcd1234ABCD}","abcd1234ABCD⁄","abcd1234ABCD€","abcd1234ABCD(","abcd1234ABCD)",
+                "abcd1234ABCD.","abcd1234ABCD,","abcd1234ABCD¡","abcd1234ABCD™","abcd1234ABCD£","abcd1234ABCD¢",
+                "abcd1234ABCD∞","abcd1234ABCD§","abcd1234ABCD¶","abcd1234ABCD•","abcd1234ABCDª","abcd1234ABCDº",
+                "abcd1234ABCD-","abcd1234ABCD≠","abcd1234ABCD ","abcd1234ABCD∑","abcd1234ABCD´","abcd1234ABCD®",
+                "abcd1234ABCD†","abcd1234ABCD—","abcd1234ABCD¨","abcd1234ABCDø","abcd1234ABCDπ","abcd1234ABCD-",
+                "abcd1234ABCDå","abcd1234ABCDß","abcd1234ABCD∂","abcd1234ABCD","abcd1234ABCD©","abcdefghijklm¿",
+                "abcd1234ABCD∆","abcd1234ABCD¬","abcd1234ABCD…","abcd1234ABCD\\","abcd1234ABCDΩ","ABCDefghij12_",
+                "abcd1234ABCD≈","abcd1234ABCDç","abcd1234ABCD√","abcd1234ABCD∫","abcd1234ABCDµ","abcd1234ABCD≤",
+                "abcd1234ABCD≥","abcd1234ABCD÷","abcd1234ABCD‹","abcd1234ABCD›","abcd1234ABCD€","abcd1234ABCDı",
+                "abcd1234ABCD°","abcd1234ABCD·","abcd1234ABCD‚","abcd1234ABCD±","abcd1234ABCDŒ","abcd1234ABCD„",
+                "abcd1234ABCD‘","abcd1234ABCD”","abcd1234ABCD’","abcd1234ABCDÉ","abcd1234ABCDØ","abcd1234ABCD∏",
+                "abcd1234ABCDÅ","abcd1234ABCDÍ","abcd1234ABCDÔ","abcd1234ABCD","abcd1234ABCDÒ","abcd1234ABCDæ",
+                "abcd1234ABCDÆ","abcd1234ABCD«","abcd1234ABCD◊","abcd1234ABCDÑ","abcd1234ABCD¯",
+                "abcd1234ABCDÈ","abcd1234ABCDˇ"};
+        int sizeOfFalseStrings = listOfFalseStringsPasswordRegExp.length;
+        String[] listOfPermittedStringsPasswordRegExp = new String[]{permittedSymbols,"ABCDefghij12@","ABCDEfghij12#",
+                "ABCDEfghij12$","ABCDEfghij12%","ABCDEfghij12^","ABCDEfghij12&","ABCDEfghij12+","ABCDEfghij12=",
+                "ABCDEfghij12!","ABCDEfghij12~","ABCDEfghij12|","ABCDEfghij1!","ab12CD23!&)$%!"};
+        int sizeOfPermittedStrings = listOfPermittedStringsPasswordRegExp.length;
+        for (int i = 0; i < sizeOfFalseStrings; i++) {
+            try {
+                ArgumentValidator.match(listOfFalseStringsPasswordRegExp[i], argRegExprPasswordRegExp, "PASSWORD_REGEXP_test_case");
+                fail("Exception expected for: " + listOfFalseStringsPasswordRegExp[i]);
+            } catch (KapuaIllegalArgumentException ex) {
+                // Expected
+            }
+        }
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
+                ArgumentValidator.match(listOfPermittedStringsPasswordRegExp[i], argRegExprPasswordRegExp, "PASSWORD_REGEXP_test_case");
+            } catch (Exception ex) {
+                fail("No exception expected for: " + listOfPermittedStringsPasswordRegExp[i]);
+            }
+        }
+    }
+
     @Test
     public void testIllegalCharacterEmailRegExp() throws Exception {
         String argRegExprEmailRegExp = "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$";
