@@ -46,6 +46,6 @@ CREATE TABLE dvc_device_event (
   
   FOREIGN KEY (scope_id, device_id) REFERENCES dvc_device(scope_id, id) ON DELETE CASCADE
   
-) CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_device_event_id ON dvc_device_event (scope_id, device_id, resource, action);

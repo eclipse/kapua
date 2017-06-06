@@ -34,7 +34,8 @@ CREATE TABLE atht_access_token (
   properties             	TEXT,  
   
   PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8;
+  
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_atht_access_token_scope_id ON atht_access_token (scope_id);
 CREATE INDEX idx_atht_access_token_user_id ON atht_access_token (scope_id, user_id);

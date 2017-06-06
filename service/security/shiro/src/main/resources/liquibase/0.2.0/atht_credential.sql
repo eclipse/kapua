@@ -31,7 +31,8 @@ CREATE TABLE atht_credential (
   properties             	TEXT,  
   
   PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8;
+  
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_atht_credential_scope_id ON atht_credential (scope_id);
 CREATE INDEX idx_atht_credential_user_id ON atht_credential (scope_id, user_id);

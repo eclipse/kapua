@@ -30,7 +30,7 @@ CREATE TABLE athz_role (
   
   PRIMARY KEY (id)
 
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE UNIQUE INDEX idx_role_name ON athz_role (scope_id, name);
 

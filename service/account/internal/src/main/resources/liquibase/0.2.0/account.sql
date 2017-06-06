@@ -43,7 +43,8 @@ CREATE TABLE act_account (
   PRIMARY KEY (id),
   FOREIGN KEY (scope_id) REFERENCES act_account(id) ON DELETE RESTRICT,
   CONSTRAINT act_accountName UNIQUE (name)
-) DEFAULT CHARSET=utf8;
+
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_account_scope_id ON act_account (scope_id);
 

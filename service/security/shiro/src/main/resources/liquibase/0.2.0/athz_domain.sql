@@ -25,7 +25,7 @@ CREATE TABLE athz_domain (
     
   PRIMARY KEY (id)
 
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE UNIQUE INDEX idx_domain_name ON athz_domain (name);
 

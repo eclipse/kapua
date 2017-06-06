@@ -65,7 +65,7 @@ CREATE TABLE dvc_device (
   CONSTRAINT uc_imsi UNIQUE (scope_id, imsi),
   CONSTRAINT uc_iccid UNIQUE (scope_id, iccid)
   
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_device_connection_id ON dvc_device (scope_id, connection_id);
 CREATE INDEX idx_device_serial_number ON dvc_device (scope_id, serial_number);

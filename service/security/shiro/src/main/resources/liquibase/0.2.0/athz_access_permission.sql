@@ -32,7 +32,7 @@ CREATE TABLE athz_access_permission (
   
   FOREIGN KEY (access_info_id) REFERENCES athz_access_info(id) ON DELETE CASCADE
   
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_scopeId_accessId_domain_action_targetScopeId_groupId ON athz_access_permission (scope_id, access_info_id, domain, action, target_scope_id, group_id);
 

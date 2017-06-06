@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS sys_configuration (
   
   PRIMARY KEY  (scope_id, id)
   
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 INSERT INTO sys_configuration (
   SCOPE_ID,

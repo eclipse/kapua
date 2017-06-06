@@ -22,7 +22,7 @@ CREATE TABLE athz_domain_actions (
   
   FOREIGN KEY (domain_id) REFERENCES athz_domain(id) ON DELETE CASCADE
  
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 INSERT INTO athz_domain_actions
 	VALUES

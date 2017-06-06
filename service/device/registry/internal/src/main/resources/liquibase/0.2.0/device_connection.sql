@@ -34,7 +34,8 @@ CREATE TABLE dvc_device_connection (
   properties                 TEXT,
 
   PRIMARY KEY (scope_id, id)   -- primary key needs to include the partitioning key
-) DEFAULT CHARSET=utf8;
+
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_connection_status_id_client_id ON dvc_device_connection (scope_id, id, status, client_id);
 CREATE INDEX idx_connection_client_id_status_id ON dvc_device_connection (scope_id, id, client_id, status);

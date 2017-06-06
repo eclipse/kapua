@@ -34,7 +34,7 @@ CREATE TABLE usr_user (
 
   PRIMARY KEY (id),
   CONSTRAINT usr_uc_name UNIQUE (name)
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_user_scope_id ON usr_user (scope_id);
 

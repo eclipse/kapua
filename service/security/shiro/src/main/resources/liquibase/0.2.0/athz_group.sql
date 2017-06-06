@@ -30,6 +30,6 @@ CREATE TABLE athz_group (
   
   PRIMARY KEY (id)
 
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE UNIQUE INDEX idx_group_name ON athz_group (scope_id, name);
