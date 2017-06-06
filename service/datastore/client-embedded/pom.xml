@@ -24,12 +24,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-client-api</artifactId>
         </dependency>
-        
+
         <!-- External dependencies -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
