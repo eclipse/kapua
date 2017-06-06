@@ -42,15 +42,13 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsTransportClientProvider.class);
 
-    private static final String KEY_ES_CLUSTER_NAME = "cluster.name";
-
     private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! please call initi method before use it!";
     private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! closing it before initialize the new one!";
     private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
     private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch transport";
+    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch client. Client is already stopped or not initialized!";
 
-    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_LOG = "Cannot close ElasticSearch client. Client is already stopped or not initialized!";
-
+    private static final String KEY_ES_CLUSTER_NAME = "cluster.name";
     private static final int DEFAULT_PORT = 9300;
 
     private static EsTransportClientProvider instance;
@@ -84,11 +82,10 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
      */
     public static void init() throws ClientUnavailableException {
         synchronized (EsTransportClientProvider.class) {
-            if (instance != null) {
-                logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
-                close();
-            }
+            logger.info(">>> Initializing ES transport client...");
+            closeIfInstanceInitialized();
             instance = new EsTransportClientProvider();
+            logger.info(">>> Initializing ES transport client... DONE");
         }
     }
 
@@ -103,11 +100,10 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
      */
     public static void init(AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
         synchronized (EsTransportClientProvider.class) {
-            if (instance != null) {
-                logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
-                close();
-            }
+            logger.info(">>> Initializing ES transport client...");
+            closeIfInstanceInitialized();
             instance = new EsTransportClientProvider(settings);
+            logger.info(">>> Initializing ES transport client... DONE");
         }
     }
 
@@ -124,11 +120,17 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
      */
     public static void init(List<InetSocketAddress> addresses, String clustername) throws ClientUnavailableException {
         synchronized (EsTransportClientProvider.class) {
-            if (instance != null) {
-                logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
-                close();
-            }
+            logger.info(">>> Initializing ES transport client...");
+            closeIfInstanceInitialized();
             instance = new EsTransportClientProvider(addresses, clustername);
+            logger.info(">>> Initializing ES transport client... DONE");
+        }
+    }
+
+    private static void closeIfInstanceInitialized() {
+        if (instance != null) {
+            logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
+            close();
         }
     }
 
@@ -140,7 +142,7 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
             if (instance != null) {
                 instance.closeClient();
             } else {
-                logger.warn(PROVIDER_CANNOT_CLOSE_CLIENT_LOG);
+                logger.warn(PROVIDER_CANNOT_CLOSE_CLIENT_MSG);
             }
         }
     }

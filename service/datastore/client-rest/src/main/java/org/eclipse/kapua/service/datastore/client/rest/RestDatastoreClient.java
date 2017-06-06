@@ -15,8 +15,6 @@ import static org.eclipse.kapua.service.datastore.client.SchemaKeys.KEY_SOURCE;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
@@ -95,10 +93,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private static final String CLIENT_HITS_MAX_VALUE_EXCEDEED = "Total hits exceeds integer max value";
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
-    private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup transport datastore driver. Cannot close Elasticsearch client instance";
-    private final static String CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
-    private final static String CLIENT_CLASS_NAME;
-    private static Class<ClientProvider<RestClient>> providerInstance;
+    private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
     private static RestDatastoreClient instance;
 
     private ClientProvider<RestClient> esClientProvider;
@@ -107,8 +102,6 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private QueryConverter queryConverter;
 
     static {
-        ClientSettings config = ClientSettings.getInstance();
-        CLIENT_CLASS_NAME = config.getString(ClientSettingsKey.ELASTICSEARCH_CLIENT_PROVIDER);
         MAPPER = new ObjectMapper();
         MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
@@ -132,11 +125,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     /**
      * Default constructor
-     * Initialize the client provider ({@link ClientProvider}) as singleton. The implementation is specified by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
+     * Initialize the client provider ({@link ClientProvider}) as singleton.
      * 
      * @throws ClientUnavailableException
      */
-    @SuppressWarnings("unchecked")
     private RestDatastoreClient() throws ClientUnavailableException {
         // lazy synchronization
         if (instance == null) {
@@ -145,23 +137,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     if (esClientProvider != null) {
                         cleanupClient(true);
                     }
-                    logger.info("Starting Elasticsearch transport client...");
-                    try {
-                        providerInstance = (Class<ClientProvider<RestClient>>) Class.forName(CLIENT_CLASS_NAME);
-                    } catch (ClassNotFoundException e) {
-                        throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
-                    }
-                    try {
-                        // esClientProvider = providerInstance.newInstance();
-                        Method initMethod = providerInstance.getMethod("init", new Class[0]);
-                        initMethod.invoke(null, new Object[0]);
-                        Method getInstanceMethod = providerInstance.getMethod("getInstance", new Class[0]);
-                        esClientProvider = (ClientProvider<RestClient>) getInstanceMethod.invoke(null, new Object[0]);
-                    } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                        instance = null;
-                        throw new ClientUnavailableException(String.format(CLIENT_CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
-                    }
-                    logger.info("Starting Elasticsearch transport client... DONE");
+                    logger.info("Starting Elasticsearch rest client...");
+                    EsRestClientProvider.init();
+                    esClientProvider = EsRestClientProvider.getInstance();
+                    logger.info("Starting Elasticsearch rest client... DONE");
                 }
             }
         }
@@ -172,10 +151,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         synchronized (RestDatastoreClient.class) {
             if (instance != null) {
                 if (esClientProvider != null) {
-                    logger.info("Stopping Elasticsearch transport client...");
+                    logger.info("Stopping Elasticsearch rest client...");
                     // all fine... try to cleanup the client
                     cleanupClient(false);
-                    logger.info("Stopping Elasticsearch transport client... DONE");
+                    logger.info("Stopping Elasticsearch rest client... DONE");
                 } else {
                     logger.warn("Close method called for a not initialized client!");
                 }
