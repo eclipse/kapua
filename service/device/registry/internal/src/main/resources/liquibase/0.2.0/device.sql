@@ -76,8 +76,6 @@ CREATE INDEX idx_device_model_id ON dvc_device (scope_id, model_id, client_id);
 CREATE INDEX idx_device_model_dn ON dvc_device (scope_id, model_id, display_name);
 CREATE INDEX idx_device_esf_id ON dvc_device (scope_id, app_framework_version, client_id);
 CREATE INDEX idx_device_esf_dn ON dvc_device (scope_id, app_framework_version, display_name);
-CREATE INDEX idx_device_app_id ON dvc_device (scope_id, app_identifiers(255), client_id);
-CREATE INDEX idx_device_app_dn ON dvc_device (scope_id, app_identifiers(255), display_name);
 CREATE INDEX idx_device_c1_id ON dvc_device (scope_id, custom_attribute_1, client_id);
 CREATE INDEX idx_device_c1_dn ON dvc_device (scope_id, custom_attribute_1, display_name);
 CREATE INDEX idx_device_c2_id ON dvc_device (scope_id, custom_attribute_2, client_id);
