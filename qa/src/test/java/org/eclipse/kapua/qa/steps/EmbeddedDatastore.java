@@ -33,15 +33,15 @@ public class EmbeddedDatastore {
 
     @Before(order = HookPriorities.DATASTORE)
     public void setup() {
-        logger.info("starting embedded datstore");
+        logger.info("starting embedded datastore");
         esEmbeddedEngine = new EsEmbeddedEngine();
-        logger.info("starting embedded datstore DONE");
+        logger.info("starting embedded datastore DONE");
     }
 
     @After(order = HookPriorities.DATASTORE)
     public void closeNode() throws IOException {
-        logger.info("closing embedded datstore");
+        logger.info("closing embedded datastore");
         esEmbeddedEngine.close();
-        logger.info("closing embedded datstore DONE");
+        logger.info("closing embedded datastore DONE");
     }
 }

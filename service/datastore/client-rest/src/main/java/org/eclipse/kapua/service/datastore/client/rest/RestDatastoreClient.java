@@ -61,7 +61,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 /**
  * Client implementation based on Elasticsearch rest client.<br>
- * The Elasticsearch client provider is instantiated as singleton by reflection using those provided by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
+ * The Elasticsearch client provider is instantiated as singleton.
  *
  * @since 1.0
  */
