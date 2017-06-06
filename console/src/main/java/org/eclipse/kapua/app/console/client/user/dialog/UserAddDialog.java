@@ -70,7 +70,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         // User info tab
         //
         infoFieldSet = new FieldSet();
-        infoFieldSet.setHeading(MSGS.dialogAddInfo());
+        infoFieldSet.setHeading(MSGS.dialogAddFieldSet());
         infoFieldSet.setBorders(true);
         infoFieldSet.setStyleAttribute("margin", "0px 10px 0px 10px");
 

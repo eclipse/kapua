@@ -23,7 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class UserEditDialog extends UserAddDialog {
 
     private GwtUser selectedUser;
-    
+
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
     
     private final static ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
@@ -84,6 +84,14 @@ public class UserEditDialog extends UserAddDialog {
             }
         });
 
+    }
+
+    @Override public String getHeaderMessage() {
+        return MSGS.dialogEditHeader(selectedUser.getUsername());
+    }
+
+    @Override public String getInfoMessage() {
+        return MSGS.dialogEditInfo();
     }
     
     private void populateEditDialog(GwtUser gwtUser) {
