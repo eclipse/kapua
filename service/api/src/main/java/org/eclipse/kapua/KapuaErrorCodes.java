@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,11 +56,15 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     UNAUTHENTICATED,
     /**
+     * Operation not supported
+     */
+    OPERATION_NOT_SUPPORTED,
+    /**
      * Internal error
      */
     INTERNAL_ERROR,
     /**
-     * Operation not supported
+     * Something very very bad! An error that the system does not expect at all and that is unmanaged.
      */
-    OPERATION_NOT_SUPPORTED
+    SEVERE_INTERNAL_ERROR,
 }

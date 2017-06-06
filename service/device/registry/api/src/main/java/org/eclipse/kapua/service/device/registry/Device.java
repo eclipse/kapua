@@ -78,7 +78,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 }, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDevice")
 public interface Device extends KapuaUpdatableEntity {
 
-    public static final String TYPE = "dvce";
+    public static final String TYPE = "device";
 
     public default String getType() {
         return TYPE;

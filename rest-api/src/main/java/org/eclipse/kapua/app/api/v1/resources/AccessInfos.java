@@ -23,12 +23,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -67,6 +69,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * @param limit
      *            The result set limit.
      * @return The {@link AccessInfoListResult} of all the {@link AccessInfo}s associated to the current selected scope.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -79,25 +83,20 @@ public class AccessInfos extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The optional User id to filter results") @QueryParam("userId") EntityId userId, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset, //
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        AccessInfoListResult accessInfoListResult = accessInfoFactory.newListResult();
-        try {
-            AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
 
-            AndPredicate andPredicate = new AndPredicate();
-            if (userId != null) {
-                andPredicate.and(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
-            }
-            query.setPredicate(andPredicate);
+        AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
 
-            query.setOffset(offset);
-            query.setLimit(limit);
-
-            accessInfoListResult = query(scopeId, query);
-        } catch (Throwable t) {
-            handleException(t);
+        AndPredicate andPredicate = new AndPredicate();
+        if (userId != null) {
+            andPredicate.and(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
         }
-        return accessInfoListResult;
+        query.setPredicate(andPredicate);
+
+        query.setOffset(offset);
+        query.setLimit(limit);
+
+        return query(scopeId, query);
     }
 
     /**
@@ -108,6 +107,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * @param query
      *            The {@link AccessInfoQuery} to use to filter results.
      * @return The {@link AccessInfoListResult} of all the result matching the given {@link AccessInfoQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -120,15 +121,10 @@ public class AccessInfos extends AbstractKapuaResource {
             responseContainer = "AccessInfoListResult")  //
     public AccessInfoListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The AccessInfoQuery to use to filter results", required = true) AccessInfoQuery query) {
-        AccessInfoListResult accessInfoListResult = null;
-        try {
-            query.setScopeId(scopeId);
-            accessInfoListResult = accessInfoService.query(query);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(accessInfoListResult);
+            @ApiParam(value = "The AccessInfoQuery to use to filter results", required = true) AccessInfoQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return accessInfoService.query(query);
     }
 
     /**
@@ -139,6 +135,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * @param query
      *            The {@link AccessInfoQuery} to use to filter count results.
      * @return The count of all the result matching the given {@link AccessInfoQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -150,15 +148,10 @@ public class AccessInfos extends AbstractKapuaResource {
             response = CountResult.class)
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The AccessInfoQuery to use to filter count results", required = true) AccessInfoQuery query) {
-        CountResult countResult = null;
-        try {
-            query.setScopeId(scopeId);
-            countResult = new CountResult(accessInfoService.count(query));
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(countResult);
+            @ApiParam(value = "The AccessInfoQuery to use to filter count results", required = true) AccessInfoQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return new CountResult(accessInfoService.count(query));
     }
 
     /**
@@ -170,6 +163,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * @param accessInfoCreator
      *            Provides the information for the new {@link AccessInfo} to be created.
      * @return The newly created {@link AccessInfo} object.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -180,15 +175,10 @@ public class AccessInfos extends AbstractKapuaResource {
             response = AccessInfo.class)
     public AccessInfo create(
             @ApiParam(value = "The ScopeId in which to create the AccessInfo", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "Provides the information for the new AccessInfo to be created", required = true) AccessInfoCreator accessInfoCreator) {
-        AccessInfo accessInfo = null;
-        try {
-            accessInfoCreator.setScopeId(scopeId);
-            accessInfo = accessInfoService.create(accessInfoCreator);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(accessInfo);
+            @ApiParam(value = "Provides the information for the new AccessInfo to be created", required = true) AccessInfoCreator accessInfoCreator) throws Exception {
+        accessInfoCreator.setScopeId(scopeId);
+
+        return accessInfoService.create(accessInfoCreator);
     }
 
     /**
@@ -199,6 +189,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * @param accessInfoId
      *            The id of the requested {@link AccessInfo}.
      * @return The requested {@link AccessInfo} object.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -209,14 +201,14 @@ public class AccessInfos extends AbstractKapuaResource {
             response = AccessInfo.class)
     public AccessInfo find(
             @ApiParam(value = "The ScopeId of the requested AccessInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the requested AccessInfo", required = true) @PathParam("accessInfoId") EntityId accessInfoId) {
-        AccessInfo accessInfo = null;
-        try {
-            accessInfo = accessInfoService.find(scopeId, accessInfoId);
-        } catch (Throwable t) {
-            handleException(t);
+            @ApiParam(value = "The id of the requested AccessInfo", required = true) @PathParam("accessInfoId") EntityId accessInfoId) throws Exception {
+        AccessInfo accessInfo = accessInfoService.find(scopeId, accessInfoId);
+
+        if (accessInfo == null) {
+            throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId);
         }
-        return returnNotNullEntity(accessInfo);
+
+        return accessInfo;
     }
 
     /**
@@ -227,6 +219,8 @@ public class AccessInfos extends AbstractKapuaResource {
      * @param accessInfoId
      *            The id of the {@link AccessInfo} to be deleted.
      * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(value = "Deletes an AccessInfo", notes = "Deletes the AccessInfo specified by the accessInfoId path parameter")
@@ -234,12 +228,9 @@ public class AccessInfos extends AbstractKapuaResource {
     @Path("{accessInfoId}")
     public Response deleteAccessInfo(
             @ApiParam(value = "The ScopeId in which to create the AccessInfo", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the AccessInfo to delete", required = true) @PathParam("accessInfoId") EntityId accessInfoId) {
-        try {
-            accessInfoService.delete(scopeId, accessInfoId);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return Response.ok().build();
+            @ApiParam(value = "The id of the AccessInfo to delete", required = true) @PathParam("accessInfoId") EntityId accessInfoId) throws Exception {
+        accessInfoService.delete(scopeId, accessInfoId);
+
+        return returnOk();
     }
 }

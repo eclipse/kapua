@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
@@ -44,6 +45,7 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
      * <p>
      * Example to list all files in the current working directory:
      * <p>
+     * 
      * <pre>
      * Client client = client();
      * WebResource apisWeb = client.resource(APIS_TEST_URL);
@@ -60,11 +62,18 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
      * DeviceCommandOutput commandOutput = deviceCommandWebXml.post(DeviceCommandOutput.class, commandInput);
      * </pre>
      *
-     * @param scopeId      The {@link ScopeId} of the {@link Device}.
-     * @param deviceId     The {@link Device} ID.
-     * @param timeout      The timeout of the command execution
-     * @param commandInput The input command
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The {@link Device} ID.
+     * @param timeout
+     *            The timeout of the command execution
+     * @param commandInput
+     *            The input command
      * @return The command output.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Path("_execute")
@@ -75,14 +84,7 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The timeout of the command execution") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The input command", required = true) DeviceCommandInput commandInput) {
-        DeviceCommandOutput commandOutput = null;
-
-        try {
-            commandOutput = commandService.exec(scopeId, deviceId, commandInput, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(commandOutput);
+            @ApiParam(value = "The input command", required = true) DeviceCommandInput commandInput) throws Exception {
+        return commandService.exec(scopeId, deviceId, commandInput, timeout);
     }
 }

@@ -49,7 +49,7 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponseCode;
         factoryMethod = "newDeviceEvent")
 public interface DeviceEvent extends KapuaEntity {
 
-    public static final String TYPE = "dvce-event";
+    public static final String TYPE = "deviceEvent";
 
     public default String getType() {
         return TYPE;

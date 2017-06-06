@@ -13,20 +13,30 @@ package org.eclipse.kapua.app.api.v1.resources;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.kapua.KapuaErrorCode;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.app.api.v1.resources.model.ErrorBean;
-import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.kapua.model.KapuaEntity;
 
+/**
+ * 
+ * @author alberto.codutti
+ *
+ */
 public abstract class AbstractKapuaResource {
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaResource.class);
 
     protected static final String DEFAULT_SCOPE_ID = "_"; // KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
+    /**
+     * Checks if the given entity is {@code null}.
+     * If it is <code>null</code> a {@link WebApplicationException} is raised.
+     * 
+     * @param entity
+     *            The {@link KapuaEntity} to check.
+     * @return The entity given if not <code>null</code>.
+     * @throws WebApplicationException
+     *             with {@link Status#NOT_FOUND} if the entity is <code>null</code>.
+     * @since 1.0.0
+     */
     protected <T> T returnNotNullEntity(T entity) {
         if (entity == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -34,30 +44,18 @@ public abstract class AbstractKapuaResource {
         return entity;
     }
 
-    protected void handleException(Throwable t) {
-        if (t instanceof KapuaAuthenticationException) {
-            KapuaErrorCode kapuaErrorCode = ((KapuaAuthenticationException) t).getCode();
-
-            if (KapuaErrorCodes.INTERNAL_ERROR.equals(kapuaErrorCode)) {
-                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-            } else {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-            }
-        } else {
-            logger.error("Internal Error", t);
-            throw newWebApplicationException(t, Response.Status.INTERNAL_SERVER_ERROR);
-        }
+    /**
+     * Builds a 200 HTTP Response.
+     * 
+     * <pre>
+     * return javax.ws.rs.core.Response.ok().build();
+     * </pre>
+     * 
+     * @return A build {@link Response#ok()}
+     * @since 1.0.0
+     */
+    protected Response returnOk() {
+        return Response.ok().build();
     }
 
-    protected WebApplicationException newWebApplicationException(Throwable t, Response.Status status) {
-        String message = t.getMessage();
-
-        Response response = Response.status(status).entity(new ErrorBean(status, message)).build();
-        return new WebApplicationException(response);
-    }
-
-    protected WebApplicationException newWebApplicationException(Response.Status status, String message) {
-        Response response = Response.status(status).entity(new ErrorBean(status, message)).build();
-        return new WebApplicationException(response);
-    }
 }

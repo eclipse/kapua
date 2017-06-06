@@ -16,8 +16,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
@@ -40,8 +42,12 @@ public class Authentication extends AbstractKapuaResource {
      * Authenticates an user with username and password and returns
      * the authentication token to be used in subsequent REST API calls.
      *
-     * @param authenticationCredentials The username and password authentication credential of a user.
+     * @param authenticationCredentials
+     *            The username and password authentication credential of a user.
      * @return The authentication token
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Authenticate an user", notes = "Authenticates an user with username and password and returns " +
             "the authentication token to be used in subsequent REST API calls.", response = AccessToken.class)
@@ -50,22 +56,20 @@ public class Authentication extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("user")
     public AccessToken loginUsernamePassword(
-            @ApiParam(value = "The username and password authentication credential of a user.", required = true) UsernamePasswordCredentials authenticationCredentials) {
-        AccessToken accessToken = null;
-        try {
-            accessToken = authenticationService.login(authenticationCredentials);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return accessToken;
+            @ApiParam(value = "The username and password authentication credential of a user.", required = true) UsernamePasswordCredentials authenticationCredentials) throws Exception {
+        return authenticationService.login(authenticationCredentials);
     }
 
     /**
      * Authenticates an user with a api key and returns
      * the authentication token to be used in subsequent REST API calls.
      *
-     * @param authenticationCredentials The API KEY authentication credential of a user.
+     * @param authenticationCredentials
+     *            The API KEY authentication credential of a user.
      * @return The authentication token
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Authenticate an user", notes = "Authenticates an user with API KEY and returns " +
             "the authentication token to be used in subsequent REST API calls.", response = AccessToken.class)
@@ -74,22 +78,20 @@ public class Authentication extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("apikey")
     public AccessToken loginApiKey(
-            @ApiParam(value = "The API KEY authentication credential of a user.", required = true) ApiKeyCredentials authenticationCredentials) {
-        AccessToken accessToken = null;
-        try {
-            accessToken = authenticationService.login(authenticationCredentials);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return accessToken;
+            @ApiParam(value = "The API KEY authentication credential of a user.", required = true) ApiKeyCredentials authenticationCredentials) throws Exception {
+        return authenticationService.login(authenticationCredentials);
     }
 
     /**
      * Authenticates an user with JWT and returns
      * the authentication token to be used in subsequent REST API calls.
      *
-     * @param authenticationCredentials The JWT authentication credential of a user.
+     * @param authenticationCredentials
+     *            The JWT authentication credential of a user.
      * @return The authentication token
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Authenticate an user", notes = "Authenticates an user with a JWT and returns " +
             "the authentication token to be used in subsequent REST API calls.", response = AccessToken.class)
@@ -98,38 +100,37 @@ public class Authentication extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("jwt")
     public AccessToken loginJwt(
-            @ApiParam(value = "The JWT authentication credential of a user.", required = true) JwtCredentials authenticationCredentials) {
-        AccessToken accessToken = null;
-        try {
-            accessToken = authenticationService.login(authenticationCredentials);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return accessToken;
+            @ApiParam(value = "The JWT authentication credential of a user.", required = true) JwtCredentials authenticationCredentials) throws Exception {
+        return authenticationService.login(authenticationCredentials);
     }
 
     /**
      * Invalidates the AccessToken related to this session.
      * All subsequent calls will end up with a HTTP 401.
      * A new login is required after this call to make other requests.
+     * 
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Logs out an user", notes = "Terminates the current session and invalidates "
-            + "the access token")
+    @ApiOperation(value = "Logs out an user", notes = "Terminates the current session and invalidates the access token")
     @POST
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("logout")
-    public void logout() {
-        try {
-            authenticationService.logout();
-        } catch (Throwable t) {
-            handleException(t);
-        }
+    public Response logout() throws Exception {
+        authenticationService.logout();
+
+        return returnOk();
     }
 
     /**
      * Refreshes an expired {@link AccessToken}. Both the current AccessToken and the Refresh token will be invalidated.
      * If also the Refresh token is expired, the user will have to restart with a new login.
+     * 
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @ApiOperation(value = "Refreshes an AccessToken", notes = "Both the current AccessToken and the Refresh token will be invalidated. "
             + "If also the Refresh token is expired, the user will have to restart with a new login.")
@@ -137,13 +138,7 @@ public class Authentication extends AbstractKapuaResource {
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("refresh")
-    public AccessToken refresh(@ApiParam(value = "The current AccessToken's tokenId and refreshToken", required = true) RefreshTokenCredentials refreshTokenCredentials) {
-        AccessToken accessToken = null;
-        try {
-            accessToken = authenticationService.refreshAccessToken(refreshTokenCredentials.getTokenId(), refreshTokenCredentials.getRefreshToken());
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return accessToken;
+    public AccessToken refresh(@ApiParam(value = "The current AccessToken's tokenId and refreshToken", required = true) RefreshTokenCredentials refreshTokenCredentials) throws Exception {
+        return authenticationService.refreshAccessToken(refreshTokenCredentials.getTokenId(), refreshTokenCredentials.getRefreshToken());
     }
 }

@@ -25,10 +25,10 @@ import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
-import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
@@ -63,6 +63,8 @@ public class DataClients extends AbstractKapuaResource {
      * @param limit
      *            The result set limit.
      * @return The {@link ClientInfoListResult} of all the clientInfos associated to the current selected scope.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(value = "Gets the ClientInfo list in the scope", //
@@ -75,25 +77,21 @@ public class DataClients extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        ClientInfoListResult clientInfoListResult = DATASTORE_OBJECT_FACTORY.newClientInfoListResult();
-        try {
-            AndPredicate andPredicate = new AndPredicateImpl();
-            if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
-                andPredicate.getPredicates().add(clientIdPredicate);
-            }
-
-            ClientInfoQuery query = DATASTORE_OBJECT_FACTORY.newClientInfoQuery(scopeId);
-            query.setPredicate(andPredicate);
-            query.setOffset(offset);
-            query.setLimit(limit);
-
-            clientInfoListResult = query(scopeId, query);
-        } catch (Throwable t) {
-            handleException(t);
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        if (!Strings.isNullOrEmpty(clientId)) {
+            TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
+            andPredicate.getPredicates().add(clientIdPredicate);
         }
-        return clientInfoListResult;
+
+        ClientInfoQuery query = DATASTORE_OBJECT_FACTORY.newClientInfoQuery(scopeId);
+
+        query.setPredicate(andPredicate);
+
+        query.setOffset(offset);
+        query.setLimit(limit);
+
+        return query(scopeId, query);
     }
 
     /**
@@ -104,6 +102,8 @@ public class DataClients extends AbstractKapuaResource {
      * @param query
      *            The {@link ClientInfoQuery} to used to filter results.
      * @return The {@link ClientInfoListResult} of all the result matching the given {@link ClientInfoQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -116,15 +116,10 @@ public class DataClients extends AbstractKapuaResource {
             responseContainer = "ClientInfoListResult")  //
     public ClientInfoListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The ClientInfoQuery to use to filter results", required = true) ClientInfoQuery query) {
-        ClientInfoListResult clientInfoListResult = null;
-        try {
-            query.setScopeId(scopeId);
-            clientInfoListResult = CLIENT_INFO_REGISTRY_SERVICE.query(query);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(clientInfoListResult);
+            @ApiParam(value = "The ClientInfoQuery to use to filter results", required = true) ClientInfoQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return CLIENT_INFO_REGISTRY_SERVICE.query(query);
     }
 
     /**
@@ -135,6 +130,8 @@ public class DataClients extends AbstractKapuaResource {
      * @param query
      *            The {@link ClientInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ClientInfoQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -146,15 +143,10 @@ public class DataClients extends AbstractKapuaResource {
             response = CountResult.class)
     public CountResult count( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The ClientInfoQuery to use to filter count results", required = true) ClientInfoQuery query) {
-        CountResult countResult = null;
-        try {
-            query.setScopeId(scopeId);
-            countResult = new CountResult(CLIENT_INFO_REGISTRY_SERVICE.count(query));
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(countResult);
+            @ApiParam(value = "The ClientInfoQuery to use to filter count results", required = true) ClientInfoQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return new CountResult(CLIENT_INFO_REGISTRY_SERVICE.count(query));
     }
 
     /**
@@ -163,6 +155,9 @@ public class DataClients extends AbstractKapuaResource {
      * @param clientInfoId
      *            The id of the requested ClientInfo.
      * @return The requested ClientInfo object.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @GET
     @Path("{clientInfoId}")
@@ -172,13 +167,9 @@ public class DataClients extends AbstractKapuaResource {
             response = ClientInfo.class)
     public ClientInfo find( //
             @ApiParam(value = "The ScopeId of the requested ClientInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the requested ClientInfo", required = true) @PathParam("clientInfoId") StorableEntityId clientInfoId) {
-        ClientInfo clientInfo = null;
-        try {
-            clientInfo = CLIENT_INFO_REGISTRY_SERVICE.find(scopeId, clientInfoId);
-        } catch (Throwable t) {
-            handleException(t);
-        }
+            @ApiParam(value = "The id of the requested ClientInfo", required = true) @PathParam("clientInfoId") StorableEntityId clientInfoId) throws Exception {
+        ClientInfo clientInfo = CLIENT_INFO_REGISTRY_SERVICE.find(scopeId, clientInfoId);
+
         return returnNotNullEntity(clientInfo);
     }
 }

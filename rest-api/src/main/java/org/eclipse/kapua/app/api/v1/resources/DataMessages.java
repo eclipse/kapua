@@ -30,11 +30,11 @@ import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
-import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
@@ -81,6 +81,8 @@ public class DataMessages extends AbstractKapuaResource {
      * @param limit
      *            The result set limit.
      * @return The {@link MessageListResult} of all the datastoreMessages associated to the current selected scope.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @SuppressWarnings("unchecked")
@@ -102,50 +104,45 @@ public class DataMessages extends AbstractKapuaResource {
             @ApiParam(value = "The min metric value to filter results") @QueryParam("metricMin") String metricMinValue, //
             @ApiParam(value = "The max metric value to filter results") @QueryParam("metricMax") String metricMaxValue, //
             @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        MessageListResult datastoreMessageListResult = DATASTORE_OBJECT_FACTORY.newDatastoreMessageListResult();
-        try {
-            AndPredicate andPredicate = new AndPredicateImpl();
-            if (!Strings.isNullOrEmpty(clientId)) {
-                TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
-                andPredicate.getPredicates().add(clientIdPredicate);
-            }
+            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
 
-            if (!Strings.isNullOrEmpty(channel)) {
-                StorablePredicate channelPredicate = null;
-                if (strictChannel) {
-                    channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
-                } else {
-                    channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
-                }
-                andPredicate.getPredicates().add(channelPredicate);
-            }
-
-            Date startDate = startDateParam != null ? startDateParam.getDate() : null;
-            Date endDate = endDateParam != null ? endDateParam.getDate() : null;
-            if (startDate != null || endDate != null) {
-                RangePredicate timestampPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
-                andPredicate.getPredicates().add(timestampPredicate);
-            }
-
-            if (!Strings.isNullOrEmpty(metricName)) {
-                V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
-                V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
-
-                MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
-                andPredicate.getPredicates().add(metricPredicate);
-            }
-
-            MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
-            query.setPredicate(andPredicate);
-            query.setOffset(offset);
-            query.setLimit(limit);
-
-            datastoreMessageListResult = query(scopeId, query);
-        } catch (Throwable t) {
-            handleException(t);
+        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        if (!Strings.isNullOrEmpty(clientId)) {
+            TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
+            andPredicate.getPredicates().add(clientIdPredicate);
         }
-        return datastoreMessageListResult;
+
+        if (!Strings.isNullOrEmpty(channel)) {
+            StorablePredicate channelPredicate = null;
+            if (strictChannel) {
+                channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+            } else {
+                channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
+            }
+            andPredicate.getPredicates().add(channelPredicate);
+        }
+
+        Date startDate = startDateParam != null ? startDateParam.getDate() : null;
+        Date endDate = endDateParam != null ? endDateParam.getDate() : null;
+        if (startDate != null || endDate != null) {
+            RangePredicate timestampPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
+            andPredicate.getPredicates().add(timestampPredicate);
+        }
+
+        if (!Strings.isNullOrEmpty(metricName)) {
+            V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
+            V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
+
+            MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+            andPredicate.getPredicates().add(metricPredicate);
+        }
+
+        MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
+        query.setPredicate(andPredicate);
+        query.setOffset(offset);
+        query.setLimit(limit);
+
+        return query(scopeId, query);
     }
 
     /**
@@ -156,6 +153,8 @@ public class DataMessages extends AbstractKapuaResource {
      * @param query
      *            The {@link MessageQuery} to used to filter results.
      * @return The {@link MessageListResult} of all the result matching the given {@link MessageQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -168,15 +167,10 @@ public class DataMessages extends AbstractKapuaResource {
             responseContainer = "DatastoreMessageListResult")
     public MessageListResult query( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The DatastoreMessageQuery to use to filter results", required = true) MessageQuery query) {
-        MessageListResult datastoreMessageListResult = null;
-        try {
-            query.setScopeId(scopeId);
-            datastoreMessageListResult = MESSAGE_STORE_SERVICE.query(query);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(datastoreMessageListResult);
+            @ApiParam(value = "The DatastoreMessageQuery to use to filter results", required = true) MessageQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return MESSAGE_STORE_SERVICE.query(query);
     }
 
     /**
@@ -187,6 +181,8 @@ public class DataMessages extends AbstractKapuaResource {
      * @param query
      *            The {@link MessageQuery} to used to filter results.
      * @return The count of all the result matching the given {@link MessageQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -198,15 +194,10 @@ public class DataMessages extends AbstractKapuaResource {
             response = CountResult.class)
     public CountResult count( //
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The DatastoreMessageQuery to use to filter count results", required = true) MessageQuery query) {
-        CountResult countResult = null;
-        try {
-            query.setScopeId(scopeId);
-            countResult = new CountResult(MESSAGE_STORE_SERVICE.count(query));
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(countResult);
+            @ApiParam(value = "The DatastoreMessageQuery to use to filter count results", required = true) MessageQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return new CountResult(MESSAGE_STORE_SERVICE.count(query));
     }
 
     /**
@@ -215,6 +206,9 @@ public class DataMessages extends AbstractKapuaResource {
      * @param datastoreMessageId
      *            The id of the requested DatastoreMessage.
      * @return The requested DatastoreMessage object.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @GET
     @Path("{datastoreMessageId}")
@@ -224,13 +218,9 @@ public class DataMessages extends AbstractKapuaResource {
             response = DatastoreMessage.class)
     public DatastoreMessage find( //
             @ApiParam(value = "The ScopeId of the requested DatastoreMessage.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested DatastoreMessage", required = true) @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) {
-        DatastoreMessage datastoreMessage = null;
-        try {
-            datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
-        } catch (Throwable t) {
-            handleException(t);
-        }
+            @ApiParam(value = "The id of the requested DatastoreMessage", required = true) @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws Exception {
+        DatastoreMessage datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
+
         return returnNotNullEntity(datastoreMessage);
     }
 }

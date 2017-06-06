@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -41,10 +42,16 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     /**
      * Returns the list of all the Snapshots available on the device.
      *
-     * @param scopeId  The {@link ScopeId} of the {@link Device}.
-     * @param deviceId The id of the device
-     * @param timeout  The timeout of the operation
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The id of the device
+     * @param timeout
+     *            The timeout of the operation
      * @return The list of Snapshot Ids.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -52,24 +59,25 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     public DeviceSnapshots get(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The timeout of the operation", required = false) @QueryParam("timeout") Long timeout) {
-        DeviceSnapshots deviceSnapshots = null;
-        try {
-            deviceSnapshots = snapshotService.get(scopeId, deviceId, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(deviceSnapshots);
+            @ApiParam(value = "The timeout of the operation", required = false) @QueryParam("timeout") Long timeout) throws Exception {
+        return snapshotService.get(scopeId, deviceId, timeout);
     }
 
     /**
      * Updates the configuration of a device rolling back a given snapshot ID.
      *
-     * @param scopeId    The {@link ScopeId} of the {@link Device}.
-     * @param deviceId   The {@link Device} ID.
-     * @param snapshotId the ID of the snapshot to rollback to.
-     * @param timeout    The timeout of the operation
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The {@link Device} ID.
+     * @param snapshotId
+     *            the ID of the snapshot to rollback to.
+     * @param timeout
+     *            The timeout of the operation
      * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Path("{snapshotId}/_rollback")
@@ -79,12 +87,9 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "the ID of the snapshot to rollback to", required = true) @PathParam("snapshotId") String snapshotId,
-            @ApiParam(value = "The timeout of the operation") @QueryParam("timeout") Long timeout) {
-        try {
-            snapshotService.rollback(scopeId, deviceId, snapshotId, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return Response.ok().build();
+            @ApiParam(value = "The timeout of the operation") @QueryParam("timeout") Long timeout) throws Exception {
+        snapshotService.rollback(scopeId, deviceId, snapshotId, timeout);
+
+        return returnOk();
     }
 }

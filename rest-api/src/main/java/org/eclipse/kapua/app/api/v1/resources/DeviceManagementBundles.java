@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -41,10 +42,16 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
     /**
      * Returns the list of all the Bundles installed on the device.
      *
-     * @param scopeId  The {@link ScopeId} of the {@link Device}.
-     * @param deviceId The id of the device
-     * @param timeout  The timeout of the operation in milliseconds
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The id of the device
+     * @param timeout
+     *            The timeout of the operation in milliseconds
      * @return The list of Bundles
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -52,24 +59,25 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
     public DeviceBundles get(
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) {
-        DeviceBundles deviceBundles = null;
-        try {
-            deviceBundles = bundleService.get(scopeId, deviceId, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(deviceBundles);
+            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) throws Exception {
+        return bundleService.get(scopeId, deviceId, timeout);
     }
 
     /**
      * Starts the bundle
      *
-     * @param scopeId  The {@link ScopeId} of the {@link Device}.
-     * @param deviceId The {@link Device} ID.
-     * @param bundleId the ID of the bundle to start
-     * @param timeout  The timeout of the operation in milliseconds
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The {@link Device} ID.
+     * @param bundleId
+     *            the ID of the bundle to start
+     * @param timeout
+     *            The timeout of the operation in milliseconds
      * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Path("{bundleId}/_start")
@@ -78,21 +86,23 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "the ID of the bundle to start", required = true) @PathParam("bundleId") String bundleId,
-            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) {
-        try {
-            bundleService.start(scopeId, deviceId, bundleId, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return Response.ok().build();
+            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) throws Exception {
+        bundleService.start(scopeId, deviceId, bundleId, timeout);
+
+        return returnOk();
     }
 
     /**
      * Stops the bundle
      *
-     * @param deviceId The {@link Device} ID.
-     * @param bundleId the ID of the bundle to stop
+     * @param deviceId
+     *            The {@link Device} ID.
+     * @param bundleId
+     *            the ID of the bundle to stop
      * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
     @POST
     @Path("{bundleId}/_stop")
@@ -101,12 +111,9 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "the ID of the bundle to stop", required = true) @PathParam("bundleId") String bundleId,
-            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) {
-        try {
-            bundleService.stop(scopeId, deviceId, bundleId, timeout);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return Response.ok().build();
+            @ApiParam(value = "The timeout of the operation in milliseconds") @QueryParam("timeout") Long timeout) throws Exception {
+        bundleService.stop(scopeId, deviceId, bundleId, timeout);
+
+        return returnOk();
     }
 }
