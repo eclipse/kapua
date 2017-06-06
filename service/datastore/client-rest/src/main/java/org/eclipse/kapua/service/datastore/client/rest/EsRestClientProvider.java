@@ -77,7 +77,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * <b>NOTE. The init methods can be called more than once in order to reinitialize the underlying datastore connection. It the datastore was already initialized this method close the old one
      * before initializing the new one.</b>
      * 
-     * @throws ClientException
+     * @throws ClientUnavailableException
      */
     public static void init() throws ClientUnavailableException {
         synchronized (EsRestClientProvider.class) {
@@ -134,7 +134,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     /**
      * Close the ES rest client
      * 
-     * @throws ClientException
+     * @throws ClientUnavailableException
      */
     public static void close() throws ClientUnavailableException {
         synchronized (EsRestClientProvider.class) {
