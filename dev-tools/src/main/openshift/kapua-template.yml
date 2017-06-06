@@ -87,12 +87,12 @@ objects:
           description: Heap Memory Used
           units: B
         - id: broker.connectionCount
-          name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalConnectionsCount"
+          name: "org.apache.activemq:type=Broker,brokerName=kapua#CurrentConnectionsCount"
           tags:
             kapuaComponent: broker
             kapuaMetricType: connectionCount
           type: gauge
-          description: Total connection count
+          description: Current connection count
         - id: broker.messagesReceived
           name: "org.apache.activemq:type=Broker,brokerName=kapua#TotalEnqueueCount"
           tags:
