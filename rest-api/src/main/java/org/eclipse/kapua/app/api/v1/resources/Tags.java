@@ -24,12 +24,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
@@ -65,34 +67,33 @@ public class Tags extends AbstractKapuaResource {
      * @param limit
      *            The result set limit.
      * @return The {@link TagListResult} of all the tags associated to the current selected scope.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the Tag list in the scope", notes = "Returns the list of all the tags associated to the current selected scope.", response = Tag.class, responseContainer = "TagListResult")
+    @ApiOperation(value = "Gets the Tag list in the scope", //
+            notes = "Returns the list of all the tags associated to the current selected scope.", //
+            response = Tag.class, //
+            responseContainer = "TagListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public TagListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The tag name to filter results.") @QueryParam("name") String name,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) {
-        TagListResult tagListResult = tagFactory.newListResult();
-        try {
-            TagQuery query = tagFactory.newQuery(scopeId);
+            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+        TagQuery query = tagFactory.newQuery(scopeId);
 
-            AndPredicate andPredicate = new AndPredicate();
-            if (!Strings.isNullOrEmpty(name)) {
-                andPredicate.and(new AttributePredicate<>(TagPredicates.NAME, name));
-            }
-            query.setPredicate(andPredicate);
-
-            query.setOffset(offset);
-            query.setLimit(limit);
-
-            tagListResult = query(scopeId, query);
-        } catch (Throwable t) {
-            handleException(t);
+        AndPredicate andPredicate = new AndPredicate();
+        if (!Strings.isNullOrEmpty(name)) {
+            andPredicate.and(new AttributePredicate<>(TagPredicates.NAME, name));
         }
-        return tagListResult;
+        query.setPredicate(andPredicate);
+
+        query.setOffset(offset);
+        query.setLimit(limit);
+
+        return query(scopeId, query);
     }
 
     /**
@@ -103,24 +104,24 @@ public class Tags extends AbstractKapuaResource {
      * @param query
      *            The {@link TagQuery} to use to filter results.
      * @return The {@link TagListResult} of all the result matching the given {@link TagQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Queries the Tags", notes = "Queries the Tags with the given TagQuery parameter returning all matching Tags", response = Tag.class, responseContainer = "TagListResult")
+    @ApiOperation(value = "Queries the Tags", //
+            notes = "Queries the Tags with the given TagQuery parameter returning all matching Tags", //
+            response = Tag.class, //
+            responseContainer = "TagListResult")
     @POST
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public TagListResult query(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The TagQuery to use to filter results.", required = true) TagQuery query) {
-        TagListResult tagListResult = null;
-        try {
-            query.setScopeId(scopeId);
-            tagListResult = tagService.query(query);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(tagListResult);
+            @ApiParam(value = "The TagQuery to use to filter results.", required = true) TagQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return tagService.query(query);
     }
 
     /**
@@ -131,24 +132,23 @@ public class Tags extends AbstractKapuaResource {
      * @param query
      *            The {@link TagQuery} to use to filter results.
      * @return The count of all the result matching the given {@link TagQuery} parameter.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Counts the Tags", notes = "Counts the Tags with the given TagQuery parameter returning the number of matching Tags", response = CountResult.class)
+    @ApiOperation(value = "Counts the Tags", //
+            notes = "Counts the Tags with the given TagQuery parameter returning the number of matching Tags", //
+            response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The TagQuery to use to filter count results", required = true) TagQuery query) {
-        CountResult countResult = null;
-        try {
-            query.setScopeId(scopeId);
-            countResult = new CountResult(tagService.count(query));
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(countResult);
+            @ApiParam(value = "The TagQuery to use to filter count results", required = true) TagQuery query) throws Exception {
+        query.setScopeId(scopeId);
+
+        return new CountResult(tagService.count(query));
     }
 
     /**
@@ -160,22 +160,22 @@ public class Tags extends AbstractKapuaResource {
      * @param tagCreator
      *            Provides the information for the new {@link Tag} to be created.
      * @return The newly created {@link Tag} object.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Create a Tag", notes = "Creates a new Tag based on the information provided in TagCreator parameter.", response = Tag.class)
+    @ApiOperation(value = "Create a Tag", //
+            notes = "Creates a new Tag based on the information provided in TagCreator parameter.", //
+            response = Tag.class)
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Tag create(
             @ApiParam(value = "The ScopeId in which to create the Tag", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "Provides the information for the new Tag to be created", required = true) TagCreator tagCreator) {
-        Tag tag = null;
-        try {
-            tagCreator.setScopeId(scopeId);
-            tag = tagService.create(tagCreator);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(tag);
+            @ApiParam(value = "Provides the information for the new Tag to be created", required = true) TagCreator tagCreator) throws Exception {
+        tagCreator.setScopeId(scopeId);
+
+        return tagService.create(tagCreator);
     }
 
     /**
@@ -186,21 +186,26 @@ public class Tags extends AbstractKapuaResource {
      * @param tagId
      *            The id of the requested Tag.
      * @return The requested Tag object.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Get an Tag", notes = "Returns the Tag specified by the \"tagId\" path parameter.", response = Tag.class)
+    @ApiOperation(value = "Get a Tag", //
+            notes = "Returns the Tag specified by the \"tagId\" path parameter.", //
+            response = Tag.class)
     @GET
     @Path("{tagId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Tag find(
             @ApiParam(value = "The ScopeId of the requested Tag.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Tag", required = true) @PathParam("tagId") EntityId tagId) {
-        Tag tag = null;
-        try {
-            tag = tagService.find(scopeId, tagId);
-        } catch (Throwable t) {
-            handleException(t);
+            @ApiParam(value = "The id of the requested Tag", required = true) @PathParam("tagId") EntityId tagId) throws Exception {
+        Tag tag = tagService.find(scopeId, tagId);
+
+        if (tag == null) {
+            throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
         }
-        return returnNotNullEntity(tag);
+
+        return tag;
     }
 
     /**
@@ -213,8 +218,13 @@ public class Tags extends AbstractKapuaResource {
      * @param tag
      *            The modified Tag whose attributed need to be updated.
      * @return The updated tag.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Update an Tag", notes = "Updates a new Tag based on the information provided in the Tag parameter.", response = Tag.class)
+    @ApiOperation(value = "Update an Tag", //
+            notes = "Updates a new Tag based on the information provided in the Tag parameter.", //
+            response = Tag.class)
     @PUT
     @Path("{tagId}")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -222,17 +232,11 @@ public class Tags extends AbstractKapuaResource {
     public Tag update(
             @ApiParam(value = "The ScopeId of the requested Tag.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Tag", required = true) @PathParam("tagId") EntityId tagId,
-            @ApiParam(value = "The modified Tag whose attributed need to be updated", required = true) Tag tag) {
-        Tag tagUpdated = null;
-        try {
-            ((TagImpl) tag).setScopeId(scopeId);
-            tag.setId(tagId);
+            @ApiParam(value = "The modified Tag whose attributed need to be updated", required = true) Tag tag) throws Exception {
+        ((TagImpl) tag).setScopeId(scopeId);
+        tag.setId(tagId);
 
-            tagUpdated = tagService.update(tag);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return returnNotNullEntity(tagUpdated);
+        return tagService.update(tag);
     }
 
     /**
@@ -243,18 +247,19 @@ public class Tags extends AbstractKapuaResource {
      * @param tagId
      *            The id of the Tag to be deleted.
      * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
      */
-    @ApiOperation(value = "Delete an Tag", notes = "Deletes the Tag specified by the \"tagId\" path parameter.")
+    @ApiOperation(value = "Delete an Tag", //
+            notes = "Deletes the Tag specified by the \"tagId\" path parameter.")
     @DELETE
     @Path("{tagId}")
     public Response deleteTag(
             @ApiParam(value = "The ScopeId of the Tag to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the Tag to be deleted", required = true) @PathParam("tagId") EntityId tagId) {
-        try {
-            tagService.delete(scopeId, tagId);
-        } catch (Throwable t) {
-            handleException(t);
-        }
-        return Response.ok().build();
+            @ApiParam(value = "The id of the Tag to be deleted", required = true) @PathParam("tagId") EntityId tagId) throws Exception {
+        tagService.delete(scopeId, tagId);
+
+        return returnOk();
     }
 }
