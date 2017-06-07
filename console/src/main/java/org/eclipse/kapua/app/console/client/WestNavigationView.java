@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.client.role.RoleView;
+import org.eclipse.kapua.app.console.client.tag.TagView;
 import org.eclipse.kapua.app.console.client.ui.misc.color.Color;
 import org.eclipse.kapua.app.console.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.client.user.UserView;
@@ -227,6 +228,16 @@ public class WestNavigationView extends LayoutContainer {
                     centerPanel.add(panel);
                     centerPanel.layout();
                     dashboardSelected = false;
+                } else if ("tags".equals(selectedId)) {
+                    panel.setIcon(new KapuaIcon(IconSet.TAGS));
+                    panel.setHeading(MSGS.tags());
+
+                    TagView groupView = new TagView(currentSession);
+                    panel.add(groupView);
+
+                    centerPanel.add(panel);
+                    centerPanel.layout();
+                    dashboardSelected = false;
                 } else if ("user".equals(selectedId)) {
 
                     UserView userView = new UserView(currentSession);
@@ -360,6 +371,9 @@ public class WestNavigationView extends LayoutContainer {
             }
             if (currentSession.hasDataReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("data", "Data", IconSet.DATABASE), false);
+            }
+            if (currentSession.hasTagReadPermission()) {
+                cloudResourcesTreeStore.add(newItem("tags", MSGS.tags(), IconSet.TAGS), false);
             }
             if (currentSession.hasUserReadPermission()) {
                 cloudResourcesTreeStore.add(newItem("user", MSGS.users(), IconSet.USERS), false);

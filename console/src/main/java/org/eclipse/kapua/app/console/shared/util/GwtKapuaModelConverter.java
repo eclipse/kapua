@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.kapua.app.console.client.group.GwtGroupQuery;
+import org.eclipse.kapua.app.console.client.tag.GwtTagQuery;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates.GwtDeviceConnectionStatus;
@@ -86,6 +87,7 @@ import org.eclipse.kapua.service.authorization.domain.shiro.DomainDomain;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 import org.eclipse.kapua.service.authorization.permission.Action;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -114,6 +116,9 @@ import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConne
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
+import org.eclipse.kapua.service.tag.TagFactory;
+import org.eclipse.kapua.service.tag.TagQuery;
+import org.eclipse.kapua.service.tag.internal.TagPredicates;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -165,8 +170,7 @@ public class GwtKapuaModelConverter {
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
         GroupQuery groupQuery = groupFactory.newQuery(convert(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
-            groupQuery
-                    .setPredicate(new AttributePredicate<String>("name", gwtGroupQuery.getName(), Operator.LIKE));
+            groupQuery.setPredicate(new AttributePredicate<String>(GroupPredicates.NAME, gwtGroupQuery.getName(), Operator.LIKE));
         }
         groupQuery.setOffset(loadConfig.getOffset());
         groupQuery.setLimit(loadConfig.getLimit());
@@ -174,20 +178,39 @@ public class GwtKapuaModelConverter {
         return groupQuery;
     }
 
-    public static AccessRoleQuery convertAccessRoleQuery(PagingLoadConfig pagingLoadConfig,
-            GwtAccessRoleQuery gwtRoleQuery) {
+    public static AccessRoleQuery convertAccessRoleQuery(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery gwtRoleQuery) {
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
-        AccessRoleQuery accessRoleQuery = accessRoleFactory
-                .newQuery(convert(gwtRoleQuery.getScopeId()));
-        accessRoleQuery.setPredicate(new AttributePredicate<KapuaId>("roleId",
-                KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
+        AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(convert(gwtRoleQuery.getScopeId()));
+        accessRoleQuery.setPredicate(new AttributePredicate<KapuaId>("roleId", KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
         accessRoleQuery.setOffset(pagingLoadConfig.getOffset());
         accessRoleQuery.setLimit(pagingLoadConfig.getLimit());
 
         return accessRoleQuery;
 
+    }
+
+    /**
+     * Converts a {@link GwtTagQuery} into a {@link TagQuery} object for backend usage
+     *
+     * @param loadConfig
+     *            the load configuration
+     * @param gwtTagQuery
+     *            the {@link GwtTagQuery} to convert
+     * @return the converted {@link TagQuery}
+     */
+    public static TagQuery convertTagQuery(PagingLoadConfig loadConfig, GwtTagQuery gwtTagQuery) {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        TagFactory tagFactory = locator.getFactory(TagFactory.class);
+        TagQuery tagQuery = tagFactory.newQuery(convert(gwtTagQuery.getScopeId()));
+        if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
+            tagQuery.setPredicate(new AttributePredicate<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
+        }
+        tagQuery.setOffset(loadConfig.getOffset());
+        tagQuery.setLimit(loadConfig.getLimit());
+
+        return tagQuery;
     }
 
     /**
