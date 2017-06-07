@@ -137,6 +137,11 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagQuery;
+import org.eclipse.kapua.service.tag.TagXmlRegistry;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
@@ -330,6 +335,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     AccessRoleCreator.class,
                     AccessRoleQuery.class,
                     AccessRoleXmlRegistry.class,
+
+                    // Tag
+                    Tag.class,
+                    TagListResult.class,
+                    TagCreator.class,
+                    TagQuery.class,
+                    TagXmlRegistry.class,
 
                     // User
                     User.class,
