@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -103,11 +103,11 @@ public class DeviceTabProfile extends LayoutContainer {
             @Override
             public Object render(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
                 Object value = model.getValue();
-                if (value != null && value instanceof String) {
-                    String stringValue = (String) value;
-
-                    if (model.getName().equals("devLastEventOn") && stringValue.compareTo("N/A") != 0) {
-                        return DateUtils.formatDateTime(new Date(Long.parseLong(stringValue)));
+                if (value != null) {
+                    if ("devLastEventOn".equals(model.getName()) && !"N/A".equals(value)) {
+                        return DateUtils.formatDateTime(new Date((Long) value));
+                    } else if ("devSecurityAllowCredentialsChange".equals(model.getName())) {
+                        return (Boolean) value ? MSGS.yes() : MSGS.no();
                     }
                 }
                 return value;
