@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.util;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -123,11 +124,10 @@ public class ArgumentValidatorTest extends Assert {
                 // Expected
             }
         }
-        for(int i=0;i<sizeOfPermittedStrings;i++){
-            try{
+        for (int i = 0; i < sizeOfPermittedStrings; i++) {
+            try {
                 ArgumentValidator.match(listOfPermittedStringsNameSpace[i], argRegExprNameSpace, "NAME_SPACE_REGEXP_test_case");
-            }
-            catch(Exception ex){
+            } catch (Exception ex) {
                 fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
             }
         }
