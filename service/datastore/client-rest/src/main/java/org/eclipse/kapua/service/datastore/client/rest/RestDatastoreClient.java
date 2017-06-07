@@ -138,8 +138,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         cleanupClient(true);
                     }
                     logger.info("Starting Elasticsearch rest client...");
-                    EsRestClientProvider.init();
-                    esClientProvider = EsRestClientProvider.getInstance();
+                    esClientProvider = EsRestClientProvider.init();
                     logger.info("Starting Elasticsearch rest client... DONE");
                 }
             }
