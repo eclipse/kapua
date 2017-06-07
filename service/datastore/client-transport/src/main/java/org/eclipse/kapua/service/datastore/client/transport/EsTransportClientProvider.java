@@ -78,15 +78,17 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
      * <b>NOTE. The init methods can be called more than once in order to reinitialize the underlying datastore connection. It the datastore was already initialized this method close the old one
      * before initializing the new one.</b>
      * 
+     * @return
      * @throws ClientUnavailableException
      */
-    public static void init() throws ClientUnavailableException {
+    public static EsTransportClientProvider init() throws ClientUnavailableException {
         synchronized (EsTransportClientProvider.class) {
             logger.info(">>> Initializing ES transport client...");
             closeIfInstanceInitialized();
             instance = new EsTransportClientProvider();
             logger.info(">>> Initializing ES transport client... DONE");
         }
+        return instance;
     }
 
     /**

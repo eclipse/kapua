@@ -134,8 +134,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                         cleanupClient(true);
                     }
                     logger.info("Starting Elasticsearch transport client...");
-                    EsTransportClientProvider.init();
-                    esClientProvider = EsTransportClientProvider.getInstance();
+                    esClientProvider = EsTransportClientProvider.init();
                     logger.info("Starting Elasticsearch transport client... DONE");
                 }
             }
