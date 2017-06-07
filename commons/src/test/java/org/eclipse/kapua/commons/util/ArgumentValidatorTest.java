@@ -12,7 +12,6 @@
 package org.eclipse.kapua.commons.util;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 
