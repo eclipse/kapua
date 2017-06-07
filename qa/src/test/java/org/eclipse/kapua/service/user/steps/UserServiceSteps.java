@@ -207,6 +207,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
         char[] passwd = password.toCharArray();
         LoginCredentials credentials = new UsernamePasswordCredentialsImpl(userName, passwd);
+        authenticationService.logout();
         authenticationService.login(credentials);
     }
 
