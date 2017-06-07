@@ -29,6 +29,7 @@ import org.eclipse.kapua.app.console.shared.model.GwtOrganization;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.shared.model.GwtPermission.GwtDomain;
+import org.eclipse.kapua.app.console.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.shared.model.GwtTopic;
 import org.eclipse.kapua.app.console.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.shared.model.account.GwtAccount;
@@ -87,6 +88,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
+import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 
@@ -410,6 +412,28 @@ public class KapuaGwtModelConverter {
         //
         // Return converted entity
         return kapuaId.toCompactId();
+    }
+
+    /**
+     * Converts a {@link Tag} into a {@link GwtTag}
+     *
+     * @param tag
+     *            The {@link Tag} to convert
+     * @return The converted {@link GwtTag}
+     * @since 1.0.0
+     */
+    public static GwtTag convert(Tag tag) {
+
+        GwtTag gwtTag = new GwtTag();
+        //
+        // Covert commons attributes
+        convertEntity(tag, gwtTag);
+
+        //
+        // Convert other attributes
+        gwtTag.setTagName(tag.getName());
+
+        return gwtTag;
     }
 
     /**

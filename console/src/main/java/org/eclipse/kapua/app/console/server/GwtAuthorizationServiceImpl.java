@@ -51,6 +51,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleDomain;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
+import org.eclipse.kapua.service.tag.internal.TagDomain;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserDomain;
@@ -66,6 +67,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     private static final Domain ACCOUNT_DOMAIN = new AccountDomain();
     private static final Domain DEVICE_DOMAIN = new DeviceDomain();
     private static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
+    private static final Domain TAG_DOMAIN = new TagDomain();
     private static final Domain USER_DOMAIN = new UserDomain();
     private static final Domain ROLE_DOMAIN = new RoleDomain();
     private static final Domain GROUP_DOMAIN = new GroupDomain();
@@ -248,6 +250,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         boolean hasDataRead = authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kapuaSession.getScopeId()));
 
+        boolean hasTagCreate = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasTagRead = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.read, kapuaSession.getScopeId()));
+        boolean hasTagUpdate = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.write, kapuaSession.getScopeId()));
+        boolean hasTagDelete = authorizationService.isPermitted(permissionFactory.newPermission(TAG_DOMAIN, Actions.delete, kapuaSession.getScopeId()));
+
         boolean hasUserCreate = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.write, kapuaSession.getScopeId()));
         boolean hasUserRead = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.read, kapuaSession.getScopeId()));
         boolean hasUserUpdate = authorizationService.isPermitted(permissionFactory.newPermission(USER_DOMAIN, Actions.write, kapuaSession.getScopeId()));
@@ -313,6 +320,11 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setDeviceManagePermission(hasDeviceManage);
 
         gwtSession.setDataReadPermission(hasDataRead);
+
+        gwtSession.setTagCreatePermission(hasTagCreate);
+        gwtSession.setTagReadPermission(hasTagRead);
+        gwtSession.setTagUpdatePermission(hasTagUpdate);
+        gwtSession.setTagDeletePermission(hasTagDelete);
 
         gwtSession.setUserCreatePermission(hasUserCreate);
         gwtSession.setUserReadPermission(hasUserRead);
