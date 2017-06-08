@@ -27,9 +27,8 @@ import org.eclipse.kapua.model.id.KapuaIdFactory;
 
 /**
  * Tag entity definition.<br>
- * Tags serve as tags for entities marked as {@link Tagable}.
+ * Tags serve as tags for entities marked as {@link Taggable}.
  * It is possible to assign a tag to an entity.
- * It is possible to assign {@link AccessPermission} and {@link RolePermission} based on the {@link Tag#getId()}.
  * {@link Tag#getName()} must be unique within the scope.
  * 
  * @since 1.0.0
