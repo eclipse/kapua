@@ -46,7 +46,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-internal</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-api</artifactId>
+        </dependency>
+        
         <!-- Internal test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
