@@ -116,7 +116,7 @@ public class GroupDAO extends ServiceDAO {
      *            The {@link EntityManager} that holds the transaction.
      * @param groupQuery
      *            The {@link GroupQuery} used to filter results.
-     * @return
+     * @return The count of {@link Group}s that matches the given query.
      * @throws KapuaException
      * @since 1.0.0
      */

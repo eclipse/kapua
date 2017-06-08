@@ -13,12 +13,12 @@ package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
+import org.eclipse.kapua.service.tag.Tag;
 
 /**
  * {@link KapuaQuery} {@link KapuaPredicate} name for {@link Tag} entity.
  * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 public class TagPredicates {
 

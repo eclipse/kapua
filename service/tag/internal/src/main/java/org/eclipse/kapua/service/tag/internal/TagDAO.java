@@ -38,6 +38,7 @@ public class TagDAO extends ServiceDAO {
      *            The {@link TagCreator} object from which create the new {@link Tag}.
      * @return The newly created {@link Tag}.
      * @throws KapuaException
+     *             On create error.
      * @since 1.0.0
      */
     public static Tag create(EntityManager em, TagCreator creator)
@@ -102,6 +103,7 @@ public class TagDAO extends ServiceDAO {
      *            The {@link TagQuery} used to filter results.
      * @return The list of {@link Tag}s that matches the given query.
      * @throws KapuaException
+     *             On query error.
      * @since 1.0.0
      */
     public static TagListResult query(EntityManager em, KapuaQuery<Tag> tagQuery)
@@ -115,8 +117,8 @@ public class TagDAO extends ServiceDAO {
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param tagQuery
-     *            The {@link TagQuery} used to filter results.
-     * @return
+     *            The {@link TagQuery} used to filter results
+     * @return The count of {@link Tag}s that matches the given query.
      * @throws KapuaException
      * @since 1.0.0
      */

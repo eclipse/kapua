@@ -28,7 +28,7 @@ public interface Taggable {
     /**
      * Sets the set of {@link Tag} id of this entity.
      * 
-     * @param tagId
+     * @param tagIds
      *            The set {@link Tag} id to assign.
      * @since 1.0.0
      */

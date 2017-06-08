@@ -24,7 +24,7 @@ import org.eclipse.kapua.service.tag.Tag;
 /**
  * {@link Tag} implementation.
  * 
- * @since 1.0
+ * @since 1.0.0
  */
 @Entity(name = "Tag")
 @Table(name = "tag_tag")
@@ -45,6 +45,7 @@ public class TagImpl extends AbstractKapuaUpdatableEntity implements Tag {
      * Creates a soft clone.
      * 
      * @param tag
+     *            The {@link Tag} from which to create the new {@link Tag}.
      * @throws KapuaException
      */
     public TagImpl(Tag tag) throws KapuaException {
