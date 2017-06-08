@@ -120,7 +120,7 @@
                 indexCacheSize—(default 10000) specifies the size of the cache in units of pages (where one page is 4 KB by default).
                 https://access.redhat.com/documentation/en-US/Fuse_ESB_Enterprise/7.1/html/ActiveMQ_Tuning_Guide/files/PersTuning-KahaDB.html
             -->
-            <kahaDB directory="./kahadb"
+            <kahaDB directory="${KAHA_DB_DIRECTORY}"
                     journalMaxFileLength="32mb"
                     concurrentStoreAndDispatchQueues="true"
                     concurrentStoreAndDispatchTopics="false"
