@@ -12,9 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import java.math.BigInteger;
-import java.util.List;
-
+import com.google.inject.Inject;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
@@ -41,14 +46,10 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.junit.Assert;
 
-import com.google.inject.Inject;
-
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Steps used in integration scenarios with running MQTT broker and process of
@@ -119,6 +120,16 @@ public class BrokerSteps extends Assert {
      */
     private StepData stepData;
 
+    /**
+     * Mqtt device for listening and sending data from/to broker
+     */
+    private MqttDevice mqttDevice;
+
+    /**
+     * Topic / value pair containing message that was received from broker.
+     */
+    private Map<String, String> mqttMessage;
+
     @Inject
     public BrokerSteps(/* dependency */ EmbeddedBroker broker, StepData stepData) {
         this.stepData = stepData;
@@ -152,10 +163,54 @@ public class BrokerSteps extends Assert {
         this.stepData = null;
     }
 
-    @When("^I start the Kura Mock")
+    @When("^I start the Kura Mock$")
     public void startKuraMock() {
+
         kuraDevice = new KuraDevice();
         kuraDevice.mqttClientConnect();
+    }
+
+    @When("^I start Mqtt Device$")
+    public void startMqttDevice() {
+
+        mqttDevice = new MqttDevice();
+        mqttDevice.mqttSubscriberConnect();
+    }
+
+    @When("^I stop Mqtt Device$")
+    public void stopMqttDevice() {
+
+        mqttDevice.mqttSubscriberDisconnect();
+    }
+
+    @Given("^I connect to broker with clientId \"(.*)\" and user \"(.*)\" and password \"(.*)\" and listening on topic \"(.*)\"$")
+    public void connectClientToBroker(String clientId, String userName, String password, String topicFilter) {
+
+        mqttDevice.mqttClientConnect(clientId, userName, password, topicFilter);
+    }
+
+    @Given("^I disconnect client$")
+    public void disconnectClientFromBroker() {
+
+        mqttDevice.mqttClientDisconnect();
+    }
+
+    @Given("I publish string \"(.*)\" to topic \"(.*)\"$")
+    public void clientPublishString(String payload, String topic) {
+
+        mqttMessage = new HashMap<>();
+        mqttDevice.mqttClientPublishString(payload, topic, mqttMessage);
+    }
+
+    @Then("I receive string \"(.*)\" on topic \"(.*)\"$")
+    public void clientReceiveString(String payload, String topic) {
+
+        if ((mqttMessage != null) && (mqttMessage.size() == 1)) {
+            String message = mqttMessage.get(topic);
+            assertEquals(payload, message);
+        } else {
+            fail("Message not received");
+        }
     }
 
     @When("^Device birth message is sent$")
