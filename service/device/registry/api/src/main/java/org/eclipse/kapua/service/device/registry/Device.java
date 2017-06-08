@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -61,7 +64,8 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
         "customAttribute4",
         "customAttribute5",
         "credentialsMode",
-        "preferredUserId"
+        "preferredUserId",
+        "tagIds"
         // // derived attributes
         // "uptime",
         // "modelName",
@@ -83,6 +87,26 @@ public interface Device extends KapuaUpdatableEntity {
     public default String getType() {
         return TYPE;
     }
+
+    /**
+     * Sets the set of Tag id of this entity.
+     * 
+     * @param tagIds
+     *            The set Tag id to assign.
+     * @since 1.0.0
+     */
+    public void setTagIds(Set<KapuaId> tagIds);
+
+    /**
+     * Gets the set of Tag id assigned to this entity.
+     * 
+     * @return The set Tag id assigned to this entity.
+     * @since 1.0.0
+     */
+    @XmlElementWrapper(name = "tagIds")
+    @XmlElement(name = "tagId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public <I extends KapuaId> Set<I> getTagIds();
 
     /**
      * Get the group identifier

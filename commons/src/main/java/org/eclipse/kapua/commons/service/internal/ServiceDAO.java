@@ -578,7 +578,7 @@ public class ServiceDAO {
         // Parse attributes
         Object attrValue = attrPred.getAttributeValue();
         if (attrValue instanceof KapuaId && !(attrValue instanceof KapuaEid)) {
-            attrValue = new KapuaEid((KapuaId) attrValue);
+            attrValue = KapuaEid.parseKapuaId((KapuaId) attrValue);
         }
 
         // Fields to query properties of sub attributes of the root entity

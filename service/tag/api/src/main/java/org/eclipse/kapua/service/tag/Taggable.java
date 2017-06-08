@@ -32,7 +32,7 @@ public interface Taggable {
      *            The set {@link Tag} id to assign.
      * @since 1.0.0
      */
-    public void setTagIds(Set<KapuaId> tagId);
+    public void setTagIds(Set<KapuaId> tagIds);
 
     /**
      * Gets the set of {@link Tag} id assigned to this entity.
@@ -42,6 +42,6 @@ public interface Taggable {
      */
     @XmlElement(name = "tagId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public Set<KapuaId> getTagIds();
+    public <I extends KapuaId> Set<I> getTagIds();
 
 }

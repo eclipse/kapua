@@ -28,6 +28,8 @@ DROP TABLE IF EXISTS athz_user_role;
 
 DROP TABLE IF EXISTS athz_user_role_roles;
 
+DROP TABLE IF EXISTS dvc_device_tag;
+
 DROP TABLE IF EXISTS dvc_device_connection;
 
 DROP TABLE IF EXISTS dvc_device;

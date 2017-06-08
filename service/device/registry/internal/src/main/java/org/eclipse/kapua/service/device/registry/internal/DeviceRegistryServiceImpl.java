@@ -106,6 +106,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
             currentDevice.setConnectionId(device.getConnectionId());
             currentDevice.setLastEventId(device.getLastEventId());
 
+            currentDevice.setTagIds(device.getTagIds());
             // Update
             return DeviceDAO.update(entityManager, currentDevice);
         });
