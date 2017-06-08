@@ -50,6 +50,7 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
@@ -98,38 +99,56 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
             throws GwtKapuaException {
         List<GwtGroupedNVPair> pairs = new ArrayList<GwtGroupedNVPair>();
         KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService drs = locator.getService(DeviceRegistryService.class);
+
+        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
+        DeviceConnectionService deviceConnectionService = locator.getService(DeviceConnectionService.class);
         try {
 
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
 
-            Device device = drs.findByClientId(scopeId, clientId);
+            Device device = deviceRegistryService.findByClientId(scopeId, clientId);
 
             if (device != null) {
                 pairs.add(new GwtGroupedNVPair("devInfo", "devStatus", device.getStatus().toString()));
 
-                DeviceConnection deviceConnection = device.getConnection();
-                DeviceConnectionStatus connectionStatus;
-                if (deviceConnection != null) {
-                    connectionStatus = deviceConnection.getStatus();
-                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
+                DeviceConnection deviceConnection = null;
+                if (device.getConnectionId() != null) {
+                    deviceConnection = deviceConnectionService.find(scopeId, device.getConnectionId());
+                    if (deviceConnection != null) {
+                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", deviceConnection.getClientIp()));
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", deviceConnection.getStatus().toString()));
+                    } else {
+                        pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
+                    }
                 } else {
-                    connectionStatus = DeviceConnectionStatus.DISCONNECTED;
-                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", ""));
+                    pairs.add(new GwtGroupedNVPair("netInfo", "netConnIp", null));
+                    pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
                 }
 
-                pairs.add(new GwtGroupedNVPair("devInfo", "devConnectionStatus", connectionStatus.toString()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devClientId", device.getClientId()));
                 pairs.add(new GwtGroupedNVPair("devInfo", "devDisplayName", device.getDisplayName()));
-                String groupId = device.getGroupId() == null ? "N/A" : device.getGroupId().toCompactId();
-                pairs.add(new GwtGroupedNVPair("devInfo", "devGroupId", groupId));
+                pairs.add(new GwtGroupedNVPair("devInfo", "devGroupId", device.getGroupId() != null ? device.getGroupId().toCompactId() : null));
 
-                String lastEventType = device.getLastEvent() != null ? device.getLastEvent().getType() : "";
-                pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEventType));
-                if (device.getLastEvent() != null) {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", String.valueOf(device.getLastEvent().getReceivedOn().getTime())));
+                if (device.getLastEventId() != null) {
+                    DeviceEvent lastEvent = deviceEventService.find(scopeId, device.getLastEventId());
+
+                    if (lastEvent != null) {
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", lastEvent.getResource()));
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", lastEvent.getReceivedOn() != null ? lastEvent.getReceivedOn().getTime() : null));
+                    } else {
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
+                    }
                 } else {
-                    pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
+                    if (deviceConnection != null) {
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", deviceConnection.getStatus().name()));
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", deviceConnection.getModifiedOn().getTime()));
+                    } else {
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventType", null));
+                        pairs.add(new GwtGroupedNVPair("devInfo", "devLastEventOn", null));
+                    }
                 }
 
                 if (device.getPreferredUserId() != null) {
@@ -147,7 +166,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
 
                 // Credentials tight
                 pairs.add(new GwtGroupedNVPair("devSecurity", "devSecurityCredentialsTight", GwtDeviceCredentialsTight.valueOf(device.getCredentialsMode().name()).getLabel()));
-                pairs.add(new GwtGroupedNVPair("devSecurity", "devSecurityAllowCredentialsChange", device.getPreferredUserId() == null ? "Yes" : "No"));
+                pairs.add(new GwtGroupedNVPair("devSecurity", "devSecurityAllowCredentialsChange", device.getPreferredUserId() == null));
 
                 pairs.add(new GwtGroupedNVPair("devHw", "devModelName", device.getModelId()));
                 pairs.add(new GwtGroupedNVPair("devHw", "devModelId", device.getModelId()));
@@ -160,7 +179,6 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
                 pairs.add(new GwtGroupedNVPair("devJava", "devJvmVersion", device.getJvmVersion()));
 
                 // GPS infos retrieval
-                DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
                 DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
                 DeviceEventQuery eventQuery = deviceEventFactory.newQuery(device.getScopeId());
                 eventQuery.setLimit(1);
@@ -459,7 +477,7 @@ public class GwtDeviceServiceImpl extends KapuaConfigurableRemoteServiceServlet<
     public String getTileEndpoint() throws GwtKapuaException {
         return ConsoleSetting.getInstance().getString(ConsoleSettingKeys.DEVICE_MAP_TILE_URI);
     }
-    
+
     public boolean isMapEnabled() {
         return ConsoleSetting.getInstance().getBoolean(ConsoleSettingKeys.DEVICE_MAP_ENABLED);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,10 +12,8 @@
 package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.eclipse.kapua.app.console.client.messages.ValidationMessages;
-import org.eclipse.kapua.app.console.client.util.DateUtils;
 
 import com.google.gwt.core.client.GWT;
 
@@ -32,15 +30,6 @@ public class GwtGroupedNVPair extends KapuaBaseModel implements Serializable {
         } else if ("nameLoc".equals(property)) {
             ValidationMessages msgs = GWT.create(ValidationMessages.class);
             return (X) msgs.getString(getName());
-        } else if ("devLastEventOn".equals(property)) {
-            String devLastEventOnString = (String) get(property);
-
-            if (devLastEventOnString != null && !devLastEventOnString.isEmpty()) {
-                Date lastEventOn = new Date(Long.valueOf(devLastEventOnString));
-                return (X) DateUtils.formatDateTime(lastEventOn);
-            } else {
-                return (X) "N/A";
-            }
         } else {
             X value = (X) super.get(property);
             if (value == null || (value instanceof String && ((String) value).isEmpty())) {
