@@ -24,6 +24,8 @@ import org.eclipse.kapua.app.api.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -85,6 +87,7 @@ import org.eclipse.kapua.service.datastore.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.DatastoreMessageXmlRegistry;
 import org.eclipse.kapua.service.datastore.MetricInfoXmlRegistry;
+import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -205,6 +208,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     MessageListResult.class,
                     MessageQuery.class,
                     DatastoreMessageXmlRegistry.class,
+                    KapuaDataMessage.class,
+                    InsertResponse.class,
+                    MessageXmlRegistry.class,
 
                     // Device
                     Device.class,

@@ -166,7 +166,7 @@ public class DatastoreMediator implements MessageStoreMediator,
             return;
         }
 
-        Map<String, Object> metrics = payload.getProperties();
+        Map<String, Object> metrics = payload.getMetrics();
         if (metrics == null) {
             return;
         }

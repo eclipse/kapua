@@ -11,12 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.client.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * Insert response
  *
  * @since 1.0
  */
+@XmlType(name = "insertResponse")
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class InsertResponse extends Response {
+
+    public InsertResponse() {
+        super(null, null);
+    }
 
     /**
      * Default constructor

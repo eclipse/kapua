@@ -215,7 +215,7 @@ public class DataSteps {
 
                 // assert metrics data
 
-                final Map<String, Object> properties = payload.getProperties();
+                final Map<String, Object> properties = payload.getMetrics();
                 Assert.assertEquals(toData(expectedMetrics), properties);
             });
         });

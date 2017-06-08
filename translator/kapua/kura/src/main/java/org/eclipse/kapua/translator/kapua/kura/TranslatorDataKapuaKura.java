@@ -80,7 +80,7 @@ public class TranslatorDataKapuaKura extends Translator<KapuaMessage, KuraMessag
 
     private KuraPayload translate(KapuaPayload kapuaPayload) throws KapuaException {
         KuraPayload kuraPayload = new KuraPayload();
-        kuraPayload.getMetrics().putAll(kapuaPayload.getProperties());
+        kuraPayload.getMetrics().putAll(kapuaPayload.getMetrics());
         kuraPayload.setBody(kapuaPayload.getBody());
 
         //

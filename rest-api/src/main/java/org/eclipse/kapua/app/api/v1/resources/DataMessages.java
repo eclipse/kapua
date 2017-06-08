@@ -29,10 +29,12 @@ import org.eclipse.kapua.app.api.v1.resources.model.MetricType;
 import org.eclipse.kapua.app.api.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
@@ -143,6 +145,28 @@ public class DataMessages extends AbstractKapuaResource {
         query.setLimit(limit);
 
         return query(scopeId, query);
+    }
+
+    /**
+     * Stores a new Message under the account of the currently connected user.
+     * In this case, the provided message will only be stored in the back-end
+     * database and it will not be forwarded to the message broker.
+     *
+     * @param message The {@KapuaDataMessage } to be stored
+     * @return an {@InsertResponse} object encapsulating the response from
+     *         the datastore
+     * @throws Exception
+     *         Whenever something bad happens. See specific
+     *         {@link KapuaService} exceptions.
+     */
+    @POST
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @ApiOperation(value = "Stores a new KapuaDataMessage", //
+            notes = "Stores a new KapuaDataMessage under the account of the currently connected user. In this case, the provided message will only be stored in the back-end database and it will not be forwarded to the message broker.", //
+            response = InsertResponse.class)
+    public InsertResponse storeMessage(@ApiParam(value = "The KapuaDataMessage to be stored") KapuaDataMessage message) throws Exception {
+        return MESSAGE_STORE_SERVICE.store(message);
     }
 
     /**

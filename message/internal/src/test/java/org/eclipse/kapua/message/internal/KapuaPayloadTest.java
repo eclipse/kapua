@@ -37,7 +37,7 @@ public class KapuaPayloadTest extends Assert {
 
     @Test
     public void neverGetNull() {
-        assertNotNull(new KapuaPayloadImpl().getProperties());
+        assertNotNull(new KapuaPayloadImpl().getMetrics());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class KapuaPayloadTest extends Assert {
         KapuaPayload kapuaPayload = new KapuaPayloadImpl();
         populatePayload(kapuaPayload);
 
-        Map<String, Object> properties = kapuaPayload.getProperties();
+        Map<String, Object> properties = kapuaPayload.getMetrics();
         byte[] body = kapuaPayload.getBody();
         assertEquals("value1", properties.get("key1"));
         assertEquals("value2", properties.get("key2"));
@@ -63,7 +63,7 @@ public class KapuaPayloadTest extends Assert {
         final KapuaPayload kapuaPayload = new KapuaPayloadImpl();
 
         populatePayloadWithAllTypesOfMetrics(kapuaPayload);
-        kapuaPayload.getProperties().put("null", null);
+        kapuaPayload.getMetrics().put("null", null);
 
         String displayStr = kapuaPayload.toDisplayString();
         assertEquals(PAYLOAD_DISPLAY_STR, displayStr);

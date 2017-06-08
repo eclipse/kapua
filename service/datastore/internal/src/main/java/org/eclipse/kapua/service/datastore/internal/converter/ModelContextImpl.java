@@ -218,7 +218,7 @@ public class ModelContextImpl implements ModelContext {
                     payloadMetrics.put(DatastoreUtils.restoreMetricName(metricsName), DatastoreUtils.convertToCorrectType(valueTypes[0], value));
                 }
             }
-            payload.setProperties(payloadMetrics);
+            payload.setMetrics(payloadMetrics);
         }
         if (fetchStyle.equals(StorableFetchStyle.SOURCE_SELECT)) {
             return message;
@@ -326,7 +326,7 @@ public class ModelContextImpl implements ModelContext {
             return unmarshalledMessage;
         }
         unmarshalledMessage.put(MessageSchema.MESSAGE_BODY, payload.getBody());
-        Map<String, Object> kapuaMetrics = payload.getProperties();
+        Map<String, Object> kapuaMetrics = payload.getMetrics();
         if (kapuaMetrics != null) {
             Map<String, Object> metrics = new HashMap<String, Object>();
             String[] metricNames = kapuaMetrics.keySet().toArray(new String[] {});

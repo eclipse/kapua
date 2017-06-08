@@ -11,11 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+
+import javax.xml.bind.annotation.XmlType;
+
 /**
  * Channel definition.
  *
  * @since 1.0
  */
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel") //
 public interface Channel {
 
 }

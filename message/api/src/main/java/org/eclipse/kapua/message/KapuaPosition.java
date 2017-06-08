@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 /**
@@ -40,7 +41,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
         "timestamp", //
         "satellites", //
         "status", //
-})
+}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
 public interface KapuaPosition extends Position, Serializable {
 
     /**

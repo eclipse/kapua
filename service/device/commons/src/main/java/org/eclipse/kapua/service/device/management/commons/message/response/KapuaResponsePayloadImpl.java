@@ -25,22 +25,22 @@ public class KapuaResponsePayloadImpl extends KapuaPayloadImpl implements KapuaR
 
     @Override
     public String getExceptionMessage() {
-        return (String) getProperties().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue());
+        return (String) getMetrics().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue());
     }
 
     @Override
     public void setExceptionMessage(String setExecptionMessage) {
-        getProperties().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue(), setExecptionMessage);
+        getMetrics().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_MESSAGE.getValue(), setExecptionMessage);
     }
 
     @Override
     public String getExceptionStack() {
-        return (String) getProperties().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue());
+        return (String) getMetrics().get(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue());
     }
 
     @Override
     public void setExceptionStack(String setExecptionStack) {
-        getProperties().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue(), setExecptionStack);
+        getMetrics().put(ResponseProperties.RESP_PROPERTY_EXCEPTION_STACK.getValue(), setExecptionStack);
     }
 
 }

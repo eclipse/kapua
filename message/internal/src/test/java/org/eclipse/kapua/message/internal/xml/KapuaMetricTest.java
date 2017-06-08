@@ -54,7 +54,7 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(String.class);
+        kapuaMetric.setValueType(String.class);
         kapuaMetric.setValue("value");
 
         assertEquals("name", kapuaMetric.getName());
@@ -67,12 +67,12 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(Double.class);
+        kapuaMetric.setValueType(Double.class);
         kapuaMetric.setValue("42.42");
 
         assertEquals("name", kapuaMetric.getName());
         assertEquals(Double.valueOf("42.42"), kapuaMetric.getCastedValue());
-        assertEquals(kapuaMetric.getType(), Double.class);
+        assertEquals(kapuaMetric.getValueType(), Double.class);
     }
 
     @Test
@@ -80,12 +80,12 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(Integer.class);
+        kapuaMetric.setValueType(Integer.class);
         kapuaMetric.setValue("42");
 
         assertEquals("name", kapuaMetric.getName());
         assertEquals(Integer.valueOf(42), kapuaMetric.getCastedValue());
-        assertEquals(kapuaMetric.getType(), Integer.class);
+        assertEquals(kapuaMetric.getValueType(), Integer.class);
     }
 
     @Test
@@ -93,12 +93,12 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(Float.class);
+        kapuaMetric.setValueType(Float.class);
         kapuaMetric.setValue("42.42");
 
         assertEquals("name", kapuaMetric.getName());
         assertEquals(Float.valueOf("42.42"), kapuaMetric.getCastedValue());
-        assertEquals(kapuaMetric.getType(), Float.class);
+        assertEquals(kapuaMetric.getValueType(), Float.class);
     }
 
     @Test
@@ -106,12 +106,12 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(Long.class);
+        kapuaMetric.setValueType(Long.class);
         kapuaMetric.setValue("42");
 
         assertEquals("name", kapuaMetric.getName());
         assertEquals(Long.valueOf("42"), kapuaMetric.getCastedValue());
-        assertEquals(kapuaMetric.getType(), Long.class);
+        assertEquals(kapuaMetric.getValueType(), Long.class);
     }
 
     @Test
@@ -119,12 +119,12 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(Boolean.class);
+        kapuaMetric.setValueType(Boolean.class);
         kapuaMetric.setValue("true");
 
         assertEquals("name", kapuaMetric.getName());
         assertEquals(Boolean.TRUE, kapuaMetric.getCastedValue());
-        assertEquals(kapuaMetric.getType(), Boolean.class);
+        assertEquals(kapuaMetric.getValueType(), Boolean.class);
     }
 
     @Test
@@ -132,12 +132,12 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(byte[].class);
+        kapuaMetric.setValueType(byte[].class);
         kapuaMetric.setValue(BASE64_BYTES);
 
         assertEquals("name", kapuaMetric.getName());
         assertArrayEquals(BYTES, (byte[]) kapuaMetric.getCastedValue());
-        assertEquals(kapuaMetric.getType(), byte[].class);
+        assertEquals(kapuaMetric.getValueType(), byte[].class);
     }
 
     @Test
@@ -145,13 +145,13 @@ public class KapuaMetricTest extends Assert {
         XmlAdaptedMetric kapuaMetric = new XmlAdaptedMetric();
 
         kapuaMetric.setName("name");
-        kapuaMetric.setType(BigDecimal.class);
+        kapuaMetric.setValueType(BigDecimal.class);
         kapuaMetric.setValue("10");
 
         assertEquals("name", kapuaMetric.getName());
         assertEquals("10", kapuaMetric.getCastedValue());
         assertEquals(kapuaMetric.getValue().getClass(), String.class);
-        assertEquals(kapuaMetric.getType(), BigDecimal.class);
+        assertEquals(kapuaMetric.getValueType(), BigDecimal.class);
     }
     //
     // @Test

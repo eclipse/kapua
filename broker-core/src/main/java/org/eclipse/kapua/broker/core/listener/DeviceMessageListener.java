@@ -74,7 +74,7 @@ public class DeviceMessageListener extends AbstractListener {
             // //republish BA
             // Date now = new Date();
             // KapuaPayload kapuaPayload = birthMessage.getMessage().getPayload();
-            // kapuaPayload.getProperties().put("server_event_time", Long.toString(now.getTime()));
+            // kapuaPayload.getMetrics().put("server_event_time", Long.toString(now.getTime()));
             //
             // birthMessage.getMessage().setSemanticChannel(BIRTH_SEMANTIC_TOPIC);
             // try {

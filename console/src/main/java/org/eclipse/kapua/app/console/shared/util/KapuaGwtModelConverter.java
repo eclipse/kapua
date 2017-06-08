@@ -686,7 +686,7 @@ public class KapuaGwtModelConverter {
         gwtMessage.setClientId(message.getClientId());
         gwtMessage.setTimestamp(message.getTimestamp());
         for (GwtHeader header : headers) {
-            gwtMessage.set(header.getName(), message.getPayload().getProperties().get(header.getName()));
+            gwtMessage.set(header.getName(), message.getPayload().getMetrics().get(header.getName()));
         }
         return gwtMessage;
     }

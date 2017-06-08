@@ -31,7 +31,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setPackageDownloadOperationId(KapuaId operationId) {
         if (operationId != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue(), operationId);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue(), operationId);
         }
     }
 
@@ -41,7 +41,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public KapuaId getPackageDownloadOperationId() {
-        return (KapuaId) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue());
+        return (KapuaId) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_OPERATION_ID.getValue());
     }
 
     /**
@@ -51,7 +51,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setPackageDownloadOperationStatus(DevicePackageDownloadStatus status) {
         if (status != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_STATUS.getValue(), status);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_STATUS.getValue(), status);
         }
     }
 
@@ -61,7 +61,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public DevicePackageDownloadStatus getPackageDownloadOperationStatus() {
-        return (DevicePackageDownloadStatus) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_STATUS.getValue());
+        return (DevicePackageDownloadStatus) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_STATUS.getValue());
     }
 
     /**
@@ -71,7 +71,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setPackageDownloadOperationSize(Integer size) {
         if (size != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_SIZE.getValue(), size);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_SIZE.getValue(), size);
         }
     }
 
@@ -81,7 +81,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public Integer getPackageDownloadOperationSize() {
-        return (Integer) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_SIZE.getValue());
+        return (Integer) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_SIZE.getValue());
     }
 
     /**
@@ -91,7 +91,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      */
     public void setPackageDownloadOperationProgress(Integer progress) {
         if (progress != null) {
-            getProperties().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PROGRESS.getValue(), progress);
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PROGRESS.getValue(), progress);
         }
     }
 
@@ -101,6 +101,6 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
      * @return
      */
     public Integer getPackageDownloadOperationProgress() {
-        return (Integer) getProperties().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PROGRESS.getValue());
+        return (Integer) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PROGRESS.getValue());
     }
 }

@@ -80,7 +80,7 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
             throws KapuaException {
         KapuaNotifyPayload kapuaNotifyPayload = new KapuaNotifyPayloadImpl();
         kapuaNotifyPayload.setBody(kuraNotifyPayload.getBody());
-        kapuaNotifyPayload.setProperties(kuraNotifyPayload.getMetrics());
+        kapuaNotifyPayload.setMetrics(kuraNotifyPayload.getMetrics());
         return kapuaNotifyPayload;
     }
 

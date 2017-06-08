@@ -102,9 +102,9 @@ public class DataExporterExcel extends DataExporter {
                 topic = semanticTopic.toString();
             }
             row.createCell(iColCount++).setCellValue(valueOf(topic));
-            if (message.getPayload() != null && message.getPayload().getProperties() != null) {
+            if (message.getPayload() != null && message.getPayload().getMetrics() != null) {
                 for (String header : headers) {
-                    row.createCell(iColCount++).setCellValue(valueOf(message.getPayload().getProperties().get(header)));
+                    row.createCell(iColCount++).setCellValue(valueOf(message.getPayload().getMetrics().get(header)));
                 }
             }
             if (rowCount >= MAX_ROWS) {

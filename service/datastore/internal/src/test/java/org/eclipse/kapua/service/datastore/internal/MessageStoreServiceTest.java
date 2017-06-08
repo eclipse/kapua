@@ -168,7 +168,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         metrics.put("double", (double) 0.01);
         metrics.put("long", (long) (10000000000000l));
         metrics.put("string_value", Integer.toString(1000));
-        messagePayload.setProperties(metrics);
+        messagePayload.setMetrics(metrics);
 
         messagePayload.setBody(payload);
         Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
@@ -264,7 +264,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             metrics.put("double", (double) 0.01);
             metrics.put("long", (long) (10000000000000l));
             metrics.put("string_value", Integer.toString(1000));
-            messagePayload.setProperties(metrics);
+            messagePayload.setMetrics(metrics);
 
             messagePayload.setBody(payload);
             Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
@@ -360,7 +360,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
 
             KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
-            messagePayload.setProperties(getMetrics(message, i));
+            messagePayload.setMetrics(getMetrics(message, i));
             messagePayload.setBody(payload);
             Date receivedOn = Date.from(capturedOnDate.plusMillis(i * 1000));
             Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
@@ -390,8 +390,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
                 checkMessageId(message, messageStoredIds.get(i));
                  checkTopic(message, messageToCompare.getChannel().toString());
                  checkMessageBody(message, messageToCompare.getPayload().getBody());
-                 checkMetricsSize(message, messageToCompare.getPayload().getProperties().size());
-                 checkMetrics(message, messageToCompare.getPayload().getProperties());
+                 checkMetricsSize(message, messageToCompare.getPayload().getMetrics().size());
+                 checkMetrics(message, messageToCompare.getPayload().getMetrics());
                  checkPosition(message, messageToCompare.getPosition());
              }
         } catch (KapuaException e) {
@@ -464,7 +464,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         metrics.put("double", (double) 0.01);
         metrics.put("long", (long) (10000000000000l));
         metrics.put("string_value", Integer.toString(1000));
-        messagePayload.setProperties(metrics);
+        messagePayload.setMetrics(metrics);
 
         messagePayload.setBody(payload);
         Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
@@ -571,7 +571,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             metrics.put("date_value_ls", dateLA);
             metrics.put("date_value_hk", dateHK);
             metrics.put("date_value_sydney", dateSydney);
-            messagePayload.setProperties(metrics);
+            messagePayload.setMetrics(metrics);
 
             messagePayload.setBody(payload);
             Date receivedOn = new Date();
@@ -1028,14 +1028,14 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message1 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message1, semanticTopic[0]);
         initMetrics(message1);
-        message1.getPayload().getProperties().put(metrics[0], Double.valueOf(123));
-        message1.getPayload().getProperties().put(metrics[1], Integer.valueOf(123));
+        message1.getPayload().getMetrics().put(metrics[0], Double.valueOf(123));
+        message1.getPayload().getMetrics().put(metrics[1], Integer.valueOf(123));
         message1.setReceivedOn(messageTime);
         KapuaDataMessage message2 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message2, semanticTopic[0]);
         initMetrics(message2);
-        message2.getPayload().getProperties().put(metrics[2], String.valueOf("123"));
-        message2.getPayload().getProperties().put(metrics[3], Boolean.valueOf(true));
+        message2.getPayload().getMetrics().put(metrics[2], String.valueOf("123"));
+        message2.getPayload().getMetrics().put(metrics[3], Boolean.valueOf(true));
         message2.setReceivedOn(messageTime);
         updateConfiguration(MESSAGE_STORE_SERVICE, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(message1, message2);
@@ -1078,26 +1078,26 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message1 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message1, semanticTopic[0]);
         initMetrics(message1);
-        message1.getPayload().getProperties().put(metrics[0], Double.valueOf(123));
-        message1.getPayload().getProperties().put(metrics[1], Integer.valueOf(123));
+        message1.getPayload().getMetrics().put(metrics[0], Double.valueOf(123));
+        message1.getPayload().getMetrics().put(metrics[1], Integer.valueOf(123));
         message1.setReceivedOn(messageTime);
         KapuaDataMessage message2 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message2, semanticTopic[0]);
         initMetrics(message2);
-        message2.getPayload().getProperties().put(metrics[2], "123");
-        message2.getPayload().getProperties().put(metrics[3], Boolean.TRUE);
+        message2.getPayload().getMetrics().put(metrics[2], "123");
+        message2.getPayload().getMetrics().put(metrics[3], Boolean.TRUE);
         message2.setReceivedOn(messageTime);
         KapuaDataMessage message3 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnSecondMessage, sentOn);
         setChannel(message3, semanticTopic[0]);
         initMetrics(message3);
-        message3.getPayload().getProperties().put(metrics[2], "123");
-        message3.getPayload().getProperties().put(metrics[3], Boolean.TRUE);
+        message3.getPayload().getMetrics().put(metrics[2], "123");
+        message3.getPayload().getMetrics().put(metrics[3], Boolean.TRUE);
         message3.setReceivedOn(messageTime);
         KapuaDataMessage message4 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOnThirdMessage, sentOn);
         setChannel(message4, semanticTopic[0]);
         initMetrics(message4);
-        message4.getPayload().getProperties().put(metrics[2], "123");
-        message4.getPayload().getProperties().put(metrics[3], Boolean.TRUE);
+        message4.getPayload().getMetrics().put(metrics[2], "123");
+        message4.getPayload().getMetrics().put(metrics[3], Boolean.TRUE);
         message4.setReceivedOn(messageTime);
 
         updateConfiguration(MESSAGE_STORE_SERVICE, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
@@ -1157,20 +1157,20 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         KapuaDataMessage message1 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message1, semanticTopic[0]);
         initMetrics(message1);
-        message1.getPayload().getProperties().put(metrics[0], Double.valueOf(123));
-        message1.getPayload().getProperties().put(metrics[1], Integer.valueOf(123));
+        message1.getPayload().getMetrics().put(metrics[0], Double.valueOf(123));
+        message1.getPayload().getMetrics().put(metrics[1], Integer.valueOf(123));
         message1.setReceivedOn(messageTime);
         KapuaDataMessage message2 = createMessage(clientIds[0], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message2, semanticTopic[0]);
         initMetrics(message2);
-        message2.getPayload().getProperties().put(metrics[2], "123");
-        message2.getPayload().getProperties().put(metrics[3], Boolean.TRUE);
+        message2.getPayload().getMetrics().put(metrics[2], "123");
+        message2.getPayload().getMetrics().put(metrics[3], Boolean.TRUE);
         message2.setReceivedOn(messageTime);
         KapuaDataMessage message3 = createMessage(clientIds[1], account.getId(), device.getId(), receivedOn, capturedOn, sentOn);
         setChannel(message3, semanticTopic[0]);
         initMetrics(message3);
-        message3.getPayload().getProperties().put(metrics[2], Double.valueOf(123));
-        message3.getPayload().getProperties().put(metrics[3], Integer.valueOf(123));
+        message3.getPayload().getMetrics().put(metrics[2], Double.valueOf(123));
+        message3.getPayload().getMetrics().put(metrics[3], Integer.valueOf(123));
         message3.setReceivedOn(messageTime);
         updateConfiguration(MESSAGE_STORE_SERVICE, account.getId(), account.getScopeId(), DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
         insertMessages(message1, message2, message3);
@@ -1262,12 +1262,12 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             setChannel(message, semanticTopic[i % semanticTopic.length]);
             // insert metrics
             initMetrics(message);
-            message.getPayload().getProperties().put(metrics[0], metricsValuesDate[i % metricsValuesDate.length]);
-            message.getPayload().getProperties().put(metrics[1], metricsValuesString[i % metricsValuesString.length]);
-            message.getPayload().getProperties().put(metrics[2], metricsValuesInt[i % metricsValuesInt.length]);
-            message.getPayload().getProperties().put(metrics[3], metricsValuesFloat[i % metricsValuesFloat.length]);
-            message.getPayload().getProperties().put(metrics[4], metricsValuesBoolean[i % metricsValuesBoolean.length]);
-            message.getPayload().getProperties().put(metrics[5], metricsValuesDouble[i % metricsValuesDouble.length]);
+            message.getPayload().getMetrics().put(metrics[0], metricsValuesDate[i % metricsValuesDate.length]);
+            message.getPayload().getMetrics().put(metrics[1], metricsValuesString[i % metricsValuesString.length]);
+            message.getPayload().getMetrics().put(metrics[2], metricsValuesInt[i % metricsValuesInt.length]);
+            message.getPayload().getMetrics().put(metrics[3], metricsValuesFloat[i % metricsValuesFloat.length]);
+            message.getPayload().getMetrics().put(metrics[4], metricsValuesBoolean[i % metricsValuesBoolean.length]);
+            message.getPayload().getMetrics().put(metrics[5], metricsValuesDouble[i % metricsValuesDouble.length]);
             insertMessages(message);
         }
 
@@ -1983,7 +1983,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         capturedOn.checkValue(message.getCapturedOn());
         receivedOn.checkValue(message.getReceivedOn());
         assertNotNull("Message payload is null!", message.getPayload());
-        assertNotNull("Message prorperties are null!", message.getPayload().getProperties());
+        assertNotNull("Message prorperties are null!", message.getPayload().getMetrics());
     }
 
     /**
@@ -1994,10 +1994,10 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     private void checkMetricsSize(DatastoreMessage message, int metricsSize) {
         if (metricsSize < 0) {
-            assertNull("Message metrics is not null!", message.getPayload().getProperties());
+            assertNull("Message metrics is not null!", message.getPayload().getMetrics());
         } else {
-            assertNotNull("Message metrics shouldn't be null!", message.getPayload().getProperties());
-            assertEquals("Message metrics size doesn't match!", metricsSize, message.getPayload().getProperties().size());
+            assertNotNull("Message metrics shouldn't be null!", message.getPayload().getMetrics());
+            assertEquals("Message metrics size doesn't match!", metricsSize, message.getPayload().getMetrics().size());
         }
     }
 
@@ -2025,7 +2025,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     private void checkMetrics(DatastoreMessage message, Map<String, Object> metrics) {
         // assuming metrics size is already checked by the checkMetricsSize
-        Map<String, Object> messageProperties = message.getPayload().getProperties();
+        Map<String, Object> messageProperties = message.getPayload().getMetrics();
         Iterator<String> metricsKeys = metrics.keySet().iterator();
         while (metricsKeys.hasNext()) {
             String key = metricsKeys.next();
@@ -2220,8 +2220,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         checkMessageId(messageToCheck, correctId);
         checkTopic(messageToCheck, correctMessage.getChannel().toString());
         checkMessageBody(messageToCheck, correctMessage.getPayload().getBody());
-        checkMetricsSize(messageToCheck, correctMessage.getPayload().getProperties().size());
-        checkMetrics(messageToCheck, correctMessage.getPayload().getProperties());
+        checkMetricsSize(messageToCheck, correctMessage.getPayload().getMetrics().size());
+        checkMetrics(messageToCheck, correctMessage.getPayload().getMetrics());
         checkPosition(messageToCheck, correctMessage.getPosition());
         checkMessageDate(messageToCheck, new Range<Date>("timestamp", correctMessage.getCapturedOn()), new Range<Date>("sentOn", correctMessage.getSentOn()),
                 new Range<Date>("capturedOn", correctMessage.getCapturedOn()),
@@ -2559,13 +2559,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
         metrics.put("distance", 1L);
         metrics.put("label", "goofy");
-        messagePayload.setProperties(metrics);
+        messagePayload.setMetrics(metrics);
 
         messagePosition.setAltitude(1.0);
         messagePosition.setTimestamp(now);
         message.setPosition(messagePosition);
 
-        messagePayload.setProperties(metrics);
+        messagePayload.setMetrics(metrics);
         message.setPayload(messagePayload);
         message.setClientId(clientId);
 

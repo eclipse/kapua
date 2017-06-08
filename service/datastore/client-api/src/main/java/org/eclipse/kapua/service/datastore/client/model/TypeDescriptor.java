@@ -16,6 +16,10 @@ public class TypeDescriptor {
     private String index;
     private String type;
 
+    public TypeDescriptor() {
+
+    }
+
     public TypeDescriptor(String index, String type) {
         this.index = index;
         this.type = type;
