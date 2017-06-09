@@ -34,6 +34,7 @@
         <module>registry</module>
         <module>bundle</module>
         <module>command</module>
+        <module>request</module>
     </modules>
 
 </project>

@@ -105,6 +105,7 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDevice
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
+import org.eclipse.kapua.service.device.management.RequestMessageXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
@@ -124,6 +125,18 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackages
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
+import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
+import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
+import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
+import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseChannel;
+import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
+import org.eclipse.kapua.service.device.management.request.message.response.GenericResponsePayload;
+import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
+import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotXmlRegistry;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -269,6 +282,21 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DevicePackageInstallRequest.class,
                     DevicePackageUninstallRequest.class,
                     DevicePackageXmlRegistry.class,
+
+                    // Device Management Requests
+                    KapuaRequestMessage.class,
+                    KapuaResponseMessage.class,
+                    KapuaRequestChannel.class,
+                    KapuaResponseChannel.class,
+                    KapuaRequestPayload.class,
+                    RequestMessageXmlRegistry.class,
+                    GenericRequestChannel.class,
+                    GenericRequestPayload.class,
+                    GenericRequestMessage.class,
+                    GenericResponseChannel.class,
+                    GenericResponsePayload.class,
+                    GenericResponseMessage.class,
+                    GenericRequestXmlRegistry.class,
 
                     AuthenticationCredentials.class,
                     AuthenticationXmlRegistry.class,

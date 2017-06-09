@@ -12,9 +12,13 @@
 package org.eclipse.kapua.service.device.management.request;
 
 import org.eclipse.kapua.message.KapuaMessage;
+import org.eclipse.kapua.service.device.management.RequestMessageXmlRegistry;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseChannel;
 import org.eclipse.kapua.service.device.management.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload;
+
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua request message definition.<br>
@@ -24,6 +28,8 @@ import org.eclipse.kapua.service.device.management.response.KapuaResponsePayload
  * @since 1.0
  *
  */
+
+@XmlType(factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestMessage")
 public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessage<C, P> {
 
     /**
@@ -31,6 +37,7 @@ public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends Ka
      * 
      * @return
      */
+    @XmlTransient
     public <M extends KapuaRequestMessage<C, P>> Class<M> getRequestClass();
 
     /**
@@ -38,6 +45,7 @@ public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends Ka
      * 
      * @return
      */
+    @XmlTransient
     public <RSC extends KapuaResponseChannel, RSP extends KapuaResponsePayload, M extends KapuaResponseMessage<RSC, RSP>> Class<M> getResponseClass();
 
 }

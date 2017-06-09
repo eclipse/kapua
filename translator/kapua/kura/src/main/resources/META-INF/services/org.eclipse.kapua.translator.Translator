@@ -5,6 +5,7 @@ org.eclipse.kapua.translator.kapua.kura.TranslatorAppCommandKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppConfigurationKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppPackageKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppSnapshotKapuaKura
+org.eclipse.kapua.translator.kapua.kura.TranslatorGenericRequestKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorDataKapuaKura
 
 #from kura to kapua
@@ -14,6 +15,7 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorAppCommandKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppConfigurationKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppPackageKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppSnapshotKuraKapua
+org.eclipse.kapua.translator.kura.kapua.TranslatorGenericResponseKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorDataKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeAppsKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeBirthKuraKapua

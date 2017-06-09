@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.message.internal;
 
-import org.eclipse.kapua.service.device.management.KapuaMethod;
-import org.eclipse.kapua.service.device.management.commons.message.response.KapuaAppChannelImpl;
-import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
+import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 
 /**
  * Device command request channel.
@@ -21,18 +19,6 @@ import org.eclipse.kapua.service.device.management.request.KapuaRequestChannel;
  * @since 1.0
  * 
  */
-public class CommandRequestChannel extends KapuaAppChannelImpl implements KapuaRequestChannel {
-
-    private KapuaMethod method;
-
-    @Override
-    public KapuaMethod getMethod() {
-        return method;
-    }
-
-    @Override
-    public void setMethod(KapuaMethod method) {
-        this.method = method;
-    }
+public class CommandRequestChannel extends KapuaRequestChannelImpl {
 
 }
