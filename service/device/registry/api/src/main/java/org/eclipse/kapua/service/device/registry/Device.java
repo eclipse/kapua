@@ -106,7 +106,7 @@ public interface Device extends KapuaUpdatableEntity {
     @XmlElementWrapper(name = "tagIds")
     @XmlElement(name = "tagId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public <I extends KapuaId> Set<I> getTagIds();
+    public Set<KapuaId> getTagIds();
 
     /**
      * Get the group identifier

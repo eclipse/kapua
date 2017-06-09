@@ -470,7 +470,7 @@ public class DeviceMock implements Device {
     }
 
     @Override
-    public <I extends KapuaId> Set<I> getTagIds() {
+    public Set<KapuaId> getTagIds() {
         // TODO Auto-generated method stub
         return null;
     }
