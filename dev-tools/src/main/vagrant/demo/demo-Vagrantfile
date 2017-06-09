@@ -96,5 +96,7 @@ Vagrant.configure("2") do |config|
 	 sudo rm -rf /usr/local/activemq
 	 sudo chown -R vagrant:vagrant /usr/local/kapua
 	 
+     #set the hostname
+     echo "192.168.33.10 $(hostname)" >> /etc/hosts
   SHELL
 end

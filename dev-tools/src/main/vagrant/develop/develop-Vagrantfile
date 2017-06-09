@@ -142,5 +142,8 @@ Vagrant.configure("2") do |config|
 	  export H2DB_VERSION="1.4.192"
 	  setsid su --login -c "/usr/local/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}/bin/elasticsearch -d" vagrant
 	  setsid su --login -c "java -cp /usr/local/h2database/h2database-${H2DB_VERSION}/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/kapua -webAllowOthers -tcpAllowOthers -tcpPort 3306 &" vagrant
+  
+	#set the hostname
+	echo "192.168.33.10 $(hostname)" >> /etc/hosts
   SHELL
 end
