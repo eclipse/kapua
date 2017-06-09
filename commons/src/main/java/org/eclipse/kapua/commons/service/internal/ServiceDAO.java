@@ -30,8 +30,8 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaEntityExistsException;
@@ -339,7 +339,7 @@ public class ServiceDAO {
 
         //
         // SELECT
-        criteriaSelectQuery.select(entityRoot);
+        criteriaSelectQuery.select(entityRoot).distinct(true);
 
         // Fetch LAZY attributes if necessary
         if (kapuaQuery.getFetchAttributes() != null) {
@@ -582,11 +582,11 @@ public class ServiceDAO {
         }
 
         // Fields to query properties of sub attributes of the root entity
-        SingularAttribute attribute;
+        Attribute attribute;
         if (attrName.contains(ATTRIBUTE_SEPARATOR)) {
-            attribute = entityType.getSingularAttribute(attrName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[0]);
+            attribute = entityType.getAttribute(attrName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[0]);
         } else {
-            attribute = entityType.getSingularAttribute(attrName);
+            attribute = entityType.getAttribute(attrName);
         }
 
         if (attrValue instanceof Object[]) {
@@ -595,7 +595,13 @@ public class ServiceDAO {
 
             Predicate[] orPredicates = new Predicate[attrValues.length];
             for (int i = 0; i < attrValues.length; i++) {
-                orPredicates[i] = cb.equal(orPredicate, attrValues[i]);
+                Object value = attrValues[i];
+
+                if (value instanceof KapuaId && !(value instanceof KapuaEid)) {
+                    value = new KapuaEid((KapuaId) value);
+                }
+
+                orPredicates[i] = cb.equal(orPredicate, value);
             }
 
             expr = cb.and(cb.or(orPredicates));
