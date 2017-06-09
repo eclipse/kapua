@@ -111,6 +111,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-client-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-kura-mqtt</artifactId>
         </dependency>
         <dependency>
