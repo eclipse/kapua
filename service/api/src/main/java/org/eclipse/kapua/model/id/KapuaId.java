@@ -30,6 +30,9 @@ public interface KapuaId extends Serializable {
     @XmlTransient
     public static final KapuaId ANY = new KapuaIdStatic(BigInteger.ONE.negate());
 
+    @XmlTransient
+    public static final KapuaId ONE = new KapuaIdStatic(BigInteger.ONE);
+
     /**
      * Get the identifier
      * 
