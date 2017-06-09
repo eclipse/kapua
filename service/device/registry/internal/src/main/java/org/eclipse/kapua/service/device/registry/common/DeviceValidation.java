@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.registry.common;
 
 import java.util.List;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -35,6 +36,8 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagService;
 
 /**
  * Provides logic used to validate preconditions required to execute the device service operation.
@@ -47,6 +50,7 @@ public final class DeviceValidation {
 
     private static AuthorizationService authorizationService;
     private static GroupService groupService;
+    private static TagService tagService;
     private static PermissionFactory permissionFactory;
 
     private static DeviceRegistryService deviceRegistryService;
@@ -56,6 +60,7 @@ public final class DeviceValidation {
         try {
             authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
             groupService = KapuaLocator.getInstance().getService(GroupService.class);
+            tagService = KapuaLocator.getInstance().getService(TagService.class);
             permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
 
             deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
@@ -130,6 +135,13 @@ public final class DeviceValidation {
             ArgumentValidator.notNull(groupService.find(device.getScopeId(), device.getGroupId()), "device.groupId");
         }
         authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), device.getGroupId()));
+
+        for (KapuaId tagId : device.getTagIds()) {
+            Tag tag = KapuaSecurityUtils.doPrivileged(() -> tagService.find(device.getScopeId(), tagId));
+            if (tag == null) {
+                throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
+            }
+        }
 
         return device;
     }
@@ -214,8 +226,10 @@ public final class DeviceValidation {
     /**
      * Finds the current {@link Group} id assigned to the given {@link Device} id.
      *
-     * @param scopeId  The scope {@link KapuaId} of the {@link Device}
-     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
+     * @param scopeId
+     *            The scope {@link KapuaId} of the {@link Device}
+     * @param entityId
+     *            The {@link KapuaEntity} {@link KapuaId} of the {@link Device}.
      * @return The {@link Group} id found.
      * @throws KapuaException
      * @since 1.0.0
