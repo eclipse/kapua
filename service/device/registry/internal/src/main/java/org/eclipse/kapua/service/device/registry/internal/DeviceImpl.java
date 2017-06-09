@@ -57,6 +57,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
 
     @ElementCollection
     @CollectionTable(name = "dvc_device_tag", joinColumns = @JoinColumn(name = "device_id", referencedColumnName = "id"))
+    // @Column(name = "tag_id", nullable = false)
     @AttributeOverrides({
             @AttributeOverride(name = "eid", column = @Column(name = "tag_id", nullable = false, updatable = false))
     })
@@ -216,7 +217,15 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     }
 
     @Override
-    public Set<KapuaEid> getTagIds() {
+    public Set<KapuaId> getTagIds() {
+        Set<KapuaId> tagIds = new HashSet<>();
+
+        if (this.tagIds != null) {
+            for (KapuaId deviceTagId : this.tagIds) {
+                tagIds.add(new KapuaEid(deviceTagId));
+            }
+        }
+
         return tagIds;
     }
 
