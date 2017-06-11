@@ -11,25 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-public abstract class AbstractDisposableResource {
 
-    public AbstractDisposableResource(LifecycleHandler lifecycleHandler) {
-        
-        final AbstractDisposableResource resourceInstance = this;
-        
-        lifecycleHandler.register(new LifecyleListener() {
-
-            @Override
-            public void onStartup() {
-            }
-
-            @Override
-            public void onShutdown() {
-                resourceInstance.close();
-            }
-            
-        });
-    }
-    
-    public abstract void close();
+public interface KapuaComponent {
 }

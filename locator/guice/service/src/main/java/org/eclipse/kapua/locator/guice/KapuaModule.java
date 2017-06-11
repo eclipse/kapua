@@ -21,7 +21,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.locator.guice.registry.SyntheticMethodMatcher;
+import org.eclipse.kapua.locator.guice.inject.SyntheticMethodMatcher;
 import org.eclipse.kapua.locator.inject.InterceptorBind;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.PoolListener;

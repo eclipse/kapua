@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.event;
+package org.eclipse.kapua.commons.event.dummy;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -28,15 +28,15 @@ import org.slf4j.LoggerFactory;
  * 
  * @since 1.0
  */
-public class EventBusConnector {
+public class DummyEventBusConnector {
 
-    private final static Logger logger = LoggerFactory.getLogger(EventBusConnector.class);
+    private final static Logger logger = LoggerFactory.getLogger(DummyEventBusConnector.class);
 
     private Thread thread;
 
     private final KapuaEventListener listener;
 
-    public EventBusConnector(KapuaEventListener listener) {
+    public DummyEventBusConnector(KapuaEventListener listener) {
         this.listener = listener;
         // Initialize event bus client
         // EventBusClient client = new EventBusClient();
@@ -72,7 +72,7 @@ public class EventBusConnector {
         
         logger.info("***** Accepted events: {}", builder.toString());
 
-        final EventBusConnector thisConnector = this;
+        final DummyEventBusConnector thisConnector = this;
         this.thread = new Thread(new Runnable() {
 
             @Override

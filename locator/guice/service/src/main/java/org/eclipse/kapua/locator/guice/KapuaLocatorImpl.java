@@ -22,7 +22,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
-import org.eclipse.kapua.locator.guice.registry.InjectorRegistry;
+import org.eclipse.kapua.locator.guice.inject.InjectorRegistry;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.LocatorConfigurationException;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
@@ -47,14 +47,14 @@ public class KapuaLocatorImpl extends KapuaLocator {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaLocatorImpl.class);
     
-    private static final String PARENT_INJECTOR = "commonsLocatorInjector";
+    private static final String COMMONS_INJECTOR = "commonsLocatorInjector";
     private static final String KAPUA_INJECTOR = "kapuaLocatorInjector";
     private static final String INJECTOR_NOT_FOUND = "Injector named %s not found or null";
     private static final String SERVICE_RESOURCE = "locator.xml";
 
     static {
         try {
-            Injector parentInj = InjectorRegistry.get(PARENT_INJECTOR);
+            Injector parentInj = InjectorRegistry.get(COMMONS_INJECTOR);
             if ( parentInj == null) {
                 throw new Exception("Injector not found: parentInjector");
             }

@@ -9,22 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice.registry;
+package org.eclipse.kapua.commons.event;
 
-import java.lang.reflect.Method;
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.KapuaEventListener;
 
-import com.google.inject.matcher.AbstractMatcher;
-
-public final class SyntheticMethodMatcher extends AbstractMatcher<Method> {
-    public static final SyntheticMethodMatcher instance = new SyntheticMethodMatcher();
-    private SyntheticMethodMatcher() {}
-
-    public static SyntheticMethodMatcher getInstance() {
-        return instance;
-    }
+public interface EventBusService {
     
-    @Override
-    public boolean matches(Method method) {
-        return method.isSynthetic();
-    }
+    public void publish(KapuaEvent event);
+    public void subscribe(KapuaEventListener eventListener);
+    public KapuaEventListener unsubscribe(KapuaEventListener eventListener);
+    public boolean isSubscribed(KapuaEventListener eventListener);
 }

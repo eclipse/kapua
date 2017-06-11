@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import java.util.List;
 
-public interface LifecycleHandler {
+public interface ServiceRegistration {
 
-    public List<LifecyleListener> getListeners();
-    public void register(LifecyleListener listener);
-    public LifecyleListener deregister(LifecyleListener listener);
+    public <I, P extends I> void register(Class<I> clazz, P provider);
+    public <P> void register(Class<P> provider);
+    public <P> void register(P provider);
 }

@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.eclipse.kapua.commons.locator.CommonsLocator;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Kpaua container hosts a Kapua application and provides the means to configure it
@@ -23,27 +27,44 @@ import org.eclipse.kapua.commons.locator.CommonsLocator;
  */
 public abstract class KapuaContainer {
 
-    private LifecycleHandler lifecycleHandler;
+    private final static Logger logger = LoggerFactory.getLogger(KapuaContainer.class);
 
+    private KapuaConfiguration configuration;
+    
     public KapuaContainer() {
         this(new KapuaConfiguration());
     }
 
     public KapuaContainer(KapuaConfiguration configuration) {
-        lifecycleHandler = CommonsLocator.getInstance().getLifecycleHandler();
+        this.configuration = configuration;
+        ComponentLocator.getInstance();
     }
 
     public final void startup() {
-        List<LifecyleListener> listeners = lifecycleHandler.getListeners();
-        for (LifecyleListener listener : listeners) {
+        logger.info("Startup...");
+        Set<LifecycleComponent> services = ComponentLocator.getInstance().getServiceComponents();
+        for(LifecycleComponent service:services) {
+            service.start();
+        }
+        
+        List<LifecyleListener> listeners = configuration.getImplementationsOf(LifecyleListener.class);
+        for(LifecyleListener listener:listeners) {
             listener.onStartup();
         }
+        logger.info("Startup...DONE");
     }
 
     public final void shutdown() {
-        List<LifecyleListener> listeners = lifecycleHandler.getListeners();
-        for (int i = listeners.size() - 1; i >= 0; i--) {
+        logger.info("Shutdown...");
+        List<LifecyleListener> listeners = configuration.getImplementationsOf(LifecyleListener.class);
+        for(int i = listeners.size() - 1; i >= 0; i--) {
             listeners.get(i).onShutdown();
         }
+        
+        ArrayList<LifecycleComponent> services = new ArrayList<>(ComponentLocator.getInstance().getServiceComponents());
+        for(int i = services.size() - 1; i >= 0; i--) {
+            services.get(i).stop();
+        }
+        logger.info("Shutdown...DONEs");
     }
 }

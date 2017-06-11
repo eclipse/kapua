@@ -14,30 +14,31 @@ package org.eclipse.kapua.commons.locator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.LifecycleHandler;
+import org.eclipse.kapua.commons.core.LifecycleComponent;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class CommonsLocator {
+public abstract class ComponentLocator {
 
-    private final static Logger logger = LoggerFactory.getLogger(CommonsLocator.class);
+    private final static Logger logger = LoggerFactory.getLogger(ComponentLocator.class);
 
-    protected static CommonsLocator instance;
+    protected static ComponentLocator instance;
     
     static {
         instance = createInstance();
     }
 
-    private static CommonsLocator createInstance() {
+    private static ComponentLocator createInstance() {
 
         logger.info("initialize Servicelocator with the default instance... ");
-        ServiceLoader<CommonsLocator> commonsLocatorLoaders = ServiceLoader.load(CommonsLocator.class);
-        CommonsLocator commonsLocator = null;
-        Iterator<CommonsLocator> commonsLocatorLoaderIterator = commonsLocatorLoaders.iterator();
+        ServiceLoader<ComponentLocator> commonsLocatorLoaders = ServiceLoader.load(ComponentLocator.class);
+        ComponentLocator commonsLocator = null;
+        Iterator<ComponentLocator> commonsLocatorLoaderIterator = commonsLocatorLoaders.iterator();
         while (commonsLocatorLoaderIterator.hasNext()) {
             commonsLocator = commonsLocatorLoaderIterator.next();
             break;
@@ -45,16 +46,16 @@ public abstract class CommonsLocator {
         if (commonsLocator == null) {
             throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.SERVICE_LOCATOR_UNAVAILABLE);
         }
-        logger.info("initialize Servicelocator with the default instance... DONE");
+        logger.info("Initialize Servicelocator with the default instance... DONE");
         return commonsLocator;
     }
     
-    public static CommonsLocator getInstance() {
+    public static ComponentLocator getInstance() {
         return instance;
     }
 
-    public abstract LifecycleHandler getLifecycleHandler();
-
+    public abstract Set<LifecycleComponent> getServiceComponents();
+    
     public abstract ManagedObjectPool getManagedObjectPool();
     
     public abstract <T> T getProvider(Class<T> superOrImplClass);

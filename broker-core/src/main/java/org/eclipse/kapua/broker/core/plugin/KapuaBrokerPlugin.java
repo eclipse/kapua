@@ -11,24 +11,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import org.eclipse.kapua.commons.core.KapuaPlugin;
+import org.eclipse.kapua.commons.core.LifecycleComponent;
+import org.eclipse.kapua.commons.core.ServiceRegistration;
+import org.eclipse.kapua.commons.locator.ComponentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KapuaBrokerPlugin implements KapuaPlugin {
+@ComponentProvider
+public class KapuaBrokerPlugin implements LifecycleComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaBrokerPlugin.class);
 
     @Override
+    public void onRegisterServices(ServiceRegistration registration) {
+        return;
+    }
+
+    @Override
     public void start() {
-        logger.info("Starting kapua broker plugin...");
-        logger.info("Starting kapua broker plugin... DONE");
+        logger.info("Starting...");
+        logger.info("Starting... DONE");
     }
 
     @Override
     public void stop() {
-        logger.info("Stopping kapua broker plugin...");
-        logger.info("Stopping kapua broker plugin... DONE");
+        logger.info("Stopping...");
+        logger.info("Stopping... DONE");
     }
 
 }

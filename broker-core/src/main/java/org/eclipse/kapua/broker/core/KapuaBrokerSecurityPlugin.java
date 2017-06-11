@@ -62,7 +62,7 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
         String dbPassword = config.getString(DB_PASSWORD);
         String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
         new KapuaLiquibaseClient(resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
-
+        
         try {
             // initialize shiro context for broker plugin from shiro ini file
             URL shiroIniUrl = getClass().getResource("/shiro.ini");

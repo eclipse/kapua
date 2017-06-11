@@ -25,15 +25,15 @@ public class KapuaConfiguration {
     public void register(LifecyleListener listener) {
         registeredObjects.add(listener);
     }
-
-    public <T> List<T> get(Class<T> clazz) {
-        ArrayList<T> objects = new ArrayList<T>();
-        for (Object object : registeredObjects) {
-            if (object.getClass().equals(clazz)) {
-                objects.add((T) object);
+    
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getImplementationsOf(Class<T> superClass) {
+        List<T> implementations = new ArrayList<>();
+        for (Object object:registeredObjects) {
+            if (superClass.isAssignableFrom(object.getClass())) {
+                implementations.add((T)object);
             }
         }
-
-        return objects;
+        return implementations;
     }
 }

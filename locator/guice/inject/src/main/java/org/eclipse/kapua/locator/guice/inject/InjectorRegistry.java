@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice.registry;
+package org.eclipse.kapua.locator.guice.inject;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -11,14 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-
 /**
  * Kapua plugin hosts custom code
  * 
  * @since 1.0
  */
-public interface KapuaPlugin {
+public interface LifecycleComponent extends KapuaComponent {
 
+    public void onRegisterServices(ServiceRegistration registration);
+    
     public void start();
     public void stop();
 }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import javax.inject.Inject;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -30,6 +32,8 @@ import org.slf4j.LoggerFactory;
 @InterceptorBind(matchSublclassOf=KapuaService.class, matchAnnotatedWith=RaiseKapuaEvent.class)
 public class RaiseKapuaEventInterceptor implements MethodInterceptor {
 
+    @Inject EventBusService eventBusService;
+    
     private static final Logger logger = LoggerFactory.getLogger(RaiseKapuaEventInterceptor.class);
 
     public RaiseKapuaEventInterceptor() {
@@ -81,7 +85,6 @@ public class RaiseKapuaEventInterceptor implements MethodInterceptor {
     }
 
     private void sendEvent(Object returnedValue, RaiseKapuaEvent event, Object[] arguments) {
-
     }
 
 }
