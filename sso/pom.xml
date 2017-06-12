@@ -31,6 +31,7 @@
 
     <modules>
         <module>api</module>
+        <module>jwt</module>
         <module>provider</module>
         <module>provider-generic</module>
         <module>provider-keycloak</module>

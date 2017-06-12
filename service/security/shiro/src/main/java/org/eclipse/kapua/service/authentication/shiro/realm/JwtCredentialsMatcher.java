@@ -17,7 +17,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
-import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.eclipse.kapua.sso.jwt.JwtProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,32 +30,44 @@ import org.slf4j.LoggerFactory;
 public class JwtCredentialsMatcher implements CredentialsMatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
+    private JwtProcessor jwtProcessor;
 
+    
+    public JwtCredentialsMatcher(final JwtProcessor jwtProcessor) {
+        this.jwtProcessor = jwtProcessor;
+    }
+    
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
 
-        JwtCredentialsImpl token = (JwtCredentialsImpl) authenticationToken;
-        String jwt = token.getJwt();
+        final String jwt = ((JwtCredentialsImpl) authenticationToken).getJwt();
+        if (jwt == null) {
+            // we don't have a JWT
+            return false;
+        }
 
-        //
-        // Info data
-        LoginAuthenticationInfo info = (LoginAuthenticationInfo) authenticationInfo;
-        Credential infoCredential = (Credential) info.getCredentials();
+        // check for correct credentials type
 
-        //
+        final Object credentialsValue = authenticationInfo.getCredentials();
+        if (!(credentialsValue instanceof Credential)) {
+            return false;
+        }
+
+        // extract credentials
+        
+        final Credential credentials = (Credential) credentialsValue;
+
         // Match token with info
-        if (jwt.equals(infoCredential.getCredentialKey())) {
-            try {
-                //
-                // This validates JWT
-                JwtHelper.processJwt(jwt);
 
-                return true;
+        if (!jwt.equals(credentials.getCredentialKey())) {
+            return false;
+        }
 
-                // FIXME: if true cache token password for authentication performance improvement
-            } catch (InvalidJwtException e) {
-                logger.error("Error while validating JWT credentials", e);
-            }
+        try {
+            // validate the JWT
+            return this.jwtProcessor.validate(jwt);
+        } catch (Exception e) {
+            logger.error("Error while validating JWT credentials", e);
         }
 
         return false;
