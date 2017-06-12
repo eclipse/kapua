@@ -334,6 +334,7 @@ public class KapuaCloudConsole implements EntryPoint {
         dlg.setClosable(false);
         dlg.setResizable(false);
         dlg.setModal(true);
+        dlg.setOnEsc(false);
 
         final Label label = new Label(MSGS.ssoWaitDialog_text());
         dlg.add(label);
