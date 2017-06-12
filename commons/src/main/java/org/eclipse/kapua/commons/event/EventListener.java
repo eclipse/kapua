@@ -9,7 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.event;
+package org.eclipse.kapua.commons.event;
 
-public interface KapuaEventListener {
+import org.eclipse.kapua.service.event.KapuaEvent;
+
+public interface EventListener {
+
+    public void onKapuaEvent(KapuaEvent event);
 }

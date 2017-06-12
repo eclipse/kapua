@@ -16,12 +16,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) 
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface FilterKapuaEvent {
+public @interface ListenKapuaEvent {
 
-    String[] service() default {"*"};
-    String[] entityType() default {"*"};
-    String[] operation() default {"*"};
-    KapuaEvent.OperationStatus[] operationStatus() default {KapuaEvent.OperationStatus.OK, KapuaEvent.OperationStatus.FAIL}; 
+    Class<? extends KapuaEvent> eventType() default KapuaEvent.class;
+
+    String service() default "*";
+
+    String entityType() default "*";
+
+    String operation() default "*";
+
+    KapuaEvent.OperationStatus[] operationStatus() default { KapuaEvent.OperationStatus.OK, KapuaEvent.OperationStatus.FAIL };
 }

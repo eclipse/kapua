@@ -18,20 +18,32 @@ import org.eclipse.kapua.model.id.KapuaId;
 public interface KapuaEvent {
 
     public enum OperationStatus {
-        OK,
-        FAIL
+        OK, FAIL
     }
 
     public String getContextId();
+
     public Date getTimestamp();
+
     public KapuaId getUserId();
+
     public String getService();
+
     public String getEntityType();
+
     public KapuaId getEntityId();
+
     public String getOperation();
+
     public OperationStatus getOperationStatus();
+
     public String getFailureMessage();
+
     public String getInputs();
+
     public String getOutputs();
+
+    public String getProperties();
+
     public String getNote();
 }

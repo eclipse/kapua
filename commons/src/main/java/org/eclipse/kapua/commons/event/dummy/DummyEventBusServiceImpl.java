@@ -11,16 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event.dummy;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.eclipse.kapua.commons.core.LifecycleComponent;
 import org.eclipse.kapua.commons.core.ServiceRegistration;
 import org.eclipse.kapua.commons.event.EventBusService;
+import org.eclipse.kapua.commons.event.EventListenerImpl;
 import org.eclipse.kapua.commons.locator.ComponentProvider;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.eclipse.kapua.locator.inject.PoolListener;
@@ -39,7 +40,7 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
     private ManagedObjectPool managedObjects;
     private boolean isStarted;
     private PoolListener poolListener;    
-    private List<DummyEventBusConnector> eventConnectors;
+    private Map<KapuaEventListener, DummyEventBusConnector> eventConnectors;
 
     @Inject public DummyEventBusServiceImpl(ManagedObjectPool managedObjects) {
         
@@ -49,7 +50,7 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
         this.managedObjects = managedObjects;
         
         this.isStarted = false;
-        this.eventConnectors = new ArrayList<DummyEventBusConnector>();
+        this.eventConnectors = new HashMap<KapuaEventListener, DummyEventBusConnector>();
         
         // The plugin wants to be notified when a new object is added to the pool.
         // If the object is an event listener it will then manage to plug it into
@@ -78,8 +79,8 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
     @Override
     public void subscribe(KapuaEventListener eventListener) {
         logger.info("Adding new event listener {} ...", eventListener.getClass().getName());
-        DummyEventBusConnector connector = new DummyEventBusConnector(eventListener);
-        eventConnectors.add(connector);
+        DummyEventBusConnector connector = new DummyEventBusConnector(EventListenerImpl.newInstance(eventListener));
+        eventConnectors.put(eventListener, connector);
         if (isStarted()) {
             connector.start();
         }
@@ -87,14 +88,16 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
 
     @Override
     public KapuaEventListener unsubscribe(KapuaEventListener eventListener) {
-        // TODO Auto-generated method stub
+        if(eventConnectors.containsKey(eventListener)) {
+            eventConnectors.remove(eventListener);
+            return eventListener;
+        }
         return null;
     }
 
     @Override
     public boolean isSubscribed(KapuaEventListener eventListener) {
-        // TODO Auto-generated method stub
-        return false;
+        return eventConnectors.containsKey(eventListener);
     }
 
     @Override
@@ -120,8 +123,9 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
     public void stop() {
         logger.info("Stopping...");
         
-        for(DummyEventBusConnector connector:eventConnectors) {
-            connector.stop();
+        Set<KapuaEventListener> listeners = eventConnectors.keySet();
+        for(KapuaEventListener listener:listeners) {
+            eventConnectors.get(listener).stop();
         }
         setStarted(false);
         logger.info("Stopping...DONE");

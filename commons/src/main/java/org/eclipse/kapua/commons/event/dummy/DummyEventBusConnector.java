@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event.dummy;
 
-import java.lang.reflect.Method;
 import java.util.Date;
 
+import org.eclipse.kapua.commons.event.EventListener;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.event.FilterKapuaEvent;
 import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.KapuaEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +32,9 @@ public class DummyEventBusConnector {
 
     private Thread thread;
 
-    private final KapuaEventListener listener;
+    private final EventListener listener;
 
-    public DummyEventBusConnector(KapuaEventListener listener) {
+    public DummyEventBusConnector(EventListener listener) {
         this.listener = listener;
         // Initialize event bus client
         // EventBusClient client = new EventBusClient();
@@ -45,32 +43,6 @@ public class DummyEventBusConnector {
 
     public void start() {
         logger.info("Starting event connector ...");
-
-        Method method = null;
-        String[] events = null;
-        try {
-            String methodName = "onKapuaEvent";
-            method = this.listener.getClass().getMethod(methodName);
-            if (method != null) {
-                FilterKapuaEvent acceptAnnotation = method.getAnnotation(FilterKapuaEvent.class);
-                if (acceptAnnotation != null) {
-                    events = new String[] {"Ciao ciao"};
-                } else {
-                    events = new String[] { "*" };
-                }
-            }
-        } catch (NoSuchMethodException | SecurityException e1) {
-            logger.error("Empty list of accepted events is not allowed, set to default");
-            events = new String[] { "*" };
-        }
-
-        StringBuilder builder = new StringBuilder();
-        for(String event:events) {
-            builder.append(event);
-            builder.append(",");
-        }
-        
-        logger.info("***** Accepted events: {}", builder.toString());
 
         final DummyEventBusConnector thisConnector = this;
         this.thread = new Thread(new Runnable() {
@@ -148,6 +120,12 @@ public class DummyEventBusConnector {
 
                         @Override
                         public String getNote() {
+                            // TODO Auto-generated method stub
+                            return null;
+                        }
+
+                        @Override
+                        public String getProperties() {
                             // TODO Auto-generated method stub
                             return null;
                         }
