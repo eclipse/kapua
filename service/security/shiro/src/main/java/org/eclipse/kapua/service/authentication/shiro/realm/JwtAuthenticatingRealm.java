@@ -116,29 +116,31 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         final String name = extractUserName(jwt);
         logger.debug("JWT contains user name: {}", name);
 
-        //
         // Get the associated user by name
+
         final User user;
         try {
             user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(name));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
+            throw new ShiroException("Error looking up the user", e);
         }
 
-        // Check existence
+        // Check user existence
+
         if (user == null) {
             throw new UnknownAccountException();
         }
 
         // Check disabled
+
         if (UserStatus.DISABLED.equals(user.getStatus())) {
             throw new DisabledAccountException();
         }
 
-        //
         // Find account
+
         final Account account;
         try {
             account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
@@ -148,17 +150,18 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
             throw new ShiroException("Error while find account!", e);
         }
 
-        // Check existence
+        // Check account existence
+
         if (account == null) {
             throw new UnknownAccountException();
         }
 
-        //
         // Create credential
+
         final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt);
 
-        //
         // Build AuthenticationInfo
+
         return new LoginAuthenticationInfo(getName(),
                 account,
                 user,
