@@ -19,7 +19,6 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -60,10 +59,8 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
      * @throws KapuaException
      */
     public JwtAuthenticatingRealm() throws KapuaException {
+        super(new JwtCredentialsMatcher());
         setName(REALM_NAME);
-
-        CredentialsMatcher credentialsMather = new JwtCredentialsMatcher();
-        setCredentialsMatcher(credentialsMather);
     }
 
     @Override
@@ -76,9 +73,9 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm {
 
         //
         // Get Services
-        KapuaLocator locator;
-        UserService userService;
-        AccountService accountService;
+        final KapuaLocator locator;
+        final UserService userService;
+        final AccountService accountService;
         try {
             locator = KapuaLocator.getInstance();
             userService = locator.getService(UserService.class);
