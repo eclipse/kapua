@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.client.util.Logout;
 import org.eclipse.kapua.app.console.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.client.util.Years;
 import org.eclipse.kapua.app.console.shared.model.GwtLoginInformation;
@@ -64,7 +65,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class KapuaCloudConsole implements EntryPoint {
 
-    private static final String PARAMETER_ACCESS_TOKEN = "access_token";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
 
@@ -290,7 +290,7 @@ public class KapuaCloudConsole implements EntryPoint {
         loadFooterData(lcFooter, genericNote, creditLabel);
 
         // Check if coming from SSO login
-        final String accessToken = Window.Location.getParameter(PARAMETER_ACCESS_TOKEN);
+        final String accessToken = Window.Location.getParameter(Logout.PARAMETER_ACCESS_TOKEN);
 
         if (accessToken != null && !accessToken.isEmpty()) {
             logger.info("Performing SSO login");
@@ -352,10 +352,8 @@ public class KapuaCloudConsole implements EntryPoint {
             public void onFailure(Throwable caught) {
                 dlg.hide();
                 ConsoleInfo.display(MSGS.loginError(), caught.getLocalizedMessage());
-                final String url = Window.Location.createUrlBuilder()
-                        .removeParameter(PARAMETER_ACCESS_TOKEN)
-                        .buildString();
-                Window.Location.assign(url);
+
+                Logout.logout();
             }
 
             @Override
