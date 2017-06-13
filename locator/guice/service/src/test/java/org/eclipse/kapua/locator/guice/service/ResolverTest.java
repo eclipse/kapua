@@ -9,17 +9,17 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.internal;
+package org.eclipse.kapua.locator.guice.service;
 
 import org.eclipse.kapua.locator.KapuaLocatorException;
-import org.eclipse.kapua.locator.guice.ServiceResolver;
-import org.eclipse.kapua.locator.internal.guice.FactoryA;
-import org.eclipse.kapua.locator.internal.guice.FactoryAImpl;
-import org.eclipse.kapua.locator.internal.guice.FactoryC;
-import org.eclipse.kapua.locator.internal.guice.ServiceA;
-import org.eclipse.kapua.locator.internal.guice.ServiceAImpl;
-import org.eclipse.kapua.locator.internal.guice.ServiceC;
-import org.eclipse.kapua.locator.internal.guice.ServiceCImpl;
+import org.eclipse.kapua.locator.guice.service.ServiceResolver;
+import org.eclipse.kapua.locator.guice.service.internal.FactoryA;
+import org.eclipse.kapua.locator.guice.service.internal.FactoryAImpl;
+import org.eclipse.kapua.locator.guice.service.internal.FactoryC;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceA;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceAImpl;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceC;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceCImpl;
 import org.junit.Test;
 
 public class ResolverTest {

@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *     Red Hat - improved tests coverage
  *******************************************************************************/
-package org.eclipse.kapua.locator.internal;
+package org.eclipse.kapua.locator.guice.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -21,13 +21,13 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.KapuaContainer;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
-import org.eclipse.kapua.locator.guice.TestService;
-import org.eclipse.kapua.locator.internal.guice.FactoryA;
-import org.eclipse.kapua.locator.internal.guice.FactoryB;
-import org.eclipse.kapua.locator.internal.guice.ServiceA;
-import org.eclipse.kapua.locator.internal.guice.ServiceB;
-import org.eclipse.kapua.locator.internal.guice.ServiceC;
+import org.eclipse.kapua.locator.guice.service.KapuaLocatorImpl;
+import org.eclipse.kapua.locator.guice.service.TestService;
+import org.eclipse.kapua.locator.guice.service.internal.FactoryA;
+import org.eclipse.kapua.locator.guice.service.internal.FactoryB;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceA;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceB;
+import org.eclipse.kapua.locator.guice.service.internal.ServiceC;
 import org.eclipse.kapua.service.KapuaService;
 import org.junit.After;
 import org.junit.Assert;
@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class GuiceLocatorImplTest {
+public class KapuaLocatorImplTest {
 
     KapuaContainer container = new KapuaContainer() {};
     KapuaLocator locator = KapuaLocatorImpl.getInstance();

@@ -10,35 +10,34 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice;
+package org.eclipse.kapua.locator.guice.service;
 
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.KapuaLocatorException;
-import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.model.KapuaObjectFactory;
 
-public class ServiceResolver<S extends KapuaService, I extends S> {
+public class FactoryResolver<F extends KapuaObjectFactory, I extends F> {
 
-    private final Class<S> serviceClass;
+    private final Class<F> factoryClass;
     private final Class<I> implementationClass;
 
-    private ServiceResolver(Class<S> service, Class<I> implementation) {
-        this.serviceClass = service;
+    private FactoryResolver(Class<F> factory, Class<I> implementation) {
+        this.factoryClass = factory;
         this.implementationClass = implementation;
     }
 
     @SuppressWarnings("unchecked")
-    public static <S extends KapuaService, I extends S> ServiceResolver<S,I> newInstance(Class<?> service, Class<?> implementation)
+    public static <F extends KapuaObjectFactory, I extends F> FactoryResolver<F, I> newInstance(Class<?> factory, Class<?> implementation)
             throws KapuaLocatorException {
-
-        if (!service.isAssignableFrom(implementation)) {
-            throw new KapuaLocatorException(KapuaLocatorErrorCodes.SERVICE_PROVIDER_INVALID, implementation, service);
+        if (!factory.isAssignableFrom(implementation)) {
+            throw new KapuaLocatorException(KapuaLocatorErrorCodes.FACTORY_PROVIDER_INVALID, implementation, factory);
         }
 
-        return new ServiceResolver<S,I>((Class<S>)service, (Class<I>)implementation);
+        return new FactoryResolver<F,I>((Class<F>)factory, (Class<I>)implementation);
     }
 
-    public Class<S> getServiceClass() {
-        return serviceClass;
+    public Class<F> getFactoryClass() {
+        return factoryClass;
     }
 
     public Class<I> getImplementationClass() {

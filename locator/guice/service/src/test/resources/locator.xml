@@ -13,14 +13,14 @@
  -->
 <locator-config>
 	<provided>
-		<api>org.eclipse.kapua.locator.internal.guice.ServiceA</api>
-		<api>org.eclipse.kapua.locator.internal.guice.FactoryA</api>
+		<api>org.eclipse.kapua.locator.guice.service.internal.ServiceA</api>
+		<api>org.eclipse.kapua.locator.guice.service.internal.FactoryA</api>
 		<provide>
 			<interceptor>annotation</interceptor>
 			<with>Impl</with>
 		</provide>
 	</provided>
 	<packages>
-		<package>org.eclipse.kapua.locator.internal.guice</package>
+		<package>org.eclipse.kapua.locator.guice.service.internal</package>
 	</packages>
 </locator-config>

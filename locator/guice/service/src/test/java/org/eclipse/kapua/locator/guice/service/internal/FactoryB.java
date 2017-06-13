@@ -9,7 +9,7 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.internal.guice;
+package org.eclipse.kapua.locator.guice.service.internal;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 

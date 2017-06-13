@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Red Hat Inc and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,14 +7,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Red Hat - loading test services
+ *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice;
+package org.eclipse.kapua.locator.guice.service.internal;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.eclipse.kapua.service.KapuaService;
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface TestService {
+public interface ServiceA extends KapuaService {
 
 }

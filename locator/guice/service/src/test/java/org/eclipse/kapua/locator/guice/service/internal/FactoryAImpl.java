@@ -9,10 +9,24 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.internal.guice;
+package org.eclipse.kapua.locator.guice.service.internal;
 
-import org.eclipse.kapua.service.KapuaService;
+import java.math.BigInteger;
 
-public interface ServiceA extends KapuaService {
+import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.id.KapuaId;
+
+@KapuaProvider
+public class FactoryAImpl implements FactoryA {
+
+    @Override
+    public KapuaId newKapuaId(String shortId) {
+        return null;
+    }
+
+    @Override
+    public KapuaId newKapuaId(BigInteger bigInteger) {
+        return null;
+    }
 
 }

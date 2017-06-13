@@ -22,7 +22,7 @@
     </parent>
     <packaging>pom</packaging>
 
-    <artifactId>kapua-guice</artifactId>
+    <artifactId>kapua-locator-guice</artifactId>
     <name>${project.artifactId}</name>
 
     <modules>

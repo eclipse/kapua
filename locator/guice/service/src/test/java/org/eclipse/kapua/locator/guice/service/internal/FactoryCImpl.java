@@ -9,10 +9,14 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.internal.guice;
+package org.eclipse.kapua.locator.guice.service.internal;
 
-import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.locator.KapuaProvider;
 
-public interface ServiceB extends KapuaService {
+/**
+ * by name this factory claims to implement {@link FactoryC}, but it doesn'
+ */
+@KapuaProvider
+public class FactoryCImpl {
 
 }

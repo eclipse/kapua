@@ -10,7 +10,7 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.locator.guice;
+package org.eclipse.kapua.locator.guice.service;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

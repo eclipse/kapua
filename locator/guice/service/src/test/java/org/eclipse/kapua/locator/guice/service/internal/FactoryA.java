@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017 Red Hat Inc and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,11 +9,10 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.internal.guice;
+package org.eclipse.kapua.locator.guice.service.internal;
 
-/**
- * A service which is named to implement {@link ServiceC} but actually doesn't
- */
-public class ServiceCImpl {
+import org.eclipse.kapua.model.id.KapuaIdFactory;
+
+public interface FactoryA extends KapuaIdFactory {
 
 }
