@@ -30,8 +30,6 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -44,7 +42,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
  */
 public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceConnectionService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GwtDeviceConnectionServiceImpl.class);
     private static final long serialVersionUID = 3314502846487119577L;
 
     @Override
@@ -79,7 +76,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
     public GwtDeviceConnection find(String scopeIdString, String deviceConnectionIdString) throws GwtKapuaException {
         KapuaId deviceConnectionId = KapuaEid.parseCompactId(deviceConnectionIdString);
         KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-        
+
         GwtDeviceConnection gwtDeviceConnection = null;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();

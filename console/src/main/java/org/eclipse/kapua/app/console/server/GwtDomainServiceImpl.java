@@ -35,9 +35,6 @@ import org.eclipse.kapua.service.authorization.permission.Action;
 
 public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements GwtDomainService {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -699492835893299489L;
 
     @Override
@@ -83,6 +80,7 @@ public class GwtDomainServiceImpl extends KapuaRemoteServiceServlet implements G
         return gwtActionList;
     }
 
+    @SuppressWarnings("unused")
     private String getServiceName(KapuaId scopeId, String domainName) throws GwtKapuaException {
         String serviceName = null;
         KapuaLocator locator = KapuaLocator.getInstance();
