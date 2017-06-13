@@ -18,6 +18,9 @@ before_script:
 
 script: ./travis.sh
 
+after_script:
+  - bash <(curl -s https://codecov.io/bash)
+
 # The following upgrades Java during the build in
 # order to work around an older Java 8 compiler issue
 # which has problems infering types. Travis ships a
