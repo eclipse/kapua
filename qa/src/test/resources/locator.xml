@@ -65,6 +65,9 @@
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
+        <api>org.eclipse.kapua.service.device.management.KapuaRequestMessageFactory</api>
+        <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
+
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
         <api>org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService</api>
@@ -75,6 +78,7 @@
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
+        <api>org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService</api>
 
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
