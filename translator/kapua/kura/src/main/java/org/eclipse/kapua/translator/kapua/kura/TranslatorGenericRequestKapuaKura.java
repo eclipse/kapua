@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;

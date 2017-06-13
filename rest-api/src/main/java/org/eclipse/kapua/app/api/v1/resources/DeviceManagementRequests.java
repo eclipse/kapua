@@ -40,26 +40,45 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
     private final DeviceRequestManagementService requestService = locator.getService(DeviceRequestManagementService.class);
 
     /**
-     * Executes a remote command on a device and return the command output.
+     * Sends a request message to a device.
+     * This call is generally used to perform remote management of resources
+     * attached to the device such sensors and registries.
      * <p>
      * <p>
-     * Example to list all files in the current working directory:
+     * Example to send a request to the Kura Command application:
      * <p>
      * 
      * <pre>
-     * Client client = client();
-     * WebResource apisWeb = client.resource(APIS_TEST_URL);
-     * WebResource.Builder deviceCommandWebXml = apisWeb.path(&quot;devices&quot;)
-     *         .path(s_clientId)
-     *         .path(&quot;command&quot;)
-     *         .accept(MediaType.APPLICATION_XML)
-     *         .type(MediaType.APPLICATION_XML);
-     *
-     * DeviceCommandInput commandInput = new DeviceCommandInput();
-     * commandInput.setCommand(&quot;ls&quot;);
-     * commandInput.setArguments(new String[] { &quot;-l&quot;, &quot;-a&quot; });
-     *
-     * DeviceCommandOutput commandOutput = deviceCommandWebXml.post(DeviceCommandOutput.class, commandInput);
+     * {
+     *   "type": "genericRequestMessage",
+     *   "position": {
+     *     "type": "kapuaPosition"
+     *   },
+     *   "channel": {
+     *     "type": "genericRequestChannel",
+     *     "method": "EXECUTE",
+     *     "appName": "CMD",
+     *     "version": "V1",
+     *     "resources": ["command"]
+     *   },
+     *   "payload": {
+     *     "type": "genericRequestPayload",
+     *     "metrics": {
+     *       "metric": [
+     *         {
+     *           "valueType": "string",
+     *           "value": "ls",
+     *           "name": "command.command"
+     *         },
+     *         {
+     *           "valueType": "string",
+     *           "value": "-lisa",
+     *           "name": "command.argument0"
+     *         }
+     *       ]
+     *     }
+     *   }
+     * }
      * </pre>
      *
      * @param scopeId
@@ -67,10 +86,10 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
      * @param deviceId
      *            The {@link Device} ID.
      * @param timeout
-     *            The timeout of the command execution
+     *            The timeout of the request execution
      * @param requestMessage
-     *            The input command
-     * @return The command output.
+     *            The input request
+     * @return The response output.
      * @throws Exception
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -78,12 +97,12 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(value = "Executes a command", notes = "Executes a remote command on a device and return the command output.", response = DeviceCommandOutput.class)
+    @ApiOperation(value = "Executes a command", notes = "Sends a request message to a device", response = DeviceCommandOutput.class)
     public KapuaResponseMessage sendCommand(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The timeout of the command execution") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The input command", required = true) GenericRequestMessage requestMessage) throws Exception {
+            @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,
+            @ApiParam(value = "The input request", required = true) GenericRequestMessage requestMessage) throws Exception {
         requestMessage.setScopeId(scopeId);
         requestMessage.setDeviceId(deviceId);
         return requestService.exec(requestMessage, timeout);
