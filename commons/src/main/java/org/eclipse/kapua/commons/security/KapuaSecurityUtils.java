@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +98,7 @@ public class KapuaSecurityUtils {
 
         if (previousSession == null) {
             logger.debug("==> create new session");
-            currentSession = new KapuaSession();
+            currentSession = new KapuaSession(null, KapuaId.ONE, KapuaId.ONE);
             currentSession.setTrustedMode(true);
         } else {
             logger.debug("==> clone from previous session");
