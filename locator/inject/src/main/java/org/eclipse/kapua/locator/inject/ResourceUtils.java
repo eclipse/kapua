@@ -25,7 +25,10 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceUtils {
 
-    public static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+
+    private ResourceUtils() {
+    }
 
     /**
      * Get the URL of a resource

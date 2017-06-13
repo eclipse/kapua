@@ -13,15 +13,11 @@ package org.eclipse.kapua.service.event;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.Date;
-
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.event.KapuaEvent.OperationStatus;
 
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.ElementType;
 
-@Retention(RetentionPolicy.RUNTIME) 
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RaiseKapuaEvent {
     /**

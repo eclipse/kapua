@@ -16,13 +16,16 @@ import java.lang.reflect.Method;
 import com.google.inject.matcher.AbstractMatcher;
 
 public final class SyntheticMethodMatcher extends AbstractMatcher<Method> {
-    public static final SyntheticMethodMatcher instance = new SyntheticMethodMatcher();
-    private SyntheticMethodMatcher() {}
+
+    private static SyntheticMethodMatcher instance = new SyntheticMethodMatcher();
+
+    private SyntheticMethodMatcher() {
+    }
 
     public static SyntheticMethodMatcher getInstance() {
         return instance;
     }
-    
+
     @Override
     public boolean matches(Method method) {
         return method.isSynthetic();

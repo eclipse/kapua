@@ -35,7 +35,7 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
     private final static Logger logger = LoggerFactory.getLogger(KapuaApplicationBrokerFilter.class);
 
     // The following line must be done before any invocation of KapuaLocator.getInstance()
-    private static KapuaContainer application = null;
+    private static KapuaContainer application;
 
     public KapuaApplicationBrokerFilter(Broker next) throws KapuaException {
         super(next);

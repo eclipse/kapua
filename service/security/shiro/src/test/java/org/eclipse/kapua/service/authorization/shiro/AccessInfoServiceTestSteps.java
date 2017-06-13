@@ -81,6 +81,9 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     private static final Domain TEST_DOMAIN = new TestDomain();
 
+    private KapuaContainer container;
+    private KapuaLocator locator;
+    
     // Test data scratchpads
     private CommonTestData commonData;
     private AccessInfoServiceTestData accessData;
@@ -116,6 +119,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             throws Exception {
         container = new KapuaContainer() {};
         container.startup();
+        
         locator = KapuaLocator.getInstance();
 
         this.scenario = scenario;

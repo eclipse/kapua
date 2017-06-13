@@ -1,11 +1,11 @@
 <!--
 	Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
-   
+
 	All rights reserved. This program and the accompanying materials
 	are made available under the terms of the Eclipse Public License v1.0
 	which accompanies this distribution, and is available at
 	http://www.eclipse.org/legal/epl-v10.html
-   
+
 	Contributors:
 	   Eurotech - initial API and implementation
 	   Red Hat Inc
@@ -28,14 +28,14 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-assembly-java-base</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
-	
+
 		<!-- console and api dependency -->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
@@ -43,19 +43,19 @@
 			<version>${tomcat.version}</version>
 			<type>tar.gz</type>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat.extras</groupId>
 			<artifactId>tomcat-extras-juli</artifactId>
 			<version>${tomcat.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat.extras</groupId>
 			<artifactId>tomcat-extras-juli-adapters</artifactId>
 			<version>${tomcat.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-rest-api</artifactId>
@@ -71,12 +71,19 @@
 
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
-			<artifactId>kapua-guice</artifactId>
+			<artifactId>kapua-locator-inject</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-guice-inject</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-guice-service</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>aopalliance</groupId>
 			<artifactId>aopalliance</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
@@ -127,7 +134,7 @@
 			<artifactId>kapua-user-internal</artifactId>
 		</dependency>
 
-		<!-- dependencies added otherwise the unix assembly doesn't know the arctifact 
+		<!-- dependencies added otherwise the unix assembly doesn't know the arctifact
 			to add -->
 		<dependency>
 			<groupId>org.eclipse.kapua</groupId>
@@ -207,7 +214,7 @@
 					  - effect here since we specifying the tar.gz file, which
 					  - cannot be changed. However the assembly descriptor
 					  - will still filter out those dependencies and the
-					  - exclusions here fix the dependency report. 
+					  - exclusions here fix the dependency report.
 					  -->
 				<exclusion>
 					<groupId>log4j</groupId>
@@ -289,11 +296,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 		</dependency>
-		
+
 		<!--
 			Java APIs from Tomcat:
 			We stick to 8.0.38 because they are only APIs and we can
-			piggyback on this version. 
+			piggyback on this version.
 			-->
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>

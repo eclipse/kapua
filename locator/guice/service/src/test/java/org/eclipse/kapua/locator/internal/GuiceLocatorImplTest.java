@@ -109,7 +109,7 @@ public class GuiceLocatorImplTest {
     
     @Test(expected=KapuaRuntimeException.class)
     public void shouldNotLoad () {
-        KapuaLocator locator = new GuiceLocatorImpl("locator-1.xml");
+        KapuaLocator locator = new KapuaLocatorImpl("locator-1.xml");
         locator.getService(ServiceC.class);
     }
 

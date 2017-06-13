@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreJAXBContextProvider;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
@@ -48,9 +47,6 @@ import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,15 +63,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
     private AccountService accountService;
 
-    private DeviceRegistryService deviceRegistryService;
-
-    private DeviceFactory deviceFactory;
-
     private MessageStoreService messageStoreService;
-
-    private DatastoreObjectFactory datastoreObjectFactory;
-
-    private StorablePredicateFactory storablePredicateFactory;
 
     private ChannelInfoRegistryService channelInfoRegistryService;
 
@@ -97,11 +85,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         // Get instance of services used in different scenarios
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
-        deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
-        datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
-        storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
         metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
         clientInfoRegistryService = locator.getService(ClientInfoRegistryService.class);

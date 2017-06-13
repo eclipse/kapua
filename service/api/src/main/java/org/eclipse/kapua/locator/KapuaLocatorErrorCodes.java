@@ -40,4 +40,8 @@ public enum KapuaLocatorErrorCodes implements KapuaErrorCode {
      * Invalid locator configuration
      */
     INVALID_CONFIGURATION,
+    /**
+     * Invalid locator context
+     */
+    INVALID_CONTEXT,
 }

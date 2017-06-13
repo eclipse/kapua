@@ -18,10 +18,9 @@ import com.google.inject.Injector;
 
 public class InjectorRegistry {
 
-    private static Map<String, Injector> injectors;
+    private static Map<String, Injector> injectors = new HashMap<String, Injector>();
 
-    static {
-        injectors = new HashMap<String, Injector>();
+    private InjectorRegistry() {
     }
 
     public static void add(String name, Injector aInjector) {

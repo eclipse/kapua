@@ -168,7 +168,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         accountService = locator.getService(AccountService.class);
         deviceConnectionService = locator.getService(DeviceConnectionService.class);
         deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
-        metricsService = locator.getService(MetricsService.class);
+        metricsService = MetricServiceFactory.getInstance();
 
         // login
         metricLoginSuccess = metricsService.getCounter("security", "login", "success", "count");
