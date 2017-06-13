@@ -91,6 +91,8 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
 
     private static final ObjectMapper MAPPER;
 
+    private static final String MSG_EMPTY_ERROR = "Empty error message";
+
     private static final String CLIENT_HITS_MAX_VALUE_EXCEDEED = "Total hits exceeds integer max value";
     private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
@@ -186,7 +188,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         try {
             Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
-            logger.info("Insert - converted object: '{}'", storableMap.toString());
+            logger.debug("Insert - converted object: '{}'", storableMap.toString());
             String json = MAPPER.writeValueAsString(storableMap);
             HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
             Response insertResponse = esClientProvider.getClient().performRequest(
@@ -217,7 +219,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             Map<String, Object> updateRequestMap = new HashMap<>();
             updateRequestMap.put(KEY_DOC, storableMap);
             updateRequestMap.put(KEY_DOC_AS_UPSERT, true);
-            logger.info("Upsert - converted object: '{}'", updateRequestMap.toString());
+            logger.debug("Upsert - converted object: '{}'", updateRequestMap.toString());
             String json = MAPPER.writeValueAsString(updateRequestMap);
             HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
             Response updateResponse = esClientProvider.getClient().performRequest(
@@ -280,7 +282,11 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         String typeName = ((TextNode) itemNode.get(KEY_DOC_TYPE)).asText();
                         int responseCode = ((NumericNode) itemNode.get(KEY_STATUS)).asInt();
                         if (!isRequestSuccessful(responseCode)) {
-                            String failureMessage = ((TextNode) itemNode.get(KEY_RESULT)).asText();
+                            TextNode failureNode = ((TextNode) itemNode.get(KEY_RESULT));
+                            String failureMessage = MSG_EMPTY_ERROR;
+                            if (failureNode != null) {
+                                failureMessage = failureNode.asText();
+                            }
                             bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
                             logger.info("Upsert failed [{}, {}, {}]", new Object[] { indexName, typeName, failureMessage });
                             continue;
