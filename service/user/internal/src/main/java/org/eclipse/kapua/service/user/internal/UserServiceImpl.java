@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
+
 import java.util.Objects;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -34,15 +36,16 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User service implementation.
- * 
- * @since 1.0
- *
  */
 @KapuaProvider
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
 
@@ -73,7 +76,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "externalId");
         }
 
-        if (allowedChildEntities(userCreator.getScopeId()) <= 0) {
+        final int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
+        if (remainingChildEntities <= 0) {
+            logger.info("Exceeded child limit - remaining: {}", remainingChildEntities);
             throw new KapuaIllegalArgumentException("scopeId", "max users reached");
         }
 
@@ -174,23 +179,27 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public User findByName(String name)
-            throws KapuaException {
+    public User findByName(final String name) throws KapuaException {
+
         // Validation of the fields
+
         ArgumentValidator.notEmptyOrNull(name, "name");
 
         // Do the find
-        return entityManagerSession.onResult(em -> {
-            User user = UserDAO.findByName(em, name);
-            //
-            // Check Access
-            if (user != null) {
-                AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-                PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-                authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, user.getScopeId()));
-            }
-            return user;
-        });
+
+        return entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByName(em, name)));
+    }
+
+    @Override
+    public User findByExternalId(final String externalId) throws KapuaException {
+
+        // Validation of the fields
+
+        notEmptyOrNull(externalId, "externalId");
+
+        // Do the find
+
+        return entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByExternalId(em, externalId)));
     }
 
     @Override
@@ -230,6 +239,15 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     // Private Methods
     //
     // -----------------------------------------------------------------------------------------
+
+    private User checkReadAccess(final User user) throws KapuaException {
+        if (user != null) {
+            AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+            PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+            authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, user.getScopeId()));
+        }
+        return user;
+    }
 
     private void validateSystemUser(String name)
             throws KapuaException {

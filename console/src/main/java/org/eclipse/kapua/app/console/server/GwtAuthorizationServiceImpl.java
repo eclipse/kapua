@@ -39,6 +39,9 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
+import org.eclipse.kapua.service.authentication.registration.RegistrationService;
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupDomain;
@@ -115,21 +118,46 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         try {
             // Get the user
+
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
             JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken());
 
             // Login
-            authenticationService.login(credentials);
+
+            try {
+                authenticationService.login(credentials);
+            } catch (final KapuaAuthenticationException e) {
+                if (e.getCode() == KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL && isAccountCreationEnabled()) {
+                    try {
+                        logger.info("Trying auto account creation");
+                        if (KapuaLocator.getInstance().getService(RegistrationService.class).createAccount(credentials)) {
+                            logger.info("Created new account");
+                            authenticationService.login(credentials);
+                        } else {
+                            logger.info("New account did not get created");
+                            throw e; // throw the original error
+                        }
+                    } catch (Exception e1) {
+                        logger.warn("Failed to auto-create account", e1);
+                        throw e; // we throw the original error instead
+                    }
+                }
+            }
 
             // Get the session infos
+
             return establishSession();
         } catch (Throwable t) {
             logout();
             KapuaExceptionHandler.handle(t);
         }
         return null;
+    }
+
+    private boolean isAccountCreationEnabled() {
+        return KapuaLocator.getInstance().getService(RegistrationService.class).isAccountCreationEnabled();
     }
 
     /**
@@ -179,6 +207,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         //
         // Get user info
         UserService userService = locator.getService(UserService.class);
+        logger.debug("Looking up - scopeId: {}, userId: {}", kapuaSession.getScopeId(), kapuaSession.getUserId());
         User user = userService.find(kapuaSession.getScopeId(), kapuaSession.getUserId());
 
         //

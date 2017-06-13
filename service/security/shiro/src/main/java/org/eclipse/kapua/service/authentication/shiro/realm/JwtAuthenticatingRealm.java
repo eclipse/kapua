@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import java.time.Duration;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -37,8 +34,7 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
-import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
-import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -66,7 +62,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
 
     /**
      * Constructor
-     * 
+     *
      * @throws KapuaException
      */
     public JwtAuthenticatingRealm() throws KapuaException {
@@ -77,17 +73,13 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
     protected void onInit() {
         super.onInit();
 
-        final KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        final List<String> audiences = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
-        final List<String> expectedIssuers = setting.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED);
-
-        this.jwtProcessor = new JwtProcessor(audiences, expectedIssuers, Duration.ofHours(1));
+        jwtProcessor = JwtProcessors.createDefault();
         setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
     }
 
     @Override
     public void destroy() throws Exception {
-        if (this.jwtProcessor != null) {
+        if (jwtProcessor != null) {
             jwtProcessor.close();
             jwtProcessor = null;
         }
@@ -113,14 +105,14 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
             throw new ShiroException("Error while getting services!", kre);
         }
 
-        final String name = extractUserName(jwt);
-        logger.debug("JWT contains user name: {}", name);
+        final String id = extractExternalId(jwt);
+        logger.debug("JWT contains external id: {}", id);
 
         // Get the associated user by name
 
         final User user;
         try {
-            user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(name));
+            user = KapuaSecurityUtils.doPrivileged(() -> userService.findByExternalId(id));
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -169,28 +161,28 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
     }
 
     /**
-     * Extract the user name from the JWT
-     * 
+     * Extract the subject information
+     *
      * @param jwt
      *            the token to use
-     * @return the username, never returns {@code null}
+     * @return the subject, never returns {@code null}
      * @throws ShiroException
-     *             in case the user name could not be extracted
+     *             in case the subject could not be extracted
      */
-    private String extractUserName(String jwt) {
-        final String name;
+    private String extractExternalId(String jwt) {
+        final String id;
         try {
             final JwtContext ctx = jwtProcessor.process(jwt);
-            name = ctx.getJwtClaims().getClaimValue("preferred_username", String.class);
+            id = ctx.getJwtClaims().getSubject();
         } catch (final Exception e) {
             throw new ShiroException("Failed to parse JWT", e);
         }
 
-        if (name == null || name.isEmpty()) {
-            throw new ShiroException("'preferred_username' missing on JWT");
+        if (id == null || id.isEmpty()) {
+            throw new ShiroException("'subject' missing on JWT");
         }
 
-        return name;
+        return id;
     }
 
     @Override

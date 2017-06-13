@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro.setting;
 
@@ -20,7 +21,9 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  *
  */
 public enum KapuaAuthorizationSettingKeys implements SettingKey {
-    AUTHORIZATION_KEY("authorization.key");
+    AUTHORIZATION_KEY("authorization.key"),
+
+    AUTO_REGISTRATION_SIMPLE_ROOT_ACCOUNT("auto.registration.simple.rootAccount");
 
     private String key;
 

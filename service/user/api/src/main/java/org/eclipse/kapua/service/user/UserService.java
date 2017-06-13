@@ -40,6 +40,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return created User
      * @throws KapuaException
      */
+    @Override
     public User create(UserCreator userCreator)
             throws KapuaException;
 
@@ -48,10 +49,12 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * The returned User object does not have its access information, roles
      * and permissions, loaded.
      *
-     * @param user to be update
+     * @param user
+     *            to be update
      * @return
      * @throws KapuaException
      */
+    @Override
     public User update(User user)
             throws KapuaException;
 
@@ -72,6 +75,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return
      * @throws KapuaException
      */
+    @Override
     public User find(KapuaId accountId, KapuaId userId)
             throws KapuaException;
 
@@ -81,12 +85,26 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * @return
      * @throws KapuaException
      */
+    @Override
     public User findByName(String name)
             throws KapuaException;
 
     /**
+     * Find user by external id
+     *
+     * @param externalId
+     *            the external ID to look for
+     * @return the user or {@code null} if the user could not be found
+     * @throws KapuaException
+     *             in case anything goes wrong
+     */
+    public User findByExternalId(String externalId) throws KapuaException;
+
+    /**
      * Queries for all users
      */
+    @Override
     public UserListResult query(KapuaQuery<User> query)
             throws KapuaException;
+
 }

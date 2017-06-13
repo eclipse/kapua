@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
@@ -23,15 +24,12 @@ import org.eclipse.kapua.service.user.UserListResult;
 
 /**
  * User DAO
- * 
- * @since 1.0
- *
  */
 public class UserDAO extends ServiceDAO {
 
     /**
      * Creates and return new User
-     * 
+     *
      * @param em
      * @param userCreator
      * @return
@@ -55,7 +53,7 @@ public class UserDAO extends ServiceDAO {
 
     /**
      * Updates the provided user
-     * 
+     *
      * @param em
      * @param user
      * @return
@@ -72,7 +70,7 @@ public class UserDAO extends ServiceDAO {
 
     /**
      * Deletes the user by user identifier
-     * 
+     *
      * @param em
      * @param userId
      * @throws KapuaEntityNotFoundException
@@ -85,7 +83,7 @@ public class UserDAO extends ServiceDAO {
 
     /**
      * Finds the user by user identifier
-     * 
+     *
      * @param em
      * @param userId
      * @return
@@ -96,7 +94,7 @@ public class UserDAO extends ServiceDAO {
 
     /**
      * Finds the user by name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -106,8 +104,21 @@ public class UserDAO extends ServiceDAO {
     }
 
     /**
+     * Finds the user by external id
+     *
+     * @param em
+     *            the entity manager to use
+     * @param external
+     *            id the external ID so search for
+     * @return the user record, may be {@code null}
+     */
+    public static User findByExternalId(final EntityManager em, final String externalId) {
+        return ServiceDAO.findByField(em, UserImpl.class, "externalId", externalId);
+    }
+
+    /**
      * Returns the user list matching the provided query
-     * 
+     *
      * @param em
      * @param userPermissionQuery
      * @return
@@ -120,7 +131,7 @@ public class UserDAO extends ServiceDAO {
 
     /**
      * Returns the user count matching the provided query
-     * 
+     *
      * @param em
      * @param userPermissionQuery
      * @return
