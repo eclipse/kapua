@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
@@ -47,8 +48,6 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * Configurable service definition abstract reference implementation.
- *
- * @since 1.0
  */
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
@@ -315,7 +314,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
-        if (result == null || result.getSize() == 0) {
+        if (result == null || result.isEmpty()) {
             // In not exists create then return
             ServiceConfig serviceConfigNew = new ServiceConfigImpl(scopeId);
             serviceConfigNew.setPid(pid);
