@@ -31,6 +31,6 @@ public interface DeviceRequestManagementService extends KapuaService {
      * @return
      * @throws KapuaException
      */
-     KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> exec(KapuaId scopeId, KapuaId deviceId, GenericRequestMessage requestInput, Long timeout)
+     KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> exec(GenericRequestMessage requestInput, Long timeout)
             throws KapuaException;
 }

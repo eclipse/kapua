@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
@@ -43,21 +42,18 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
     private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
 
     @Override public KapuaResponseMessage exec(
-            KapuaId scopeId, KapuaId deviceId,
             GenericRequestMessage requestInput,
             Long timeout) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(requestInput, "commandInput");
+        ArgumentValidator.notNull(requestInput, "requestInput");
 
         //
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.execute, requestInput.getScopeId()));
 
         //
         // Prepare the request
@@ -72,8 +68,8 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
         genericRequestPayload.setBody(requestInput.getPayload().getBody());
 
         GenericRequestMessage genericRequestMessage = FACTORY.newRequestMessage();
-        genericRequestMessage.setScopeId(scopeId);
-        genericRequestMessage.setDeviceId(deviceId);
+        genericRequestMessage.setScopeId(requestInput.getScopeId());
+        genericRequestMessage.setDeviceId(requestInput.getDeviceId());
         genericRequestMessage.setCapturedOn(new Date());
         genericRequestMessage.setChannel(genericRequestChannel);
         genericRequestMessage.setPayload(genericRequestPayload);
@@ -89,7 +85,7 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
         DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
         DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
 
-        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(scopeId, deviceId, responseMessage.getReceivedOn(), requestInput.getChannel().getAppName().getValue());
+        DeviceEventCreator deviceEventCreator = deviceEventFactory.newCreator(requestInput.getScopeId(), requestInput.getDeviceId(), responseMessage.getReceivedOn(), requestInput.getChannel().getAppName().getValue());
         deviceEventCreator.setPosition(responseMessage.getPosition());
         deviceEventCreator.setSentOn(responseMessage.getSentOn());
         deviceEventCreator.setAction(KapuaMethod.EXECUTE);

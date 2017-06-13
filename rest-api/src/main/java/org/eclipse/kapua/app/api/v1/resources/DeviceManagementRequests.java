@@ -84,6 +84,8 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The timeout of the command execution") @QueryParam("timeout") Long timeout,
             @ApiParam(value = "The input command", required = true) GenericRequestMessage requestMessage) throws Exception {
-        return requestService.exec(scopeId, deviceId, requestMessage, timeout);
+        requestMessage.setScopeId(scopeId);
+        requestMessage.setDeviceId(deviceId);
+        return requestService.exec(requestMessage, timeout);
     }
 }

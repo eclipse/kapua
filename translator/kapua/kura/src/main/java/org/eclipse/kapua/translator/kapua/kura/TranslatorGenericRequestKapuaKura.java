@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.app.request.kura.KuraRequestMessage;
@@ -36,9 +38,12 @@ public class TranslatorGenericRequestKapuaKura extends AbstractTranslatorKapuaKu
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
         StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(kapuaChannel.getAppName().getValue())
-                .append("-")
-                .append(kapuaChannel.getVersion().getValue());
+        appIdSb.append(kapuaChannel.getAppName().getValue());
+        if (kapuaChannel.getVersion() != null && StringUtils.isNotEmpty(kapuaChannel.getVersion().getValue())) {
+            appIdSb.append("-")
+                    .append(kapuaChannel.getVersion().getValue());
+        }
+
 
         kuraRequestChannel.setAppId(appIdSb.toString());
         kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
