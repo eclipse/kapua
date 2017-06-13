@@ -108,7 +108,7 @@ public class UserDAO extends ServiceDAO {
      *
      * @param em
      *            the entity manager to use
-     * @param external
+     * @param externalId
      *            id the external ID so search for
      * @return the user record, may be {@code null}
      */
