@@ -24,6 +24,7 @@ import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.kapua.qa.utils.Suppressed;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,10 @@ public class EmbeddedBroker {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedBroker.class);
 
+    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/activemq/" + UUIDs.randomBase64UUID();
+    private static final String DEFAULT_KAHA_DB_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/kahaDB";
+    private static final String DEFAULT_DATA_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/data";
+    private static final String KAHA_DB_DIRECTORY = "KAHA_DB_DIRECTORY";
     /**
      * Embedded broker configuration file from classpath resources.
      */
@@ -71,8 +76,10 @@ public class EmbeddedBroker {
             }
 
             // start the broker
-
+            System.setProperty(KAHA_DB_DIRECTORY, DEFAULT_KAHA_DB_DIRECTORY);
             broker = BrokerFactory.createBroker(ACTIVEMQ_XML);
+            broker.setDataDirectory(DEFAULT_DATA_DIRECTORY);
+            logger.info("Setting ActiveMQ data directory to {}", broker.getBrokerDataDirectory());
             broker.start();
 
             // wait for the broker
