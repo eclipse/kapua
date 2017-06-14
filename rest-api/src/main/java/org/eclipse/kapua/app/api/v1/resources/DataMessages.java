@@ -152,8 +152,8 @@ public class DataMessages extends AbstractKapuaResource {
      * In this case, the provided message will only be stored in the back-end
      * database and it will not be forwarded to the message broker.
      *
-     * @param message The {@KapuaDataMessage } to be stored
-     * @return an {@InsertResponse} object encapsulating the response from
+     * @param message The {@link KapuaDataMessage } to be stored
+     * @return an {@link InsertResponse} object encapsulating the response from
      *         the datastore
      * @throws Exception
      *         Whenever something bad happens. See specific
