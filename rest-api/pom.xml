@@ -244,6 +244,13 @@
 			<groupId>org.eclipse.kapua</groupId>
 			<artifactId>kapua-device-request-internal</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-stream-api</artifactId>
+        </dependency><dependency>
+			<groupId>org.eclipse.kapua</groupId>
+			<artifactId>kapua-stream-internal</artifactId>
+		</dependency>
     </dependencies>
 	<build>
 		<finalName>api</finalName>

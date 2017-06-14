@@ -12,6 +12,9 @@
 package org.eclipse.kapua.message.device.data;
 
 import org.eclipse.kapua.message.KapuaChannel;
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kapua data message channel object definition.
@@ -19,5 +22,6 @@ import org.eclipse.kapua.message.KapuaChannel;
  * @since 1.0
  *
  */
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaDataChannel")
 public interface KapuaDataChannel extends KapuaChannel {
 }

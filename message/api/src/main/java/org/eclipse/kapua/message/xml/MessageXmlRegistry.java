@@ -19,7 +19,9 @@ import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 
 /**
  * Message xml factory class
@@ -51,6 +53,14 @@ public class MessageXmlRegistry {
 
     public KapuaPosition newPosition() {
         return factory.newPosition();
+    }
+
+    public KapuaDataChannel newKapuaDataChannel() {
+        return factory.newKapuaDataChannel();
+    }
+
+    public KapuaDataPayload newKapuaDataPayload() {
+        return factory.newKapuaDataPayload();
     }
 
 }

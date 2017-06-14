@@ -33,6 +33,7 @@
         <module>user</module>
         <module>account</module>
         <module>liquibase</module>
+        <module>stream</module>
     </modules>
 
 </project>

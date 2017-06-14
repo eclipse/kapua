@@ -49,4 +49,10 @@ public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload>
      * @return
      */
     public Date getTimestamp();
+
+    void setChannel(C channel);
+
+    void setPayload(P payload);
+
+    void setTimestamp(Date timestamp);
 }

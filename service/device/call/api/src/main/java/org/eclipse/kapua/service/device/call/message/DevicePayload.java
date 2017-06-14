@@ -53,6 +53,14 @@ public interface DevicePayload extends Payload {
      */
     public byte[] getBody();
 
+    void setTimestamp(Date timestamp);
+
+    void setPosition(DevicePosition position);
+
+    void setMetrics(Map<String, Object> metrics);
+
+    void setBody(byte[] body);
+
     //
     // Encode/Decode stuff
     //

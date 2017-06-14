@@ -24,7 +24,9 @@ import org.eclipse.kapua.app.api.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.v1.resources.model.CountResult;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -297,6 +299,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     GenericResponsePayload.class,
                     GenericResponseMessage.class,
                     GenericRequestXmlRegistry.class,
+                    KapuaDataChannel.class,
+                    KapuaDataPayload.class,
+                    KapuaDataMessage.class,
 
                     AuthenticationCredentials.class,
                     AuthenticationXmlRegistry.class,
