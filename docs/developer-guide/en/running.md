@@ -30,17 +30,17 @@ For running Kapua on an OpenShift you need to
 have OpenShift cluster installed and started in a first place. You can install it by yourself or rely on the script we provides:
 
     sudo kapua/dev-tools/src/main/openshift/openshift-start.sh
-    
+
 If you are running your OpenShift cluster for a first time, execute the following initialized script as well:
 
     kapua/dev-tools/src/main/openshift/openshift-initialize.sh
-    
+
 Initialization script is responsible for logging you into a cluster and creating new OpenShift project for Kapua.
 
 If for some reasons, you cannot start your cluster, try to execute the startup script with option `DOCKERIZED=FALSE`:
 
     sudo DOCKERIZED=FALSE kapua/dev-tools/src/main/openshift/openshift-start.sh
-    
+
 Option `DOCKERIZED=FALSE` tells startup script to use standard binary installation of OpenShift Origin instead of Docker-based `oc cluster up` command.
 
 ### Deploying Kapua into OpenShift cluster
@@ -49,7 +49,7 @@ Now when you have OpenShift cluster up, running and initialized, execute the fol
 
     cd kapua/dev-tools/src/main/openshift
     ./openshift-deploy.sh
-    
+
 Now open the following URL in your web browser - `http://localhost:8080`. And log-in into Kapua UI using default
 credentials:
 
@@ -57,6 +57,16 @@ credentials:
 	<dt>username</dt><dd>kapua-sys</dd>
 	<dt>password</dt><dd>kapua-password</dd>
 </dl>
+
+### External Node port for MQTT
+
+The default setup uses port 31883 to export the MQTT over TCP port of the broker. This means that you can connect
+from outside of the OpenShift cluster to Kapua over port 31883 (instead of port 1883) to Kapua.
+
+However it is only possible for one service to make use of this port. If you are planning to add a second Kapua installation
+and still want to use the external node port, then you will need to choose a different, yet unsed, port.
+
+Also see: https://docs.openshift.com/container-platform/latest/dev_guide/getting_traffic_into_cluster.html
 
 ### Adding metrics
 
@@ -72,16 +82,12 @@ In order to enable devices to access Kapua we need to allow external access to t
 First, the broker exposes MQTT over WebSocket transport. As WebSocket is based on HTTP we can define a router inside the Openshift to get those device connections to the broker.
 For example, if your Openshift deployment is running at the address `192.168.64.2`, you can connect the [Kura Simulator](../user-manual/simulator.md) like this
 
-```
-java -jar target/kapua-simulator-kura-*-SNAPSHOT-app.jar --broker ws://kapua-broker:kapua-password@broker-eclipse-kapua.192.168.64.2.nip.io:80
-```
+    java -jar target/kapua-simulator-kura-*-SNAPSHOT-app.jar --broker ws://kapua-broker:kapua-password@broker-eclipse-kapua.192.168.64.2.nip.io:80
 
 Not all MQTT clients have WebSocket support, so we need to enable direct MQTT over TCP access to the broker as well. By default, Kapua comes with the NodePort service that routes all traffic from port `31883` to the broker.
 So you can connect your MQTT clients directly to this service. For the simulator example similar to the above, that would look something like
 
-```
-java -jar target/kapua-simulator-kura-0.2.0-SNAPSHOT-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
-```
+    java -jar target/kapua-simulator-kura-0.2.0-SNAPSHOT-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
 
 This is suitable only for the local deployments. In the cloud or production environments, you should deploy a proper LoadBalancer Openshift service to enable external traffic flow to the broker.
 
