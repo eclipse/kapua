@@ -1,8 +1,11 @@
 language: java
+
 jdk:
   - oraclejdk8
 
-before_script:
+sudo: false
+
+install:
   - echo ==== Setting up toolchain.xml ====
   - ls /usr/lib/jvm
   - ls
@@ -12,6 +15,8 @@ before_script:
   - mkdir maven
   - cd maven ; tar --strip-components 1 -xzf ../maven.tar.gz ; cd ..
   - chmod a+x maven/bin/mvn
+
+before_script:
   - export M2_HOME=$PWD/maven
   - export PATH=$PWD/maven/bin:${PATH}
   - hash -r
