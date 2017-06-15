@@ -156,8 +156,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setEditable(false);
         domainsCombo.setTypeAhead(false);
         domainsCombo.setAllowBlank(false);
+        domainsCombo.disable();
         domainsCombo.setFieldLabel(MSGS.dialogAddPermissionDomain());
         domainsCombo.setTriggerAction(TriggerAction.ALL);
+        domainsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
         GWT_DOMAIN_SERVICE.findAll(new AsyncCallback<List<GwtDomain>>() {
 
             @Override
@@ -172,7 +174,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 domainsCombo.add(allDomain);
                 domainsCombo.add(result);
                 domainsCombo.setSimpleValue(allDomain);
-                actionsCombo.enable();
+                domainsCombo.enable();
             }
         });
 
@@ -195,6 +197,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                         actionsCombo.add(allAction);
                         actionsCombo.add(result);
                         actionsCombo.setSimpleValue(allAction);
+                        actionsCombo.enable();
                     }
                 });
 
@@ -205,13 +208,13 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         //
         // Action
         actionsCombo = new SimpleComboBox<GwtAction>();
-        actionsCombo.setEditable(false);
+        actionsCombo.disable();
         actionsCombo.setTypeAhead(false);
         actionsCombo.setAllowBlank(false);
         actionsCombo.setFieldLabel(MSGS.dialogAddPermissionAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
+        actionsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
 
-        actionsCombo.disable();
         permissionFormPanel.add(actionsCombo);
 
         //
@@ -233,7 +236,9 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setDisplayField("groupName");
         groupsCombo.setValueField("id");
         groupsCombo.setFieldLabel(MSGS.dialogAddPermissionGroupId());
-        actionsCombo.setTriggerAction(TriggerAction.ALL);
+        groupsCombo.setTriggerAction(TriggerAction.ALL);
+        groupsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
+        groupsCombo.disable();
         GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
 
             @Override
@@ -249,6 +254,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 groupsCombo.getStore().add(allGroup);
                 groupsCombo.getStore().add(result);
                 groupsCombo.setValue(allGroup);
+                groupsCombo.enable();
             }
         });
         permissionFormPanel.add(groupsCombo);
