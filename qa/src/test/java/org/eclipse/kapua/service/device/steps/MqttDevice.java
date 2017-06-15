@@ -88,6 +88,11 @@ public class MqttDevice {
     private Map<String, String> clientReceivedMqttMessage;
 
     /**
+     * Map for storing received messages that Listener is listening to.
+     */
+    private Map<String, String> listenerReceivedMqttMessage;
+
+    /**
      * Connect subscriber to mqtt broker.
      */
     public void mqttSubscriberConnect() {
@@ -113,6 +118,9 @@ public class MqttDevice {
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
                 logger.info("Message arrived in Listener with topic: " + topic);
+
+                listenerReceivedMqttMessage.clear();
+                listenerReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
             }
 
             @Override
@@ -155,7 +163,9 @@ public class MqttDevice {
             mqttClient = new MqttClient(BROKER_URI, clientId,
                     new MemoryPersistence());
             mqttClient.connect(clientOpts);
-            mqttClient.subscribe(topicFilter, DEFAULT_QOS);
+            if ((topicFilter != null) && (topicFilter.length() > 0)) {
+                mqttClient.subscribe(topicFilter, DEFAULT_QOS);
+            }
         } catch (MqttException e) {
             e.printStackTrace();
         }
@@ -202,11 +212,13 @@ public class MqttDevice {
      *
      * @param payload     simple string payload
      * @param topic       topic described as string e.g. /foo/bar
-     * @param mqttMessage object where received message is stored
+     * @param clientMqttMessage object where client received message is stored
+     * @param listenerMqttMessage object where listener received message is stored
      */
-    public void mqttClientPublishString(String payload, String topic, Map<String, String> mqttMessage) {
+    public void mqttClientPublishString(String payload, String topic, Map<String, String> clientMqttMessage, Map<String, String> listenerMqttMessage) {
 
-        this.clientReceivedMqttMessage = mqttMessage;
+        this.clientReceivedMqttMessage = clientMqttMessage;
+        this.listenerReceivedMqttMessage = listenerMqttMessage;
         try {
             mqttClient.publish(topic, payload.getBytes(), DEFAULT_QOS, DEFAULT_RETAIN);
         } catch (MqttException e) {
