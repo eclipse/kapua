@@ -58,12 +58,14 @@ CREATE TABLE dvc_device (
   attributes             	TEXT,  
   properties             	TEXT,   
   
-  PRIMARY KEY (scope_id, id),   -- primary key needs to include the partitioning key
+  PRIMARY KEY (scope_id, id),
+  
   CONSTRAINT uc_clientId UNIQUE (scope_id, client_id),
   CONSTRAINT uc_imei UNIQUE (scope_id, imei),
   CONSTRAINT uc_imsi UNIQUE (scope_id, imsi),
   CONSTRAINT uc_iccid UNIQUE (scope_id, iccid)
-) DEFAULT CHARSET=utf8;
+  
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_device_connection_id ON dvc_device (scope_id, connection_id);
 CREATE INDEX idx_device_serial_number ON dvc_device (scope_id, serial_number);
@@ -74,8 +76,6 @@ CREATE INDEX idx_device_model_id ON dvc_device (scope_id, model_id, client_id);
 CREATE INDEX idx_device_model_dn ON dvc_device (scope_id, model_id, display_name);
 CREATE INDEX idx_device_esf_id ON dvc_device (scope_id, app_framework_version, client_id);
 CREATE INDEX idx_device_esf_dn ON dvc_device (scope_id, app_framework_version, display_name);
-CREATE INDEX idx_device_app_id ON dvc_device (scope_id, app_identifiers, client_id);
-CREATE INDEX idx_device_app_dn ON dvc_device (scope_id, app_identifiers, display_name);
 CREATE INDEX idx_device_c1_id ON dvc_device (scope_id, custom_attribute_1, client_id);
 CREATE INDEX idx_device_c1_dn ON dvc_device (scope_id, custom_attribute_1, display_name);
 CREATE INDEX idx_device_c2_id ON dvc_device (scope_id, custom_attribute_2, client_id);

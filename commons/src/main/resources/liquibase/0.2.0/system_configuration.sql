@@ -12,7 +12,7 @@
 
 -- liquibase formatted sql
 
--- changeset configurarion:1
+-- changeset configuration:1
 
 CREATE TABLE IF NOT EXISTS sys_configuration (
   scope_id          		 BIGINT(21) 	  UNSIGNED,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS sys_configuration (
   optlock                    INT UNSIGNED,
   attributes				 TEXT,
   properties                 TEXT,
-  PRIMARY KEY  (id),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE INDEX IF NOT EXISTS idx_configurationScopeId ON sys_configuration (scope_id);
+  
+  PRIMARY KEY  (scope_id, id)
+  
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;

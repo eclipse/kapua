@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *  
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ CREATE TABLE collision_entity_test (
   properties                TEXT,
 
   PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8;
+
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_collision_entity_test_scope_id ON collision_entity_test (scope_id);

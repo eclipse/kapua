@@ -14,7 +14,12 @@ Feature: Device Event CRUD tests
     events.
 
 Background:
-	Given A "first" device 
+	Given Scope 12
+	And I configure the device service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  10   |
+	And A "first" device 
 	And A "second" device 
 
 Scenario: Create a regular event
@@ -95,8 +100,14 @@ Scenario: Count events in scope
 	Given Scope 12
 	And User 5
 	And I have 15 "CREATE" events from device "first"
+	
 	Given Scope 42
-	And I have 25 "READ" events from device "second"
+	And I configure the device service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  10   |
+	And A "third" device 
+	And I have 25 "READ" events from device "third"
 	When I count events for scope 12
 	Then There are 15 events
 

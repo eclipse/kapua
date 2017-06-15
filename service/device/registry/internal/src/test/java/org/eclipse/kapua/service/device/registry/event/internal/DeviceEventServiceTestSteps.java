@@ -18,7 +18,10 @@ import static org.mockito.Mockito.mock;
 import java.math.BigInteger;
 import java.security.acl.Permission;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.kapua.KapuaException;
@@ -39,6 +42,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.TestConfig;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
@@ -206,6 +210,23 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
             assertNotNull(deviceId);
 
             devices.add(device);
+        } catch (KapuaException ex) {
+            exceptionCaught = true;
+            fail("Device: " + ex.getMessage());
+        }
+    }
+
+    @When("^I configure the device service$")
+    public void setDeviceServiceConfig(List<TestConfig> testConfigs)
+            throws KapuaException {
+
+        Map<String, Object> valueMap = new HashMap<>();
+        for (TestConfig config : testConfigs) {
+            config.addConfigToMap(valueMap);
+        }
+        try {
+            exceptionCaught = false;
+            deviceService.setConfigValues(scopeId, new KapuaEid(BigInteger.ONE), valueMap);
         } catch (KapuaException ex) {
             exceptionCaught = true;
         }
@@ -493,7 +514,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
                 return d.getId();
             }
         }
-        fail("Not foung device with clientId: " + clientId);
+        fail("Not found device with clientId: " + clientId);
         return null;
     }
 

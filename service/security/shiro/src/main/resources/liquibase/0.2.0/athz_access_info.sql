@@ -30,7 +30,7 @@ CREATE TABLE athz_access_info (
   
   PRIMARY KEY (id)
   
-) DEFAULT CHARSET=utf8;
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 CREATE INDEX idx_scopeId_userId ON athz_access_info (scope_id, user_id);
 
