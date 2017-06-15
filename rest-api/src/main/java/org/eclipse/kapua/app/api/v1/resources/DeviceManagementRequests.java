@@ -33,7 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @Api("Devices")
-@Path("{scopeId}/devices/{deviceId}/sendRequest")
+@Path("{scopeId}/devices/{deviceId}/requests")
 public class DeviceManagementRequests extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
