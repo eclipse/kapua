@@ -279,7 +279,7 @@
     </dependencies>
 
     <build>
-        <finalName>Kapua</finalName>
+        <finalName>admin</finalName>
 
         <plugins>
             <plugin>
@@ -299,7 +299,7 @@
                 </executions>
 
                 <configuration>
-                    <module>org.eclipse.kapua.app.console.Kapua</module>
+                    <module>org.eclipse.kapua.app.console.admin</module>
 
                     <extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</extraJvmArgs>
                     <webappDirectory>${project.build.directory}</webappDirectory>
@@ -473,7 +473,7 @@
                             <!-- we can always enable draft compile -->
                             <draftCompile>true</draftCompile>
                             <!-- use "dev" profile, limiting permutations -->
-                            <module>org.eclipse.kapua.app.console.KapuaDev</module>
+                            <module>org.eclipse.kapua.app.console.adminDev</module>
                             <!-- don't optimize -->
                             <optimizationLevel>0</optimizationLevel>
                             <!-- enable details -->

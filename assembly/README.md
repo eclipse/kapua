@@ -65,5 +65,5 @@ It is also possible to use Tomcat as a web container. For this use the following
     docker run -td --name kapua-console --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 kapua/kapua-console
     docker run -td --name kapua-api --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8081:8080 kapua/kapua-api
 
-Please note that in this case you also have to append `/console` and `/api` to the URL.
+Please note that in this case you also have to append `/admin` and `/api` to the URL.
 
