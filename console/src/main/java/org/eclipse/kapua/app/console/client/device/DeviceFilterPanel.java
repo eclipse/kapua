@@ -11,9 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.device;
 
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -35,6 +40,10 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupService;
+import org.eclipse.kapua.app.console.shared.service.GwtGroupServiceAsync;
+
+import java.util.List;
 
 public class DeviceFilterPanel extends LayoutContainer {
 
@@ -43,7 +52,11 @@ public class DeviceFilterPanel extends LayoutContainer {
 
     private DevicesTable devicesTable;
 
-    public DeviceFilterPanel(GwtSession gwtSession) {
+    private final GwtGroupServiceAsync groupService = GWT.create(GwtGroupService.class);
+    private final GwtSession currentSession;
+
+    public DeviceFilterPanel(GwtSession currentSession) {
+        this.currentSession = currentSession;
     }
 
     public void setDeviceTable(DevicesTable devicesTable) {
@@ -237,6 +250,53 @@ public class DeviceFilterPanel extends LayoutContainer {
         formPanel.add(customAttribute2Field);
 
         //
+        // Groups
+        final Label groupLabel = new Label(MSGS.deviceFilteringPanelGroup());
+        groupLabel.setWidth(WIDTH);
+        groupLabel.setStyleAttribute("margin", "5px");
+        formPanel.add(groupLabel);
+
+        final GwtGroup allGroup = new GwtGroup();
+        allGroup.setGroupName("ANY");
+        allGroup.setId(null);
+
+        final ComboBox<GwtGroup> groupsCombo = new ComboBox<GwtGroup>();
+        groupsCombo.setStore(new ListStore<GwtGroup>());
+        groupsCombo.disable();
+        groupsCombo.setEditable(false);
+        groupsCombo.setTypeAhead(false);
+        groupsCombo.setAllowBlank(false);
+        groupsCombo.setEmptyText(MSGS.deviceFilteringPanelLoading());
+        groupsCombo.setDisplayField("groupName");
+        groupsCombo.setValueField("id");
+        groupsCombo.setName("groupId");
+        groupsCombo.setWidth(WIDTH);
+        groupsCombo.setStyleAttribute("margin-top", "0px");
+        groupsCombo.setStyleAttribute("margin-left", "5px");
+        groupsCombo.setStyleAttribute("margin-right", "5px");
+        groupsCombo.setStyleAttribute("margin-bottom", "10px");
+        groupsCombo.setTriggerAction(TriggerAction.ALL);
+        groupsCombo.setValue(allGroup);
+        groupService.findAll(currentSession.getSelectedAccount().getId(), new AsyncCallback<List<GwtGroup>>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                ConsoleInfo.display(MSGS.popupError(), MSGS.deviceFilteringPanelGroupsError());
+            }
+
+            @Override
+            public void onSuccess(List<GwtGroup> result) {
+                groupsCombo.getStore().removeAll();
+                groupsCombo.getStore().add(allGroup);
+                groupsCombo.getStore().add(result);
+                groupsCombo.setValue(allGroup);
+                groupsCombo.enable();
+            }
+        });
+
+        formPanel.add(groupsCombo);
+
+        //
         // Buttons
         HorizontalPanel buttonPanel = new HorizontalPanel();
         buttonPanel.setBorders(false);
@@ -282,6 +342,9 @@ public class DeviceFilterPanel extends LayoutContainer {
                 if (customAttribute2Field.getValue() != null && !customAttribute2Field.getValue().trim().isEmpty()) {
                     predicates.setCustomAttribute2(unescapeValue(customAttribute2Field.getValue()));
                 }
+                if (!groupsCombo.getValue() .equals(allGroup)) {
+                    predicates.setGroupId(groupsCombo.getValue().getId());
+                }
 
                 devicesTable.refreshAll(predicates);
             }
@@ -302,6 +365,7 @@ public class DeviceFilterPanel extends LayoutContainer {
                 applicationIdentifiersField.setValue("");
                 customAttribute1Field.setValue("");
                 customAttribute2Field.setValue("");
+                groupsCombo.setValue(allGroup);
 
                 devicesTable.refreshAll(new GwtDeviceQueryPredicates());
             }
