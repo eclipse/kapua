@@ -12,8 +12,8 @@
         Red Hat Inc - initial API and implementation
  -->
 
-<module rename-to="Kapua">
-  <inherits name="org.eclipse.kapua.app.console.Kapua" />
+<module rename-to="admin">
+  <inherits name="org.eclipse.kapua.app.console.admin" />
   <inherits name="com.google.gwt.logging.Logging"/>
 
   <!-- The 'user.agent' property can be changed to the developer's

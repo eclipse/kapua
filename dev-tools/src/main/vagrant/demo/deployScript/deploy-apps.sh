@@ -11,10 +11,10 @@
 #*******************************************************************************
 vagrant ssh -c "echo 'deploying the Kapua broker'
 	cd /usr/local/kapua/apache-tomcat-${TOMCAT_VERSION}
-	sudo rm -rf webapp/console*
+	sudo rm -rf webapp/admin*
 	sudo rm -rf webapp/api*
 	echo 'copying Kapua console web application'
-	sudo cp /kapua/console/target/console.war webapps/console.war
+	sudo cp /kapua/console/target/admin.war webapps/admin.war
 	echo 'copying Kapua api web application'
 	sudo cp /kapua/rest-api/target/api.war webapps/api.war
 	cd ..
