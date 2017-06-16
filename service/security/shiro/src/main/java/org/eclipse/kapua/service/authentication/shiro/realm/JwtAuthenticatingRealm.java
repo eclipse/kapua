@@ -18,6 +18,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.session.Session;
@@ -42,6 +43,8 @@ import org.eclipse.kapua.sso.jwt.JwtProcessor;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * {@link ApiKeyCredentials} based {@link AuthenticatingRealm} implementation.
@@ -129,6 +132,11 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
 
         if (UserStatus.DISABLED.equals(user.getStatus())) {
             throw new DisabledAccountException();
+        }
+
+        // Check if expired
+        if (user.getExpirationDate() != null && !user.getExpirationDate().after(new Date())) {
+            throw new ExpiredCredentialsException();
         }
 
         // Find account

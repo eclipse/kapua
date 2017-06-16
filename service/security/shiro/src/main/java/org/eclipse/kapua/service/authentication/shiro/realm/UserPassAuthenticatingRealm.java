@@ -17,6 +17,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
@@ -37,6 +38,8 @@ import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredential
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
+
+import java.util.Date;
 
 /**
  * {@link UsernamePasswordCredentials} based {@link AuthenticatingRealm} implementation.
@@ -106,6 +109,11 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         // Check disabled
         if (UserStatus.DISABLED.equals(user.getStatus())) {
             throw new DisabledAccountException();
+        }
+
+        // Check if expired
+        if (user.getExpirationDate() != null && !user.getExpirationDate().after(new Date())) {
+            throw new ExpiredCredentialsException();
         }
 
         //

@@ -47,6 +47,7 @@ import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDe
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
 import org.eclipse.kapua.app.console.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUserQuery;
 import org.eclipse.kapua.broker.core.BrokerDomain;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -113,6 +114,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceDomain;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifecycleDomain;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
+import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.internal.UserDomain;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
 
@@ -774,6 +776,10 @@ public class GwtKapuaModelConverter {
             }
         }
         return parameters;
+    }
+
+    public static UserStatus convertUserStatus(GwtUser.GwtUserStatus gwtUserStatus) {
+        return UserStatus.valueOf(gwtUserStatus.toString());
     }
 
 }

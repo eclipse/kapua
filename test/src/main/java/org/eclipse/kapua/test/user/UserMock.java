@@ -32,6 +32,7 @@ public class UserMock implements User {
     private String name;
     private UserType userType;
     private String externalId;
+    private Date expirationDate;
 
     public UserMock(KapuaId scopeId, String name) {
         this.id = new KapuaEid(BigInteger.valueOf(longId++));
@@ -195,5 +196,15 @@ public class UserMock implements User {
     @Override
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

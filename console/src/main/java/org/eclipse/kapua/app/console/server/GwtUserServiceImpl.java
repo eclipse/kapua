@@ -50,7 +50,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -80,11 +79,12 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
             UserFactory userFactory = locator.getFactory(UserFactory.class);
 
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
-            UserCreator userCreator = userFactory.newCreator(scopeId,
-                    gwtUserCreator.getUsername());
+            UserCreator userCreator = userFactory.newCreator(scopeId, gwtUserCreator.getUsername());
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
+            userCreator.setExpirationDate(gwtUserCreator.getExpirationDate());
+            userCreator.setUserStatus(GwtKapuaModelConverter.convertUserStatus(gwtUserCreator.getUserStatus()));
 
             //
             // Create the User
@@ -143,9 +143,9 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
                 user.setDisplayName(gwtUser.getUnescapedDisplayName());
                 user.setEmail(gwtUser.getUnescapedEmail());
                 user.setPhoneNumber(gwtUser.getUnescapedPhoneNumber());
-
+                user.setExpirationDate(gwtUser.getExpirationDate());
                 // status
-                user.setStatus(UserStatus.valueOf(gwtUser.getStatus()));
+                user.setStatus(GwtKapuaModelConverter.convertUserStatus(gwtUser.getStatusEnum()));
 
                 // //
                 // // Update credentials
@@ -339,6 +339,7 @@ public class GwtUserServiceImpl extends KapuaConfigurableRemoteServiceServlet<Us
                 gwtUserDescription.add(new GwtGroupedNVPair("User", "Display Name", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("User", "Phone Number", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair("User", "Email", user.getEmail()));
+                gwtUserDescription.add(new GwtGroupedNVPair("User", "Expiration Date", user.getExpirationDate()));
 
             }
         } catch (Exception e) {

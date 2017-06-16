@@ -15,13 +15,15 @@ import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
+
+import java.util.Date;
 
 /**
  * User creator service implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> implements UserCreator {
 
@@ -32,10 +34,12 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     private String phoneNumber;
     private UserType userType = UserType.INTERNAL;
     private String externalId;
+    private Date expirationDate;
+    private UserStatus userStatus;
 
     /**
      * Constructor
-     * 
+     *
      * @param accountId
      * @param name
      */
@@ -91,5 +95,25 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    @Override
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

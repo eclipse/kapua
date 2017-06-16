@@ -16,8 +16,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+
+import java.util.Date;
 
 /**
  * UserCreator encapsulates all the information needed to create a new User in the system.
@@ -25,12 +29,14 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
  * @since 1.0
  */
 @XmlRootElement(name = "userCreator")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { "displayName",
         "email",
         "phoneNumber",
         "userType",
-        "externalId" },
+        "externalId",
+        "expirationDate",
+        "userStatus"},
         factoryClass = UserXmlRegistry.class,
         factoryMethod = "newUserCreator")
 public interface UserCreator extends KapuaNamedEntityCreator<User> {
@@ -109,4 +115,15 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      * @param externalId
      */
     public void setExternalId(String externalId);
+
+    @XmlElement(name = "expirationDate")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getExpirationDate();
+
+    void setExpirationDate(Date expirationDate);
+
+    @XmlElement(name="userStatus")
+    UserStatus getUserStatus();
+
+    void setUserStatus(UserStatus userStatus);
 }

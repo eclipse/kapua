@@ -13,7 +13,10 @@ package org.eclipse.kapua.test.user;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserType;
+
+import java.util.Date;
 
 public class UserCreatorMock implements UserCreator {
 
@@ -23,6 +26,9 @@ public class UserCreatorMock implements UserCreator {
     private String email;
     private String phoneNumber;
     private UserType userType;
+    private Date expiarionDate;
+
+    private UserStatus userStatus;
 
     public UserType getUserType() {
         return userType;
@@ -90,5 +96,25 @@ public class UserCreatorMock implements UserCreator {
     @Override
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public Date getExpirationDate() {
+        return expiarionDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expiarionDate = expirationDate;
+    }
+
+    @Override
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    @Override
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.client.user.tabs.credentials;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.eclipse.kapua.app.console.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.client.ui.panel.FormPanel;
@@ -20,6 +21,7 @@ import org.eclipse.kapua.app.console.client.util.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.shared.model.GwtSession;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialType;
 import org.eclipse.kapua.app.console.shared.model.user.GwtUser;
 import org.eclipse.kapua.app.console.shared.service.GwtCredentialService;
@@ -63,7 +65,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     public CredentialAddDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
-        DialogUtils.resizeDialog(this, 400, 230);
+        DialogUtils.resizeDialog(this, 400, 300);
     }
 
     @Override
@@ -118,14 +120,14 @@ public class CredentialAddDialog extends EntityAddEditDialog {
 
         expirationDate = new DateField();
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
-        // FIXME add again when supported in backend
-        //credentialFormPanel.add(expirationDate);
+        expirationDate.setFormatValue(true);
+        expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        credentialFormPanel.add(expirationDate);
 
         enabled = new CheckBox();
         enabled.setFieldLabel(MSGS.dialogAddFieldEnabled());
         enabled.setBoxLabel("");    // Align to the left
-        // FIXME add again when supported in backend
-        //credentialFormPanel.add(enabled);
+        credentialFormPanel.add(enabled);
 
         optlock = new NumberField();
         optlock.setName("optlock");
@@ -145,6 +147,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         gwtCredentialCreator.setCredentialType(credentialType.getValue().getValue());
         gwtCredentialCreator.setCredentialPlainKey(password.getValue());
         gwtCredentialCreator.setUserId(selectedUser.getId());
+        gwtCredentialCreator.setExpirationDate(expirationDate.getValue());
+        gwtCredentialCreator.setCredentialStatus(enabled.getValue() ? GwtCredentialStatus.ENABLED : GwtCredentialStatus.DISABLED);
 
         GWT_CREDENTIAL_SERVICE.create(xsrfToken, gwtCredentialCreator, new AsyncCallback<GwtCredential>() {
 
