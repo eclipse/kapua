@@ -22,6 +22,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -73,9 +74,9 @@ public class MqttDevice {
     private static final String NO_TOPIC_FILTER = "#";
 
     /**
-     * Mqtt client for sending messages.
+     * Map of Mqtt client for sending messages.
      */
-    private MqttClient mqttClient;
+    private Map<String, MqttClient> mqttClients;
 
     /**
      * Mqtt client for listening from messages.
@@ -83,14 +84,21 @@ public class MqttDevice {
     private MqttClient subscribedClient;
 
     /**
-     * Map for storing received messages that client is listening to.
+     * Map for storing received messages that clients are listening to.
+     * It is Map of Maps, first key is clientId. Key in second map is
+     * topic on which message was received.
      */
-    private Map<String, String> clientReceivedMqttMessage;
+    private Map<String, Map<String, String>> clientReceivedMqttMessage;
 
     /**
      * Map for storing received messages that Listener is listening to.
      */
     private Map<String, String> listenerReceivedMqttMessage;
+
+    public MqttDevice() {
+
+        mqttClients = new HashMap<>();
+    }
 
     /**
      * Connect subscriber to mqtt broker.
@@ -153,21 +161,20 @@ public class MqttDevice {
      * @param userName    user with which client connects to broker
      * @param password    password for connection
      * @param topicFilter filter for topics client is listening to
+     * @throws MqttException
      */
-    public void mqttClientConnect(String clientId, String userName, String password, String topicFilter) {
+    public void mqttClientConnect(String clientId, String userName, String password, String topicFilter)
+            throws MqttException {
 
         MqttConnectOptions clientOpts = new MqttConnectOptions();
         clientOpts.setUserName(userName);
         clientOpts.setPassword(password.toCharArray());
-        try {
-            mqttClient = new MqttClient(BROKER_URI, clientId,
-                    new MemoryPersistence());
-            mqttClient.connect(clientOpts);
-            if ((topicFilter != null) && (topicFilter.length() > 0)) {
-                mqttClient.subscribe(topicFilter, DEFAULT_QOS);
-            }
-        } catch (MqttException e) {
-            e.printStackTrace();
+        MqttClient mqttClient = null;
+        mqttClient = new MqttClient(BROKER_URI, clientId,
+                new MemoryPersistence());
+        mqttClient.connect(clientOpts);
+        if ((topicFilter != null) && (topicFilter.length() > 0)) {
+            mqttClient.subscribe(topicFilter, DEFAULT_QOS);
         }
 
         mqttClient.setCallback(new MqttCallback() {
@@ -181,7 +188,9 @@ public class MqttDevice {
                 logger.info("Message arrived in client with topic: " + topic);
 
                 clientReceivedMqttMessage.clear();
-                clientReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
+                Map<String, String > topicPayload = new HashMap<>();
+                topicPayload.put(topic, new String(mqttMessage.getPayload()));
+                clientReceivedMqttMessage.put(clientId, topicPayload);
             }
 
             @Override
@@ -189,20 +198,24 @@ public class MqttDevice {
                 logger.info("Client message delivery complete.");
             }
         });
+
+        mqttClients.put(clientId, mqttClient);
     }
 
     /**
      * Disconnect Device mqtt client that listens and sends messages to mqtt broker.
      */
-    public void mqttClientDisconnect() {
+    public void mqttClientsDisconnect() {
 
-        try {
-            try (final Suppressed<Exception> s = Suppressed.withException()) {
-                s.run(mqttClient::disconnect);
-                s.run(mqttClient::close);
+        for (Map.Entry<String, MqttClient>mqttClient: mqttClients.entrySet()) {
+            try {
+                try (final Suppressed<Exception> s = Suppressed.withException()) {
+                    s.run(mqttClient.getValue()::disconnect);
+                    s.run(mqttClient.getValue()::close);
+                }
+            } catch (final Exception e) {
+                logger.warn("Failed during cleanup of client Paho resources", e);
             }
-        } catch (final Exception e) {
-            logger.warn("Failed during cleanup of client Paho resources", e);
         }
     }
 
@@ -210,15 +223,19 @@ public class MqttDevice {
      * Send string message to topic, also provide map where message received
      * from broker is stored.
      *
+     * @param clientId    id of client with which message is sent.
      * @param payload     simple string payload
      * @param topic       topic described as string e.g. /foo/bar
      * @param clientMqttMessage object where client received message is stored
      * @param listenerMqttMessage object where listener received message is stored
      */
-    public void mqttClientPublishString(String payload, String topic, Map<String, String> clientMqttMessage, Map<String, String> listenerMqttMessage) {
+    public void mqttClientPublishString(String clientId, String payload, String topic,
+                                        Map<String, Map<String, String>> clientMqttMessage,
+                                        Map<String, String> listenerMqttMessage) {
 
         this.clientReceivedMqttMessage = clientMqttMessage;
         this.listenerReceivedMqttMessage = listenerMqttMessage;
+        MqttClient mqttClient = mqttClients.get(clientId);
         try {
             mqttClient.publish(topic, payload.getBytes(), DEFAULT_QOS, DEFAULT_RETAIN);
         } catch (MqttException e) {
