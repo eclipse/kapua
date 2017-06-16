@@ -39,7 +39,7 @@ public interface User extends KapuaNamedEntity {
 
     public static final String TYPE = "user";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

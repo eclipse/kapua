@@ -31,7 +31,7 @@ public interface ServiceConfig extends KapuaUpdatableEntity {
     /**
      * Return the service type
      */
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 

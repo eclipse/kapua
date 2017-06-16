@@ -41,7 +41,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
 
     public static final String TYPE = "deviceConnection";
 
-    default public String getType() {
+    public default String getType() {
         return TYPE;
     }
 
