@@ -133,5 +133,9 @@ public class DeviceTable extends LayoutContainer {
     public void onUnload() {
         super.onUnload();
     }
+    
+    public void refresh(){
+        deviceGrid.getStore().getLoader().load();
+    }
 
 }

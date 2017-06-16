@@ -64,6 +64,10 @@ public class TopicsTable extends LayoutContainer {
     public void addSelectionChangedListener(SelectionChangedListener<GwtTopic> listener) {
         listeners.add(listener);
     }
+    
+    public void refresh(){
+        this.inittopicInfoGrid();
+    }
 
     @Override
     protected void onRender(Element parent, int index) {

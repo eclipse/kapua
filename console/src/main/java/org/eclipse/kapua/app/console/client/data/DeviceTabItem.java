@@ -38,6 +38,8 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 public class DeviceTabItem extends TabItem {
 
@@ -48,9 +50,11 @@ public class DeviceTabItem extends TabItem {
     private DeviceTable deviceTable;
 
     private Button queryButton;
+    private Button refreshButton;
 
     private MetricsTable metricsTable;
     private ResultsTable resultsTable;
+    private ToolBar toolbar;
 
     public DeviceTabItem(GwtSession currentSession) {
         super(MSGS.deviceTabItemTitle(), null);
@@ -86,6 +90,7 @@ public class DeviceTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDatastoreDevice> selectedDevice) {
+                refreshButton.enable();
                 metricsTable.refresh(selectedDevice.getSelectedItem());
             }
         });
@@ -118,11 +123,27 @@ public class DeviceTabItem extends TabItem {
                 resultsTable.refresh(gwtDevice, metricsInfo);
             }
         });
+        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                deviceTable.refresh();
+                metricsTable.clearTable();
+                resultsTable.refresh();
+            }
+        });
+        refreshButton.disable();
+        queryButton.disable();
+        
+        toolbar = new ToolBar();
+        toolbar.add(queryButton);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(refreshButton);
         queryButton.disable();
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
-        queryButtonContainer.add(queryButton, new TableData());
+        queryButtonContainer.add(toolbar);
         tables.add(queryButtonContainer, queryButtonLayout);
 
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);

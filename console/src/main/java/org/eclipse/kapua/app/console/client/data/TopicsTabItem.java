@@ -38,6 +38,9 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 
 public class TopicsTabItem extends TabItem {
 
@@ -46,11 +49,13 @@ public class TopicsTabItem extends TabItem {
     private GwtSession currentSession;
 
     private Button queryButton;
+    private Button refreshButton;
 
     private TopicsTable topicTable;
 
     private MetricsTable metricsTable;
     private ResultsTable resultsTable;
+    private ToolBar toolbar;
 
     public TopicsTabItem(GwtSession currentSession) {
         super(MSGS.topicTabItemTitle(), null);
@@ -86,6 +91,7 @@ public class TopicsTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtTopic> selectedTopic) {
+                refreshButton.enable();
                 metricsTable.refresh(selectedTopic.getSelectedItem());
             }
         });
@@ -122,7 +128,22 @@ public class TopicsTabItem extends TabItem {
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
-        queryButtonContainer.add(queryButton, new TableData());
+        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                topicTable.refresh();
+                metricsTable.clearTable();
+                resultsTable.refresh();
+            }
+        });
+        refreshButton.disable();
+        toolbar = new ToolBar();
+        toolbar.add(queryButton);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(refreshButton);
+        
+        queryButtonContainer.add(toolbar);
         tables.add(queryButtonContainer, queryButtonLayout);
 
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);

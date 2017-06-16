@@ -35,10 +35,12 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.user.client.ui.Widget;
 
 public class AssetTabItem extends TabItem {
 
@@ -49,10 +51,12 @@ public class AssetTabItem extends TabItem {
     private DeviceTable deviceTable;
 
     private Button queryButton;
+    private Button refreshButton;
 
     private ResultsTable resultsTable;
     private AssetTable assetTable;
     private MetricsTable metricsTable;
+    private ToolBar toolbar;
 
     public AssetTabItem(GwtSession currentSession) {
         super(MSGS.assetTabItemTitle(), null);
@@ -87,7 +91,12 @@ public class AssetTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtDatastoreDevice> se) {
-                assetTable.refresh(se.getSelectedItem());
+                refreshButton.enable();
+                if (se.getSelectedItem() != null){
+                    assetTable.refresh(se.getSelectedItem());}
+                else{
+                    assetTable.clearTable();
+                }
             }
         });
         tables.add(deviceTable, deviceLayout);
@@ -134,10 +143,25 @@ public class AssetTabItem extends TabItem {
             }
         });
         queryButton.disable();
+        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                deviceTable.refresh();
+                resultsTable.refresh();
+            }
+        });
+        refreshButton.disable();
+        toolbar = new ToolBar();
+        toolbar.add(queryButton);
+        toolbar.add(new SeparatorToolItem());
+        toolbar.add(refreshButton);
+      
+        
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
-        queryButtonContainer.add(queryButton, new TableData());
+        queryButtonContainer.add(toolbar);
         tables.add(queryButtonContainer, queryButtonLayout);
 
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);

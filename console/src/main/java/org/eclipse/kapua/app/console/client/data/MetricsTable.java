@@ -161,7 +161,15 @@ public class MetricsTable extends LayoutContainer {
         metricsInfoGrid.setSelectionModel(selectionModel);
     }
 
-    private void refresh() {
+    public void clearTable(){
+        metricsInfoGrid.getStore().removeAll();
+    }
+    
+    public void refreshChannels(){
+        metricsInfoGrid.getStore().removeAll();
+    }
+    
+    public void refresh() {
         metricsInfoGrid.getStore().getLoader().load();
     }
 
