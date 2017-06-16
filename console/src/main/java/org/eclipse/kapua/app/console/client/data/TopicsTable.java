@@ -66,7 +66,7 @@ public class TopicsTable extends LayoutContainer {
     }
     
     public void refresh(){
-        this.inittopicInfoGrid();
+        topicInfoGrid.getSelectionModel().deselect(getSelectedTopic());
     }
 
     @Override
