@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.PrivateModule;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.InjectionListener;
@@ -66,12 +67,13 @@ public class ComponentsModule extends PrivateModule {
                 ComponentProvider providerAnnotation = componentProvider.getAnnotation(ComponentProvider.class);
                 Class<?> providedComponent  = providerAnnotation.provides();
                 ComponentResolver resolver = ComponentResolver.newInstance(providedComponent, componentProvider);
-                bind(resolver.getImplementationClass());
+                bind(resolver.getImplementationClass()).in(Singleton.class);
                 bind(resolver.getProvidedClass()).to(resolver.getImplementationClass());
                 expose(resolver.getProvidedClass());
             }
 
-            // When an implementation of a service is created the listener is invoked
+            // When a new insance object is created by the injector the  
+            // following listener is invoked
             this.bindListener(Matchers.any(), new TypeListener() {
                 
                 @Override

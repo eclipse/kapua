@@ -26,11 +26,9 @@ import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Binding;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.PrivateModule;
 
 
@@ -94,13 +92,7 @@ public class ComponentLocatorImpl extends ComponentLocator {
     @Override
     public <T> T getComponent(Class<T> superOrImplClass) {
         
-        Injector injector = InjectorRegistry.get(COMMONS_INJECTOR_NAME);
-        
-        Binding<T> binding = injector.getExistingBinding(Key.get(superOrImplClass));
-        if (binding == null) {
-            throw new RuntimeException(superOrImplClass.getName() + " has no binding.");
-        }
-        
+        Injector injector = InjectorRegistry.get(COMMONS_INJECTOR_NAME);        
         return injector.getInstance(superOrImplClass);
     }
 }
