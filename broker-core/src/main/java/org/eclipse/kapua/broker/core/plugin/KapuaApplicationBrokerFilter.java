@@ -15,7 +15,7 @@ package org.eclipse.kapua.broker.core.plugin;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerFilter;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
     private final static Logger logger = LoggerFactory.getLogger(KapuaApplicationBrokerFilter.class);
 
     // The following line must be done before any invocation of KapuaLocator.getInstance()
-    private static KapuaContainer application;
+    private static Container application;
 
     public KapuaApplicationBrokerFilter(Broker next) throws KapuaException {
         super(next);
@@ -47,7 +47,7 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
         logger.info(">>> Application broker filter: calling start...");
         synchronized(KapuaApplicationBrokerFilter.class) {
             if (application == null) {
-                application = new KapuaContainer() {};
+                application = new Container() {};
             }
             application.startup();
         }

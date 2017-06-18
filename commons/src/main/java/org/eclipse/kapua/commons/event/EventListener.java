@@ -13,6 +13,9 @@ package org.eclipse.kapua.commons.event;
 
 import org.eclipse.kapua.service.event.KapuaEvent;
 
+/**
+ * @since 0.3.0
+ */
 public interface EventListener {
 
     public void onKapuaEvent(KapuaEvent event);

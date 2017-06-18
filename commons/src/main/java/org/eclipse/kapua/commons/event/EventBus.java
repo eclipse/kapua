@@ -9,12 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core;
+package org.eclipse.kapua.commons.event;
 
+import org.eclipse.kapua.service.event.KapuaEvent;
+import org.eclipse.kapua.service.event.KapuaEventListener;
 
-public interface ServiceRegistration {
-
-    public <I, P extends I> void register(Class<I> clazz, P provider);
-    public <P> void register(Class<P> provider);
-    public <P> void register(P provider);
+/**
+ * @since 0.3.0
+ */
+public interface EventBus {
+    
+    public void publish(KapuaEvent event);
+    public void subscribe(KapuaEventListener eventListener);
+    public KapuaEventListener unsubscribe(KapuaEventListener eventListener);
+    public boolean isSubscribed(KapuaEventListener eventListener);
 }

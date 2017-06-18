@@ -14,11 +14,14 @@ package org.eclipse.kapua.commons.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KapuaConfiguration {
+/**
+ * @since 0.3.0
+ */
+public class ContainerConfig {
 
     private List<Object> registeredObjects;
 
-    public KapuaConfiguration() {
+    public ContainerConfig() {
         registeredObjects = new ArrayList<Object>();
     }
 

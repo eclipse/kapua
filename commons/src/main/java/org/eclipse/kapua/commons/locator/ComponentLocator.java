@@ -12,22 +12,22 @@
 package org.eclipse.kapua.commons.locator;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.ServiceLoader;
-import java.util.Set;
 
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.LifecycleComponent;
-import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @since 0.3.0
+ *
+ */
 public abstract class ComponentLocator {
 
     private final static Logger logger = LoggerFactory.getLogger(ComponentLocator.class);
 
-    protected static ComponentLocator instance;
+    private static ComponentLocator instance;
     
     static {
         instance = createInstance();
@@ -53,12 +53,6 @@ public abstract class ComponentLocator {
     public static ComponentLocator getInstance() {
         return instance;
     }
-
-    public abstract Set<LifecycleComponent> getServiceComponents();
     
-    public abstract ManagedObjectPool getManagedObjectPool();
-    
-    public abstract <T> T getProvider(Class<T> superOrImplClass);
-
-    public abstract <T> List<Class<T>> getProviders(Class<T> superOrImplClasss);
+    public abstract <T> T getComponent(Class<T> clazz);
 }

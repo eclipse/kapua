@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Workflow event interceptor
+ * Event interceptor
  * 
  * @since 1.0
  */
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 @InterceptorBind(matchSublclassOf=KapuaService.class, matchAnnotatedWith=RaiseKapuaEvent.class)
 public class RaiseKapuaEventInterceptor implements MethodInterceptor {
 
-    @Inject EventBusService eventBusService;
+    @Inject EventBus eventBusService;
     
     private static final Logger logger = LoggerFactory.getLogger(RaiseKapuaEventInterceptor.class);
 

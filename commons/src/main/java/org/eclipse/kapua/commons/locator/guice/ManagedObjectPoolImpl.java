@@ -18,6 +18,10 @@ import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.eclipse.kapua.locator.inject.PoolListener;
 
 
+/**
+ * @since 0.3.0
+ *
+ */
 public class ManagedObjectPoolImpl implements ManagedObjectPool {
 
     private List<Object> instances = new ArrayList<Object>();

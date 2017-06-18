@@ -11,6 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-
-public interface KapuaComponent {
+/**
+ * Bundle manages the lifecycle of the services
+ * 
+ * @since 0.3.0
+ */
+public interface Bundle {
+    
+    public void start();
+    public void stop();
 }

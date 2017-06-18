@@ -18,7 +18,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.service.KapuaLocatorImpl;
@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public class KapuaLocatorImplTest {
 
-    KapuaContainer container = new KapuaContainer() {};
+    Container container = new Container() {};
     KapuaLocator locator = KapuaLocatorImpl.getInstance();
 
     @Before

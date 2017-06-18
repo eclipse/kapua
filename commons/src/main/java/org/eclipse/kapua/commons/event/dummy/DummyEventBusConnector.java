@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * to the event listener that it is bound to. The connector connect to the event 
  * bus through a client that is picked from a client pool. 
  * 
- * @since 1.0
+ * @since 0.3.0
  */
 public class DummyEventBusConnector {
 

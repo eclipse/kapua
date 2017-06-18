@@ -83,12 +83,18 @@
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
         </dependency>
-        
+
         <!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.inject.extensions/guice-multibindings -->
+        <!--<dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-multibindings</artifactId>
+        </dependency>-->
 
         <!-- metrics -->
         <dependency>

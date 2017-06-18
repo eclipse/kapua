@@ -15,7 +15,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class KapuaMetricsMapAdapterTest extends Assert {
 
-    private KapuaContainer container = new KapuaContainer() {};
+    private Container container = new Container() {};
 
     private static final String NEWLINE = System.lineSeparator();
 

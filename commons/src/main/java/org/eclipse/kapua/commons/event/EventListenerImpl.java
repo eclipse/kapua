@@ -22,7 +22,9 @@ import org.eclipse.kapua.service.event.ListenKapuaEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * @since 0.3.0
+ */
 public class EventListenerImpl implements EventListener {
 
     private final static Logger logger = LoggerFactory.getLogger(EventListenerImpl.class);

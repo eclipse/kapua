@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 import cucumber.api.java.After;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -81,7 +81,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
     private static final Domain TEST_DOMAIN = new TestDomain();
 
-    private KapuaContainer container;
+    private Container container;
     private KapuaLocator locator;
     
     // Test data scratchpads
@@ -117,7 +117,7 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
-        container = new KapuaContainer() {};
+        container = new Container() {};
         container.startup();
         
         locator = KapuaLocator.getInstance();

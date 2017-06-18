@@ -14,11 +14,11 @@ package org.eclipse.kapua.app.api;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 
 public class RestApiListener implements ServletContextListener {
 
-    private KapuaContainer kapuaContainer;
+    private Container kapuaContainer;
     
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
@@ -30,7 +30,7 @@ public class RestApiListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
         if (kapuaContainer == null) {
-            kapuaContainer = new KapuaContainer() {};
+            kapuaContainer = new Container() {};
         }
         
         kapuaContainer.startup();

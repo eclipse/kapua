@@ -11,39 +11,38 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.eclipse.kapua.commons.locator.BundleProvider;
 import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Kpaua container hosts a Kapua application and provides the means to configure it
+ * Container hosts a Kapua application and provides the means to configure it
  * and manage its lifecycle.
  * 
- * @since 1.0
+ * @since 0.3.0
  */
-public abstract class KapuaContainer {
+public abstract class Container {
 
-    private final static Logger logger = LoggerFactory.getLogger(KapuaContainer.class);
+    private final static Logger logger = LoggerFactory.getLogger(Container.class);
 
-    private KapuaConfiguration configuration;
+    private ContainerConfig configuration;
     
-    public KapuaContainer() {
-        this(new KapuaConfiguration());
+    public Container() {
+        this(new ContainerConfig());
     }
 
-    public KapuaContainer(KapuaConfiguration configuration) {
+    public Container(ContainerConfig configuration) {
         this.configuration = configuration;
         ComponentLocator.getInstance();
     }
 
     public final void startup() {
         logger.info("Startup...");
-        Set<LifecycleComponent> services = ComponentLocator.getInstance().getServiceComponents();
-        for(LifecycleComponent service:services) {
+        BundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(BundleProvider.class);
+        for(Bundle service:bundleProvider.getBundles()) {
             service.start();
         }
         
@@ -61,9 +60,9 @@ public abstract class KapuaContainer {
             listeners.get(i).onShutdown();
         }
         
-        ArrayList<LifecycleComponent> services = new ArrayList<>(ComponentLocator.getInstance().getServiceComponents());
-        for(int i = services.size() - 1; i >= 0; i--) {
-            services.get(i).stop();
+        BundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(BundleProvider.class);
+        for(Bundle service:bundleProvider.getBundles()) {
+            service.stop();
         }
         logger.info("Shutdown...DONEs");
     }

@@ -17,10 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import org.eclipse.kapua.commons.core.LifecycleComponent;
-import org.eclipse.kapua.commons.core.ServiceRegistration;
-import org.eclipse.kapua.commons.event.EventBusService;
+import org.eclipse.kapua.commons.event.EventBus;
 import org.eclipse.kapua.commons.event.EventListenerImpl;
 import org.eclipse.kapua.commons.locator.ComponentProvider;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
@@ -30,10 +29,14 @@ import org.eclipse.kapua.service.event.KapuaEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ComponentProvider
-public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusService {
+/**
+ * @since 0.3.0
+  */
+@Singleton
+@ComponentProvider(provides=EventBus.class)
+public class DummyEventBus implements EventBus {
 
-    private final static Logger logger = LoggerFactory.getLogger(DummyEventBusServiceImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(DummyEventBus.class);
 
     private Map<Class<?>, Object> availableServices;
     
@@ -42,10 +45,10 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
     private PoolListener poolListener;    
     private Map<KapuaEventListener, DummyEventBusConnector> eventConnectors;
 
-    @Inject public DummyEventBusServiceImpl(ManagedObjectPool managedObjects) {
+    @Inject public DummyEventBus(ManagedObjectPool managedObjects) {
         
         this.availableServices = new HashMap<Class<?>, Object>();
-        availableServices.put(EventBusService.class, this);
+        availableServices.put(EventBus.class, this);
         
         this.managedObjects = managedObjects;
         
@@ -56,13 +59,13 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
         // If the object is an event listener it will then manage to plug it into
         // an event bus connector.
         @SuppressWarnings("resource")
-        final DummyEventBusServiceImpl thisEventBusPlugin = this;
+        final DummyEventBus thisEventBus = this;
         poolListener = new PoolListener(){
 
             @Override
             public void onObjectAdded(Object object) {
                 if (KapuaEventListener.class.isAssignableFrom(object.getClass())) {
-                    thisEventBusPlugin.subscribe((KapuaEventListener) object);
+                    thisEventBus.subscribe((KapuaEventListener) object);
                 }
             }
         };
@@ -100,12 +103,6 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
         return eventConnectors.containsKey(eventListener);
     }
 
-    @Override
-    public void onRegisterServices(ServiceRegistration registration) {
-        registration.register(EventBusService.class, this);
-    }
-
-    @Override
     public void start() {
         logger.info("Starting...");
         
@@ -119,7 +116,6 @@ public class DummyEventBusServiceImpl implements LifecycleComponent, EventBusSer
         logger.info("Starting...DONE");
     }
 
-    @Override
     public void stop() {
         logger.info("Stopping...");
         

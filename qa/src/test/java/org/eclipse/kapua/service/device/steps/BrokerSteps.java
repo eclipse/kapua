@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
@@ -63,7 +63,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class BrokerSteps extends Assert {
 
-    protected static KapuaContainer container = new KapuaContainer() {};
+    protected static Container container = new Container() {};
 
     protected static KapuaLocator locator = KapuaLocatorImpl.getInstance();
 

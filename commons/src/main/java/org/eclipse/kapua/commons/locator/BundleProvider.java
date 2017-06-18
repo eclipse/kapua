@@ -9,17 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.core;
+package org.eclipse.kapua.commons.locator;
+
+import java.util.Set;
+
+import org.eclipse.kapua.commons.core.Bundle;
 
 /**
- * Kapua plugin hosts custom code
+ * Bundle provider retrieves the list of bundles
  * 
- * @since 1.0
+ * @since 0.3.0
  */
-public interface LifecycleComponent extends KapuaComponent {
+public interface BundleProvider {
 
-    public void onRegisterServices(ServiceRegistration registration);
-    
-    public void start();
-    public void stop();
+    public Set<Bundle> getBundles();
 }

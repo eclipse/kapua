@@ -17,7 +17,7 @@ import java.io.StringWriter;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class KapuaPositionTest extends Assert {
 
-    private KapuaContainer container = new KapuaContainer() {};
+    private Container container = new Container() {};
 
     private static final String NEWLINE = System.lineSeparator();
 

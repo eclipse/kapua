@@ -21,7 +21,7 @@ import java.util.Random;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.KapuaContainer;
+import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
@@ -43,7 +43,7 @@ public class KapuaTest extends Assert {
     private static final Logger logger = LoggerFactory.getLogger(KapuaTest.class);
 
     protected static Random random = new Random();
-    protected static KapuaContainer container = new KapuaContainer() {};
+    protected static Container container = new Container() {};
     protected KapuaLocator locator;
 
     protected static KapuaId adminUserId;

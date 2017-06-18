@@ -9,15 +9,27 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.event;
+package org.eclipse.kapua.commons.locator.guice;
 
-import org.eclipse.kapua.service.event.KapuaEvent;
-import org.eclipse.kapua.service.event.KapuaEventListener;
+import java.util.Set;
 
-public interface EventBusService {
+import javax.inject.Inject;
+
+import org.eclipse.kapua.commons.core.Bundle;
+import org.eclipse.kapua.commons.locator.BundleProvider;
+
+
+/**
+ * @since 0.3.0
+ *
+ */
+public class BundleProviderImpl implements BundleProvider {
+
+    @Inject Set<Bundle> bundles;
     
-    public void publish(KapuaEvent event);
-    public void subscribe(KapuaEventListener eventListener);
-    public KapuaEventListener unsubscribe(KapuaEventListener eventListener);
-    public boolean isSubscribed(KapuaEventListener eventListener);
+    @Override
+    public Set<Bundle> getBundles() {
+        return bundles;
+    }
+
 }
