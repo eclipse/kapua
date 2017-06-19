@@ -59,6 +59,10 @@ public class KapuaEid implements KapuaId, Serializable {
         setId(id.getId());
     }
 
+    public static KapuaEid parseKapuaId(KapuaId kapuaId) {
+        return kapuaId != null ? (kapuaId instanceof KapuaEid ? (KapuaEid) kapuaId : new KapuaEid(kapuaId)) : null;
+    }
+
     /**
      * Creates a {@link KapuaEid} instance parsing the short identifier provided
      *

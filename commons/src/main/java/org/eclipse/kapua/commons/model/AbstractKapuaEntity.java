@@ -109,7 +109,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     @Override
     public void setId(KapuaId id) {
-        this.id = id != null ? (id instanceof KapuaEid ? (KapuaEid) id : new KapuaEid(id)) : null;
+        this.id = KapuaEid.parseKapuaId(id);
     }
 
     @Override
@@ -123,7 +123,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * @param scopeId
      */
     public void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? (scopeId instanceof KapuaEid ? (KapuaEid) scopeId : new KapuaEid(scopeId)) : null;
+        this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }
 
     @Override
@@ -151,7 +151,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
      * @param createdBy
      */
     public void setCreatedBy(KapuaId createdBy) {
-        this.createdBy = createdBy != null ? (createdBy instanceof KapuaEid ? (KapuaEid) createdBy : new KapuaEid(createdBy)) : null;
+        this.createdBy = KapuaEid.parseKapuaId(createdBy);
     }
 
     /**

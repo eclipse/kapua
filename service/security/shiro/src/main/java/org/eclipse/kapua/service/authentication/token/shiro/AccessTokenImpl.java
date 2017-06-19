@@ -56,15 +56,15 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "expires_on", nullable = false)
     private Date expiresOn;
-    
+
     @Basic
     @Column(name = "refresh_token", updatable = false, nullable = false)
     private String refreshToken;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "refresh_expires_on", nullable = false)
     private Date refreshExpiresOn;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "invalidated_on", nullable = true)
     private Date invalidatedOn;
@@ -111,7 +111,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     @Override
     public void setUserId(KapuaId userId) {
-        this.userId = userId != null ? new KapuaEid(userId) : null;
+        this.userId = KapuaEid.parseKapuaId(userId);
     }
 
     @Override
@@ -167,7 +167,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     @Override
     public void setRefreshExpiresOn(Date refreshExpiresOn) {
         this.refreshExpiresOn = refreshExpiresOn;
-        
+
     }
 
     @Override

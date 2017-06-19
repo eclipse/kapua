@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.Random;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -51,7 +53,6 @@ public class KapuaEidTest {
     public void test() {
         KapuaEid kid = new KapuaEid(eid);
         String sid = kid.toCompactId();
-        System.out.println(eid + "=" + sid);
 
         assertEquals(eid, kid.getId());
         assertEquals(eid.toString(), kid.toString());
@@ -60,5 +61,22 @@ public class KapuaEidTest {
         assertEquals(eid, kid1.getId());
         assertEquals(kid.toString(), kid1.toString());
         assertEquals(kid.toCompactId(), kid1.toCompactId());
+    }
+
+    @Test
+    public void testParseKapuaId() {
+        KapuaEid kapuaEid = new KapuaEid(eid);
+        KapuaEid parsedKapuaEid = KapuaEid.parseKapuaId(kapuaEid);
+
+        assertTrue(kapuaEid == parsedKapuaEid);
+        assertEquals(kapuaEid, parsedKapuaEid);
+        assertEquals(eid, kapuaEid.getId());
+        assertEquals(eid.toString(), kapuaEid.toString());
+
+        KapuaId kapuaIdAny = KapuaId.ANY;
+        KapuaEid parsedKapuaIdAny = KapuaEid.parseKapuaId(kapuaIdAny);
+
+        assertTrue(parsedKapuaIdAny != kapuaIdAny);
+        assertEquals(parsedKapuaIdAny.getId(), kapuaIdAny.getId());
     }
 }

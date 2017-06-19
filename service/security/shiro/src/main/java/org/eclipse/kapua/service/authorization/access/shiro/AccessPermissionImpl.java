@@ -75,8 +75,8 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
     }
 
     @Override
-    public void setAccessInfoId(KapuaId accessInfo) {
-        accessInfoId = accessInfo != null ? accessInfo instanceof KapuaEid ? (KapuaEid) accessInfo : new KapuaEid(accessInfo) : null;
+    public void setAccessInfoId(KapuaId accessInfoId) {
+        this.accessInfoId = KapuaEid.parseKapuaId(accessInfoId);
     }
 
     @Override

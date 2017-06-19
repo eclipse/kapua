@@ -135,7 +135,7 @@ public class EntityManager {
      * @return
      */
     public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id) {
-        KapuaEid eid = id instanceof KapuaEid ? (KapuaEid) id : new KapuaEid(id);
+        KapuaEid eid = KapuaEid.parseKapuaId(id);
         return javaxPersitenceEntityManager.find(clazz, eid);
     }
 

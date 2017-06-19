@@ -134,7 +134,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
      * @param modifiedBy
      */
     public void setModifiedBy(KapuaId modifiedBy) {
-        this.modifiedBy = modifiedBy != null ? (modifiedBy instanceof KapuaEid ? (KapuaEid) modifiedBy : new KapuaEid(modifiedBy)) : null;
+        this.modifiedBy = KapuaEid.parseKapuaId(modifiedBy);
     }
 
     @Override

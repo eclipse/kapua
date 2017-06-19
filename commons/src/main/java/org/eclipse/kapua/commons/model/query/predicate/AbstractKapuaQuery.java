@@ -89,7 +89,7 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
 
     @Override
     public void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? (scopeId instanceof KapuaEid ? (KapuaEid) scopeId : new KapuaEid(scopeId)) : null;
+        this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }
 
     @Override

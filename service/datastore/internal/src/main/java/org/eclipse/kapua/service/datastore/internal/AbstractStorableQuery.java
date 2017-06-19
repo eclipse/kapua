@@ -97,7 +97,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     @Override
     public void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? (scopeId instanceof KapuaEid ? (KapuaEid) scopeId : new KapuaEid(scopeId)) : null;
+        this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }
 
     @Override

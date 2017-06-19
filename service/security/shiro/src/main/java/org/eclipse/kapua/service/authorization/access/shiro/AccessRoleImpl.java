@@ -85,12 +85,8 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     }
 
     @Override
-    public void setAccessInfoId(KapuaId accessId) {
-        if (accessId != null) {
-            accessInfoId = new KapuaEid(accessId);
-        } else {
-            accessInfoId = null;
-        }
+    public void setAccessInfoId(KapuaId accessInfoId) {
+        this.accessInfoId = KapuaEid.parseKapuaId(accessInfoId);
     }
 
     @Override
@@ -99,12 +95,8 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     }
 
     @Override
-    public void setRoleId(KapuaId accessId) {
-        if (accessId != null) {
-            roleId = new KapuaEid(accessId);
-        } else {
-            roleId = null;
-        }
+    public void setRoleId(KapuaId roleId) {
+        this.roleId = KapuaEid.parseKapuaId(roleId);
     }
 
     @Override

@@ -159,7 +159,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public void setTargetScopeId(KapuaId targetScopeId) {
-        this.targetScopeId = targetScopeId != null ? targetScopeId instanceof KapuaEid ? (KapuaEid) targetScopeId : new KapuaEid(targetScopeId) : null;
+        this.targetScopeId = KapuaEid.parseKapuaId(targetScopeId);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
 
     @Override
     public void setGroupId(KapuaId groupId) {
-        this.groupId = groupId != null ? groupId instanceof KapuaEid ? (KapuaEid) groupId : new KapuaEid(groupId) : null;
+        this.groupId = KapuaEid.parseKapuaId(groupId);
     }
 
     @Override

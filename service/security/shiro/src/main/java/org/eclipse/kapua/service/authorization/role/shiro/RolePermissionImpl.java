@@ -89,7 +89,7 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
 
     @Override
     public void setRoleId(KapuaId roleId) {
-        this.roleId = roleId != null ? roleId instanceof KapuaEid ? (KapuaEid) roleId : new KapuaEid(roleId) : null;
+        this.roleId = KapuaEid.parseKapuaId(roleId);
     }
 
     @Override

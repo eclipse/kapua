@@ -80,11 +80,7 @@ public class AccessInfoImpl extends AbstractKapuaUpdatableEntity implements Acce
 
     @Override
     public void setUserId(KapuaId userId) {
-        if (userId != null) {
-            this.userId = new KapuaEid(userId.getId());
-        } else {
-            this.userId = null;
-        }
+        this.userId = KapuaEid.parseKapuaId(userId);
     }
 
     @Override
