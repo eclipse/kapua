@@ -40,6 +40,12 @@ public class UserMock implements User {
     }
 
     @Override
+    public void setScopeId(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }

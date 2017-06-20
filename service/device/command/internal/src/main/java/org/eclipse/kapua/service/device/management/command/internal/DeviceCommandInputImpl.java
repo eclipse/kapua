@@ -127,6 +127,12 @@ public class DeviceCommandInputImpl implements DeviceCommandInput {
     }
 
     @Override
+    public void setScopeId(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public KapuaId getId() {
         // TODO Auto-generated method stub
         return null;

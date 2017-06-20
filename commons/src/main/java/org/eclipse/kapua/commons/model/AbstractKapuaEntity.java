@@ -117,11 +117,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
         return scopeId;
     }
 
-    /**
-     * Sets scope identifier
-     * 
-     * @param scopeId
-     */
+    @Override
     public void setScopeId(KapuaId scopeId) {
         this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }

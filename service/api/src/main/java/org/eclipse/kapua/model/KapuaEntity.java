@@ -36,6 +36,9 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
         "createdBy" })
 public interface KapuaEntity extends KapuaSerializable {
 
+    @XmlTransient
+    public String getType();
+
     /**
      * Get the Kapua identifier for the entity
      * 
@@ -54,9 +57,6 @@ public interface KapuaEntity extends KapuaSerializable {
      */
     public void setId(KapuaId id);
 
-    @XmlTransient
-    public String getType();
-
     /**
      * Get the Kapua scope identifier for the entity
      * 
@@ -66,6 +66,15 @@ public interface KapuaEntity extends KapuaSerializable {
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId();
+
+    /**
+     * Set the Kapua scope identifier for the entity.
+     * 
+     * @param scopeId
+     *            The Kapua scope identifier to set.
+     * @since 1.0.0
+     */
+    public void setScopeId(KapuaId scopeId);
 
     /**
      * Get the created on date
