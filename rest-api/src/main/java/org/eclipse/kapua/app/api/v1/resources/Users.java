@@ -38,7 +38,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserImpl;
 import org.eclipse.kapua.service.user.internal.UserPredicates;
 
 import com.google.common.base.Strings;
@@ -219,7 +218,7 @@ public class Users extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested User.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested User", required = true) @PathParam("userId") EntityId userId,
             @ApiParam(value = "The modified User whose attributes needs to be updated", required = true) User user) throws Exception {
-        ((UserImpl) user).setScopeId(scopeId);
+        user.setScopeId(scopeId);
         user.setId(userId);
 
         return userService.update(user);

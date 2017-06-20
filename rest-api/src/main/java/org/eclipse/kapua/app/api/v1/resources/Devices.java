@@ -42,7 +42,6 @@ import org.eclipse.kapua.service.device.registry.DevicePredicates;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
-import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 
 import com.google.common.base.Strings;
 
@@ -232,7 +231,7 @@ public class Devices extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested Device.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The modified Device whose attributed need to be updated", required = true) Device device) throws Exception {
-        ((DeviceImpl) device).setScopeId(scopeId);
+        device.setScopeId(scopeId);
         device.setId(deviceId);
 
         return deviceService.update(device);

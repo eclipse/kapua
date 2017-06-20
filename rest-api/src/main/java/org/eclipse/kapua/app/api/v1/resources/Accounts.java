@@ -39,7 +39,6 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountPredicates;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.internal.AccountImpl;
 
 import com.google.common.base.Strings;
 
@@ -233,7 +232,7 @@ public class Accounts extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
             @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") EntityId accountId, //
             @ApiParam(value = "The modified Account whose attributes needs to be updated", required = true) Account account) throws Exception {
-        ((AccountImpl) account).setScopeId(scopeId);
+        account.setScopeId(scopeId);
         account.setId(accountId);
 
         return accountService.update(account);
