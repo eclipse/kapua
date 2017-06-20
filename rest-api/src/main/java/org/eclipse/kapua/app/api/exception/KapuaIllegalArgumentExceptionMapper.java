@@ -16,22 +16,22 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.app.api.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.app.api.exception.model.IllegalArgumentExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider
-public class KapuaEntityNotFoundExceptionMapper implements ExceptionMapper<KapuaEntityNotFoundException> {
+public class KapuaIllegalArgumentExceptionMapper implements ExceptionMapper<KapuaIllegalArgumentException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityNotFoundExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaIllegalArgumentExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaEntityNotFoundException kapuaException) {
-        LOG.error("Entity not found exception!", kapuaException);
+    public Response toResponse(KapuaIllegalArgumentException kapuaException) {
+        LOG.error("Illegal argument exception!", kapuaException);
         return Response//
-                .status(Status.NOT_FOUND) //
-                .entity(new EntityNotFoundExceptionInfo(Status.NOT_FOUND, kapuaException)) //
+                .status(Status.BAD_REQUEST) //
+                .entity(new IllegalArgumentExceptionInfo(Status.BAD_REQUEST, kapuaException)) //
                 .build();
     }
 }
