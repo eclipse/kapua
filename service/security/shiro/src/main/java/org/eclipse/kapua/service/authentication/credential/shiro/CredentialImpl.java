@@ -71,6 +71,22 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     @Column(name = "credential_status", nullable = false)
     private CredentialStatus credentialStatus;
 
+    @Basic
+    @Column(name = "login_failures", nullable = false)
+    private int loginFailures;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "first_login_failure")
+    protected Date firstLoginFailure;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "login_failures_reset")
+    protected Date loginFailuresReset;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "lockout_reset")
+    protected Date lockoutReset;
+
     /**
      * Constructor
      */
@@ -148,5 +164,53 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     @Override
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public void setUserId(KapuaEid userId) {
+        this.userId = userId;
+    }
+
+    public CredentialStatus getCredentialStatus() {
+        return credentialStatus;
+    }
+
+    @Override
+    public int getLoginFailures() {
+        return loginFailures;
+    }
+
+    @Override
+    public void setLoginFailures(int loginFailures) {
+        this.loginFailures = loginFailures;
+    }
+
+    @Override
+    public Date getFirstLoginFailure() {
+        return firstLoginFailure;
+    }
+
+    @Override
+    public void setFirstLoginFailure(Date firstLoginFailure) {
+        this.firstLoginFailure = firstLoginFailure;
+    }
+
+    @Override
+    public Date getLoginFailuresReset() {
+        return loginFailuresReset;
+    }
+
+    @Override
+    public void setLoginFailuresReset(Date loginFailuresReset) {
+        this.loginFailuresReset = loginFailuresReset;
+    }
+
+    @Override
+    public Date getLockoutReset() {
+        return lockoutReset;
+    }
+
+    @Override
+    public void setLockoutReset(Date lockoutReset) {
+        this.lockoutReset = lockoutReset;
     }
 }

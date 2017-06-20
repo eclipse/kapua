@@ -38,7 +38,11 @@ import java.util.Date;
         "credentialType",
         "credentialKey",
         "status",
-        "expirationDate"}, //
+        "expirationDate",
+        "loginFailures",
+        "firstLoginFailure",
+        "loginFailuresReset",
+        "lockoutReset"}, //
         factoryClass = CredentialXmlRegistry.class, //
         factoryMethod = "newCredential") //
 public interface Credential extends KapuaUpdatableEntity {
@@ -91,14 +95,90 @@ public interface Credential extends KapuaUpdatableEntity {
      */
     public void setCredentialKey(String credentialKey);
 
+    /**
+     * Returns the current Credential status
+     * @return the Credential status
+     * @see CredentialStatus
+     */
     @XmlElement(name = "status")
     CredentialStatus getStatus();
 
+    /**
+     * Sets the current Credential status
+     * @param status The credential status
+     */
     void setCredentialStatus(CredentialStatus status);
 
+    /**
+     * Gets the current Credential expiration date
+     * @return the current Credential expiration date
+     */
     @XmlElement(name="expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getExpirationDate();
 
+    /**
+     * Sets the current Credential expiration date
+     * @param expirationDate the current Credential expiration date
+     */
     void setExpirationDate(Date expirationDate);
+
+    /**
+     * Gets how many times this credential failed a login
+     * @return an integer representing login failures for this credential
+     */
+    int getLoginFailures();
+
+    /**
+     * Sets how many times this credential failed a login
+     * @param loginFailures the new failed logins count
+     */
+    void setLoginFailures(int loginFailures);
+
+    /**
+     * Gets a date indicating when the first login attempt failed after
+     * the login attempts have been reset
+     * @return A {@link Date} object indicating when the first login
+     * attempt failed after the login attempts have been reset
+     */
+    @XmlElement(name="firstLoginFailure")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getFirstLoginFailure();
+
+    /**
+     * Sets a date indicating when the first login attempt failed after
+     * the login attempts have been reset
+     * @param firstLoginFailure A {@link Date} object indicating when the first login
+     * attempt failed after the login attempts have been reset
+     */
+    void setFirstLoginFailure(Date firstLoginFailure);
+
+    /**
+     * Gets a date indicating when the failed login attempts will be reset
+     * @return A {@link Date} object indicating when the failed login attempts will be reset
+     */
+    @XmlElement(name="loginFailuresReset")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getLoginFailuresReset();
+
+    /**
+     * Sets a date indicating when the failed login attempts will be reset
+     * @param loginFailuresReset A {@link Date} object indicating when the
+     * failed login attempts will be reset
+     */
+    void setLoginFailuresReset(Date loginFailuresReset);
+
+    /**
+     * Gets a date indicating when the lockout will be lifted from the credential
+     * @return A {@link Date} object indicating when the lockout will be reset
+     */
+    @XmlElement(name="lockoutReset")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
+    Date getLockoutReset();
+
+    /**
+     * Sets a date indicating when the lockout will be lifted from the credential
+     * @param lockoutReset A {@link Date} object indicating when the lockout will be reset
+     */
+    void setLockoutReset(Date lockoutReset);
 }
