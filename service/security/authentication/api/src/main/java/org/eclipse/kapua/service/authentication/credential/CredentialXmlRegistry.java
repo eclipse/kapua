@@ -45,7 +45,7 @@ public class CredentialXmlRegistry {
      * @return
      */
     public CredentialCreator newCredentialCreator() {
-        return factory.newCreator(null, null, null, null);
+        return factory.newCreator(null, null, null, null, null, null);
     }
 
     public CredentialQuery newQuery() {

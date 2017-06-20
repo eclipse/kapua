@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
@@ -158,7 +159,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
 
         // Create credential
 
-        final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt);
+        final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt, CredentialStatus.ENABLED, null);
 
         // Build AuthenticationInfo
 

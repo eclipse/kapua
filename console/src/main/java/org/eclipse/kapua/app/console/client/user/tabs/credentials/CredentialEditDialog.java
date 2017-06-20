@@ -36,6 +36,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
     public void submit() {
         // TODO read enabled and expire date
         selectedCredential.setCredentialKey(password.getValue());
+        selectedCredential.setExpirationDate(expirationDate.getValue());
+        selectedCredential.setCredentialStatus(credentialStatus.getValue().getValue().toString());
+        selectedCredential.setOptlock(optlock.getValue().intValue());
         GWT_CREDENTIAL_SERVICE.update(xsrfToken, selectedCredential, new AsyncCallback<GwtCredential>() {
 
             @Override
@@ -69,6 +72,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     private void loadCredential() {
         credentialType.setSimpleValue(selectedCredential.getCredentialTypeEnum());
+        expirationDate.setValue(selectedCredential.getExpirationDate());
+        credentialStatus.setSimpleValue(selectedCredential.getCredentialStatusEnum());
+        optlock.setValue(selectedCredential.getOptlock());
     }
 
     @Override

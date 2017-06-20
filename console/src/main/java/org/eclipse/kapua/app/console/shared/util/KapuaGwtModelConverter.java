@@ -615,6 +615,8 @@ public class KapuaGwtModelConverter {
         gwtCredential.setUserId(credential.getUserId().toCompactId());
         gwtCredential.setCredentialType(credential.getCredentialType().toString());
         gwtCredential.setCredentialKey(credential.getCredentialKey());
+        gwtCredential.setCredentialStatus(credential.getStatus().toString());
+        gwtCredential.setExpirationDate(credential.getExpirationDate());
         if (user != null) {
             gwtCredential.setUsername(user.getName());
         }

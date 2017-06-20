@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.shared.model.account.GwtAccountQuery;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredential;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialQuery;
+import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.shared.model.authentication.GwtCredentialType;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessInfoCreator;
 import org.eclipse.kapua.app.console.shared.model.authorization.GwtAccessPermissionCreator;
@@ -68,6 +69,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDomain;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenDomain;
@@ -403,8 +405,12 @@ public class GwtKapuaModelConverter {
         // Convert scopeId
         KapuaId scopeId = convert(gwtCredentialCreator.getScopeId());
         CredentialCreator credentialCreator = credentialFactory
-                .newCreator(scopeId, convert(gwtCredentialCreator.getUserId()), convert(gwtCredentialCreator.getCredentialType()), gwtCredentialCreator.getCredentialPlainKey());
-
+                .newCreator(scopeId,
+                        convert(gwtCredentialCreator.getUserId()),
+                        convert(gwtCredentialCreator.getCredentialType()),
+                        gwtCredentialCreator.getCredentialPlainKey(),
+                        convert(gwtCredentialCreator.getCredentialStatus()),
+                        gwtCredentialCreator.getExpirationDate());
         //
         // Return converted
         return credentialCreator;
@@ -425,11 +431,16 @@ public class GwtKapuaModelConverter {
 
         // Convert scopeId
         KapuaId scopeId = convert(gwtCredential.getScopeId());
-        Credential credential = credentialFactory
-                .newCredential(scopeId, convert(gwtCredential.getUserId()), convert(gwtCredential.getCredentialTypeEnum()), gwtCredential.getCredentialKey());
+        Credential credential = credentialFactory.newEntity(scopeId);
+        convertEntity(gwtCredential, credential);
         if (gwtCredential.getId() != null && !gwtCredential.getId().trim().isEmpty()) {
             credential.setId(convert(gwtCredential.getId()));
         }
+        credential.setUserId(convert(gwtCredential.getUserId()));
+        credential.setCredentialType(convert(gwtCredential.getCredentialTypeEnum()));
+        credential.setCredentialKey(gwtCredential.getCredentialKey());
+        credential.setExpirationDate(gwtCredential.getExpirationDate());
+        credential.setCredentialStatus(convert(gwtCredential.getCredentialStatusEnum()));
         //
         // Return converted
         return credential;
@@ -738,6 +749,10 @@ public class GwtKapuaModelConverter {
 
     public static CredentialType convert(GwtCredentialType gwtCredentialType) {
         return CredentialType.valueOf(gwtCredentialType.toString());
+    }
+
+    public static CredentialStatus convert(GwtCredentialStatus gwtCredentialStatus) {
+        return CredentialStatus.valueOf(gwtCredentialStatus.toString());
     }
 
     public static Map<String, Object> convert(GwtConfigComponent configComponent) {

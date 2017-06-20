@@ -11,13 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+
+import java.util.Date;
 
 /**
  * Credential creator implementation.
@@ -29,33 +30,34 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
 
     private static final long serialVersionUID = -5020680413729882095L;
 
-    @XmlElement(name = "userId")
     private KapuaId userId;
-
-    @XmlElement(name = "credentialType")
     private CredentialType credentialType;
-
-    @XmlElement(name = "credentialKey")
     private String credentialKey;
+    private Date expirationDate;
+    private CredentialStatus credentialStatus;
+
 
     /**
      * Constructor
-     * 
-     * @param scopeId
+     *  @param scopeId
      *            scope identifier
      * @param userId
      *            user identifier
      * @param credentialType
-     *            credential type (see {@link CredentialType} for the allowed values)
+ *            credential type (see {@link CredentialType} for the allowed values)
      * @param credentialKey
-     *            credential key
+     * @param credentialStatus
+     * @param expirationDate
      */
-    public CredentialCreatorImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
+    public CredentialCreatorImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey,
+            CredentialStatus credentialStatus, Date expirationDate) {
         super(scopeId);
 
         this.userId = userId;
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
+        this.credentialStatus = credentialStatus;
+        this.expirationDate = expirationDate;
     }
     
     public CredentialCreatorImpl(KapuaId scopeId) {
@@ -88,5 +90,25 @@ public class CredentialCreatorImpl extends AbstractKapuaEntityCreator<Credential
     @Override
     public void setCredentialPlainKey(String credentialKey) {
         this.credentialKey = credentialKey;
+    }
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public CredentialStatus getCredentialStatus() {
+        return credentialStatus;
+    }
+
+    @Override
+    public void setCredentialStatus(CredentialStatus credentialStatus) {
+        this.credentialStatus = credentialStatus;
     }
 }

@@ -20,6 +20,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,10 +30,13 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
+import java.util.Date;
+
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "Credential")
 @Table(name = "atht_credential")
 /**
@@ -58,6 +63,14 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     @Column(name = "credential_key", nullable = false)
     private String credentialKey;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "expiration_date")
+    protected Date expirationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "credential_status", nullable = false)
+    private CredentialStatus credentialStatus;
+
     /**
      * Constructor
      */
@@ -73,11 +86,13 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
      * @param credentialType
      * @param credentialKey
      */
-    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey) {
+    public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate) {
         super(scopeId);
         this.userId = (KapuaEid) userId;
         this.credentialType = credentialType;
         this.credentialKey = credentialKey;
+        this.credentialStatus = credentialStatus;
+        this.expirationDate = expirationDate;
     }
 
     public CredentialImpl(KapuaId scopeId) {
@@ -115,4 +130,23 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
         this.credentialKey = credentialKey;
     }
 
+    @Override
+    public CredentialStatus getStatus() {
+        return credentialStatus;
+    }
+
+    @Override
+    public void setCredentialStatus(CredentialStatus status) {
+        this.credentialStatus = status;
+    }
+
+    @Override
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }

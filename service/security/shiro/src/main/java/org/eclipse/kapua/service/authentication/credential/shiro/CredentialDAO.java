@@ -62,7 +62,9 @@ public class CredentialDAO extends ServiceDAO {
         CredentialImpl credentialImpl = new CredentialImpl(credentialCreator.getScopeId(),
                 credentialCreator.getUserId(),
                 credentialCreator.getCredentialType(),
-                cryptedCredential);
+                cryptedCredential,
+                credentialCreator.getCredentialStatus(),
+                credentialCreator.getExpirationDate());
 
         //
         // Do create

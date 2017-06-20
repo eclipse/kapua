@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -162,7 +163,9 @@ public class DeviceCommandManagementServiceTest extends Assert {
         CredentialCreator credentialCreator = credentialFactory.newCreator(account.getId(),
                 user.getId(),
                 CredentialType.PASSWORD,
-                "kapua-password");
+                "kapua-password",
+                CredentialStatus.ENABLED,
+                null);
 
         credentialService.create(credentialCreator);
 

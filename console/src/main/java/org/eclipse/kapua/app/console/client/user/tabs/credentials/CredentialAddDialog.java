@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
@@ -56,7 +55,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     protected TextField<String> password;
     protected TextField<String> confirmPassword;
     protected DateField expirationDate;
-    protected CheckBox enabled;
+    protected SimpleComboBox<GwtCredentialStatus> credentialStatus;
     protected NumberField optlock;
 
     protected static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
@@ -119,15 +118,25 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialFormPanel.add(confirmPassword);
 
         expirationDate = new DateField();
+        expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         credentialFormPanel.add(expirationDate);
 
-        enabled = new CheckBox();
-        enabled.setFieldLabel(MSGS.dialogAddFieldEnabled());
-        enabled.setBoxLabel("");    // Align to the left
-        credentialFormPanel.add(enabled);
+        credentialStatus = new SimpleComboBox<GwtCredentialStatus>();
+        credentialStatus.setName("comboStatus");
+        credentialStatus.setFieldLabel(MSGS.dialogAddStatus());
+        credentialStatus.setLabelSeparator(":");
+        credentialStatus.setEditable(false);
+        credentialStatus.setTypeAhead(true);
+        credentialStatus.setTriggerAction(ComboBox.TriggerAction.ALL);
+        // show account status combo box
+        for (GwtCredentialStatus credentialStatus : GwtCredentialStatus.values()) {
+            this.credentialStatus.add(credentialStatus);
+        }
+        credentialStatus.setSimpleValue(GwtCredentialStatus.ENABLED);
+        credentialFormPanel.add(credentialStatus);
 
         optlock = new NumberField();
         optlock.setName("optlock");
@@ -148,7 +157,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         gwtCredentialCreator.setCredentialPlainKey(password.getValue());
         gwtCredentialCreator.setUserId(selectedUser.getId());
         gwtCredentialCreator.setExpirationDate(expirationDate.getValue());
-        gwtCredentialCreator.setCredentialStatus(enabled.getValue() ? GwtCredentialStatus.ENABLED : GwtCredentialStatus.DISABLED);
+        gwtCredentialCreator.setCredentialStatus(credentialStatus.getValue().getValue());
 
         GWT_CREDENTIAL_SERVICE.create(xsrfToken, gwtCredentialCreator, new AsyncCallback<GwtCredential>() {
 

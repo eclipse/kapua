@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -105,6 +106,16 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
             throw new UnknownAccountException();
         }
 
+        // Check credential disabled
+        if (CredentialStatus.DISABLED.equals(credential.getStatus())) {
+            throw new DisabledAccountException();
+        }
+
+        // Check if credential expired
+        if (credential.getExpirationDate() != null && !credential.getExpirationDate().after(new Date())) {
+            throw new ExpiredCredentialsException();
+        }
+
         //
         // Get the associated user by name
         final User user;
@@ -145,6 +156,16 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         // Check existence
         if (account == null) {
             throw new UnknownAccountException();
+        }
+
+        // Check credential disabled
+        if (CredentialStatus.DISABLED.equals(credential.getStatus())) {
+            throw new DisabledAccountException();
+        }
+
+        // Check if credential expired
+        if (credential.getExpirationDate() != null && !credential.getExpirationDate().after(new Date())) {
+            throw new ExpiredCredentialsException();
         }
 
         //

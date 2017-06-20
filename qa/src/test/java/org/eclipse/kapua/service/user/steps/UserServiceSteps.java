@@ -41,6 +41,7 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
@@ -435,7 +436,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password) {
         CredentialCreator credentialCreator;
 
-        credentialCreator = new CredentialFactoryImpl().newCreator(scopeId, userId, CredentialType.PASSWORD, password);
+        credentialCreator = new CredentialFactoryImpl().newCreator(scopeId, userId, CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
 
         return credentialCreator;
     }

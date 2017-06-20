@@ -69,6 +69,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         ArgumentValidator.notNull(credentialCreator.getScopeId(), "credentialCreator.scopeId");
         ArgumentValidator.notNull(credentialCreator.getUserId(), "credentialCreator.userId");
         ArgumentValidator.notNull(credentialCreator.getCredentialType(), "credentialCreator.credentialType");
+        ArgumentValidator.notNull(credentialCreator.getCredentialStatus(), "credentialCreator.credentialStatus");
         if (credentialCreator.getCredentialType() != CredentialType.API_KEY) {
             ArgumentValidator.notEmptyOrNull(credentialCreator.getCredentialPlainKey(), "credentialCreator.credentialKey");
         }
@@ -110,7 +111,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                 credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
                         credentialCreator.getUserId(),
                         credentialCreator.getCredentialType(),
-                        fullKey);
+                        fullKey,
+                        credentialCreator.getCredentialStatus(),
+                        credentialCreator.getExpirationDate());
 
                 break;
             case PASSWORD:
