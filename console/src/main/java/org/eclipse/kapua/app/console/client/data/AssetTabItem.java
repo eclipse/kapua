@@ -40,7 +40,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.ui.Widget;
 
 public class AssetTabItem extends TabItem {
 
