@@ -55,6 +55,11 @@ public class BasicSteps extends Assert {
         Thread.sleep(ofSeconds((long) Math.ceil(effectiveSeconds)).toMillis());
     }
 
+    @When("(\\d+) seconds?.* passed")
+    public void secondsPassed(int seconds) throws InterruptedException {
+        waitSeconds(seconds);
+    }
+
     @Then("^An exception was thrown$")
     public void exceptionCaught() {
         assertTrue((boolean) stepData.get("ExceptionCaught"));
