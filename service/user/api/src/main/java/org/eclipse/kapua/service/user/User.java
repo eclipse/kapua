@@ -35,7 +35,8 @@ import java.util.Date;
         "email",
         "phoneNumber",
         "userType",
-        "externalId"
+        "externalId",
+        "expirationDate"
 }, //
         factoryClass = UserXmlRegistry.class, //
         factoryMethod = "newUser")
