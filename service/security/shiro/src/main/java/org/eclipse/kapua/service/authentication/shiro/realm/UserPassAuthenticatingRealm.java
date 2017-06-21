@@ -79,16 +79,14 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
 
         //
         // Get Services
-        KapuaLocator locator;
         UserService userService;
         AccountService accountService;
         CredentialService credentialService;
 
         try {
-            locator = KapuaLocator.getInstance();
-            userService = locator.getService(UserService.class);
-            accountService = locator.getService(AccountService.class);
-            credentialService = locator.getService(CredentialService.class);
+            userService = LOCATOR.getService(UserService.class);
+            accountService = LOCATOR.getService(AccountService.class);
+            credentialService = LOCATOR.getService(CredentialService.class);
         } catch (KapuaRuntimeException kre) {
             throw new ShiroException("Error while getting services!", kre);
         }
@@ -210,7 +208,6 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
             super.assertCredentialsMatch(authcToken, info);
         } catch (AuthenticationException authenticationEx) {
             try {
-                // TODO Update Lockout Policy fields
                 Credential failedCredential = (Credential) kapuaInfo.getCredentials();
                 KapuaSecurityUtils.doPrivileged(() -> {
                     Map<String, Object> credentialServiceConfig = kapuaInfo.getCredentialServiceConfig();
@@ -244,7 +241,6 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
             }
             throw authenticationEx;
         }
-        // TODO Clear Lockout Policy fields
         Credential credential = (Credential) kapuaInfo.getCredentials();
         credential.setFirstLoginFailure(null);
         credential.setLoginFailuresReset(null);
