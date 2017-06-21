@@ -17,6 +17,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.Container;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -31,9 +33,11 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -50,6 +54,8 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
 public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
+
+    private Container container;
 
     // Various domain related service references
     DomainService domainService ;
@@ -74,12 +80,18 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
+        this.container = new Container() {};
+        this.container.startup();
+        
         this.scenario = scenario;
 
+        // Retrieve the entity manager factory
+        AuthorizationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthorizationEntityManagerFactory.class);
+
         // Instantiate all the services and factories that are required by the tests
-        domainService = new DomainServiceImpl();
+        domainService = new DomainServiceImpl(factory);
         domainFactory = new DomainFactoryImpl();
-        groupService = new GroupServiceImpl();
+        groupService = new GroupServiceImpl(factory);
         groupFactory = new GroupFactoryImpl();
 
         // Clean up the database. A clean slate is needed for truly independent
@@ -90,6 +102,11 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         // Clean up the test data scratchpads
         commonData.clearData();
         domainData.clearData();
+    }
+
+    @After
+    public void afterScenario() throws KapuaException {
+        container.shutdown();
     }
 
     // *************************************

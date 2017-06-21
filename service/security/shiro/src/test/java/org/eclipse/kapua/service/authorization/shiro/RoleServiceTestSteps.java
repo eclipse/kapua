@@ -21,11 +21,14 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.Container;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -49,6 +52,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.test.steps.DatabaseInstance;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -62,6 +66,8 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     private static final Domain TEST_DOMAIN = new TestDomain();
+
+    private Container container;
 
     // Various Role related service references
     RoleCreator roleCreator;
@@ -89,13 +95,19 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
+        this.container = new Container() {};
+        this.container.startup();
+
         this.scenario = scenario;
         commonData.exceptionCaught = false;
 
+        // Retrieve the entity manager factory
+        AuthorizationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthorizationEntityManagerFactory.class);
+
         // Instantiate all the services and factories that are required by the tests
-        roleService = new RoleServiceImpl();
+        roleService = new RoleServiceImpl(factory);
         roleFactory = new RoleFactoryImpl();
-        rolePermissionService = new RolePermissionServiceImpl();
+        rolePermissionService = new RolePermissionServiceImpl(factory);
         rolePermissionFactory = new RolePermissionFactoryImpl();
         permissionFactory = new PermissionFactoryImpl();
 
@@ -107,6 +119,11 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         // Clean up the test data scratchpads
         commonData.clearData();
         roleData.clearData();
+    }
+
+    @After
+    public void afterScenario() throws KapuaException {
+        container.shutdown();
     }
 
     // *************************************

@@ -17,9 +17,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import cucumber.api.java.After;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.Container;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -54,6 +54,7 @@ import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleFactoryImp
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -66,6 +67,7 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserImpl;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -124,12 +126,15 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
 
         this.scenario = scenario;
 
+        // Retrieve the entity manager factory
+        AuthorizationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthorizationEntityManagerFactory.class);
+
         // Instantiate all the services and factories that are required by the tests
-        accessInfoService = new AccessInfoServiceImpl();
+        accessInfoService = new AccessInfoServiceImpl(factory);
         accessInfoFactory = new AccessInfoFactoryImpl();
-        accessPermissionService = new AccessPermissionServiceImpl();
+        accessPermissionService = new AccessPermissionServiceImpl(factory);
         accessPermissionFactory = new AccessPermissionFactoryImpl();
-        accessRoleService = new AccessRoleServiceImpl();
+        accessRoleService = new AccessRoleServiceImpl(factory);
         accessRoleFactory = new AccessRoleFactoryImpl();
 
         userService = LOCATOR.getService(UserService.class);

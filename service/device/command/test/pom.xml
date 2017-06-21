@@ -33,7 +33,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice-service</artifactId>
+            <artifactId>kapua-locator-guice-service</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

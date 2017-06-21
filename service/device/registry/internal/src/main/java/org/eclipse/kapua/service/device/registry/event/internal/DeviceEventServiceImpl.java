@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
@@ -49,8 +51,8 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
     /**
      * Constructor
      */
-    public DeviceEventServiceImpl() {
-        super(DeviceEntityManagerFactory.instance());
+    @Inject public DeviceEventServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+        super(deviceEntityManagerFactory);
         KapuaLocator locator = KapuaLocator.getInstance();
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);

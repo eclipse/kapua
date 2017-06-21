@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -47,15 +49,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      *
      * @param deviceEntityManagerFactory
      */
-    public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+    @Inject public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
         super(DeviceRegistryService.class.getName(), DEVICE_DOMAIN, deviceEntityManagerFactory, DeviceRegistryService.class, DeviceFactory.class);
-    }
-
-    /**
-     * Constructor
-     */
-    public DeviceRegistryServiceImpl() {
-        this(DeviceEntityManagerFactory.instance());
     }
 
     // Operations implementation

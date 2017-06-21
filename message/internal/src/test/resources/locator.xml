@@ -50,6 +50,7 @@
 	</provided>
 	<packages>
 		<package>org.eclipse.kapua.service.authentication.credential.shiro</package>
+		<package>org.eclipse.kapua.service.authentication.jpa</package>
 
         <package>org.eclipse.kapua.service.authorization.domain.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.permission.shiro</package>
@@ -58,6 +59,7 @@
 		<package>org.eclipse.kapua.service.authorization.access.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.role.shiro</package>
 		<package>org.eclipse.kapua.service.authorization.shiro</package>
+		<package>org.eclipse.kapua.service.authorization.jpa</package>
 
 		<package>org.eclipse.kapua.test.user</package>
 		<package>org.eclipse.kapua.test.account</package>

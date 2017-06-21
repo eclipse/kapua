@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -22,6 +24,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -32,7 +35,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * {@link RolePermission} service implementation.
@@ -46,8 +48,8 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     private static final Domain ROLE_DOMAIN = new RoleDomain();
     private static final RoleService ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);
 
-    public RolePermissionServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+    @Inject public RolePermissionServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+        super(authorizationEntityManagerFactory);
     }
 
     @Override

@@ -46,5 +46,6 @@
 		<package>org.eclipse.kapua.test.authorization</package>
         
         <package>org.eclipse.kapua.commons.model.id</package>
+        <package>org.eclipse.kapua.commons.jpa</package>
 	</packages>
 </locator-config>

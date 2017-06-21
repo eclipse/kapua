@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.account.internal;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -65,8 +66,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * 
      * @since 1.0.0
      */
-    public AccountServiceImpl() {
-        super(AccountService.class.getName(), ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
+    @Inject public AccountServiceImpl(AccountEntityManagerFactory entityManagerFactory) {
+        super(AccountService.class.getName(), ACCOUNT_DOMAIN, entityManagerFactory, AccountService.class, AccountFactory.class);
     }
 
     @Override

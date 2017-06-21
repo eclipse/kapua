@@ -17,10 +17,11 @@ import java.util.Random;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
+import org.eclipse.kapua.service.authentication.jpa.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -63,7 +64,8 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
 
             logger.info("Running database scripts...");
 
-            em = AuthenticationEntityManagerFactory.getEntityManager();
+            AuthenticationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthenticationEntityManagerFactory.class);
+            em = factory.createEntityManager();
             em.beginTransaction();
 
             SimpleSqlScriptExecutor sqlScriptExecutor = new SimpleSqlScriptExecutor();

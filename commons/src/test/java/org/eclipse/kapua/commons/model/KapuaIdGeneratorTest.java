@@ -19,8 +19,10 @@ import static org.junit.Assert.fail;
 import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.misc.CollisionEntity;
+import org.eclipse.kapua.commons.model.misc.CollisionEntityManagerFactory;
 import org.eclipse.kapua.commons.model.misc.CollisionIdGenerator;
 import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -52,7 +54,7 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     public void testKeyCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("1000", new BigInteger("499"), 5);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
-        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl();
+        CollisionServiceImpl collisionServiceImpl = ComponentLocator.getInstance().getComponent(CollisionServiceImpl.class);
         try {
             // this insert creates the record with the correct id
             collisionServiceImpl.insert("Collision - first record");
@@ -74,7 +76,8 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     public void testKeyPartialCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("2000", new BigInteger("1499"), 4);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
-        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl();
+        CollisionEntityManagerFactory collisionEntityManagerFactory = ComponentLocator.getInstance().getComponent(CollisionEntityManagerFactory.class);
+        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl(collisionEntityManagerFactory);
         try {
             // this insert creates the record with the correct id
             collisionServiceImpl.insert("PartialCollision - first record");
@@ -96,7 +99,8 @@ public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
     public void testKeyNoKeyCollision() {
         CollisionIdGenerator collisionIdGenerator = new CollisionIdGenerator("3000", new BigInteger("2499"), 0);
         CollisionEntity.initializeCollisionIdGenerator(collisionIdGenerator);
-        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl();
+        CollisionEntityManagerFactory collisionEntityManagerFactory = ComponentLocator.getInstance().getComponent(CollisionEntityManagerFactory.class);
+        CollisionServiceImpl collisionServiceImpl = new CollisionServiceImpl(collisionEntityManagerFactory);
         try {
             collisionServiceImpl.insert("NoKeyCollision - first record");
             assertEquals("The generated random identifiers count is wrong!", 1, collisionIdGenerator.getGeneretedValuesCount());

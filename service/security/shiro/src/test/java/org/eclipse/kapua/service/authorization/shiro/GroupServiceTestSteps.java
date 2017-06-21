@@ -19,6 +19,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.core.Container;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -31,8 +33,10 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -45,6 +49,8 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
+
+    private Container container;
 
     // Test data scratchpads
     CommonTestData commonData ;
@@ -67,11 +73,17 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
     @Before
     public void beforeScenario(Scenario scenario)
             throws Exception {
+        this.container = new Container() {};
+        this.container.startup();
+
         this.scenario = scenario;
         commonData.exceptionCaught = false;
 
+        // Retrieve the entity manager factory
+        AuthorizationEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AuthorizationEntityManagerFactory.class);
+
         // Instantiate all the services and factories that are required by the tests
-        groupService = new GroupServiceImpl();
+        groupService = new GroupServiceImpl(factory);
         groupFactory = new GroupFactoryImpl();
 
         // Clean up the database. A clean slate is needed for truly independent
@@ -89,6 +101,11 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
 
         // Setup JAXB context
         XmlUtil.setContextProvider(new ShiroJAXBContextProvider());
+    }
+
+    @After
+    public void afterScenario() throws KapuaException {
+        container.shutdown();
     }
 
     // *************************************

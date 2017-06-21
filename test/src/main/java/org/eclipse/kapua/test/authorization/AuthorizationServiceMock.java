@@ -13,7 +13,7 @@ package org.eclipse.kapua.test.authorization;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.locator.guice.TestService;
+import org.eclipse.kapua.locator.guice.service.TestService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 

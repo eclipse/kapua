@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -27,9 +29,9 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainService;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * {@link DomainService} implementation.
@@ -42,8 +44,8 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
 
     private static final Domain DOMAIN_DOMAIN = new DomainDomain();
 
-    public DomainServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+    @Inject public DomainServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+        super(authorizationEntityManagerFactory);
     }
 
     @Override

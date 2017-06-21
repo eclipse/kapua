@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class KapuaConfigurableServiceSchemaUtils {
 
             logger.info("Running database scripts...");
 
-            em = CommonsEntityManagerFactory.getEntityManager();
+            em = ComponentLocator.getInstance().getComponent(CommonsEntityManagerFactory.class).createEntityManager();
             em.beginTransaction();
 
             SimpleSqlScriptExecutor sqlScriptExecutor = new SimpleSqlScriptExecutor();

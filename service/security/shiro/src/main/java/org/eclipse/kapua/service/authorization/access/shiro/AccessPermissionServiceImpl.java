@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -28,10 +30,10 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * {@link AccessPermission} service implementation.
@@ -44,8 +46,8 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
 
     private static final Domain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
 
-    public AccessPermissionServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+    @Inject public AccessPermissionServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+        super(authorizationEntityManagerFactory);
     }
 
     @Override

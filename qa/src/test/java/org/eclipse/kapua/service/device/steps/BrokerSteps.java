@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.qa.steps.EmbeddedBroker;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
@@ -65,7 +64,7 @@ public class BrokerSteps extends Assert {
 
     protected static Container container = new Container() {};
 
-    protected static KapuaLocator locator = KapuaLocatorImpl.getInstance();
+    protected static KapuaLocator locator = KapuaLocator.getInstance();
 
     /**
      * Embedded broker configuration file from classpath resources.
@@ -136,7 +135,7 @@ public class BrokerSteps extends Assert {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
         container.startup();
-        locator = KapuaLocatorImpl.getInstance();
+        locator = KapuaLocator.getInstance();
 
         //KapuaLocator locator = KapuaLocator.getInstance();
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);

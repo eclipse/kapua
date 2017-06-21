@@ -107,8 +107,6 @@ public class KapuaModule extends AbstractModule {
                         continue;
                     }
                 }
-                
-                logger.info("Binding interceptors ..");
 
                 // When the provided object is a factory ...
                 // ... add binding with a matching implementation
@@ -131,7 +129,8 @@ public class KapuaModule extends AbstractModule {
                 logger.warn("No provider found for {}", kapuaObject);
             }
             
-            // Bind interceptors
+            // Bind interceptors            
+            logger.info("Binding interceptors ..");
             for (Class<?> clazz : providers) {
                 if (MethodInterceptor.class.isAssignableFrom(clazz)) {
                     InterceptorBind annotation = clazz.getAnnotation(InterceptorBind.class);
@@ -145,7 +144,9 @@ public class KapuaModule extends AbstractModule {
             
             logger.info("Binding lifecycle listeners ..");
             final KapuaModule thisModule = this;
-            // When an implementation of a service is created the listener is invoked
+            
+            // When a new insance object is created by the injector the  
+            // following listener is invoked
             if (this.getInjectorListener() != null) {
                 this.bindListener(Matchers.any(), new TypeListener() {
                     

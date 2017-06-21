@@ -22,12 +22,11 @@ import java.util.Random;
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.Container;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -55,7 +54,7 @@ public class KapuaTest extends Assert {
     public void setUp() throws SQLException {
         logger.debug("Setting up test...");
         container.startup();
-        locator = KapuaLocatorImpl.getInstance();
+        locator = KapuaLocator.getInstance();
         try {
             connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
 
@@ -136,7 +135,7 @@ public class KapuaTest extends Assert {
         System.setProperty(DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
     }
 
-    public static void scriptSession(AbstractEntityManagerFactory entityManagerFactory, String fileFilter) throws KapuaException {
+    public static void scriptSession(EntityManagerFactory entityManagerFactory, String fileFilter) throws KapuaException {
         EntityManagerSession entityManagerSession = new EntityManagerSession(entityManagerFactory);
         entityManagerSession.onTransactedAction(entityManager -> new SimpleSqlScriptExecutor().scanScripts(fileFilter).executeUpdate(entityManager));
     }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -43,8 +45,8 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
 
     private static final Domain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
 
-    public DeviceConnectionServiceImpl() {
-        super(DeviceEntityManagerFactory.instance());
+    @Inject public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+        super(deviceEntityManagerFactory);
     }
 
     @Override

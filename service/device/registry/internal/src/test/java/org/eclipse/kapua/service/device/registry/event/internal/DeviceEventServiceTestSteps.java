@@ -27,10 +27,11 @@ import java.util.Set;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -84,7 +85,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     public static final String DEFAULT_COMMONS_PATH = "../../../commons";
     public static final String CREATE_DEVICE_TABLES = "dvc_*_create.sql";
     public static final String DROP_DEVICE_TABLES = "dvc_*_drop.sql";
-
+    
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
     KapuaId sysUserId = new KapuaEid(BigInteger.ONE);
 
@@ -133,16 +134,19 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
         container.startup();
-        locator = KapuaLocatorImpl.getInstance();
+        locator = KapuaLocator.getInstance();
 
         this.scenario = scenario;
         exceptionCaught = false;
 
         // Create User Service tables
         enableH2Connection();
+        
+        // Retrieve entity manager factory
+        DeviceEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(DeviceEntityManagerFactory.class);
 
         // Drop the Device Registry Service tables
-        scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
+        scriptSession(factory, DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
 
         // Create the Device Registry Service tables
@@ -165,12 +169,12 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
                 mockedPermissionFactory);
 
         // Inject actual device registry related services
-        deviceService = new DeviceRegistryServiceImpl();
+        deviceService = new DeviceRegistryServiceImpl(factory);
         mockLocator.setMockedService(org.eclipse.kapua.service.device.registry.DeviceRegistryService.class, deviceService);
         deviceFactory = new DeviceFactoryImpl();
         mockLocator.setMockedFactory(org.eclipse.kapua.service.device.registry.DeviceFactory.class, deviceFactory);
 
-        eventService = new DeviceEventServiceImpl();
+        eventService = new DeviceEventServiceImpl(factory);
         mockLocator.setMockedService(org.eclipse.kapua.service.device.registry.event.DeviceEventService.class, eventService);
         eventFactory = new DeviceEventFactoryImpl();
         mockLocator.setMockedFactory(org.eclipse.kapua.service.device.registry.event.DeviceEventFactory.class, eventFactory);
@@ -189,8 +193,11 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     @After
     public void afterScenario()
             throws Exception {
+        
+        // Retrieve entity manager factory
+        DeviceEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(DeviceEntityManagerFactory.class);
         // Drop the Device Registry Service tables
-        scriptSession(DeviceEntityManagerFactory.instance(), DROP_DEVICE_TABLES);
+        scriptSession(factory, DROP_DEVICE_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
 

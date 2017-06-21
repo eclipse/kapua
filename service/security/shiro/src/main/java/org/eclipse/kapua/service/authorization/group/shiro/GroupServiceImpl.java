@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -28,9 +30,9 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
 /**
  * {@link GroupService} implementation.
@@ -43,8 +45,8 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
     private static final Domain GROUP_DOMAIN = new GroupDomain();
 
-    public GroupServiceImpl() {
-        super(GroupService.class.getName(), GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
+    @Inject public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+        super(GroupService.class.getName(), GROUP_DOMAIN, authorizationEntityManagerFactory, GroupService.class, GroupFactory.class);
     }
 
     @Override

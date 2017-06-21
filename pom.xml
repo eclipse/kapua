@@ -538,12 +538,12 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-guice-inject</artifactId>
+                <artifactId>kapua-locator-guice-inject</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-guice-service</artifactId>
+                <artifactId>kapua-locator-guice-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -81,8 +83,8 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaConfigurableSer
      * 
      * @throws ClientUnavailableException
      */
-    public ChannelInfoRegistryServiceImpl() throws ClientUnavailableException {
-        super(ChannelInfoRegistryService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+    @Inject public ChannelInfoRegistryServiceImpl(DatastoreEntityManagerFactory datastoreEntityManagerFactory) throws ClientUnavailableException {
+        super(ChannelInfoRegistryService.class.getName(), DATASTORE_DOMAIN, datastoreEntityManagerFactory);
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);

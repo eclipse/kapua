@@ -11,6 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.standalone;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
+import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.AuthorizationException;
@@ -21,6 +34,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaIdFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -34,25 +48,13 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationServiceImpl;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers.resolveJdbcUrl;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_PASSWORD;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_SCHEMA_ENV;
-import static org.eclipse.kapua.commons.setting.system.SystemSettingKey.DB_USERNAME;
-
 public class StandaloneDeviceRegistryFactory {
-
+    
     public DeviceRegistryService create() {
         System.setProperty(KapuaLocator.LOCATOR_CLASS_NAME_SYSTEM_PROPERTY, MockedLocator.class.getName());
         MockedLocator locator = (MockedLocator) KapuaLocator.getInstance();
@@ -196,8 +198,13 @@ public class StandaloneDeviceRegistryFactory {
                 return null;
             }
         });
+        
         KapuaSecurityUtils.setSession(new KapuaSession());
-        return new DeviceRegistryServiceImpl();
+        
+        // The service impl was explicitely instantiated so the entity manager factory is
+        // passed into instead of requiring the locator to do the work.
+        DeviceEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(DeviceEntityManagerFactory.class);
+        return new DeviceRegistryServiceImpl(factory);
     }
 
 }

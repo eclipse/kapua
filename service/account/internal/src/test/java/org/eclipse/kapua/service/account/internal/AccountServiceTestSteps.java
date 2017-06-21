@@ -25,13 +25,14 @@ import java.util.Properties;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -111,7 +112,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
         container.startup();
-        locator = KapuaLocatorImpl.getInstance();
+        locator = KapuaLocator.getInstance();
 
         this.scenario = scenario;
         exceptionCaught = false;
@@ -138,8 +139,10 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
                 mockedPermissionFactory);
 
+        AccountEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AccountEntityManagerFactory.class);
+
         // Inject actual account related services
-        accountService = new AccountServiceImpl();
+        accountService = new AccountServiceImpl(factory);
         mockLocator.setMockedService(org.eclipse.kapua.service.account.AccountService.class, accountService);
         accountFactory = new AccountFactoryImpl();
         mockLocator.setMockedFactory(org.eclipse.kapua.service.account.AccountFactory.class, accountFactory);
@@ -154,8 +157,10 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
     @After
     public void afterScenario() throws Exception {
+        AccountEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(AccountEntityManagerFactory.class);
+        
         // Drop the Account Service tables
-        scriptSession(AccountEntityManagerFactory.getInstance(), DROP_ACCOUNT_TABLES);
+        scriptSession(factory, DROP_ACCOUNT_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
 

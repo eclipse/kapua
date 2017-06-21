@@ -26,12 +26,12 @@ import java.util.Set;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -65,7 +65,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class UserServiceSteps extends AbstractKapuaSteps {
-
+    
     /**
      * User service is implemented in beforeScenario()
      */
@@ -139,7 +139,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
         container.startup();
-        locator = KapuaLocatorImpl.getInstance();
+        
+        locator = KapuaLocator.getInstance();
 
         this.scenario = scenario;
         this.isException = false;
@@ -149,7 +150,8 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
 
         // Inject actual implementation of UserService
-        userService = new UserServiceImpl();
+            UserEntityManagerFactory userEntityManagerFactory = ComponentLocator.getInstance().getComponent(UserEntityManagerFactory.class);
+        userService = new UserServiceImpl(userEntityManagerFactory);
         userFactory = new UserFactoryImpl();
         MockedLocator mockLocator = (MockedLocator) locator;
         mockLocator.setMockedService(org.eclipse.kapua.service.user.UserService.class, userService);
@@ -182,7 +184,7 @@ public class UserServiceSteps extends AbstractKapuaSteps {
     public void afterScenario() throws Exception {
 
         // Drop User Service tables
-        scriptSession((AbstractEntityManagerFactory) UserEntityManagerFactory.getInstance(), DROP_FILTER);
+        scriptSession(ComponentLocator.getInstance().getComponent(UserEntityManagerFactory.class), DROP_FILTER);
 
         // Drop system configuration tables
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);

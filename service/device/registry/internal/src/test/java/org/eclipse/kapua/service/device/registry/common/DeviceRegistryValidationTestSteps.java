@@ -19,11 +19,12 @@ import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.id.KapuaIdFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.locator.guice.KapuaLocatorImpl;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.internal.DeviceCreatorImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
@@ -60,7 +62,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
  */
 @ScenarioScoped
 public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
-
+    
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 
     // Currently executing scenario.
@@ -70,18 +72,18 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     // DeviceValidation deviceValidator = null;
 
     // Commons related objects
-    KapuaIdFactory kapuaIdFactory = new KapuaIdFactoryImpl();
+    KapuaIdFactory kapuaIdFactory;
 
     // Device registry related objects
-    DeviceRegistryService deviceRegistryService = new DeviceRegistryServiceImpl();
-    DeviceFactory deviceFactory = new DeviceFactoryImpl();
+    DeviceRegistryService deviceRegistryService;
+    DeviceFactory deviceFactory;
     DeviceCreator deviceCreator;
     DeviceImpl device;
     DeviceQuery query;
 
     // Check if exception was fired in step.
     boolean exceptionCaught;
-
+    
     // *************************************
     // Definition of Cucumber scenario steps
     // *************************************
@@ -91,7 +93,11 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
         container.startup();
-        locator = KapuaLocatorImpl.getInstance();
+        
+        // Init memeber variables after the conteiner has been initialized
+        init();
+        
+        locator = KapuaLocator.getInstance();
 
         this.scenario = scenario;
         exceptionCaught = false;
@@ -329,6 +335,22 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
     // * Private Helpers *
     // *******************
 
+    private void init() {
+        
+        if (kapuaIdFactory == null) {
+            kapuaIdFactory = new KapuaIdFactoryImpl();
+        }
+        
+        if (deviceRegistryService == null) {
+            DeviceEntityManagerFactory factory = ComponentLocator.getInstance().getComponent(DeviceEntityManagerFactory.class);
+            deviceRegistryService = new DeviceRegistryServiceImpl(factory);
+        }
+        
+        if (deviceFactory == null) {
+            deviceFactory = new DeviceFactoryImpl();     
+        }
+    }
+    
     // Create a device creator object. The creator is pre-filled with default data.
     private DeviceCreator prepareRegularDeviceCreator(KapuaId accountId, String client) {
         DeviceCreatorImpl tmpDeviceCreator = (DeviceCreatorImpl) deviceFactory.newCreator(accountId, client);

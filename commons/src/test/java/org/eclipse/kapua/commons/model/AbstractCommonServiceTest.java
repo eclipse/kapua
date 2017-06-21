@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUti
 import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.locator.ComponentLocator;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,7 +37,7 @@ public abstract class AbstractCommonServiceTest {
 
             logger.info("Running database scripts...");
 
-            em = CommonsEntityManagerFactory.getInstance().createEntityManager();
+            em = ComponentLocator.getInstance().getComponent(CommonsEntityManagerFactory.class).createEntityManager();
             em.beginTransaction();
 
             SimpleSqlScriptExecutor sqlScriptExecutor = new SimpleSqlScriptExecutor();

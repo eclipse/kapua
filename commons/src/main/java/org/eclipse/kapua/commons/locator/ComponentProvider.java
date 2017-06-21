@@ -11,10 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.locator;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import javax.inject.Singleton;
 
 /**
  * @since 0.3.0
@@ -24,4 +27,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface ComponentProvider {
     Class<?> provides();
+    Class<? extends Annotation> as() default Singleton.class;
 }

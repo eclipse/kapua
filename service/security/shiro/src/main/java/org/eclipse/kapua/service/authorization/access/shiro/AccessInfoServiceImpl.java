@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
@@ -35,12 +37,12 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
 
@@ -60,8 +62,8 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
      * 
      * @since 1.0.0
      */
-    public AccessInfoServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+    @Inject public AccessInfoServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+        super(authorizationEntityManagerFactory);
     }
 
     @Override

@@ -9,58 +9,54 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro;
+package org.eclipse.kapua.service.device.registry.internal;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.commons.locator.ComponentProvider;
 
 /**
- * Entity manager factory for the authorization module.
+ * Entity manager factory for the device module.
  *
  * @since 1.0
- *
  */
-@KapuaProvider
-public class AuthorizationEntityManagerFactory extends AbstractEntityManagerFactory {
+@ComponentProvider(provides=DeviceEntityManagerFactory.class)
+public class DeviceEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements DeviceEntityManagerFactory {
 
-    private static final String PERSISTENCE_UNIT_NAME = "kapua-authorization";
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-device";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-    private static AuthorizationEntityManagerFactory instance = new AuthorizationEntityManagerFactory();
+//    private static DeviceEntityManagerFactory instance = new DeviceEntityManagerFactory();
 
     /**
-     * Constructs a new entity manager factory and configure it to use the authorization persistence unit.
+     * Constructs a new entity manager factory and configure it to use the device persistence unit.
      */
-    private AuthorizationEntityManagerFactory() {
+    public DeviceEntityManagerFactoryImpl() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
                 UNIQUE_CONSTRAINTS);
     }
 
     /**
-     * Return the {@link EntityManager} singleton instance
-     * 
+     * Return a new {@link EntityManager} instance
+     *
      * @return
-     * @throws KapuaException
      */
-    public static EntityManager getEntityManager()
-            throws KapuaException {
-        return instance.createEntityManager();
-    }
+//    public static EntityManager getEntityManager()
+//            throws KapuaException {
+//        return instance.createEntityManager();
+//    }
 
     /**
      * Return the {@link EntityManager} singleton instance
-     * 
+     *
      * @return
      */
-    public static AuthorizationEntityManagerFactory getInstance() {
-        return instance;
-    }
+//    public static DeviceEntityManagerFactory instance() {
+//        return instance;
+//    }
 
 }

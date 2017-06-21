@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -61,8 +63,8 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      * 
      * @throws ClientUnavailableException
      */
-    public MessageStoreServiceImpl() throws ClientUnavailableException {
-        super(MessageStoreService.class.getName(), DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+    @Inject public MessageStoreServiceImpl(DatastoreEntityManagerFactory datastoreEntityManagerFactory) throws ClientUnavailableException {
+        super(MessageStoreService.class.getName(), DATASTORE_DOMAIN, datastoreEntityManagerFactory);
 
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());

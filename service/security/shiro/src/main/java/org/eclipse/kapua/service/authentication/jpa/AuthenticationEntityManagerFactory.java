@@ -7,14 +7,17 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Red Hat - loading test services
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.locator.guice;
+package org.eclipse.kapua.service.authentication.jpa;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface TestService {
-
+/**
+ * Entity manager factory for the authentication module.
+ *
+ * @since 1.0
+ *
+ */
+public interface AuthenticationEntityManagerFactory extends EntityManagerFactory {
 }

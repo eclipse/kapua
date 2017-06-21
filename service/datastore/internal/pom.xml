@@ -54,7 +54,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice-service</artifactId>
+            <artifactId>kapua-locator-guice-service</artifactId>
         </dependency>
 
         <dependency>

@@ -9,34 +9,33 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authorization.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.locator.ComponentProvider;
 
 /**
- * Entity manager factory for the authentication module.
+ * Entity manager factory for the authorization module.
  *
  * @since 1.0
  *
  */
-public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
+@ComponentProvider(provides=AuthorizationEntityManagerFactory.class)
+public class AuthorizationEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements AuthorizationEntityManagerFactory {
 
-    private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
+    private static final String PERSISTENCE_UNIT_NAME = "kapua-authorization";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-    private static AuthenticationEntityManagerFactory instance = new AuthenticationEntityManagerFactory();
+//    private static AuthorizationEntityManagerFactory instance = new AuthorizationEntityManagerFactory();
 
     /**
-     * Constructs a new entity manager factory and configure it to use the authentication persistence unit.
+     * Constructs a new entity manager factory and configure it to use the authorization persistence unit.
      */
-    private AuthenticationEntityManagerFactory() {
+    public AuthorizationEntityManagerFactoryImpl() {
         super(PERSISTENCE_UNIT_NAME,
                 DATASOURCE_NAME,
                 UNIQUE_CONSTRAINTS);
@@ -48,18 +47,18 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
      * @return
      * @throws KapuaException
      */
-    public static EntityManager getEntityManager()
-            throws KapuaException {
-        return instance.createEntityManager();
-    }
+//    public static EntityManager getEntityManager()
+//            throws KapuaException {
+//        return instance.createEntityManager();
+//    }
 
     /**
      * Return the {@link EntityManager} singleton instance
      * 
      * @return
      */
-    public static AuthenticationEntityManagerFactory getInstance() {
-        return instance;
-    }
+//    public static AuthorizationEntityManagerFactory getInstance() {
+//        return instance;
+//    }
 
 }

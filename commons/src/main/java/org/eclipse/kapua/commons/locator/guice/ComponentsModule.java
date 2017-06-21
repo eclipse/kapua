@@ -55,11 +55,11 @@ public class ComponentsModule extends PrivateModule {
             bind(BundleProvider.class).to(BundleProviderImpl.class);
             expose(BundleProvider.class);
             
+//            Multibinder<Bundle> bundleBinder = Multibinder.newSetBinder(binder(), Bundle.class);
             Set<Class<?>> componentProviders = locatorConfig.getAnnotatedWith(ComponentProvider.class);
             for(Class<?> componentProvider:componentProviders) {
                 if (Bundle.class.isAssignableFrom(componentProvider)) {
 //                    ComponentResolver resolver = ComponentResolver.newInstance(Bundle.class, componentProvider);
-//                    Multibinder<Bundle> bundleBinder = Multibinder.newSetBinder(binder(), Bundle.class);
 //                    bundleBinder.addBinding().to(resolver.getImplementationClass());
                     continue;
                 }

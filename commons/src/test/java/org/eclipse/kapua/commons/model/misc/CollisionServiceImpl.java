@@ -13,6 +13,8 @@ package org.eclipse.kapua.commons.model.misc;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -28,8 +30,8 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     @SuppressWarnings("unused")
     private static final long serialVersionUID = -5296593780771944081L;
 
-    public CollisionServiceImpl() {
-        super(CollisionServiceImpl.class.getName(), COLLISION_ENTITY_DOMAIN, CollisionEntityManagerFactory.getInstance());
+    @Inject public CollisionServiceImpl(CollisionEntityManagerFactory collisionEntityManagerFactory) {
+        super(CollisionServiceImpl.class.getName(), COLLISION_ENTITY_DOMAIN, collisionEntityManagerFactory);
     }
 
     public CollisionEntity insert(String testField) throws KapuaException {

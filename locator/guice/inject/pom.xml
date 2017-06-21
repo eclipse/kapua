@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.kapua</groupId>
-		<artifactId>kapua-guice</artifactId>
+		<artifactId>kapua-locator-guice</artifactId>
 		<version>0.2.0-SNAPSHOT</version>
 	</parent>
 

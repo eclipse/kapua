@@ -16,6 +16,8 @@ import static org.eclipse.kapua.commons.util.ArgumentValidator.notEmptyOrNull;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -54,8 +56,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     /**
      * Constructor
      */
-    public UserServiceImpl() {
-        super(UserService.class.getName(), USER_DOMAIN, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
+    @Inject public UserServiceImpl(UserEntityManagerFactory userEntityManagerFactory) {
+        super(UserService.class.getName(), USER_DOMAIN, userEntityManagerFactory, UserService.class, UserFactory.class);
     }
 
     @Override

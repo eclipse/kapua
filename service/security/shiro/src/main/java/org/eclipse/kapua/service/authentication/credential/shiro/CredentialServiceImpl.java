@@ -13,6 +13,8 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import java.security.SecureRandom;
 
+import javax.inject.Inject;
+
 import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -37,7 +39,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
+import org.eclipse.kapua.service.authentication.jpa.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -56,8 +58,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
     private static final Domain CREDENTIAL_DOMAIN = new CredentialDomain();
 
-    public CredentialServiceImpl() {
-        super(CredentialService.class.getName(), CREDENTIAL_DOMAIN, AuthenticationEntityManagerFactory.getInstance());
+    @Inject public CredentialServiceImpl(AuthenticationEntityManagerFactory authenticationEntityManagerFactory) {
+        super(CredentialService.class.getName(), CREDENTIAL_DOMAIN, authenticationEntityManagerFactory);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Do create
         Credential credential = null;
-        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
+        EntityManager em = super.entityManagerFactory.createEntityManager();
         try {
             em.beginTransaction();
 
@@ -291,7 +293,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Do the find
         Credential credential = null;
-        EntityManager em = AuthenticationEntityManagerFactory.getEntityManager();
+        EntityManager em = super.entityManagerFactory.createEntityManager();
         try {
 
             //

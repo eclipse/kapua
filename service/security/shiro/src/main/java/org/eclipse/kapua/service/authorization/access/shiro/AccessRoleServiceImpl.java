@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -28,11 +30,11 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
 
@@ -47,8 +49,8 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
     private static final Domain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
 
-    public AccessRoleServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance());
+    @Inject public AccessRoleServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+        super(authorizationEntityManagerFactory);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class AccessInfoServiceTest extends KapuaTest {
     private static final Domain TEST_DOMAIN = new TestDomain();
 
     KapuaEid scope = new KapuaEid(BigInteger.valueOf(random.nextLong()));
-
+    
     @Before
     public void before() {
         // Setup JAXB context

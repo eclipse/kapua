@@ -13,6 +13,8 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicate;
@@ -48,8 +50,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     /**
      * Constructor
      */
-    public AccessTokenServiceImpl() {
-        super(AccessTokenEntityManagerFactory.getInstance());
+    @Inject public AccessTokenServiceImpl(AccessTokenEntityManagerFactory accessTokenEntityManagerFactory) {
+        super(accessTokenEntityManagerFactory);
     }
 
     @Override
