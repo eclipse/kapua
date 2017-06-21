@@ -212,6 +212,16 @@ public class AclSteps {
         }
     }
 
+    @Then("^client \"([^\"]*)\" doesn't receive string \"([^\"]*)\" on topic \"([^\"]*)\"$")
+    public void clientDoesntReceiveStringOnTopic(String clientId, String payload, String topic) throws Throwable {
+
+        Map<String, String> messages = clientMqttMessage.get(clientId);
+        if ((messages != null) && (messages.size() >= 1)) {
+            String message = messages.get(topic);
+            assertNotEquals(payload, message);
+        }
+    }
+
     @And("^broker account and user are created$")
     public void createBrokerAccountAndUser() throws Throwable {
 
