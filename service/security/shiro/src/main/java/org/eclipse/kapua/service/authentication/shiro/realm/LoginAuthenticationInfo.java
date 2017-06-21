@@ -18,6 +18,8 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.user.User;
 
+import java.util.Map;
+
 /**
  * Kapua {@link AuthenticationInfo} implementation
  * 
@@ -32,6 +34,7 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
     private Account account;
     private User user;
     private Credential credentials;
+    private Map<String, Object> credentialServiceConfig;
 
     /**
      * Constructor
@@ -44,11 +47,13 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
     public LoginAuthenticationInfo(String realmName,
             Account account,
             User user,
-            Credential credentials) {
+            Credential credentials,
+            Map<String, Object> credentialServiceConfig) {
         this.realmName = realmName;
         this.account = account;
         this.user = user;
         this.credentials = credentials;
+        this.credentialServiceConfig = credentialServiceConfig;
     }
 
     /**
@@ -83,4 +88,7 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
         return credentials;
     }
 
+    public Map<String, Object> getCredentialServiceConfig() {
+        return credentialServiceConfig;
+    }
 }

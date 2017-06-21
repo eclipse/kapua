@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.TemporaryLockedAccountException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -177,13 +178,14 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         // Check if lockout policy is blocking credential
+        Map<String, Object> credentialServiceConfig;
         try {
-            Map<String, Object> credentialServiceConfig = KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(account.getScopeId()));
+            credentialServiceConfig = KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(account.getScopeId()));
             boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
             if (lockoutPolicyEnabled) {
                 Date now = new Date();
                 if (credential.getLockoutReset() != null && now.before(credential.getLockoutReset())) {
-                    throw new DisabledAccountException();
+                    throw new TemporaryLockedAccountException(credential.getLockoutReset());
                 }
             }
         } catch (KapuaException kex) {
@@ -195,7 +197,8 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         return new LoginAuthenticationInfo(getName(),
                 account,
                 user,
-                credential);
+                credential,
+                credentialServiceConfig);
     }
 
     @Override
@@ -210,7 +213,7 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
                 // TODO Update Lockout Policy fields
                 Credential failedCredential = (Credential) kapuaInfo.getCredentials();
                 KapuaSecurityUtils.doPrivileged(() -> {
-                    Map<String, Object> credentialServiceConfig = credentialService.getConfigValues(((LoginAuthenticationInfo) info).getAccount().getScopeId());
+                    Map<String, Object> credentialServiceConfig = kapuaInfo.getCredentialServiceConfig();
                     boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
                     if (lockoutPolicyEnabled) {
                         Date now = new Date();

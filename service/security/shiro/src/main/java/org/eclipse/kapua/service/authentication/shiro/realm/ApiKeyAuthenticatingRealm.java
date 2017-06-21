@@ -173,7 +173,8 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         return new LoginAuthenticationInfo(getName(),
                 account,
                 user,
-                credential);
+                credential,
+                null);
     }
 
     @Override

@@ -166,7 +166,8 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         return new LoginAuthenticationInfo(getName(),
                 account,
                 user,
-                credential);
+                credential,
+               null);
     }
 
     /**
