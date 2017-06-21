@@ -13,9 +13,7 @@
 package org.eclipse.kapua.service.device.steps;
 
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.kapua.commons.core.Container;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -49,7 +47,6 @@ import com.google.inject.Inject;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
@@ -62,7 +59,8 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class BrokerSteps extends Assert {
 
-    protected static Container container = new Container() {};
+    protected static Container container = new Container() {
+    };
 
     protected static KapuaLocator locator = KapuaLocator.getInstance();
 
@@ -137,7 +135,7 @@ public class BrokerSteps extends Assert {
         container.startup();
         locator = KapuaLocator.getInstance();
 
-        //KapuaLocator locator = KapuaLocator.getInstance();
+        // KapuaLocator locator = KapuaLocator.getInstance();
         devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceConfiguratiomManagementService = locator.getService(DeviceConfigurationManagementService.class);
