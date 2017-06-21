@@ -45,10 +45,11 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
      */
     public UserCreatorImpl(KapuaId accountId, String name) {
         super(accountId, name);
+        this.userStatus = UserStatus.ENABLED;
     }
 
     public UserCreatorImpl(KapuaId scopeId) {
-        super(scopeId);
+        this(scopeId, null);
     }
 
     @Override
