@@ -22,32 +22,45 @@ public class RoleXmlRegistry {
     private final RoleFactory factory = locator.getFactory(RoleFactory.class);
 
     /**
-     * Creates a new role instance
+     * Creates a new {@link Role} instance.
      * 
-     * @return
+     * @return The newly created {@link Role} instance.
+     * 
+     * @since 1.0.0
      */
     public Role newRole() {
         return factory.newEntity(null);
     }
 
     /**
-     * Creates a new role creator instance
+     * Creates a new {@link RoleCreator} instance.
      * 
-     * @return
+     * @return The newly created {@link RoleCreator} instance.
+     * 
+     * @since 1.0.0
      */
     public RoleCreator newRoleCreator() {
         return factory.newCreator(null);
     }
 
     /**
-     * Creates a new role creator instance
+     * Creates a new {@link RoleListResult} instance.
      * 
-     * @return
+     * @return The newly created {@link RoleListResult} instance.
+     * 
+     * @since 1.0.0
      */
     public RoleListResult newRoleListResult() {
         return factory.newListResult();
     }
 
+    /**
+     * Creates a new {@link RoleQuery} instance.
+     * 
+     * @return The newly created {@link RoleQuery} instance.
+     * 
+     * @since 1.0.0
+     */
     public RoleQuery newQuery() {
         return factory.newQuery(null);
     }

@@ -22,32 +22,44 @@ public class GroupXmlRegistry {
     private final GroupFactory factory = locator.getFactory(GroupFactory.class);
 
     /**
-     * Creates a new role instance
+     * Creates a new {@link Group} instance
      * 
-     * @return
+     * @return The newly created {@link Group} instance.
+     * 
+     * @since 1.0.0
      */
     public Group newGroup() {
         return factory.newEntity(null);
     }
 
     /**
-     * Creates a new role creator instance
+     * Creates a new {@link GroupCreator} instance.
      * 
-     * @return
+     * @return The newly created {@link GroupCreator} instance.
+     * 
+     * @since 1.0.0
      */
     public GroupCreator newGroupCreator() {
         return factory.newCreator(null, null);
     }
 
     /**
-     * Creates a new role creator instance
+     * Creates a new {@link GroupListResult} instance.
      * 
-     * @return
+     * @return The newly created {@link GroupListResult} instance.
+     * @since 1.0.0
      */
     public GroupListResult newGroupListResult() {
         return factory.newListResult();
     }
 
+    /**
+     * Creates a new {@link GroupQuery} instance.
+     * 
+     * @return The newly created {@link GroupQuery} instance.
+     * 
+     * @since 1.0.0
+     */
     public GroupQuery newQuery() {
         return factory.newQuery(null);
     }
