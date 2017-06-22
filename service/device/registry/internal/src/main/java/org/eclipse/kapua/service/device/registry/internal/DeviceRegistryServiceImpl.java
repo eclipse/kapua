@@ -167,4 +167,22 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         }
     }
 
+    public void onGroupDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+        KapuaId groupId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
+
+        DeviceQuery query = deviceFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(DevicePredicates.GROUP_ID, groupId));
+
+        DeviceListResult devicesToDelete = query(query);
+
+        for (Device d : devicesToDelete.getItems()) {
+            d.setGroupId(null);
+            update(d);
+        }
+    }
+
 }
