@@ -231,6 +231,15 @@ public class AclSteps {
         aclCreator.attachBrokerPermissions(account, user);
     }
 
+    @And("^device account and user are created$")
+    public void createDeviceAccountAndUser() throws Throwable {
+
+        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
+        User user = aclCreator.createUser(account, "luise");
+        aclCreator.attachUserCredentials(account, user);
+        aclCreator.attachDevicePermissions(account, user);
+    }
+
     @And("^other broker account and user are created$")
     public void createOtherBrokerAccountAndUser() throws Throwable {
 
