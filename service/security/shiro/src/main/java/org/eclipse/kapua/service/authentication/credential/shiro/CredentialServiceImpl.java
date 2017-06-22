@@ -33,7 +33,6 @@ import org.eclipse.kapua.model.query.predicate.KapuaAttributePredicate.Operator;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
-import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
@@ -58,7 +57,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
     private static final Domain CREDENTIAL_DOMAIN = new CredentialDomain();
 
-    @Inject public CredentialServiceImpl(AuthenticationEntityManagerFactory authenticationEntityManagerFactory) {
+    @Inject
+    public CredentialServiceImpl(AuthenticationEntityManagerFactory authenticationEntityManagerFactory) {
         super(CredentialService.class.getName(), CREDENTIAL_DOMAIN, authenticationEntityManagerFactory);
     }
 
@@ -343,16 +343,4 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         return credential;
     }
 
-    @SuppressWarnings("unused")
-    private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
-        KapuaQuery<Credential> credentialQuery = credentialFactory.newQuery(scopeId);
-        CredentialType ct = credentialType;
-        KapuaPredicate credentialTypePredicate = new AttributePredicate<>(CredentialPredicates.CREDENTIAL_TYPE, ct);
-        KapuaPredicate userIdPredicate = new AttributePredicate<>(CredentialPredicates.USER_ID, userId);
-        KapuaPredicate andPredicate = new AndPredicate().and(credentialTypePredicate).and(userIdPredicate);
-        credentialQuery.setPredicate(andPredicate);
-        return count(credentialQuery);
-    }
 }
