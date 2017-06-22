@@ -189,7 +189,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         RoleFactory roleFactory = locator.getFactory(RoleFactory.class);

@@ -214,7 +214,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);

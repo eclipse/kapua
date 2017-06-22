@@ -153,7 +153,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
@@ -168,8 +168,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     }
 
     public void onGroupDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
-        KapuaId groupId = null;
+        KapuaId scopeId = kapuaEvent.getScopeId();
+        KapuaId groupId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);

@@ -346,7 +346,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
@@ -361,8 +361,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     }
 
     public void onUserDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
-        KapuaId userId = null;
+        KapuaId scopeId = kapuaEvent.getScopeId();
+        KapuaId userId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);

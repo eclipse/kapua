@@ -165,7 +165,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);

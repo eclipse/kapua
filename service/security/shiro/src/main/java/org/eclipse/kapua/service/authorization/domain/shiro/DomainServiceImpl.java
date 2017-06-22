@@ -161,7 +161,7 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         DomainFactory domainFactory = locator.getFactory(DomainFactory.class);

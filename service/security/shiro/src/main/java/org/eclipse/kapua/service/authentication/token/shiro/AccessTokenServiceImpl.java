@@ -269,7 +269,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
@@ -284,8 +284,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     public void onUserDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
-        KapuaId userId = null;
+        KapuaId scopeId = kapuaEvent.getScopeId();
+        KapuaId userId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);

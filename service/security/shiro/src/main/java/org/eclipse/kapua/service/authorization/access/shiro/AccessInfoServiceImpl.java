@@ -222,7 +222,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
     }
 
     public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
+        KapuaId scopeId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
@@ -237,8 +237,8 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
     }
 
     public void onUserDelete(KapuaEvent kapuaEvent) throws KapuaException {
-        KapuaId scopeId = null;
-        KapuaId userId = null;
+        KapuaId scopeId = kapuaEvent.getScopeId();
+        KapuaId userId = kapuaEvent.getEntityId();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
