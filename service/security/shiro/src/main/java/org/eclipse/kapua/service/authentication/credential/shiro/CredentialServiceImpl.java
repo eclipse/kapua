@@ -359,4 +359,21 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             delete(c.getScopeId(), c.getId());
         }
     }
+
+    public void onUserDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+        KapuaId userId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
+
+        CredentialQuery query = credentialFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(CredentialPredicates.USER_ID, userId));
+
+        CredentialListResult credentialsToDelete = query(query);
+
+        for (Credential c : credentialsToDelete.getItems()) {
+            delete(c.getScopeId(), c.getId());
+        }
+    }
 }

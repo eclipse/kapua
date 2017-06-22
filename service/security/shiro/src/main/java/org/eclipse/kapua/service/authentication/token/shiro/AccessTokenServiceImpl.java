@@ -282,4 +282,21 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
             delete(at.getScopeId(), at.getId());
         }
     }
+
+    public void onUserDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+        KapuaId userId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
+
+        AccessTokenQuery query = accessTokenFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(AccessTokenPredicates.USER_ID, userId));
+
+        AccessTokenListResult accessTokensToDelete = query(query);
+
+        for (AccessToken at : accessTokensToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
+    }
 }

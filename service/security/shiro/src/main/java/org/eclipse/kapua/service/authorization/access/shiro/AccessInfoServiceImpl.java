@@ -235,4 +235,21 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
             delete(at.getScopeId(), at.getId());
         }
     }
+
+    public void onUserDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+        KapuaId userId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+
+        AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+        query.setPredicate(new AttributePredicate<>(AccessInfoPredicates.USER_ID, userId));
+
+        AccessInfoListResult accessInfosToDelete = query(query);
+
+        for (AccessInfo at : accessInfosToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
+    }
 }
