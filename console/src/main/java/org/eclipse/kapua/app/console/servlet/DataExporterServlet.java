@@ -30,12 +30,12 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +43,9 @@ public class DataExporterServlet extends HttpServlet {
 
     private static final long serialVersionUID = 226461063207179649L;
     private static Logger logger = LoggerFactory.getLogger(DataExporterServlet.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -72,13 +75,13 @@ public class DataExporterServlet extends HttpServlet {
             AndPredicate predicate = new AndPredicateImpl();
             if (topic != null) {
                 topicOrDevice = topic;
-                predicate.getPredicates().add(new TermPredicateImpl(MessageField.CHANNEL, topic));
+                predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.replaceFirst("/#$", "")));
             } else if (device != null) {
                 topicOrDevice = device;
-                predicate.getPredicates().add(new TermPredicateImpl(MessageField.CLIENT_ID, device));
-            } else if(asset != null) {
+                predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device));
+            } else if (asset != null) {
                 topicOrDevice = device;
-                predicate.getPredicates().add(new TermPredicateImpl(MessageField.CHANNEL, asset));
+                predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, asset));
             } else {
                 throw new IllegalArgumentException("topic, device");
             }
@@ -116,15 +119,15 @@ public class DataExporterServlet extends HttpServlet {
             }
 
             query.setPredicate(predicate);
-            MessageListResult result; 
+            MessageListResult result;
             int offset = 0;
             query.setLimit(250);
-            do{
+            do {
                 query.setOffset(offset);
                 result = messageService.query(query);
                 dataExporter.append(result.getItems());
                 offset += result.getSize();
-            }while (result.getSize() > 0);
+            } while (!result.isEmpty());
             dataExporter.close();
         } catch (IllegalArgumentException iae) {
             response.sendError(400, "Illegal value for query parameter(s): " + iae.getMessage());
