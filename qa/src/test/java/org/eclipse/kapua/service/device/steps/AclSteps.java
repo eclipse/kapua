@@ -250,6 +250,15 @@ public class AclSteps {
         aclCreator.attachDataViewPermissions(account, user);
     }
 
+    @And("^data manage account and user are created$")
+    public void createDataManageAccountAndUser() throws Throwable {
+
+        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
+        User user = aclCreator.createUser(account, "luise");
+        aclCreator.attachUserCredentials(account, user);
+        aclCreator.attachDataManagePermissions(account, user);
+    }
+
     @And("^other broker account and user are created$")
     public void createOtherBrokerAccountAndUser() throws Throwable {
 
