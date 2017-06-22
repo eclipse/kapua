@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainService;
 import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * {@link DomainService} implementation.
@@ -44,7 +45,8 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
 
     private static final Domain DOMAIN_DOMAIN = new DomainDomain();
 
-    @Inject public DomainServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+    @Inject
+    public DomainServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
         super(authorizationEntityManagerFactory);
     }
 
@@ -156,5 +158,20 @@ public class DomainServiceImpl extends AbstractKapuaService implements DomainSer
         authorizationService.checkPermission(permissionFactory.newPermission(DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
         return entityManagerSession.onResult(em -> DomainDAO.count(em, query));
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
+
+        DomainQuery query = domainFactory.newQuery(scopeId);
+
+        DomainListResult domainsToDelete = query(query);
+
+        for (Domain d : domainsToDelete.getItems()) {
+            delete(d.getScopeId(), d.getId());
+        }
     }
 }

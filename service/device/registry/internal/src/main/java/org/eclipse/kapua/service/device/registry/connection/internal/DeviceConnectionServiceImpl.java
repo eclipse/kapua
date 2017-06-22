@@ -29,10 +29,13 @@ import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
@@ -45,7 +48,8 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
 
     private static final Domain DEVICE_CONNECTION_DOMAIN = new DeviceConnectionDomain();
 
-    @Inject public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+    @Inject
+    public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
         super(deviceEntityManagerFactory);
     }
 
@@ -207,6 +211,21 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
             throws KapuaException {
         // TODO Auto-generated method stub
 
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        DeviceConnectionFactory deviceConnectionFactory = locator.getFactory(DeviceConnectionFactory.class);
+
+        DeviceConnectionQuery query = deviceConnectionFactory.newQuery(scopeId);
+
+        DeviceConnectionListResult deviceConnectionsToDelete = query(query);
+
+        for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
+            delete(dc.getScopeId(), dc.getId());
+        }
     }
 
 }

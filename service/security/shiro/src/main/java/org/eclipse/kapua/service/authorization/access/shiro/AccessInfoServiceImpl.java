@@ -45,6 +45,7 @@ import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizationException;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * {@link AccessInfoService} implementation based on JPA.
@@ -62,7 +63,8 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
      * 
      * @since 1.0.0
      */
-    @Inject public AccessInfoServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+    @Inject
+    public AccessInfoServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
         super(authorizationEntityManagerFactory);
     }
 
@@ -217,5 +219,20 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
 
             AccessInfoDAO.delete(em, accessInfoId);
         });
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+
+        AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
+
+        AccessInfoListResult accessInfosToDelete = query(query);
+
+        for (AccessInfo at : accessInfosToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
     }
 }

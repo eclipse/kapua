@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.jpa.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * {@link GroupService} implementation.
@@ -45,7 +46,8 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
     private static final Domain GROUP_DOMAIN = new GroupDomain();
 
-    @Inject public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+    @Inject
+    public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
         super(GroupService.class.getName(), GROUP_DOMAIN, authorizationEntityManagerFactory, GroupService.class, GroupFactory.class);
     }
 
@@ -62,11 +64,11 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
-        
+
         if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
             throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
         }
-        
+
         return entityManagerSession.onTransactedInsert(em -> GroupDAO.create(em, groupCreator));
     }
 
@@ -160,5 +162,20 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         authorizationService.checkPermission(permissionFactory.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> GroupDAO.count(em, query));
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
+
+        GroupQuery query = groupFactory.newQuery(scopeId);
+
+        GroupListResult groupsToDelete = query(query);
+
+        for (Group g : groupsToDelete.getItems()) {
+            delete(g.getScopeId(), g.getId());
+        }
     }
 }

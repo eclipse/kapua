@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * Role service implementation.
@@ -48,7 +49,8 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Domain ROLE_DOMAIN = new RoleDomain();
 
-    @Inject public RoleServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
+    @Inject
+    public RoleServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory) {
         super(RoleService.class.getName(), ROLE_DOMAIN, authorizationEntityManagerFactory, RoleService.class, RoleFactory.class);
     }
 
@@ -184,5 +186,20 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         authorizationService.checkPermission(permissionFactory.newPermission(ROLE_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+
+        RoleQuery query = roleFactory.newQuery(scopeId);
+
+        RoleListResult rolesToDelete = query(query);
+
+        for (Role r : rolesToDelete.getItems()) {
+            delete(r.getScopeId(), r.getId());
+        }
     }
 }

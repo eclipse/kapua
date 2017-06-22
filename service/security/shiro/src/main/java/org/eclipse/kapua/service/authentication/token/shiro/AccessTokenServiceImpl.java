@@ -27,6 +27,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.KapuaPredicate;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
+import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 import org.eclipse.kapua.service.authentication.token.AccessTokenPredicates;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
@@ -35,6 +36,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
 
 /**
  * Access token service implementation.
@@ -50,7 +52,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     /**
      * Constructor
      */
-    @Inject public AccessTokenServiceImpl(AccessTokenEntityManagerFactory accessTokenEntityManagerFactory) {
+    @Inject
+    public AccessTokenServiceImpl(AccessTokenEntityManagerFactory accessTokenEntityManagerFactory) {
         super(accessTokenEntityManagerFactory);
     }
 
@@ -263,5 +266,20 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
             accessToken.setInvalidatedOn(now);
             return AccessTokenDAO.update(em, accessToken);
         });
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
+
+        AccessTokenQuery query = accessTokenFactory.newQuery(scopeId);
+
+        AccessTokenListResult accessTokensToDelete = query(query);
+
+        for (AccessToken at : accessTokensToDelete.getItems()) {
+            delete(at.getScopeId(), at.getId());
+        }
     }
 }

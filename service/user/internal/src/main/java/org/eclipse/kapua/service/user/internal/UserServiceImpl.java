@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.permission.Actions;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.event.KapuaEvent;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -56,7 +57,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     /**
      * Constructor
      */
-    @Inject public UserServiceImpl(UserEntityManagerFactory userEntityManagerFactory) {
+    @Inject
+    public UserServiceImpl(UserEntityManagerFactory userEntityManagerFactory) {
         super(UserService.class.getName(), USER_DOMAIN, userEntityManagerFactory, UserService.class, UserFactory.class);
     }
 
@@ -234,6 +236,21 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         authorizationService.checkPermission(permissionFactory.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> UserDAO.count(em, query));
+    }
+
+    public void onAccountDelete(KapuaEvent kapuaEvent) throws KapuaException {
+        KapuaId scopeId = null;
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        UserFactory userFactory = locator.getFactory(UserFactory.class);
+
+        UserQuery query = userFactory.newQuery(scopeId);
+
+        UserListResult usersToDelete = query(query);
+
+        for (User u : usersToDelete.getItems()) {
+            delete(u.getScopeId(), u.getId());
+        }
     }
 
     // -----------------------------------------------------------------------------------------
