@@ -38,7 +38,6 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupPredicates;
 
 import com.google.common.base.Strings;
@@ -216,7 +215,7 @@ public class Groups extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested Group.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Group", required = true) @PathParam("groupId") EntityId groupId,
             @ApiParam(value = "The modified Group whose attributed need to be updated", required = true) Group group) throws Exception {
-        ((GroupImpl) group).setScopeId(scopeId);
+        group.setScopeId(scopeId);
         group.setId(groupId);
 
         return groupService.update(group);

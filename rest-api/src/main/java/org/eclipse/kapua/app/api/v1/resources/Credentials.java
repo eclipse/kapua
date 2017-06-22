@@ -39,7 +39,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialPredicates;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -211,8 +210,7 @@ public class Credentials extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested Credential.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Credential", required = true) @PathParam("credentialId") EntityId credentialId,
             @ApiParam(value = "The modified Credential whose attributed need to be updated", required = true) Credential credential) throws Exception {
-
-        ((CredentialImpl) credential).setScopeId(scopeId);
+        credential.setScopeId(scopeId);
         credential.setId(credentialId);
 
         return credentialService.update(credential);

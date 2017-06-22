@@ -38,7 +38,6 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePredicates;
 
 import com.google.common.base.Strings;
@@ -219,7 +218,7 @@ public class Roles extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Role", required = true) @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The modified Role whose attributed need to be updated", required = true) Role role) throws Exception {
-        ((RoleImpl) role).setScopeId(scopeId);
+        role.setScopeId(scopeId);
         role.setId(roleId);
 
         return roleService.update(role);

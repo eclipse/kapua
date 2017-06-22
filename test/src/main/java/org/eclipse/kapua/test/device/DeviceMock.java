@@ -39,6 +39,12 @@ public class DeviceMock implements Device {
     }
 
     @Override
+    public void setScopeId(KapuaId scopeId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public Date getModifiedOn() {
         // TODO Auto-generated method stub
         return null;
@@ -436,5 +442,4 @@ public class DeviceMock implements Device {
         // TODO Auto-generated method stub
         return null;
     }
-
 }
