@@ -36,7 +36,6 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
@@ -180,16 +179,6 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @Basic
     @Column(name = "custom_attribute_5")
     private String customAttribute5;
-
-    @Column(name = "credentials_mode")
-    @Enumerated(EnumType.STRING)
-    private DeviceCredentialsMode deviceCredentialsMode;
-
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "preferred_user_id"))
-    })
-    private KapuaEid preferredUserId;
 
     /**
      * Constructor
@@ -507,26 +496,6 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @Override
     public void setCustomAttribute5(String customAttribute5) {
         this.customAttribute5 = customAttribute5;
-    }
-
-    @Override
-    public DeviceCredentialsMode getCredentialsMode() {
-        return deviceCredentialsMode;
-    }
-
-    @Override
-    public void setCredentialsMode(DeviceCredentialsMode deviceCredentialsMode) {
-        this.deviceCredentialsMode = deviceCredentialsMode;
-    }
-
-    @Override
-    public org.eclipse.kapua.model.id.KapuaId getPreferredUserId() {
-        return preferredUserId;
-    }
-
-    @Override
-    public void setPreferredUserId(KapuaId preferredUserId) {
-        this.preferredUserId = KapuaEid.parseKapuaId(preferredUserId);
     }
 
     @Override

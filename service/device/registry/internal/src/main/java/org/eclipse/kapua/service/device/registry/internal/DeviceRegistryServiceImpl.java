@@ -100,8 +100,6 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
             currentDevice.setCustomAttribute3(device.getCustomAttribute3());
             currentDevice.setCustomAttribute4(device.getCustomAttribute4());
             currentDevice.setCustomAttribute5(device.getCustomAttribute5());
-            currentDevice.setCredentialsMode(device.getCredentialsMode());
-            currentDevice.setPreferredUserId(device.getPreferredUserId());
 
             currentDevice.setConnectionId(device.getConnectionId());
             currentDevice.setLastEventId(device.getLastEventId());
