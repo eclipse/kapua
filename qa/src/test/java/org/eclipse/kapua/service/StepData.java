@@ -46,4 +46,8 @@ public class StepData {
     public Object get(String key) {
         return stepDataMap.get(key);
     }
+
+    public void remove(String key) {
+        stepDataMap.remove(key);
+    }
 }

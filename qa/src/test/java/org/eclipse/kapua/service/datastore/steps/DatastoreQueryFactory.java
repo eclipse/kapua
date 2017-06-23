@@ -66,6 +66,26 @@ public class DatastoreQueryFactory {
     }
 
     /**
+     * Creating query for data messages with reasonable defaults and user specified ordering.
+     *
+     * @param scopeId scope
+     * @param limit limit results
+     * @param order the required result ordering
+     * @return query
+     */
+    public static MessageQuery createBaseMessageQuery(KapuaId scopeId, int limit, List<SortField> order) {
+
+        MessageQuery query = new MessageQueryImpl(scopeId);
+        query.setAskTotalCount(true);
+        query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
+        query.setLimit(limit);
+        query.setOffset(0);
+        query.setSortFields(order);
+
+        return query;
+    }
+
+    /**
      * Creating query for channel info with reasonable defaults.
      *
      * @param scopeId

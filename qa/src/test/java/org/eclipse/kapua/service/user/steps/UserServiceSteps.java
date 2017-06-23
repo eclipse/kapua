@@ -219,6 +219,17 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         }
     }
 
+    @When("^I select account \"(.*)\"$")
+    public void selectAccount(String accountName) throws KapuaException{
+        Account tmpAccount;
+        tmpAccount = accountService.findByName(accountName);
+        if (tmpAccount != null) {
+            stepData.put("LastAccount", tmpAccount);
+        } else {
+            stepData.remove("LastAccount");
+        }
+    }
+
     @Then("^I try to delete user \"(.*)\"$")
     public void thenDeleteUser(String userName) throws KapuaException {
         try {
