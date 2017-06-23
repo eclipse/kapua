@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.registry.connection;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 
 /**
  * Device connection creator service definition.
@@ -48,6 +49,34 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
      * @param userId
      */
     public void setUserId(KapuaId userId);
+
+    /**
+     * Get the device connection user coupling mode.
+     *
+     * @return
+     */
+    public ConnectionUserCouplingMode getUserCouplingMode();
+
+    /**
+     * Set the device connection user coupling mode.
+     *
+     * @param status
+     */
+    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
+
+    /**
+     * Get the reserved user identifier
+     *
+     * @return
+     */
+    public KapuaId getReservedUserId();
+
+    /**
+     * Set the reserved user identifier
+     *
+     * @param reservedUserId
+     */
+    public void setReservedUserId(KapuaId reservedUserId);
 
     /**
      * Get the device protocol
