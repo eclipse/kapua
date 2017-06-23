@@ -768,6 +768,23 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- Console dependencies -->
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console-modules</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- External dependencies -->
 
             <dependency>
