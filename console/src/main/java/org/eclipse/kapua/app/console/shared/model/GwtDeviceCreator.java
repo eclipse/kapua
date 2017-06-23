@@ -13,7 +13,7 @@ package org.eclipse.kapua.app.console.shared.model;
 
 import java.io.Serializable;
 
-import org.eclipse.kapua.app.console.shared.model.GwtDevice.GwtDeviceCredentialsTight;
+import org.eclipse.kapua.app.console.shared.model.GwtDevice.GwtConnectionUserCouplingMode;
 
 public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
 
@@ -26,7 +26,7 @@ public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
     private String displayName;
 
     // Security options
-    private GwtDeviceCredentialsTight gwtCredentialsTight;
+    private GwtConnectionUserCouplingMode gwtCredentialsTight;
     private String gwtPreferredUserId;
 
     // Custom Attributes
@@ -71,15 +71,15 @@ public class GwtDeviceCreator extends KapuaBaseModel implements Serializable {
         this.displayName = displayName;
     }
 
-    public GwtDeviceCredentialsTight getGwtCredentialsTight() {
+    public GwtConnectionUserCouplingMode getGwtCredentialsTight() {
         return gwtCredentialsTight;
     }
 
     public void setGwtCredentialsTight(String gwtCredentialsTight) {
-        setGwtCredentialsTight(GwtDeviceCredentialsTight.getEnumFromLabel(gwtCredentialsTight));
+        setGwtCredentialsTight(GwtConnectionUserCouplingMode.getEnumFromLabel(gwtCredentialsTight));
     }
 
-    public void setGwtCredentialsTight(GwtDeviceCredentialsTight gwtCredentialsTight) {
+    public void setGwtCredentialsTight(GwtConnectionUserCouplingMode gwtCredentialsTight) {
         this.gwtCredentialsTight = gwtCredentialsTight;
     }
 
