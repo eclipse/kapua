@@ -70,7 +70,6 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DevicePredicates;
@@ -597,9 +596,6 @@ public class DeviceServiceSteps extends KapuaTest {
         if (dev.connectionId != null) {
             tmpCr.setConnectionId(dev.getConnectionId());
         }
-        if (dev.preferredUserId != null) {
-            tmpCr.setPreferredUserId(dev.getPreferredUserId());
-        }
         if (dev.displayName != null) {
             tmpCr.setDisplayName(dev.displayName);
         }
@@ -645,9 +641,6 @@ public class DeviceServiceSteps extends KapuaTest {
         if (dev.acceptEncoding != null) {
             tmpCr.setAcceptEncoding(dev.acceptEncoding);
         }
-        if (dev.credentialsMode != null) {
-            tmpCr.setCredentialsMode(dev.getCredentialsMode());
-        }
 
         return tmpCr;
     }
@@ -679,8 +672,6 @@ public class DeviceServiceSteps extends KapuaTest {
         tmpCr.setCustomAttribute3("customAttribute3");
         tmpCr.setCustomAttribute4("customAttribute4");
         tmpCr.setCustomAttribute5("customAttribute5");
-        tmpCr.setCredentialsMode(DeviceCredentialsMode.LOOSE);
-        tmpCr.setPreferredUserId(generateRandomId());
         tmpCr.setStatus(DeviceStatus.ENABLED);
 
         return tmpCr;
