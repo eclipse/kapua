@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@integration
 Feature: Device data scenarios
 
 Scenario: Connect to the system and publish some data

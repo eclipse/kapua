@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
+@integration
 Feature: Device Broker Integration
   Device Service integration scenarios with running broker service.
   Each Scenario starts with BIRTH of device and then the communication over MQTT
