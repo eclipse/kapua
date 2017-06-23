@@ -35,11 +35,11 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+
 
 public class AssetTabItem extends TabItem {
 
@@ -55,7 +55,7 @@ public class AssetTabItem extends TabItem {
     private ResultsTable resultsTable;
     private AssetTable assetTable;
     private MetricsTable metricsTable;
-    private ToolBar toolbar;
+  
 
     public AssetTabItem(GwtSession currentSession) {
         super(MSGS.assetTabItemTitle(), null);
@@ -81,6 +81,23 @@ public class AssetTabItem extends TabItem {
         tablesLayout.setMargins(new Margins(0, 5, 0, 5));
         tablesLayout.setMinSize(250);
         add(tables, tablesLayout);
+        
+        BorderLayoutData refreshButtonLayout = new BorderLayoutData(LayoutRegion.NORTH, 0.1f);
+        refreshButtonLayout.setMargins(new Margins(5));
+        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                deviceTable.refresh();
+                resultsTable.refresh();
+            }
+        });
+        refreshButton.disable();
+        TableLayout refreshButtonTL = new TableLayout();
+        refreshButtonTL.setCellPadding(0);
+        LayoutContainer refreshButtonContainer = new LayoutContainer(refreshButtonTL);
+        refreshButtonContainer.add(refreshButton, new TableData());
+        tables.add(refreshButtonContainer, refreshButtonLayout);
 
         BorderLayoutData deviceLayout = new BorderLayoutData(LayoutRegion.WEST, 0.33f);
         deviceTable = new DeviceTable(currentSession);
@@ -142,27 +159,12 @@ public class AssetTabItem extends TabItem {
             }
         });
         queryButton.disable();
-        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
-
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                deviceTable.refresh();
-                resultsTable.refresh();
-            }
-        });
-        refreshButton.disable();
-        toolbar = new ToolBar();
-        toolbar.add(queryButton);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(refreshButton);
-      
-        
         TableLayout queryButtonTL = new TableLayout();
         queryButtonTL.setCellPadding(0);
         LayoutContainer queryButtonContainer = new LayoutContainer(queryButtonTL);
-        queryButtonContainer.add(toolbar);
+        queryButtonContainer.add(queryButton, new TableData());
         tables.add(queryButtonContainer, queryButtonLayout);
-
+        
         BorderLayoutData resultsLayout = new BorderLayoutData(LayoutRegion.SOUTH, 0.5f);
         resultsLayout.setSplit(true);
 
