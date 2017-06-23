@@ -39,6 +39,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -240,6 +241,15 @@ public class AclSteps {
         aclCreator.attachDevicePermissions(account, user);
     }
 
+    @And("^data view account and user are created$")
+    public void createDataViewAccountAndUser() throws Throwable {
+
+        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
+        User user = aclCreator.createUser(account, "luise");
+        aclCreator.attachUserCredentials(account, user);
+        aclCreator.attachDataViewPermissions(account, user);
+    }
+
     @And("^other broker account and user are created$")
     public void createOtherBrokerAccountAndUser() throws Throwable {
 
@@ -254,6 +264,13 @@ public class AclSteps {
 
         Exception e = (Exception) stepData.get("exception");
         assertNotNull("Exception expected!", e);
+    }
+
+    @Then("^exception is not thrown$")
+    public void exceptionIsNotThrown() throws Throwable {
+
+        Exception e = (Exception) stepData.get("exception");
+        assertNull("Exception not expected!", e);
     }
 
     /**
