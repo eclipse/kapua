@@ -13,7 +13,6 @@ package org.eclipse.kapua.test.device;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
 public class DeviceCreatorMock implements DeviceCreator {
@@ -291,30 +290,6 @@ public class DeviceCreatorMock implements DeviceCreator {
 
     @Override
     public void setCustomAttribute5(String customAttribute5) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public DeviceCredentialsMode getCredentialsMode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCredentialsMode(DeviceCredentialsMode credentialsMode) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public KapuaId getPreferredUserId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setPreferredUserId(KapuaId preferredUserId) {
         // TODO Auto-generated method stub
 
     }

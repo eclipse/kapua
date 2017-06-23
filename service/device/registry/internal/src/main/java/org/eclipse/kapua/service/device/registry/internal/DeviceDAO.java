@@ -65,8 +65,6 @@ public class DeviceDAO extends ServiceDAO {
         device.setCustomAttribute3(deviceCreator.getCustomAttribute3());
         device.setCustomAttribute4(deviceCreator.getCustomAttribute4());
         device.setCustomAttribute5(deviceCreator.getCustomAttribute5());
-        device.setCredentialsMode(deviceCreator.getCredentialsMode());
-        device.setPreferredUserId(deviceCreator.getPreferredUserId());
 
         device.setConnectionId(deviceCreator.getConnectionId());
         device.setLastEventId(deviceCreator.getLastEventId());
@@ -80,7 +78,8 @@ public class DeviceDAO extends ServiceDAO {
      * @param em
      * @param device
      * @return
-     * @throws KapuaEntityNotFoundException If {@link Device} is not found.
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Device} is not found.
      */
     public static Device update(EntityManager em, Device device) throws KapuaEntityNotFoundException {
         DeviceImpl deviceImpl = (DeviceImpl) device;
@@ -167,7 +166,8 @@ public class DeviceDAO extends ServiceDAO {
      *
      * @param em
      * @param deviceId
-     * @throws KapuaEntityNotFoundException If {@link Device} is not found.
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Device} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceImpl.class, deviceId);

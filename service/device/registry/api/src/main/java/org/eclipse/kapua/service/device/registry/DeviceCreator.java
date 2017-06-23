@@ -61,9 +61,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
         "customAttribute2",
         "customAttribute3",
         "customAttribute4",
-        "customAttribute5",
-        "credentialsMode",
-        "preferredUserId" //
+        "customAttribute5"
 }, //
         factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
 public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
@@ -456,39 +454,4 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      * @param customAttribute5
      */
     public void setCustomAttribute5(String customAttribute5);
-
-    /**
-     * Get credentials mode.<br>
-     * The device credential mode sets a security level for the devices, setting a specific user connection policy between the available policies.
-     * 
-     * @return
-     */
-    @XmlElement(name = "credentialsMode")
-    public DeviceCredentialsMode getCredentialsMode();
-
-    /**
-     * Set credentials mode.<br>
-     * The device credential mode sets a security level for the devices, setting a specific user connection policy between the available policies.
-     * 
-     * @param credentialsMode
-     */
-    public void setCredentialsMode(DeviceCredentialsMode credentialsMode);
-
-    /**
-     * Get preferred user identifier.<br>
-     * Set the preferred user identifier that can connect to this device.
-     * 
-     * @return
-     */
-    @XmlElement(name = "preferredUserId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getPreferredUserId();
-
-    /**
-     * Set preferred user identifier.<br>
-     * Set the preferred user identifier that can connect to this device.
-     * 
-     * @param preferredUserId
-     */
-    public void setPreferredUserId(KapuaId preferredUserId);
 }

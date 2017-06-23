@@ -15,7 +15,6 @@ import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceCredentialsMode;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 
 /**
@@ -55,8 +54,6 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     private String customAttribute3;
     private String customAttribute4;
     private String customAttribute5;
-    private DeviceCredentialsMode deviceCredentialsMode = DeviceCredentialsMode.INHERITED;
-    private KapuaId preferredUserId;
 
     /**
      * Constructor.
@@ -360,25 +357,5 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     @Override
     public void setCustomAttribute5(String customAttribute5) {
         this.customAttribute5 = customAttribute5;
-    }
-
-    @Override
-    public DeviceCredentialsMode getCredentialsMode() {
-        return deviceCredentialsMode;
-    }
-
-    @Override
-    public void setCredentialsMode(DeviceCredentialsMode credentialsMode) {
-        this.deviceCredentialsMode = credentialsMode;
-    }
-
-    @Override
-    public KapuaId getPreferredUserId() {
-        return preferredUserId;
-    }
-
-    @Override
-    public void setPreferredUserId(KapuaId preferredUserId) {
-        this.preferredUserId = preferredUserId;
     }
 }
