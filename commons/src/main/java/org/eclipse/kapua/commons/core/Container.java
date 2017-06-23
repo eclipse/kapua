@@ -13,8 +13,8 @@ package org.eclipse.kapua.commons.core;
 
 import java.util.List;
 
-import org.eclipse.kapua.commons.locator.BundleProvider;
 import org.eclipse.kapua.commons.locator.ComponentLocator;
+import org.eclipse.kapua.commons.locator.ServiceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +41,11 @@ public abstract class Container {
 
     public final void startup() {
         logger.info("Startup...");
-        BundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(BundleProvider.class);
-        for(Bundle service:bundleProvider.getBundles()) {
-            service.start();
+        if (ComponentLocator.getInstance().hasBinding(ServiceBundleProvider.class)) {
+            ServiceBundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(ServiceBundleProvider.class);
+            for(ServiceBundle service:bundleProvider.getBundles()) {
+                service.start();
+            }
         }
         
         List<LifecyleListener> listeners = configuration.getImplementationsOf(LifecyleListener.class);
@@ -60,9 +62,11 @@ public abstract class Container {
             listeners.get(i).onShutdown();
         }
         
-        BundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(BundleProvider.class);
-        for(Bundle service:bundleProvider.getBundles()) {
-            service.stop();
+        if (ComponentLocator.getInstance().hasBinding(ServiceBundleProvider.class)) {
+            ServiceBundleProvider bundleProvider = ComponentLocator.getInstance().getComponent(ServiceBundleProvider.class);
+            for (ServiceBundle service : bundleProvider.getBundles()) {
+                service.stop();
+            }
         }
         logger.info("Shutdown...DONEs");
     }

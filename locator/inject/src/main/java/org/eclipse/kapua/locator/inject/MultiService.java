@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.event;
+package org.eclipse.kapua.locator.inject;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -17,16 +17,9 @@ import java.lang.annotation.Target;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.ElementType;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RaiseKapuaEvent {
-    /**
-     * Tell when the action should be executed
-     *
-     */
-    ActionPerformedOn eventActionPerformedOn() default ActionPerformedOn.AFTER;
-    String service() default "";
-    String entityType() default "";
-    String operation() default "";
-    String note() default "";
+@Retention(RetentionPolicy.RUNTIME) 
+@Target(ElementType.TYPE)
+public @interface MultiService {
+
+    Class<?> provides();
 }

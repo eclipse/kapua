@@ -17,13 +17,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.event.EventBus;
 import org.eclipse.kapua.commons.event.EventListenerImpl;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
 import org.eclipse.kapua.locator.inject.PoolListener;
+import org.eclipse.kapua.locator.inject.Service;
 import org.eclipse.kapua.service.event.KapuaEvent;
 import org.eclipse.kapua.service.event.KapuaEventListener;
 import org.slf4j.Logger;
@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @since 0.3.0
   */
-@Singleton
-@ComponentProvider(provides=EventBus.class)
+@ComponentProvider
+@Service(provides=EventBus.class)
 public class DummyEventBus implements EventBus {
 
     private final static Logger logger = LoggerFactory.getLogger(DummyEventBus.class);

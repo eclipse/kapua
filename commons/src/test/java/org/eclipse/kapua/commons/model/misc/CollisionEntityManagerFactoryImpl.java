@@ -14,12 +14,14 @@ package org.eclipse.kapua.commons.model.misc;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ComponentProvider(provides=CollisionEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=CollisionEntityManagerFactory.class)
 public class CollisionEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements CollisionEntityManagerFactory {
 
     @SuppressWarnings("unused")

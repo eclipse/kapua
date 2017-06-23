@@ -11,15 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.locator.guice;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.core.Bundle;
-import org.eclipse.kapua.commons.locator.BundleProvider;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.commons.core.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.ManagedObjectPool;
+import org.eclipse.kapua.locator.inject.MultiService;
+import org.eclipse.kapua.locator.inject.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +32,7 @@ import com.google.inject.PrivateModule;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
@@ -41,7 +47,8 @@ public class ComponentsModule extends PrivateModule {
     
     private ManagedObjectPool managedObjectPool;
     private LocatorConfig locatorConfig;
-    
+    Map<Class<?>, Multibinder<Class<?>>> multibinders;
+
     public ComponentsModule(ManagedObjectPool managedObjectPool, LocatorConfig locatorConfig) {
         this.managedObjectPool = managedObjectPool;
         this.locatorConfig = locatorConfig;
@@ -51,25 +58,48 @@ public class ComponentsModule extends PrivateModule {
     protected void configure() {
 
         try {
+            multibinders = new HashMap<>();
             
-            bind(BundleProvider.class).to(BundleProviderImpl.class);
-            expose(BundleProvider.class);
-            
-//            Multibinder<Bundle> bundleBinder = Multibinder.newSetBinder(binder(), Bundle.class);
             Set<Class<?>> componentProviders = locatorConfig.getAnnotatedWith(ComponentProvider.class);
             for(Class<?> componentProvider:componentProviders) {
-                if (Bundle.class.isAssignableFrom(componentProvider)) {
-//                    ComponentResolver resolver = ComponentResolver.newInstance(Bundle.class, componentProvider);
-//                    bundleBinder.addBinding().to(resolver.getImplementationClass());
+                // Bind bundles
+                MultiService multiServiceAnnotation = componentProvider.getAnnotation(MultiService.class);
+                if (multiServiceAnnotation != null) {
+                    Class<?> multiserviceClass = multiServiceAnnotation.provides();
+                    ComponentResolver resolver = ComponentResolver.newInstance(multiserviceClass, componentProvider);
+                    if (!multibinders.containsKey(resolver.getProvidedClass())) {
+                        multibinders.put(resolver.getProvidedClass(), (Multibinder<Class<?>>) Multibinder.newSetBinder(binder(), resolver.getProvidedClass())); 
+                    }
+                    
+                    if (resolver.getProvidedClass().isAssignableFrom(componentProvider)) {
+                        multibinders.get(resolver.getProvidedClass()).addBinding().to(resolver.getImplementationClass());
+                    }
                     continue;
                 }
+
+                // Bind interceptors
+                logger.info("Binding interceptors ..");
+                Interceptor interceptorAnnotation = componentProvider.getAnnotation(Interceptor.class);
+                if (interceptorAnnotation != null) {
+                    if (MethodInterceptor.class.isAssignableFrom(componentProvider)) {
+                        
+                        Class<?> parentClazz = interceptorAnnotation.matchSubclassOf();
+                        Class<? extends Annotation> methodAnnotation = interceptorAnnotation.matchAnnotatedWith();
+                        bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), (MethodInterceptor) componentProvider.newInstance());
+                        logger.info("Bind service interceptor {} to subclasses of {} annotated with {}", componentProvider, parentClazz, methodAnnotation);
+                        continue;
+                    }
+                }
                 
-                ComponentProvider providerAnnotation = componentProvider.getAnnotation(ComponentProvider.class);
-                Class<?> providedComponent  = providerAnnotation.provides();
-                ComponentResolver resolver = ComponentResolver.newInstance(providedComponent, componentProvider);
-                bind(resolver.getImplementationClass()).in(Singleton.class);
-                bind(resolver.getProvidedClass()).to(resolver.getImplementationClass());
-                expose(resolver.getProvidedClass());
+                // Bind services
+                Service serviceAnnotation = componentProvider.getAnnotation(Service.class);
+                if (serviceAnnotation != null) {
+                    Class<?> providedComponent  = serviceAnnotation.provides();
+                    ComponentResolver resolver = ComponentResolver.newInstance(providedComponent, componentProvider);
+                    bind(resolver.getImplementationClass()).in(Singleton.class);
+                    bind(resolver.getProvidedClass()).to(resolver.getImplementationClass());
+                    expose(resolver.getProvidedClass());
+                }
             }
 
             // When a new insance object is created by the injector the  

@@ -91,10 +91,10 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.inject.extensions/guice-multibindings -->
-        <!--<dependency>
+        <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-multibindings</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!-- metrics -->
         <dependency>

@@ -9,23 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.locator;
+package org.eclipse.kapua.locator.inject;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
+
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Singleton;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
 
-/**
- * @since 0.3.0
- *
- */
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.RUNTIME) 
 @Target(ElementType.TYPE)
-public @interface ComponentProvider {
+public @interface Service {
+
     Class<?> provides();
-    Class<? extends Annotation> as() default Singleton.class;
 }

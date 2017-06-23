@@ -90,9 +90,23 @@ public class ComponentLocatorImpl extends ComponentLocator {
     }
     
     @Override
+    public <T> boolean hasBinding(Class<T> clazz) {
+        try {
+            Injector injector = InjectorRegistry.get(COMMONS_INJECTOR_NAME);
+            injector.getBinding(clazz);
+            return true;
+        } catch (ConfigurationException e) {
+            return false;
+        }
+    }
+    
+    @Override
     public <T> T getComponent(Class<T> superOrImplClass) {
-        
-        Injector injector = InjectorRegistry.get(COMMONS_INJECTOR_NAME);        
-        return injector.getInstance(superOrImplClass);
+        try {
+            Injector injector = InjectorRegistry.get(COMMONS_INJECTOR_NAME);
+            return injector.getInstance(superOrImplClass);
+        } catch (ConfigurationException e) {
+            throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cant get instance of " + superOrImplClass);
+        }
     }
 }

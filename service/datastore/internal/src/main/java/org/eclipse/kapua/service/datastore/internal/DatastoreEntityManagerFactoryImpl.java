@@ -14,8 +14,9 @@ package org.eclipse.kapua.service.datastore.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 
 /**
  * Datastore entity manager factory implementation
@@ -23,7 +24,8 @@ import org.eclipse.kapua.commons.locator.ComponentProvider;
  * @since 1.0
  *
  */
-@ComponentProvider(provides=DatastoreEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=DatastoreEntityManagerFactory.class)
 public class DatastoreEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements DatastoreEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-datastore";

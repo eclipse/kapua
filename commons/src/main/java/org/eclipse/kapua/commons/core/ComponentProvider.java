@@ -11,13 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * Bundle manages the lifecycle of the services
- * 
  * @since 0.3.0
+ *
  */
-public interface Bundle {
-    
-    public void start();
-    public void stop();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ComponentProvider {
 }

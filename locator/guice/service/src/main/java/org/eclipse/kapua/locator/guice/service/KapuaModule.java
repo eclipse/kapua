@@ -22,7 +22,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.inject.SyntheticMethodMatcher;
-import org.eclipse.kapua.locator.inject.InterceptorBind;
+import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.locator.inject.LocatorConfig;
 import org.eclipse.kapua.locator.inject.PoolListener;
 import org.eclipse.kapua.model.KapuaObjectFactory;
@@ -93,7 +93,7 @@ public class KapuaModule extends AbstractModule {
                             
                             // This further EXPLICIT bind is necessary to let the service implementation be visible to 
                             // Guice when an interceptor binding has to be applied later on at runtime.
-                            bind(clazz).in(Singleton.class);
+                            bind(resolver.getImplementationClass()).in(Singleton.class);
                             //
                             //////
                             
@@ -133,8 +133,8 @@ public class KapuaModule extends AbstractModule {
             logger.info("Binding interceptors ..");
             for (Class<?> clazz : providers) {
                 if (MethodInterceptor.class.isAssignableFrom(clazz)) {
-                    InterceptorBind annotation = clazz.getAnnotation(InterceptorBind.class);
-                    Class<?> parentClazz = annotation.matchSublclassOf();
+                    Interceptor annotation = clazz.getAnnotation(Interceptor.class);
+                    Class<?> parentClazz = annotation.matchSubclassOf();
                     Class<? extends Annotation> methodAnnotation = annotation.matchAnnotatedWith();
                     bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), (MethodInterceptor) clazz.newInstance());
                     logger.info("Bind service interceptor {} to subclasses of {} annotated with {}", clazz, parentClazz, methodAnnotation);

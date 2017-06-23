@@ -14,8 +14,9 @@ package org.eclipse.kapua.service.account.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 
 /**
  * Entity manager factory for the account module.
@@ -23,7 +24,8 @@ import org.eclipse.kapua.commons.locator.ComponentProvider;
  * @since 1.0
  *
  */
-@ComponentProvider(provides=AccountEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=AccountEntityManagerFactory.class)
 public class AccountEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements AccountEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-account";

@@ -16,6 +16,7 @@
 	</provided>
 	<packages>
 		<package>org.eclipse.kapua.commons.jpa</package>
+		<package>org.eclipse.kapua.commons.locator</package>
 		<package>org.eclipse.kapua.commons.model.misc</package>
 	</packages>
 </locator-config>

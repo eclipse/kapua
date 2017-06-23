@@ -118,7 +118,7 @@ public class LocatorConfig {
             for (ClassInfo classInfo : classInfos) {
                 logger.trace("CLASS: {}", classInfo.getName());
                 Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
-                A serviceProvider = theClass.getAnnotation(annotation);
+                A serviceProvider = getAnnotationRecursively(theClass, annotation, new HashSet<>());
                 if (serviceProvider != null) {
                     extendedClassInfo.add(theClass);
                 }
@@ -163,5 +163,33 @@ public class LocatorConfig {
                 list.add((String) entry);
             }
         }
+    }
+    
+    private <A extends Annotation> A getAnnotationRecursively(Class<?> clazz, Class<A> requestedAnnotation, Set<Class<?>> notMatching) {
+
+        // Annotations may have loops.
+        // While exploring the hierarchy if a class was already tagged as not matching
+        // the iteration can stop.
+        if (notMatching.contains(clazz)) {
+            return null;
+        }
+        
+        A matchingAnnotation = clazz.getAnnotation(requestedAnnotation);
+        if (matchingAnnotation != null) {
+            return matchingAnnotation;
+        }
+        
+        // Tag as not matching
+        notMatching.add(clazz);
+        
+        Annotation[] annotations = clazz.getAnnotations();
+        for (Annotation annotation:annotations) {
+            matchingAnnotation = getAnnotationRecursively(annotation.annotationType(), requestedAnnotation, notMatching);
+            if (matchingAnnotation!= null) {
+                break;
+            }
+        }
+        
+        return matchingAnnotation;
     }
 }

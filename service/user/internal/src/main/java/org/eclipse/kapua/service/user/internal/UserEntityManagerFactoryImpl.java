@@ -14,8 +14,9 @@ package org.eclipse.kapua.service.user.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,8 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  *
  */
-@ComponentProvider(provides=UserEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=UserEntityManagerFactory.class)
 public class UserEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements UserEntityManagerFactory {
 
     @SuppressWarnings("unused")

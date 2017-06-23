@@ -13,11 +13,13 @@ package org.eclipse.kapua.service.account.internal;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.commons.core.Bundle;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.commons.core.ServiceBundle;
+import org.eclipse.kapua.locator.inject.MultiService;
+import org.eclipse.kapua.commons.core.ComponentProvider;
 
-@ComponentProvider(provides=Bundle.class)
-public class AccountServiceBundle implements Bundle {
+@ComponentProvider
+@MultiService(provides=ServiceBundle.class)
+public class AccountServiceBundle implements ServiceBundle {
 
     @Inject AccountEntityManagerFactoryImpl accountEntityManagerFactory;
     

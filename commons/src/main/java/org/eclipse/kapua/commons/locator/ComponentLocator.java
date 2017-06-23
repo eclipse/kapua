@@ -54,5 +54,6 @@ public abstract class ComponentLocator {
         return instance;
     }
     
+    public abstract <T> boolean hasBinding(Class<T> clazz);
     public abstract <T> T getComponent(Class<T> clazz);
 }

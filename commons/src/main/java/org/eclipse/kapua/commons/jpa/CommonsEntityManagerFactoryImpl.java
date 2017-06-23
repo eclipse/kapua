@@ -14,14 +14,16 @@ package org.eclipse.kapua.commons.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.commons.core.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 
 /**
  * Commons module entity manager reference service.
  *
  * @since 1.0
  */
-@ComponentProvider(provides=CommonsEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=CommonsEntityManagerFactory.class)
 public class CommonsEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements CommonsEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-commons";

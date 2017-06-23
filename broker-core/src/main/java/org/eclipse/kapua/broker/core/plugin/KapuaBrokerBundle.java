@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import org.eclipse.kapua.commons.core.Bundle;
+import org.eclipse.kapua.commons.core.ServiceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KapuaBrokerBundle implements Bundle {
+public class KapuaBrokerBundle implements ServiceBundle {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaBrokerBundle.class);
 

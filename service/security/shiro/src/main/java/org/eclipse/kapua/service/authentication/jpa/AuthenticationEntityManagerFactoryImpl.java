@@ -14,8 +14,9 @@ package org.eclipse.kapua.service.authentication.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 
 /**
  * Entity manager factory for the authentication module.
@@ -23,7 +24,8 @@ import org.eclipse.kapua.commons.locator.ComponentProvider;
  * @since 1.0
  *
  */
-@ComponentProvider(provides=AuthenticationEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=AuthenticationEntityManagerFactory.class)
 public class AuthenticationEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements AuthenticationEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";

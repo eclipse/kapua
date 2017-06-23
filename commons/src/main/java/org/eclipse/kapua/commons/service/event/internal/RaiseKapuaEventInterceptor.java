@@ -9,14 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.event;
-
-import javax.inject.Inject;
+package org.eclipse.kapua.commons.service.event.internal;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.locator.inject.InterceptorBind;
+import org.eclipse.kapua.locator.inject.Interceptor;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.event.ActionPerformedOn;
 import org.eclipse.kapua.service.event.RaiseKapuaEvent;
@@ -29,10 +27,8 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  */
 @KapuaProvider
-@InterceptorBind(matchSublclassOf=KapuaService.class, matchAnnotatedWith=RaiseKapuaEvent.class)
+@Interceptor(matchSubclassOf=KapuaService.class, matchAnnotatedWith=RaiseKapuaEvent.class)
 public class RaiseKapuaEventInterceptor implements MethodInterceptor {
-
-    @Inject EventBus eventBusService;
     
     private static final Logger logger = LoggerFactory.getLogger(RaiseKapuaEventInterceptor.class);
 

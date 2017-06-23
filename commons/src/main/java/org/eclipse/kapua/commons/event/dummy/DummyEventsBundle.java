@@ -12,10 +12,10 @@
 package org.eclipse.kapua.commons.event.dummy;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import org.eclipse.kapua.commons.core.Bundle;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.commons.core.ServiceBundle;
+import org.eclipse.kapua.commons.core.ComponentProvider;
+import org.eclipse.kapua.locator.inject.MultiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
  * @since 0.3.0
  *
  */
-@Singleton
-@ComponentProvider(provides=Bundle.class)
-public class DummyEventsBundle implements Bundle {
+@ComponentProvider
+@MultiService(provides=ServiceBundle.class)
+public class DummyEventsBundle implements ServiceBundle {
 
     private final static Logger logger = LoggerFactory.getLogger(DummyEventsBundle.class);
 

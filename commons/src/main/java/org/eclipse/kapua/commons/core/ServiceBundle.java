@@ -9,21 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.inject;
+package org.eclipse.kapua.commons.core;
 
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-
-@Retention(RetentionPolicy.RUNTIME) 
-@Target(ElementType.TYPE)
-public @interface InterceptorBind {
+/**
+ * Bundle manages the lifecycle of the services
+ * 
+ * @since 0.3.0
+ */
+public interface ServiceBundle {
     
-    // Only for interceptors
-    Class<?> matchSublclassOf() ;
-    Class<? extends Annotation> matchAnnotatedWith();
+    public void start();
+    public void stop();
 }

@@ -14,8 +14,9 @@ package org.eclipse.kapua.service.authorization.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 
 /**
  * Entity manager factory for the authorization module.
@@ -23,7 +24,8 @@ import org.eclipse.kapua.commons.locator.ComponentProvider;
  * @since 1.0
  *
  */
-@ComponentProvider(provides=AuthorizationEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=AuthorizationEntityManagerFactory.class)
 public class AuthorizationEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements AuthorizationEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authorization";

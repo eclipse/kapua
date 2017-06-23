@@ -14,15 +14,17 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.core.ComponentProvider;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.locator.ComponentProvider;
+import org.eclipse.kapua.locator.inject.Service;
 
 /**
  * Entity manager factory for the {@link AccessTokenServiceImpl} module.
  * 
  * @since 1.0.0
  */
-@ComponentProvider(provides=AccessTokenEntityManagerFactory.class)
+@ComponentProvider
+@Service(provides=AccessTokenEntityManagerFactory.class)
 public class AccessTokenEntityManagerFactoryImpl extends AbstractEntityManagerFactory implements AccessTokenEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
