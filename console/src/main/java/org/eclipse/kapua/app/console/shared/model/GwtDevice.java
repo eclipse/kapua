@@ -48,14 +48,14 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         }
     }
 
-    public enum GwtDeviceCredentialsTight implements IsSerializable {
+    public enum GwtConnectionUserCouplingMode implements IsSerializable {
         LOOSE("Unbound"), //
         STRICT("Device-bound"), //
         INHERITED("Account Default");
 
         private final String label;
 
-        GwtDeviceCredentialsTight(String label) {
+        GwtConnectionUserCouplingMode(String label) {
             this.label = label;
         }
 
@@ -63,10 +63,10 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
             return label;
         }
 
-        public static GwtDeviceCredentialsTight getEnumFromLabel(String label) {
-            GwtDeviceCredentialsTight gdct = null;
+        public static GwtConnectionUserCouplingMode getEnumFromLabel(String label) {
+            GwtConnectionUserCouplingMode gdct = null;
 
-            for (GwtDeviceCredentialsTight e : GwtDeviceCredentialsTight.values()) {
+            for (GwtConnectionUserCouplingMode e : GwtConnectionUserCouplingMode.values()) {
                 if (e.getLabel().equals(label)) {
                     gdct = e;
                 }
@@ -92,7 +92,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
                 return null;
             }
         } else if ("credentialsTightEnum".equals(property)) {
-            return (X) GwtDeviceCredentialsTight.valueOf(getCredentialsTight());
+            return (X) GwtConnectionUserCouplingMode.valueOf(getCredentialsTight());
         } else if ("deviceConnectionStatusEnum".equals(property)) {
             return (X) GwtDeviceConnectionStatus.valueOf(getGwtDeviceConnectionStatus());
         } else {
@@ -521,7 +521,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         return (String) get("credentialsTight");
     }
 
-    public GwtDeviceCredentialsTight getCredentialTightEnum() {
+    public GwtConnectionUserCouplingMode getCredentialTightEnum() {
         return get("credentialsTightEnum");
     }
 
