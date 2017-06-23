@@ -41,6 +41,8 @@ public class DeviceConnectionDAO extends ServiceDAO {
         deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
         deviceConnection.setClientId(deviceConnectionCreator.getClientId());
         deviceConnection.setUserId(deviceConnectionCreator.getUserId());
+        deviceConnection.setUserCouplingMode(deviceConnectionCreator.getUserCouplingMode());
+        deviceConnection.setReservedUserId(deviceConnectionCreator.getReservedUserId());
         deviceConnection.setProtocol(deviceConnectionCreator.getProtocol());
         deviceConnection.setClientIp(deviceConnectionCreator.getClientIp());
         deviceConnection.setServerIp(deviceConnectionCreator.getServerIp());
@@ -54,7 +56,8 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * @param em
      * @param deviceConnection
      * @return
-     * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link DeviceConnection} is not found.
      */
     public static DeviceConnection update(EntityManager em, DeviceConnection deviceConnection)
             throws KapuaException {
@@ -104,7 +107,8 @@ public class DeviceConnectionDAO extends ServiceDAO {
      *
      * @param em
      * @param deviceConnectionId
-     * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link DeviceConnection} is not found.
      */
     public static void delete(EntityManager em, KapuaId deviceConnectionId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DeviceConnectionImpl.class, deviceConnectionId);
