@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 
@@ -27,19 +26,12 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<Devi
 
     private static final long serialVersionUID = 2740394157765904615L;
 
-    @XmlElement(name = "clientId")
     private String clientId;
-
-    @XmlElement(name = "userId")
     private KapuaId userId;
-
-    @XmlElement(name = "protocol")
+    private ConnectionUserCouplingMode userCouplingMode;
+    private KapuaId reservedUserId;
     private String protocol;
-
-    @XmlElement(name = "clientIp")
     private String clientIp;
-
-    @XmlElement(name = "serverIp")
     private String serverIp;
 
     /**
@@ -69,6 +61,22 @@ public class DeviceConnectionCreatorImpl extends AbstractKapuaEntityCreator<Devi
     @Override
     public void setUserId(KapuaId userId) {
         this.userId = userId;
+    }
+
+    public ConnectionUserCouplingMode getUserCouplingMode() {
+        return userCouplingMode;
+    }
+
+    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode) {
+        this.userCouplingMode = userCouplingMode;
+    }
+
+    public KapuaId getReservedUserId() {
+        return reservedUserId;
+    }
+
+    public void setReservedUserId(KapuaId reservedUserId) {
+        this.reservedUserId = reservedUserId;
     }
 
     @Override

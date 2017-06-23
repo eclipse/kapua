@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 
 /**
  * Device connection entity definition.
@@ -90,6 +91,37 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      * @param userId
      */
     public void setUserId(KapuaId userId);
+
+    /**
+     * Get the device connection user coupling mode.
+     *
+     * @return
+     */
+    @XmlElement(name = "userCouplingMode")
+    public ConnectionUserCouplingMode getUserCouplingMode();
+
+    /**
+     * Set the device connection user coupling mode.
+     *
+     * @param status
+     */
+    public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode);
+
+    /**
+     * Get the reserved user identifier
+     *
+     * @return
+     */
+    @XmlElement(name = "reservedUserId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    public KapuaId getReservedUserId();
+
+    /**
+     * Set the reserved user identifier
+     *
+     * @param reservedUserId
+     */
+    public void setReservedUserId(KapuaId reservedUserId);
 
     /**
      * Get the device protocol
