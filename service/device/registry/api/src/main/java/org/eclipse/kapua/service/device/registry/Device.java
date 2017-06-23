@@ -359,6 +359,32 @@ public interface Device extends KapuaUpdatableEntity {
     public void setApplicationFrameworkVersion(String appFrameworkVersion);
 
     /**
+     * Gets the device's primary connection interface name
+     * @return The device's primary connection interface name
+     */
+    @XmlElement(name = "connectionInterface")
+    String getConnectionInterface();
+
+    /**
+     * Sets the device's primary connection interface name
+     * @param connectionInterface The device's primary connection interface name
+     */
+    void setConnectionInterface(String connectionInterface);
+
+    /**
+     * Gets the device's primary connection interface IP address
+     * @return The device's primary connection interface IP address
+     */
+    @XmlElement(name="connectionIp")
+    String getConnectionIp();
+
+    /**
+     * Sets the device's primary connection interface IP address
+     * @param connectionIp The device's primary connection interface IP address
+     */
+    void setConnectionIp(String connectionIp);
+
+    /**
      * Get application identifiers
      * 
      * @return

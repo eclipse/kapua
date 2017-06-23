@@ -132,6 +132,14 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     private String applicationFrameworkVersion;
 
     @Basic
+    @Column(name = "connection_interface")
+    private String connectionInterface;
+
+    @Basic
+    @Column(name = "connection_ip")
+    private String connectionIp;
+
+    @Basic
     @Column(name = "app_identifiers")
     private String applicationIdentifiers;
 
@@ -373,6 +381,26 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device {
     @Override
     public void setApplicationFrameworkVersion(String applicationFrameworkVersion) {
         this.applicationFrameworkVersion = applicationFrameworkVersion;
+    }
+
+    @Override
+    public String getConnectionInterface() {
+        return connectionInterface;
+    }
+
+    @Override
+    public void setConnectionInterface(String connectionInterface) {
+        this.connectionInterface = connectionInterface;
+    }
+
+    @Override
+    public String getConnectionIp() {
+        return connectionIp;
+    }
+
+    @Override
+    public void setConnectionIp(String connectionIp) {
+        this.connectionIp = connectionIp;
     }
 
     @Override

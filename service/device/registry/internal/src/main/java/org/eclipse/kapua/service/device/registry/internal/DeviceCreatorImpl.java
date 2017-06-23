@@ -44,6 +44,8 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     private String jvmVersion;
     private String osgiFrameworkVersion;
     private String applicationFrameworkVersion;
+    private String connectionInterface;
+    private String connectionIp;
     private String applicationIdentifiers;
     private String acceptEncoding;
     private Double gpsLongitude;
@@ -232,6 +234,26 @@ public class DeviceCreatorImpl extends AbstractKapuaEntityCreator<Device> implem
     @Override
     public void setApplicationFrameworkVersion(String applicationFrameworkVersion) {
         this.applicationFrameworkVersion = applicationFrameworkVersion;
+    }
+
+    @Override
+    public String getConnectionInterface() {
+        return connectionInterface;
+    }
+
+    @Override
+    public void setConnectionInterface(String connectionInterface) {
+        this.connectionInterface = connectionInterface;
+    }
+
+    @Override
+    public String getConnectionIp() {
+        return connectionIp;
+    }
+
+    @Override
+    public void setConnectionIp(String connectionIp) {
+        this.connectionIp = connectionIp;
     }
 
     @Override
