@@ -9,30 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.locator;
+package org.eclipse.kapua.commons.core;
 
 import java.util.Set;
 
-import javax.inject.Inject;
-
-import org.eclipse.kapua.commons.core.ComponentProvider;
-import org.eclipse.kapua.commons.core.ServiceBundle;
-import org.eclipse.kapua.locator.inject.Service;
-
-
 /**
+ * Bundle provider retrieves the list of bundles
+ * 
  * @since 0.3.0
- *
  */
-@ComponentProvider
-@Service(provides=ServiceBundleProvider.class)
-public class ServiceBundleProviderImpl implements ServiceBundleProvider {
+public interface ServiceBundleProvider {
 
-    @Inject Set<ServiceBundle> bundles;
-    
-    @Override
-    public Set<ServiceBundle> getBundles() {
-        return bundles;
-    }
-
+    public Set<ServiceBundle> getBundles();
 }

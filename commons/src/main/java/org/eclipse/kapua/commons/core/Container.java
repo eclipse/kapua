@@ -14,7 +14,6 @@ package org.eclipse.kapua.commons.core;
 import java.util.List;
 
 import org.eclipse.kapua.commons.locator.ComponentLocator;
-import org.eclipse.kapua.commons.locator.ServiceBundleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
