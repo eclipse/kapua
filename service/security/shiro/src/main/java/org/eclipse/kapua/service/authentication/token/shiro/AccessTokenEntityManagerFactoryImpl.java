@@ -31,8 +31,6 @@ public class AccessTokenEntityManagerFactoryImpl extends AbstractEntityManagerFa
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-//    private static AccessTokenEntityManagerFactory instance = new AccessTokenEntityManagerFactory();
-
     /**
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
@@ -41,13 +39,4 @@ public class AccessTokenEntityManagerFactoryImpl extends AbstractEntityManagerFa
               DATASOURCE_NAME, 
               UNIQUE_CONSTRAINTS);
     }
-
-    /**
-     * Return the {@link EntityManager} singleton instance
-     * 
-     * @return
-     */
-//    public static EntityManagerFactory getInstance() {
-//        return instance;
-//    }
 }

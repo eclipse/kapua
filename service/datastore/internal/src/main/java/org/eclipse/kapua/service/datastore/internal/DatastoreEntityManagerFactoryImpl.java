@@ -32,8 +32,6 @@ public class DatastoreEntityManagerFactoryImpl extends AbstractEntityManagerFact
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-//    private static DatastoreEntityManagerFactory instance = new DatastoreEntityManagerFactory();
-
     /**
      * Constructs a new entity manager factory and configure it to use the account persistence unit.
      */
@@ -42,13 +40,4 @@ public class DatastoreEntityManagerFactoryImpl extends AbstractEntityManagerFact
                 DATASOURCE_NAME,
                 UNIQUE_CONSTRAINTS);
     }
-
-    /**
-     * Return the {@link EntityManager} singleton instance
-     * 
-     * @return
-     */
-//    public static DatastoreEntityManagerFactory getInstance() {
-//        return instance;
-//    }
 }

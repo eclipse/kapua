@@ -31,8 +31,6 @@ public class CollisionEntityManagerFactoryImpl extends AbstractEntityManagerFact
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
-//    private static CollisionEntityManagerFactory instance = new CollisionEntityManagerFactory();
-
     /**
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
@@ -41,13 +39,4 @@ public class CollisionEntityManagerFactoryImpl extends AbstractEntityManagerFact
               DATASOURCE_NAME, 
               UNIQUE_CONTRAINTS);
     }
-
-    /**
-     * Return the {@link EntityManager} singleton instance
-     *
-     * @return
-     */
-//    public static EntityManagerFactory getInstance() {
-//        return instance;
-//    }
 }

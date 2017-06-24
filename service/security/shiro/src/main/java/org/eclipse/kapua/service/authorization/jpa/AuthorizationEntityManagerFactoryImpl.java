@@ -32,8 +32,6 @@ public class AuthorizationEntityManagerFactoryImpl extends AbstractEntityManager
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-//    private static AuthorizationEntityManagerFactory instance = new AuthorizationEntityManagerFactory();
-
     /**
      * Constructs a new entity manager factory and configure it to use the authorization persistence unit.
      */
@@ -42,25 +40,4 @@ public class AuthorizationEntityManagerFactoryImpl extends AbstractEntityManager
                 DATASOURCE_NAME,
                 UNIQUE_CONSTRAINTS);
     }
-
-    /**
-     * Return the {@link EntityManager} singleton instance
-     * 
-     * @return
-     * @throws KapuaException
-     */
-//    public static EntityManager getEntityManager()
-//            throws KapuaException {
-//        return instance.createEntityManager();
-//    }
-
-    /**
-     * Return the {@link EntityManager} singleton instance
-     * 
-     * @return
-     */
-//    public static AuthorizationEntityManagerFactory getInstance() {
-//        return instance;
-//    }
-
 }

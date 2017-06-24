@@ -31,8 +31,6 @@ public class DeviceEntityManagerFactoryImpl extends AbstractEntityManagerFactory
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-//    private static DeviceEntityManagerFactory instance = new DeviceEntityManagerFactory();
-
     /**
      * Constructs a new entity manager factory and configure it to use the device persistence unit.
      */
@@ -41,24 +39,4 @@ public class DeviceEntityManagerFactoryImpl extends AbstractEntityManagerFactory
                 DATASOURCE_NAME,
                 UNIQUE_CONSTRAINTS);
     }
-
-    /**
-     * Return a new {@link EntityManager} instance
-     *
-     * @return
-     */
-//    public static EntityManager getEntityManager()
-//            throws KapuaException {
-//        return instance.createEntityManager();
-//    }
-
-    /**
-     * Return the {@link EntityManager} singleton instance
-     *
-     * @return
-     */
-//    public static DeviceEntityManagerFactory instance() {
-//        return instance;
-//    }
-
 }

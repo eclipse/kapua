@@ -30,8 +30,6 @@ public class CommonsEntityManagerFactoryImpl extends AbstractEntityManagerFactor
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
-//    private static CommonsEntityManagerFactoryImpl instance = new CommonsEntityManagerFactoryImpl();
-
     /**
      * Constructor
      */
@@ -40,24 +38,4 @@ public class CommonsEntityManagerFactoryImpl extends AbstractEntityManagerFactor
                 DATASOURCE_NAME,
                 UNIQUE_CONTRAINTS);
     }
-
-    /**
-     * Return the entity manager
-     *
-     * @return
-     * @throws KapuaException
-     */
-//    public static EntityManager getEntityManager()
-//            throws KapuaException {
-//        return instance.createEntityManager();
-//    }
-
-    /**
-     * Return the {@link CommonsEntityManagerFactoryImpl} instance (singleton)
-     *
-     * @return
-     */
-//    public static CommonsEntityManagerFactoryImpl getInstance() {
-//        return instance;
-//    }
 }
