@@ -94,11 +94,19 @@ public class ComponentsModule extends PrivateModule {
                 // Bind services
                 Service serviceAnnotation = componentProvider.getAnnotation(Service.class);
                 if (serviceAnnotation != null) {
-                    Class<?> providedComponent  = serviceAnnotation.provides();
-                    ComponentResolver resolver = ComponentResolver.newInstance(providedComponent, componentProvider);
+                    Class<?>[] providedComponents  = serviceAnnotation.provides();
+                    if (providedComponents.length <= 0) {
+                        throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, String.format("Annotation %s does not provide any interface to bind to.", serviceAnnotation));
+                    }
+
+                    ComponentResolver resolver = null;
+                    for (Class<?> providedComponent:providedComponents) {
+                        resolver = ComponentResolver.newInstance(providedComponent, componentProvider);
+                        bind(resolver.getProvidedClass()).to(resolver.getImplementationClass());
+                        expose(resolver.getProvidedClass());
+                    }
+                    // Use the last resolver to make the implementation class a singleton scope
                     bind(resolver.getImplementationClass()).in(Singleton.class);
-                    bind(resolver.getProvidedClass()).to(resolver.getImplementationClass());
-                    expose(resolver.getProvidedClass());
                 }
             }
 

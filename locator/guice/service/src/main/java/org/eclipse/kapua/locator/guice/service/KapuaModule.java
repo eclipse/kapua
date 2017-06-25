@@ -136,7 +136,13 @@ public class KapuaModule extends AbstractModule {
                     Interceptor annotation = clazz.getAnnotation(Interceptor.class);
                     Class<?> parentClazz = annotation.matchSubclassOf();
                     Class<? extends Annotation> methodAnnotation = annotation.matchAnnotatedWith();
-                    bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), (MethodInterceptor) clazz.newInstance());
+                    
+                    // Need to request injection explicitely otherwise the interceptor would not 
+                    // be injected.
+                    MethodInterceptor interceptor = (MethodInterceptor) clazz.newInstance();
+                    requestInjection(interceptor);
+                    
+                    bindInterceptor(Matchers.subclassesOf(parentClazz), Matchers.annotatedWith(methodAnnotation), interceptor);
                     logger.info("Bind service interceptor {} to subclasses of {} annotated with {}", clazz, parentClazz, methodAnnotation);
                 }
             }

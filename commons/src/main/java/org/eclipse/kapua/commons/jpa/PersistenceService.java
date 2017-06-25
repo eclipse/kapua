@@ -9,18 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.locator.inject;
+package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.KapuaException;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+public interface PersistenceService {
 
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.ElementType;
-
-@Retention(RetentionPolicy.RUNTIME) 
-@Target(ElementType.TYPE)
-public @interface Service {
-
-    Class<?>[] provides();
+    public void begin(EntityManagerFactory factory) throws KapuaException;
+    public EntityManager get();
+    public void end();
 }

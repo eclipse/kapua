@@ -93,7 +93,7 @@ public abstract class AbstractEntityManagerFactory {
      */
     public EntityManager createEntityManager()
             throws KapuaException {
-        return new EntityManager(entityManagerFactory.createEntityManager());
+        return new EntityManagerImpl(entityManagerFactory.createEntityManager());
     }
 
     public void close() {
