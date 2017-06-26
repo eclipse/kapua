@@ -15,8 +15,13 @@
 -- changeset device_connection:1
 
 ALTER TABLE dvc_device_connection 
-	ADD COLUMN  user_coupling_mode VARCHAR(20) NOT NULL DEFAULT 'LOOSE';
+	ADD COLUMN  user_coupling_mode VARCHAR(20) NOT NULL;
+	
+UPDATE dvc_device_connection
+	SET user_coupling_mode = 'LOOSE';
 
 ALTER TABLE dvc_device_connection 
 	ADD COLUMN  reserved_user_id BIGINT(21) UNSIGNED;
-	
+
+UPDATE dvc_device_connection
+	SET reserved_user_id = NULL;
