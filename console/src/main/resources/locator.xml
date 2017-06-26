@@ -54,6 +54,8 @@
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService</api>
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
         <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>

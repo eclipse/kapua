@@ -31,7 +31,7 @@ public class DeviceConnectionOptionXmlRegistry {
      * 
      * @return
      */
-    public DeviceConnectionOption newDeviceConnectionOptions() {
+    public DeviceConnectionOption newDeviceConnectionOption() {
         return factory.newEntity(null);
     }
 
@@ -40,7 +40,7 @@ public class DeviceConnectionOptionXmlRegistry {
      * 
      * @return
      */
-    public DeviceConnectionOptionListResult newDeviceConnectionOptionsListResult() {
+    public DeviceConnectionOptionListResult newDeviceConnectionOptionListResult() {
         return factory.newListResult();
     }
 
