@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
@@ -17,9 +18,6 @@ import org.eclipse.kapua.message.KapuaChannel;
 
 /**
  * Kapua message channel object reference implementation.
- *
- * @since 1.0
- *
  */
 public class KapuaChannelImpl implements KapuaChannel {
 
@@ -31,26 +29,16 @@ public class KapuaChannelImpl implements KapuaChannel {
     }
 
     @Override
-    public void setSemanticParts(List<String> semanticParts) {
+    public void setSemanticParts(final List<String> semanticParts) {
         this.semanticParts = semanticParts;
     }
 
     @Override
     public String toString() {
-        StringBuilder strBuilder = new StringBuilder();
-        if (semanticParts != null && !semanticParts.isEmpty()) {
-            boolean first = true;
-            for (String str : semanticParts) {
-                if (!first) {
-                    strBuilder.append("/");
-                }
-                first = false;
-                strBuilder.append(str);
-            }
-            return strBuilder.toString();
-        } else {
+        if (semanticParts == null) {
             return "";
         }
+        return String.join("/", semanticParts);
     }
 
 }
